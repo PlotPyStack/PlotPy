@@ -1,0 +1,11 @@
+== Version 1.2.1 ==
+
+    * Stabilized version based on PythonQwt
+    * packaging_helpers.py included into plotpy.core.utils
+    * some GUI bug fixed
+    * mscv option added into packaging_helpers.py
+    * tests improved
+
+== Version 1.0.5 ==
+
+    * packaging.py renamed into packaging_helpers.py in order to be compatible with Sphinx

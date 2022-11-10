@@ -1,0 +1,11 @@
+The following files come from spyder ide version 3.3.2:
+
+- attribute.png
+- class.png
+- copywop.png
+- editclear.png
+- editcut.png
+- function.png
+- method.png
+- module.png
+- selectall.png

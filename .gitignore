@@ -1,0 +1,47 @@
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+*.pyd
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+eggs/
+.eggs/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Tests
+.tox/
+.coverage
+.coverage.*
+.cache
+unittests.xml
+coverage.xml
+coverage/
+.pytest_cache/
+pylint_report.txt
+
+
+# Sphinx documentation
+docs/build/
+
+
+# Generated cython c file
+src/contour2d.c
+src/histogram2d.c
+src/mandelbrot.c
+
+# qt.conf files
+sift/qt.conf
+doc/source/deployment_example/qt.conf
+

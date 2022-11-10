@@ -1,0 +1,2758 @@
+# -*- coding: utf-8 -*-
+# guidata module translation file
+# Copyright (C) 2009 CEA
+# Pierre Raybaut <pierre.raybaut@cea.fr>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2019-02-20 14:41+0100\n"
+"PO-Revision-Date: 2019-02-20 14:42+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+"X-Generator: Poedit 2.2.1\n"
+"X-Poedit-Basepath: ../../..\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: ../tests\n"
+
+#: console/syntaxhighlighters.py:33
+msgid "Background:"
+msgstr "Couleur du fond :"
+
+#: console/syntaxhighlighters.py:34
+#, fuzzy
+#| msgid "Current value"
+msgid "Current line:"
+msgstr "Valeur actuelle"
+
+#: console/syntaxhighlighters.py:35
+#, fuzzy
+#| msgid "Current value"
+msgid "Current cell:"
+msgstr "Valeur actuelle"
+
+#: console/syntaxhighlighters.py:36
+msgid "Occurrence:"
+msgstr ""
+
+#: console/syntaxhighlighters.py:37
+msgid "Link:"
+msgstr ""
+
+#: console/syntaxhighlighters.py:38
+msgid "Side areas:"
+msgstr ""
+
+#: console/syntaxhighlighters.py:39
+msgid "Matched <br>parens:"
+msgstr ""
+
+#: console/syntaxhighlighters.py:40
+msgid "Unmatched <br>parens:"
+msgstr ""
+
+#: console/syntaxhighlighters.py:41
+#, fuzzy
+#| msgid "Label text"
+msgid "Normal text:"
+msgstr "Texte de l'étiquette"
+
+#: console/syntaxhighlighters.py:42
+msgid "Keyword:"
+msgstr ""
+
+#: console/syntaxhighlighters.py:43
+msgid "Builtin:"
+msgstr ""
+
+#: console/syntaxhighlighters.py:44
+msgid "Definition:"
+msgstr ""
+
+#: console/syntaxhighlighters.py:45
+msgid "Comment:"
+msgstr ""
+
+#: console/syntaxhighlighters.py:46
+msgid "String:"
+msgstr ""
+
+#: console/syntaxhighlighters.py:47
+msgid "Number:"
+msgstr "Nombre :"
+
+#: console/syntaxhighlighters.py:48
+msgid "Instance:"
+msgstr "Instance :"
+
+#: console/widgets/arraybuilder.py:197
+msgid ""
+"\n"
+"           <b>Numpy Array/Matrix Helper</b><br>\n"
+"           Type an array in Matlab    : <code>[1 2;3 4]</code><br>\n"
+"           or Spyder simplified syntax : <code>1 2;3 4</code>\n"
+"           <br><br>\n"
+"           Hit 'Enter' for array or 'Ctrl+Enter' for matrix.\n"
+"           <br><br>\n"
+"           <b>Hint:</b><br>\n"
+"           Use two spaces or two tabs to generate a ';'.\n"
+"           "
+msgstr ""
+
+#: console/widgets/arraybuilder.py:210
+msgid ""
+"\n"
+"           <b>Numpy Array/Matrix Helper</b><br>\n"
+"           Enter an array in the table. <br>\n"
+"           Use Tab to move between cells.\n"
+"           <br><br>\n"
+"           Hit 'Enter' for array or 'Ctrl+Enter' for matrix.\n"
+"           <br><br>\n"
+"           <b>Hint:</b><br>\n"
+"           Use two tabs at the end of a row to move to the next row.\n"
+"           "
+msgstr ""
+
+#: console/widgets/arraybuilder.py:386
+msgid "Array dimensions not valid"
+msgstr ""
+
+#: console/widgets/internalshell.py:345
+msgid "Help..."
+msgstr "Aide..."
+
+#: console/widgets/internalshell.py:356 gui/widgets/tools.py:2647
+#: gui/widgets/tools.py:2656
+msgid "Help"
+msgstr "Aide"
+
+#: console/widgets/internalshell.py:367
+msgid "Shell special commands:"
+msgstr ""
+
+#: console/widgets/internalshell.py:368
+msgid "Internal editor:"
+msgstr "Éditeur interne :"
+
+#: console/widgets/internalshell.py:369
+msgid "External editor:"
+msgstr "Éditeur externe :"
+
+#: console/widgets/internalshell.py:370
+msgid "Run script:"
+msgstr "Exécuter ce script :"
+
+#: console/widgets/internalshell.py:371
+msgid "Remove references:"
+msgstr ""
+
+#: console/widgets/internalshell.py:372
+msgid "System commands:"
+msgstr "Commandes système :"
+
+#: console/widgets/internalshell.py:373
+msgid "Python help:"
+msgstr ""
+
+#: console/widgets/internalshell.py:374
+msgid "GUI-based editor:"
+msgstr ""
+
+#: console/widgets/internalshell.py:496
+msgid ""
+"In order to use commands like \"raw_input\" or \"input\" run Spyder with the "
+"multithread option (--multithread) from a system terminal"
+msgstr ""
+
+#: console/widgets/mixins.py:771
+msgid "Arguments"
+msgstr "Paramètres"
+
+#: console/widgets/shell.py:138
+msgid "Cut"
+msgstr "Couper"
+
+#: console/widgets/shell.py:145 console/widgets/sourcecode/codeviewer.py:1187
+#: gui/widgets/variableexplorer/arrayeditor.py:535
+#: gui/widgets/variableexplorer/collectionseditor.py:838
+#: gui/widgets/variableexplorer/dataframeeditor.py:667
+msgid "Copy"
+msgstr "Copier"
+
+#: console/widgets/shell.py:152
+#: gui/widgets/variableexplorer/collectionseditor.py:835
+msgid "Paste"
+msgstr "Coller"
+
+#: console/widgets/shell.py:159
+msgid "Save history log..."
+msgstr "Enregistrer l'historique sous..."
+
+#: console/widgets/shell.py:162
+msgid "Save current history log (i.e. all inputs and outputs) in a text file"
+msgstr ""
+
+#: console/widgets/shell.py:169
+msgid "Delete"
+msgstr "Supprimer"
+
+#: console/widgets/shell.py:176 console/widgets/sourcecode/codeviewer.py:1195
+msgid "Select All"
+msgstr "Tout sélectionner"
+
+#: console/widgets/shell.py:301
+msgid "Save history log"
+msgstr "Enregistrer l'historique"
+
+#: console/widgets/shell.py:304
+msgid "History logs"
+msgstr ""
+
+#: console/widgets/shell.py:748
+msgid "Copy without prompts"
+msgstr ""
+
+#: console/widgets/shell.py:754 console/widgets/shell.py:757
+msgid "Clear line"
+msgstr "Effacer la ligne"
+
+#: console/widgets/shell.py:762
+msgid "Clear shell"
+msgstr "Effacer la console"
+
+#: console/widgets/shell.py:765
+msgid "Clear shell contents ('cls' command)"
+msgstr ""
+
+#: core/dataset/dataitems.py:79
+msgid "integer"
+msgstr "entier"
+
+#: core/dataset/dataitems.py:79
+msgid "float"
+msgstr "flottant"
+
+#: core/dataset/dataitems.py:85
+msgid " between "
+msgstr " compris entre "
+
+#: core/dataset/dataitems.py:85
+msgid " and "
+msgstr " et "
+
+#: core/dataset/dataitems.py:87
+msgid " higher than "
+msgstr " supérieur à "
+
+#: core/dataset/dataitems.py:89
+msgid " lower than "
+msgstr " inférieur à "
+
+#: core/dataset/dataitems.py:91
+msgid "non zero"
+msgstr "non nul"
+
+#: core/dataset/dataitems.py:93
+msgid "unit:"
+msgstr "unité :"
+
+#: core/dataset/dataitems.py:237
+msgid "even"
+msgstr "pair"
+
+#: core/dataset/dataitems.py:239
+msgid "odd"
+msgstr "impair"
+
+#: core/dataset/dataitems.py:423
+msgid "all file types"
+msgstr "tout type de fichier"
+
+#: core/dataset/dataitems.py:425
+msgid "supported file types:"
+msgstr "types de fichiers pris en charge : "
+
+#: gui/dataset/qtitemwidgets.py:297 gui/dataset/qtitemwidgets.py:364
+msgid "Value is forced to {}"
+msgstr "La valeur est imposée à {}"
+
+#: gui/dataset/qtitemwidgets.py:736
+msgid "{} files"
+msgstr "Fichiers {}"
+
+#: gui/dataset/qtitemwidgets.py:739 gui/widgets/io.py:145
+msgid "All supported files"
+msgstr "Tous les fichiers pris en charge"
+
+#: gui/dataset/qtitemwidgets.py:989
+msgid "Number of rows x Number of columns"
+msgstr "Nombre de lignes x Nombre de colonnes"
+
+#: gui/dataset/qtitemwidgets.py:992
+msgid "Edit array contents"
+msgstr "Modifier le contenu du tableau"
+
+#: gui/dataset/qtitemwidgets.py:998
+msgid "Smallest element in array"
+msgstr "Valeur minimale du tableau"
+
+#: gui/dataset/qtitemwidgets.py:1002
+msgid "Largest element in array"
+msgstr "Valeur maximale du tableau"
+
+#: gui/dataset/qtwidgets.py:237
+msgid "Some required entries are incorrect"
+msgstr "Les champs surlignés n'ont pas été remplis correctement."
+
+#: gui/dataset/qtwidgets.py:239
+msgid "Please check highlighted fields."
+msgstr "Veuillez vérifier votre saisie."
+
+#: gui/dataset/qtwidgets.py:619 gui/widgets/base.py:56
+msgid "Apply"
+msgstr "Appliquer"
+
+#: gui/widgets/about.py:53
+msgid "on"
+msgstr "sur"
+
+#: gui/widgets/base.py:44
+msgid "Reset"
+msgstr ""
+
+#: gui/widgets/base.py:156
+msgid "Rotate & Crop"
+msgstr "Rotation et rognage"
+
+#: gui/widgets/baseplot.py:143
+msgid "Grid..."
+msgstr "Grille..."
+
+#: gui/widgets/baseplot.py:144
+msgid "Axes style..."
+msgstr "Style des axes..."
+
+#: gui/widgets/baseplot.py:145 gui/widgets/baseplot.py:1817
+msgid "Parameters..."
+msgstr "Paramètres..."
+
+#: gui/widgets/baseplot.py:303 gui/widgets/styles.py:908
+#: gui/widgets/styles.py:974 gui/widgets/styles.py:1696
+msgid "Left"
+msgstr "Gauche"
+
+#: gui/widgets/baseplot.py:304 gui/widgets/styles.py:909
+#: gui/widgets/styles.py:975 gui/widgets/styles.py:1697
+msgid "Right"
+msgstr "Droite"
+
+#: gui/widgets/baseplot.py:305 gui/widgets/styles.py:911
+#: gui/widgets/styles.py:977 gui/widgets/styles.py:1699
+msgid "Bottom"
+msgstr "Bas"
+
+#: gui/widgets/baseplot.py:306 gui/widgets/styles.py:910
+#: gui/widgets/styles.py:976 gui/widgets/styles.py:1698
+msgid "Top"
+msgstr "Haut"
+
+#: gui/widgets/baseplot.py:363 gui/widgets/baseplot.py:428
+#: gui/widgets/builder.py:175 gui/widgets/items/curve.py:242
+msgid "Grid"
+msgstr "Grille"
+
+#: gui/widgets/baseplot.py:901
+msgid "Unknown file extension"
+msgstr "Extension de fichier inconnue"
+
+#: gui/widgets/baseplot.py:1374 gui/widgets/items/shapes.py:1533
+#: gui/widgets/items/shapes.py:1561 gui/widgets/tools.py:1220
+msgid "Axes"
+msgstr "Axes"
+
+#: gui/widgets/baseplot.py:1376
+msgid "Axes associated to selected item"
+msgstr "Axes associés à l'objet sélectionné"
+
+#: gui/widgets/baseplot.py:1413 gui/widgets/styles.py:683
+#: gui/widgets/styles.py:689 gui/widgets/styles.py:796
+#: gui/widgets/styles.py:827
+msgid "Y Axis"
+msgstr "Ordonnées"
+
+#: gui/widgets/baseplot.py:1415 gui/widgets/styles.py:682
+#: gui/widgets/styles.py:688 gui/widgets/styles.py:790
+#: gui/widgets/styles.py:823
+msgid "X Axis"
+msgstr "Abscisses"
+
+#: gui/widgets/baseplot.py:1805
+msgid "Move to back"
+msgstr "Déplacer vers l'arrière-plan"
+
+#: gui/widgets/baseplot.py:1811
+msgid "Move to front"
+msgstr "Déplacer vers le premier plan"
+
+#: gui/widgets/baseplot.py:1822 gui/widgets/baseplot.py:1998
+#: gui/widgets/tools.py:2917 gui/widgets/tools.py:2943
+#: gui/widgets/variableexplorer/collectionseditor.py:876
+#: gui/widgets/variableexplorer/collectionseditor.py:1137
+msgid "Remove"
+msgstr "Supprimer"
+
+#: gui/widgets/baseplot.py:1994 gui/widgets/tools.py:2939
+msgid "Do you really want to remove this item?"
+msgstr "Souhaitez-vous vraiment supprimer cet objet ?"
+
+#: gui/widgets/baseplot.py:1996 gui/widgets/tools.py:2941
+msgid "Do you really want to remove selected items?"
+msgstr "Souhaitez-vous vraiment supprimer les objets sélectionnés ?"
+
+#: gui/widgets/baseplot.py:2011 gui/widgets/tools.py:2179
+msgid "Item list"
+msgstr "Liste des objets"
+
+#: gui/widgets/builder.py:400 gui/widgets/builder.py:515
+#: gui/widgets/builder.py:547 gui/widgets/builder.py:647
+#: gui/widgets/builder.py:699 gui/widgets/cross_section.py:421
+#: gui/widgets/histogram.py:145 gui/widgets/histogram.py:282
+#: gui/widgets/items/curve.py:409 gui/widgets/items/curve.py:515
+#: gui/widgets/items/curve.py:1122
+msgid "Curve"
+msgstr "Courbe"
+
+#: gui/widgets/builder.py:549 gui/widgets/builder.py:649
+#: gui/widgets/items/curve.py:1104 gui/widgets/items/curve.py:1124
+msgid "Error bars"
+msgstr "Barres d'erreur"
+
+#: gui/widgets/builder.py:697 gui/widgets/histogram.py:148
+#: gui/widgets/histogram.py:285 gui/widgets/styles.py:1841
+#: gui/widgets/variableexplorer/collectionseditor.py:852
+msgid "Histogram"
+msgstr "Histogramme"
+
+#: gui/widgets/builder.py:739 gui/widgets/builder.py:832
+#: gui/widgets/builder.py:941 gui/widgets/builder.py:1022
+#: gui/widgets/builder.py:1071 gui/widgets/builder.py:1119
+#: gui/widgets/builder.py:1182 gui/widgets/builder.py:1244
+#: gui/widgets/items/image.py:981 gui/widgets/items/image.py:1163
+#: gui/widgets/items/image.py:1729 gui/widgets/items/image.py:2174
+#: gui/widgets/items/image.py:2388 gui/widgets/items/image.py:2765
+#: gui/widgets/items/image.py:2896 gui/widgets/items/image.py:3303
+#: gui/widgets/styles.py:1216 gui/widgets/styles.py:1378
+msgid "Image"
+msgstr "Image"
+
+#: gui/widgets/builder.py:1282 gui/widgets/styles.py:1649
+msgid "Filter"
+msgstr "Filtre"
+
+#: gui/widgets/builder.py:1317
+msgid "2D Histogram"
+msgstr "Histogramme 2D"
+
+#: gui/widgets/builder.py:1355 gui/widgets/items/annotations.py:188
+#: gui/widgets/items/label.py:103 gui/widgets/items/label.py:127
+#: gui/widgets/tools.py:866 gui/widgets/tools.py:927
+msgid "Label"
+msgstr "Étiquette"
+
+#: gui/widgets/builder.py:1389
+msgid "Legend"
+msgstr "Légende"
+
+#: gui/widgets/builder.py:1515 gui/widgets/items/shapes.py:342
+msgid "Marker"
+msgstr "Marqueur"
+
+#: gui/widgets/builder.py:1612 gui/widgets/items/annotations.py:120
+#: gui/widgets/items/annotations.py:153
+msgid "Annotation"
+msgstr "Annotation"
+
+#: gui/widgets/builder.py:1676 gui/widgets/styles.py:1853
+msgid "Computation"
+msgstr "Calcul"
+
+#: gui/widgets/config.py:25
+msgid "#"
+msgstr "n°"
+
+#: gui/widgets/config.py:56
+msgid "pixels"
+msgstr "pixels"
+
+#: gui/widgets/config.py:67
+msgid "Intensity"
+msgstr "Intensité"
+
+#: gui/widgets/config.py:68
+msgid "lsb"
+msgstr "lsb"
+
+#: gui/widgets/cross_section.py:391
+msgid "LUT scale"
+msgstr "Échelle LUT"
+
+#: gui/widgets/cross_section.py:397 gui/widgets/tools.py:1448
+msgid "Cross section"
+msgstr "Profil rectiligne"
+
+#: gui/widgets/cross_section.py:398
+msgid "Enable a marker"
+msgstr "Activer un marqueur"
+
+#: gui/widgets/cross_section.py:789
+msgid "Cross section tool"
+msgstr "Profils d'images"
+
+#: gui/widgets/cross_section.py:886
+msgid "Lock scales"
+msgstr "Synchroniser les échelles"
+
+#: gui/widgets/cross_section.py:889
+msgid "Lock scales to main plot axes"
+msgstr "Synchroniser les échelles à celles du canevas"
+
+#: gui/widgets/cross_section.py:894
+msgid "Auto-scale"
+msgstr "Échelle automatique"
+
+#: gui/widgets/cross_section.py:902
+msgid "Refresh"
+msgstr "Rafraîchir"
+
+#: gui/widgets/cross_section.py:908
+msgid "Auto-refresh"
+msgstr "Rafraîchissement automatique"
+
+#: gui/widgets/cross_section.py:1068
+msgid "Per image cross-section"
+msgstr "Un profil par image"
+
+#: gui/widgets/cross_section.py:1072
+msgid ""
+"Enable the per-image cross-section mode, which works directly on image rows/"
+"columns.\n"
+"That is the fastest method to compute cross-section curves but it ignores "
+"image transformations (e.g. rotation)"
+msgstr ""
+"Active l'affichage d'un profil par image : ce mode d'affichage extrait les "
+"profils directement depuis les lignes ou les colonnes des images.\n"
+"C'est la méthode la plus rapide, mais cela ne fonctionne pas sur des images "
+"ayant subies une transformation (rotation, par exemple)."
+
+#: gui/widgets/cross_section.py:1081
+msgid ""
+"Apply LUT\n"
+"(contrast settings)"
+msgstr ""
+"Appliquer la LUT\n"
+"(réglages de contraste)"
+
+#: gui/widgets/cross_section.py:1085
+msgid ""
+"Apply LUT (Look-Up Table) contrast settings.\n"
+"This is the easiest way to compare images which have slightly different "
+"level ranges.\n"
+"\n"
+"Note: LUT is coded over 1024 levels (0...1023)"
+msgstr ""
+"Applique les réglages de contraste de la LUT (Look-Up Table).\n"
+"C'est le moyen le plus facile pour comparer (en relatif) des images ayant "
+"des dynamiques très différentes.\n"
+"\n"
+"Note : la LUT est codée sur 1024 niveaux (0...1023)"
+
+#: gui/widgets/cross_section.py:1242 gui/widgets/cross_section.py:1243
+#: gui/widgets/tools.py:1532 gui/widgets/tools.py:2174
+msgid "Oblique averaged cross section"
+msgstr "Profil oblique moyen"
+
+#: gui/widgets/cross_section.py:1244
+msgid "Activate the oblique cross section tool"
+msgstr "Activer l'outil de profil oblique moyen"
+
+#: gui/widgets/fit.py:84
+msgid "Method"
+msgstr "Méthode"
+
+#: gui/widgets/fit.py:90
+msgid "Conjugate Gradient"
+msgstr "Gradient conjugué"
+
+#: gui/widgets/fit.py:91
+msgid "Least squares"
+msgstr "Moindres carrés"
+
+#: gui/widgets/fit.py:98
+msgid "for simplex, powel, cg and bfgs norm used by the error function"
+msgstr ""
+
+#: gui/widgets/fit.py:101 gui/widgets/fit.py:104
+msgid "for simplex, powel, least squares"
+msgstr ""
+
+#: gui/widgets/fit.py:106
+msgid "for cg, bfgs"
+msgstr ""
+
+#: gui/widgets/fit.py:108
+msgid "for cg, bfgs. inf is max, -inf is min"
+msgstr ""
+
+#: gui/widgets/fit.py:113 gui/widgets/variableexplorer/collectionseditor.py:201
+msgid "Name"
+msgstr "Nom"
+
+#: gui/widgets/fit.py:114 gui/widgets/variableexplorer/collectionseditor.py:412
+msgid "Value"
+msgstr "Valeur"
+
+#: gui/widgets/fit.py:115
+msgid "Min"
+msgstr ""
+
+#: gui/widgets/fit.py:116
+msgid "Max"
+msgstr ""
+
+#: gui/widgets/fit.py:117 gui/widgets/styles.py:374
+msgid "Steps"
+msgstr ""
+
+#: gui/widgets/fit.py:118 gui/widgets/variableexplorer/arrayeditor.py:628
+#: gui/widgets/variableexplorer/arrayeditor.py:663
+#: gui/widgets/variableexplorer/dataframeeditor.py:779
+#: gui/widgets/variableexplorer/dataframeeditor.py:841
+msgid "Format"
+msgstr "Format"
+
+#: gui/widgets/fit.py:119
+msgid "Logarithmic"
+msgstr ""
+
+#: gui/widgets/fit.py:119 gui/widgets/styles.py:745 gui/widgets/tools.py:2563
+msgid "Scale"
+msgstr ""
+
+#: gui/widgets/fit.py:120 gui/widgets/styles.py:734
+msgid "Unit"
+msgstr ""
+
+#: gui/widgets/fit.py:156
+msgid "Curve fitting parameter"
+msgstr "Paramètre d'ajustement"
+
+#: gui/widgets/fit.py:186
+#, python-brace-format
+msgid "Edit '{name}' fit parameter properties"
+msgstr "Modifier les propriétés du paramètre d'ajustement '{name}'"
+
+#: gui/widgets/fit.py:372
+msgid "Curve fitting"
+msgstr "Ajustement de courbes"
+
+#: gui/widgets/fit.py:424
+msgid "Fit parameters"
+msgstr "Paramètres d'ajustement"
+
+#: gui/widgets/fit.py:471
+msgid "Automatic fitting options"
+msgstr "Options d'ajustement automatique"
+
+#: gui/widgets/fit.py:519
+msgid "Run"
+msgstr "Ajuster"
+
+#: gui/widgets/fit.py:521
+msgid "Settings"
+msgstr "Options"
+
+#: gui/widgets/fit.py:523 gui/widgets/styles.py:1650
+msgid "Bounds"
+msgstr ""
+
+#: gui/widgets/fit.py:531
+msgid "Automatic fit"
+msgstr "Ajustement automatique"
+
+#: gui/widgets/fit.py:580 gui/widgets/variableexplorer/arrayeditor.py:795
+msgid "Data"
+msgstr ""
+
+#: gui/widgets/fit.py:585
+msgid "Fit"
+msgstr "Ajustement"
+
+#: gui/widgets/fliprotate.py:47
+msgid "Angle (°):"
+msgstr "Angle (°) :"
+
+#: gui/widgets/fliprotate.py:59
+msgid "Flip:"
+msgstr "Retournement :"
+
+#: gui/widgets/histogram.py:555 gui/widgets/histogram.py:671
+msgid "Eliminate outliers"
+msgstr "Éliminer les bords"
+
+#: gui/widgets/histogram.py:564
+msgid "Contrast adjustment tool"
+msgstr "Outil de réglage du contraste"
+
+#: gui/widgets/histogram.py:626
+msgid "Minimum level"
+msgstr "Niveau minimum"
+
+#: gui/widgets/histogram.py:629
+msgid "Select minimum level on image"
+msgstr "Sélectionne le niveau minimum de l'image"
+
+#: gui/widgets/histogram.py:635
+msgid "Maximum level"
+msgstr "Niveau maximum"
+
+#: gui/widgets/histogram.py:638
+msgid "Select maximum level on image"
+msgstr "Sélectionne le niveau maximum de l'image"
+
+#: gui/widgets/histogram.py:664
+msgid "Full range"
+msgstr "Pleine échelle"
+
+#: gui/widgets/histogram.py:667
+msgid "Scale the image's display range according to data range"
+msgstr "Adapte l'échelle d'affichage des niveaux de l'image aux données"
+
+#: gui/widgets/histogram.py:675
+msgid ""
+"Eliminate levels histogram outliers and scale the image's display range "
+"accordingly"
+msgstr ""
+"Supprime les bords (pourcentage choisi) de l'histogramme des niveaux de "
+"l'image, puis affiche l'image résultante"
+
+#: gui/widgets/io.py:431
+msgid "PNG files"
+msgstr "Fichiers PNG"
+
+#: gui/widgets/io.py:438
+msgid "TIFF files"
+msgstr "Fichiers TIFF"
+
+#: gui/widgets/io.py:441
+msgid "8-bit images"
+msgstr "Images 8 bits"
+
+#: gui/widgets/io.py:447 gui/widgets/variableexplorer/collectionseditor.py:1275
+msgid "NumPy arrays"
+msgstr "Tableaux NumPy"
+
+#: gui/widgets/io.py:449
+msgid "Text files"
+msgstr "Fichiers textes"
+
+#: gui/widgets/io.py:452
+msgid "DICOM files"
+msgstr "Fichiers DICOM"
+
+#: gui/widgets/items/annotations.py:495
+msgid "Distance:"
+msgstr "Distance :"
+
+#: gui/widgets/items/annotations.py:550 gui/widgets/items/annotations.py:632
+#: gui/widgets/items/annotations.py:726 gui/widgets/items/annotations.py:752
+msgid "Center:"
+msgstr "Centre :"
+
+#: gui/widgets/items/annotations.py:551 gui/widgets/items/annotations.py:633
+#: gui/widgets/items/annotations.py:727
+msgid "Size:"
+msgstr "Taille :"
+
+#: gui/widgets/items/annotations.py:634 gui/widgets/items/annotations.py:728
+msgid "Angle:"
+msgstr "Angle :"
+
+#: gui/widgets/items/annotations.py:753
+msgid "Diameter:"
+msgstr "Diamètre :"
+
+#: gui/widgets/items/curve.py:746 gui/widgets/items/curve.py:888
+msgid "PolygonMap"
+msgstr ""
+
+#: gui/widgets/items/image.py:1620
+msgid "Quadrilaterals"
+msgstr "Quadrilatères"
+
+#: gui/widgets/items/image.py:2027
+msgid "There is no supported image item in current plot."
+msgstr "La figure ne contient aucun objet image pris en charge."
+
+#: gui/widgets/items/shapes.py:674 gui/widgets/items/shapes.py:717
+msgid "Shape"
+msgstr "Forme"
+
+#: gui/widgets/items/shapes.py:1743
+msgid "Range"
+msgstr "Intervalle"
+
+#: gui/widgets/plot.py:1060 gui/widgets/pyplot.py:153
+msgid "Tools"
+msgstr "Outils"
+
+#: gui/widgets/pyplot.py:930
+#, python-brace-format
+msgid ""
+"Function 'savefig' currently supports the following formats:\n"
+"{formats}"
+msgstr ""
+"La fonction 'savefig' ne prend en charge que les formats suivants:\n"
+"{formats}"
+
+#: gui/widgets/qthelpers.py:70 gui/widgets/tools.py:2209
+#: gui/widgets/tools.py:2331
+msgid "Save as"
+msgstr "Enregistrer sous"
+
+#: gui/widgets/qthelpers.py:87
+#, python-brace-format
+msgid ""
+"{filename} could not be written:\n"
+"{msg}"
+msgstr ""
+"{filename} n'a pas pu être écrit:\n"
+"{msg}"
+
+#: gui/widgets/qthelpers.py:91 gui/widgets/qthelpers.py:126
+#: gui/widgets/qthelpers.py:163 gui/widgets/variableexplorer/arrayeditor.py:674
+#: gui/widgets/variableexplorer/collectionseditor.py:539
+#: gui/widgets/variableexplorer/dataframeeditor.py:852
+#: gui/widgets/variableexplorer/dataframeeditor.py:856
+msgid "Error"
+msgstr "Erreur"
+
+#: gui/widgets/qthelpers.py:112 gui/widgets/qthelpers.py:148
+#: gui/widgets/tools.py:2479
+msgid "Open"
+msgstr "Ouvrir"
+
+#: gui/widgets/qthelpers.py:122 gui/widgets/qthelpers.py:159
+#, python-brace-format
+msgid ""
+"{filename} could not be opened:\n"
+"{msg}"
+msgstr ""
+"{filename} n'a pas pu être ouvert:\n"
+"{msg}"
+
+#: gui/widgets/resizedialog.py:91
+msgid "Original size"
+msgstr "Taille d'origine"
+
+#: gui/widgets/resizedialog.py:93
+msgid "Width (pixels)"
+msgstr "Largeur (pixels)"
+
+#: gui/widgets/resizedialog.py:94
+msgid "Height (pixels)"
+msgstr "Hauteur (pixels)"
+
+#: gui/widgets/resizedialog.py:97
+msgid "Original size:"
+msgstr "Taille d'origine :"
+
+#: gui/widgets/resizedialog.py:99
+msgid "Zoom factor:"
+msgstr "Facteur de zoom :"
+
+#: gui/widgets/resizedialog.py:113
+#: gui/widgets/variableexplorer/arrayeditor.py:633
+#: gui/widgets/variableexplorer/dataframeeditor.py:783
+msgid "Resize"
+msgstr "Ajuster"
+
+#: gui/widgets/rotatecrop.py:48
+msgid "Show cropping rectangle"
+msgstr "Afficher le rectangle de rognage"
+
+#: gui/widgets/rotatecrop.py:58
+msgid "Cropping rectangle"
+msgstr "Rectangle de rognage"
+
+#: gui/widgets/styles.py:350
+msgid "Solid line"
+msgstr "Trait continu"
+
+#: gui/widgets/styles.py:351
+msgid "Dashed line"
+msgstr "Tirets"
+
+#: gui/widgets/styles.py:352
+msgid "Dotted line"
+msgstr "Pointillés"
+
+#: gui/widgets/styles.py:353
+msgid "Dash-dot line"
+msgstr "Tirets-points"
+
+#: gui/widgets/styles.py:354
+msgid "Dash-dot-dot line"
+msgstr "Tirets-points-points"
+
+#: gui/widgets/styles.py:355
+msgid "No line"
+msgstr "Aucun trait"
+
+#: gui/widgets/styles.py:358 gui/widgets/styles.py:405
+msgid "Cross"
+msgstr "Plus"
+
+#: gui/widgets/styles.py:359 gui/widgets/tools.py:1198
+msgid "Ellipse"
+msgstr "Ellipse"
+
+#: gui/widgets/styles.py:360
+msgid "Star"
+msgstr "Étoile"
+
+#: gui/widgets/styles.py:361
+msgid "X-Cross"
+msgstr "Croix"
+
+#: gui/widgets/styles.py:362
+msgid "Square"
+msgstr "Carré"
+
+#: gui/widgets/styles.py:363
+msgid "Diamond"
+msgstr "Losange"
+
+#: gui/widgets/styles.py:364 gui/widgets/styles.py:365
+#: gui/widgets/styles.py:366 gui/widgets/styles.py:367
+msgid "Triangle"
+msgstr "Triangle"
+
+#: gui/widgets/styles.py:368
+msgid "Hexagon"
+msgstr "Hexagone"
+
+#: gui/widgets/styles.py:369
+msgid "No symbol"
+msgstr "Aucun symbole"
+
+#: gui/widgets/styles.py:372
+msgid "Lines"
+msgstr "Lignes"
+
+#: gui/widgets/styles.py:373
+msgid "Sticks"
+msgstr "Bâtonnets"
+
+#: gui/widgets/styles.py:375
+msgid "Dots"
+msgstr "Points"
+
+#: gui/widgets/styles.py:376
+msgid "No curve"
+msgstr "Pas de courbe"
+
+#: gui/widgets/styles.py:380
+msgid "No brush pattern"
+msgstr "Pas de motif de remplissage"
+
+#: gui/widgets/styles.py:381
+msgid "Uniform color"
+msgstr "Couleur de remplissage uniforme"
+
+#: gui/widgets/styles.py:382
+msgid "Extremely dense brush pattern"
+msgstr "Motif extrêmement dense"
+
+#: gui/widgets/styles.py:383
+msgid "Very dense brush pattern"
+msgstr "Motif très dense"
+
+#: gui/widgets/styles.py:384
+msgid "Somewhat dense brush pattern"
+msgstr "Motif quelque peu dense"
+
+#: gui/widgets/styles.py:385
+msgid "Half dense brush pattern"
+msgstr "Motif de densité moyenne"
+
+#: gui/widgets/styles.py:386
+msgid "Somewhat sparse brush pattern"
+msgstr "Motif quelque peu clairsemé"
+
+#: gui/widgets/styles.py:387
+msgid "Very sparse brush pattern"
+msgstr "Motif très clairsemé"
+
+#: gui/widgets/styles.py:388
+msgid "Extremely sparse brush pattern"
+msgstr "Motif extrêmement clairsemé"
+
+#: gui/widgets/styles.py:389
+msgid "Horizontal lines"
+msgstr "Lignes horizontales"
+
+#: gui/widgets/styles.py:390
+msgid "Vertical lines"
+msgstr "Lignes verticales"
+
+#: gui/widgets/styles.py:391
+msgid "Crossing horizontal and vertical lines"
+msgstr "Lignes horizontales et verticales"
+
+#: gui/widgets/styles.py:392
+msgid "Backward diagonal lines"
+msgstr "Lignes diagonales descendantes"
+
+#: gui/widgets/styles.py:393
+msgid "Forward diagonal lines"
+msgstr "Lignes diagonales montantes"
+
+#: gui/widgets/styles.py:394
+msgid "Crossing diagonal lines"
+msgstr "Lignes diagonales croisées"
+
+#: gui/widgets/styles.py:402
+msgid "None"
+msgstr "Aucun"
+
+#: gui/widgets/styles.py:403
+msgid "Horizontal"
+msgstr "Horizontal"
+
+#: gui/widgets/styles.py:404
+msgid "Vertical"
+msgstr "Vertical"
+
+#: gui/widgets/styles.py:426
+msgid "Family"
+msgstr "Famille"
+
+#: gui/widgets/styles.py:427
+msgid "Choose font"
+msgstr "Choisir une police"
+
+#: gui/widgets/styles.py:428
+msgid "Size in point"
+msgstr "Taille en point"
+
+#: gui/widgets/styles.py:429
+msgid "Bold"
+msgstr "Gras"
+
+#: gui/widgets/styles.py:430
+msgid "Italic"
+msgstr "Italique"
+
+#: gui/widgets/styles.py:471 gui/widgets/styles.py:535
+#: gui/widgets/styles.py:582
+msgid "Style"
+msgstr "Style"
+
+#: gui/widgets/styles.py:472
+#: gui/widgets/variableexplorer/collectionseditor.py:412
+msgid "Size"
+msgstr "Taille"
+
+#: gui/widgets/styles.py:473 gui/widgets/styles.py:887
+msgid "Border"
+msgstr "Bordure"
+
+#: gui/widgets/styles.py:474 gui/widgets/styles.py:642
+#: gui/widgets/styles.py:680 gui/widgets/styles.py:893
+#: gui/widgets/styles.py:1454 gui/widgets/styles.py:1875
+#: gui/widgets/variableexplorer/arrayeditor.py:636
+#: gui/widgets/variableexplorer/dataframeeditor.py:787
+msgid "Background color"
+msgstr "Couleur du fond"
+
+#: gui/widgets/styles.py:475 gui/widgets/styles.py:643
+msgid "Background alpha"
+msgstr "Opacité du fond"
+
+#: gui/widgets/styles.py:536 gui/widgets/styles.py:583
+#: gui/widgets/styles.py:735 gui/widgets/styles.py:1171
+msgid "Color"
+msgstr "Couleur"
+
+#: gui/widgets/styles.py:537 gui/widgets/styles.py:1175
+msgid "Width"
+msgstr "Largeur"
+
+#: gui/widgets/styles.py:584 gui/widgets/styles.py:1173
+msgid "Alpha"
+msgstr "Alpha"
+
+#: gui/widgets/styles.py:585
+msgid "Angle"
+msgstr "Angle"
+
+#: gui/widgets/styles.py:586
+msgid "sx"
+msgstr "sx"
+
+#: gui/widgets/styles.py:587
+msgid "sy"
+msgstr "sy"
+
+#: gui/widgets/styles.py:640
+msgid "Font"
+msgstr "Police"
+
+#: gui/widgets/styles.py:641 gui/widgets/styles.py:892
+msgid "Text color"
+msgstr "Couleur du texte"
+
+#: gui/widgets/styles.py:681
+msgid "Major grid"
+msgstr "Quadrillage primaire"
+
+#: gui/widgets/styles.py:684 gui/widgets/styles.py:690
+#: gui/widgets/styles.py:1104 gui/widgets/styles.py:1914
+#: gui/widgets/styles.py:1917 gui/widgets/styles.py:1984
+#: gui/widgets/styles.py:1987 gui/widgets/styles.py:2055
+#: gui/widgets/styles.py:2058 gui/widgets/styles.py:2173
+#: gui/widgets/styles.py:2176
+msgid "Line"
+msgstr "Trait"
+
+#: gui/widgets/styles.py:687
+msgid "Minor grid"
+msgstr "Quadrillage secondaire"
+
+#: gui/widgets/styles.py:733 gui/widgets/styles.py:868
+#: gui/widgets/styles.py:1038 gui/widgets/styles.py:1101
+#: gui/widgets/styles.py:1649 gui/widgets/styles.py:1841
+#: gui/widgets/styles.py:1981 gui/widgets/styles.py:2101
+msgid "Title"
+msgstr "Titre"
+
+#: gui/widgets/styles.py:736
+msgid "Title font"
+msgstr "Police du titre"
+
+#: gui/widgets/styles.py:737
+msgid "Values font"
+msgstr "Police des valeurs"
+
+#: gui/widgets/styles.py:745
+msgid "linear"
+msgstr "linéaire"
+
+#: gui/widgets/styles.py:745 gui/widgets/styles.py:1815
+#: gui/widgets/styles.py:1850
+msgid "logarithmic"
+msgstr "logarithmique"
+
+#: gui/widgets/styles.py:747
+msgid "Lower axis limit"
+msgstr "Borne inférieure de l'axe"
+
+#: gui/widgets/styles.py:748
+msgid "Upper axis limit"
+msgstr "Borne supérieure de l'axe"
+
+#: gui/widgets/styles.py:786
+msgid "X-axis position"
+msgstr "Position de l'axe des abscisses"
+
+#: gui/widgets/styles.py:787
+msgid "bottom"
+msgstr "bas"
+
+#: gui/widgets/styles.py:787
+msgid "top"
+msgstr "haut"
+
+#: gui/widgets/styles.py:792
+msgid "Y-axis position"
+msgstr "Position de l'axe des ordonnées"
+
+#: gui/widgets/styles.py:793
+msgid "left"
+msgstr "gauche"
+
+#: gui/widgets/styles.py:793
+msgid "right"
+msgstr "droite"
+
+#: gui/widgets/styles.py:824
+msgid "Lower x-axis limit"
+msgstr "Borne inférieure de l'axe des abscisses"
+
+#: gui/widgets/styles.py:825
+msgid "Upper x-axis limit"
+msgstr "Borne supérieure de l'axe des abscisses"
+
+#: gui/widgets/styles.py:828
+msgid "Lower y-axis limit"
+msgstr "Borne inférieure de l'axe des ordonnées"
+
+#: gui/widgets/styles.py:829
+msgid "Upper y-axis limit"
+msgstr "Borne supérieure de l'axe des ordonnées"
+
+#: gui/widgets/styles.py:831
+msgid "Z Axis"
+msgstr "Niveaux"
+
+#: gui/widgets/styles.py:832
+msgid "Lower z-axis limit"
+msgstr "Borne inférieure des niveaux"
+
+#: gui/widgets/styles.py:833
+msgid "Upper z-axis limit"
+msgstr "Borne supérieure des niveaux"
+
+#: gui/widgets/styles.py:874 gui/widgets/styles.py:878
+msgid "Contents"
+msgstr "Contenu"
+
+#: gui/widgets/styles.py:882 gui/widgets/styles.py:1105
+#: gui/widgets/styles.py:1919 gui/widgets/styles.py:1922
+#: gui/widgets/styles.py:1989 gui/widgets/styles.py:1992
+#: gui/widgets/styles.py:2178 gui/widgets/styles.py:2181
+msgid "Symbol"
+msgstr "Symbole"
+
+#: gui/widgets/styles.py:887
+msgid "set width to 0 to disable"
+msgstr "entrer 0 pour désactiver"
+
+#: gui/widgets/styles.py:890 gui/widgets/styles.py:895
+#: gui/widgets/styles.py:1924 gui/widgets/styles.py:1927
+msgid "Text"
+msgstr "Texte"
+
+#: gui/widgets/styles.py:891
+msgid "Text font"
+msgstr "Police du texte"
+
+#: gui/widgets/styles.py:894
+msgid "Background transparency"
+msgstr "Opacité du fond"
+
+#: gui/widgets/styles.py:897 gui/widgets/styles.py:968
+#: gui/widgets/styles.py:989 gui/widgets/styles.py:1301
+#: gui/widgets/styles.py:1508 gui/widgets/styles.py:1688
+msgid "Position"
+msgstr "Position"
+
+#: gui/widgets/styles.py:898
+msgid "Position relative to anchor"
+msgstr "Position de l'étiquette par rapport au point d'ancrage"
+
+#: gui/widgets/styles.py:902
+msgid "Corner"
+msgstr "Coin"
+
+#: gui/widgets/styles.py:904 gui/widgets/styles.py:970
+msgid "Top left"
+msgstr "En haut à gauche"
+
+#: gui/widgets/styles.py:905 gui/widgets/styles.py:971
+msgid "Top right"
+msgstr "En haut à droite"
+
+#: gui/widgets/styles.py:906 gui/widgets/styles.py:972
+msgid "Bottom left"
+msgstr "En bas à gauche"
+
+#: gui/widgets/styles.py:907 gui/widgets/styles.py:973
+msgid "Bottom right"
+msgstr "En bas à droite"
+
+#: gui/widgets/styles.py:912 gui/widgets/styles.py:978
+msgid "Center"
+msgstr "Centre"
+
+#: gui/widgets/styles.py:915
+msgid "Label position relative to anchor point"
+msgstr "Position de l'étiquette par rapport au point d'ancrage"
+
+#: gui/widgets/styles.py:918
+msgid "ΔX"
+msgstr "ΔX"
+
+#: gui/widgets/styles.py:920
+msgid "Horizontal offset (pixels) relative to anchor point"
+msgstr "Décalage horizontal (pixels) par rapport au point d'ancrage"
+
+#: gui/widgets/styles.py:924
+msgid "ΔY"
+msgstr "ΔY"
+
+#: gui/widgets/styles.py:926
+msgid "Vertical offset (pixels) relative to anchor point"
+msgstr "Décalage vertical (pixels) par rapport au point d'ancrage"
+
+#: gui/widgets/styles.py:931 gui/widgets/styles.py:939
+msgid "Anchor"
+msgstr "Ancre"
+
+#: gui/widgets/styles.py:934 gui/widgets/styles.py:986
+msgid "Anchor position"
+msgstr "Position du point d'ancrage"
+
+#: gui/widgets/styles.py:939
+msgid "Attach to canvas"
+msgstr "Attacher au canevas"
+
+#: gui/widgets/styles.py:944
+msgid "X"
+msgstr "X"
+
+#: gui/widgets/styles.py:944
+msgid "X-axis position in canvas coordinates"
+msgstr "Abscisse en coordonnées du canevas"
+
+#: gui/widgets/styles.py:949
+msgid "Y"
+msgstr "Y"
+
+#: gui/widgets/styles.py:949
+msgid "Y-axis position in canvas coordinates"
+msgstr "Ordonnée en coordonnées du canevas"
+
+#: gui/widgets/styles.py:956
+msgid "Interact"
+msgstr "Interaction"
+
+#: gui/widgets/styles.py:958
+msgid "moving object changes anchor position"
+msgstr "déplacer l'objet modifie le point d'ancrage"
+
+#: gui/widgets/styles.py:959
+msgid "moving object changes label position"
+msgstr "déplacer l'objet modifie la position de l'étiquette"
+
+#: gui/widgets/styles.py:981
+msgid "Absolute position on canvas"
+msgstr "Position absolue sur le canevas"
+
+#: gui/widgets/styles.py:1106
+msgid "Shadow"
+msgstr "Ombre"
+
+#: gui/widgets/styles.py:1107
+msgid "Curve style"
+msgstr "Style de courbe"
+
+#: gui/widgets/styles.py:1108
+msgid "Baseline"
+msgstr "Ligne de base"
+
+#: gui/widgets/styles.py:1162
+msgid "Display"
+msgstr "Affichage"
+
+#: gui/widgets/styles.py:1164
+msgid "error bars with caps (x, y)"
+msgstr "barres d'erreurs (x, y)"
+
+#: gui/widgets/styles.py:1164
+msgid "error area (y)"
+msgstr "zone d'erreur (y)"
+
+#: gui/widgets/styles.py:1166
+msgid ""
+"Note: only y-axis error bars are shown in error area mode\n"
+"(width and cap parameters will also be ignored)"
+msgstr ""
+"Note: seules les erreurs en y sont indiquées dans le mode zone d'erreur"
+
+#: gui/widgets/styles.py:1173
+msgid "Error bar transparency"
+msgstr "Transparence de la barre d'erreur"
+
+#: gui/widgets/styles.py:1176
+msgid "Cap"
+msgstr "Bordure"
+
+#: gui/widgets/styles.py:1177
+msgid "set to foreground"
+msgstr "afficher en premier plan"
+
+#: gui/widgets/styles.py:1177
+msgid "Visibility"
+msgstr "Ordre"
+
+#: gui/widgets/styles.py:1216 gui/widgets/styles.py:1378
+msgid "Image title"
+msgstr "Titre de l'image"
+
+#: gui/widgets/styles.py:1220 gui/widgets/styles.py:1382
+msgid "Use image level as alpha"
+msgstr "Utiliser les niveaux de l'image"
+
+#: gui/widgets/styles.py:1220 gui/widgets/styles.py:1382
+msgid "Alpha channel"
+msgstr "Canal alpha"
+
+#: gui/widgets/styles.py:1223 gui/widgets/styles.py:1385
+msgid "Global alpha"
+msgstr "Alpha global"
+
+#: gui/widgets/styles.py:1223 gui/widgets/styles.py:1385
+msgid "Global alpha value"
+msgstr "Valeur globale du canal alpha"
+
+#: gui/widgets/styles.py:1227 gui/widgets/styles.py:1389
+#: gui/widgets/tools.py:2981
+msgid "Colormap"
+msgstr "Échelle de couleur"
+
+#: gui/widgets/styles.py:1231 gui/widgets/styles.py:1393
+msgid "Interpolation"
+msgstr "Interpolation"
+
+#: gui/widgets/styles.py:1233
+msgid "None (nearest pixel)"
+msgstr "Néant (plus proche pixel)"
+
+#: gui/widgets/styles.py:1234
+msgid "Linear interpolation"
+msgstr "Interpolation linéaire"
+
+#: gui/widgets/styles.py:1235
+msgid "2x2 antialiasing filter"
+msgstr "Filtre anti-repliement 2x2"
+
+#: gui/widgets/styles.py:1236
+msgid "3x3 antialiasing filter"
+msgstr "Filtre anti-repliement 3x3"
+
+#: gui/widgets/styles.py:1237
+msgid "5x5 antialiasing filter"
+msgstr "Filtre anti-repliement 5x5"
+
+#: gui/widgets/styles.py:1240
+msgid "Image interpolation type"
+msgstr "Type d'interpolation"
+
+#: gui/widgets/styles.py:1243 gui/widgets/styles.py:1247
+msgid "Statistics string formatting"
+msgstr "Formats d'affichage des statistiques"
+
+#: gui/widgets/styles.py:1244
+msgid "X-Axis"
+msgstr "Axe des X"
+
+#: gui/widgets/styles.py:1245
+msgid "Y-Axis"
+msgstr "Axe des Y"
+
+#: gui/widgets/styles.py:1246
+msgid "Z-Axis"
+msgstr "Axe des Z"
+
+#: gui/widgets/styles.py:1300 gui/widgets/styles.py:1507
+#: gui/widgets/styles.py:1687
+msgid "Lock position"
+msgstr "Verrouiller la position"
+
+#: gui/widgets/styles.py:1303 gui/widgets/styles.py:1510
+#: gui/widgets/styles.py:1690
+msgid "Locked images are not movable with the mouse"
+msgstr "Les images verrouillées ne sont pas déplaçable à la souris"
+
+#: gui/widgets/styles.py:1306 gui/widgets/styles.py:1311
+#: gui/widgets/styles.py:1703 gui/widgets/styles.py:1708
+msgid "Pixel size"
+msgstr "Taille des pixels"
+
+#: gui/widgets/styles.py:1309 gui/widgets/styles.py:1706
+msgid "Width (dx)"
+msgstr "Largeur (dx)"
+
+#: gui/widgets/styles.py:1310 gui/widgets/styles.py:1707
+msgid "Height (dy)"
+msgstr "Hauteur (dy)"
+
+#: gui/widgets/styles.py:1314 gui/widgets/styles.py:1324
+#: gui/widgets/styles.py:1711 gui/widgets/styles.py:1721
+msgid "Translate, rotate and flip"
+msgstr "Translation, rotation et symétrie"
+
+#: gui/widgets/styles.py:1315 gui/widgets/styles.py:1712
+msgid "x<sub>CENTER</sub>"
+msgstr "x<sub>CENTRE</sub>"
+
+#: gui/widgets/styles.py:1318 gui/widgets/styles.py:1715
+msgid "Flip horizontally"
+msgstr "Symétrie horizontale"
+
+#: gui/widgets/styles.py:1319 gui/widgets/styles.py:1716
+msgid "y<sub>CENTER</sub>"
+msgstr "y<sub>CENTRE</sub>"
+
+#: gui/widgets/styles.py:1322 gui/widgets/styles.py:1719
+msgid "Flip vertically"
+msgstr "Symétrie verticale"
+
+#: gui/widgets/styles.py:1323 gui/widgets/styles.py:1720
+msgid "θ (°)"
+msgstr "θ (°)"
+
+#: gui/widgets/styles.py:1394
+msgid "Quadrangle interpolation"
+msgstr "Interpolation linéaire"
+
+#: gui/widgets/styles.py:1394
+msgid "Flat"
+msgstr ""
+
+#: gui/widgets/styles.py:1397
+msgid ""
+"Image interpolation type, Flat mode use fixed u,v interpolation parameters"
+msgstr ""
+
+#: gui/widgets/styles.py:1403
+msgid "Fixed U interpolation parameter"
+msgstr ""
+
+#: gui/widgets/styles.py:1407 gui/widgets/styles.py:1414
+msgid "For flat mode only"
+msgstr ""
+
+#: gui/widgets/styles.py:1410
+msgid "Fixed V interpolation parameter"
+msgstr ""
+
+#: gui/widgets/styles.py:1416
+msgid "Show grid"
+msgstr "Afficher la grille"
+
+#: gui/widgets/styles.py:1417
+msgid "Grid lines color"
+msgstr "Couleur de la grille"
+
+#: gui/widgets/styles.py:1512 gui/widgets/styles.py:1515
+msgid "Image placement along X-axis"
+msgstr "Positionnement de l'image le long de l'axe des X"
+
+#: gui/widgets/styles.py:1513 gui/widgets/styles.py:1651
+msgid "x|min"
+msgstr "x|min"
+
+#: gui/widgets/styles.py:1514 gui/widgets/styles.py:1652
+msgid "x|max"
+msgstr "x|max"
+
+#: gui/widgets/styles.py:1516 gui/widgets/styles.py:1519
+msgid "Image placement along Y-axis"
+msgstr "Positionnement de l'image le long de l'axe des Y"
+
+#: gui/widgets/styles.py:1517 gui/widgets/styles.py:1653
+msgid "y|min"
+msgstr "y|min"
+
+#: gui/widgets/styles.py:1518 gui/widgets/styles.py:1654
+msgid "y|max"
+msgstr "y|max"
+
+#: gui/widgets/styles.py:1599 gui/widgets/styles.py:1604
+#: gui/widgets/tools.py:3066 gui/widgets/variableexplorer/arrayeditor.py:795
+msgid "Mask"
+msgstr "Masque"
+
+#: gui/widgets/styles.py:1600
+msgid "Filling value"
+msgstr "Valeur de remplissage"
+
+#: gui/widgets/styles.py:1601 gui/widgets/tools.py:3106
+msgid "Show image mask"
+msgstr "Afficher le masque"
+
+#: gui/widgets/styles.py:1602
+msgid "Masked area alpha"
+msgstr "Zone masquée (alpha)"
+
+#: gui/widgets/styles.py:1603
+msgid "Unmasked area alpha"
+msgstr "Zone non masquée (alpha)"
+
+#: gui/widgets/styles.py:1657
+msgid "Use image colormap and level"
+msgstr "Utiliser l'échelle de couleur de l'image"
+
+#: gui/widgets/styles.py:1657
+msgid "Color map"
+msgstr "Échelle de couleur"
+
+#: gui/widgets/styles.py:1693
+msgid "Crop"
+msgstr "Rognage"
+
+#: gui/widgets/styles.py:1700
+msgid "Cropping"
+msgstr "Rognage"
+
+#: gui/widgets/styles.py:1814
+msgid "Bins"
+msgstr "Classes"
+
+#: gui/widgets/styles.py:1814
+msgid "Number of bins"
+msgstr "Nombre de classes"
+
+#: gui/widgets/styles.py:1815
+msgid "Y-axis scale"
+msgstr "Échelle en y"
+
+#: gui/widgets/styles.py:1845
+msgid "X-axis bins"
+msgstr "Classes en x"
+
+#: gui/widgets/styles.py:1845
+msgid "Number of bins along x-axis"
+msgstr "Nombre de classes le long de l'axe des abscisses"
+
+#: gui/widgets/styles.py:1848
+msgid "Y-axis bins"
+msgstr "Classes en y"
+
+#: gui/widgets/styles.py:1848
+msgid "Number of bins along y-axis"
+msgstr "Nombre de classes le long de l'axes des ordonnées"
+
+#: gui/widgets/styles.py:1850
+msgid "Z-axis scale"
+msgstr "Échelle en z"
+
+#: gui/widgets/styles.py:1855
+msgid "Bin count"
+msgstr "Effectif total"
+
+#: gui/widgets/styles.py:1856
+msgid "Maximum value"
+msgstr "Valeur maximale"
+
+#: gui/widgets/styles.py:1857
+msgid "Mininum value"
+msgstr "Valeur minimale"
+
+#: gui/widgets/styles.py:1858
+msgid "Sum"
+msgstr "Addition"
+
+#: gui/widgets/styles.py:1859
+msgid "Product"
+msgstr "Produit"
+
+#: gui/widgets/styles.py:1860
+msgid "Average"
+msgstr "Moyenne"
+
+#: gui/widgets/styles.py:1864
+msgid ""
+"Bin count : counts the number of points per bin,\n"
+"For max, min, sum, product, average, compute the function of a third "
+"parameter (one by default)"
+msgstr ""
+
+#: gui/widgets/styles.py:1870
+msgid "Automatic LUT range"
+msgstr "Ajustement automatique de la LUT"
+
+#: gui/widgets/styles.py:1872
+msgid "Automatically adapt color scale when panning, zooming"
+msgstr "Ajuste automatiquement l'échelle de couleur (déplacement, zoom)"
+
+#: gui/widgets/styles.py:1877
+msgid "Background color when no data is present"
+msgstr "Couleur de fond en l'absence de données"
+
+#: gui/widgets/styles.py:1915 gui/widgets/styles.py:1985
+#: gui/widgets/styles.py:2174
+msgid "Line (not selected)"
+msgstr "Trait (hors sélection)"
+
+#: gui/widgets/styles.py:1916 gui/widgets/styles.py:1986
+#: gui/widgets/styles.py:2175
+msgid "Line (selected)"
+msgstr "Trait (sélection)"
+
+#: gui/widgets/styles.py:1920 gui/widgets/styles.py:1990
+#: gui/widgets/styles.py:2179
+msgid "Symbol (not selected)"
+msgstr "Symbole (hors sélection)"
+
+#: gui/widgets/styles.py:1921 gui/widgets/styles.py:1991
+#: gui/widgets/styles.py:2180
+msgid "Symbol (selected)"
+msgstr "Symbole (sélection)"
+
+#: gui/widgets/styles.py:1925
+msgid "Text (not selected)"
+msgstr "Texte (hors sélection)"
+
+#: gui/widgets/styles.py:1926
+msgid "Text (selected)"
+msgstr "Texte (sélection)"
+
+#: gui/widgets/styles.py:1931
+msgid "Line style"
+msgstr "Style de trait"
+
+#: gui/widgets/styles.py:1933
+msgid "Spacing"
+msgstr "Espacement"
+
+#: gui/widgets/styles.py:1994 gui/widgets/styles.py:1999
+#: gui/widgets/styles.py:2060 gui/widgets/styles.py:2065
+msgid "Fill pattern"
+msgstr "Motif de remplissage"
+
+#: gui/widgets/styles.py:1997
+msgid "Fill pattern (not selected)"
+msgstr "Motif de remplissage (hors sélection)"
+
+#: gui/widgets/styles.py:1998
+msgid "Fill pattern (selected)"
+msgstr "Motif de remplissage (sélection)"
+
+#: gui/widgets/styles.py:2003 gui/widgets/styles.py:2119
+msgid "Read-only shape"
+msgstr "Lecture seule"
+
+#: gui/widgets/styles.py:2005 gui/widgets/styles.py:2121
+msgid "Read-only shapes can't be removed from the item list panel"
+msgstr ""
+"Les formes en lecture seule ne peuvent pas être supprimer du panneau de "
+"liste des objets"
+
+#: gui/widgets/styles.py:2008 gui/widgets/styles.py:2124
+msgid "Private shape"
+msgstr "Forme privée"
+
+#: gui/widgets/styles.py:2010 gui/widgets/styles.py:2126
+msgid "Private shapes are not shown in the item list panel"
+msgstr ""
+"Les formes privées ne sont pas affichées dans le panneau de liste des objets"
+
+#: gui/widgets/styles.py:2051
+msgid "Arrow angle (°)"
+msgstr "Angle de la flèche (°)"
+
+#: gui/widgets/styles.py:2052
+msgid "Arrow size (%)"
+msgstr "Taille de la flèche (%)"
+
+#: gui/widgets/styles.py:2056
+msgid "Line (X-Axis)"
+msgstr "Trait (axes des x)"
+
+#: gui/widgets/styles.py:2057
+msgid "Line (Y-Axis)"
+msgstr "Trait (axes des y)"
+
+#: gui/widgets/styles.py:2063
+msgid "Fill pattern (X-Axis)"
+msgstr "Motif de remplissage (axes des x)"
+
+#: gui/widgets/styles.py:2064
+msgid "Fill pattern (Y-Axis)"
+msgstr "Motif de remplissage (axes des y)"
+
+#: gui/widgets/styles.py:2096
+msgid "Show annotation"
+msgstr "Afficher l'annotation"
+
+#: gui/widgets/styles.py:2098
+msgid "Show informations on area covered by this shape"
+msgstr "Afficher les informations sur cette région d'intérêt"
+
+#: gui/widgets/styles.py:2100
+msgid "Show subtitle"
+msgstr "Afficher le sous-titre"
+
+#: gui/widgets/styles.py:2104
+msgid "Subtitle"
+msgstr "Sous-titre"
+
+#: gui/widgets/styles.py:2107
+msgid "String formatting"
+msgstr "Format"
+
+#: gui/widgets/styles.py:2109
+msgid "Uncertainty"
+msgstr "Incertitude"
+
+#: gui/widgets/styles.py:2113
+msgid "Measurement relative uncertainty"
+msgstr "Incertitude relative de mesure"
+
+#: gui/widgets/styles.py:2116
+msgid "Transform matrix"
+msgstr "Matrice de transformation"
+
+#: gui/widgets/styles.py:2183 gui/widgets/styles.py:2186
+msgid "Fill"
+msgstr "Remplissage"
+
+#: gui/widgets/styles.py:2184
+msgid "Fill color"
+msgstr "Couleur de remplissage"
+
+#: gui/widgets/styles.py:2185
+msgid "Shade"
+msgstr ""
+
+#: gui/widgets/tools.py:515
+msgid "Selection"
+msgstr "Sélection"
+
+#: gui/widgets/tools.py:566
+msgid "Point selection"
+msgstr "Sélection d'un point"
+
+#: gui/widgets/tools.py:694
+msgid "Polyline"
+msgstr "Ligne brisée"
+
+#: gui/widgets/tools.py:847
+msgid "Free form"
+msgstr "Forme libre"
+
+#: gui/widgets/tools.py:929
+msgid "Label text"
+msgstr "Texte de l'étiquette"
+
+#: gui/widgets/tools.py:1134
+msgid "Rectangle"
+msgstr "Rectangle"
+
+#: gui/widgets/tools.py:1139
+msgid "Oblique rectangle"
+msgstr "Rectangle oblique"
+
+#: gui/widgets/tools.py:1154
+msgid "Point"
+msgstr "Point"
+
+#: gui/widgets/tools.py:1169
+msgid "Segment"
+msgstr "Segment"
+
+#: gui/widgets/tools.py:1184
+msgid "Circle"
+msgstr "Cercle"
+
+#: gui/widgets/tools.py:1353
+msgid "Image statistics"
+msgstr "Statistiques de l'image"
+
+#: gui/widgets/tools.py:1517
+msgid "Average cross section"
+msgstr "Profil rectiligne moyen"
+
+#: gui/widgets/tools.py:1549
+msgid "Rectangle zoom"
+msgstr "Zoom rectangulaire"
+
+#: gui/widgets/tools.py:1652
+msgid "Horizontal selection"
+msgstr "Sélection horizontale"
+
+#: gui/widgets/tools.py:1666
+msgid "Vertical cursor"
+msgstr "Curseur vertical"
+
+#: gui/widgets/tools.py:1680
+msgid "Horizontal cursor"
+msgstr "Curseur horizontal"
+
+#: gui/widgets/tools.py:1694
+msgid "Cross cursor"
+msgstr "Curseur croix"
+
+#: gui/widgets/tools.py:1712
+msgid "Signal statistics"
+msgstr "Statistiques du signal"
+
+#: gui/widgets/tools.py:1935
+msgid "Antialiasing (curves)"
+msgstr "Anticrénelage (courbes)"
+
+#: gui/widgets/tools.py:1958
+msgid "Markers"
+msgstr ""
+
+#: gui/widgets/tools.py:1969
+msgid "Free"
+msgstr "Libre"
+
+#: gui/widgets/tools.py:1972
+msgid "Bound to active item"
+msgstr "Lié à l'objet actif"
+
+#: gui/widgets/tools.py:2010
+msgid "Reverse Y axis"
+msgstr "Inverser l'axe des ordonnées"
+
+#: gui/widgets/tools.py:2027
+msgid "Lock aspect ratio"
+msgstr "Verrouiller le rapport hauteur/largeur"
+
+#: gui/widgets/tools.py:2028
+msgid "Current value"
+msgstr "Valeur actuelle"
+
+#: gui/widgets/tools.py:2029
+msgid "Lock value"
+msgstr "Valeur imposée"
+
+#: gui/widgets/tools.py:2039 gui/widgets/tools.py:2045
+msgid "Aspect ratio"
+msgstr "Rapport hauteur/largeur"
+
+#: gui/widgets/tools.py:2048
+msgid "Lock"
+msgstr "Verrouiller"
+
+#: gui/widgets/tools.py:2049
+msgid "Unlock"
+msgstr "Déverrouiller"
+
+#: gui/widgets/tools.py:2051
+msgid "1:1"
+msgstr "Rapport unité"
+
+#: gui/widgets/tools.py:2054
+msgid "Edit..."
+msgstr "Modifier..."
+
+#: gui/widgets/tools.py:2146
+msgid "Contrast adjustment"
+msgstr "Réglage du contraste"
+
+#: gui/widgets/tools.py:2164
+msgid "X-axis cross section"
+msgstr "Profil selon l'axe des abscisses"
+
+#: gui/widgets/tools.py:2169
+msgid "Y-axis cross section"
+msgstr "Profil selon l'axe des ordonnées"
+
+#: gui/widgets/tools.py:2191
+msgid "Save as..."
+msgstr "Enregistrer sous..."
+
+#: gui/widgets/tools.py:2201
+msgid "PNG image"
+msgstr "Image PNG"
+
+#: gui/widgets/tools.py:2208
+msgid "PDF document"
+msgstr "Document PDF"
+
+#: gui/widgets/tools.py:2209 gui/widgets/tools.py:2332
+#: gui/widgets/tools.py:2511
+msgid "untitled"
+msgstr "sanstitre"
+
+#: gui/widgets/tools.py:2222
+msgid "Copy to clipboard"
+msgstr "Copier dans le presse-papier"
+
+#: gui/widgets/tools.py:2250 gui/widgets/tools.py:2282
+#: gui/widgets/tools.py:2380
+msgid "Rectangle snapshot"
+msgstr "Capture rectangulaire"
+
+#: gui/widgets/tools.py:2251
+msgid "There is no supported image item in current selection."
+msgstr "La sélection ne contient aucun objet image pris en charge."
+
+#: gui/widgets/tools.py:2263
+msgid "Destination size:"
+msgstr ""
+
+#: gui/widgets/tools.py:2269 gui/widgets/tools.py:2273
+msgid "Image levels adjustments"
+msgstr "Modification des niveaux de l'image"
+
+#: gui/widgets/tools.py:2270
+msgid "Apply contrast settings"
+msgstr "Appliquer les réglages de contraste"
+
+#: gui/widgets/tools.py:2271
+msgid "Apply interpolation algorithm"
+msgstr "Appliquer l'algorithme d'interpolation"
+
+#: gui/widgets/tools.py:2272
+msgid "Scale levels to maximum range"
+msgstr "Normaliser (utiliser la totalité de la dynamique)"
+
+#: gui/widgets/tools.py:2274 gui/widgets/tools.py:2280
+msgid "Superimposed images"
+msgstr "Images superposées"
+
+#: gui/widgets/tools.py:2276
+msgid "If image B is behind image A, replace intersection by"
+msgstr "Si l'image B est derrière l'image A, remplacer l'intersection par"
+
+#: gui/widgets/tools.py:2316
+msgid "Memory error"
+msgstr "Mémoire insuffisante"
+
+#: gui/widgets/tools.py:2318
+#, python-brace-format
+msgid ""
+"There is not enough memory left to process this {destw} x {desth} image "
+"({mbytes} MB would be required)."
+msgstr ""
+"La quantité de mémoire disponible n'est pas suffisante pour traiter cette "
+"image de {destw} x {desth}({mbytes} Mo seraient nécessaires)"
+
+#: gui/widgets/tools.py:2397
+msgid "Rotate and crop"
+msgstr "Rotation et rognage"
+
+#: gui/widgets/tools.py:2439
+msgid "Print..."
+msgstr "Imprimer..."
+
+#: gui/widgets/tools.py:2463
+msgid "Open..."
+msgstr "Ouvrir..."
+
+#: gui/widgets/tools.py:2501
+msgid "Save items"
+msgstr "Enregistrer les objets plotpy"
+
+#: gui/widgets/tools.py:2510
+msgid "Save items as"
+msgstr "Enregistrer les objets plotpy sous"
+
+#: gui/widgets/tools.py:2512
+msgid "plotpy items"
+msgstr "objets plotpy"
+
+#: gui/widgets/tools.py:2527
+msgid "Load items"
+msgstr "Charger les objets plotpy"
+
+#: gui/widgets/tools.py:2550
+msgid "Open image"
+msgstr "Ouvrir une image"
+
+#: gui/widgets/tools.py:2658
+msgid ""
+"Keyboard/mouse shortcuts:\n"
+"  - single left-click: item (curve, image, ...) selection\n"
+"  - single right-click: context-menu relative to selected item\n"
+"  - shift: on-active-curve (or image) cursor\n"
+"  - alt: free cursor\n"
+"  - left-click + mouse move: move item (when available)\n"
+"  - middle-click + mouse move: pan\n"
+"  - right-click + mouse move: zoom"
+msgstr ""
+"Raccourcis clavier et souris :\n"
+"  - clique gauche : sélection d'une courbe\n"
+"  - clique droit : menu contextuel\n"
+"  - shift : affichage d'un curseur sur la courbe ou l'image sélectionnée\n"
+"  - alt : curseur libre\n"
+"  - clique gauche + déplacement souris : déplacement de l'objet actif (si "
+"possible)\n"
+"  - clique du milieu + déplacement souris : translation dans le plan "
+"('pan')\n"
+"  - clique droit + déplacement souris : agrandissement ('zoom')"
+
+#: gui/widgets/tools.py:2677 gui/widgets/tools.py:2684
+msgid "About"
+msgstr ""
+
+#: gui/widgets/tools.py:2758 gui/widgets/tools.py:2768
+msgid "Export"
+msgstr "Exporter"
+
+#: gui/widgets/tools.py:2761
+msgid "Text file"
+msgstr "Fichier texte"
+
+#: gui/widgets/tools.py:2769
+msgid "Unable to export item data."
+msgstr "Impossible d'exporter les données de l'objet sélectionné."
+
+#: gui/widgets/tools.py:2771
+msgid "Error message:"
+msgstr "Message d'erreur :"
+
+#: gui/widgets/tools.py:2789
+msgid "Export data..."
+msgstr "Exporter les données..."
+
+#: gui/widgets/tools.py:2843
+msgid "Edit data..."
+msgstr "Modifier les données..."
+
+#: gui/widgets/tools.py:2859
+msgid "Center items"
+msgstr "Centrer des objets"
+
+#: gui/widgets/tools.py:2982
+msgid "Select colormap for active image"
+msgstr "Sélectionne l'échelle de couleurs de l'image active"
+
+#: gui/widgets/tools.py:3068
+msgid "Manage image masking areas"
+msgstr "Gestion des zones de masquage"
+
+#: gui/widgets/tools.py:3079
+msgid "Mask rectangular area (inside)"
+msgstr "Masquer l'intérieur d'une zone rectangulaire"
+
+#: gui/widgets/tools.py:3086
+msgid "Mask rectangular area (outside)"
+msgstr "Masquer l'extérieur d'une zone rectangulaire"
+
+#: gui/widgets/tools.py:3093
+msgid "Mask circular area (inside)"
+msgstr "Masquer l'intérieur d'une zone circulaire"
+
+#: gui/widgets/tools.py:3100
+msgid "Mask circular area (outside)"
+msgstr "Masquer l'extérieur d'une zone circulaire"
+
+#: gui/widgets/tools.py:3109
+msgid "Show masking shapes"
+msgstr "Afficher les formes de masquage"
+
+#: gui/widgets/tools.py:3113
+msgid "Apply mask"
+msgstr "Appliquer le masque"
+
+#: gui/widgets/tools.py:3116 gui/widgets/tools.py:3316
+msgid "Clear mask"
+msgstr "Supprimer le masque"
+
+#: gui/widgets/tools.py:3119 gui/widgets/tools.py:3193
+msgid "Remove all masking shapes"
+msgstr "Supprimer toutes les formes de masquage"
+
+#: gui/widgets/tools.py:3189
+msgid "Do you really want to remove all masking shapes?"
+msgstr "Souhaitez-vous vraiment supprimer toutes les formes de masquages ?"
+
+#: gui/widgets/tools.py:3313
+msgid "Do you really want to clear the mask?"
+msgstr "Souhaitez-vous vraiment effacer le masque ?"
+
+#: gui/widgets/variableexplorer/arrayeditor.py:583
+#: gui/widgets/variableexplorer/collectionseditor.py:523
+#: gui/widgets/variableexplorer/collectionseditor.py:1311
+#: gui/widgets/variableexplorer/collectionseditor.py:1324
+msgid "Warning"
+msgstr ""
+
+#: gui/widgets/variableexplorer/arrayeditor.py:584
+msgid "It was not possible to copy values for this array"
+msgstr ""
+
+#: gui/widgets/variableexplorer/arrayeditor.py:664
+#: gui/widgets/variableexplorer/dataframeeditor.py:842
+#, fuzzy
+#| msgid "String formatting"
+msgid "Float formatting"
+msgstr "Format"
+
+#: gui/widgets/variableexplorer/arrayeditor.py:674
+#, python-format
+msgid "Format (%s) is incorrect"
+msgstr "Le format (%s) est incorrect"
+
+#: gui/widgets/variableexplorer/arrayeditor.py:715
+msgid "Arrays with more than 3 dimensions are not supported"
+msgstr "Les tableaux ayant plus de trois dimensions ne sont pas pris en charge"
+
+#: gui/widgets/variableexplorer/arrayeditor.py:719
+msgid "The 'xlabels' argument length do no match array column number"
+msgstr ""
+"La taille de l'argument 'xlabels' ne correspond pas au nombre de colonnes du "
+"tableau"
+
+#: gui/widgets/variableexplorer/arrayeditor.py:724
+msgid "The 'ylabels' argument length do no match array row number"
+msgstr ""
+"La taille de l'argument 'ylabels' ne correspond pas au nombre de lignes du "
+"tableau"
+
+#: gui/widgets/variableexplorer/arrayeditor.py:734
+#, python-format
+msgid "%s arrays"
+msgstr "les tableaux %s"
+
+#: gui/widgets/variableexplorer/arrayeditor.py:735
+#, python-format
+msgid "%s are currently not supported"
+msgstr "%s ne sont pas pris en charge"
+
+#: gui/widgets/variableexplorer/arrayeditor.py:742
+msgid "NumPy array"
+msgstr "Tableaux NumPy"
+
+#: gui/widgets/variableexplorer/arrayeditor.py:744
+#: gui/widgets/variableexplorer/arrayeditor.py:936
+msgid "Array editor"
+msgstr "Éditeur de tableaux"
+
+#: gui/widgets/variableexplorer/arrayeditor.py:746
+msgid "read only"
+msgstr "lecture seule"
+
+#: gui/widgets/variableexplorer/arrayeditor.py:783
+msgid "Record array fields:"
+msgstr "Champs :"
+
+#: gui/widgets/variableexplorer/arrayeditor.py:795
+msgid "Masked data"
+msgstr "Zone masquée"
+
+#: gui/widgets/variableexplorer/arrayeditor.py:806
+msgid "Axis:"
+msgstr "Axes :"
+
+#: gui/widgets/variableexplorer/arrayeditor.py:811
+msgid "Index:"
+msgstr "Indice :"
+
+#: gui/widgets/variableexplorer/arrayeditor.py:824
+msgid "<u>Warning</u>: changes are applied separately"
+msgstr ""
+
+#: gui/widgets/variableexplorer/arrayeditor.py:827
+msgid ""
+"For performance reasons, changes applied to masked array won't be reflected "
+"in array's data (and vice-versa)."
+msgstr ""
+
+#: gui/widgets/variableexplorer/arrayeditor.py:837
+#: gui/widgets/variableexplorer/collectionseditor.py:1580
+#: gui/widgets/variableexplorer/dataframeeditor.py:803
+#: gui/widgets/variableexplorer/texteditor.py:69
+msgid "Save and Close"
+msgstr "Enregistrer et fermer"
+
+#: gui/widgets/variableexplorer/arrayeditor.py:842
+#: gui/widgets/variableexplorer/collectionseditor.py:1585
+#: gui/widgets/variableexplorer/dataframeeditor.py:808
+#: gui/widgets/variableexplorer/texteditor.py:74
+msgid "Close"
+msgstr "Fermer"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:199
+msgid "Index"
+msgstr "Indice"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:204
+msgid "Tuple"
+msgstr "Tuple"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:207
+msgid "List"
+msgstr "Liste"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:210
+msgid "Dictionary"
+msgstr "Dictionnaire"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:212
+msgid "Key"
+msgstr "Clé"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:217
+msgid "Attribute"
+msgstr "Attribut"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:220
+msgid "elements"
+msgstr "éléments"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:412
+msgid "Type"
+msgstr "Type"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:525
+msgid ""
+"Opening this variable can be slow\n"
+"\n"
+"Do you want to continue anyway?"
+msgstr ""
+"Redimensionner les cellules d'un tableau d'une telle taille sera "
+"probablement très long.\n"
+"\n"
+"Souhaitez-vous néanmoins effectuer cette opération ?"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:541
+#, python-format
+msgid ""
+"Spyder was unable to retrieve the value of this variable from the console."
+"<br><br>The error mesage was:<br><i>%s</i>"
+msgstr ""
+
+#: gui/widgets/variableexplorer/collectionseditor.py:760
+#, fuzzy
+#| msgid "Load items"
+msgid "Edit item"
+msgstr "Charger les objets plotpy"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:762
+#, python-format
+msgid "<b>Unable to assign data to item.</b><br><br>Error message:<br>%s"
+msgstr ""
+"<b>Impossible d'associer les données à l'élément</b><br><br>Message "
+"d'erreur :<br>%s"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:832
+msgid "Resize rows to contents"
+msgstr ""
+
+#: gui/widgets/variableexplorer/collectionseditor.py:841
+#, fuzzy
+#| msgid "Edit..."
+msgid "Edit"
+msgstr "Modifier..."
+
+#: gui/widgets/variableexplorer/collectionseditor.py:845
+#: gui/widgets/variableexplorer/collectionseditor.py:1243
+#: gui/widgets/variableexplorer/collectionseditor.py:1262
+msgid "Plot"
+msgstr "Tracer"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:859
+msgid "Show image"
+msgstr "Afficher l'image"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:866
+#: gui/widgets/variableexplorer/collectionseditor.py:1270
+msgid "Save array"
+msgstr "Enregistrer le tableau"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:872
+#: gui/widgets/variableexplorer/collectionseditor.py:1200
+#: gui/widgets/variableexplorer/collectionseditor.py:1209
+msgid "Insert"
+msgstr "Insérer"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:881
+msgid "Show arrays min/max"
+msgstr "Afficher les min/max des tableaux"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:886
+#: gui/widgets/variableexplorer/collectionseditor.py:1156
+msgid "Rename"
+msgstr "Renommer"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:890
+#: gui/widgets/variableexplorer/collectionseditor.py:1159
+msgid "Duplicate"
+msgstr "Dupliquer"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:1133
+msgid "Do you want to remove the selected item?"
+msgstr "Souhaitez-vous vraiment supprimer l'élément sélectionné ?"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:1134
+msgid "Do you want to remove all selected items?"
+msgstr "Souhaitez-vous vraiment supprimer les éléments sélectionnés ?"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:1157
+#, fuzzy
+#| msgid "variable_name"
+msgid "New variable name:"
+msgstr "nom_de_variable"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:1160
+#, fuzzy
+#| msgid "variable_name"
+msgid "Variable name:"
+msgstr "nom_de_variable"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:1200
+msgid "Key:"
+msgstr "Clé :"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:1209
+msgid "Value:"
+msgstr "Valeur :"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:1229
+#, fuzzy
+#| msgid "Memory error"
+msgid "Import error"
+msgstr "Mémoire insuffisante"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:1230
+#, fuzzy
+#| msgid "Please install <b>guiqwt</b>."
+msgid "Please install <b>matplotlib</b> or <b>plotpy</b>."
+msgstr "Merci d'installer <b>guiqwt</b>."
+
+#: gui/widgets/variableexplorer/collectionseditor.py:1244
+#, fuzzy, python-format
+#| msgid "<b>Unable to plot data.</b><br><br>Error message:<br>{}"
+msgid "<b>Unable to plot data.</b><br><br>Error message:<br>%s"
+msgstr ""
+"<b>Impossible d'afficher les données</b><br><br>Message d'erreur :<br>{}"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:1263
+#, fuzzy, python-format
+#| msgid "<b>Unable to show image.</b><br><br>Error message:<br>{}"
+msgid "<b>Unable to show image.</b><br><br>Error message:<br>%s"
+msgstr "<b>Impossible d'afficher l'image</b><br><br>Message d'erreur :<br>{}"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:1289
+#, fuzzy, python-format
+#| msgid "<b>Unable to save array</b><br><br>Error message:<br>{}"
+msgid "<b>Unable to save array</b><br><br>Error message:<br>%s"
+msgstr ""
+"<b>Impossible d'enregistrer le tableau</b><br><br>Message d'erreur :<br>{}"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:1312
+msgid "It was not possible to copy this array"
+msgstr ""
+
+#: gui/widgets/variableexplorer/collectionseditor.py:1325
+msgid "It was not possible to copy this dataframe"
+msgstr ""
+
+#: gui/widgets/variableexplorer/collectionseditor.py:1347
+msgid "Clipboard contents"
+msgstr "Contenu du presse-papiers"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:1362
+msgid "Import from clipboard"
+msgstr "Importer depuis le presse-papiers"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:1365
+msgid "Empty clipboard"
+msgstr "Vider le presse-papier"
+
+#: gui/widgets/variableexplorer/collectionseditor.py:1365
+msgid "Nothing to be imported from clipboard."
+msgstr "Aucune donnée ne peut être importée depuis le presse-papiers."
+
+#: gui/widgets/variableexplorer/dataframeeditor.py:327
+msgid ""
+"It is not possible to display this value because\n"
+"an error ocurred while trying to do it"
+msgstr ""
+
+#: gui/widgets/variableexplorer/dataframeeditor.py:674
+msgid "To bool"
+msgstr ""
+
+#: gui/widgets/variableexplorer/dataframeeditor.py:675
+msgid "To complex"
+msgstr ""
+
+#: gui/widgets/variableexplorer/dataframeeditor.py:676
+msgid "To int"
+msgstr ""
+
+#: gui/widgets/variableexplorer/dataframeeditor.py:677
+#, fuzzy
+#| msgid "float"
+msgid "To float"
+msgstr "flottant"
+
+#: gui/widgets/variableexplorer/dataframeeditor.py:678
+msgid "To str"
+msgstr ""
+
+#: gui/widgets/variableexplorer/dataframeeditor.py:758
+#, fuzzy, python-format
+#| msgid "Array editor"
+msgid "%s editor"
+msgstr "Éditeur de tableaux"
+
+#: gui/widgets/variableexplorer/dataframeeditor.py:793
+msgid "Column min/max"
+msgstr ""
+
+#: gui/widgets/variableexplorer/dataframeeditor.py:851
+msgid "Format ({}) is incorrect"
+msgstr "Le format ({}) est incorrect"
+
+#: gui/widgets/variableexplorer/dataframeeditor.py:855
+msgid "Format ({}) should start with '%'"
+msgstr ""
+
+#: gui/widgets/variableexplorer/importwizard.py:162
+#: gui/widgets/variableexplorer/importwizard.py:514
+msgid "Import as"
+msgstr "Importer en tant que"
+
+#: gui/widgets/variableexplorer/importwizard.py:164
+#, fuzzy
+#| msgid "data"
+msgid "data"
+msgstr "données"
+
+#: gui/widgets/variableexplorer/importwizard.py:168
+msgid "code"
+msgstr "code"
+
+#: gui/widgets/variableexplorer/importwizard.py:171
+#: gui/widgets/variableexplorer/importwizard.py:604
+msgid "text"
+msgstr "texte"
+
+#: gui/widgets/variableexplorer/importwizard.py:183
+msgid "Column separator:"
+msgstr "Séparateur de colonne :"
+
+#: gui/widgets/variableexplorer/importwizard.py:187
+msgid "Tab"
+msgstr "Tab"
+
+#: gui/widgets/variableexplorer/importwizard.py:190
+msgid "Whitespace"
+msgstr ""
+
+#: gui/widgets/variableexplorer/importwizard.py:193
+#: gui/widgets/variableexplorer/importwizard.py:211
+msgid "other"
+msgstr "autre"
+
+#: gui/widgets/variableexplorer/importwizard.py:204
+msgid "Row separator:"
+msgstr "Séparateur de ligne :"
+
+#: gui/widgets/variableexplorer/importwizard.py:208
+msgid "EOL"
+msgstr "EOL"
+
+#: gui/widgets/variableexplorer/importwizard.py:223
+msgid "Additional options"
+msgstr "Options supplémentaires"
+
+#: gui/widgets/variableexplorer/importwizard.py:227
+msgid "Skip rows:"
+msgstr "Sauter des lignes :"
+
+#: gui/widgets/variableexplorer/importwizard.py:237
+msgid "Comments:"
+msgstr "Commentaires :"
+
+#: gui/widgets/variableexplorer/importwizard.py:243
+msgid "Transpose"
+msgstr "Transposer"
+
+#: gui/widgets/variableexplorer/importwizard.py:517
+msgid "array"
+msgstr "tableau"
+
+#: gui/widgets/variableexplorer/importwizard.py:522
+msgid "list"
+msgstr "liste"
+
+#: gui/widgets/variableexplorer/importwizard.py:527
+msgid "DataFrame"
+msgstr ""
+
+#: gui/widgets/variableexplorer/importwizard.py:587
+#: gui/widgets/variableexplorer/importwizard.py:674
+msgid "Import wizard"
+msgstr "Assistant d'importation"
+
+#: gui/widgets/variableexplorer/importwizard.py:592
+#, fuzzy
+#| msgid "Label text"
+msgid "Raw text"
+msgstr "Texte de l'étiquette"
+
+#: gui/widgets/variableexplorer/importwizard.py:595
+msgid "variable_name"
+msgstr "nom_de_variable"
+
+#: gui/widgets/variableexplorer/importwizard.py:606
+msgid "table"
+msgstr "tableau"
+
+#: gui/widgets/variableexplorer/importwizard.py:607
+msgid "Preview"
+msgstr "Aperçu"
+
+#: gui/widgets/variableexplorer/importwizard.py:611
+#, fuzzy
+#| msgid "variable_name"
+msgid "Variable Name"
+msgstr "nom_de_variable"
+
+#: gui/widgets/variableexplorer/importwizard.py:619
+msgid "Cancel"
+msgstr "Annuler"
+
+#: gui/widgets/variableexplorer/importwizard.py:624
+msgid "Previous"
+msgstr "Précédent"
+
+#: gui/widgets/variableexplorer/importwizard.py:628
+msgid "Next"
+msgstr "Suivant"
+
+#: gui/widgets/variableexplorer/importwizard.py:633
+msgid "Done"
+msgstr ""
+
+#: gui/widgets/variableexplorer/importwizard.py:676
+#, python-format
+msgid ""
+"<b>Unable to proceed to next step</b><br><br>Please check your entries."
+"<br><br>Error message:<br>%s"
+msgstr ""
+"<b>Impossible de passer à l'étape suivante</b><br><br>Merci de vérifier "
+"votre saisie.<br><br>Message d'erreur :<br>%s"
+
+#: gui/widgets/variableexplorer/texteditor.py:87
+msgid "Text editor"
+msgstr "Éditeur de texte"
+
+#~ msgid "No description available"
+#~ msgstr "Aucune description disponible"
+
+#~ msgid "Source code"
+#~ msgstr "Code source"
+
+#~ msgid "Quit"
+#~ msgstr "Quitter"
+
+#~ msgid "Tests - {} module"
+#~ msgstr "Tests - Module {}"
+
+#, fuzzy
+#~| msgid "non zero"
+#~ msgid "zeros"
+#~ msgstr "non nul"
+
+#, fuzzy
+#~| msgid "Number of rows x Number of columns"
+#~ msgid "Image width (total number of columns)"
+#~ msgstr "Nombre de lignes x Nombre de colonnes"
+
+#, fuzzy
+#~| msgid "Error"
+#~ msgid "Error:"
+#~ msgstr "Erreur"
+
+#, fuzzy
+#~| msgid "Show image"
+#~ msgid "New signal..."
+#~ msgstr "Afficher l'image"
+
+#, fuzzy
+#~| msgid "Open a file"
+#~ msgid "Create a new signal"
+#~ msgstr "Ouvrir un fichier"
+
+#, fuzzy
+#~| msgid "Open a file"
+#~ msgid "Open signal..."
+#~ msgstr "Ouvrir un fichier"
+
+#, fuzzy
+#~| msgid "Open a file"
+#~ msgid "Open a signal"
+#~ msgstr "Ouvrir un fichier"
+
+#, fuzzy
+#~| msgid "Show image"
+#~ msgid "Save signal..."
+#~ msgstr "Afficher l'image"
+
+#~ msgid "CSV files"
+#~ msgstr "Fichiers CSV"
+
+#, fuzzy
+#~| msgid "Parameters..."
+#~ msgid "Filter parameters"
+#~ msgstr "Paramètres..."
+
+#, fuzzy
+#~| msgid "Parameters..."
+#~ msgid "Image parameters"
+#~ msgstr "Paramètres..."
+
+#~ msgid "Draws y as a function of x"
+#~ msgstr "Tracé de y en fonction de x"
+
+#~ msgid "Draws x as a function of y"
+#~ msgstr "Tracé de x en fonction de y"
+
+#~ msgid "Fit curve to data"
+#~ msgstr "Ajuster la courbe aux données"
+
+#~ msgid "Fitting"
+#~ msgstr "Ajustement"
+
+#~ msgid "A"
+#~ msgstr "A"
+
+#~ msgid "A+B"
+#~ msgstr "A+B"
+
+#~ msgid "16-bits DICOM image"
+#~ msgstr "Image DICOM 16 bits"
+
+#~ msgid "16-bits TIFF image"
+#~ msgstr "Image TIFF 16 bits"
+
+#~ msgid "Keep the original size"
+#~ msgstr "Conserver la taille d'origine"
+
+#~ msgid "Both"
+#~ msgstr "Les deux"
+
+#~ msgid "There is no cross section plot to export."
+#~ msgstr "Aucun profil n'est actuellement affiché."
+
+#~ msgid "Please select a cross section plot."
+#~ msgstr "Merci de sélectionner le profil à exporter."
+
+#~ msgid "Unable to export cross section data."
+#~ msgstr "Impossible d'exporter les données du profil."
+
+#~ msgid "Export cross section data"
+#~ msgstr "Exporter les données d'un profil"
+
+#~ msgid "Run all tests"
+#~ msgstr "Exécuter tous les tests"
+
+#~ msgid "All"
+#~ msgstr "Tout"
+
+#~ msgid "Array is empty"
+#~ msgstr "Le tableau est vide"
+
+#~ msgid "unknown"
+#~ msgstr "inconnue"
+
+#~ msgid "<b>Unable to retrieve data.</b><br><br>Error message:<br>{}"
+#~ msgstr ""
+#~ "<b>Impossible d'afficher les données</b><br><br>Message d'erreur :<br>{}"
+
+#~ msgid "Show collection contents"
+#~ msgstr "Afficher le contenu des séquences"
+
+#~ msgid "Always edit in-place"
+#~ msgstr "Édition en ligne pour tous les types"
+
+#~ msgid "Import as array"
+#~ msgstr "Importer en tant que tableau"

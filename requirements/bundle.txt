@@ -1,0 +1,7 @@
+-r codequality.txt
+-r documentation.txt
+-r testing.txt
+-r create_exe.txt
+tox
+wheel
+.
