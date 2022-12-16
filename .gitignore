@@ -1,4 +1,3 @@
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -45,3 +44,5 @@ src/mandelbrot.c
 sift/qt.conf
 doc/source/deployment_example/qt.conf
 
+# Virtual env
+.venv/

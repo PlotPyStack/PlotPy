@@ -1,0 +1,17 @@
+black
+chardet
+guidata
+h5py
+isort
+mypy
+numpy
+pycodestyle
+pylint
+PyQt5
+PythonQwt
+qtpy
+scipy
+sphinx
+sphinx-rtd-theme
+sphinx-intl
+esbonio
