@@ -59,22 +59,33 @@ REM ======================================================
     set PYTHONPATH=%PYTHONPATH%;%ORIGINAL_PYTHONPATH%
     goto:eof
 
-:UseWinPython
+:UsePython
     if defined WINPYVER (goto:eof)
     if not defined PYTHON (goto :nopython)
     for %%a in ("%PYTHON%") do set "p_dir=%%~dpa"
+    if exist "%p_dir%\activate.bat" (goto :venvpython)
     for %%a in (%p_dir:~0,-1%) do set "WINPYDIRBASE=%%~dpa"
+    if exist "%WINPYDIRBASE%\scripts\env.bat" (goto :nopython)
+    goto :python
+    :venvpython
+        call "%p_dir%\activate.bat"
+        call :ShowTitle "Using Python Virtual Environment from %p_dir%"
+        goto:eof
+    :python
+        set PATH=%p_dir%;%PATH%
+        call :ShowTitle "Using Python from %p_dir%"
+        goto:eof
     :nopython
-    if defined WINPYDIRBASE (
-        call %WINPYDIRBASE%\scripts\env.bat
-        call :ShowTitle "Using WinPython from %WINPYDIRBASE%"
-    ) else (
-        echo Warning: WINPYDIRBASE environment variable is not defined, switching to system Python
-        echo ********
-        echo (if nothing happens, that's probably because Python is not installed either:
-        echo please set the WINPYDIRBASE variable to select WinPython directory, or install Python)
-        )
-    goto:eof
+        if defined WINPYDIRBASE (
+            call %WINPYDIRBASE%\scripts\env.bat
+            call :ShowTitle "Using WinPython from %WINPYDIRBASE%"
+        ) else (
+            echo Warning: WINPYDIRBASE environment variable is not defined, switching to system Python
+            echo ********
+            echo (if nothing happens, that's probably because Python is not installed either:
+            echo please set the WINPYDIRBASE variable to select WinPython directory, or install Python)
+            )
+        goto:eof
 
 :ShowTitle
     @echo:

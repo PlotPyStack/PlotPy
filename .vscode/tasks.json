@@ -85,6 +85,39 @@
                 "clear": true
             }
         },
+        {
+            "label": "Build Python packages",
+            "type": "shell",
+            "command": "cmd",
+            "options": {
+                "cwd": "scripts",
+                "env": {
+                    "PYTHON": "${env:PLOTPY_PYTHON_DEV}",
+                    "UNATTENDED": "1",
+                }
+            },
+            "args": [
+                "/c",
+                "build_dist.bat"
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true
+            },
+            // "dependsOrder": "sequence",
+            // "dependsOn": [
+            //     "Build documentation",
+            // ]
+        },
         /* {
             "label": "Build documentation",
             "type": "shell",
@@ -206,41 +239,8 @@
                 "showReuseMessage": true,
                 "clear": true
             }
-        },
-        {
-            "label": "Build Python packages",
-            "type": "shell",
-            "command": "cmd",
-            "options": {
-                "cwd": "scripts",
-                "env": {
-                    "PYTHON": "${env:PYTHON_CODRAFT_DEV}",
-                    "UNATTENDED": "1",
-                }
-            },
-            "args": [
-                "/c",
-                "build_dist.bat"
-            ],
-            "problemMatcher": [],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": true
-            },
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                "Build documentation",
-            ]
-        },
-        {
+        },*/
+        /*{
             "label": "New release",
             "type": "shell",
             "command": "cmd",
