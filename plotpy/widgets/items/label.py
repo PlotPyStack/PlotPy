@@ -49,14 +49,13 @@ Reference
 """
 
 import numpy as np
+from guidata.configtools import get_icon
 from guidata.utils import update_dataset
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
-from qtpy import QtWidgets as QW
 from qwt import QwtPlotItem
 
 from plotpy.config import CONF, _
-from plotpy.utils.config.getters import get_icon
 from plotpy.utils.gui import assert_interfaces_valid
 from plotpy.widgets.interfaces import IBasePlotItem, ISerializableType, IShapeItemType
 from plotpy.widgets.items.curve.base import CurveItem

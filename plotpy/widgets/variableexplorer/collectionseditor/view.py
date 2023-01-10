@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import io
+import re
 import sys
 
 from guidata.configtools import get_icon
@@ -11,6 +12,7 @@ from plotpy.config import _
 from plotpy.utils.misc_from_gui import add_actions, create_action
 from plotpy.utils.path import getcwd_or_home
 from plotpy.widgets.qthelpers import mimedata2url
+from plotpy.widgets.variableexplorer.collectionseditor.editor import CollectionsDelegate
 from plotpy.widgets.variableexplorer.collectionseditor.model import (
     CollectionsModel,
     ReadOnlyCollectionsModel,
@@ -475,7 +477,7 @@ class BaseTableView(QW.QTableView):
 
     def __prepare_plot(self):
         try:
-            import plotpy.gui.widgets.pyplot  # analysis:ignore
+            import plotpy.widgets.plot.interactive  # analysis:ignore
 
             return True
         except:
@@ -720,7 +722,7 @@ class CollectionsEditorTableView(BaseTableView):
     def plot(self, key, funcname):
         """Plot item"""
         data = self.model.get_data()
-        import plotpy.widgets.pyplot as plt
+        import plotpy.widgets.plot.interactive as plt
 
         plt.figure()
         getattr(plt, funcname)(data[key])
@@ -729,7 +731,7 @@ class CollectionsEditorTableView(BaseTableView):
     def imshow(self, key):
         """Show item's image"""
         data = self.model.get_data()
-        import plotpy.widgets.pyplot as plt
+        import plotpy.widgets.plot.interactive as plt
 
         plt.figure()
         plt.imshow(data[key])

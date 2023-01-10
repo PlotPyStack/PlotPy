@@ -40,8 +40,8 @@ import sys
 
 from qtpy import QtWidgets as QW
 
+from plotpy.config import _
 from plotpy.widgets import io
-from plotpy.widgets.config import _
 
 # from plotpy.widgets.dialog import (
 #     get_open_filename,

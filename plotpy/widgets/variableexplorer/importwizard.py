@@ -15,13 +15,13 @@ import io
 from functools import partial as ft_partial
 from itertools import zip_longest
 
+from guidata.configtools import get_icon
 from numpy import nan
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
 
 from plotpy.config import _
-from plotpy.utils.config.getters import get_icon
 from plotpy.utils.misc_from_gui import add_actions, create_action
 
 try:

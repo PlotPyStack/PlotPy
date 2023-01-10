@@ -22,13 +22,11 @@ External resources:
 .. _GoogleGroup: http://groups.google.fr/group/guidata_guiqwt
 """
 
-import os
-import os.path as osp
 import platform
 import sys
 import time
 
-from qtpy.QtCore import PYQT_VERSION_STR, QT_VERSION_STR
+from qtpy.QtCore import QT_VERSION_STR
 from qwt import QWT_VERSION_STR
 
 import plotpy

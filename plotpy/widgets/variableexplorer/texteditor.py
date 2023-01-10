@@ -7,36 +7,26 @@
 """
 Text editor dialog
 """
+from guidata.configtools import get_font, get_icon
+from qtpy import QtCore as QC
+from qtpy import QtWidgets as QW
+
+from plotpy.config import CONF, _
 
 
-from __future__ import print_function
-
-from plotpy.gui.config.misc import get_font, get_icon
-from plotpy.gui.widgets.config import CONF, _
-from plotpy.gui.widgets.ext_gui_lib import (
-    QDialog,
-    QHBoxLayout,
-    QPushButton,
-    Qt,
-    QTextEdit,
-    QVBoxLayout,
-    Slot,
-)
-
-
-class TextEditor(QDialog):
+class TextEditor(QW.QDialog):
     """Array Editor Dialog"""
 
     def __init__(
         self, text, title="", font=None, parent=None, readonly=False, size=(400, 300)
     ):
-        QDialog.__init__(self, parent)
+        QW.QDialog.__init__(self, parent)
 
         # Destroying the C++ object right after closing the dialog box,
         # otherwise it may be garbage-collected in another QThread
         # (e.g. the editor's analysis thread in Spyder), thus leading to
         # a segmentation fault on UNIX or an application crash on Windows
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self.setAttribute(QC.Qt.WidgetAttribute.WA_DeleteOnClose)
 
         self.text = None
         self.btn_save_and_close = None
@@ -49,11 +39,11 @@ class TextEditor(QDialog):
         else:
             self.is_binary = False
 
-        self.layout = QVBoxLayout()
+        self.layout = QW.QVBoxLayout()
         self.setLayout(self.layout)
 
         # Text edit
-        self.edit = QTextEdit(parent)
+        self.edit = QW.QTextEdit(parent)
         self.edit.setReadOnly(readonly)
         self.edit.textChanged.connect(self.text_changed)
         self.edit.setPlainText(text)
@@ -63,15 +53,15 @@ class TextEditor(QDialog):
         self.layout.addWidget(self.edit)
 
         # Buttons configuration
-        btn_layout = QHBoxLayout()
+        btn_layout = QW.QHBoxLayout()
         btn_layout.addStretch()
         if not readonly:
-            self.btn_save_and_close = QPushButton(_("Save and Close"))
+            self.btn_save_and_close = QW.QPushButton(_("Save and Close"))
             self.btn_save_and_close.setDisabled(True)
             self.btn_save_and_close.clicked.connect(self.accept)
             btn_layout.addWidget(self.btn_save_and_close)
 
-        self.btn_close = QPushButton(_("Close"))
+        self.btn_close = QW.QPushButton(_("Close"))
         self.btn_close.setAutoDefault(True)
         self.btn_close.setDefault(True)
         self.btn_close.clicked.connect(self.reject)
@@ -80,7 +70,7 @@ class TextEditor(QDialog):
         self.layout.addLayout(btn_layout)
 
         # Make the dialog act as a window
-        self.setWindowFlags(Qt.Window)
+        self.setWindowFlags(QC.Qt.WindowType.Window)
 
         self.setWindowIcon(get_icon("edit.png"))
         self.setWindowTitle(
@@ -88,7 +78,7 @@ class TextEditor(QDialog):
         )
         self.resize(size[0], size[1])
 
-    @Slot()
+    @QC.Slot()
     def text_changed(self):
         """Text has changed"""
         # Save text as bytes, if it was initially bytes

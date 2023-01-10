@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from plotpy.widgets.items.annotations import (
     AnnotatedCircle,
     AnnotatedEllipse,
@@ -7,6 +6,14 @@ from plotpy.widgets.items.annotations import (
     AnnotatedPoint,
     AnnotatedRectangle,
     AnnotatedSegment,
+)
+from plotpy.widgets.tools.shapes import (
+    CircleTool,
+    EllipseTool,
+    ObliqueRectangleTool,
+    PointTool,
+    RectangleTool,
+    SegmentTool,
 )
 
 

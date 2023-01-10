@@ -22,12 +22,11 @@ import weakref
 
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
-from qtpy import QtWidgets as QW
 
 from plotpy.config import CONF
 from plotpy.widgets.debug import buttons_to_str, evt_type_to_str
 
-CursorShape = type(QC.Qt.ArrowCursor)
+CursorShape = type(QC.Qt.CursorShape.ArrowCursor)
 
 
 # Sélection d'événements  ---------

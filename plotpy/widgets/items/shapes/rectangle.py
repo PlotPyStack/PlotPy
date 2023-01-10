@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
+from guidata.configtools import get_icon
 
-from plotpy.utils.config.getters import get_icon
 from plotpy.utils.gui import assert_interfaces_valid
 from plotpy.widgets.geometry import (
     compute_center,

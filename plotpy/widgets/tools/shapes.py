@@ -12,7 +12,12 @@ from plotpy.widgets.items.shapes.point import PointShape
 from plotpy.widgets.items.shapes.polygon import PolygonShape
 from plotpy.widgets.items.shapes.rectangle import ObliqueRectangleShape
 from plotpy.widgets.items.shapes.segment import SegmentShape
-from plotpy.widgets.tools.base import SHAPE_Z_OFFSET, DefaultToolbarID, InteractiveTool
+from plotpy.widgets.tools.base import (
+    SHAPE_Z_OFFSET,
+    DefaultToolbarID,
+    InteractiveTool,
+    RectangularActionTool,
+)
 
 
 class MultiLineTool(InteractiveTool):
@@ -20,7 +25,7 @@ class MultiLineTool(InteractiveTool):
 
     TITLE = _("Polyline")
     ICON = "polyline.png"
-    CURSOR = QC.Qt.ArrowCursor
+    CURSOR = QC.Qt.CursorShape.ArrowCursor
 
     def __init__(
         self,

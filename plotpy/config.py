@@ -1,14 +1,3 @@
-"""
-
-
-:synopsis:
-
-:moduleauthor: CEA
-
-:platform: All
-
-"""
-
 # Copyright CEA (2018)
 
 # http://www.cea.fr/
@@ -55,8 +44,14 @@ Handle *plotpy.core* module configuration
 
 import os.path as osp
 
-from plotpy.core.config.misc import add_image_module_path, get_translation
-from plotpy.core.config.userconfig import UserConfig
+from guidata.config import UserConfig
+from guidata.configtools import add_image_module_path, get_translation
+
+
+def make_title(basename, count):
+    """Make item title with *basename* and *count* number"""
+    return "{} {}{:d}".format(basename, _("#"), count)
+
 
 APP_PATH = osp.dirname(__file__)
 add_image_module_path("plotpy", "images")

@@ -1,176 +1,20 @@
 # -*- coding: utf-8 -*-
-#
-# Copyright © 2009-2010 CEA
-# Pierre Raybaut
-# Licensed under the terms of the CECILL License
-# (see plotpy/__init__.py for details)
-
 # pylint: disable=C0103
-
-"""
-plotpy.gui.widgets.items.image
-------------------------------
-
-The `image` module provides image-related objects and functions:
-
-    * :py:class:`.image.ImageItem`: simple images
-    * :py:class:`.image.TrImageItem`: images supporting arbitrary
-      affine transform
-    * :py:class:`.image.XYImageItem`: images with non-linear X/Y axes
-    * :py:class:`.image.Histogram2DItem`: 2D histogram
-    * :py:class:`.image.ImageFilterItem`: rectangular filtering area
-      that may be resized and moved onto the processed image
-    * :py:func:`.image.assemble_imageitems`
-    * :py:func:`.image.get_plot_qrect`
-    * :py:func:`.image.get_image_from_plot`
-
-``ImageItem``, ``TrImageItem``, ``XYImageItem``, ``Histogram2DItem`` and
-``ImageFilterItem`` objects are plot items (derived from QwtPlotItem) that
-may be displayed on a :py:class:`.baseplot.BasePlot` plotting widget.
-
-.. seealso::
-
-    Module :py:mod:`plotpy.gui.widgets.items.curve`
-        Module providing curve-related plot items
-
-    Module :py:mod:`plotpy.gui.widgets.plot`
-        Module providing ready-to-use curve and image plotting widgets and
-        dialog boxes
-
-Examples
-~~~~~~~~
-
-Create a basic image plotting widget:
-
-    * before creating any widget, a `QApplication` must be instantiated (that
-      is a `Qt` internal requirement):
-
->>> import plotpy.gui
->>> app = plotpy.gui.qapplication()
-
-    * that is mostly equivalent to the following (the only difference is that
-      the `plotpy` helper function also installs the `Qt` translation
-      corresponding to the system locale):
-
->>> from PyQt5.QtWidgets import QApplication
->>> app = QApplication([])
-
-    * now that a `QApplication` object exists, we may create the plotting
-      widget:
-
->>> from plotpy.gui.widgets.baseplot import BasePlot, PlotType
->>> plot = BasePlot(title="Example", type=PlotType.IMAGE)
-
-Generate random data for testing purpose:
-
->>> import numpy as np
->>> data = np.random.rand(100, 100)
-
-Create a simple image item:
-
-    * from the associated plot item class (e.g. `XYImageItem` to create
-      an image with non-linear X/Y axes): the item properties are then
-      assigned by creating the appropriate style parameters object
-      (e.g. :py:class:`.styles.ImageParam`)
-
->>> from plotpy.gui.widgets.items.image import ImageItem
->>> from plotpy.gui.widgets.styles import ImageParam
->>> param = ImageParam()
->>> param.label = 'My image'
->>> image = ImageItem(param)
->>> image.set_data(data)
-
-    * or using the `plot item builder` (see :py:func:`.builder.make`):
-
->>> from plotpy.gui.widgets.builder import make
->>> image = make.image(data, title='My image')
-
-Attach the image to the plotting widget:
-
->>> plot.add_item(image)
-
-Display the plotting widget:
-
->>> plot.show()
->>> app.exec_()
-
-Reference
-~~~~~~~~~
-
-.. autoclass:: BaseImageItem
-   :members:
-   :inherited-members:
-.. autoclass:: RawImageItem
-   :members:
-   :inherited-members:
-.. autoclass:: ImageItem
-   :members:
-   :inherited-members:
-.. autoclass: TransformImageMixin
-.. autoclass:: TrImageItem
-   :members:
-   :inherited-members:
-.. autoclass:: XYImageItem
-   :members:
-   :inherited-members:
-.. autoclass:: RGBImageItem
-   :members:
-   :inherited-members:
-.. autoclass:: MaskedImageItem
-   :members:
-   :inherited-members:
-.. autoclass:: MaskedXYImageItem
-   :members:
-   :inherited-members:
-.. autoclass:: ImageFilterItem
-   :members:
-   :inherited-members:
-.. autoclass:: XYImageFilterItem
-   :members:
-   :inherited-members:
-.. autoclass:: Histogram2DItem
-   :members:
-   :inherited-members:
-.. autoclass:: QuadGridItem
-   :members:
-   :inherited-members:
-
-.. autofunction:: assemble_imageitems
-.. autofunction:: get_plot_qrect
-.. autofunction:: get_image_from_plot
-"""
 
 # FIXME: traceback in scaler when adding here 'from __future__ import division'
 
 from __future__ import print_function, unicode_literals
 
-import os.path as osp
 import sys
-from os import getcwd
 
 import numpy as np
+from qtpy import QtCore as QC
 
-from plotpy.core.dataset.dataitems import DirectoryItem
-from plotpy.core.utils.dataset import update_dataset
-from plotpy.gui.utils.gui import assert_interfaces_valid
-from plotpy.gui.utils.misc import get_icon
-from plotpy.gui.widgets import io
-from plotpy.gui.widgets.colormap import FULLRANGE, get_cmap, get_cmap_name
-from plotpy.gui.widgets.config import _
-from plotpy.gui.widgets.ext_gui_lib import (
-    QBrush,
-    QColor,
-    QIcon,
-    QImage,
-    QPen,
-    QPointF,
-    QRect,
-    QRectF,
-    QwtPlot,
-    QwtPlotItem,
-)
-from plotpy.gui.widgets.geometry import colvector, rotate, scale, translate
-from plotpy.gui.widgets.interfaces import (
+from plotpy.config import _
+from plotpy.utils.gui import assert_interfaces_valid
+from plotpy.widgets import io
+from plotpy.widgets.geometry import colvector
+from plotpy.widgets.interfaces import (
     IBaseImageItem,
     IBasePlotItem,
     IColormapImageItemType,
@@ -179,37 +23,17 @@ from plotpy.gui.widgets.interfaces import (
     IHistDataSource,
     IImageItemType,
     ISerializableType,
-    IStatsImageItemType,
     ITrackableItemType,
     IVoiImageItemType,
 )
-from plotpy.gui.widgets.io import iohandler
-from plotpy.gui.widgets.items.shapes import RectangleShape
-from plotpy.gui.widgets.items.utils import axes_to_canvas, canvas_to_axes
-from plotpy.gui.widgets.styles import (
-    ImageParam,
-    MaskedImageParam,
-    MaskedXYImageParam,
-    QuadGridParam,
-    RawImageParam,
-    RGBImageParam,
-    TrImageParam,
-    XYImageParam,
-)
+from plotpy.widgets.items.image.base import RawImageItem, pixelround
+from plotpy.widgets.items.image.filter import XYImageFilterItem, to_bins
+from plotpy.widgets.items.image.mixin import ImageMixin
+from plotpy.widgets.items.utils import canvas_to_axes
+from plotpy.widgets.styles.image import ImageParam, RGBImageParam, XYImageParam
 
-stderr = sys.stderr
 try:
-    from plotpy._scaler import (
-        INTERP_AA,
-        INTERP_LINEAR,
-        INTERP_NEAREST,
-        _histogram,
-        _scale_quads,
-        _scale_rect,
-        _scale_tr,
-        _scale_xy,
-    )
-    from plotpy.histogram2d import histogram2d, histogram2d_func
+    from plotpy._scaler import INTERP_NEAREST, _scale_rect, _scale_xy
 except ImportError:
     print(
         ("Module 'plotpy.gui.widgets.items.image': missing C extension"),
@@ -220,9 +44,6 @@ except ImportError:
         file=sys.stderr,
     )
     raise
-
-LUT_SIZE = 1024
-LUT_MAX = float(LUT_SIZE - 1)
 
 
 # ==============================================================================
@@ -355,7 +176,7 @@ class ImageItem(RawImageItem):
         if self.data is None:
             return
         (xmin, xmax), (ymin, ymax) = self.get_xdata(), self.get_ydata()
-        self.bounds = QRectF(QPointF(xmin, ymin), QPointF(xmax, ymax))
+        self.bounds = QC.QRectF(QC.QPointF(xmin, ymin), QC.QPointF(xmax, ymax))
 
     # ---- BaseImageItem API ---------------------------------------------------
     def get_pixel_coordinates(self, xplot, yplot):
@@ -436,7 +257,7 @@ class ImageItem(RawImageItem):
         dest = _scale_rect(
             self.data, src2, self._offscreen, dst_rect, self.lut, self.interpolate
         )
-        qrect = QRectF(QPointF(dest[0], dest[1]), QPointF(dest[2], dest[3]))
+        qrect = QC.QRectF(QC.QPointF(dest[0], dest[1]), QC.QPointF(dest[2], dest[3]))
         painter.drawImage(qrect, self._image, qrect)
 
     def export_roi(
@@ -516,239 +337,6 @@ class ImageItem(RawImageItem):
 
 
 assert_interfaces_valid(ImageItem)
-
-
-def assemble_imageitems(
-    items,
-    src_qrect,
-    destw,
-    desth,
-    align=None,
-    add_images=False,
-    apply_lut=False,
-    apply_interpolation=False,
-    original_resolution=False,
-    force_interp_mode=None,
-    force_interp_size=None,
-):
-    """
-    Assemble together image items in qrect (`QRectF` object)
-    and return resulting pixel data
-
-    .. warning::
-
-        Does not support `XYImageItem` objects
-    """
-    # align width to 'align' bytes
-    if align is not None:
-        print(
-            "plotpy.gui.widgets.items.image.assemble_imageitems: since v2.2, "
-            "the `align` option is ignored",
-            file=sys.stderr,
-        )
-    align = 1  # XXX: byte alignment is disabled until further notice!
-    aligned_destw = int(align * ((int(destw) + align - 1) / align))
-    aligned_desth = int(desth * aligned_destw / destw)
-
-    try:
-        output = np.zeros((aligned_desth, aligned_destw), np.float32)
-    except ValueError:
-        raise MemoryError
-    if not add_images:
-        dst_image = output
-
-    dst_rect = (0, 0, aligned_destw, aligned_desth)
-
-    src_rect = list(src_qrect.getCoords())
-    # The source QRect is generally coming from a rectangle shape which is
-    # adjusted to fit a given ROI on the image. So the rectangular area is
-    # aligned with image pixel edges: to avoid any rounding error, we reduce
-    # the rectangle area size by one half of a pixel, so that the area is now
-    # aligned with the center of image pixels.
-    pixel_width = src_qrect.width() / float(destw)
-    pixel_height = src_qrect.height() / float(desth)
-    src_rect[0] += 0.5 * pixel_width
-    src_rect[1] += 0.5 * pixel_height
-    src_rect[2] -= 0.5 * pixel_width
-    src_rect[3] -= 0.5 * pixel_height
-
-    for it in sorted(items, key=lambda obj: obj.z()):
-        if it.isVisible() and src_qrect.intersects(it.boundingRect()):
-            if add_images:
-                dst_image = np.zeros_like(output)
-            it.export_roi(
-                src_rect=src_rect,
-                dst_rect=dst_rect,
-                dst_image=dst_image,
-                apply_lut=apply_lut,
-                apply_interpolation=apply_interpolation,
-                original_resolution=original_resolution,
-                force_interp_mode=force_interp_mode,
-                force_interp_size=force_interp_size,
-            )
-            if add_images:
-                output += dst_image
-    return output
-
-
-def get_plot_qrect(plot, p0, p1):
-    """
-    Return `QRectF` rectangle object in plot coordinates
-    from top-left and bottom-right `QPointF` objects in canvas coordinates
-    """
-    ax, ay = plot.X_BOTTOM, plot.Y_LEFT
-    p0x, p0y = plot.invTransform(ax, p0.x()), plot.invTransform(ay, p0.y())
-    p1x, p1y = plot.invTransform(ax, p1.x() + 1), plot.invTransform(ay, p1.y() + 1)
-    return QRectF(p0x, p0y, p1x - p0x, p1y - p0y)
-
-
-def get_items_in_rectangle(plot, p0, p1, item_type=None, intersect=True):
-    """Return items which bounding rectangle intersects (p0, p1)
-    item_type: default is `IExportROIImageItemType`"""
-    if item_type is None:
-        item_type = IExportROIImageItemType
-    items = plot.get_items(item_type=item_type)
-    src_qrect = get_plot_qrect(plot, p0, p1)
-    if intersect:
-        return [it for it in items if src_qrect.intersects(it.boundingRect())]
-    else:  # contains
-        return [it for it in items if src_qrect.contains(it.boundingRect())]
-
-
-def compute_trimageitems_original_size(items, src_w, src_h):
-    """Compute `TrImageItem` original size from max dx and dy"""
-    trparams = [item.get_transform() for item in items if isinstance(item, TrImageItem)]
-    if trparams:
-        dx_max = max([dx for _x, _y, _angle, dx, _dy, _hf, _vf in trparams])
-        dy_max = max([dy for _x, _y, _angle, _dx, dy, _hf, _vf in trparams])
-        return src_w / dx_max, src_h / dy_max
-    else:
-        return src_w, src_h
-
-
-def get_image_from_qrect(
-    plot,
-    p0,
-    p1,
-    src_size=None,
-    adjust_range=None,
-    item_type=None,
-    apply_lut=False,
-    apply_interpolation=False,
-    original_resolution=False,
-    add_images=False,
-    force_interp_mode=None,
-    force_interp_size=None,
-):
-    """Return image array from `QRect` area (p0 and p1 are respectively the
-    top-left and bottom-right `QPointF` objects)
-
-    adjust_range: None (return raw data, dtype=np.float32), 'original'
-    (return data with original data type), 'normalize' (normalize range with
-    original data type)"""
-    assert adjust_range in (None, "normalize", "original")
-    items = get_items_in_rectangle(plot, p0, p1, item_type=item_type)
-    if not items:
-        raise TypeError(_("There is no supported image item in current plot."))
-    if src_size is None:
-        _src_x, _src_y, src_w, src_h = get_plot_qrect(plot, p0, p1).getRect()
-    else:
-        # The only benefit to pass the src_size list is to avoid any
-        # rounding error in the transformation computed in `get_plot_qrect`
-        src_w, src_h = src_size
-    destw, desth = compute_trimageitems_original_size(items, src_w, src_h)
-    data = get_image_from_plot(
-        plot,
-        p0,
-        p1,
-        destw=destw,
-        desth=desth,
-        apply_lut=apply_lut,
-        add_images=add_images,
-        apply_interpolation=apply_interpolation,
-        original_resolution=original_resolution,
-        force_interp_mode=force_interp_mode,
-        force_interp_size=force_interp_size,
-    )
-    if adjust_range is None:
-        return data
-    dtype = None
-    for item in items:
-        if dtype is None or item.data.dtype.itemsize > dtype.itemsize:
-            dtype = item.data.dtype
-    if adjust_range == "normalize":
-        from plotpy.gui.widgets import io
-
-        data = io.scale_data_to_dtype(data, dtype=dtype)
-    else:
-        data = np.array(data, dtype=dtype)
-    return data
-
-
-def get_image_in_shape(
-    obj, norm_range=False, item_type=None, apply_lut=False, apply_interpolation=False
-):
-    """Return image array from rectangle shape"""
-    x0, y0, x1, y1 = obj.get_rect()
-    (x0, x1), (y0, y1) = sorted([x0, x1]), sorted([y0, y1])
-    xc0, yc0 = axes_to_canvas(obj, x0, y0)
-    xc1, yc1 = axes_to_canvas(obj, x1, y1)
-    adjust_range = "normalize" if norm_range else "original"
-    return get_image_from_qrect(
-        obj.plot(),
-        QPointF(xc0, yc0),
-        QPointF(xc1, yc1),
-        src_size=(x1 - x0, y1 - y0),
-        adjust_range=adjust_range,
-        item_type=item_type,
-        apply_lut=apply_lut,
-        apply_interpolation=apply_interpolation,
-        original_resolution=True,
-    )
-
-
-def get_image_from_plot(
-    plot,
-    p0,
-    p1,
-    destw=None,
-    desth=None,
-    add_images=False,
-    apply_lut=False,
-    apply_interpolation=False,
-    original_resolution=False,
-    force_interp_mode=None,
-    force_interp_size=None,
-):
-    """
-    Return pixel data of a rectangular plot area (image items only)
-    p0, p1: resp. top-left and bottom-right points (`QPointF` objects)
-    apply_lut: apply contrast settings
-    add_images: add superimposed images (instead of replace by the foreground)
-
-    .. warning::
-
-        Support only the image items implementing the `IExportROIImageItemType`
-        interface, i.e. this does *not* support `XYImageItem` objects
-    """
-    if destw is None:
-        destw = p1.x() - p0.x() + 1
-    if desth is None:
-        desth = p1.y() - p0.y() + 1
-    items = plot.get_items(item_type=IExportROIImageItemType)
-    qrect = get_plot_qrect(plot, p0, p1)
-    return assemble_imageitems(
-        items,
-        qrect,
-        destw,
-        desth,  # align=4,
-        add_images=add_images,
-        apply_lut=apply_lut,
-        apply_interpolation=apply_interpolation,
-        original_resolution=original_resolution,
-        force_interp_mode=force_interp_mode,
-        force_interp_size=force_interp_size,
-    )
 
 
 class XYImageItem(ImageMixin, RawImageItem):
@@ -900,7 +488,7 @@ class XYImageItem(ImageMixin, RawImageItem):
         dest = _scale_xy(
             self.data, xytr, mat, self._offscreen, dst_rect, self.lut, self.interpolate
         )
-        qrect = QRectF(QPointF(dest[0], dest[1]), QPointF(dest[2], dest[3]))
+        qrect = QC.QRectF(QC.QPointF(dest[0], dest[1]), QC.QPointF(dest[2], dest[3]))
         painter.drawImage(qrect, self._image, qrect)
 
     def get_pixel_coordinates(self, xplot, yplot):
@@ -1098,40 +686,3 @@ class RGBImageItem(ImageItem):
 
 
 assert_interfaces_valid(RGBImageItem)
-
-
-# ==============================================================================
-# Masked Image
-# ==============================================================================
-class MaskedArea(object):
-    """Defines masked areas for a masked image item"""
-
-    def __init__(self, geometry=None, x0=None, y0=None, x1=None, y1=None, inside=None):
-        self.geometry = geometry
-        self.x0 = x0
-        self.y0 = y0
-        self.x1 = x1
-        self.y1 = y1
-        self.inside = inside
-
-    def __eq__(self, other):
-        return (
-            self.geometry == other.geometry
-            and self.x0 == other.x0
-            and self.y0 == other.y0
-            and self.x1 == other.x1
-            and self.y1 == other.y1
-            and self.inside == other.inside
-        )
-
-    def serialize(self, writer):
-        """Serialize object to HDF5 writer"""
-        for name in ("geometry", "inside", "x0", "y0", "x1", "y1"):
-            writer.write(getattr(self, name), name)
-
-    def deserialize(self, reader):
-        """Deserialize object from HDF5 reader"""
-        self.geometry = reader.read("geometry")
-        self.inside = reader.read("inside")
-        for name in ("x0", "y0", "x1", "y1"):
-            setattr(self, name, reader.read(name, func=reader.read_float))

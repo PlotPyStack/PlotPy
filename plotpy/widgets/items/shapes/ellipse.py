@@ -3,11 +3,11 @@ import math
 import sys
 
 import numpy as np
+from guidata.configtools import get_icon
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qwt import QwtSymbol
 
-from plotpy.utils.config.getters import get_icon
 from plotpy.utils.gui import assert_interfaces_valid
 from plotpy.widgets.geometry import compute_angle, compute_center
 from plotpy.widgets.items.shapes.polygon import PolygonShape

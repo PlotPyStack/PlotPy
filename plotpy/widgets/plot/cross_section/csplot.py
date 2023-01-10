@@ -1,3 +1,24 @@
+# -*- coding: utf-8 -*-
+import weakref
+
+from qtpy import QtCore as QC
+from qtpy import QtWidgets as QW
+
+from plotpy.config import CONF, _
+from plotpy.widgets.builder import make
+from plotpy.widgets.interfaces import ICSImageItemType
+from plotpy.widgets.items.image.base import LUT_MAX
+from plotpy.widgets.plot.base import BasePlot, PlotType
+from plotpy.widgets.plot.cross_section.csitem import (
+    ObliqueCrossSectionItem,
+    XCrossSectionItem,
+    YCrossSectionItem,
+)
+from plotpy.widgets.styles.curve import CurveParam
+
+LUT_AXIS_TITLE = _("LUT scale") + (" (0-%d)" % LUT_MAX)
+
+
 class CrossSectionPlot(BasePlot):
     """Cross section plot"""
 
@@ -29,9 +50,9 @@ class CrossSectionPlot(BasePlot):
         self.set_curve_style("cross_section", "curve")
 
         if self._height is not None:
-            self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
+            self.setSizePolicy(QW.QSizePolicy.Expanding, QW.QSizePolicy.Minimum)
         elif self._width is not None:
-            self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Expanding)
+            self.setSizePolicy(QW.QSizePolicy.Minimum, QW.QSizePolicy.Expanding)
 
         self.label = make.label(self.LABEL_TEXT, "C", (0, 0), "C")
         self.label.set_readonly(True)
@@ -355,7 +376,7 @@ class XCrossSectionPlot(HorizontalCrossSectionPlot):
 
         :return:
         """
-        return QSize(self.width(), self._height)
+        return QC.QSize(self.width(), self._height)
 
     def create_cross_section_item(self):
         """
@@ -375,7 +396,7 @@ class YCrossSectionPlot(VerticalCrossSectionPlot):
 
         :return:
         """
-        return QSize(self._width, self.height())
+        return QC.QSize(self._width, self.height())
 
     def create_cross_section_item(self):
         """

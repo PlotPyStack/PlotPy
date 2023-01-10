@@ -1,6 +1,50 @@
-# ==============================================================================
-# QuadGrid item
-# ==============================================================================
+# -*- coding: utf-8 -*-
+import sys
+
+import numpy as np
+from guidata.configtools import get_icon
+from guidata.dataset.datatypes import update_dataset
+from qtpy import QtCore as QC
+
+from plotpy.config import _
+from plotpy.utils.gui import assert_interfaces_valid
+from plotpy.widgets.interfaces import (
+    IBaseImageItem,
+    IBasePlotItem,
+    IColormapImageItemType,
+    ICSImageItemType,
+    IExportROIImageItemType,
+    IHistDataSource,
+    IImageItemType,
+    ITrackableItemType,
+    IVoiImageItemType,
+)
+from plotpy.widgets.items.image.base import (
+    BaseImageItem,
+    RawImageItem,
+    _nanmax,
+    _nanmin,
+)
+from plotpy.widgets.items.image.mixin import ImageMixin
+from plotpy.widgets.items.image.transform import TrImageItem
+from plotpy.widgets.items.utils import axes_to_canvas
+from plotpy.widgets.styles.image import ImageParam, QuadGridParam
+
+try:
+    from plotpy._scaler import _histogram, _scale_quads
+    from plotpy.histogram2d import histogram2d, histogram2d_func
+except ImportError:
+    print(
+        ("Module 'plotpy.widgets.items.image.base': missing C extension"),
+        file=sys.stderr,
+    )
+    print(
+        ("try running :" "python setup.py build_ext --inplace -c mingw32"),
+        file=sys.stderr,
+    )
+    raise
+
+
 class QuadGridItem(ImageMixin, RawImageItem):
     """
     Construct a QuadGrid image
@@ -102,7 +146,7 @@ class QuadGridItem(ImageMixin, RawImageItem):
             self.interpolate,
             self.grid,
         )
-        qrect = QRectF(QPointF(dest[0], dest[1]), QPointF(dest[2], dest[3]))
+        qrect = QC.QRectF(QC.QPointF(dest[0], dest[1]), QC.QPointF(dest[2], dest[3]))
         painter.drawImage(qrect, self._image, qrect)
         xl, yt, xr, yb = dest
         self._offscreen[yt:yb, xl:xr] = 0
@@ -115,9 +159,7 @@ class QuadGridItem(ImageMixin, RawImageItem):
 
 assert_interfaces_valid(QuadGridItem)
 
-# ==============================================================================
-# 2-D Histogram
-# ==============================================================================
+
 class Histogram2DItem(ImageMixin, BaseImageItem):
     """
     Construct a 2D histogram item
@@ -319,3 +361,236 @@ class Histogram2DItem(ImageMixin, BaseImageItem):
 
 
 assert_interfaces_valid(Histogram2DItem)
+
+
+def assemble_imageitems(
+    items,
+    src_qrect,
+    destw,
+    desth,
+    align=None,
+    add_images=False,
+    apply_lut=False,
+    apply_interpolation=False,
+    original_resolution=False,
+    force_interp_mode=None,
+    force_interp_size=None,
+):
+    """
+    Assemble together image items in qrect (`QRectF` object)
+    and return resulting pixel data
+
+    .. warning::
+
+        Does not support `XYImageItem` objects
+    """
+    # align width to 'align' bytes
+    if align is not None:
+        print(
+            "plotpy.gui.widgets.items.image.assemble_imageitems: since v2.2, "
+            "the `align` option is ignored",
+            file=sys.stderr,
+        )
+    align = 1  # XXX: byte alignment is disabled until further notice!
+    aligned_destw = int(align * ((int(destw) + align - 1) / align))
+    aligned_desth = int(desth * aligned_destw / destw)
+
+    try:
+        output = np.zeros((aligned_desth, aligned_destw), np.float32)
+    except ValueError:
+        raise MemoryError
+    if not add_images:
+        dst_image = output
+
+    dst_rect = (0, 0, aligned_destw, aligned_desth)
+
+    src_rect = list(src_qrect.getCoords())
+    # The source QRect is generally coming from a rectangle shape which is
+    # adjusted to fit a given ROI on the image. So the rectangular area is
+    # aligned with image pixel edges: to avoid any rounding error, we reduce
+    # the rectangle area size by one half of a pixel, so that the area is now
+    # aligned with the center of image pixels.
+    pixel_width = src_qrect.width() / float(destw)
+    pixel_height = src_qrect.height() / float(desth)
+    src_rect[0] += 0.5 * pixel_width
+    src_rect[1] += 0.5 * pixel_height
+    src_rect[2] -= 0.5 * pixel_width
+    src_rect[3] -= 0.5 * pixel_height
+
+    for it in sorted(items, key=lambda obj: obj.z()):
+        if it.isVisible() and src_qrect.intersects(it.boundingRect()):
+            if add_images:
+                dst_image = np.zeros_like(output)
+            it.export_roi(
+                src_rect=src_rect,
+                dst_rect=dst_rect,
+                dst_image=dst_image,
+                apply_lut=apply_lut,
+                apply_interpolation=apply_interpolation,
+                original_resolution=original_resolution,
+                force_interp_mode=force_interp_mode,
+                force_interp_size=force_interp_size,
+            )
+            if add_images:
+                output += dst_image
+    return output
+
+
+def get_plot_qrect(plot, p0, p1):
+    """
+    Return `QRectF` rectangle object in plot coordinates
+    from top-left and bottom-right `QPointF` objects in canvas coordinates
+    """
+    ax, ay = plot.X_BOTTOM, plot.Y_LEFT
+    p0x, p0y = plot.invTransform(ax, p0.x()), plot.invTransform(ay, p0.y())
+    p1x, p1y = plot.invTransform(ax, p1.x() + 1), plot.invTransform(ay, p1.y() + 1)
+    return QC.QRectF(p0x, p0y, p1x - p0x, p1y - p0y)
+
+
+def get_items_in_rectangle(plot, p0, p1, item_type=None, intersect=True):
+    """Return items which bounding rectangle intersects (p0, p1)
+    item_type: default is `IExportROIImageItemType`"""
+    if item_type is None:
+        item_type = IExportROIImageItemType
+    items = plot.get_items(item_type=item_type)
+    src_qrect = get_plot_qrect(plot, p0, p1)
+    if intersect:
+        return [it for it in items if src_qrect.intersects(it.boundingRect())]
+    else:  # contains
+        return [it for it in items if src_qrect.contains(it.boundingRect())]
+
+
+def compute_trimageitems_original_size(items, src_w, src_h):
+    """Compute `TrImageItem` original size from max dx and dy"""
+    trparams = [item.get_transform() for item in items if isinstance(item, TrImageItem)]
+    if trparams:
+        dx_max = max([dx for _x, _y, _angle, dx, _dy, _hf, _vf in trparams])
+        dy_max = max([dy for _x, _y, _angle, _dx, dy, _hf, _vf in trparams])
+        return src_w / dx_max, src_h / dy_max
+    else:
+        return src_w, src_h
+
+
+def get_image_from_qrect(
+    plot,
+    p0,
+    p1,
+    src_size=None,
+    adjust_range=None,
+    item_type=None,
+    apply_lut=False,
+    apply_interpolation=False,
+    original_resolution=False,
+    add_images=False,
+    force_interp_mode=None,
+    force_interp_size=None,
+):
+    """Return image array from `QRect` area (p0 and p1 are respectively the
+    top-left and bottom-right `QPointF` objects)
+
+    adjust_range: None (return raw data, dtype=np.float32), 'original'
+    (return data with original data type), 'normalize' (normalize range with
+    original data type)"""
+    assert adjust_range in (None, "normalize", "original")
+    items = get_items_in_rectangle(plot, p0, p1, item_type=item_type)
+    if not items:
+        raise TypeError(_("There is no supported image item in current plot."))
+    if src_size is None:
+        _src_x, _src_y, src_w, src_h = get_plot_qrect(plot, p0, p1).getRect()
+    else:
+        # The only benefit to pass the src_size list is to avoid any
+        # rounding error in the transformation computed in `get_plot_qrect`
+        src_w, src_h = src_size
+    destw, desth = compute_trimageitems_original_size(items, src_w, src_h)
+    data = get_image_from_plot(
+        plot,
+        p0,
+        p1,
+        destw=destw,
+        desth=desth,
+        apply_lut=apply_lut,
+        add_images=add_images,
+        apply_interpolation=apply_interpolation,
+        original_resolution=original_resolution,
+        force_interp_mode=force_interp_mode,
+        force_interp_size=force_interp_size,
+    )
+    if adjust_range is None:
+        return data
+    dtype = None
+    for item in items:
+        if dtype is None or item.data.dtype.itemsize > dtype.itemsize:
+            dtype = item.data.dtype
+    if adjust_range == "normalize":
+        from plotpy.widgets import io
+
+        data = io.scale_data_to_dtype(data, dtype=dtype)
+    else:
+        data = np.array(data, dtype=dtype)
+    return data
+
+
+def get_image_in_shape(
+    obj, norm_range=False, item_type=None, apply_lut=False, apply_interpolation=False
+):
+    """Return image array from rectangle shape"""
+    x0, y0, x1, y1 = obj.get_rect()
+    (x0, x1), (y0, y1) = sorted([x0, x1]), sorted([y0, y1])
+    xc0, yc0 = axes_to_canvas(obj, x0, y0)
+    xc1, yc1 = axes_to_canvas(obj, x1, y1)
+    adjust_range = "normalize" if norm_range else "original"
+    return get_image_from_qrect(
+        obj.plot(),
+        QC.QPointF(xc0, yc0),
+        QC.QPointF(xc1, yc1),
+        src_size=(x1 - x0, y1 - y0),
+        adjust_range=adjust_range,
+        item_type=item_type,
+        apply_lut=apply_lut,
+        apply_interpolation=apply_interpolation,
+        original_resolution=True,
+    )
+
+
+def get_image_from_plot(
+    plot,
+    p0,
+    p1,
+    destw=None,
+    desth=None,
+    add_images=False,
+    apply_lut=False,
+    apply_interpolation=False,
+    original_resolution=False,
+    force_interp_mode=None,
+    force_interp_size=None,
+):
+    """
+    Return pixel data of a rectangular plot area (image items only)
+    p0, p1: resp. top-left and bottom-right points (`QPointF` objects)
+    apply_lut: apply contrast settings
+    add_images: add superimposed images (instead of replace by the foreground)
+
+    .. warning::
+
+        Support only the image items implementing the `IExportROIImageItemType`
+        interface, i.e. this does *not* support `XYImageItem` objects
+    """
+    if destw is None:
+        destw = p1.x() - p0.x() + 1
+    if desth is None:
+        desth = p1.y() - p0.y() + 1
+    items = plot.get_items(item_type=IExportROIImageItemType)
+    qrect = get_plot_qrect(plot, p0, p1)
+    return assemble_imageitems(
+        items,
+        qrect,
+        destw,
+        desth,  # align=4,
+        add_images=add_images,
+        apply_lut=apply_lut,
+        apply_interpolation=apply_interpolation,
+        original_resolution=original_resolution,
+        force_interp_mode=force_interp_mode,
+        force_interp_size=force_interp_size,
+    )

@@ -1,3 +1,37 @@
+# -*- coding: utf-8 -*-
+import sys
+
+import numpy as np
+from qtpy import QtCore as QC
+from qtpy import QtGui as QG
+
+from plotpy.config import _
+from plotpy.utils.gui import assert_interfaces_valid
+from plotpy.widgets.geometry import colvector, scale, translate
+from plotpy.widgets.interfaces import (
+    IBaseImageItem,
+    IBasePlotItem,
+    IExportROIImageItemType,
+)
+from plotpy.widgets.items.image.base import RawImageItem
+from plotpy.widgets.items.image.mixin import TransformImageMixin
+from plotpy.widgets.items.utils import axes_to_canvas
+from plotpy.widgets.styles.image import TrImageParam
+
+try:
+    from plotpy._scaler import INTERP_LINEAR, INTERP_NEAREST, _scale_tr
+except ImportError:
+    print(
+        ("Module 'plotpy.widgets.items.image.base': missing C extension"),
+        file=sys.stderr,
+    )
+    print(
+        ("try running :" "python setup.py build_ext --inplace -c mingw32"),
+        file=sys.stderr,
+    )
+    raise
+
+
 # ==============================================================================
 # Image with a custom linear transform
 # ==============================================================================
@@ -64,7 +98,7 @@ class TrImageItem(TransformImageMixin, RawImageItem):
     def compute_bounds(self):
         """ """
         x0, y0, x1, y1 = self.get_crop_coordinates()
-        self.bounds = QRectF(QPointF(x0, y0), QPointF(x1, y1))
+        self.bounds = QC.QRectF(QC.QPointF(x0, y0), QC.QPointF(x1, y1))
         self.update_border()
 
     def set_rotation_point(self, x, y, rotation_point_move_with_shape=True):
@@ -189,17 +223,17 @@ class TrImageItem(TransformImageMixin, RawImageItem):
         dest = _scale_tr(
             self.data, mat, self._offscreen, dst_rect, self.lut, self.interpolate
         )
-        qrect = QRectF(QPointF(dest[0], dest[1]), QPointF(dest[2], dest[3]))
+        qrect = QC.QRectF(QC.QPointF(dest[0], dest[1]), QC.QPointF(dest[2], dest[3]))
         painter.drawImage(qrect, self._image, qrect)
         # -- rotation circle
         if self.can_rotate():
             if self.rotation_point is None:
                 self.set_rotation_point_to_center()
-            brush = QBrush(QColor("magenta"))
-            pen = QPen(QColor("magenta"))
+            brush = QG.QBrush(QG.QColor("magenta"))
+            pen = QG.QPen(QG.QColor("magenta"))
             pen.setBrush(brush)
             painter.setBrush(brush)
-            center = QPointF(
+            center = QC.QPointF(
                 *axes_to_canvas(self, self.rotation_point[0], self.rotation_point[1])
             )
             painter.drawEllipse(

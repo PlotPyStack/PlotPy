@@ -19,7 +19,6 @@ import io
 
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
-from qtpy import QtWidgets as QW
 
 
 def buttons_to_str(buttons):

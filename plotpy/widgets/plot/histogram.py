@@ -51,31 +51,28 @@ from guidata.dataset.dataitems import FloatItem
 from guidata.dataset.datatypes import DataSet
 from guidata.utils import update_dataset
 from qtpy import QtCore as QC
-from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
 from qwt import QwtPlotCurve
 
 from plotpy.config import CONF, _
 from plotpy.utils.gui import assert_interfaces_valid
 from plotpy.utils.misc_from_gui import add_actions, create_action
-from plotpy.widgets.baseplot import BasePlot, PlotType
 from plotpy.widgets.interfaces import (
     IBasePlotItem,
     IHistDataSource,
     IPanel,
     IVoiImageItemType,
 )
-from plotpy.widgets.items.curve import CurveItem
-from plotpy.widgets.items.shapes import XRangeSelection
+from plotpy.widgets.items.curve.base import CurveItem
+from plotpy.widgets.items.shapes.range import XRangeSelection
 from plotpy.widgets.panels import ID_CONTRAST, PanelWidget
 from plotpy.widgets.plot import PlotManager
-from plotpy.widgets.styles import CurveParam, HistogramParam
-from plotpy.widgets.tools import (
-    AntiAliasingTool,
-    BasePlotMenuTool,
-    SelectPointTool,
-    SelectTool,
-)
+from plotpy.widgets.plot.base import BasePlot, PlotType
+from plotpy.widgets.styles.curve import CurveParam
+from plotpy.widgets.styles.histogram import HistogramParam
+from plotpy.widgets.tools.curve import AntiAliasingTool, SelectPointTool
+from plotpy.widgets.tools.plot import BasePlotMenuTool
+from plotpy.widgets.tools.selection import SelectTool
 
 
 class HistDataSource(object):

@@ -48,7 +48,7 @@ def qapplication():
     Return QApplication instance
     Creates it if it doesn't already exist
     """
-    from plotpy.gui.widgets.ext_gui_lib import QApplication
+    from qtpy.QtWidgets import QApplication
 
     app = QApplication.instance()
     if not app:
@@ -64,7 +64,7 @@ def install_translator(qapp):
     """Install Qt translator to the QApplication instance"""
     global QT_TRANSLATOR
     if QT_TRANSLATOR is None:
-        from plotpy.gui.widgets.ext_gui_lib import QLibraryInfo, QLocale, QTranslator
+        from qtpy.QtCore import QLibraryInfo, QLocale, QTranslator
 
         locale = QLocale.system().name()
         # Qt-specific translator

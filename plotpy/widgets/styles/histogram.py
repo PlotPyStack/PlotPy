@@ -7,9 +7,6 @@ from guidata.dataset.dataitems import (
     StringItem,
 )
 from guidata.dataset.datatypes import DataSet, GetAttrProp
-from qtpy import QtCore as QC
-from qtpy import QtGui as QG
-from qtpy import QtWidgets as QW
 
 from plotpy.config import _
 from plotpy.widgets.styles.base import ItemParameters

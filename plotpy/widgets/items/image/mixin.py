@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+import numpy as np
+from qtpy import QtCore as QC
+
+from plotpy.widgets import io
+from plotpy.widgets.geometry import colvector, rotate, scale, translate
+from plotpy.widgets.items.image.masked import MaskedArea
+from plotpy.widgets.items.utils import axes_to_canvas, canvas_to_axes
+
+
 class TransformImageMixin:
     """Mixin that provides utilities to move/rotate/resize an image based
     on a transformation matrix.
@@ -78,7 +88,7 @@ class TransformImageMixin:
         xmax = points[0].max()
         ymin = points[1].min()
         ymax = points[1].max()
-        self.bounds = QRectF(xmin, ymin, xmax - xmin, ymax - ymin)
+        self.bounds = QC.QRectF(xmin, ymin, xmax - xmin, ymax - ymin)
 
     def update_border(self):
         """
@@ -216,8 +226,8 @@ class TransformImageMixin:
         if self.rotation_point is None:
             self.set_rotation_point_to_center()
         x0, y0, _angle, _dx, _dy, _hflip, _vflip = self.get_transform()
-        old_pos = QPointF(*axes_to_canvas(self, x0, y0))
-        new_pos = QPointF(old_pos.x() + dx, old_pos.y() + dy)
+        old_pos = QC.QPointF(*axes_to_canvas(self, x0, y0))
+        new_pos = QC.QPointF(old_pos.x() + dx, old_pos.y() + dy)
         nx, ny = canvas_to_axes(self, new_pos)
         ox, oy = canvas_to_axes(self, old_pos)
         self.set_transform(nx, ny, _angle, _dx, _dy, _hflip, _vflip)
@@ -370,7 +380,7 @@ class ImageMixin:
         xmax = points[0].max()
         ymin = points[1].min()
         ymax = points[1].max()
-        self.bounds = QRectF(xmin, ymin, xmax - xmin, ymax - ymin)
+        self.bounds = QC.QRectF(xmin, ymin, xmax - xmin, ymax - ymin)
 
     def update_border(self):
         """

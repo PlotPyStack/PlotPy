@@ -6,127 +6,27 @@
 # (see plotpy/__init__.py for details)
 
 # pylint: disable=C0103
-
-"""
-plotpy.gui.widgets.items.curve
-------------------------------
-
-The `curve` module provides curve-related objects:
-    * :py:class:`.curve.CurveItem`: a curve plot item
-    * :py:class:`.curve.ErrorBarCurveItem`: a curve plot item with
-      error bars
-    * :py:class:`.curve.GridItem`
-
-``CurveItem`` and ``GridItem`` objects are plot items (derived from
-QwtPlotItem) that may be displayed on a 2D plotting widget like
-:py:class:`.baseplot.BasePlot`.
-
-.. seealso::
-
-    Module :py:mod:`plotpy.gui.widgets.items.image`
-        Module providing image-related plot items
-
-    Module :py:mod:`plotpy.gui.widgets.plot`
-        Module providing ready-to-use curve and image plotting widgets and
-        dialog boxes
-
-Examples
-~~~~~~~~
-
-Create a basic curve plotting widget:
-    * before creating any widget, a `QApplication` must be instantiated (that
-      is a `Qt` internal requirement):
-
->>> import plotpy.gui
->>> app = plotpy.gui.qapplication()
-
-    * that is mostly equivalent to the following (the only difference is that
-      the `plotpy` helper function also installs the `Qt` translation
-      corresponding to the system locale):
-
->>> from PyQt5.QtWidgets import QApplication
->>> app = QApplication([])
-
-    * now that a `QApplication` object exists, we may create the plotting
-      widget:
-
->>> from plotpy.gui.widgets.baseplot import BasePlot, PlotType
->>> plot = BasePlot(title="Example", xlabel="X", ylabel="Y", type=PlotType.CURVE)
-
-Create a curve item:
-    * from the associated plot item class (e.g. `ErrorBarCurveItem` to
-      create a curve with error bars): the item properties are then assigned
-      by creating the appropriate style parameters object
-      (e.g. :py:class:`.styles.ErrorBarParam`)
-
->>> from plotpy.gui.widgets.items.curve import CurveItem
->>> from plotpy.gui.widgets.styles import CurveParam
->>> param = CurveParam()
->>> param.label = 'My curve'
->>> curve = CurveItem(param)
->>> curve.set_data(x, y)
-
-    * or using the `plot item builder` (see :py:func:`.builder.make`):
-
->>> from plotpy.gui.widgets.builder import make
->>> curve = make.curve(x, y, title='My curve')
-
-Attach the curve to the plotting widget:
-
->>> plot.add_item(curve)
-
-Display the plotting widget:
-
->>> plot.show()
->>> app.exec_()
-
-Reference
-~~~~~~~~~
-
-.. autoclass:: CurveItem
-   :members:
-   :inherited-members:
-.. autoclass:: ErrorBarCurveItem
-   :members:
-   :inherited-members:
-.. autoclass:: GridItem
-   :members:
-"""
-
 from __future__ import print_function, with_statement
 
-import warnings
 from sys import maxsize
 
 import numpy as np
+from guidata.configtools import get_icon
+from guidata.dataset.datatypes import update_dataset
+from qtpy import QtCore as QC
+from qtpy import QtGui as QG
+from qwt import QwtPlotItem
 
-from plotpy.core.utils.dataset import update_dataset
-from plotpy.gui.config.misc import get_icon
-from plotpy.gui.utils.gui import assert_interfaces_valid
-from plotpy.gui.widgets.config import CONF, _
-from plotpy.gui.widgets.ext_gui_lib import (
-    QBrush,
-    QColor,
-    QIcon,
-    QLineF,
-    QPen,
-    QPointF,
-    QPolygonF,
-    QRectF,
-    QwtPlotCurve,
-    QwtPlotGrid,
-    QwtPlotItem,
-    QwtScaleMap,
-)
-from plotpy.gui.widgets.interfaces import (
+from plotpy.config import _
+from plotpy.utils.gui import assert_interfaces_valid
+from plotpy.widgets.interfaces import (
     IBasePlotItem,
     ICurveItemType,
-    IDecoratorItemType,
     ISerializableType,
     ITrackableItemType,
 )
-from plotpy.gui.widgets.items.utils import canvas_to_axes
-from plotpy.gui.widgets.styles import CurveParam, ErrorBarParam, GridParam, SymbolParam
+from plotpy.widgets.items.curve.base import SELECTED_SYMBOL
+from plotpy.widgets.styles.curve import CurveParam
 
 
 def _simplify_poly(pts, off, scale, bounds):
@@ -151,26 +51,6 @@ try:
     from gshhs import simplify_poly
 except ImportError:
     simplify_poly = _simplify_poly
-
-
-def test_seg_dist():
-    """ """
-    print(seg_dist(QPointF(200, 100), QPointF(150, 196), QPointF(250, 180)))
-    print(seg_dist(QPointF(200, 100), QPointF(190, 196), QPointF(210, 180)))
-    print(seg_dist(QPointF(201, 105), QPointF(201, 196), QPointF(201, 180)))
-
-
-def test_seg_dist_v():
-    """Test de seg_dist_v"""
-    a = (np.arange(10.0) ** 2).reshape(5, 2)
-    ix, dist = seg_dist_v((2.1, 3.3), a[:-1, 0], a[:-1, 1], a[1:, 0], a[1:, 1])
-    print(ix, dist)
-    assert ix == 0
-
-
-if __name__ == "__main__":
-    test_seg_dist_v()
-    test_seg_dist()
 
 
 class PolygonMapItem(QwtPlotItem):
@@ -386,7 +266,7 @@ class PolygonMapItem(QwtPlotItem):
         self._c = np.array(c, copy=False)
         xmin, ymin = self._pts.min(axis=0)
         xmax, ymax = self._pts.max(axis=0)
-        self.bounds = QRectF(xmin, ymin, xmax - xmin, ymax - ymin)
+        self.bounds = QC.QRectF(xmin, ymin, xmax - xmin, ymax - ymin)
 
     def is_empty(self):
         """Return True if item data is empty"""
@@ -486,8 +366,8 @@ class PolygonMapItem(QwtPlotItem):
         bx, by = p1x - s1x * ax, p1y - s1y * ay
         _c = self._c
         _n = self._n
-        fgcol = QColor()
-        bgcol = QColor()
+        fgcol = QG.QColor()
+        bgcol = QG.QColor()
         # t0 = time()
         polygons = simplify_poly(
             self._pts, _n, (ax, bx, ay, by), canvasRect.getCoords()
@@ -498,12 +378,12 @@ class PolygonMapItem(QwtPlotItem):
         for poly, num in polygons:
             points = []
             for i in range(poly.shape[0]):
-                points.append(QPointF(poly[i, 0], poly[i, 1]))
-            pg = QPolygonF(points)
+                points.append(QC.QPointF(poly[i, 0], poly[i, 1]))
+            pg = QG.QPolygonF(points)
             fgcol.setRgba(int(_c[num, 0]))
             bgcol.setRgba(int(_c[num, 1]))
-            painter.setPen(QPen(fgcol))
-            painter.setBrush(QBrush(bgcol))
+            painter.setPen(QG.QPen(fgcol))
+            painter.setBrush(QG.QBrush(bgcol))
             painter.drawPolygon(pg)
         # print "poly:", time()-t2
 

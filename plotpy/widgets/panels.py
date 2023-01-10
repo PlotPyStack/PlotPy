@@ -79,7 +79,7 @@ class PanelWidget(DockableWidget):
         if self.PANEL_TITLE is not None:
             self.setWindowTitle(self.PANEL_TITLE)
         if self.PANEL_ICON is not None:
-            from plotpy.gui.config.misc import get_icon
+            from guidata.configtools import get_icon
 
             self.setWindowIcon(get_icon(self.PANEL_ICON))
 

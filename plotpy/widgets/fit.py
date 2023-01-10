@@ -44,29 +44,29 @@ Reference
 from __future__ import division, print_function
 
 import numpy as np
-from numpy import inf  # Do not remove this import (used by optimization funcs)
-from qtpy import QtWidgets as QW
-from qtpy.QtCore import Qt
-
-import plotpy.gui
-from plotpy.core.dataset.dataitems import (
+from guidata.configtools import get_icon
+from guidata.dataset.dataitems import (
     BoolItem,
     ChoiceItem,
     FloatItem,
     IntItem,
     StringItem,
 )
-from plotpy.core.utils.dataset import restore_dataset, update_dataset
-from plotpy.gui.config.misc import get_icon
-from plotpy.gui.dataset.datatypes import DataSetGui
-from plotpy.gui.utils.misc import create_groupbox
-from plotpy.gui.widgets.baseplot import PlotType
-from plotpy.gui.widgets.builder import make
-from plotpy.gui.widgets.config import _
-from plotpy.gui.widgets.plot import PlotWidgetMixin
+from guidata.dataset.datatypes import DataSet, update_dataset
+from numpy import inf  # Do not remove this import (used by optimization funcs)
+from qtpy import QtWidgets as QW
+from qtpy.QtCore import Qt
+
+import plotpy.widgets
+from plotpy.config import _
+from plotpy.core.utils.dataset import restore_dataset
+from plotpy.utils.misc_from_gui import create_groupbox
+from plotpy.widgets.builder import make
+from plotpy.widgets.plot.base import PlotType
+from plotpy.widgets.plot.plotwidget import PlotWidgetMixin
 
 
-class AutoFitParam(DataSetGui):
+class AutoFitParam(DataSet):
     xmin = FloatItem("xmin")
     xmax = FloatItem("xmax")
     method = ChoiceItem(
@@ -98,7 +98,7 @@ class AutoFitParam(DataSetGui):
     )
 
 
-class FitParamDataSet(DataSetGui):
+class FitParamDataSet(DataSet):
     name = StringItem(_("Name"))
     value = FloatItem(_("Value"), default=0.0)
     min = FloatItem(_("Min"), default=-1.0)

@@ -65,8 +65,6 @@ import os.path as osp
 from numpy import arange, array, meshgrid, ndarray, zeros
 
 from plotpy.config import CONF, _, make_title
-from plotpy.widgets.baseplot import BasePlot
-from plotpy.widgets.histogram import HistogramItem, lut_range_threshold
 from plotpy.widgets.items.annotations import (
     AnnotatedEllipse,
     AnnotatedRectangle,
@@ -75,16 +73,10 @@ from plotpy.widgets.items.annotations import (
 from plotpy.widgets.items.curve.base import CurveItem
 from plotpy.widgets.items.curve.errorbar import ErrorBarCurveItem
 from plotpy.widgets.items.grid import GridItem
-from plotpy.widgets.items.image import (
-    Histogram2DItem,
-    ImageItem,
-    MaskedImageItem,
-    MaskedXYImageItem,
-    QuadGridItem,
-    RGBImageItem,
-    TrImageItem,
-    XYImageItem,
-)
+from plotpy.widgets.items.image.image_items import ImageItem, RGBImageItem, XYImageItem
+from plotpy.widgets.items.image.masked import MaskedImageItem, MaskedXYImageItem
+from plotpy.widgets.items.image.misc import Histogram2DItem, QuadGridItem
+from plotpy.widgets.items.image.transform import TrImageItem
 from plotpy.widgets.items.label import (
     DataInfoLabel,
     LabelItem,
@@ -99,6 +91,8 @@ from plotpy.widgets.items.shapes.marker import Marker
 from plotpy.widgets.items.shapes.range import XRangeSelection
 from plotpy.widgets.items.shapes.rectangle import RectangleShape
 from plotpy.widgets.items.shapes.segment import SegmentShape
+from plotpy.widgets.plot.base import BasePlot
+from plotpy.widgets.plot.histogram import HistogramItem, lut_range_threshold
 from plotpy.widgets.styles.base import (
     COLORS,
     MARKERS,
@@ -750,7 +744,7 @@ class PlotItemBuilder(object):
     def _get_image_data(self, data, filename, title, to_grayscale):
         if data is None:
             assert filename is not None
-            from plotpy.gui.widgets import io
+            from plotpy.widgets import io
 
             data = io.imread(filename, to_grayscale=to_grayscale)
         if title is None and filename is not None:

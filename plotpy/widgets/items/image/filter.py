@@ -2,10 +2,10 @@
 import sys
 
 import numpy as np
+from guidata.configtools import get_icon
 from guidata.utils import update_dataset
 from qtpy import QtCore as QC
 
-from plotpy.utils.config.getters import get_icon
 from plotpy.utils.gui import assert_interfaces_valid
 from plotpy.widgets.interfaces import (
     IBaseImageItem,

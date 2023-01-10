@@ -2,12 +2,12 @@
 import sys
 
 import numpy as np
+from guidata.configtools import get_icon
 from guidata.utils import update_dataset
 from qtpy import QtCore as QC
 from qwt import QwtPlotCurve
 
 from plotpy.config import CONF, _
-from plotpy.utils.config.getters import get_icon
 from plotpy.utils.gui import assert_interfaces_valid
 from plotpy.widgets.interfaces import (
     IBasePlotItem,
@@ -400,3 +400,23 @@ class CurveItem(QwtPlotCurve):
 
 
 assert_interfaces_valid(CurveItem)
+
+
+def test_seg_dist():
+    """ """
+    print(seg_dist(QC.QPointF(200, 100), QC.QPointF(150, 196), QC.QPointF(250, 180)))
+    print(seg_dist(QC.QPointF(200, 100), QC.QPointF(190, 196), QC.QPointF(210, 180)))
+    print(seg_dist(QC.QPointF(201, 105), QC.QPointF(201, 196), QC.QPointF(201, 180)))
+
+
+def test_seg_dist_v():
+    """Test de seg_dist_v"""
+    a = (np.arange(10.0) ** 2).reshape(5, 2)
+    ix, dist = seg_dist_v((2.1, 3.3), a[:-1, 0], a[:-1, 1], a[1:, 0], a[1:, 1])
+    print(ix, dist)
+    assert ix == 0
+
+
+if __name__ == "__main__":
+    test_seg_dist_v()
+    test_seg_dist()

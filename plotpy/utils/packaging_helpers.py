@@ -10,18 +10,18 @@
 packaging_helpers
 -----------------
 
-The ``packaging_helpers`` module provides various utility helper functions 
+The ``packaging_helpers`` module provides various utility helper functions
 (pure python).
 """
 
 
-import os
-import os.path as osp
-import sys
+import atexit
 import importlib
 import importlib.machinery
+import os
+import os.path as osp
 import shutil
-import atexit
+import sys
 import traceback
 
 if os.name == "nt":
@@ -69,9 +69,14 @@ except ImportError:
     CX_FREEZE_INSTALLED = False
 
 
-from plotpy.core.utils.module import get_module_path
 from plotpy.core.utils.disthelpers import remove_dir, strip_version, to_include_files
-from plotpy.core.utils.dll import get_msvc_version, create_msvc_data_files, get_msvc_dlls, get_dll_architecture
+from plotpy.core.utils.dll import (
+    create_msvc_data_files,
+    get_dll_architecture,
+    get_msvc_dlls,
+    get_msvc_version,
+)
+from plotpy.core.utils.module import get_module_path
 
 
 def atexit_deletion(path):
@@ -235,7 +240,7 @@ class Distribution(object):
         bin_path_includes=None,
         bin_path_excludes=None,
         msvc=None,
-        include_msvcr=False
+        include_msvcr=False,
     ):
         """Setup distribution object
 
@@ -731,10 +736,8 @@ class Distribution(object):
                 "You must install cx_Freeze in order to build the executable"
             )
         assert not self._py2exe_is_loaded, "cx_Freeze can't be executed after py2exe"
-        from cx_Freeze import setup
-
         # ===== Monkey-patching cx_Freeze (backported from v5.0 dev) ===========
-        from cx_Freeze import hooks
+        from cx_Freeze import hooks, setup
 
         def load_h5py(finder, module):
             """h5py module has a number of implicit imports"""
@@ -779,9 +782,9 @@ class Distribution(object):
             optimize=0,
             zip_include_packages="*",
             zip_exclude_packages=["numpy", "pandas"],
-            include_msvcr=self.include_msvcr
+            include_msvcr=self.include_msvcr,
         )
-        
+
         setup(
             name=self.name,
             version=self.version,

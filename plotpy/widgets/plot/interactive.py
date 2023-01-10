@@ -111,14 +111,25 @@ from qtpy import QtWidgets as QW
 from qtpy.QtPrintSupport import QPrinter
 
 import plotpy.widgets
-from plotpy.widgets.baseplot import BasePlot, PlotItemList, PlotType
 from plotpy.widgets.builder import make
 from plotpy.widgets.config import _
-from plotpy.widgets.histogram import ContrastAdjustment
-from plotpy.widgets.items.image import INTERP_AA, INTERP_LINEAR, INTERP_NEAREST
 from plotpy.widgets.plot import PlotManager
-from plotpy.widgets.plot.cross_section import XCrossSection, YCrossSection
+from plotpy.widgets.plot.base import BasePlot, PlotItemList, PlotType
+from plotpy.widgets.plot.cross_section.cswidget import XCrossSection, YCrossSection
+from plotpy.widgets.plot.histogram import ContrastAdjustment
 
+try:
+    from plotpy._scaler import INTERP_AA, INTERP_LINEAR, INTERP_NEAREST
+except ImportError:
+    print(
+        ("Module 'plotpy.gui.widgets.items.image': missing C extension"),
+        file=sys.stderr,
+    )
+    print(
+        ("try running :" "python setup.py build_ext --inplace -c mingw32"),
+        file=sys.stderr,
+    )
+    raise
 _interactive = False
 _figures = {}
 _current_fig = None

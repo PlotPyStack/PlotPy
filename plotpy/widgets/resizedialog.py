@@ -171,9 +171,9 @@ class ResizeDialog(QW.QDialog):
 
 
 if __name__ == "__main__":
-    import plotpy.gui
+    import plotpy.widgets
 
-    qapp = plotpy.gui.qapplication()
+    qapp = plotpy.widgets.qapplication()
     test = ResizeDialog(None, (150, 100), (300, 200), "Enter the new size:")
     if test.exec_():
         print(test.width)

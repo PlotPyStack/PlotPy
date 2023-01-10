@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
+"""
+* :py:class:`.curve.GridItem`
+.. autoclass:: GridItem
+   :members:
+"""
 import sys
 
+from guidata.configtools import get_icon
 from qwt import QwtPlotGrid
 
-from plotpy.utils.config.getters import get_icon
 from plotpy.utils.gui import assert_interfaces_valid
 from plotpy.widgets.interfaces import IBasePlotItem, IDecoratorItemType
 from plotpy.widgets.styles.base import GridParam

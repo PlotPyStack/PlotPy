@@ -52,6 +52,20 @@ from math import fabs
 
 import numpy as np
 from guidata.configtools import get_font
+from qtpy import QtCore as QC
+from qtpy import QtGui as QG
+from qtpy import QtWidgets as QW
+from qtpy.QtPrintSupport import QPrinter
+from qwt import (
+    QwtInterval,
+    QwtLinearScaleEngine,
+    QwtLogScaleEngine,
+    QwtPlot,
+    QwtPlotCanvas,
+    QwtPlotCurve,
+    QwtPlotItem,
+    QwtText,
+)
 
 from plotpy.config import CONF, _
 from plotpy.widgets import io
@@ -67,18 +81,19 @@ from plotpy.widgets.interfaces import (
     ITrackableItemType,
 )
 from plotpy.widgets.items import annotations
-from plotpy.widgets.items.curve import CurveItem, GridItem, PolygonMapItem
-from plotpy.widgets.items.image import BaseImageItem
-from plotpy.widgets.items.shapes import Marker, PolygonShape
-from plotpy.widgets.panels import ID_ITEMLIST, PanelWidget
-from plotpy.widgets.styles import (
+from plotpy.widgets.items.curve.base import CurveItem
+from plotpy.widgets.items.grid import GridItem
+from plotpy.widgets.items.image.base import BaseImageItem
+from plotpy.widgets.items.polygon import PolygonMapItem
+from plotpy.widgets.items.shapes.marker import Marker
+from plotpy.widgets.items.shapes.polygon import PolygonShape
+from plotpy.widgets.styles.axes import (
     AxesParam,
     AxeStyleParam,
     AxisParam,
-    GridParam,
     ImageAxesParam,
-    ItemParameters,
 )
+from plotpy.widgets.styles.base import GridParam, ItemParameters
 
 
 class PlotType(Enum):
@@ -92,10 +107,6 @@ class PlotType(Enum):
     IMAGE = 3  #: Image specialized plot : the y axis is reversed and the aspect ratio is locked by default. Only IMAGE typed tools are automatically registered.
     MANUAL = 4  #: No assumption is made on the type of items to be displayed on the plot. Acts like the CURVE value of the enum for y axis and aspect ratio. No tool are automatically registered.
 
-
-# ==============================================================================
-# Base plot widget
-# ==============================================================================
 
 PARAMETERS_TITLE_ICON = {
     "grid": (_("Grid..."), "grid.png"),
@@ -134,56 +145,56 @@ class BasePlot(QwtPlot):
     AUTOSCALE_EXCLUDES = []
 
     #: Signal emitted by plot when an IBasePlotItem object was moved (args: x0, y0, x1, y1)
-    SIG_ITEM_MOVED = Signal("PyQt_PyObject", float, float, float, float)
+    SIG_ITEM_MOVED = QC.Signal("PyQt_PyObject", float, float, float, float)
 
     #: Signal emitted by plot when an IBasePlotItem object was resized
-    SIG_ITEM_RESIZED = Signal("PyQt_PyObject", float, float)
+    SIG_ITEM_RESIZED = QC.Signal("PyQt_PyObject", float, float)
 
     #: Signal emitted by plot when an IBasePlotItem object was rotated (args: angle)
-    SIG_ITEM_ROTATED = Signal("PyQt_PyObject", float)
+    SIG_ITEM_ROTATED = QC.Signal("PyQt_PyObject", float)
 
     #: Signal emitted by plot when a shapes.Marker position changes
-    SIG_MARKER_CHANGED = Signal("PyQt_PyObject")
+    SIG_MARKER_CHANGED = QC.Signal("PyQt_PyObject")
 
     #: Signal emitted by plot when a shapes.Axes position (or the angle) changes
-    SIG_AXES_CHANGED = Signal("PyQt_PyObject")
+    SIG_AXES_CHANGED = QC.Signal("PyQt_PyObject")
 
     #: Signal emitted by plot when an annotation.AnnotatedShape position changes
-    SIG_ANNOTATION_CHANGED = Signal("PyQt_PyObject")
+    SIG_ANNOTATION_CHANGED = QC.Signal("PyQt_PyObject")
 
     #: Signal emitted by plot when the a shapes.XRangeSelection range changes
-    SIG_RANGE_CHANGED = Signal("PyQt_PyObject", float, float)
+    SIG_RANGE_CHANGED = QC.Signal("PyQt_PyObject", float, float)
 
     #: Signal emitted by plot when item list has changed (item removed, added, ...)
-    SIG_ITEMS_CHANGED = Signal("PyQt_PyObject")
+    SIG_ITEMS_CHANGED = QC.Signal("PyQt_PyObject")
 
     #: Signal emitted by plot when selected item has changed
-    SIG_ACTIVE_ITEM_CHANGED = Signal("PyQt_PyObject")
+    SIG_ACTIVE_ITEM_CHANGED = QC.Signal("PyQt_PyObject")
 
     #: Signal emitted by plot when an item was deleted from the item list or using the
     #: delete item tool
-    SIG_ITEM_REMOVED = Signal("PyQt_PyObject")
+    SIG_ITEM_REMOVED = QC.Signal("PyQt_PyObject")
 
     #: Signal emitted by plot when an item is selected
-    SIG_ITEM_SELECTION_CHANGED = Signal("PyQt_PyObject")
+    SIG_ITEM_SELECTION_CHANGED = QC.Signal("PyQt_PyObject")
 
     #: Signal emitted by plot when plot's title or any axis label has changed
-    SIG_PLOT_LABELS_CHANGED = Signal("PyQt_PyObject")
+    SIG_PLOT_LABELS_CHANGED = QC.Signal("PyQt_PyObject")
 
     #: Signal emitted by plot when any plot axis direction has changed
-    SIG_AXIS_DIRECTION_CHANGED = Signal("PyQt_PyObject", "PyQt_PyObject")
+    SIG_AXIS_DIRECTION_CHANGED = QC.Signal("PyQt_PyObject", "PyQt_PyObject")
 
     #: Signal emitted by plot when LUT has been changed by the user
-    SIG_LUT_CHANGED = Signal("PyQt_PyObject")
+    SIG_LUT_CHANGED = QC.Signal("PyQt_PyObject")
 
     #: Signal emitted by plot when image mask has changed
-    SIG_MASK_CHANGED = Signal("PyQt_PyObject")
+    SIG_MASK_CHANGED = QC.Signal("PyQt_PyObject")
 
     #: Signal emitted by cross section plot when cross section curve data has changed
-    SIG_CS_CURVE_CHANGED = Signal("PyQt_PyObject")
+    SIG_CS_CURVE_CHANGED = QC.Signal("PyQt_PyObject")
 
     #: Signal emitted by plot when plot axis has changed, e.g. when panning/zooming (arg: plot))
-    SIG_PLOT_AXIS_CHANGED = Signal("PyQt_PyObject")
+    SIG_PLOT_AXIS_CHANGED = QC.Signal("PyQt_PyObject")
 
     EPSILON_ASPECT_RATIO = 1e-6
 
@@ -256,7 +267,7 @@ class BasePlot(QwtPlot):
             yunit = (yunit, zunit)
 
         self._start_autoscaled = True
-        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.setSizePolicy(QW.QSizePolicy.Expanding, QW.QSizePolicy.Expanding)
         self.manager = None
         self.plot_id = None  # id assigned by it's manager
         self.filter = StatefulEventFilter(self)
@@ -274,14 +285,14 @@ class BasePlot(QwtPlot):
         self.read_axes_styles(section, self.AXIS_CONF_OPTIONS)
         self.font_title = get_font(CONF, section, "title")
         canvas = self.canvas()
-        canvas.setFocusPolicy(Qt.StrongFocus)
+        canvas.setFocusPolicy(QC.Qt.FocusPolicy.StrongFocus)
         canvas.setFocusIndicator(QwtPlotCanvas.ItemFocusIndicator)
 
         # to have a nicer looking white component
-        canvas.setFrameStyle(QFrame.Plain)
-        self.setBackgroundRole(QPalette.Window)
+        canvas.setFrameStyle(QW.QFrame.Plain)
+        self.setBackgroundRole(QG.QPalette.Window)
         self.setAutoFillBackground(True)
-        self.setPalette(QPalette(Qt.white))
+        self.setPalette(QG.QPalette(QC.Qt.GlobalColor.white))
 
         self.SIG_ITEM_MOVED.connect(self._move_selected_items_together)
         self.SIG_ITEM_RESIZED.connect(self._resize_selected_items_together)
@@ -319,7 +330,7 @@ class BasePlot(QwtPlot):
         self.curve_marker.attach(self)
 
         # Background color
-        self.setCanvasBackground(Qt.white)
+        self.setCanvasBackground(QC.Qt.GlobalColor.white)
 
         self.curve_pointer = False
         self.canvas_pointer = False
@@ -423,14 +434,20 @@ class BasePlot(QwtPlot):
         """
         pos = event.pos()
         self.set_marker_axes()
-        if event.modifiers() & Qt.ShiftModifier or self.curve_pointer:
+        if (
+            event.modifiers() & QC.Qt.KeyboardModifier.ShiftModifier
+            or self.curve_pointer
+        ):
             self.curve_marker.setZ(self.get_max_z() + 1)
             self.cross_marker.setVisible(False)
             self.curve_marker.setVisible(True)
             self.curve_marker.move_local_point_to(0, pos)
             self.replot()
             # self.move_curve_marker(self.curve_marker, xc, yc)
-        elif event.modifiers() & Qt.AltModifier or self.canvas_pointer:
+        elif (
+            event.modifiers() & QC.Qt.KeyboardModifier.AltModifier
+            or self.canvas_pointer
+        ):
             self.cross_marker.setZ(self.get_max_z() + 1)
             self.cross_marker.setVisible(True)
             self.curve_marker.setVisible(False)
@@ -650,7 +667,7 @@ class BasePlot(QwtPlot):
 
     def sizeHint(self):
         """Preferred size"""
-        return QSize(400, 300)
+        return QC.QSize(400, 300)
 
     def get_title(self):
         """Get plot title"""
@@ -728,7 +745,7 @@ class BasePlot(QwtPlot):
         """
         axis_id = self.get_axis_id(axis_id)
         if isinstance(color, str):
-            color = QColor(color)
+            color = QG.QColor(color)
         self.axes_styles[axis_id].color = str(color.name())
         self.update_axis_style(axis_id)
 
@@ -750,7 +767,7 @@ class BasePlot(QwtPlot):
         axis_text = self.axisTitle(axis_id)
         axis_text.setFont(title_font)
         axis_text.setText(title)
-        axis_text.setColor(QColor(style.color))
+        axis_text.setColor(QG.QColor(style.color))
         self.setAxisTitle(axis_id, axis_text)
         self.SIG_PLOT_LABELS_CHANGED.emit(self)
 
@@ -877,7 +894,7 @@ class BasePlot(QwtPlot):
 
     def copy_to_clipboard(self):
         """Copy widget's window to clipboard"""
-        clipboard = QApplication.clipboard()
+        clipboard = QW.QApplication.clipboard()
         pixmap = self.grab()
         clipboard.setPixmap(pixmap)
 
@@ -886,8 +903,8 @@ class BasePlot(QwtPlot):
         fname = str(fname)
         if fname.lower().endswith(".pdf"):
             printer = QPrinter()
-            printer.setOutputFormat(QPrinter.PdfFormat)
-            printer.setOrientation(QPrinter.Landscape)
+            printer.setOutputFormat(QPrinter.OutputFormat.PdfFormat)
+            printer.setOrientation(QPrinter.orientation.Landscape)
             printer.setOutputFileName(fname)
             printer.setCreator("plotpy")
             self.print_(printer)
@@ -1446,7 +1463,7 @@ class BasePlot(QwtPlot):
                     isinstance(item, self.AUTOSCALE_TYPES)
                     and not item.is_empty()
                     and item.isVisible()
-                    and not item in self.AUTOSCALE_EXCLUDES
+                    and item not in self.AUTOSCALE_EXCLUDES
                 ):
                     bounds = item.boundingRect()
                     if axis_id == item.xAxis():
@@ -1479,7 +1496,7 @@ class BasePlot(QwtPlot):
 
         self.updateAxes()
         #        if self.lock_aspect_ratio:
-        ##            self.replot()
+        #            self.replot()
         #            self.apply_aspect_ratio(full_scale=True)
         if replot:
             self.replot()
@@ -1770,8 +1787,8 @@ for shape in (
 ):
     BasePlot.register_autoscale_type(shape)
 
-## Keep this around to debug too many replots
-##    def replot(self):
-##        import traceback
-##        traceback.print_stack()
-##        QwtPlot.replot(self)
+# Keep this around to debug too many replots
+#    def replot(self):
+#        import traceback
+#        traceback.print_stack()
+#        QwtPlot.replot(self)

@@ -1,39 +1,22 @@
 # -*- coding: utf-8 -*-
-import os
-import os.path as osp
 import sys
 
 import numpy as np
-from guidata.utils import update_dataset
 from qtpy import QtCore as QC
-from qtpy import QtGui as QG
-from qwt import QwtPlotItem
 
 from plotpy.config import _
-from plotpy.utils.config.getters import get_icon
-from plotpy.utils.gui import assert_interfaces_valid
-from plotpy.widgets import io
-from plotpy.widgets.colormap import FULLRANGE, get_cmap, get_cmap_name
 from plotpy.widgets.interfaces import (
     IBaseImageItem,
     IBasePlotItem,
-    IColormapImageItemType,
-    ICSImageItemType,
-    IExportROIImageItemType,
     IHistDataSource,
-    IImageItemType,
-    ISerializableType,
-    IStatsImageItemType,
-    ITrackableItemType,
     IVoiImageItemType,
 )
-from plotpy.widgets.items.image.base import BaseImageItem,
-from plotpy.widgets.items.shapes.rectangle import RectangleShape
-from plotpy.widgets.items.utils import canvas_to_axes
-from plotpy.widgets.styles.image import RawImageParam
+from plotpy.widgets.items.image.masked import ImageItem, MaskedArea, XYImageItem
+from plotpy.widgets.items.image.mixin import MaskedImageMixin
+from plotpy.widgets.styles.image import MaskedImageParam, MaskedXYImageParam
 
 try:
-    from plotpy._scaler import _scale_xy
+    from plotpy._scaler import INTERP_NEAREST, _scale_rect, _scale_xy
 except ImportError:
     print(
         ("Module 'plotpy.widgets.items.image.filter': missing C extension"),
@@ -160,7 +143,9 @@ class MaskedImageItem(ImageItem, MaskedImageMixin):
             dest = _scale_rect(
                 shown_data, src2, self._offscreen, dst_rect, lut, (INTERP_NEAREST,)
             )
-            qrect = QRectF(QPointF(dest[0], dest[1]), QPointF(dest[2], dest[3]))
+            qrect = QC.QRectF(
+                QC.QPointF(dest[0], dest[1]), QC.QPointF(dest[2], dest[3])
+            )
             painter.drawImage(qrect, self._image, qrect)
 
     # ---- RawImageItem API -----------------------------------------------------
@@ -314,7 +299,9 @@ class MaskedXYImageItem(XYImageItem, MaskedImageMixin):
             dest = _scale_xy(
                 shown_data, xytr, mat, self._offscreen, dst_rect, lut, (INTERP_NEAREST,)
             )
-            qrect = QRectF(QPointF(dest[0], dest[1]), QPointF(dest[2], dest[3]))
+            qrect = QC.QRectF(
+                QC.QPointF(dest[0], dest[1]), QC.QPointF(dest[2], dest[3])
+            )
             painter.drawImage(qrect, self._image, qrect)
 
     def set_data(self, data, lut_range=None):
@@ -326,3 +313,37 @@ class MaskedXYImageItem(XYImageItem, MaskedImageMixin):
         """
         super(MaskedXYImageItem, self).set_data(data, lut_range)
         MaskedImageMixin._set_data(self, data)
+
+
+class MaskedArea(object):
+    """Defines masked areas for a masked image item"""
+
+    def __init__(self, geometry=None, x0=None, y0=None, x1=None, y1=None, inside=None):
+        self.geometry = geometry
+        self.x0 = x0
+        self.y0 = y0
+        self.x1 = x1
+        self.y1 = y1
+        self.inside = inside
+
+    def __eq__(self, other):
+        return (
+            self.geometry == other.geometry
+            and self.x0 == other.x0
+            and self.y0 == other.y0
+            and self.x1 == other.x1
+            and self.y1 == other.y1
+            and self.inside == other.inside
+        )
+
+    def serialize(self, writer):
+        """Serialize object to HDF5 writer"""
+        for name in ("geometry", "inside", "x0", "y0", "x1", "y1"):
+            writer.write(getattr(self, name), name)
+
+    def deserialize(self, reader):
+        """Deserialize object from HDF5 reader"""
+        self.geometry = reader.read("geometry")
+        self.inside = reader.read("inside")
+        for name in ("x0", "y0", "x1", "y1"):
+            setattr(self, name, reader.read(name, func=reader.read_float))

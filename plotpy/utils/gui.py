@@ -42,7 +42,7 @@ The ``plotpy.gui.utils.gui`` module provides various utility helper functions
 """
 
 
-import collections
+import collections.abc
 
 
 def assert_interface_supported(klass, iface):
@@ -50,7 +50,7 @@ def assert_interface_supported(klass, iface):
     for name, func in list(iface.__dict__.items()):
         if name == "__inherits__":
             continue
-        if isinstance(func, collections.Callable):
+        if isinstance(func, collections.abc.Callable):
             assert hasattr(klass, name), "Attribute {} missing from {}".format(
                 name, klass
             )

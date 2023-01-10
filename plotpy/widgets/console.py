@@ -42,11 +42,11 @@ This module provides a Python console.
 """
 
 
+from guidata.configtools import get_icon
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 
 from plotpy.config import _
-from plotpy.utils.config.getters import get_icon
 from plotpy.utils.misc_from_gui import create_action
 from plotpy.widgets.console.shell.internal import InternalShell
 from plotpy.widgets.dockables import DockableWidgetMixin

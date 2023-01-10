@@ -54,7 +54,7 @@ def scale_data_to_dtype(data, dtype):
 def eliminate_outliers(data, percent=2.0, bins=256):
     """Eliminate data histogram outliers"""
     hist, bin_edges = np.histogram(data, bins)
-    from plotpy.gui.widgets.histogram import hist_range_threshold
+    from plotpy.widgets.plot.histogram import hist_range_threshold
 
     vmin, vmax = hist_range_threshold(hist, bin_edges, percent)
     return data.clip(vmin, vmax)

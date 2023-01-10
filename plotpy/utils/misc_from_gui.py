@@ -44,12 +44,12 @@ easily Qt-based graphical user interfaces.
 
 from collections import namedtuple
 
+from guidata.configtools import get_icon
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
 from qtpy.QtCore import Qt
 
 from plotpy.config import CONF
-from plotpy.utils.config.getters import get_icon
 
 
 def text_to_qcolor(text):

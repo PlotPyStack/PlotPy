@@ -24,39 +24,21 @@ The current version is qtpandas/models/DataFrameModel.py of the
 import io
 
 import numpy as np
-
+from guidata.configtools import get_font, get_icon
 from pandas import DataFrame, DatetimeIndex, Series
-from plotpy.gui import qapplication
-from plotpy.gui.config.misc import get_font, get_icon
-from plotpy.gui.utils.misc import (
+from qtpy import QtCore as QC
+from qtpy import QtGui as QG
+from qtpy import QtWidgets as QW
+
+from plotpy.config import CONF, _
+from plotpy.utils.misc_from_gui import (
     add_actions,
     config_shortcut,
     create_action,
     keybinding,
 )
-from plotpy.gui.widgets.config import CONF, _
-from plotpy.gui.widgets.ext_gui_lib import (
-    QAbstractTableModel,
-    QApplication,
-    QCheckBox,
-    QColor,
-    QCursor,
-    QDialog,
-    QGridLayout,
-    QHBoxLayout,
-    QHeaderView,
-    QInputDialog,
-    QLineEdit,
-    QMenu,
-    QMessageBox,
-    QModelIndex,
-    QPushButton,
-    Qt,
-    QTableView,
-    Signal,
-    Slot,
-)
-from plotpy.gui.widgets.variableexplorer.arrayeditor import get_idx_rect
+from plotpy.widgets import qapplication
+from plotpy.widgets.variableexplorer.arrayeditor import get_idx_rect
 
 try:
     from pandas._libs.tslib import OutOfBoundsDatetime
@@ -84,7 +66,7 @@ BACKGROUND_NUMBER_HUERANGE = 0.33  # (hue for smallest) minus (hue for largest)
 BACKGROUND_NUMBER_SATURATION = 0.7
 BACKGROUND_NUMBER_VALUE = 1.0
 BACKGROUND_NUMBER_ALPHA = 0.6
-BACKGROUND_NONNUMBER_COLOR = Qt.lightGray
+BACKGROUND_NONNUMBER_COLOR = QC.Qt.GlobalColor.lightGray
 BACKGROUND_INDEX_ALPHA = 0.8
 BACKGROUND_STRING_ALPHA = 0.05
 BACKGROUND_MISC_ALPHA = 0.3
@@ -107,14 +89,14 @@ def global_max(col_vals, index):
     return max(max_col), min(min_col)
 
 
-class DataFrameModel(QAbstractTableModel):
-    """ DataFrame Table Model"""
+class DataFrameModel(QC.QAbstractTableModel):
+    """DataFrame Table Model"""
 
     ROWS_TO_LOAD = 500
     COLS_TO_LOAD = 40
 
     def __init__(self, dataFrame, format=DEFAULT_FORMAT, parent=None):
-        QAbstractTableModel.__init__(self)
+        QC.QAbstractTableModel.__init__(self)
         self.dialog = parent
         self.df = dataFrame
         self.df_index = dataFrame.index.tolist()
@@ -209,12 +191,12 @@ class DataFrameModel(QAbstractTableModel):
             self.return_max = global_max
         self.reset()
 
-    def headerData(self, section, orientation, role=Qt.DisplayRole):
+    def headerData(self, section, orientation, role=QC.Qt.ItemDataRole.DisplayRole):
         """Set header data"""
-        if role != Qt.DisplayRole:
+        if role != QC.Qt.ItemDataRole.DisplayRole:
             return None
 
-        if orientation == Qt.Horizontal:
+        if orientation == QC.Qt.Orientation.Horizontal:
             if section == 0:
                 return "Index"
             elif type(self.df_header[section - 1]) in (bytes, str):
@@ -231,14 +213,14 @@ class DataFrameModel(QAbstractTableModel):
         """Background color depending on value"""
         column = index.column()
         if column == 0:
-            color = QColor(BACKGROUND_NONNUMBER_COLOR)
+            color = QG.QColor(BACKGROUND_NONNUMBER_COLOR)
             color.setAlphaF(BACKGROUND_INDEX_ALPHA)
             return color
         if not self.bgcolor_enabled:
             return
         value = self.get_value(index.row(), column - 1)
         if self.max_min_col[column - 1] is None:
-            color = QColor(BACKGROUND_NONNUMBER_COLOR)
+            color = QG.QColor(BACKGROUND_NONNUMBER_COLOR)
             if isinstance(value, str):
                 color.setAlphaF(BACKGROUND_STRING_ALPHA)
             else:
@@ -255,7 +237,7 @@ class DataFrameModel(QAbstractTableModel):
             hue = float(abs(hue))
             if hue > 1:
                 hue = 1
-            color = QColor.fromHsvF(
+            color = QG.QColor.fromHsvF(
                 hue,
                 BACKGROUND_NUMBER_SATURATION,
                 BACKGROUND_NUMBER_VALUE,
@@ -276,14 +258,17 @@ class DataFrameModel(QAbstractTableModel):
         return value
 
     def update_df_index(self):
-        """"Update the DataFrame index"""
+        """ "Update the DataFrame index"""
         self.df_index = self.df.index.tolist()
 
-    def data(self, index, role=Qt.DisplayRole):
+    def data(self, index, role=QC.Qt.ItemDataRole.DisplayRole):
         """Cell content"""
         if not index.isValid():
             return None
-        if role == Qt.DisplayRole or role == Qt.EditRole:
+        if (
+            role == QC.Qt.ItemDataRole.DisplayRole
+            or role == QC.Qt.ItemDataRole.EditRole
+        ):
             column = index.column()
             row = index.row()
             if column == 0:
@@ -316,12 +301,12 @@ class DataFrameModel(QAbstractTableModel):
                         return str(value)
                     except Exception:
                         self.display_error_idxs.append(index)
-                        return u"Display Error!"
-        elif role == Qt.BackgroundColorRole:
+                        return "Display Error!"
+        elif role == QC.Qt.ItemDataRole.BackgroundColorRole:
             return self.get_bgcolor(index)
-        elif role == Qt.FontRole:
+        elif role == QC.Qt.ItemDataRole.FontRole:
             return get_font(CONF, "arrayeditor", "font")
-        elif role == Qt.ToolTipRole:
+        elif role == QC.Qt.ItemDataRole.ToolTipRole:
             if index in self.display_error_idxs:
                 return _(
                     "It is not possible to display this value because\n"
@@ -329,11 +314,11 @@ class DataFrameModel(QAbstractTableModel):
                 )
         return None
 
-    def sort(self, column, order=Qt.AscendingOrder):
+    def sort(self, column, order=QC.Qt.SortOrder.AscendingOrder):
         """Overriding sort method"""
         if self.complex_intran is not None:
             if self.complex_intran.any(axis=0).iloc[column - 1]:
-                QMessageBox.critical(
+                QW.QMessageBox.critical(
                     self.dialog,
                     "Error",
                     "TypeError error: no ordering "
@@ -341,7 +326,7 @@ class DataFrameModel(QAbstractTableModel):
                 )
                 return False
         try:
-            ascending = order == Qt.AscendingOrder
+            ascending = order == QC.Qt.SortOrder.AscendingOrder
             if column > 0:
                 try:
                     self.df.sort_values(
@@ -360,12 +345,12 @@ class DataFrameModel(QAbstractTableModel):
                     )
                 except ValueError as e:
                     # Not possible to sort on duplicate columns #5225
-                    QMessageBox.critical(
+                    QW.QMessageBox.critical(
                         self.dialog, "Error", "ValueError: %s" % str(e)
                     )
                 except SystemError as e:
                     # Not possible to sort on category dtypes #5361
-                    QMessageBox.critical(
+                    QW.QMessageBox.critical(
                         self.dialog, "Error", "SystemError: %s" % str(e)
                     )
                 self.update_df_index()
@@ -373,7 +358,9 @@ class DataFrameModel(QAbstractTableModel):
                 self.df.sort_index(inplace=True, ascending=ascending)
                 self.update_df_index()
         except TypeError as e:
-            QMessageBox.critical(self.dialog, "Error", "TypeError error: %s" % str(e))
+            QW.QMessageBox.critical(
+                self.dialog, "Error", "TypeError error: %s" % str(e)
+            )
             return False
 
         self.reset()
@@ -382,10 +369,12 @@ class DataFrameModel(QAbstractTableModel):
     def flags(self, index):
         """Set flags"""
         if index.column() == 0:
-            return Qt.ItemIsEnabled | Qt.ItemIsSelectable
-        return Qt.ItemFlags(QAbstractTableModel.flags(self, index) | Qt.ItemIsEditable)
+            return QC.Qt.ItemFlag.ItemIsEnabled | QC.Qt.ItemFlag.ItemIsSelectable
+        return QC.Qt.ItemFlags(
+            QC.QAbstractTableModel.flags(self, index) | QC.Qt.ItemFlag.ItemIsEditable
+        )
 
-    def setData(self, index, value, role=Qt.EditRole, change_type=None):
+    def setData(self, index, value, role=QC.Qt.ItemDataRole.EditRole, change_type=None):
         """Cell content change"""
         column = index.column()
         row = index.row()
@@ -394,7 +383,7 @@ class DataFrameModel(QAbstractTableModel):
             return False
         if change_type is not None:
             try:
-                val = self.data(index, role=Qt.DisplayRole)
+                val = self.data(index, role=QC.Qt.ItemDataRole.DisplayRole)
                 if change_type is bool:
                     val = bool_false_check(val)
                 self.df.iloc[row, column - 1] = change_type(val)
@@ -412,12 +401,12 @@ class DataFrameModel(QAbstractTableModel):
                 try:
                     self.df.iloc[row, column - 1] = current_value.__class__(val)
                 except (ValueError, OverflowError) as e:
-                    QMessageBox.critical(
+                    QW.QMessageBox.critical(
                         self.dialog, "Error", str(type(e).__name__) + ": " + str(e)
                     )
                     return False
             else:
-                QMessageBox.critical(
+                QW.QMessageBox.critical(
                     self.dialog,
                     "Error",
                     "Editing dtype {0!s} not yet supported.".format(
@@ -433,7 +422,7 @@ class DataFrameModel(QAbstractTableModel):
         """Return data"""
         return self.df
 
-    def rowCount(self, index=QModelIndex()):
+    def rowCount(self, index=QC.QModelIndex()):
         """DataFrame row number"""
         if self.total_rows <= self.rows_loaded:
             return self.total_rows
@@ -468,7 +457,9 @@ class DataFrameModel(QAbstractTableModel):
             reminder = self.total_rows - self.rows_loaded
             items_to_fetch = min(reminder, self.ROWS_TO_LOAD)
             self.beginInsertRows(
-                QModelIndex(), self.rows_loaded, self.rows_loaded + items_to_fetch - 1
+                QC.QModelIndex(),
+                self.rows_loaded,
+                self.rows_loaded + items_to_fetch - 1,
             )
             self.rows_loaded += items_to_fetch
             self.endInsertRows()
@@ -476,12 +467,14 @@ class DataFrameModel(QAbstractTableModel):
             reminder = self.total_cols - self.cols_loaded
             items_to_fetch = min(reminder, self.COLS_TO_LOAD)
             self.beginInsertColumns(
-                QModelIndex(), self.cols_loaded, self.cols_loaded + items_to_fetch - 1
+                QC.QModelIndex(),
+                self.cols_loaded,
+                self.cols_loaded + items_to_fetch - 1,
             )
             self.cols_loaded += items_to_fetch
             self.endInsertColumns()
 
-    def columnCount(self, index=QModelIndex()):
+    def columnCount(self, index=QC.QModelIndex()):
         """DataFrame column number"""
         # This is done to implement series
         if len(self.df.shape) == 1:
@@ -492,29 +485,27 @@ class DataFrameModel(QAbstractTableModel):
             return self.cols_loaded + 1
 
     def reset(self):
-        """
-
-        """
+        """ """
         self.beginResetModel()
         self.endResetModel()
 
 
-class FrozenTableView(QTableView):
+class FrozenTableView(QW.QTableView):
     """This class implements a table with its first column frozen
     For more information please see:
     https://doc.qt.io/qt-5/qtwidgets-itemviews-frozencolumn-example.html"""
 
     def __init__(self, parent):
         """Constructor."""
-        QTableView.__init__(self, parent)
+        QW.QTableView.__init__(self, parent)
         self.parent = parent
         self.setModel(parent.model())
-        self.setFocusPolicy(Qt.NoFocus)
+        self.setFocusPolicy(QC.Qt.FocusPolicy.NoFocus)
         self.verticalHeader().hide()
         try:
-            self.horizontalHeader().setSectionResizeMode(QHeaderView.Fixed)
+            self.horizontalHeader().setSectionResizeMode(QW.QHeaderView.Fixed)
         except:  # support for qtpy<1.2.0
-            self.horizontalHeader().setResizeMode(QHeaderView.Fixed)
+            self.horizontalHeader().setResizeMode(QW.QHeaderView.Fixed)
 
         parent.viewport().stackUnder(self)
 
@@ -523,8 +514,8 @@ class FrozenTableView(QTableView):
             self.setColumnHidden(col, True)
 
         self.setColumnWidth(0, parent.columnWidth(0))
-        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setHorizontalScrollBarPolicy(QC.Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.setVerticalScrollBarPolicy(QC.Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.show()
 
         self.setVerticalScrollMode(1)
@@ -540,11 +531,11 @@ class FrozenTableView(QTableView):
         )
 
 
-class DataFrameView(QTableView):
+class DataFrameView(QW.QTableView):
     """Data Frame view class"""
 
     def __init__(self, parent, model):
-        QTableView.__init__(self, parent)
+        QW.QTableView.__init__(self, parent)
         self.setModel(model)
 
         self.frozen_table_view = FrozenTableView(self)
@@ -595,7 +586,7 @@ class DataFrameView(QTableView):
         Updates takes place when the enclosing window of this
         table reports a dimension change
         """
-        QTableView.resizeEvent(self, event)
+        QW.QTableView.resizeEvent(self, event)
         self.frozen_table_view.update_geometry()
 
     def moveCursor(self, cursor_action, modifiers):
@@ -604,7 +595,7 @@ class DataFrameView(QTableView):
         Updates the position along with the frozen column
         when the cursor (selector) changes its position
         """
-        current = QTableView.moveCursor(self, cursor_action, modifiers)
+        current = QW.QTableView.moveCursor(self, cursor_action, modifiers)
 
         col_width = self.frozen_table_view.columnWidth(
             0
@@ -628,7 +619,7 @@ class DataFrameView(QTableView):
         the frozen column is scrolled.
         """
         if index.column() > 1:
-            QTableView.scrollTo(self, index, hint)
+            QW.QTableView.scrollTo(self, index, hint)
 
     def load_more_data(self, value, rows=False, columns=False):
         """
@@ -643,7 +634,7 @@ class DataFrameView(QTableView):
             self.model().fetch_more(columns=columns)
 
     def sortByColumn(self, index):
-        """ Implement a Column sort """
+        """Implement a Column sort"""
         if self.sort_old == [None]:
             self.header_class.setSortIndicatorShown(True)
         sort_order = self.header_class.sortIndicatorOrder()
@@ -668,7 +659,7 @@ class DataFrameView(QTableView):
             shortcut=keybinding("Copy"),
             icon=get_icon("editcopy.png"),
             triggered=self.copy,
-            context=Qt.WidgetShortcut,
+            context=QC.Qt.ShortcutContext.WidgetShortcut,
         )
         functions = (
             (_("To bool"), bool),
@@ -682,9 +673,14 @@ class DataFrameView(QTableView):
             # QAction.triggered works differently for PySide and PyQt
             slot = lambda _checked, func=func: self.change_type(func)
             types_in_menu += [
-                create_action(self, name, triggered=slot, context=Qt.WidgetShortcut)
+                create_action(
+                    self,
+                    name,
+                    triggered=slot,
+                    context=QC.Qt.ShortcutContext.WidgetShortcut,
+                )
             ]
-        menu = QMenu(self)
+        menu = QW.QMenu(self)
         add_actions(menu, types_in_menu)
         return menu
 
@@ -694,7 +690,7 @@ class DataFrameView(QTableView):
         index_list = self.selectedIndexes()
         [model.setData(i, "", change_type=func) for i in index_list]
 
-    @Slot()
+    @QC.Slot()
     def copy(self):
         """Copy text to clipboard"""
         if not self.selectedIndexes():
@@ -717,11 +713,11 @@ class DataFrameView(QTableView):
             obj.to_csv(output, sep="\t", index=index, header=header)
             contents = output.getvalue()
             output.close()
-        clipboard = QApplication.clipboard()
+        clipboard = QW.QApplication.clipboard()
         clipboard.setText(contents)
 
 
-class DataFrameEditor(QDialog):
+class DataFrameEditor(QW.QDialog):
     """
     Dialog for displaying and editing DataFrame and related objects.
 
@@ -731,15 +727,15 @@ class DataFrameEditor(QDialog):
        Arguments are name of option and its new value.
     """
 
-    sig_option_changed = Signal(str, object)
+    sig_option_changed = QC.Signal(str, object)
 
     def __init__(self, parent=None):
-        QDialog.__init__(self, parent)
+        QW.QDialog.__init__(self, parent)
         # Destroying the C++ object right after closing the dialog box,
         # otherwise it may be garbage-collected in another QThread
         # (e.g. the editor's analysis thread in Spyder), thus leading to
         # a segmentation fault on UNIX or an application crash on Windows
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self.setAttribute(QC.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.is_series = False
         self.layout = None
 
@@ -749,7 +745,7 @@ class DataFrameEditor(QDialog):
         return False if data is not supported, True otherwise.
         Supported types for data are DataFrame, Series and DatetimeIndex.
         """
-        self.layout = QGridLayout()
+        self.layout = QW.QGridLayout()
         self.setLayout(self.layout)
         self.setWindowIcon(get_icon("arredit.png"))
         if title:
@@ -773,24 +769,24 @@ class DataFrameEditor(QDialog):
         self.setLayout(self.layout)
         self.setMinimumSize(400, 300)
         # Make the dialog act as a window
-        self.setWindowFlags(Qt.Window)
-        btn_layout = QHBoxLayout()
+        self.setWindowFlags(QC.Qt.WindowType.Window)
+        btn_layout = QW.QHBoxLayout()
 
-        btn = QPushButton(_("Format"))
+        btn = QW.QPushButton(_("Format"))
         # disable format button for int type
         btn_layout.addWidget(btn)
         btn.clicked.connect(self.change_format)
-        btn = QPushButton(_("Resize"))
+        btn = QW.QPushButton(_("Resize"))
         btn_layout.addWidget(btn)
         btn.clicked.connect(self.resize_to_contents)
 
-        bgcolor = QCheckBox(_("Background color"))
+        bgcolor = QW.QCheckBox(_("Background color"))
         bgcolor.setChecked(self.dataModel.bgcolor_enabled)
         bgcolor.setEnabled(self.dataModel.bgcolor_enabled)
         bgcolor.stateChanged.connect(self.change_bgcolor_enable)
         btn_layout.addWidget(bgcolor)
 
-        self.bgcolor_global = QCheckBox(_("Column min/max"))
+        self.bgcolor_global = QW.QCheckBox(_("Column min/max"))
         self.bgcolor_global.setChecked(self.dataModel.colum_avg_enabled)
         self.bgcolor_global.setEnabled(
             not self.is_series and self.dataModel.bgcolor_enabled
@@ -800,12 +796,12 @@ class DataFrameEditor(QDialog):
 
         btn_layout.addStretch()
 
-        self.btn_save_and_close = QPushButton(_("Save and Close"))
+        self.btn_save_and_close = QW.QPushButton(_("Save and Close"))
         self.btn_save_and_close.setDisabled(True)
         self.btn_save_and_close.clicked.connect(self.accept)
         btn_layout.addWidget(self.btn_save_and_close)
 
-        self.btn_close = QPushButton(_("Close"))
+        self.btn_close = QW.QPushButton(_("Close"))
         self.btn_close.setAutoDefault(True)
         self.btn_close.setDefault(True)
         self.btn_close.clicked.connect(self.reject)
@@ -815,7 +811,7 @@ class DataFrameEditor(QDialog):
 
         return True
 
-    @Slot(QModelIndex, QModelIndex)
+    @QC.Slot(QC.QModelIndex, QC.QModelIndex)
     def save_and_close_enable(self, top_left, bottom_right):
         """Handle the data change event to enable the save and close button."""
         self.btn_save_and_close.setEnabled(True)
@@ -836,11 +832,11 @@ class DataFrameEditor(QDialog):
         This function also checks whether the format is valid and emits
         `sig_option_changed`.
         """
-        format, valid = QInputDialog.getText(
+        format, valid = QW.QInputDialog.getText(
             self,
             _("Format"),
             _("Float formatting"),
-            QLineEdit.Normal,
+            QW.QLineEdit.Normal,
             self.dataModel.get_format(),
         )
         if valid:
@@ -849,11 +845,11 @@ class DataFrameEditor(QDialog):
                 format % 1.1
             except:
                 msg = _("Format ({}) is incorrect").format(format)
-                QMessageBox.critical(self, _("Error"), msg)
+                QW.QMessageBox.critical(self, _("Error"), msg)
                 return
             if not format.startswith("%"):
                 msg = _("Format ({}) should start with '%'").format(format)
-                QMessageBox.critical(self, _("Error"), msg)
+                QW.QMessageBox.critical(self, _("Error"), msg)
                 return
             self.dataModel.set_format(format)
             self.sig_option_changed.emit("dataframe_format", format)
@@ -869,14 +865,12 @@ class DataFrameEditor(QDialog):
             return df
 
     def resize_to_contents(self):
-        """
-
-        """
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        """ """
+        QW.QApplication.setOverrideCursor(QG.QCursor(QC.Qt.CursorShape.WaitCursor))
         self.dataTable.resizeColumnsToContents()
         self.dataModel.fetch_more(columns=True)
         self.dataTable.resizeColumnsToContents()
-        QApplication.restoreOverrideCursor()
+        QW.QApplication.restoreOverrideCursor()
 
 
 # ==============================================================================

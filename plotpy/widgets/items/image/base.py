@@ -4,13 +4,13 @@ import os.path as osp
 import sys
 
 import numpy as np
+from guidata.configtools import get_icon
 from guidata.utils import update_dataset
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qwt import QwtPlotItem
 
 from plotpy.config import _
-from plotpy.utils.config.getters import get_icon
 from plotpy.utils.gui import assert_interfaces_valid
 from plotpy.widgets import io
 from plotpy.widgets.colormap import FULLRANGE, get_cmap, get_cmap_name
@@ -53,21 +53,6 @@ LUT_SIZE = 1024
 LUT_MAX = float(LUT_SIZE - 1)
 
 
-def pixelround(x, corner=None):
-    """
-    Return pixel index (int) from pixel coordinate (float)
-    corner: None (not a corner), 'TL' (top-left corner),
-    'BR' (bottom-right corner)
-    """
-    assert corner is None or corner in ("TL", "BR")
-    if corner is None:
-        return np.floor(x)
-    elif corner == "BR":
-        return np.ceil(x)
-    elif corner == "TL":
-        return np.floor(x)
-
-
 def _nanmin(data):
     if isinstance(data, np.ma.MaskedArray):
         data = data.data
@@ -84,6 +69,21 @@ def _nanmax(data):
         return np.nanmax(data)
     else:
         return data.max()
+
+
+def pixelround(x, corner=None):
+    """
+    Return pixel index (int) from pixel coordinate (float)
+    corner: None (not a corner), 'TL' (top-left corner),
+    'BR' (bottom-right corner)
+    """
+    assert corner is None or corner in ("TL", "BR")
+    if corner is None:
+        return np.floor(x)
+    elif corner == "BR":
+        return np.ceil(x)
+    elif corner == "TL":
+        return np.floor(x)
 
 
 class BaseImageItem(QwtPlotItem):

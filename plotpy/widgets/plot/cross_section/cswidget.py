@@ -1,3 +1,22 @@
+# -*- coding: utf-8 -*-
+from guidata.configtools import get_icon
+from qtpy import QtCore as QC
+from qtpy import QtWidgets as QW
+
+from plotpy.config import _
+from plotpy.utils.gui import assert_interfaces_valid
+from plotpy.utils.misc_from_gui import add_actions, create_action
+from plotpy.widgets.interfaces import IPanel
+from plotpy.widgets.panels import ID_OCS, ID_XCS, ID_YCS, PanelWidget
+from plotpy.widgets.plot import PlotManager
+from plotpy.widgets.plot.cross_section.csplot import (
+    ObliqueCrossSectionPlot,
+    XCrossSectionPlot,
+    YCrossSectionPlot,
+)
+from plotpy.widgets.tools.item import ExportItemDataTool
+
+
 class CrossSectionWidget(PanelWidget):
     """ """
 
@@ -25,8 +44,8 @@ class CrossSectionWidget(PanelWidget):
         self.export_tool = None
         self.setup_plot()
 
-        self.toolbar = QToolBar(self)
-        self.toolbar.setOrientation(Qt.Vertical)
+        self.toolbar = QW.QToolBar(self)
+        self.toolbar.setOrientation(QC.Qt.Orientation.Vertical)
 
         self.setup_widget()
 
@@ -58,7 +77,7 @@ class CrossSectionWidget(PanelWidget):
 
     def setup_widget(self):
         """ """
-        layout = QHBoxLayout()
+        layout = QW.QHBoxLayout()
         layout.addWidget(self.cs_plot)
         layout.addWidget(self.toolbar)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -166,9 +185,9 @@ class CrossSectionWidget(PanelWidget):
         self.cs_plot.update_plot(obj)
 
 
-# ===============================================================================
-# X-Y cross sections
-# ===============================================================================
+assert_interfaces_valid(CrossSectionWidget)
+
+
 class XCrossSection(CrossSectionWidget):
     """X-axis cross section widget"""
 
@@ -198,8 +217,9 @@ class XCrossSection(CrossSectionWidget):
         :param lockscales:
         """
         assert (
-            self.manager is not None
-        ), f"Panel '{self.PANEL_ID}' must be registered to plot manager before changing options"
+            self.manager is not None,
+            f"Panel '{self.PANEL_ID}' must be registered to plot manager before changing options",
+        )
         if autoscale is not None:
             self.autoscale_ac.setChecked(autoscale)
         if autorefresh is not None:
@@ -306,15 +326,15 @@ class YCrossSection(XCrossSection):
 
     def __init__(self, parent=None, position="right", xsection_pos="top"):
         self.xsection_pos = xsection_pos
-        self.spacer = QSpacerItem(0, 0)
+        self.spacer = QW.QSpacerItem(0, 0)
         super(YCrossSection, self).__init__(parent)
         self.cs_plot.set_axis_direction("bottom", reverse=position == "left")
 
     def setup_widget(self):
         """ """
         toolbar = self.toolbar
-        toolbar.setOrientation(Qt.Horizontal)
-        layout = QVBoxLayout()
+        toolbar.setOrientation(QC.Qt.Orientation.Horizontal)
+        layout = QW.QVBoxLayout()
         if self.xsection_pos == "top":
             layout.addSpacerItem(self.spacer)
         layout.addWidget(toolbar)
@@ -329,7 +349,7 @@ class YCrossSection(XCrossSection):
 
         :param height:
         """
-        self.spacer.changeSize(0, height, QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.spacer.changeSize(0, height, QW.QSizePolicy.Fixed, QW.QSizePolicy.Fixed)
         self.layout().invalidate()
 
 

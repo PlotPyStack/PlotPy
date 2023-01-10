@@ -43,11 +43,10 @@ for developing easily Qt-based graphical user interfaces.
 
 from math import cos, pi, sin
 
+from guidata.configtools import get_family
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
-
-from plotpy.utils.config.getters import get_family
 
 
 class RotatedLabel(QW.QLabel):

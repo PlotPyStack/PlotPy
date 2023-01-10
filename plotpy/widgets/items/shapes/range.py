@@ -2,12 +2,12 @@
 import math
 
 import numpy as np
+from guidata.configtools import get_icon
 from guidata.utils import update_dataset
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 
 from plotpy.config import CONF, _
-from plotpy.utils.config.getters import get_icon
 from plotpy.utils.gui import assert_interfaces_valid
 from plotpy.widgets.items.shapes.base import AbstractShape
 from plotpy.widgets.items.utils import canvas_to_axes

@@ -5,12 +5,12 @@ import os
 import re
 import time
 
+from guidata.configtools import get_icon
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
 
 from plotpy.config import _
-from plotpy.utils.config.getters import get_icon
 from plotpy.utils.misc_from_gui import (
     add_actions,
     config_shortcut,

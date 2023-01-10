@@ -19,7 +19,6 @@ from __future__ import division
 import re
 
 from qtpy import QtCore as QC
-from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
 
 from plotpy.config import _
@@ -396,7 +395,7 @@ class NumpyArrayDialog(QW.QDialog):
 
 def test():  # pragma: no cover
     """ """
-    from plotpy.gui import qapplication
+    from plotpy.widgets import qapplication
 
     app = qapplication()
     dlg_table = NumpyArrayDialog(None, inline=False)

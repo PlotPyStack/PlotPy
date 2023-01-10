@@ -108,7 +108,8 @@ class IExportROIImageItemType(IItemType):
         apply_interpolation=False,
         original_resolution=False,
         force_interp_mode=None,
-        force_interp_size=None):
+        force_interp_size=None,
+    ):
         """
 
         :param src_rect:
@@ -368,7 +369,7 @@ class IHistDataSource(object):
         """
         # this raises NameError but it's here to show what this method
         # should return
-        return numpy.histogram(data, nbins)
+        return np.histogram(data, nbins)
 
 
 class IPlotManager(object):
@@ -382,6 +383,8 @@ class IPlotManager(object):
         :param plot:
         :param plot_id:
         """
+        from plotpy.widgets.plot.base import BasePlot
+
         assert id not in self.plots
         assert isinstance(plot, BasePlot)
 
@@ -412,7 +415,7 @@ class IPanel(object):
 
     @staticmethod
     def __inherits__():
-        from plotpy.gui.widgets.panels import PanelWidget
+        from plotpy.widgets.panels import PanelWidget
 
         return PanelWidget
 

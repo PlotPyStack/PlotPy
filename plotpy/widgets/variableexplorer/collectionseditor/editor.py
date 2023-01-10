@@ -577,7 +577,7 @@ def get_test_data():
 
 def editor_test():
     """Test Collections editor."""
-    from plotpy.gui import qapplication
+    from plotpy.widgets import qapplication
 
     app = qapplication()  # analysis:ignore
     dialog = CollectionsEditor()

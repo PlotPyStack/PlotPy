@@ -1,16 +1,3 @@
-"""
-Module plotpy.gui.widgets.items
-===============================
-
-:synopsis:
-
-:moduleauthor: CEA
-
-:platform: All
-
-"""
-
-
 # Copyright CEA (2018)
 
 # http://www.cea.fr/
@@ -41,3 +28,73 @@ Module plotpy.gui.widgets.items
 # requirements in conditions enabling the security of their systems and/or
 # data to be ensured and,  more generally, to use and operate it in the
 # same conditions as regards security.
+"""
+plotpy.widgets.items.shapes
+---------------------------
+
+The `shapes` module provides geometrical shapes:
+    * :py:class:`.shapes.PolygonShape`
+    * :py:class:`.shapes.RectangleShape`
+    * :py:class:`.shapes.ObliqueRectangleShape`
+    * :py:class:`.shapes.PointShape`
+    * :py:class:`.shapes.SegmentShape`
+    * :py:class:`.shapes.EllipseShape`
+    * :py:class:`.shapes.Axes`
+    * :py:class:`.shapes.XRangeSelection`
+
+A shape is a plot item (derived from QwtPlotItem) that may be displayed
+on a 2D plotting widget like :py:class:`.baseplot.BasePlot`.
+
+.. seealso:: module :py:mod:`.annotations`
+
+Examples
+~~~~~~~~
+
+A shape may be created:
+    * from the associated plot item class (e.g. `RectangleShape` to create a
+      rectangle): the item properties are then assigned by creating the
+      appropriate style parameters object
+      (:py:class:`.styles.ShapeParam`)
+
+>>> from plotpy.gui.widgets.items.shapes import RectangleShape
+>>> from plotpy.gui.widgets.styles import ShapeParam
+>>> param = ShapeParam()
+>>> param.title = 'My rectangle'
+>>> rect_item = RectangleShape(0., 2., 4., 0., param)
+
+    * or using the `plot item builder` (see :py:func:`.builder.make`):
+
+>>> from plotpy.gui.widgets.builder import make
+>>> rect_item = make.rectangle(0., 2., 4., 0., title='My rectangle')
+
+Reference
+~~~~~~~~~
+
+.. autoclass:: PolygonShape
+   :members:
+   :inherited-members:
+.. autoclass:: RectangleShape
+   :members:
+   :inherited-members:
+.. autoclass:: ObliqueRectangleShape
+   :members:
+   :inherited-members:
+.. autoclass:: PointShape
+   :members:
+   :inherited-members:
+.. autoclass:: SegmentShape
+   :members:
+   :inherited-members:
+.. autoclass:: EllipseShape
+   :members:
+   :inherited-members:
+.. autoclass:: Axes
+   :members:
+   :inherited-members:
+.. autoclass:: XRangeSelection
+   :members:
+   :inherited-members:
+.. autoclass:: Marker
+   :members:
+   :inherited-members:
+"""

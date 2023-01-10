@@ -52,7 +52,7 @@ from uuid import uuid1
 import h5py
 import numpy as np
 
-from plotpy.utils.config import BaseIOHandler, WriterMixin
+from plotpy.utils.config.userconfigio import BaseIOHandler, WriterMixin
 
 
 class TypeConverter(object):

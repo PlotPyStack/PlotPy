@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 import math
 
+from guidata.configtools import get_icon
 from guidata.utils import update_dataset
 from qtpy import QtCore as QC
 from qwt import QwtPlotMarker
 
 from plotpy.config import CONF, _
-from plotpy.utils.config.getters import get_icon
 from plotpy.utils.gui import assert_interfaces_valid
 from plotpy.widgets.interfaces import IBasePlotItem, IShapeItemType
 from plotpy.widgets.items.utils import canvas_to_axes

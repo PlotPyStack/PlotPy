@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
+from guidata.configtools import get_icon
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 
-from plotpy.config import CONF, _
-from plotpy.utils.config.getters import get_icon
+from plotpy.config import _
 from plotpy.utils.gui import assert_interfaces_valid
 from plotpy.widgets.items.shapes.polygon import PolygonShape
 

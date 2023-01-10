@@ -5,6 +5,7 @@ import os.path as osp
 import sys
 import time
 
+from guidata.configtools import get_icon
 from guidata.widgets.console.base import ConsoleBaseWidget
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
@@ -12,7 +13,6 @@ from qtpy import QtWidgets as QW
 
 from plotpy.config import CONF, _
 from plotpy.utils import encoding
-from plotpy.utils.config.getters import get_icon
 from plotpy.utils.misc_from_gui import (
     add_actions,
     create_action,

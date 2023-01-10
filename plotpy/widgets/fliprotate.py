@@ -26,12 +26,12 @@ Reference
    :inherited-members:
 """
 import numpy as np
+from guidata.configtools import get_icon
 from qtpy import QtWidgets as QW
 
-from plotpy.gui.config.misc import get_icon
-from plotpy.gui.utils.misc import create_toolbutton
-from plotpy.gui.widgets import base
-from plotpy.gui.widgets.config import _
+from plotpy.config import _
+from plotpy.utils.misc_from_gui import create_toolbutton
+from plotpy.widgets import base
 
 
 class FlipRotateMixin(base.BaseTransformMixin):

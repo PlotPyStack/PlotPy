@@ -1,16 +1,3 @@
-"""
-Module plotpy.widgets.tools
-===========================
-
-:synopsis:
-
-:moduleauthor: CEA
-
-:platform: All
-
-"""
-
-
 # Copyright CEA (2018)
 
 # http://www.cea.fr/
@@ -44,3 +31,112 @@ Module plotpy.widgets.tools
 
 # The fact that you are presently reading this means that you have had
 # knowledge of the CeCILL license and that you accept its terms.
+
+"""
+plotpy.widgets.styles
+---------------------
+
+The `styles` module provides set of parameters (DataSetGui classes) to
+configure `plot items` and `plot tools`.
+
+.. seealso::
+
+    Module :py:mod:`.plot`
+        Module providing ready-to-use curve and image plotting widgets and
+        dialog boxes
+
+    Module :py:mod:`.curve`
+        Module providing curve-related plot items and plotting widgets
+
+    Module :py:mod:`.image`
+        Module providing image-related plot items and plotting widgets
+
+    Module :py:mod:`.tools`
+        Module providing the `plot tools`
+
+Reference
+~~~~~~~~~
+
+.. autoclass:: CurveParam
+   :members:
+   :inherited-members:
+.. autoclass:: ErrorBarParam
+   :members:
+   :inherited-members:
+.. autoclass:: GridParam
+   :members:
+   :inherited-members:
+.. autoclass:: ImageParam
+   :members:
+   :inherited-members:
+.. autoclass:: TrImageParam
+   :members:
+   :inherited-members:
+.. autoclass:: ImageFilterParam
+   :members:
+   :inherited-members:
+.. autoclass:: HistogramParam
+   :members:
+   :inherited-members:
+.. autoclass:: Histogram2DParam
+   :members:
+   :inherited-members:
+.. autoclass:: AxesParam
+   :members:
+   :inherited-members:
+.. autoclass:: ImageAxesParam
+   :members:
+   :inherited-members:
+.. autoclass:: LabelParam
+   :members:
+   :inherited-members:
+.. autoclass:: LegendParam
+   :members:
+   :inherited-members:
+.. autoclass:: ShapeParam
+   :members:
+   :inherited-members:
+.. autoclass:: AnnotationParam
+   :members:
+   :inherited-members:
+.. autoclass:: AxesShapeParam
+   :members:
+   :inherited-members:
+.. autoclass:: RangeShapeParam
+   :members:
+   :inherited-members:
+.. autoclass:: MarkerParam
+   :members:
+   :inherited-members:
+.. autoclass:: FontParam
+   :members:
+   :inherited-members:
+.. autoclass:: SymbolParam
+   :members:
+   :inherited-members:
+.. autoclass:: LineStyleParam
+   :members:
+   :inherited-members:
+.. autoclass:: BrushStyleParam
+   :members:
+   :inherited-members:
+.. autoclass:: TextStyleParam
+   :members:
+   :inherited-members:
+.. autoclass:: RawImageParam
+   :members:
+   :inherited-members:
+.. autoclass:: XYImageParam
+   :members:
+   :inherited-members:
+.. autoclass:: RGBImageParam
+   :members:
+   :inherited-members:
+.. autoclass:: MaskedImageParam
+   :members:
+   :inherited-members:
+.. autoclass:: MaskedXYImageParam
+   :members:
+   :inherited-members:
+
+"""

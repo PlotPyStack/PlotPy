@@ -1,16 +1,3 @@
-"""
-Module plotpy.gui.widgets.items
-===============================
-
-:synopsis:
-
-:moduleauthor: CEA
-
-:platform: All
-
-"""
-
-
 # Copyright CEA (2018)
 
 # http://www.cea.fr/
@@ -41,3 +28,136 @@ Module plotpy.gui.widgets.items
 # requirements in conditions enabling the security of their systems and/or
 # data to be ensured and,  more generally, to use and operate it in the
 # same conditions as regards security.
+
+"""
+plotpy.widgets.items.image
+--------------------------
+
+The `image` module provides image-related objects and functions:
+
+    * :py:class:`.image.ImageItem`: simple images
+    * :py:class:`.image.TrImageItem`: images supporting arbitrary
+      affine transform
+    * :py:class:`.image.XYImageItem`: images with non-linear X/Y axes
+    * :py:class:`.image.Histogram2DItem`: 2D histogram
+    * :py:class:`.image.ImageFilterItem`: rectangular filtering area
+      that may be resized and moved onto the processed image
+    * :py:func:`.image.assemble_imageitems`
+    * :py:func:`.image.get_plot_qrect`
+    * :py:func:`.image.get_image_from_plot`
+
+``ImageItem``, ``TrImageItem``, ``XYImageItem``, ``Histogram2DItem`` and
+``ImageFilterItem`` objects are plot items (derived from QwtPlotItem) that
+may be displayed on a :py:class:`.baseplot.BasePlot` plotting widget.
+
+.. seealso::
+
+    Module :py:mod:`plotpy.gui.widgets.items.curve`
+        Module providing curve-related plot items
+
+    Module :py:mod:`plotpy.gui.widgets.plot`
+        Module providing ready-to-use curve and image plotting widgets and
+        dialog boxes
+
+Examples
+~~~~~~~~
+
+Create a basic image plotting widget:
+
+    * before creating any widget, a `QApplication` must be instantiated (that
+      is a `Qt` internal requirement):
+
+>>> import plotpy.gui
+>>> app = plotpy.gui.qapplication()
+
+    * that is mostly equivalent to the following (the only difference is that
+      the `plotpy` helper function also installs the `Qt` translation
+      corresponding to the system locale):
+
+>>> from PyQt5.QtWidgets import QApplication
+>>> app = QApplication([])
+
+    * now that a `QApplication` object exists, we may create the plotting
+      widget:
+
+>>> from plotpy.gui.widgets.baseplot import BasePlot, PlotType
+>>> plot = BasePlot(title="Example", type=PlotType.IMAGE)
+
+Generate random data for testing purpose:
+
+>>> import numpy as np
+>>> data = np.random.rand(100, 100)
+
+Create a simple image item:
+
+    * from the associated plot item class (e.g. `XYImageItem` to create
+      an image with non-linear X/Y axes): the item properties are then
+      assigned by creating the appropriate style parameters object
+      (e.g. :py:class:`.styles.ImageParam`)
+
+>>> from plotpy.gui.widgets.items.image import ImageItem
+>>> from plotpy.gui.widgets.styles import ImageParam
+>>> param = ImageParam()
+>>> param.label = 'My image'
+>>> image = ImageItem(param)
+>>> image.set_data(data)
+
+    * or using the `plot item builder` (see :py:func:`.builder.make`):
+
+>>> from plotpy.gui.widgets.builder import make
+>>> image = make.image(data, title='My image')
+
+Attach the image to the plotting widget:
+
+>>> plot.add_item(image)
+
+Display the plotting widget:
+
+>>> plot.show()
+>>> app.exec_()
+
+Reference
+~~~~~~~~~
+
+.. autoclass:: BaseImageItem
+   :members:
+   :inherited-members:
+.. autoclass:: RawImageItem
+   :members:
+   :inherited-members:
+.. autoclass:: ImageItem
+   :members:
+   :inherited-members:
+.. autoclass: TransformImageMixin
+.. autoclass:: TrImageItem
+   :members:
+   :inherited-members:
+.. autoclass:: XYImageItem
+   :members:
+   :inherited-members:
+.. autoclass:: RGBImageItem
+   :members:
+   :inherited-members:
+.. autoclass:: MaskedImageItem
+   :members:
+   :inherited-members:
+.. autoclass:: MaskedXYImageItem
+   :members:
+   :inherited-members:
+.. autoclass:: ImageFilterItem
+   :members:
+   :inherited-members:
+.. autoclass:: XYImageFilterItem
+   :members:
+   :inherited-members:
+.. autoclass:: Histogram2DItem
+   :members:
+   :inherited-members:
+.. autoclass:: QuadGridItem
+   :members:
+   :inherited-members:
+
+.. autofunction:: assemble_imageitems
+.. autofunction:: get_plot_qrect
+.. autofunction:: get_image_from_plot
+"""

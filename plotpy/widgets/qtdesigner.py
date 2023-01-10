@@ -24,11 +24,10 @@ Reference
 
 import io
 
+from guidata.configtools import get_icon
 from qtpy import QtGui as QG
 from qtpy import uic
 from qtpy.QtDesigner import QPyDesignerCustomWidgetPlugin
-
-from plotpy.utils.config.getters import get_icon
 
 
 def loadui(fname, replace_class="QwtPlot"):

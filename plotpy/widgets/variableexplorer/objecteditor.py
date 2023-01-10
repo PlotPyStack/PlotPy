@@ -11,31 +11,29 @@ Generic object editor dialog
 
 import PIL.Image
 from numpy.core.multiarray import ndarray
+from qtpy import QtCore as QC
 
-from plotpy.gui.widgets.ext_gui_lib import QObject
-from plotpy.gui.widgets.variableexplorer.arrayeditor import ArrayEditor
-from plotpy.gui.widgets.variableexplorer.collectionseditor import CollectionsEditor
-from plotpy.gui.widgets.variableexplorer.nsview import (
+from plotpy.widgets.variableexplorer.arrayeditor import ArrayEditor
+from plotpy.widgets.variableexplorer.collectionseditor.editor import CollectionsEditor
+from plotpy.widgets.variableexplorer.nsview import (
     DataFrame,
     FakeObject,
     Series,
     is_known_type,
 )
-from plotpy.gui.widgets.variableexplorer.texteditor import TextEditor
+from plotpy.widgets.variableexplorer.texteditor import TextEditor
 
 try:
-    from plotpy.gui.widgets.variableexplorer.dataframeeditor import DataFrameEditor
+    from plotpy.widgets.variableexplorer.dataframeeditor import DataFrameEditor
 except ImportError:
     DataFrameEditor = FakeObject()
 
 
-class DialogKeeper(QObject):
-    """
-
-    """
+class DialogKeeper(QC.QObject):
+    """ """
 
     def __init__(self):
-        QObject.__init__(self)
+        QC.QObject.__init__(self)
         self.dialogs = {}
         self.namespace = None
 
@@ -82,11 +80,11 @@ keeper = DialogKeeper()
 
 def create_dialog(obj, obj_name):
     """Creates the editor dialog and returns a tuple (dialog, func) where func
-    is the function to be called with the dialog instance as argument, after 
+    is the function to be called with the dialog instance as argument, after
     quitting the dialog box
-    
+
     The role of this intermediate function is to allow easy monkey-patching.
-    (uschmitt suggested this indirection here so that he can monkey patch 
+    (uschmitt suggested this indirection here so that he can monkey patch
     oedit to show eMZed related data)
     """
 
@@ -130,15 +128,15 @@ def oedit(obj, modal=True, namespace=None):
     (if Cancel is pressed, return None)
 
     The object 'obj' is a container
-    
+
     Supported container types:
     dict, list, tuple, str/unicode or numpy.array
-    
+
     (instantiate a new QApplication if necessary,
     so it can be called directly from the interpreter)
     """
 
-    from plotpy.gui import qapplication
+    from plotpy.widgets import qapplication
 
     app = qapplication()
 
@@ -175,7 +173,9 @@ def oedit(obj, modal=True, namespace=None):
 # ==============================================================================
 def test():
     """Run object editor test"""
-    import datetime, numpy as np
+    import datetime
+
+    import numpy as np
     import PIL.Image
 
     data = np.random.random_integers(255, size=(100, 100)).astype("uint8")
@@ -193,9 +193,7 @@ def test():
     image = oedit(image)
 
     class Foobar(object):
-        """
-
-        """
+        """ """
 
         def __init__(self):
             self.text = "toto"

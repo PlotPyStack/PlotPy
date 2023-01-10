@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
+import weakref
+
 from guidata.configtools import get_icon
 from qtpy import QtCore as QC
-from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
 
+from plotpy.widgets.events import (
+    RectangularSelectionHandler,
+    setup_standard_tool_filter,
+)
 from plotpy.widgets.interfaces import IPlotManager
+from plotpy.widgets.items.shapes.rectangle import RectangleShape
 
 SHAPE_Z_OFFSET = 1000
 
@@ -94,7 +100,7 @@ class InteractiveTool(GuiTool):
     TITLE = None
     ICON = None
     TIP = None
-    CURSOR = QC.Qt.CrossCursor
+    CURSOR = QC.Qt.CursorShape.CrossCursor
     SWITCH_TO_DEFAULT_TOOL = False  # switch to default tool when finished
 
     #: Signal emitted by InteractiveTool when validating tool action
@@ -190,3 +196,222 @@ class InteractiveTool(GuiTool):
         """
         self.SIG_VALIDATE_TOOL.emit(filter)
         self.SIG_TOOL_JOB_FINISHED.emit()
+
+
+class CommandTool(GuiTool):
+    """Base class for command tools: action, context menu entry"""
+
+    CHECKABLE = False
+
+    def __init__(
+        self, manager, title, icon=None, tip=None, toolbar_id=DefaultToolbarID
+    ):
+        self.title = title
+        if icon and isinstance(icon, str):
+            self.icon = get_icon(icon)
+        else:
+            self.icon = icon
+        self.tip = tip
+        super(CommandTool, self).__init__(manager, toolbar_id)
+
+    def create_action(self, manager):
+        """Create and return tool's action"""
+        return manager.create_action(
+            self.title,
+            icon=self.icon,
+            tip=self.tip,
+            triggered=self.activate,
+            checkable=self.CHECKABLE,
+        )
+
+    def setup_context_menu(self, menu, plot):
+        """
+
+        :param menu:
+        :param plot:
+        """
+        menu.addAction(self.action)
+
+    def activate(self, checked=True):
+        """
+
+        :param checked:
+        """
+        plot = self.get_active_plot()
+        if plot is not None:
+            self.activate_command(plot, checked)
+
+    def set_status_active_item(self, plot):
+        """
+
+        :param plot:
+        """
+        item = plot.get_active_item()
+        if item:
+            self.action.setEnabled(True)
+        else:
+            self.action.setEnabled(False)
+
+
+class ToggleTool(CommandTool):
+    """ """
+
+    CHECKABLE = True
+
+    def __init__(self, manager, title, icon=None, tip=None, toolbar_id=None):
+        super(ToggleTool, self).__init__(manager, title, icon, tip, toolbar_id)
+
+
+class PanelTool(ToggleTool):
+    """ """
+
+    panel_id = None
+    panel_name = None
+
+    def __init__(self, manager):
+        super(PanelTool, self).__init__(manager, self.panel_name)
+        manager.get_panel(self.panel_id).SIG_VISIBILITY_CHANGED.connect(
+            self.action.setChecked
+        )
+
+    def activate_command(self, plot, checked):
+        """Activate tool"""
+        panel = self.manager.get_panel(self.panel_id)
+        panel.setVisible(checked)
+
+    def update_status(self, plot):
+        """
+
+        :param plot:
+        """
+        panel = self.manager.get_panel(self.panel_id)
+        self.action.setChecked(panel.isVisible())
+
+
+class RectangularActionTool(InteractiveTool):
+    """ """
+
+    SHAPE_STYLE_SECT = "plot"
+    SHAPE_STYLE_KEY = "shape/drag"
+    AVOID_NULL_SHAPE = False
+
+    def __init__(
+        self,
+        manager,
+        func,
+        shape_style=None,
+        toolbar_id=DefaultToolbarID,
+        title=None,
+        icon=None,
+        tip=None,
+        fix_orientation=False,
+        switch_to_default_tool=None,
+    ):
+        self.action_func = func
+        self.fix_orientation = fix_orientation
+        super(RectangularActionTool, self).__init__(
+            manager,
+            toolbar_id,
+            title=title,
+            icon=icon,
+            tip=tip,
+            switch_to_default_tool=switch_to_default_tool,
+        )
+        if shape_style is not None:
+            self.shape_style_sect = shape_style[0]
+            self.shape_style_key = shape_style[1]
+        else:
+            self.shape_style_sect = self.SHAPE_STYLE_SECT
+            self.shape_style_key = self.SHAPE_STYLE_KEY
+        self.last_final_shape = None
+        self.switch_to_default_tool = switch_to_default_tool
+
+    def get_last_final_shape(self):
+        """
+
+        :return:
+        """
+        if self.last_final_shape is not None:
+            return self.last_final_shape()
+
+    def set_shape_style(self, shape):
+        """
+
+        :param shape:
+        """
+        shape.set_style(self.shape_style_sect, self.shape_style_key)
+
+    def create_shape(self):
+        """
+
+        :return:
+        """
+        shape = RectangleShape(0, 0, 1, 1)
+        self.set_shape_style(shape)
+        return shape, 0, 2
+
+    def setup_shape(self, shape):
+        """
+
+        :param shape:
+        """
+        pass
+
+    def get_shape(self):
+        """Reimplemented RectangularActionTool method"""
+        shape, h0, h1 = self.create_shape()
+        self.setup_shape(shape)
+        return shape, h0, h1
+
+    def get_final_shape(self, plot, p0, p1):
+        """
+
+        :param plot:
+        :param p0:
+        :param p1:
+        :return:
+        """
+        shape, h0, h1 = self.create_shape()
+        self.setup_shape(shape)
+        plot.add_item_with_z_offset(shape, SHAPE_Z_OFFSET)
+        shape.move_local_point_to(h0, p0)
+        shape.move_local_point_to(h1, p1)
+        self.last_final_shape = weakref.ref(shape)
+        return shape
+
+    def setup_filter(self, baseplot):
+        """
+
+        :param baseplot:
+        :return:
+        """
+        filter = baseplot.filter
+        start_state = filter.new_state()
+        handler = RectangularSelectionHandler(
+            filter, QC.Qt.MouseButton.LeftButton, start_state=start_state
+        )
+        shape, h0, h1 = self.get_shape()
+        handler.set_shape(
+            shape, h0, h1, self.setup_shape, avoid_null_shape=self.AVOID_NULL_SHAPE
+        )
+        handler.SIG_END_RECT.connect(self.end_rect)
+        return setup_standard_tool_filter(filter, start_state)
+
+    def end_rect(self, filter, p0, p1):
+        """
+
+        :param filter:
+        :param p0:
+        :param p1:
+        """
+        plot = filter.plot
+        if self.fix_orientation:
+            left, right = min(p0.x(), p1.x()), max(p0.x(), p1.x())
+            top, bottom = min(p0.y(), p1.y()), max(p0.y(), p1.y())
+            self.action_func(plot, QC.QPointF(left, top), QC.QPointF(right, bottom))
+        else:
+            self.action_func(plot, p0, p1)
+        self.SIG_TOOL_JOB_FINISHED.emit()
+        if self.switch_to_default_tool:
+            shape = self.get_last_final_shape()
+            plot.set_active_item(shape)

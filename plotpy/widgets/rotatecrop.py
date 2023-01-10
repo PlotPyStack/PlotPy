@@ -28,10 +28,10 @@ Reference
 
 from qtpy import QtWidgets as QW
 
+from plotpy.config import _
 from plotpy.widgets import base
 from plotpy.widgets.builder import make
-from plotpy.widgets.config import _
-from plotpy.widgets.items.image import get_image_in_shape
+from plotpy.widgets.items.image.misc import get_image_in_shape
 
 
 class RotateCropMixin(base.BaseTransformMixin):

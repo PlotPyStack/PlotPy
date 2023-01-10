@@ -1,9 +1,30 @@
+# -*- coding: utf-8 -*-
+import sys
 import weakref
 
 import numpy as np
+from qtpy import QtCore as QC
 
-from plotpy.gui.widgets.interfaces import IBasePlotItem
-from plotpy.gui.widgets.items.curve import ErrorBarCurveItem
+from plotpy.widgets.geometry import rotate, translate, vector_angle, vector_norm
+from plotpy.widgets.interfaces import IBasePlotItem
+from plotpy.widgets.items.curve.errorbar import ErrorBarCurveItem
+from plotpy.widgets.items.image.misc import get_image_from_qrect
+from plotpy.widgets.items.utils import axes_to_canvas, canvas_to_axes
+
+try:
+    from plotpy._scaler import INTERP_LINEAR, _scale_tr
+except ImportError:
+    print(
+        ("Module 'plotpy.widgets.items.image.base': missing C extension"),
+        file=sys.stderr,
+    )
+    print(
+        ("try running :" "python setup.py build_ext --inplace -c mingw32"),
+        file=sys.stderr,
+    )
+    raise
+
+DEBUG = False
 
 
 def get_rectangular_area(obj):
@@ -43,8 +64,8 @@ def get_plot_x_section(obj, apply_lut=False):
         # TODO: eventually add an option to apply interpolation algorithm
         data = get_image_from_qrect(
             plot,
-            QPointF(xc0, yc0),
-            QPointF(xc1, yc1),
+            QC.QPointF(xc0, yc0),
+            QC.QPointF(xc1, yc1),
             apply_lut=apply_lut,
             add_images=True,
             apply_interpolation=False,
@@ -54,8 +75,8 @@ def get_plot_x_section(obj, apply_lut=False):
     if data.size == 0:
         return np.array([]), np.array([])
     y = data.mean(axis=0)
-    x0, _y0 = canvas_to_axes(obj, QPointF(xc0, yc0))
-    x1, _y1 = canvas_to_axes(obj, QPointF(xc1, yc1))
+    x0, _y0 = canvas_to_axes(obj, QC.QPointF(xc0, yc0))
+    x1, _y1 = canvas_to_axes(obj, QC.QPointF(xc1, yc1))
     x = np.linspace(x0, x1, len(y))
     return x, y
 
@@ -76,8 +97,8 @@ def get_plot_y_section(obj, apply_lut=False):
     try:
         data = get_image_from_qrect(
             plot,
-            QPointF(xc0, yc0),
-            QPointF(xc1, yc1),
+            QC.QPointF(xc0, yc0),
+            QC.QPointF(xc1, yc1),
             apply_lut=apply_lut,
             add_images=True,
             apply_interpolation=False,
@@ -87,8 +108,8 @@ def get_plot_y_section(obj, apply_lut=False):
     if data.size == 0:
         return np.array([]), np.array([])
     y = data.mean(axis=1)
-    _x0, y0 = canvas_to_axes(obj, QPointF(xc0, yc0))
-    _x1, y1 = canvas_to_axes(obj, QPointF(xc1, yc1))
+    _x0, y0 = canvas_to_axes(obj, QC.QPointF(xc0, yc0))
+    _x1, y1 = canvas_to_axes(obj, QC.QPointF(xc1, yc1))
     x = np.linspace(y0, y1, len(y))
     return x, y
 
@@ -112,8 +133,8 @@ def get_plot_average_x_section(obj, apply_lut=False):
     try:
         data = get_image_from_qrect(
             obj.plot(),
-            QPointF(xc0, yc0),
-            QPointF(xc1, yc1),
+            QC.QPointF(xc0, yc0),
+            QC.QPointF(xc1, yc1),
             apply_lut=apply_lut,
             apply_interpolation=False,
         )
@@ -147,8 +168,8 @@ def get_plot_average_y_section(obj, apply_lut=False):
     try:
         data = get_image_from_qrect(
             obj.plot(),
-            QPointF(xc0, yc0),
-            QPointF(xc1, yc1),
+            QC.QPointF(xc0, yc0),
+            QC.QPointF(xc1, yc1),
             apply_lut=apply_lut,
             apply_interpolation=False,
         )
@@ -202,7 +223,7 @@ def compute_oblique_section(item, obj):
     if DEBUG:
         plot = obj.plot()
         if TEMP_ITEM is None:
-            from plotpy.gui.widgets.builder import make
+            from plotpy.widgets.builder import make
 
             TEMP_ITEM = make.image(dst_image)
             plot.add_item(TEMP_ITEM)
@@ -294,7 +315,7 @@ class CrossSectionItem(ErrorBarCurveItem):
             # warnings.filterwarnings('ignore')
             sectx[:-1] += np.mean(np.diff(sectx) / 2)
             # warnings.filterwarnings('default')
-        if self.orientation() == Qt.Vertical:
+        if self.orientation() == QC.Qt.Orientation.Vertical:
             self.process_curve_data(secty, sectx)
         else:
             self.process_curve_data(sectx, secty)
@@ -326,7 +347,7 @@ class CrossSectionItem(ErrorBarCurveItem):
     def update_scale(self):
         """ """
         plot = self.plot()
-        if self.orientation() == Qt.Vertical:
+        if self.orientation() == QC.Qt.Orientation.Vertical:
             axis_id = plot.Y_LEFT
         else:
             axis_id = plot.X_BOTTOM
@@ -339,7 +360,7 @@ class CrossSectionItem(ErrorBarCurveItem):
 class XCrossSectionItem(CrossSectionItem):
     """A Qwt item representing x-axis cross section data"""
 
-    ORIENTATION = Qt.Horizontal
+    ORIENTATION = QC.Qt.Orientation.Horizontal
 
     def get_cross_section(self, obj):
         """Get x-cross section data from source image"""
@@ -365,7 +386,7 @@ class XCrossSectionItem(CrossSectionItem):
 class YCrossSectionItem(CrossSectionItem):
     """A Qwt item representing y-axis cross section data"""
 
-    ORIENTATION = Qt.Vertical
+    ORIENTATION = QC.Qt.Orientation.Vertical
 
     def get_cross_section(self, obj):
         """Get y-cross section data from source image"""
