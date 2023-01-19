@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "envFile": "${workspaceFolder}/dev.env",
+            "envFile": "${workspaceFolder}/.env",
             "python": "${env:PYTHON_PLOTPY_DEV}",
             "justMyCode": false,
             "args": [],

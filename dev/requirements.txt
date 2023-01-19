@@ -15,3 +15,12 @@ sphinx
 sphinx-rtd-theme
 sphinx-intl
 esbonio
+Pillow
+pandas
+matplotlib
+Cython
+pytest
+pytest-qt
+pytest-xvfb
+flaky
+pydicom
