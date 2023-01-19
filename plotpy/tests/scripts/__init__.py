@@ -10,7 +10,7 @@ plotpy test package
 ====================
 """
 
-import plotpy.core
+import plotpy.utils
 
 try:
     from tests.gui.guitest import run_testlauncher
@@ -21,7 +21,7 @@ except ImportError:
 def run():
     """Run plotpy.core test launcher"""
 
-    run_testlauncher(plotpy.core, "tests.scripts")
+    run_testlauncher(plotpy.utils, "tests.scripts")
 
 
 if __name__ == "__main__":

@@ -13,8 +13,9 @@ SHOW = True  # Show test in GUI-based test launcher
 def test():
     """Test"""
     import os.path as osp
-    from plotpy.gui import qapplication
-    from plotpy.gui.widgets import io, scaler, pyplot as plt
+
+    from plotpy.widgets import io, qapplication, scaler
+    from plotpy.widgets.plot.interactive import imshow, show
 
     app = qapplication()
 
@@ -22,8 +23,8 @@ def test():
     data = io.imread(filename)
     dst_image = scaler.resize(data, (2000, 3000))
 
-    plt.imshow(dst_image, interpolation="nearest")
-    plt.show()
+    imshow(dst_image, interpolation="nearest")
+    show()
 
 
 if __name__ == "__main__":

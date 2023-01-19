@@ -7,28 +7,28 @@
 
 """Load/save items using Python's pickle protocol"""
 
-SHOW = True  # Show test in GUI-based test launcher
 
 # WARNING:
 # This script requires read/write permissions on current directory
 
-from plotpy.gui.widgets.ext_gui_lib import QFont
-
 import os
-import os.path as osp
+
 import numpy as np
 
-from plotpy.gui.widgets.baseplot import PlotType
-from plotpy.gui.widgets.plot import PlotDialog
-from plotpy.gui.widgets.builder import make
-from plotpy.gui.widgets.items.shapes import PolygonShape, Axes
-from plotpy.gui.widgets.tools import LoadItemsTool, SaveItemsTool, ImageMaskTool
+from plotpy.widgets.builder import make
+from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.tools.axes import Axes
+from plotpy.widgets.tools.image import ImageMaskTool
+from plotpy.widgets.tools.item import LoadItemsTool, SaveItemsTool
+from plotpy.widgets.tools.shapes import PolygonShape
+
+SHOW = True  # Show test in GUI-based test launcher
 
 
 def build_items():
     x = np.linspace(-10, 10, 200)
     y = np.sin(np.sin(np.sin(x)))
-    filename = osp.join(osp.dirname(__file__), "brain.png")
+    filename = os.path.join(os.path.dirname(__file__), "brain.png")
     xydata = make._get_image_data(None, filename, "XY Brain Image", to_grayscale=True)[
         0
     ]
@@ -147,8 +147,8 @@ class PickleTest(IOTest):
 
 
 if __name__ == "__main__":
-    import plotpy.gui
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
     test = PickleTest()
     test.run()

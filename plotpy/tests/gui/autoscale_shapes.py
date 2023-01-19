@@ -6,31 +6,32 @@
 
 """This example shows autoscaling of plot with various shapes."""
 
-SHOW = True  # Show test in GUI-based test launcher
 
 import numpy as np
 
-from plotpy.gui.widgets.items.annotations import AnnotatedRectangle
-from plotpy.gui.widgets.items import shapes
-from plotpy.gui.widgets.plot import PlotDialog
-from plotpy.gui.widgets.styles import ShapeParam, AnnotationParam
-from plotpy.gui.widgets.tools import (
-    RectangleTool,
-    EllipseTool,
-    PlaceAxesTool,
-    MultiLineTool,
-    FreeFormTool,
-    SegmentTool,
-    CircleTool,
-    AnnotatedRectangleTool,
-    AnnotatedEllipseTool,
-    AnnotatedSegmentTool,
+from plotpy.widgets.items.annotations import AnnotatedRectangle
+from plotpy.widgets.items.shapes.ellipse import EllipseShape
+from plotpy.widgets.items.shapes.polygon import PolygonShape
+from plotpy.widgets.plot.plotwidget import PlotDialog
+from plotpy.widgets.styles.shape import AnnotationParam, ShapeParam
+from plotpy.widgets.tools.annotations import (
     AnnotatedCircleTool,
-    LabelTool,
-    AnnotatedPointTool,
-    ObliqueRectangleTool,
+    AnnotatedEllipseTool,
     AnnotatedObliqueRectangleTool,
+    AnnotatedPointTool,
+    AnnotatedRectangleTool,
+    AnnotatedSegmentTool,
+    CircleTool,
+    EllipseTool,
+    ObliqueRectangleTool,
+    RectangleTool,
+    SegmentTool,
 )
+from plotpy.widgets.tools.axes import PlaceAxesTool
+from plotpy.widgets.tools.label import LabelTool
+from plotpy.widgets.tools.shapes import FreeFormTool, MultiLineTool
+
+SHOW = True  # Show test in GUI-based test launcher
 
 
 def create_window():
@@ -68,14 +69,14 @@ def test():
     x = np.arange(-3.0, 3.0, delta)
     param = ShapeParam()
     param.label = "Polygon"
-    crv = shapes.PolygonShape(closed=False, shapeparam=param)
+    crv = PolygonShape(closed=False, shapeparam=param)
     crv.set_points(np.column_stack((x, np.sin(x))))
     plot.add_item(crv)
 
     # Add a circle
     param = ShapeParam()
     param.label = "Circle"
-    circle = shapes.EllipseShape(-1, 2, shapeparam=param)
+    circle = EllipseShape(-1, 2, shapeparam=param)
     plot.add_item(circle)
 
     # Add an annotated rectangle
@@ -87,9 +88,9 @@ def test():
     # Add an annotated rectangle excluded
     param = AnnotationParam()
     param.title = "Annotated rectangle excluded from autoscale"
-    rect = AnnotatedRectangle(1., 2., 5, 10, annotationparam=param)
+    rect = AnnotatedRectangle(1.0, 2.0, 5, 10, annotationparam=param)
     plot.add_item(rect)
-    
+
     plot.add_autoscale_excludes([rect])
 
     win.show()
@@ -97,7 +98,7 @@ def test():
 
 
 if __name__ == "__main__":
-    import plotpy.gui
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
     test()

@@ -7,10 +7,11 @@
 
 """Test in text mode"""
 
-SHOW = False  # Do not show test in GUI-based test launcher
 
-from plotpy.core.dataset.datatypes import DataSet
-from plotpy.core.dataset.dataitems import FloatItem, IntItem
+from guidata.dataset.dataitems import FloatItem, IntItem
+from guidata.dataset.datatypes import DataSet
+
+SHOW = False  # Do not show test in GUI-based test launcher
 
 
 class Parameters(DataSet):

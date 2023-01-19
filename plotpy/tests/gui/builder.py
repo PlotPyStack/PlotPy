@@ -8,13 +8,12 @@
 """Builder tests"""
 
 
-SHOW = True  # Show test in GUI-based test launcher
-
 import numpy as np
 
-from plotpy.gui.widgets.baseplot import PlotType
-from plotpy.gui.widgets.plot import PlotDialog
-from plotpy.gui.widgets.builder import make
+from plotpy.widgets.builder import make
+from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+
+SHOW = True  # Show test in GUI-based test launcher
 
 
 def compute_image(N=2000, grid=True):
@@ -22,9 +21,9 @@ def compute_image(N=2000, grid=True):
     x = np.array(np.linspace(-5, 5, N), T)
     img = np.zeros((N, N), T)
     x.shape = (1, N)
-    img += x ** 2
+    img += x**2
     x.shape = (N, 1)
-    img += x ** 2
+    img += x**2
     np.cos(img, img)  # inplace cosine
     if not grid:
         return img
@@ -50,9 +49,9 @@ def compute_image(N=2000, grid=True):
 def test():
     """Test"""
     # -- Create QApplication
-    import plotpy.gui
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
 
     win0 = PlotDialog(
         edit=False,

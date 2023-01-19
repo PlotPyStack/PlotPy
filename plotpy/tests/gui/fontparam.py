@@ -7,16 +7,17 @@
 
 """FontParam test"""
 
-SHOW = False  # Do not show test in GUI-based test launcher
 
-from plotpy.gui.widgets.styles import FontParam
+from plotpy.widgets.styles.base import FontParam
+
+SHOW = False  # Do not show test in GUI-based test launcher
 
 
 def test():
 
-    import plotpy.gui
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
 
     fp = FontParam()
     fp.edit()

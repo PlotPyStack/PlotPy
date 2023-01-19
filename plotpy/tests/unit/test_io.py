@@ -7,13 +7,14 @@
 """
 Unit tests for io module
 """
+import os
 from pathlib import Path
 
 import numpy as np
+from qtpy.QtGui import QImage
 
-from plotpy.core.config.misc import get_image_file_path
-from plotpy.gui.widgets.ext_gui_lib import QImage
-from plotpy.gui.widgets.io import imwrite, imread
+from plotpy.utils.config.misc import add_image_path, get_image_file_path
+from plotpy.widgets.io import imread, imwrite
 
 
 def compute_image(N=1000, M=1000):
@@ -79,6 +80,7 @@ def test_imread_brain_png():
 
 def test_imread_python_icon():
     """Test reading of python icon which is a colored PNG with alpha."""
+    add_image_path(os.path.join(os.path.dirname(__file__), "..\\..\\images"))
     path = get_image_file_path("python.png")
     data = imread(path)
     assert data.shape == (16, 16, 4)

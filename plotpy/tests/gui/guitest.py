@@ -9,39 +9,35 @@
 GUI-based test launcher
 """
 
-import sys
 import os
-import os.path as osp
 import subprocess
+import sys
 
-from plotpy.console.widgets.sourcecode.codeviewer import PythonCodeViewer
-
-
-from plotpy.core.config.config import _
-from plotpy.gui.widgets.ext_gui_lib import (
-    QWidget,
-    QVBoxLayout,
-    QSplitter,
-    QFont,
-    QListWidget,
-    QPushButton,
-    QLabel,
+from guidata.configtools import MONOSPACE, get_family, get_icon
+from guidata.widgets.codeeditor import CodeEditor
+from qtpy.QtCore import QSize, Qt
+from qtpy.QtGui import QFont, QKeySequence
+from qtpy.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
+    QLabel,
+    QListWidget,
+    QPushButton,
     QShortcut,
-    QKeySequence,
-    Qt,
-    QSize,
+    QSplitter,
+    QVBoxLayout,
+    QWidget,
 )
-from plotpy.gui.config.misc import get_icon, get_family, MONOSPACE
-from plotpy.gui.utils.icons import get_std_icon
+
+from plotpy.config import _
+from plotpy.utils.icons import get_std_icon
 
 
 def get_tests(test_package):
     tests = []
-    test_path = osp.dirname(osp.realpath(test_package.__file__))
+    test_path = os.path.dirname(os.path.realpath(test_package.__file__))
     for fname in sorted(os.listdir(test_path)):
-        module_name, ext = osp.splitext(fname)
+        module_name, ext = os.path.splitext(fname)
         if ext not in (".py", ".pyw"):
             continue
         if not module_name.startswith("_"):
@@ -56,8 +52,10 @@ def get_tests(test_package):
 class TestModule(object):
     def __init__(self, test_module):
         self.module = test_module
-        self.filename = osp.splitext(osp.abspath(test_module.__file__))[0] + ".py"
-        if not osp.isfile(self.filename):
+        self.filename = (
+            os.path.splitext(os.path.abspath(test_module.__file__))[0] + ".py"
+        )
+        if not os.path.isfile(self.filename):
             self.filename += "w"
 
     def is_visible(self):
@@ -104,7 +102,7 @@ class TestPropertiesWidget(QWidget):
         layout.addWidget(self.desc_label)
         group_desc.setLayout(layout)
 
-        self.editor = PythonCodeViewer(self)
+        self.editor = CodeEditor(self)
         self.editor.setup_editor(linenumbers=True, font=font)
         self.editor.setReadOnly(True)
         group_code = QGroupBox(_("Source code"), self)
@@ -147,7 +145,7 @@ class TestLauncherWindow(QSplitter):
 
         tests = get_tests(test_package)
         listwidget = QListWidget(self)
-        listwidget.addItems([osp.basename(test.filename) for test in tests])
+        listwidget.addItems([os.path.basename(test.filename) for test in tests])
 
         self.properties = TestPropertiesWidget(self)
 
@@ -174,7 +172,7 @@ class TestLauncherWindow(QSplitter):
 
 def run_testlauncher(package, test_package_name=None):
     """Run test launcher"""
-    from plotpy.gui.widgets.ext_gui_lib import QApplication
+    from qtpy.QtWidgets import QApplication
 
     app = QApplication([])
     win = TestLauncherWindow(package, test_package_name)

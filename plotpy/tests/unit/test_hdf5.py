@@ -10,9 +10,7 @@ Unit tests for hdf5io module
 
 
 import numpy as np
-
-from plotpy.core.dataset.datatypes import BeginGroup, DataSet, EndGroup
-from plotpy.core.dataset.dataitems import (
+from guidata.dataset.dataitems import (
     BoolItem,
     ChoiceItem,
     ColorItem,
@@ -22,7 +20,9 @@ from plotpy.core.dataset.dataitems import (
     MultipleChoiceItem,
     StringItem,
 )
-from plotpy.core.io.hdf5io import HDF5Reader, HDF5Writer
+from guidata.dataset.datatypes import BeginGroup, DataSet, EndGroup
+
+from plotpy.utils.io.hdf5io import HDF5Reader, HDF5Writer
 
 
 class Parameters(DataSet):

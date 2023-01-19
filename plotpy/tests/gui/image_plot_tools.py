@@ -7,34 +7,35 @@
 
 """All image and plot tools test"""
 
-SHOW = True  # Show test in GUI-based test launcher
 
-import os.path as osp
+import os
 
-from plotpy.gui.widgets.baseplot import PlotType
-from plotpy.gui.widgets.plot import PlotDialog
-from plotpy.gui.widgets.tools import (
-    RectangleTool,
-    EllipseTool,
-    HRangeTool,
-    PlaceAxesTool,
-    MultiLineTool,
-    FreeFormTool,
-    SegmentTool,
-    CircleTool,
-    AnnotatedRectangleTool,
-    AnnotatedEllipseTool,
-    AnnotatedSegmentTool,
+from plotpy.widgets.builder import make
+from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.tools.annotations import (
     AnnotatedCircleTool,
-    LabelTool,
-    AnnotatedPointTool,
-    VCursorTool,
-    HCursorTool,
-    XCursorTool,
-    ObliqueRectangleTool,
+    AnnotatedEllipseTool,
     AnnotatedObliqueRectangleTool,
+    AnnotatedPointTool,
+    AnnotatedRectangleTool,
+    AnnotatedSegmentTool,
+    CircleTool,
+    EllipseTool,
+    ObliqueRectangleTool,
+    RectangleTool,
+    SegmentTool,
 )
-from plotpy.gui.widgets.builder import make
+from plotpy.widgets.tools.axes import PlaceAxesTool
+from plotpy.widgets.tools.cursor import (
+    HCursorTool,
+    HRangeTool,
+    VCursorTool,
+    XCursorTool,
+)
+from plotpy.widgets.tools.label import LabelTool
+from plotpy.widgets.tools.shapes import FreeFormTool, MultiLineTool
+
+SHOW = True  # Show test in GUI-based test launcher
 
 
 def create_window():
@@ -72,11 +73,11 @@ def create_window():
 def test():
     """Test"""
     # -- Create QApplication
-    import plotpy.gui
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
     # --
-    filename = osp.join(osp.dirname(__file__), "brain.png")
+    filename = os.path.join(os.path.dirname(__file__), "brain.png")
     win = create_window()
     image = make.image(filename=filename, colormap="bone")
     plot = win.get_plot()

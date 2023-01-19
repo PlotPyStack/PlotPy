@@ -7,17 +7,18 @@
 
 """Load/save items from/to HDF5 file"""
 
-SHOW = True  # Show test in GUI-based test launcher
 
 # WARNING:
 # This script requires read/write permissions on current directory
 
-from plotpy.core.io.hdf5io import HDF5Reader, HDF5Writer
+from plotpy.utils.io.hdf5io import HDF5Reader, HDF5Writer
 
 try:
     from tests.gui.loadsaveitems_pickle import IOTest
 except ImportError:
     from plotpy.tests.gui.loadsaveitems_pickle import IOTest
+
+SHOW = True  # Show test in GUI-based test launcher
 
 
 class HDF5Test(IOTest):
@@ -35,8 +36,8 @@ class HDF5Test(IOTest):
 
 
 if __name__ == "__main__":
-    import plotpy.gui
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
     test = HDF5Test()
     test.run()

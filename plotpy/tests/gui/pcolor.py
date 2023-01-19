@@ -7,13 +7,13 @@
 
 """PlotDialog / Pcolor test"""
 
-SHOW = True  # Show test in GUI-based test launcher
 
 import numpy as np
 
-from plotpy.gui.widgets.baseplot import PlotType
-from plotpy.gui.widgets.plot import PlotDialog
-from plotpy.gui.widgets.builder import make
+from plotpy.widgets.builder import make
+from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+
+SHOW = True  # Show test in GUI-based test launcher
 
 
 def imshow(items):
@@ -53,7 +53,7 @@ def compute_quads(N=300):
 def compute_quads2(N=4):
     x = np.linspace(0, N - 1, N)
     X, Y = np.meshgrid(x, x)
-    Z = X ** 2 + Y ** 2
+    Z = X**2 + Y**2
     Z = Z.reshape((8, 2))
     item = make.pcolor(Z)  # checks if X, Y are properly generated in make.pcolor
     return [item]
@@ -76,17 +76,18 @@ def compute_quads3():
 def test():
     """Test"""
     # -- Create QApplication
-    import plotpy.gui
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
     # --
     items = compute_quads() + compute_quads3()
     imshow(items)
 
 
 def valgrind_test(K=200):
-    from plotpy._scaler import _scale_quads
     from time import time
+
+    from plotpy._scaler import _scale_quads
 
     X, Y, Z = polar_demo()
     lut = (1.0, 0.0, None, np.zeros((1024,), np.uint32))

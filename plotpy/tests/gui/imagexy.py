@@ -7,13 +7,13 @@
 
 """Image with custom X/Y axes linear scales"""
 
-SHOW = True  # Show test in GUI-based test launcher
-
-from plotpy.gui.widgets.baseplot import PlotType
-from plotpy.gui.widgets.plot import PlotDialog
-from plotpy.gui.widgets.builder import make
 
 import numpy as np
+
+from plotpy.widgets.builder import make
+from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+
+SHOW = True  # Show test in GUI-based test launcher
 
 
 def imshow(x, y, data):
@@ -38,9 +38,9 @@ def compute_image():
     x = np.array(np.linspace(-5, 5, N), T)
     img = np.zeros((N, N), T)
     x.shape = (1, N)
-    img += x ** 2
+    img += x**2
     x.shape = (N, 1)
-    img += x ** 2
+    img += x**2
     img = np.cos(img)
     x.shape = (N,)
     for k in range(-5, 5):
@@ -66,9 +66,9 @@ def compute_image():
 def test():
     """Test"""
     # -- Create QApplication
-    import plotpy.gui
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
     # --
     imshow(*compute_image())
 

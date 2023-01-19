@@ -7,12 +7,13 @@
 """PlotDialog test"""
 
 import numpy as np
+from qtpy.QtCore import Qt
+from qwt import QwtPlotItem
 
-from plotpy.gui.widgets.baseplot import PlotType
-from plotpy.gui.widgets.builder import make
-from plotpy.gui.widgets.ext_gui_lib import Qt, QwtPlotItem
-from plotpy.gui.widgets.plot import BasePlotWidget, PlotDialog
-from plotpy.gui.widgets.tools import AntiAliasingTool, AxisScaleTool, CurveStatsTool
+from plotpy.widgets.builder import make
+from plotpy.widgets.plot.plotwidget import BasePlotWidget, PlotDialog, PlotType
+from plotpy.widgets.tools.axes import AxisScaleTool
+from plotpy.widgets.tools.curve import AntiAliasingTool, CurveStatsTool
 
 
 def test_plot_curve(qtbot):

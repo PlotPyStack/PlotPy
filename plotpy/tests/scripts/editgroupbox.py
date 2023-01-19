@@ -11,29 +11,27 @@ DataSetEditGroupBox and DataSetShowGroupBox demo
 These group box widgets are intended to be integrated in a GUI application
 layout, showing read-only parameter sets or allowing to edit parameter values.
 """
-from plotpy.gui.config.misc import get_icon
-
-SHOW = True  # Show test in GUI-based test launcher
-
-from plotpy.gui.widgets.ext_gui_lib import QMainWindow, QSplitter
-
-from plotpy.core.dataset.datatypes import (
-    DataSet,
-    BeginGroup,
-    EndGroup,
-    BeginTabGroup,
-    EndTabGroup,
-)
-from plotpy.core.dataset.dataitems import (
+from guidata.dataset.dataitems import (
     ChoiceItem,
-    FloatItem,
-    StringItem,
     DirectoryItem,
     FileOpenItem,
+    FloatItem,
+    StringItem,
 )
-from plotpy.gui.dataset.qtwidgets import DataSetShowGroupBox, DataSetEditGroupBox
-from plotpy.gui.utils.icons import get_std_icon
-from plotpy.gui.utils.misc import create_action, add_actions
+from guidata.dataset.datatypes import (
+    BeginGroup,
+    BeginTabGroup,
+    DataSet,
+    EndGroup,
+    EndTabGroup,
+)
+from guidata.dataset.qtwidgets import DataSetEditGroupBox, DataSetShowGroupBox
+from qtpy.QtWidgets import QMainWindow, QSplitter
+
+from plotpy.utils.icons import get_std_icon
+from plotpy.utils.misc_from_gui import add_actions, create_action, get_icon
+
+SHOW = True  # Show test in GUI-based test launcher
 
 # Local test import:
 try:
@@ -171,11 +169,12 @@ class MainWindow(QMainWindow):
 
 
 if __name__ == "__main__":
-    from plotpy.gui.widgets.ext_gui_lib import QApplication
     import sys
 
+    from qtpy.QtWidgets import QApplication
+
     # import config to add plotlib/images/ path to images lookup directories
-    import plotpy.core.config.config  # pylint: disable=unused-import
+    import plotpy.config  # pylint: disable=unused-import
 
     app = QApplication(sys.argv)
     window = MainWindow()

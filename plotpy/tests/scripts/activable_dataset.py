@@ -17,14 +17,14 @@ So this example with dialog boxes may be confusing.
 # When showing dataset in read-only mode (e.g. inside another layout), all items
 # are shown except the enable item.
 
+
+from guidata.dataset.dataitems import BoolItem, ChoiceItem, ColorItem, FloatItem
+from guidata.dataset.datatypes import ActivableDataSet, DataSet
+
 SHOW = True  # Show test in GUI-based test launcher
 
-from plotpy.core.dataset.datatypes import ActivableDataSet
-from plotpy.core.dataset.dataitems import BoolItem, FloatItem, ChoiceItem, ColorItem
-from plotpy.gui.dataset.datatypes import DataSetGui
 
-
-class ExampleDataSet(ActivableDataSet, DataSetGui):
+class ExampleDataSet(ActivableDataSet, DataSet):
     """
     Example
     <b>Activable dataset example</b>
@@ -46,10 +46,10 @@ ExampleDataSet.active_setup()
 
 if __name__ == "__main__":
     # Create QApplication
-    import plotpy.gui
-    import plotpy.core.config.config
+    import plotpy.config
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
 
     # Editing mode:
     prm = ExampleDataSet()

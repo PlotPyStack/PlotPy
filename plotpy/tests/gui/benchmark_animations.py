@@ -4,16 +4,15 @@
 """Benchmark that animates a curve"""
 
 import sys
+import time
+
+import numpy as np
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QPolygonF
 from PyQt5.QtWidgets import QApplication
 
-import time
-import numpy as np
-
-from plotpy.gui.widgets.baseplot import PlotType
-from plotpy.gui.widgets.builder import make
-from plotpy.gui.widgets.plot import PlotDialog
+from plotpy.widgets.builder import make
+from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
 
 NPOINTS = 500000
 NB_FRAMES_FOR_MEAN_FPS = 10
@@ -35,7 +34,7 @@ class TestApp(QApplication):
         polyline = QPolygonF(size)
 
         pointer = polyline.data()
-        dtype, tinfo = np.float, np.finfo
+        dtype, tinfo = np.single, np.finfo
         pointer.setsize(2 * size * tinfo(dtype).dtype.itemsize)
         memory = np.frombuffer(pointer, dtype)
         memory[: (size - 1) * 2 + 1 : 2] = self.x
@@ -55,7 +54,7 @@ class TestApp(QApplication):
 def test():
     """Test"""
     # -- Create QApplication
-    import plotpy.gui
+    import plotpy.widgets
 
     # --
     _app = TestApp(sys.argv)

@@ -7,28 +7,29 @@
 
 """PlotManager test"""
 
-SHOW = True  # Show test in GUI-based test launcher
 
-import os.path as osp
+import os
 
-from plotpy.gui.widgets.baseplot import BasePlot, PlotType
-from plotpy.gui.widgets.ext_gui_lib import QMainWindow, QWidget, QGridLayout
-from plotpy.gui.widgets.baseplot import PlotItemList
-from plotpy.gui.widgets.histogram import ContrastAdjustment
-from plotpy.gui.widgets.plot import PlotManager
-from plotpy.gui.widgets.builder import make
+from qtpy import QtWidgets as QW
+
+from plotpy.widgets.builder import make
+from plotpy.widgets.plot.histogram import ContrastAdjustment
+from plotpy.widgets.plot.manager import PlotManager
+from plotpy.widgets.plot.plotwidget import BasePlot, PlotItemList, PlotType
 
 try:
     from tests.gui.image import compute_image
 except ImportError:
     from plotpy.tests.gui.image import compute_image
 
+SHOW = True  # Show test in GUI-based test launcher
 
-class CentralWidget(QWidget):
+
+class CentralWidget(QW.QWidget):
     def __init__(self, parent):
-        QWidget.__init__(self, parent)
+        QW.QWidget.__init__(self, parent)
 
-        layout = QGridLayout()
+        layout = QW.QGridLayout()
         self.setLayout(layout)
 
         self.plot1 = BasePlot(self, type=PlotType.IMAGE)
@@ -51,11 +52,11 @@ class CentralWidget(QWidget):
         self.manager.register_all_image_tools()
 
 
-class Window(QMainWindow):
+class Window(QW.QMainWindow):
     def __init__(self):
-        QMainWindow.__init__(self)
+        QW.QMainWindow.__init__(self)
 
-        filename = osp.join(osp.dirname(__file__), "brain.png")
+        filename = os.path.join(os.path.dirname(__file__), "brain.png")
         image1 = make.image(filename=filename, title="Original", colormap="gray")
 
         image2 = make.image(compute_image())
@@ -75,9 +76,9 @@ class Window(QMainWindow):
 def test():
     """Test"""
     # -- Create QApplication
-    import plotpy.gui
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
     # --
     win = Window()
     win.show()

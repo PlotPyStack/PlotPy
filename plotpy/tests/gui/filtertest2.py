@@ -8,22 +8,16 @@
 """Simple filter testing application based on PyQt and plotpy
 filtertest1.py + plot manager"""
 
-SHOW = True  # Show test in GUI-based test launcher
 
-from plotpy.gui.widgets.ext_gui_lib import (
-    QWidget,
-    QVBoxLayout,
-    QHBoxLayout,
-    QPushButton,
-    QMainWindow,
-)
+from guidata.configtools import get_icon
+from qtpy.QtWidgets import QHBoxLayout, QMainWindow, QPushButton, QVBoxLayout, QWidget
+
+from plotpy.widgets.builder import make
 
 # ---Import plot widget base class
-from plotpy.gui.widgets.baseplot import BasePlot, PlotType
-from plotpy.gui.widgets.plot import PlotManager
-from plotpy.gui.widgets.builder import make
-from plotpy.gui.utils.misc import get_icon
+from plotpy.widgets.plot.plotwidget import BasePlot, PlotManager, PlotType
 
+SHOW = True  # Show test in GUI-based test launcher
 # ---
 
 
@@ -106,17 +100,18 @@ class TestWindow(QMainWindow):
 
 def test():
     """Testing this simple Qt/plotpy example"""
-    from plotpy.gui.widgets.ext_gui_lib import QApplication
-    import plotpy.core.config.config  # Loading icons
-
     import numpy as np
-    import scipy.signal as sps, scipy.ndimage as spi
+    import scipy.ndimage as spi
+    import scipy.signal as sps
+    from qtpy.QtWidgets import QApplication
+
+    import plotpy.config  # Loading icons
 
     app = QApplication([])
     win = TestWindow()
 
     x = np.linspace(-10, 10, 500)
-    y = np.random.rand(len(x)) + 5 * np.sin(2 * x ** 2) / x
+    y = np.random.rand(len(x)) + 5 * np.sin(2 * x**2) / x
     win.add_plot(x, y, lambda x: spi.gaussian_filter1d(x, 1.0), "Gaussian")
     win.add_plot(x, y, sps.wiener, "Wiener")
     # ---Setup window

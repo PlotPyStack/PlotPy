@@ -12,15 +12,16 @@ From time to time, it may be useful to derive a DataSet from another. The main
 application is to extend a parameter set with additionnal parameters.
 """
 
-SHOW = True  # Show test in GUI-based test launcher
 
-from plotpy.core.dataset.datatypes import BeginGroup, EndGroup
-from plotpy.core.dataset.dataitems import FloatItem, BoolItem
+from guidata.dataset.dataitems import BoolItem, FloatItem
+from guidata.dataset.datatypes import BeginGroup, EndGroup
 
 try:
     from tests.scripts.all_features import TestParameters
 except ImportError:
     from plotpy.tests.scripts.all_features import TestParameters
+
+SHOW = True  # Show test in GUI-based test launcher
 
 
 class TestParameters2(TestParameters):
@@ -36,10 +37,10 @@ class TestParameters2(TestParameters):
 
 if __name__ == "__main__":
     # Create QApplication
-    import plotpy.gui
-    import plotpy.core.config.config
+    import plotpy.config
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
 
     e = TestParameters2()
     e.edit()

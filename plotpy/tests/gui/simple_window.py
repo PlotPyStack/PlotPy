@@ -6,43 +6,30 @@
 # (see plotpy/__init__.py for details)
 
 """Simple application based on plotpy"""
-from plotpy.gui.widgets.dialog import get_open_filename
+import platform
+import sys
 
-SHOW = True  # Show test in GUI-based test launcher
-
-import sys, platform
 import numpy as np
+from guidata.dataset.dataitems import ChoiceItem, FloatArrayItem, IntItem, StringItem
+from guidata.dataset.datatypes import DataSet, GetAttrProp, update_dataset
+from guidata.dataset.qtwidgets import DataSetEditGroupBox
+from qtpy import QT_VERSION
+from qtpy.QtCore import PYQT_VERSION_STR, QSize, Qt
+from qtpy.QtWidgets import QFileDialog, QListWidget, QMainWindow, QMessageBox, QSplitter
 
-from plotpy.core.dataset.datatypes import GetAttrProp
-from plotpy.core.dataset.dataitems import (
-    IntItem,
-    FloatArrayItem,
-    StringItem,
-    ChoiceItem,
-)
-from plotpy.core.utils.dataset import update_dataset
-from plotpy.gui.utils.icons import get_std_icon
-from plotpy.gui.utils.misc import add_actions, create_action, get_icon
-from plotpy.gui.dataset.datatypes import DataSetGui
-from plotpy.gui.dataset.qtwidgets import DataSetEditGroupBox
-from plotpy.gui.widgets.ext_gui_lib import (
-    QMainWindow,
-    QMessageBox,
-    QSplitter,
-    QListWidget,
-)
-from plotpy.gui.widgets.ext_gui_lib import QSize, QT_VERSION_STR, PYQT_VERSION_STR, Qt
-from plotpy.gui.widgets.baseplot import PlotType
-from plotpy.gui.widgets.config import _
-from plotpy.gui.widgets.plot import PlotWidget
-from plotpy.gui.widgets.builder import make
-from plotpy.gui.widgets import io
+from plotpy.config import _
+from plotpy.utils.icons import get_std_icon
+from plotpy.utils.misc_from_gui import add_actions, create_action, get_icon
+from plotpy.widgets import io
+from plotpy.widgets.builder import make
+from plotpy.widgets.plot.plotwidget import PlotType, PlotWidget
 
 APP_NAME = _("Application example")
 VERSION = "1.0.0"
+SHOW = True  # Show test in GUI-based test launcher
 
 
-class ImageParam(DataSetGui):
+class ImageParam(DataSet):
     _hide_data = False
     _hide_size = True
     title = StringItem(_("Title"), default=_("Untitled"))
@@ -232,7 +219,7 @@ class MainWindow(QMainWindow):
                 VERSION,
                 _("Developped by"),
                 platform.python_version(),
-                QT_VERSION_STR,
+                QT_VERSION,
                 PYQT_VERSION_STR,
                 _("on"),
                 platform.system(),
@@ -257,8 +244,13 @@ class MainWindow(QMainWindow):
         """Open image file"""
         saved_in, saved_out, saved_err = sys.stdin, sys.stdout, sys.stderr
         sys.stdout = None
-        filename, _filter = get_open_filename(
-            self, _("Open"), "", io.iohandler.get_filters("load")
+        filename, _filter = QFileDialog.getOpenFileName(
+            self,
+            _("Open"),
+            "",
+            io.iohandler.get_filters("load"),
+            "",
+            options=QFileDialog.ShowDirsOnly,
         )
         sys.stdin, sys.stdout, sys.stderr = saved_in, saved_out, saved_err
         if filename:
@@ -266,8 +258,8 @@ class MainWindow(QMainWindow):
 
 
 if __name__ == "__main__":
-    from plotpy.gui import qapplication
-    import plotpy.core.config.config  # Loading icons
+    import plotpy.config  # Loading icons
+    from plotpy.widgets import qapplication
 
     app = qapplication()
     window = MainWindow()

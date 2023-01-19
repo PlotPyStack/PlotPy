@@ -7,22 +7,21 @@
 
 """Shows how to customize a shape created with a tool like RectangleTool"""
 
-SHOW = True  # Show test in GUI-based test launcher
 
-import os.path as osp
+import os
 
-from plotpy.gui.widgets.baseplot import PlotType
-from plotpy.gui.widgets.plot import PlotDialog
-from plotpy.gui.widgets.tools import (
-    RectangleTool,
+from plotpy.widgets.builder import make
+from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.styles.base import style_generator, update_style_attr
+from plotpy.widgets.tools.shapes import (
     EllipseTool,
-    SegmentTool,
-    MultiLineTool,
     FreeFormTool,
+    MultiLineTool,
+    RectangleTool,
+    SegmentTool,
 )
-from plotpy.gui.widgets.builder import make
-from plotpy.gui.widgets.styles import style_generator, update_style_attr
 
+SHOW = True  # Show test in GUI-based test launcher
 STYLE = style_generator()
 
 
@@ -59,11 +58,11 @@ def create_window():
 def test():
     """Test"""
     # -- Create QApplication
-    import plotpy.gui
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
     # --
-    filename = osp.join(osp.dirname(__file__), "brain.png")
+    filename = os.path.join(os.path.dirname(__file__), "brain.png")
     win = create_window()
     image = make.image(filename=filename, colormap="bone", alpha_mask=True)
     plot = win.get_plot()

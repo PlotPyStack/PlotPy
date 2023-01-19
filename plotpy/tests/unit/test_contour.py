@@ -2,7 +2,7 @@ import unittest
 
 import numpy as np
 
-from plotpy.gui.widgets.contour import contour
+from plotpy.widgets.contour import contour
 
 
 class ContourTest(unittest.TestCase):
@@ -18,8 +18,8 @@ class ContourTest(unittest.TestCase):
         self.x = np.arange(-3.0, 3.0, delta)
         self.y = np.arange(-2.0, 2.0, delta)
         self.X, self.Y = np.meshgrid(self.x, self.y)
-        Z1 = np.exp(-self.X ** 2 - self.Y ** 2)
-        Z2 = np.exp(-(self.X - 1) ** 2 - (self.Y - 1) ** 2)
+        Z1 = np.exp(-self.X**2 - self.Y**2)
+        Z2 = np.exp(-((self.X - 1) ** 2) - (self.Y - 1) ** 2)
         self.Z = (Z1 - Z2) * 2
 
     def test_contour_level_1(self):

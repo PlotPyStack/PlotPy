@@ -10,12 +10,11 @@
 # SHOW = True # Show test in GUI-based test launcher
 # todo: change this test so that shown data means something...
 
-from numpy import random, array, dot, concatenate
+from numpy import array, concatenate, dot, random
 
-from plotpy.gui.widgets.baseplot import PlotType
-from plotpy.gui.widgets.plot import PlotDialog
-from plotpy.gui.widgets.builder import make
-from plotpy.gui.widgets.config import _
+from plotpy.config import _
+from plotpy.widgets.builder import make
+from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
 
 
 def hist2d_func(X, Y, Z):
@@ -38,9 +37,9 @@ def hist2d_func(X, Y, Z):
 
 
 if __name__ == "__main__":
-    import plotpy.gui
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
     N = 150000
     m = array([[1.0, 0.2], [-0.2, 3.0]])
     X1 = random.normal(0, 0.3, size=(N, 2))

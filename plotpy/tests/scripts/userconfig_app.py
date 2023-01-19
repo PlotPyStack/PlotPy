@@ -14,13 +14,14 @@ version = 1.0.0
 b/f = 1.0
 """
 
-from plotpy.core.dataset import datatypes as gdt
-from plotpy.core.dataset import dataitems as gdi
-from plotpy.core.config import userconfig
+from guidata.dataset.dataitems import FloatItem
+from guidata.dataset.datatypes import DataSet
+
+from plotpy.utils.config import userconfig
 
 
-class DS(gdt.DataSet):
-    f = gdi.FloatItem("F", 1.0)
+class DS(DataSet):
+    f = FloatItem("F", 1.0)
 
 
 ds = DS("")

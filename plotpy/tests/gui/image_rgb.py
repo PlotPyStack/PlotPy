@@ -10,9 +10,8 @@
 import os.path as osp
 
 import plotpy
-from plotpy.gui.widgets.baseplot import PlotType
-from plotpy.gui.widgets.plot import PlotDialog
-from plotpy.gui.widgets.builder import make
+from plotpy.widgets.builder import make
+from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
 
 SHOW = True  # Show test in GUI-based test launcher
 
@@ -37,9 +36,9 @@ def imshow(filename):
 def test():
     """Test"""
     # -- Create QApplication
-    import plotpy.gui
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
     # --
     imshow(IMGFILE)
 

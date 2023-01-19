@@ -11,13 +11,13 @@ SelectPointTool test
 This plotpy tool provide a MATLAB-like "ginput" feature.
 """
 
-SHOW = True  # Show test in GUI-based test launcher
 
-from plotpy.gui.widgets.baseplot import PlotType
-from plotpy.gui.widgets.plot import PlotDialog
-from plotpy.gui.widgets.tools import SelectPointTool
-from plotpy.gui.widgets.builder import make
-from plotpy.gui.widgets.config import _
+from plotpy.config import _
+from plotpy.widgets.builder import make
+from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.tools.curve import SelectPointTool
+
+SHOW = True  # Show test in GUI-based test launcher
 
 
 def test_function(tool):
@@ -54,9 +54,9 @@ def get_point(*args):
 def test():
     """Test"""
     # -- Create QApplication
-    import plotpy.gui
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
     # --
     from numpy import linspace, sin
 

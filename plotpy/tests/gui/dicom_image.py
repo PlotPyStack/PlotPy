@@ -9,31 +9,31 @@
 
 Requires pydicom (>=0.9.3)"""
 
-SHOW = True  # Show test in GUI-based test launcher
 
-try: 
+try:
     import pydicom
 except ImportError:
     print("Pydicom not installed, dicom_image.py can not run")
     pydicom = False
 
-import os.path as osp
+import os
 
 import plotpy
-from plotpy.gui.widgets.baseplot import PlotType
-from plotpy.gui.widgets.plot import PlotDialog
-from plotpy.gui.widgets.builder import make
+from plotpy.widgets.builder import make
+from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+
+SHOW = True  # Show test in GUI-based test launcher
 
 
-def test():    
+def test():
     win = PlotDialog(
         edit=False,
         toolbar=True,
         wintitle="DICOM I/O test",
         options=dict(show_contrast=True, type=PlotType.IMAGE),
-    )    
+    )
     if pydicom:
-        filename = osp.join(osp.dirname(__file__), "mr-brain.dcm")
+        filename = os.path.join(os.path.dirname(__file__), "mr-brain.dcm")
         image = make.image(filename=filename, title="DICOM img", colormap="gray")
         plot = win.get_plot()
         plot.add_item(image)
@@ -41,11 +41,13 @@ def test():
         contrast = win.get_contrast_panel()
         contrast.histogram.eliminate_outliers(54.0)
         win.resize(600, 700)
-        
+
     return win
 
 
 if __name__ == "__main__":
-    _app = plotpy.gui.qapplication()
+    import plotpy.widgets
+
+    _app = plotpy.widgets.qapplication()
     win = test()
     win.exec_()

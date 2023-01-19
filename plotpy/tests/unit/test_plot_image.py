@@ -10,12 +10,11 @@ import contextlib
 import numpy as np
 import pytest
 from pytest import approx
+from qtpy.QtCore import Qt
 
-from plotpy.gui.widgets.baseplot import PlotType, BasePlot
-from plotpy.gui.widgets.plot import PlotDialog
-from plotpy.gui.widgets.builder import make
-from plotpy.gui.widgets.ext_gui_lib import Qt
-from plotpy.gui.widgets.tools import ColormapTool
+from plotpy.widgets.builder import make
+from plotpy.widgets.plot.plotwidget import BasePlot, PlotDialog, PlotType
+from plotpy.widgets.tools.image import ColormapTool
 
 
 def compute_image():
@@ -24,7 +23,7 @@ def compute_image():
     x = np.array(np.linspace(-5, 5, N), np.float32)
     img = np.zeros((N, N), np.float32)
     x.shape = (1, N)
-    img += x ** 2
+    img += x**2
     return img
 
 
@@ -59,9 +58,9 @@ def compute_image_xy():
     x = np.array(np.linspace(-5, 5, N), T)
     img = np.zeros((N, N), T)
     x.shape = (1, N)
-    img += x ** 2
+    img += x**2
     x.shape = (N, 1)
-    img += x ** 2
+    img += x**2
     x.shape = (N,)
     return x, (x + 5) ** 0.6, img
 
@@ -128,11 +127,11 @@ def test_set_aspect_ratio(qtbot, ratio):
     x0, x1, y0, y1 = plot.get_plot_limits()
     width = abs(x1 - x0)
     height = abs(y1 - y0)
-    #XXX: this is tested with gui, it depends on x/y image ration
+    # XXX: this is tested with gui, it depends on x/y image ration
     # assert original_width != width
     # assert original_height / height == pytest.approx(ratio)
-#    assert original_height == height
-#    assert width / original_width == pytest.approx(ratio)
+    #    assert original_height == height
+    #    assert width / original_width == pytest.approx(ratio)
 
     qtbot.keyClick(win, Qt.Key_Enter)
 

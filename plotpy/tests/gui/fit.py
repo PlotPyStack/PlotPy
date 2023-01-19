@@ -7,11 +7,12 @@
 
 """Curve fitting tools"""
 
-SHOW = True  # Show test in GUI-based test launcher
 
 import numpy as np
 
-from plotpy.gui.widgets.fit import FitParam, guifit
+from plotpy.widgets.fit import FitParam, guifit
+
+SHOW = True  # Show test in GUI-based test launcher
 
 
 def test():

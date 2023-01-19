@@ -7,15 +7,15 @@
 
 """Internal test related to pcolor feature"""
 
-SHOW = False  # Show test in GUI-based test launcher
 
-from numpy import int32, zeros
+import numpy as np
 
 from plotpy._scaler import _line_test as line
 
+SHOW = False  # Show test in GUI-based test launcher
 N = 10
-imin = zeros((N,), int32)
-imax = zeros((N,), int32)
+imin = np.ndarray((N,), dtype=int)
+imax = np.ndarray((N,), dtype=int)
 
 
 def print_tri(imin, imax):

@@ -10,7 +10,8 @@ Tests for texteditor.py
 
 # Test library imports
 import pytest
-from plotpy.gui.widgets.variableexplorer.texteditor import TextEditor
+
+from plotpy.widgets.variableexplorer.texteditor import TextEditor
 
 TEXT = """01234567890123456789012345678901234567890123456789012345678901234567890123456789
 dedekdh elkd ezd ekjd lekdj elkdfjelfjk e"""
@@ -33,4 +34,5 @@ def test_texteditor(texteditor):
 
 
 if __name__ == "__main__":
+    pytest.main()
     pytest.main()

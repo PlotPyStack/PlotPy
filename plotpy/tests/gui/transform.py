@@ -7,24 +7,24 @@
 
 """Tests around image transforms: rotation, translation, ..."""
 
-SHOW = True  # Show test in GUI-based test launcher
 
 import os
+
 import numpy as np
+from qtpy.QtCore import QRectF
+from qtpy.QtGui import QImage
 
-from plotpy.gui.widgets.ext_gui_lib import QRectF, QImage
+from plotpy.widgets import io
+from plotpy.widgets.builder import make
+from plotpy.widgets.items.image.misc import assemble_imageitems
+from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
 
-from plotpy.gui.widgets.items.image import assemble_imageitems
-from plotpy.gui.widgets.baseplot import PlotType
-from plotpy.gui.widgets.plot import PlotDialog
-from plotpy.gui.widgets.builder import make
-from plotpy.gui.widgets import io
-
+SHOW = True  # Show test in GUI-based test launcher
 DEFAULT_CHARS = "".join([chr(c) for c in range(32, 256)])
 
 
 def get_font_array(sz, chars=DEFAULT_CHARS):
-    from plotpy.gui.widgets.ext_gui_lib import QFont, QPainter, QColor
+    from qtpy.QtGui import QColor, QFont, QPainter
 
     font = QFont()
     font.setFixedPitch(True)
@@ -177,7 +177,7 @@ def test():
         s = float((info.max - info.min))
         a1 = s * (data - m) / (M - m)
         img = np.array(a1 + info.min, type)
-        txtwrite(img, 0, 0, N / 15.0, str(type))
+        txtwrite(img, 0, 0, int(N / 15.0), str(type))
         items.append(make.trimage(img, colormap="jet"))
     imshow(items, title="Transform test ({}x{} images)".format(N, N))
     return items
@@ -185,9 +185,9 @@ def test():
 
 if __name__ == "__main__":
     # -- Create QApplication
-    import plotpy.gui
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
     # --
     items = test()
     build_image(items)

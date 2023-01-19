@@ -9,20 +9,20 @@
 Demonstrates how items may trigger callbacks when activated
 """
 
+
+from guidata.dataset.dataitems import (
+    ChoiceItem,
+    ColorItem,
+    FloatItem,
+    StringItem,
+    TextItem,
+)
+from guidata.dataset.datatypes import DataSet
+
 SHOW = True  # Show test in GUI-based test launcher
 
 
-from plotpy.core.dataset.dataitems import (
-    ChoiceItem,
-    StringItem,
-    TextItem,
-    ColorItem,
-    FloatItem,
-)
-from plotpy.gui.dataset.datatypes import DataSetGui
-
-
-class TestParameters(DataSetGui):
+class TestParameters(DataSet):
     def cb_example(self, item, value):
         print("\nitem: ", item, "\nvalue:", value)
         if self.results is None:
@@ -58,10 +58,10 @@ class TestParameters(DataSetGui):
 
 if __name__ == "__main__":
     # Create QApplication
-    import plotpy.gui
-    import plotpy.core.config.config  # Loading icons
+    import plotpy.config  # Loading icons
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
 
     e = TestParameters()
     print(e)

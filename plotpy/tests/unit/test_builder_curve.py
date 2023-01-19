@@ -8,11 +8,11 @@
 
 import numpy as np
 import pytest
+from qtpy.QtCore import Qt
+from qwt import QwtPlotCurve
 
-from plotpy.gui.widgets.baseplot import PlotType
-from plotpy.gui.widgets.builder import make
-from plotpy.gui.widgets.ext_gui_lib import Qt, QwtPlotCurve
-from plotpy.gui.widgets.plot import PlotDialog
+from plotpy.widgets.builder import make
+from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
 
 
 def plot_qtbot_curve(qtbot, curve):

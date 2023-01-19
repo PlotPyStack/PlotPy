@@ -7,19 +7,17 @@
 
 """Mandelbrot demo"""
 
-SHOW = True  # Show test in GUI-based test launcher
 
 import numpy as np
+from qtpy.QtCore import QPointF, QRectF
 
-from plotpy.gui.widgets.ext_gui_lib import QRectF, QPointF
-
-from plotpy.gui.widgets.config import _
-from plotpy.gui.widgets.baseplot import PlotType
-from plotpy.gui.widgets.plot import PlotDialog
-from plotpy.gui.widgets.items.image import RawImageItem
-from plotpy.gui.widgets.tools import ToggleTool
-
+from plotpy.config import _
 from plotpy.mandelbrot import mandelbrot
+from plotpy.widgets.items.image.base import RawImageItem
+from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.tools.base import ToggleTool
+
+SHOW = True  # Show test in GUI-based test launcher
 
 
 class FullScale(ToggleTool):
@@ -86,7 +84,7 @@ def mandel():
 
 
 if __name__ == "__main__":
-    import plotpy.gui
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
     mandel()

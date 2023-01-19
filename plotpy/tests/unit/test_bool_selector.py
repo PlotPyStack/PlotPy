@@ -12,14 +12,12 @@ box widgets in the editing dialog box) and item groups may be enabled/disabled
 using one group parameter (a boolean item).
 """
 
-from plotpy.gui.dataset.qtitemwidgets import (
-    GroupWidget,
-    CheckBoxWidget,
-    FloatSliderWidget,
-)
-from plotpy.gui.dataset.qtwidgets import DataSetEditDialog
-from plotpy.gui.widgets.ext_gui_lib import QApplication, Qt, QTimer
-from tests.scripts.bool_selector import GroupSelection
+from guidata.dataset.qtitemwidgets import CheckBoxWidget, FloatSliderWidget, GroupWidget
+from guidata.dataset.qtwidgets import DataSetEditDialog
+from qtpy.QtCore import Qt, QTimer
+from qtpy.QtWidgets import QApplication
+
+from plotpy.tests.scripts.bool_selector import GroupSelection
 
 
 def get_edit_dialog():

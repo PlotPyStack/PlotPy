@@ -9,55 +9,51 @@
 SIFT, the Signal and Image Filtering Tool
 Simple signal and image processing application based on plotpy
 """
-from plotpy.gui.widgets.console import DockableConsole
-
-SHOW = True  # Show test in GUI-based test launcher
-
-import sys
-import os.path as osp
 import os
-import numpy as np
+import os.path as osp
+import sys
 
-from plotpy.core.utils.dataset import update_dataset
-from plotpy.core.dataset.datatypes import ValueProp
-from plotpy.core.dataset.dataitems import (
-    IntItem,
-    FloatArrayItem,
-    StringItem,
-    ChoiceItem,
-    FloatItem,
+import numpy as np
+from guidata.dataset.dataitems import (
     BoolItem,
+    ChoiceItem,
+    DictItem,
+    FloatArrayItem,
+    FloatItem,
+    IntItem,
+    StringItem,
 )
-from plotpy.gui.dataset.dataitems import DictItem
-from plotpy.gui.dataset.qtwidgets import DataSetEditGroupBox
-from plotpy.gui.dataset.datatypes import DataSetGui
-from plotpy.gui.utils.icons import get_std_icon
-from plotpy.gui.utils.misc import add_actions, create_action, get_icon
-from plotpy.gui.widgets.dockables import DockableWidget, DockableWidgetMixin
-from plotpy.gui.widgets.config import _
-from plotpy.gui.widgets.baseplot import PlotType
-from plotpy.gui.widgets.plot import PlotWidget
-from plotpy.gui.widgets.builder import make
-from plotpy.gui.widgets.dialog import get_open_filenames, get_save_filename
-from plotpy.gui.widgets.ext_gui_lib import (
+from guidata.dataset.datatypes import DataSet, ValueProp, update_dataset
+from guidata.dataset.qtwidgets import DataSetEditGroupBox
+from PyQt5.QtCore import pyqtSignal as Signal
+from qtpy.QtCore import Qt
+from qtpy.QtGui import QCursor
+from qtpy.QtWidgets import (
+    QApplication,
+    QFileDialog,
+    QHBoxLayout,
+    QListWidget,
     QMainWindow,
+    QMenu,
     QMessageBox,
     QSplitter,
-    QListWidget,
-    QVBoxLayout,
-    QHBoxLayout,
-    QWidget,
     QTabWidget,
-    QMenu,
-    QApplication,
-    QCursor,
-    Qt,
-    Signal,
+    QVBoxLayout,
+    QWidget,
 )
+
+from plotpy.config import _
+from plotpy.utils.icons import get_std_icon
+from plotpy.utils.misc_from_gui import add_actions, create_action, get_icon
+from plotpy.widgets.builder import make
+from plotpy.widgets.dockable_console import DockableConsole
+from plotpy.widgets.dockables import DockableWidget, DockableWidgetMixin
+from plotpy.widgets.plot.plotwidget import PlotType, PlotWidget
 
 sys.path.append(osp.abspath(osp.dirname(__file__)))
 
 
+SHOW = True  # Show test in GUI-based test launcher
 APP_NAME = _("Sift")
 APP_DESC = _(
     """Signal and Image Filtering Tool<br>
@@ -117,7 +113,7 @@ def flatfield(rawdata, flatdata):
     return np.array(dtemp / dunif, dtype=rawdata.dtype)
 
 
-class SignalParam(DataSetGui):
+class SignalParam(DataSet):
     title = StringItem(_("Title"), default=_("Untitled"))
     xydata = FloatArrayItem(_("Data"), transpose=True, minmax="rows")
 
@@ -137,7 +133,7 @@ class SignalParam(DataSetGui):
     data = property(get_data, set_data)
 
 
-class SignalParamNew(DataSetGui):
+class SignalParamNew(DataSet):
     title = StringItem(_("Title"), default=_("Untitled"))
     xmin = FloatItem("Xmin", default=-10.0)
     xmax = FloatItem("Xmax", default=10.0)
@@ -150,9 +146,9 @@ class SignalParamNew(DataSetGui):
     )
 
 
-class ImageParam(DataSetGui):
+class ImageParam(DataSet):
     def __init__(self, title=None, comment=None, icon=""):
-        DataSetGui.__init__(self, title, comment, icon)
+        DataSet.__init__(self, title, comment, icon)
         self._template = None
 
     @property
@@ -201,7 +197,7 @@ class ImageParam(DataSetGui):
         self.data = np.array(self.data, dtype=dtype)
 
 
-class ImageParamNew(DataSetGui):
+class ImageParamNew(DataSet):
     title = StringItem(_("Title"), default=_("Untitled"))
     height = IntItem(
         _("Height"), help=_("Image height (total number of rows)"), min=1, default=500
@@ -568,6 +564,7 @@ class SignalFT(ObjectFT):
     PARAMCLASS = SignalParam
     PREFIX = "s"
     # ------ObjectFT API
+
     def setup(self, toolbar):
         ObjectFT.setup(self, toolbar)
 
@@ -677,7 +674,7 @@ class SignalFT(ObjectFT):
 
     # ------Signal operations
     def extract_roi(self):
-        class ROIParam(DataSetGui):
+        class ROIParam(DataSet):
             row1 = IntItem(_("First row index"), default=0, min=-1)
             row2 = IntItem(_("Last row index"), default=-1, min=-1)
 
@@ -719,7 +716,7 @@ class SignalFT(ObjectFT):
             (_("energy"), "energy"),
         )
 
-        class NormalizeParam(DataSetGui):
+        class NormalizeParam(DataSet):
             method = ChoiceItem(_("Normalize with respect to"), methods)
 
         param = NormalizeParam(_("Normalize"))
@@ -734,7 +731,7 @@ class SignalFT(ObjectFT):
     def calibrate(self):
         axes = (("x", _("X-axis")), ("y", _("Y-axis")))
 
-        class CalibrateParam(DataSetGui):
+        class CalibrateParam(DataSet):
             axis = ChoiceItem(_("Calibrate"), axes, default="y")
             a = FloatItem("a", default=1.0)
             b = FloatItem("b", default=0.0)
@@ -763,7 +760,7 @@ class SignalFT(ObjectFT):
         self.compute_11("WienerFilter", func)
 
     def compute_gaussian(self):
-        class GaussianParam(DataSetGui):
+        class GaussianParam(DataSet):
             sigma = FloatItem("σ", default=1.0)
 
         param = GaussianParam(_("Gaussian filter"))
@@ -802,7 +799,7 @@ class SignalFT(ObjectFT):
             signal.xydata = np.vstack((xarr, np.random.rand(signalnew.size) - 0.5))
         elif signalnew.type == "gauss":
 
-            class GaussParam(DataSetGui):
+            class GaussParam(DataSet):
                 a = FloatItem("Norm", default=1.0)
                 x0 = FloatItem("X0", default=0.0)
                 sigma = FloatItem("σ", default=5.0)
@@ -821,7 +818,9 @@ class SignalFT(ObjectFT):
         filters = "{} (*.txt *.csv)\n{} (*.npy)".format(
             _("Text files"), _("NumPy arrays")
         )
-        filenames, _filter = get_open_filenames(self.parent(), _("Open"), "", filters)
+        filenames, _filter = QFileDialog.getOpenFileNames(
+            self.parent(), _("Open"), "", filters, "", options=QFileDialog.ShowDirsOnly
+        )
         sys.stdin, sys.stdout, sys.stderr = saved_in, saved_out, saved_err
         filenames = list(filenames)
         for filename in filenames:
@@ -874,8 +873,14 @@ class SignalFT(ObjectFT):
         """Save selected signal"""
         rows = self._get_selected_rows()
         for row in rows:
-            filename, _filter = get_save_filename(
-                self, _("Save as"), "", _("CSV files") + " (*.csv)"
+            filename, _filter = QFileDialog.getSaveFileName(
+                self,
+                _("Save as"),
+                "",
+                _("CSV files") + " (*.csv)",
+                "",
+                "",
+                options=QFileDialog.ShowDirsOnly,
             )
             if not filename:
                 return
@@ -902,6 +907,7 @@ class ImageFT(ObjectFT):
     PARAMCLASS = ImageParam
     PREFIX = "i"
     # ------ObjectFT API
+
     def setup(self, toolbar):
         ObjectFT.setup(self, toolbar)
 
@@ -1052,7 +1058,7 @@ class ImageFT(ObjectFT):
         boundaries = ("constant", "nearest", "reflect", "wrap")
         prop = ValueProp(False)
 
-        class RotateParam(DataSetGui):
+        class RotateParam(DataSet):
             angle = FloatItem("{} (°)" % _("Angle"))
             mode = ChoiceItem(
                 _("Mode"), list(zip(boundaries, boundaries)), default=boundaries[0]
@@ -1128,7 +1134,7 @@ class ImageFT(ObjectFT):
                     + "\n{}".format("Selected images do not have the" + "same size"),
                 )
         original_size = objs[rows[0]].size
-        from plotpy.gui.widgets.resizedialog import ResizeDialog
+        from plotpy.widgets.resizedialog import ResizeDialog
 
         dlg = ResizeDialog(
             self.plot,
@@ -1141,7 +1147,7 @@ class ImageFT(ObjectFT):
         boundaries = ("constant", "nearest", "reflect", "wrap")
         prop = ValueProp(False)
 
-        class ResizeParam(DataSetGui):
+        class ResizeParam(DataSet):
             zoom = FloatItem(_("Zoom"), default=dlg.get_zoom())
             mode = ChoiceItem(
                 _("Mode"), list(zip(boundaries, boundaries)), default=boundaries[0]
@@ -1190,7 +1196,7 @@ class ImageFT(ObjectFT):
         )
 
     def extract_roi(self):
-        class ROIParam(DataSetGui):
+        class ROIParam(DataSet):
             row1 = IntItem(_("First row index"), default=0, min=-1)
             row2 = IntItem(_("Last row index"), default=-1, min=-1)
             col1 = IntItem(_("First column index"), default=0, min=-1)
@@ -1233,7 +1239,7 @@ class ImageFT(ObjectFT):
 
     # ------Image Processing
     def calibrate(self):
-        class CalibrateParam(DataSetGui):
+        class CalibrateParam(DataSet):
             a = FloatItem("a", default=1.0)
             b = FloatItem("b", default=0.0)
 
@@ -1246,7 +1252,7 @@ class ImageFT(ObjectFT):
         )
 
     def compute_threshold(self):
-        class ThresholdParam(DataSetGui):
+        class ThresholdParam(DataSet):
             value = FloatItem(_("Threshold"))
 
         self.compute_11(
@@ -1257,7 +1263,7 @@ class ImageFT(ObjectFT):
         )
 
     def compute_clip(self):
-        class ClipParam(DataSetGui):
+        class ClipParam(DataSet):
             value = FloatItem(_("Clipping value"))
 
         self.compute_11(
@@ -1273,7 +1279,7 @@ class ImageFT(ObjectFT):
         self.compute_11("WienerFilter", sps.wiener)
 
     def compute_gaussian(self):
-        class GaussianParam(DataSetGui):
+        class GaussianParam(DataSet):
             sigma = FloatItem("σ", default=1.0)
 
         param = GaussianParam(_("Gaussian filter"))
@@ -1313,14 +1319,14 @@ class ImageFT(ObjectFT):
             image.data = np.empty(shape, dtype=dtype)
         elif imagenew.type == "rand":
             data = np.random.rand(*shape)
-            from plotpy.gui.widgets import io
+            from plotpy.widgets import io
 
             image.data = io.scale_data_to_dtype(data, dtype)
         self.add_object(image)
 
     def open_image(self):
         """Open image file"""
-        from plotpy.gui.widgets.qthelpers import exec_images_open_dialog
+        from plotpy.widgets.qthelpers import exec_images_open_dialog
 
         for filename, data in exec_images_open_dialog(
             self, basedir="", app_name=APP_NAME, to_grayscale=True
@@ -1344,7 +1350,7 @@ class ImageFT(ObjectFT):
         rows = self._get_selected_rows()
         for row in rows:
             obj = self.objects[row]
-            from plotpy.gui.widgets.qthelpers import exec_image_save_dialog
+            from plotpy.widgets.qthelpers import exec_image_save_dialog
 
             filename = exec_image_save_dialog(
                 self, obj.data, template=obj.template, basedir="", app_name=APP_NAME
@@ -1481,7 +1487,10 @@ class MainWindow(QMainWindow):
         if DockableConsole is None:
             self.console = None
         else:
-            import time, scipy.signal as sps, scipy.ndimage as spi
+            import time
+
+            import scipy.ndimage as spi
+            import scipy.signal as sps
 
             ns = {
                 "sift": self.sift_proxy,
@@ -1573,7 +1582,7 @@ class MainWindow(QMainWindow):
 
     # ------?
     def about(self):
-        from plotpy.gui.widgets.about import about
+        from plotpy.widgets.about import about
 
         QMessageBox.about(
             self,
@@ -1595,7 +1604,7 @@ class MainWindow(QMainWindow):
 
 
 def run():
-    from plotpy.gui import qapplication
+    from plotpy.widgets import qapplication
 
     app = qapplication()
     window = MainWindow()

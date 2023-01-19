@@ -7,20 +7,21 @@
 
 """Rotate/crop test: using the scaler C++ engine to rotate/crop images"""
 
-SHOW = True  # Show test in GUI-based test launcher
 
 import os.path as osp
+
 import numpy as np
 
-from plotpy.gui.widgets.builder import make
-from plotpy.gui.widgets.baseplot import PlotType
-from plotpy.gui.widgets.plot import PlotDialog
-from plotpy.gui.widgets.rotatecrop import (
+from plotpy.widgets import io
+from plotpy.widgets.builder import make
+from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.rotatecrop import (
+    MultipleRotateCropWidget,
     RotateCropDialog,
     RotateCropWidget,
-    MultipleRotateCropWidget,
 )
-from plotpy.gui.widgets import io
+
+SHOW = True  # Show test in GUI-based test launcher
 
 
 def imshow(data, title=None, hold=False):
@@ -87,7 +88,7 @@ def dialog_test(fname, interactive=True):
 
 
 if __name__ == "__main__":
-    from plotpy.gui import qapplication
+    from plotpy.widgets import qapplication
 
     qapp = qapplication()  # analysis:ignore
 

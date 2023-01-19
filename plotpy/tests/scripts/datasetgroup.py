@@ -12,21 +12,22 @@ DataSet objects may be grouped into DataSetGroup, allowing them to be edited
 in a single dialog box (with one tab per DataSet object).
 """
 
-SHOW = True  # Show test in GUI-based test launcher
 
-from plotpy.gui.dataset.datatypes import DataSetGroupGui
+from guidata.dataset.datatypes import DataSetGroupGui
 
 try:
     from tests.scripts.all_features import TestParameters
 except ImportError:
     from plotpy.tests.scripts.all_features import TestParameters
 
+SHOW = True  # Show test in GUI-based test launcher
+
 if __name__ == "__main__":
     # Create QApplication
-    import plotpy.gui
-    import plotpy.core.config.config
+    import plotpy.config
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
 
     e1 = TestParameters("DataSet #1")
     e2 = TestParameters("DataSet #2")

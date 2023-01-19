@@ -7,9 +7,10 @@
 
 """Little translation test"""
 
-SHOW = False  # Do not show test in GUI-based test launcher
 
-from plotpy.core.config.config import _
+from plotpy.config import _
+
+SHOW = False  # Do not show test in GUI-based test launcher
 
 translations = (_("Some required entries are incorrect"),)
 

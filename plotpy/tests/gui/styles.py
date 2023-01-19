@@ -7,18 +7,19 @@
 
 """Styles unit tests"""
 
-SHOW = False  # Do not show test in GUI-based test launcher
 
+import gettext
 import unittest
 
-from plotpy.gui.widgets.ext_gui_lib import Qt, QSize, QPen, QBrush, QwtSymbol
+from qtpy.QtCore import QSize, Qt
+from qtpy.QtGui import QBrush, QPen
+from qwt import QwtSymbol
 
-from plotpy.core.config.userconfig import UserConfig
-import gettext
+from plotpy.config import UserConfig
+from plotpy.widgets.styles.base import LineStyleParam, SymbolParam
 
 gettext.install("test")
-from plotpy.gui.widgets.styles import SymbolParam, LineStyleParam
-
+SHOW = False  # Do not show test in GUI-based test launcher
 CONF = UserConfig({})
 CONF.set_application("plotpy", version="0.0.0", load=False)
 

@@ -15,15 +15,14 @@ This test must be run from plotpy sources (the file packaging.py must be
 present). CxFreeze or py2exe must be installed.
 """
 
-SHOW = True  # Show test in GUI-based test launcher
 
 import os
-import os.path as osp
 
+SHOW = True  # Show test in GUI-based test launcher
 
 if os.name == "nt":
     try:
-        from plotpy.core.utils.packaging_helpers import Distribution
+        from plotpy.utils.packaging_helpers import Distribution
     except ImportError:
         print(
             "disthelpers test is not shown because packaging.py, "
@@ -40,7 +39,7 @@ if __name__ == "__main__":
         name="Application demo",
         version="1.0.0",
         description="Application demo based on editgroupbox.py",
-        script=osp.join(osp.dirname(__file__), "editgroupbox.py"),
+        script=os.path.join(os.path.dirname(__file__), "editgroupbox.py"),
         target_name="demo.exe",
     )
     dist.add_modules("plotpy")

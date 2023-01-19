@@ -6,20 +6,21 @@
 
 """Contour test"""
 
-SHOW = True  # Show test in GUI-based test launcher
 
 import numpy as np
 
-import plotpy.gui
-from plotpy.gui.widgets.builder import make
-from plotpy.gui.widgets.contour import contour
-from plotpy.gui.widgets.items.shapes import PolygonShape
-from plotpy.gui.widgets.plot import PlotDialog
-from plotpy.gui.widgets.styles import ShapeParam
+import plotpy.widgets
+from plotpy.widgets.builder import make
+from plotpy.widgets.contour import contour
+from plotpy.widgets.items.shapes.polygon import PolygonShape
+from plotpy.widgets.plot.plotwidget import PlotDialog
+from plotpy.widgets.styles.shape import ShapeParam
+
+SHOW = True  # Show test in GUI-based test launcher
 
 
 def test():
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
     win = PlotDialog(edit=True, toolbar=True, wintitle="Sample contour plotting")
     plot = win.get_plot()
     plot.set_aspect_ratio(lock=True)
@@ -31,8 +32,8 @@ def test():
     x = np.arange(-3.0, 3.0, delta)
     y = np.arange(-2.0, 2.0, delta)
     X, Y = np.meshgrid(x, y)
-    Z1 = np.exp(-X ** 2 - Y ** 2)
-    Z2 = np.exp(-(X - 1) ** 2 - (Y - 1) ** 2)
+    Z1 = np.exp(-(X**2) - Y**2)
+    Z2 = np.exp(-((X - 1) ** 2) - (Y - 1) ** 2)
     Z = (Z1 - Z2) * 2
 
     # show the image

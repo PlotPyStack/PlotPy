@@ -12,21 +12,21 @@ Masked image items are constructed using a masked array item. Masked data is
 ignored in computations, like the average cross sections.
 """
 
-import os, os.path as osp, pickle
+import os
+import pickle
 
-from plotpy.gui.widgets.baseplot import PlotType
-from plotpy.gui.widgets.plot import PlotDialog
-from plotpy.gui.widgets.tools import ImageMaskTool
-from plotpy.gui.widgets.builder import make
+from plotpy.widgets.builder import make
+from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.tools.image import ImageMaskTool
 
 SHOW = True  # Show test in GUI-based test launcher
 
 FNAME = "image_masked.pickle"
 
 if __name__ == "__main__":
-    import plotpy.gui
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
     win = PlotDialog(
         toolbar=True,
         wintitle="Masked image item test",
@@ -40,7 +40,7 @@ if __name__ == "__main__":
         iofile.close()
         print("OK")
     else:
-        fname = osp.join(osp.abspath(osp.dirname(__file__)), "brain.png")
+        fname = os.path.join(os.path.abspath(os.path.dirname(__file__)), "brain.png")
         image = make.maskedimage(
             filename=fname,
             colormap="gray",

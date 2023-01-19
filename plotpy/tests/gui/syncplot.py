@@ -13,11 +13,16 @@
 # ===============================================================================
 
 
-SHOW = False  # Show test in GUI-based test launcher
+from plotpy.widgets.builder import make
+from plotpy.widgets.plot.plotwidget import (
+    BasePlot,
+    PlotDialog,
+    PlotManager,
+    PlotType,
+    PlotWidget,
+)
 
-from plotpy.gui.widgets.baseplot import BasePlot, PlotType
-from plotpy.gui.widgets.plot import PlotDialog, PlotWidget, PlotManager
-from plotpy.gui.widgets.builder import make
+SHOW = False  # Show test in GUI-based test launcher
 
 
 class MyPlotDialog(PlotDialog):
@@ -62,9 +67,9 @@ def plot(items1, items2, items3, items4):
 def test():
     """Test"""
     # -- Create QApplication
-    import plotpy.gui
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
     # --
     from numpy import linspace, sin
 

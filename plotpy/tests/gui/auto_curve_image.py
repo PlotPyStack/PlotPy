@@ -7,14 +7,13 @@
 
 """PlotDialog test"""
 
-SHOW = True  # Show test in GUI-based test launcher
-
-from plotpy.gui.widgets.plot import PlotDialog
-from plotpy.gui.widgets.baseplot import PlotType
-from plotpy.gui.widgets.builder import make
-
 
 import numpy as np
+
+from plotpy.widgets.builder import make
+from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+
+SHOW = True  # Show test in GUI-based test launcher
 
 
 def compute_image(N=2000, grid=True):
@@ -22,9 +21,9 @@ def compute_image(N=2000, grid=True):
     x = np.array(np.linspace(-5, 5, N), T)
     img = np.zeros((N, N), T)
     x.shape = (1, N)
-    img += x ** 2
+    img += x**2
     x.shape = (N, 1)
-    img += x ** 2
+    img += x**2
     np.cos(img, img)  # inplace cosine
     if not grid:
         return img
@@ -68,19 +67,15 @@ def plot(*items):
 def test():
     """Test"""
     # -- Create QApplication
-    import plotpy.gui
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
     # --
     from numpy import linspace, sin
 
     x = linspace(0, 2000, 20000)
-    y = (sin(sin(sin(x/50)))-1)*-1000
-    plot(
-        make.image(compute_image()),
-        make.curve(x, y, color="b"),
-        make.legend("TR")
-    )
+    y = (sin(sin(sin(x / 50))) - 1) * -1000
+    plot(make.image(compute_image()), make.curve(x, y, color="b"), make.legend("TR"))
 
 
 if __name__ == "__main__":

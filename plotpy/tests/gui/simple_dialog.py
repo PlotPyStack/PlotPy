@@ -7,21 +7,20 @@
 
 """Simple dialog box based on plotpy"""
 
-SHOW = True  # Show test in GUI-based test launcher
 
 import scipy.ndimage
+from guidata.dataset.dataitems import ChoiceItem, IntItem, StringItem
+from guidata.dataset.datatypes import DataSet
+from guidata.dataset.qtwidgets import DataSetEditGroupBox, DataSetShowGroupBox
+from guidata.utils import update_dataset
 
-from plotpy.core.dataset.datatypes import DataSet
-from plotpy.core.dataset.dataitems import StringItem, IntItem, ChoiceItem
-from plotpy.core.utils.dataset import update_dataset
+from plotpy.config import _
+from plotpy.widgets import io
+from plotpy.widgets.builder import make
+from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.tools.image import OpenImageTool
 
-from plotpy.gui.widgets.config import _
-from plotpy.gui.widgets.baseplot import PlotType
-from plotpy.gui.widgets.plot import PlotDialog
-from plotpy.gui.widgets.builder import make
-from plotpy.gui.widgets.tools import OpenImageTool
-from plotpy.gui.widgets import io
-from plotpy.gui.dataset.qtwidgets import DataSetShowGroupBox, DataSetEditGroupBox
+SHOW = True  # Show test in GUI-based test launcher
 
 
 class ImageParam(DataSet):
@@ -106,8 +105,8 @@ class ExampleDialog(PlotDialog):
 
 
 if __name__ == "__main__":
-    from plotpy.gui import qapplication
-    import plotpy.core.config.config  # Loading icons
+    import plotpy.config  # Loading icons
+    from plotpy.widgets import qapplication
 
     _app = qapplication()
     dlg = ExampleDialog()

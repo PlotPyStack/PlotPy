@@ -7,21 +7,20 @@
 
 """Oblique averaged cross section test"""
 
-SHOW = True  # Show test in GUI-based test launcher
 
 import os.path as osp
 
-import plotpy.gui.widgets.cross_section
+import plotpy.widgets.plot.cross_section
+from plotpy.widgets.builder import make
+from plotpy.widgets.plot.cross_section.cswidget import ObliqueCrossSection
+from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.tools.cross_section import ObliqueCrossSectionTool, OCSPanelTool
+from plotpy.widgets.tools.image import ImageMaskTool
 
 # debug mode shows the ROI in the top-left corner of the image plot:
-plotpy.gui.widgets.cross_section.DEBUG = True
+plotpy.widgets.plot.cross_section.csitem.DEBUG = True
 
-from plotpy.gui.widgets.baseplot import PlotType
-from plotpy.gui.widgets.plot import PlotDialog
-from plotpy.gui.widgets.builder import make
-from plotpy.gui.widgets.tools import ImageMaskTool
-from plotpy.gui.widgets.cross_section import ObliqueCrossSection
-from plotpy.gui.widgets.tools import ObliqueCrossSectionTool, OCSPanelTool
+SHOW = True  # Show test in GUI-based test launcher
 
 
 class OCSImageDialog(PlotDialog):
@@ -43,9 +42,9 @@ class OCSImageDialog(PlotDialog):
 def test():
     """Test"""
     # -- Create QApplication
-    import plotpy.gui
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
     # --
     win = OCSImageDialog(
         toolbar=True,

@@ -7,16 +7,16 @@
 
 """plotpy plot benchmarking"""
 
-SHOW = False  # Show test in GUI-based test launcher
-
 
 import time
-import numpy as np
 
-from plotpy.gui.widgets.builder import make
-from plotpy.gui.widgets.ext_gui_lib import QApplication
-from plotpy.gui.widgets.baseplot import PlotType
-from plotpy.gui.widgets.plot import PlotWindow
+import numpy as np
+from qtpy import QtWidgets as QW
+
+from plotpy.widgets.builder import make
+from plotpy.widgets.plot.plotwidget import PlotType, PlotWindow
+
+SHOW = False  # Show test in GUI-based test launcher
 
 
 class BaseBM(object):
@@ -27,7 +27,7 @@ class BaseBM(object):
 
     def __init__(self, name, nsamples, **options):
         self.name = name
-        self.nsamples = nsamples
+        self.nsamples = int(nsamples)
         self.options = options
         self._item = None
 
@@ -48,7 +48,7 @@ class BaseBM(object):
             toolbar=True, wintitle=self.name, options={"type": self.WIN_TYPE}
         )
         win.show()
-        QApplication.processEvents()
+        QW.QApplication.processEvents()
         plot = win.get_plot()
 
         # Create item (ignore this step in benchmark result!)
@@ -128,23 +128,27 @@ class PColorBM(BaseBM):
 def run():
     """Run benchmark"""
     # Print(informations banner)
+    import qtpy
+    from qtpy import QtCore as QC
+
     import plotpy
-    from plotpy.gui.widgets.ext_gui_lib import PYQT_VERSION_STR, QT_VERSION_STR
 
     qt_lib = "PyQt5"
     title = "plotpy plot benchmark [{} v{} (Qt v{}), plotpy v{}]".format(
-        qt_lib, PYQT_VERSION_STR, QT_VERSION_STR, plotpy.__version__
+        qt_lib, QC.PYQT_VERSION_STR, qtpy.QT_VERSION, plotpy.__version__
     )
     print(title)
     print("-" * len(title))
     print()
 
-    import plotpy.gui
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
 
     # Run benchmarks
     close = False
+    # XXX: Error 'BasePlot' object has no attribute '_QwtPlot__data', when handeling
+    # ErrorBarBM's graphical change of position
     for benchmark in (
         CurveBM("Simple curve", 5e6),
         CurveBM("Curve with markers", 2e5, marker="Ellipse", markersize=10),

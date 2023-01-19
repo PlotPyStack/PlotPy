@@ -15,21 +15,23 @@ file.
 import os
 
 try:
-    import plotpy.core.io.hdf5io  # @UnusedImport
+    import plotpy.utils.io.hdf5io  # @UnusedImport
 
     hdf5_is_available = True
 except ImportError:
     hdf5_is_available = False
 
-SHOW = hdf5_is_available  # Show test in GUI-based test launcher
 
-from plotpy.core.io.hdf5io import HDF5Reader, HDF5Writer
-from plotpy.core.dataset.dataitems import StringItem
+from guidata.dataset.dataitems import StringItem
+
+from plotpy.utils.io.hdf5io import HDF5Reader, HDF5Writer
 
 try:
     from tests.scripts.all_items import TestParameters
 except ImportError:
     from plotpy.tests.scripts.all_items import TestParameters
+
+SHOW = hdf5_is_available  # Show test in GUI-based test launcher
 
 
 class TestParameters_Light(TestParameters):
@@ -39,10 +41,10 @@ class TestParameters_Light(TestParameters):
 
 if __name__ == "__main__":
     # Create QApplication
-    import plotpy.gui
-    import plotpy.core.config.config
+    import plotpy.config
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
 
     # FIXME: test.h5 is versioned
     # It may be removed if code fails

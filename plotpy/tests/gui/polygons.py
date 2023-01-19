@@ -11,15 +11,14 @@ PolygonMapItem is intended to display maps ie items containing
 several hundreds of independent polygons.
 """
 
-SHOW = True  # Show test in GUI-based test launcher
 
-from plotpy.gui.widgets.baseplot import PlotType
-from plotpy.gui.widgets.plot import PlotDialog
-from plotpy.gui.widgets.items.curve import PolygonMapItem
-
+from numpy import concatenate, cos, empty, int32, linspace, pi, sin, uint32, zeros
 from numpy.random import rand, randint
-from numpy import concatenate, linspace, int32, uint32, zeros, empty, pi, cos, sin
 
+from plotpy.widgets.items.polygon import PolygonMapItem
+from plotpy.widgets.plot.plotwidget import PlotDialog
+
+SHOW = True  # Show test in GUI-based test launcher
 
 # Create a sample dataset consisting of tesselated circles randomly placed
 # in a box
@@ -85,7 +84,7 @@ def test():
 
 
 if __name__ == "__main__":
-    import plotpy.gui
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
     test()

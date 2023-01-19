@@ -16,12 +16,12 @@ import sys
 from unittest.mock import ANY, Mock
 
 import numpy as np
-from numpy.testing import assert_array_equal
-
 import pytest
 from flaky import flaky
-from plotpy.gui.widgets.ext_gui_lib import Qt
-from plotpy.gui.widgets.variableexplorer.arrayeditor import ArrayEditor, ArrayModel
+from numpy.testing import assert_array_equal
+from qtpy.QtCore import Qt
+
+from plotpy.widgets.variableexplorer.arrayeditor import ArrayEditor, ArrayModel
 
 
 # =============================================================================
@@ -91,7 +91,7 @@ def test_arrayeditor_with_unicode_array(qtbot):
 
     :param qtbot:
     """
-    arr = np.array([u"ñññéáíó"])
+    arr = np.array(["ñññéáíó"])
     assert arr == launch_arrayeditor(arr, "unicode array")
 
 
@@ -267,7 +267,7 @@ def test_arraymodel_set_data_overflow(monkeypatch):
     Unit regression test for #6114 .
     """
     MockQMessageBox = Mock()
-    attr_to_patch = "plotpy.gui.widgets.variableexplorer.arrayeditor.QMessageBox"
+    attr_to_patch = "qtpy.QtWidgets.QMessageBox"
     monkeypatch.setattr(attr_to_patch, MockQMessageBox)
 
     # Numpy doesn't raise OverflowError on Linux for ints smaller than 64 bits
@@ -281,7 +281,7 @@ def test_arraymodel_set_data_overflow(monkeypatch):
         test_array = np.array([[5], [6], [7], [3], [4]], dtype=int_type)
         model = ArrayModel(test_array.copy())
         index = model.createIndex(0, 2)
-        assert not model.setData(index, str(int(2 ** bit_exponent)))
+        assert not model.setData(index, str(int(2**bit_exponent)))
         MockQMessageBox.critical.assert_called_with(ANY, "Error", ANY)
         assert MockQMessageBox.critical.call_count == idx
         assert np.sum(test_array == model._data) == len(test_array)
@@ -296,7 +296,7 @@ def test_arrayeditor_edit_overflow(qtbot, monkeypatch):
     Integration regression test for #6114 .
     """
     MockQMessageBox = Mock()
-    attr_to_patch = "plotpy.gui.widgets.variableexplorer.arrayeditor.QMessageBox"
+    attr_to_patch = "qtpy.QtWidgets.QMessageBox"
     monkeypatch.setattr(attr_to_patch, MockQMessageBox)
 
     # Numpy doesn't raise the OverflowError for ints smaller than 64 bits
@@ -322,7 +322,7 @@ def test_arrayeditor_edit_overflow(qtbot, monkeypatch):
         qtbot.keyClicks(view, "5")
         qtbot.keyClick(view, Qt.Key_Down)
         qtbot.keyClick(view, Qt.Key_Space)
-        qtbot.keyClicks(view.focusWidget(), str(int(2 ** bit_exponent)))
+        qtbot.keyClicks(view.focusWidget(), str(int(2**bit_exponent)))
         qtbot.keyClick(view.focusWidget(), Qt.Key_Down)
         MockQMessageBox.critical.assert_called_with(ANY, "Error", ANY)
         assert MockQMessageBox.critical.call_count == idx

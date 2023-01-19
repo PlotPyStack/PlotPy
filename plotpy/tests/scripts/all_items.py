@@ -15,32 +15,34 @@ DataSet class definition: each parameter type has its own DataItem class
 (IntItem for integers, FloatItem for floats, StringItem for strings, etc.)
 """
 
-SHOW = True  # Show test in GUI-based test launcher
 
-import tempfile, atexit, shutil, datetime, numpy as np
+import atexit
+import datetime
+import shutil
+import tempfile
 
-from plotpy.core.dataset.datatypes import BeginGroup, EndGroup
-from plotpy.core.dataset.dataitems import (
-    FloatItem,
-    IntItem,
+import numpy as np
+from guidata.dataset.dataitems import (
     BoolItem,
     ChoiceItem,
-    MultipleChoiceItem,
-    ImageChoiceItem,
-    FilesOpenItem,
-    StringItem,
-    TextItem,
     ColorItem,
-    FileSaveItem,
-    FileOpenItem,
-    DirectoryItem,
-    FloatArrayItem,
     DateItem,
     DateTimeItem,
+    DirectoryItem,
+    FileOpenItem,
+    FileSaveItem,
+    FilesOpenItem,
+    FloatArrayItem,
+    FloatItem,
+    ImageChoiceItem,
+    IntItem,
+    MultipleChoiceItem,
+    StringItem,
+    TextItem,
 )
-from plotpy.gui.dataset.datatypes import DataSetGui
+from guidata.dataset.datatypes import BeginGroup, DataSet, EndGroup
 
-
+SHOW = True  # Show test in GUI-based test launcher
 # Creating temporary files and registering cleanup functions
 TEMPDIR = tempfile.mkdtemp(prefix="test_")
 atexit.register(shutil.rmtree, TEMPDIR)
@@ -50,7 +52,7 @@ FILE_CSV = tempfile.NamedTemporaryFile(suffix=".csv", dir=TEMPDIR)
 atexit.register(FILE_CSV.close)
 
 
-class TestParameters(DataSetGui):
+class TestParameters(DataSet):
     """
     DataSet test
     The following text is the DataSet 'comment': <br>Plain text or
@@ -104,10 +106,10 @@ class TestParameters(DataSetGui):
 
 if __name__ == "__main__":
     # Create QApplication
-    import plotpy.gui
-    import plotpy.core.config.config
+    import plotpy.config
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
 
     e = TestParameters()
     e.floatarray[:, 0] = np.linspace(-5, 5, 50)

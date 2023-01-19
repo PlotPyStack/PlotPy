@@ -7,16 +7,17 @@
 
 """Config test"""
 
-SHOW = False  # Do not show test in GUI-based test launcher
 
 import unittest
 
-from plotpy.core.config.userconfig import UserConfig
+from plotpy.config import UserConfig
 
 try:
     from tests.scripts.all_features import TestParameters
 except ImportError:
     from plotpy.tests.scripts.all_features import TestParameters
+
+SHOW = False  # Do not show test in GUI-based test launcher
 
 # TODO: move to a class attribute or setupClass ?
 CONF = UserConfig({})

@@ -9,16 +9,15 @@ Unit tests for callback option of DataSetItem
 """
 from unittest import mock
 
-from plotpy.core.dataset.dataitems import StringItem
-from plotpy.gui.dataset.datatypes import DataSetGui
-from plotpy.gui.widgets.ext_gui_lib import Qt
-from plotpy.gui.dataset.qtwidgets import DataSetEditDialog
-
+from guidata.dataset.dataitems import StringItem
+from guidata.dataset.datatypes import DataSet
+from guidata.dataset.qtwidgets import DataSetEditDialog
+from qtpy.QtCore import Qt
 
 callback = mock.Mock(return_value=None)
 
 
-class CallbackParameter(DataSetGui):
+class CallbackParameter(DataSet):
 
     string = StringItem("String", default="foobar").set_prop(
         "display", callback=callback

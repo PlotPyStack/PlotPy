@@ -13,17 +13,17 @@ box widgets in the editing dialog box) and item groups may be enabled/disabled
 using one group parameter (a boolean item).
 """
 
-SHOW = True  # Show test in GUI-based test launcher
 
-from plotpy.core.dataset.datatypes import BeginGroup, EndGroup, ValueProp
-from plotpy.core.dataset.dataitems import BoolItem, FloatItem
-from plotpy.gui.dataset.datatypes import DataSetGui
+from guidata.dataset.dataitems import BoolItem, FloatItem
+from guidata.dataset.datatypes import BeginGroup, DataSet, EndGroup, ValueProp
+
+SHOW = True  # Show test in GUI-based test launcher
 
 prop1 = ValueProp(False)
 prop2 = ValueProp(False)
 
 
-class GroupSelection(DataSetGui):
+class GroupSelection(DataSet):
     """
     Group selection test
     <b>Group selection example:</b>
@@ -55,10 +55,10 @@ class GroupSelection(DataSetGui):
 
 if __name__ == "__main__":
     # Create QApplication
-    import plotpy.gui
-    import plotpy.core.config.config
+    import plotpy.config
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
 
     prm = GroupSelection()
     prm.edit()

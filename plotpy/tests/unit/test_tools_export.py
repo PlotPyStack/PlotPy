@@ -9,10 +9,10 @@
 from unittest.mock import patch
 
 import numpy as np
+from qtpy.QtWidgets import QFileDialog
 
-from plotpy.gui.widgets.builder import make
-from plotpy.gui.widgets.tools import export_curve_data
-from plotpy.gui.widgets.ext_gui_lib import QFileDialog
+from plotpy.widgets.builder import make
+from plotpy.widgets.tools.curve import export_curve_data
 
 
 def test_export_curve(tmpdir):

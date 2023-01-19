@@ -9,41 +9,40 @@
 All plotpy item/group features demo
 """
 
-SHOW = True  # Show test in GUI-based test launcher
 
-import tempfile
 import atexit
 import shutil
-import numpy as np
+import tempfile
 
-from plotpy.core.dataset.datatypes import (
-    DataSet,
-    BeginTabGroup,
-    EndTabGroup,
-    BeginGroup,
-    EndGroup,
-    ObjectItem,
-)
-from plotpy.core.dataset.dataitems import (
-    FloatItem,
-    IntItem,
+import numpy as np
+from guidata.dataset.dataitems import (
     BoolItem,
     ChoiceItem,
-    MultipleChoiceItem,
-    ImageChoiceItem,
+    ColorItem,
+    DirectoryItem,
+    FileOpenItem,
+    FileSaveItem,
     FilesOpenItem,
+    FloatArrayItem,
+    FloatItem,
+    ImageChoiceItem,
+    IntItem,
+    MultipleChoiceItem,
     StringItem,
     TextItem,
-    ColorItem,
-    FileSaveItem,
-    FileOpenItem,
-    DirectoryItem,
-    FloatArrayItem,
 )
-from plotpy.gui.dataset.datatypes import DataSetGui
-from plotpy.gui.dataset.qtwidgets import DataSetEditLayout, DataSetShowLayout
-from plotpy.gui.dataset.qtitemwidgets import DataSetWidget
+from guidata.dataset.datatypes import (
+    BeginGroup,
+    BeginTabGroup,
+    DataSet,
+    EndGroup,
+    EndTabGroup,
+    ObjectItem,
+)
+from guidata.dataset.qtitemwidgets import DataSetWidget
+from guidata.dataset.qtwidgets import DataSetEditLayout, DataSetShowLayout
 
+SHOW = True  # Show test in GUI-based test launcher
 
 # Creating temporary files and registering cleanup functions
 TEMPDIR = tempfile.mkdtemp(prefix="test_")
@@ -73,7 +72,7 @@ DataSetEditLayout.register(SubDataSetItem, SubDataSetWidget)
 DataSetShowLayout.register(SubDataSetItem, SubDataSetWidget)
 
 
-class TestParameters(DataSetGui):
+class TestParameters(DataSet):
     """
     DataSet test
     The following text is the DataSet 'comment': <br>Plain text or
@@ -139,10 +138,10 @@ class TestParameters(DataSetGui):
 
 if __name__ == "__main__":
     # Create QApplication
-    import plotpy.gui
-    import plotpy.core.config.config
+    import plotpy.config
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
 
     e = TestParameters()
     e.floatarray[:, 0] = np.linspace(-5, 5, 50)

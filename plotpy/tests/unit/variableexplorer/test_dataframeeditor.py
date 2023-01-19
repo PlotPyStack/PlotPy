@@ -17,13 +17,15 @@ from datetime import datetime
 from unittest.mock import ANY, Mock
 
 import numpy
-
 import pytest
 from flaky import flaky
 from pandas import DataFrame, concat, date_range, read_csv
-from plotpy.gui.widgets.ext_gui_lib import QApplication, QColor, QMessageBox, Qt, QTimer
-from plotpy.gui.widgets.variableexplorer import dataframeeditor
-from plotpy.gui.widgets.variableexplorer.dataframeeditor import (
+from qtpy.QtCore import Qt, QTimer
+from qtpy.QtGui import QColor
+from qtpy.QtWidgets import QApplication, QMessageBox
+
+from plotpy.widgets.variableexplorer import dataframeeditor
+from plotpy.widgets.variableexplorer.dataframeeditor import (
     DataFrameEditor,
     DataFrameModel,
 )
@@ -85,9 +87,7 @@ def close_message_box(qtbot):
 # Tests
 # =============================================================================
 def test_dataframemodel_basic():
-    """
-
-    """
+    """ """
     df = DataFrame({"colA": [1, 3], "colB": ["c", "a"]})
     dfm = DataFrameModel(df)
     assert dfm.rowCount() == 2
@@ -101,9 +101,7 @@ def test_dataframemodel_basic():
 
 
 def test_dataframemodel_sort():
-    """
-
-    """
+    """ """
     df = DataFrame({"colA": [1, 3], "colB": ["c", "a"]})
     dfm = DataFrameModel(df)
     dfm.sort(2)
@@ -116,9 +114,7 @@ def test_dataframemodel_sort():
 
 
 def test_dataframemodel_sort_is_stable():  # cf. issue 3010
-    """
-
-    """
+    """ """
     df = DataFrame(
         [
             [2, 14],
@@ -150,36 +146,28 @@ def test_dataframemodel_sort_is_stable():  # cf. issue 3010
 
 
 def test_dataframemodel_max_min_col_update():
-    """
-
-    """
+    """ """
     df = DataFrame([[1, 2.0], [2, 2.5], [3, 9.0]])
     dfm = DataFrameModel(df)
     assert dfm.max_min_col == [[3, 1], [9.0, 2.0]]
 
 
 def test_dataframemodel_max_min_col_update_constant():
-    """
-
-    """
+    """ """
     df = DataFrame([[1, 2.0], [1, 2.0], [1, 2.0]])
     dfm = DataFrameModel(df)
     assert dfm.max_min_col == [[1, 0], [2.0, 1.0]]
 
 
 def test_dataframemodel_with_timezone_aware_timestamps():  # cf. issue 2940
-    """
-
-    """
+    """ """
     df = DataFrame([x] for x in date_range("20150101", periods=5, tz="UTC"))
     dfm = DataFrameModel(df)
     assert dfm.max_min_col == [None]
 
 
 def test_dataframemodel_with_categories():  # cf. issue 3308
-    """
-
-    """
+    """ """
     df = DataFrame(
         {"id": [1, 2, 3, 4, 5, 6], "raw_grade": ["a", "b", "b", "a", "a", "e"]}
     )
@@ -189,9 +177,7 @@ def test_dataframemodel_with_categories():  # cf. issue 3308
 
 
 def test_dataframemodel_get_bgcolor_with_numbers():
-    """
-
-    """
+    """ """
     df = DataFrame([[0, 10], [1, 20], [2, 40]])
     dfm = DataFrameModel(df)
     h0 = dataframeeditor.BACKGROUND_NUMBER_MINHUE
@@ -208,9 +194,7 @@ def test_dataframemodel_get_bgcolor_with_numbers():
 
 
 def test_dataframemodel_get_bgcolor_with_numbers_using_global_max():
-    """
-
-    """
+    """ """
     df = DataFrame([[0, 10], [1, 20], [2, 40]])
     dfm = DataFrameModel(df)
     dfm.colum_avg(0)
@@ -228,9 +212,7 @@ def test_dataframemodel_get_bgcolor_with_numbers_using_global_max():
 
 
 def test_dataframemodel_get_bgcolor_for_index():
-    """
-
-    """
+    """ """
     df = DataFrame([[0]])
     dfm = DataFrameModel(df)
     h, s, v, dummy = QColor(dataframeeditor.BACKGROUND_NONNUMBER_COLOR).getHsvF()
@@ -239,9 +221,7 @@ def test_dataframemodel_get_bgcolor_for_index():
 
 
 def test_dataframemodel_get_bgcolor_with_string():
-    """
-
-    """
+    """ """
     df = DataFrame([["xxx"]])
     dfm = DataFrameModel(df)
     h, s, v, dummy = QColor(dataframeeditor.BACKGROUND_NONNUMBER_COLOR).getHsvF()
@@ -250,9 +230,7 @@ def test_dataframemodel_get_bgcolor_with_string():
 
 
 def test_dataframemodel_get_bgcolor_with_object():
-    """
-
-    """
+    """ """
     df = DataFrame([[None]])
     dfm = DataFrameModel(df)
     h, s, v, dummy = QColor(dataframeeditor.BACKGROUND_NONNUMBER_COLOR).getHsvF()
@@ -283,7 +261,7 @@ def test_change_format_emits_signal(qtbot, monkeypatch):
     mockQInputDialog = Mock()
     mockQInputDialog.getText = lambda parent, title, label, mode, text: ("%10.3e", True)
     monkeypatch.setattr(
-        "plotpy.gui.widgets.variableexplorer.dataframeeditor.QInputDialog",
+        "qtpy.QtWidgets.QInputDialog",
         mockQInputDialog,
     )
     df = DataFrame([[0]])
@@ -303,11 +281,11 @@ def test_change_format_with_format_not_starting_with_percent(qtbot, monkeypatch)
     mockQInputDialog = Mock()
     mockQInputDialog.getText = lambda parent, title, label, mode, text: ("xxx%f", True)
     monkeypatch.setattr(
-        "plotpy.gui.widgets.variableexplorer.dataframeeditor" ".QInputDialog",
+        "qtpy.QtWidgets.QInputDialog",
         mockQInputDialog,
     )
     monkeypatch.setattr(
-        "plotpy.gui.widgets.variableexplorer.dataframeeditor" ".QMessageBox.critical",
+        "qtpy.QtWidgets.QMessageBox.critical",
         Mock(),
     )
     df = DataFrame([[0]])
@@ -318,9 +296,7 @@ def test_change_format_with_format_not_starting_with_percent(qtbot, monkeypatch)
 
 
 def test_header_bom():
-    """
-
-    """
+    """ """
     df = read_csv(os.path.join(FILES_PATH, "issue_2514.csv"))
     editor = DataFrameEditor(None)
     editor.setup_and_check(df)
@@ -329,9 +305,7 @@ def test_header_bom():
 
 
 def test_dataframeeditor_with_datetimeindex():
-    """
-
-    """
+    """ """
     rng = date_range("20150101", periods=3)
     editor = DataFrameEditor(None)
     editor.setup_and_check(rng)
@@ -344,9 +318,7 @@ def test_dataframeeditor_with_datetimeindex():
 
 
 def test_dataframeeditor_with_OutOfBoundsDatetime():  # Test for #6177
-    """
-
-    """
+    """ """
     df = DataFrame(
         [{"DATETIME": datetime.strptime("9999-1-1T00:00", "%Y-%m-%dT%H:%M")}]
     )
@@ -384,9 +356,7 @@ def test_dataframemodel_set_data_overflow(monkeypatch):
     Unit regression test for issue #6114 .
     """
     MockQMessageBox = Mock()
-    attr_to_patch = (
-        "plotpy.gui.widgets.variableexplorer" + ".dataframeeditor.QMessageBox"
-    )
+    attr_to_patch = "qtpy.QtWidgets.QMessageBox"
     monkeypatch.setattr(attr_to_patch, MockQMessageBox)
 
     # Numpy doesn't raise the OverflowError for ints smaller than 64 bits
@@ -400,7 +370,7 @@ def test_dataframemodel_set_data_overflow(monkeypatch):
         test_df = DataFrame(numpy.arange(7, 11), dtype=int_type)
         model = DataFrameModel(test_df.copy())
         index = model.createIndex(2, 1)
-        assert not model.setData(index, str(int(2 ** bit_exponent)))
+        assert not model.setData(index, str(int(2**bit_exponent)))
         MockQMessageBox.critical.assert_called_with(ANY, "Error", ANY)
         assert MockQMessageBox.critical.call_count == idx
         try:
@@ -421,9 +391,7 @@ def test_dataframeeditor_edit_overflow(qtbot, monkeypatch):
     Integration regression test for issue #6114 .
     """
     MockQMessageBox = Mock()
-    attr_to_patch = (
-        "plotpy.gui.widgets.variableexplorer" + ".dataframeeditor.QMessageBox"
-    )
+    attr_to_patch = "qtpy.QtWidgets.QMessageBox"
     monkeypatch.setattr(attr_to_patch, MockQMessageBox)
 
     # Numpy doesn't raise the OverflowError for ints smaller than 64 bits
@@ -447,7 +415,7 @@ def test_dataframeeditor_edit_overflow(qtbot, monkeypatch):
         qtbot.keyClick(view, Qt.Key_Down)
         qtbot.keyClick(view, Qt.Key_Space)
         qtbot.keyClick(view.focusWidget(), Qt.Key_Backspace)
-        qtbot.keyClicks(view.focusWidget(), str(int(2 ** bit_exponet)))
+        qtbot.keyClicks(view.focusWidget(), str(int(2**bit_exponet)))
         qtbot.keyClick(view.focusWidget(), Qt.Key_Down)
         MockQMessageBox.critical.assert_called_with(ANY, "Error", ANY)
         assert MockQMessageBox.critical.call_count == idx
@@ -475,9 +443,7 @@ def test_dataframemodel_set_data_complex(monkeypatch):
     Unit regression test for issue #6115 .
     """
     MockQMessageBox = Mock()
-    attr_to_patch = (
-        "plotpy.gui.widgets.variableexplorer" + ".dataframeeditor.QMessageBox"
-    )
+    attr_to_patch = "qtpy.QtWidgets.QMessageBox"
     monkeypatch.setattr(attr_to_patch, MockQMessageBox)
 
     test_params = [(1, numpy.complex128), (2, numpy.complex64), (3, complex)]
@@ -507,9 +473,7 @@ def test_dataframeeditor_edit_complex(qtbot, monkeypatch):
     Integration regression test for issue #6115 .
     """
     MockQMessageBox = Mock()
-    attr_to_patch = (
-        "plotpy.gui.widgets.variableexplorer" + ".dataframeeditor.QMessageBox"
-    )
+    attr_to_patch = "qtpy.QtWidgets.QMessageBox"
     monkeypatch.setattr(attr_to_patch, MockQMessageBox)
 
     test_params = [(1, numpy.complex128), (2, numpy.complex64), (3, complex)]
@@ -559,12 +523,10 @@ def test_dataframeeditor_edit_complex(qtbot, monkeypatch):
 def test_dataframemodel_set_data_bool(monkeypatch):
     """Test that bools are editible in df and false-y strs are detected."""
     MockQMessageBox = Mock()
-    attr_to_patch = (
-        "plotpy.gui.widgets.variableexplorer" + ".dataframeeditor.QMessageBox"
-    )
+    attr_to_patch = "qtpy.QtWidgets.QMessageBox"
     monkeypatch.setattr(attr_to_patch, MockQMessageBox)
 
-    test_params = [numpy.bool_, numpy.bool, bool]
+    test_params = [numpy.bool_, bool]
     test_strs = ["foo", "false", "f", "0", "0.", "0.0", "", " "]
     expected_df = DataFrame([1, 0, 0, 0, 0, 0, 0, 0, 0], dtype=bool)
 
@@ -590,12 +552,10 @@ def test_dataframemodel_set_data_bool(monkeypatch):
 def test_dataframeeditor_edit_bool(qtbot, monkeypatch):
     """Test that bools are editible in df and false-y strs are detected."""
     MockQMessageBox = Mock()
-    attr_to_patch = (
-        "plotpy.gui.widgets.variableexplorer" + ".dataframeeditor.QMessageBox"
-    )
+    attr_to_patch = "qtpy.QtWidgets.QMessageBox"
     monkeypatch.setattr(attr_to_patch, MockQMessageBox)
 
-    test_params = [numpy.bool_, numpy.bool, bool]
+    test_params = [numpy.bool_, bool]
     test_strs = ["foo", "false", "f", "0", "0.", "0.0", "", " "]
     expected_df = DataFrame([1, 0, 0, 0, 0, 0, 0, 0, 0], dtype=bool)
 
@@ -647,9 +607,9 @@ def test_no_convert_strings_to_unicode():
     )
     dfm = DataFrameModel(df)
 
-    assert dfm.headerData(1, orientation=Qt.Horizontal) != u"Это"
-    assert data(dfm, 0, 0) != u"пример"
-    assert data(dfm, 0, 1) != u"файла"
+    assert dfm.headerData(1, orientation=Qt.Horizontal) != "Это"
+    assert data(dfm, 0, 0) != "пример"
+    assert data(dfm, 0, 1) != "файла"
 
 
 if __name__ == "__main__":

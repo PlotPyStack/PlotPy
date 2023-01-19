@@ -10,13 +10,13 @@
 # FIXME: unexpected behavior when changing the xmin/xmax/ymin/ymax values in
 #       the image parameters (2nd tab: "Axes")
 
-SHOW = True  # Show test in GUI-based test launcher
 
 import numpy as np
 
-from plotpy.gui.widgets.baseplot import PlotType
-from plotpy.gui.widgets.plot import PlotDialog
-from plotpy.gui.widgets.builder import make
+from plotpy.widgets.builder import make
+from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+
+SHOW = True  # Show test in GUI-based test launcher
 
 
 def imshow(data):
@@ -38,9 +38,9 @@ def compute_image(N=2000, grid=True):
     x = np.array(np.linspace(-5, 5, N), T)
     img = np.zeros((N, N), T)
     x.shape = (1, N)
-    img += x ** 2
+    img += x**2
     x.shape = (N, 1)
-    img += x ** 2
+    img += x**2
     np.cos(img, img)  # inplace cosine
     if not grid:
         return img
@@ -72,9 +72,9 @@ def compute_image_2():
     x = np.array(np.linspace(-5 * S, 5 * S, N), T)
     img = np.zeros((N, N), T)
     x.shape = (1, N)
-    img += x ** 2
+    img += x**2
     x.shape = (N, 1)
-    img += x ** 2
+    img += x**2
     img = TMAX * np.cos(img / S) + TMIN
     x.shape = (N,)
     #    dx = dy = x[1]-x[0]
@@ -115,9 +115,9 @@ def compute_image_3():
 def test():
     """Test"""
     # -- Create QApplication
-    import plotpy.gui
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
     # --
     for func in (compute_image, compute_image_2, compute_image_3):
         img = func()

@@ -11,12 +11,29 @@ pyplot test
 Interactive plotting interface with MATLAB-like syntax
 """
 
-SHOW = True  # Show test in GUI-based test launcher
 
 import numpy as np
 
-from plotpy.gui import qapplication
-from plotpy.gui.widgets.pyplot import *
+from plotpy.widgets import qapplication
+from plotpy.widgets.plot.interactive import (
+    errorbar,
+    figure,
+    gray,
+    hist,
+    imshow,
+    legend,
+    pcolor,
+    plot,
+    plotyy,
+    semilogx,
+    show,
+    subplot,
+    xlabel,
+    ylabel,
+    zlabel,
+)
+
+SHOW = True  # Show test in GUI-based test launcher
 
 
 def main():
@@ -26,7 +43,7 @@ def main():
     subplot(2, 1, 1)
     plot(x, np.sin(x), "r+")
     plot(x, np.cos(x), "g-")
-    errorbar(x, -1 + x ** 2 / 20 + 0.2 * np.random.rand(len(x)), x / 20)
+    errorbar(x, -1 + x**2 / 20 + 0.2 * np.random.rand(len(x)), x / 20)
     xlabel("Axe x")
     ylabel("Axe y")
     subplot(2, 1, 2)

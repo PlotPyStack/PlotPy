@@ -11,13 +11,13 @@ SHOW = False  # Show test in GUI-based test launcher
 
 
 def xyimagebug(offset):
-    from plotpy.gui.widgets.baseplot import PlotType
-    from plotpy.gui.widgets.plot import PlotDialog
-    from plotpy.gui.widgets.builder import make
     import numpy
-    import plotpy.gui
 
-    _app = plotpy.gui.qapplication()
+    import plotpy.widgets
+    from plotpy.widgets.builder import make
+    from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+
+    _app = plotpy.widgets.qapplication()
     data = numpy.random.rand(100, 100)
     x = numpy.arange(100) + offset
     y = numpy.arange(100)

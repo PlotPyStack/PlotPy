@@ -19,16 +19,19 @@ from unittest.mock import Mock
 from xml.dom.minidom import parseString
 
 import numpy
-
 import pandas
 import pytest
 from flaky import flaky
-from plotpy.gui.widgets.ext_gui_lib import Qt, QWidget
-from plotpy.gui.widgets.variableexplorer.collectionseditor import (
-    LARGE_NROWS,
-    ROWS_TO_LOAD,
+from qtpy.QtCore import Qt
+from qtpy.QtWidgets import QWidget
+
+from plotpy.widgets.variableexplorer.collectionseditor.editor import (
     CollectionsEditor,
     CollectionsEditorTableView,
+)
+from plotpy.widgets.variableexplorer.collectionseditor.model import (
+    LARGE_NROWS,
+    ROWS_TO_LOAD,
     CollectionsModel,
 )
 
@@ -88,7 +91,7 @@ def test_create_dataframeeditor_with_correct_format(qtbot, monkeypatch):
     MockDataFrameEditor = Mock()
     mockDataFrameEditor_instance = MockDataFrameEditor()
     monkeypatch.setattr(
-        "plotpy.gui.widgets.variableexplorer.collectionseditor.DataFrameEditor",
+        "plotpy.widgets.variableexplorer.dataframeeditor.DataFrameEditor",
         MockDataFrameEditor,
     )
     df = pandas.DataFrame(["foo", "bar"])
@@ -118,9 +121,7 @@ def test_accept_sig_option_changed_from_dataframeeditor(qtbot, monkeypatch):
 
 
 def test_collectionsmodel_with_two_ints():
-    """
-
-    """
+    """ """
     coll = {"x": 1, "y": 2}
     cm = CollectionsModel(None, coll)
     assert cm.rowCount() == 2
@@ -143,9 +144,7 @@ def test_collectionsmodel_with_two_ints():
 
 
 def test_collectionsmodel_with_datetimeindex():
-    """
-
-    """
+    """ """
     # Regression test for issue #3380
     rng = pandas.date_range("10/1/2016", periods=25, freq="bq")
     coll = {"rng": rng}
@@ -168,7 +167,7 @@ def test_shows_dataframeeditor_when_editing_datetimeindex(qtbot, monkeypatch):
     MockDataFrameEditor = Mock()
     mockDataFrameEditor_instance = MockDataFrameEditor()
     monkeypatch.setattr(
-        "plotpy.gui.widgets.variableexplorer.collectionseditor.DataFrameEditor",
+        "plotpy.widgets.variableexplorer.collectionseditor.DataFrameEditor",
         MockDataFrameEditor,
     )
     rng = pandas.date_range("10/1/2016", periods=25, freq="bq")
@@ -179,9 +178,7 @@ def test_shows_dataframeeditor_when_editing_datetimeindex(qtbot, monkeypatch):
 
 
 def test_sort_collectionsmodel():
-    """
-
-    """
+    """ """
     coll = [1, 3, 2]
     cm = CollectionsModel(None, coll)
     assert cm.rowCount() == 3
@@ -221,9 +218,7 @@ def test_sort_collectionsmodel():
 
 
 def test_sort_collectionsmodel_with_many_rows():
-    """
-
-    """
+    """ """
     coll = list(range(2 * LARGE_NROWS))
     cm = CollectionsModel(None, coll)
     assert cm.rowCount() == cm.rows_loaded == ROWS_TO_LOAD
@@ -237,9 +232,7 @@ def test_sort_collectionsmodel_with_many_rows():
 
 
 def test_rename_and_duplicate_item_in_collection_editor():
-    """
-
-    """
+    """ """
     collections = {
         "list": ([1, 2, 3], False, True),
         "tuple": ((1, 2, 3), False, False),
@@ -267,26 +260,26 @@ def test_edit_mutable_and_immutable_types(monkeypatch):
     """
     MockQLineEdit = Mock()
     attr_to_patch_qlineedit = (
-        "plotpy.gui.widgets.variableexplorer." + "collectionseditor.QLineEdit"
+        "plotpy.widgets.variableexplorer." + "collectionseditor.QLineEdit"
     )
     monkeypatch.setattr(attr_to_patch_qlineedit, MockQLineEdit)
 
     MockTextEditor = Mock()
     attr_to_patch_textedit = (
-        "plotpy.gui.widgets.variableexplorer." + "collectionseditor.TextEditor"
+        "plotpy.widgets.variableexplorer." + "collectionseditor.TextEditor"
     )
     monkeypatch.setattr(attr_to_patch_textedit, MockTextEditor)
 
     MockQDateTimeEdit = Mock()
     attr_to_patch_qdatetimeedit = (
-        "plotpy.gui.widgets.variableexplorer." + "collectionseditor.QDateTimeEdit"
+        "plotpy.widgets.variableexplorer." + "collectionseditor.QDateTimeEdit"
     )
     monkeypatch.setattr(attr_to_patch_qdatetimeedit, MockQDateTimeEdit)
 
     MockCollectionsEditor = Mock()
     mockCollectionsEditor_instance = MockCollectionsEditor()
     attr_to_patch_coledit = (
-        "plotpy.gui.widgets.variableexplorer." + "collectionseditor.CollectionsEditor"
+        "plotpy.widgets.variableexplorer." + "collectionseditor.CollectionsEditor"
     )
     monkeypatch.setattr(attr_to_patch_coledit, MockCollectionsEditor)
 
@@ -407,25 +400,25 @@ def test_editor_parent_set(monkeypatch):
 
     MockCollectionsEditor = Mock()
     attr_to_patch_coledit = (
-        "plotpy.gui.widgets.variableexplorer." + "collectionseditor.CollectionsEditor"
+        "plotpy.widgets.variableexplorer." + "collectionseditor.CollectionsEditor"
     )
     monkeypatch.setattr(attr_to_patch_coledit, MockCollectionsEditor)
 
     MockArrayEditor = Mock()
     attr_to_patch_arredit = (
-        "plotpy.gui.widgets.variableexplorer." + "collectionseditor.ArrayEditor"
+        "plotpy.widgets.variableexplorer." + "collectionseditor.ArrayEditor"
     )
     monkeypatch.setattr(attr_to_patch_arredit, MockArrayEditor)
 
     MockDataFrameEditor = Mock()
     attr_to_patch_dfedit = (
-        "plotpy.gui.widgets.variableexplorer." + "collectionseditor.DataFrameEditor"
+        "plotpy.widgets.variableexplorer." + "collectionseditor.DataFrameEditor"
     )
     monkeypatch.setattr(attr_to_patch_dfedit, MockDataFrameEditor)
 
     MockTextEditor = Mock()
     attr_to_patch_textedit = (
-        "plotpy.gui.widgets.variableexplorer." + "collectionseditor.TextEditor"
+        "plotpy.widgets.variableexplorer." + "collectionseditor.TextEditor"
     )
     monkeypatch.setattr(attr_to_patch_textedit, MockTextEditor)
 

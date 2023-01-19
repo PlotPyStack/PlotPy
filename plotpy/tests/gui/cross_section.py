@@ -7,13 +7,15 @@
 
 """Renders a cross section chosen by a cross marker"""
 
+
+import os
+
+import numpy as np
+
+from plotpy.widgets.builder import make
+from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+
 SHOW = True  # Show test in GUI-based test launcher
-
-import os.path as osp, numpy as np
-
-from plotpy.gui.widgets.baseplot import PlotType
-from plotpy.gui.widgets.plot import PlotDialog
-from plotpy.gui.widgets.builder import make
 
 
 def create_window():
@@ -35,11 +37,11 @@ def create_window():
 def test():
     """Test"""
     # -- Create QApplication
-    import plotpy.gui
+    import plotpy.widgets
 
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
     # --
-    filename = osp.join(osp.dirname(__file__), "brain.png")
+    filename = os.path.join(os.path.dirname(__file__), "brain.png")
     win = create_window()
     image = make.image(filename=filename, colormap="bone")
     data2 = np.array(image.data.T[200:], copy=True)

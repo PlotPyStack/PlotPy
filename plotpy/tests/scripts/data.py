@@ -7,12 +7,13 @@
 
 """Unit tests"""
 
-SHOW = False  # Do not show test in GUI-based test launcher
 
 import unittest
-from plotpy.core.dataset.datatypes import DataSet
-from plotpy.core.dataset.dataitems import FloatItem, IntItem
-from plotpy.core.utils.dataset import update_dataset
+
+from guidata.dataset.dataitems import FloatItem, IntItem
+from guidata.dataset.datatypes import DataSet, update_dataset
+
+SHOW = False  # Do not show test in GUI-based  test launcher
 
 
 class Parameters(DataSet):

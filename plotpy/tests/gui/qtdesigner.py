@@ -13,15 +13,17 @@ These plugins provide PlotWidget objects
 embedding in GUI layouts directly from QtDesigner.
 """
 
+
+import os
+import sys
+
+from qtpy.QtWidgets import QApplication
+
+from plotpy.widgets.builder import make
+from plotpy.widgets.qtdesigner import loadui
+
 SHOW = True  # Show test in GUI-based test launcher
-
-import sys, os.path as osp
-
-from plotpy.gui.widgets.ext_gui_lib import QApplication
-from plotpy.gui.widgets.qtdesigner import loadui
-from plotpy.gui.widgets.builder import make
-
-FormClass = loadui(osp.splitext(__file__)[0] + ".ui")
+FormClass = loadui(os.path.splitext(__file__)[0] + ".ui")
 
 
 class TestWindow(FormClass):
