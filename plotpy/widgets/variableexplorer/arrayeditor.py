@@ -22,13 +22,13 @@ from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
 
+from plotpy.config import CONF, _
 from plotpy.utils.misc_from_gui import (
     add_actions,
     config_shortcut,
     create_action,
     keybinding,
 )
-from plotpy.widgets.config import CONF, _
 
 # Note: string and unicode data types will be formatted with '%s' (see below)
 SUPPORTED_FORMATS = {

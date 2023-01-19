@@ -474,7 +474,7 @@ class LabelItem(AbstractLabelItem):
         self.marker.drawSymbols(painter, [QC.QPointF(x0, y0)])
         painter.restore()
         sz = self.text.size()
-        self.draw_frame(painter, x, y, sz.width(), sz.height())
+        self.draw_frame(painter, int(x), int(y), int(sz.width()), int(sz.height()))
         painter.setPen(QG.QPen(QG.QColor(self.labelparam.color)))
         painter.translate(x, y)
         self.text.drawContents(painter)
@@ -587,10 +587,10 @@ class LegendBoxItem(AbstractLabelItem):
         TW, TH, _width, height = self.get_legend_size(items)
 
         x, y = self.get_top_left(xMap, yMap, canvasRect)
-        self.draw_frame(painter, x, y, TW, TH)
+        self.draw_frame(painter, int(x), int(y), int(TW), int(TH))
 
-        y0 = y + LEGEND_SPACEV
-        x0 = x + LEGEND_SPACEH
+        y0 = int(y + LEGEND_SPACEV)
+        x0 = int(x + LEGEND_SPACEH)
         for text, ipen, ibrush, isymbol in items:
             isymbol.drawSymbols(
                 painter, [QC.QPointF(x0 + LEGEND_WIDTH / 2, y0 + height / 2)]
@@ -598,7 +598,9 @@ class LegendBoxItem(AbstractLabelItem):
             painter.save()
             painter.setPen(ipen)
             painter.setBrush(ibrush)
-            painter.drawLine(x0, y0 + height / 2, x0 + LEGEND_WIDTH, y0 + height / 2)
+            painter.drawLine(
+                x0, int(y0 + height / 2), int(x0 + LEGEND_WIDTH), int(y0 + height / 2)
+            )
             x1 = x0 + LEGEND_SPACEH + LEGEND_WIDTH
             painter.translate(x1, y0)
             text.drawContents(painter)

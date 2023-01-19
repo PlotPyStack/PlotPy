@@ -38,7 +38,7 @@ class PolygonShape(AbstractShape):
 
         self.pen = QG.QPen()
         self.brush = QG.QBrush()
-        self.symbol = QC.Qt.QwtSymbol.NoSymbol
+        self.symbol = QwtSymbol.NoSymbol
         self.sel_pen = QG.QPen()
         self.sel_brush = QG.QBrush()
         self.sel_symbol = QwtSymbol.NoSymbol

@@ -69,14 +69,14 @@ except ImportError:
     CX_FREEZE_INSTALLED = False
 
 
-from plotpy.core.utils.disthelpers import remove_dir, strip_version, to_include_files
-from plotpy.core.utils.dll import (
+from plotpy.utils.disthelpers import remove_dir, strip_version, to_include_files
+from plotpy.utils.dll import (
     create_msvc_data_files,
     get_dll_architecture,
     get_msvc_dlls,
     get_msvc_version,
 )
-from plotpy.core.utils.module import get_module_path
+from plotpy.utils.module import get_module_path
 
 
 def atexit_deletion(path):

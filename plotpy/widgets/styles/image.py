@@ -68,7 +68,7 @@ class BaseImageParam(DataSet):
         self.colormap = image.get_color_map_name()
         interpolation = image.get_interpolation()
         mode = interpolation[0]
-        from plotpy.widgets.items.image import INTERP_LINEAR, INTERP_NEAREST
+        from plotpy._scaler import INTERP_LINEAR, INTERP_NEAREST
 
         if mode == INTERP_NEAREST:
             self.interpolation = 0
@@ -90,7 +90,7 @@ class BaseImageParam(DataSet):
         image.setTitle(self.label)
         image.set_color_map(self.colormap)
         size = self.interpolation
-        from plotpy.widgets.items.image import INTERP_AA, INTERP_LINEAR, INTERP_NEAREST
+        from plotpy._scaler import INTERP_AA, INTERP_LINEAR, INTERP_NEAREST
 
         if size == 0:
             mode = INTERP_NEAREST
@@ -606,7 +606,7 @@ class TrImageParam(RawImageParam):
         # we don't get crop info from the image because
         # its not easy to extract from the transform
         # and TrImageItem keeps it's crop information
-        # directly in this DataSetGui
+        # directly in this DataSet
 
     def update_item(self, image):
         """

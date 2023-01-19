@@ -98,8 +98,8 @@ from plotpy.widgets.styles.base import GridParam, ItemParameters
 
 class PlotType(Enum):
     """
-    This is the enum used for the plot type. Defines how the plot should deal with the different
-    PlotItems types (curves and images)
+    This is the enum used for the plot type. Defines how the plot should deal with the
+    different PlotItems types (curves and images)
     """
 
     AUTO = 1  #: Automatic plot type. The first PlotItem attached to the plot sets the plot type (see CURVE and IMAGE values of the enum). All tools (curve and image related) are registered and accessible depending on the last selected PlotItem.

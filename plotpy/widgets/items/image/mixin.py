@@ -4,7 +4,7 @@ from qtpy import QtCore as QC
 
 from plotpy.widgets import io
 from plotpy.widgets.geometry import colvector, rotate, scale, translate
-from plotpy.widgets.items.image.masked import MaskedArea
+from plotpy.widgets.items.image.masked_area import MaskedArea
 from plotpy.widgets.items.utils import axes_to_canvas, canvas_to_axes
 
 
@@ -550,7 +550,7 @@ class MaskedImageMixin:
         if inside:
             self.data[iy0:iy1, ix0:ix1] = np.ma.masked
         else:
-            indexes = np.ones(self.data.shape, dtype=np.bool)
+            indexes = np.ones(self.data.shape, dtype=np.bool_)
             indexes[iy0:iy1, ix0:ix1] = False
             self.data[indexes] = np.ma.masked
         if trace:
@@ -563,7 +563,7 @@ class MaskedImageMixin:
     ):
         """
         Mask circular area, inside the rectangle (x0, y0, x1, y1), i.e.
-        circle with a radius of ``.5\*(x1-x0)``
+        circle with a radius of ``.5/*(x1-x0)``
         If inside is True (default), mask the inside of the area
         Otherwise, mask the outside
         """

@@ -36,7 +36,7 @@
 plotpy.widgets.styles
 ---------------------
 
-The `styles` module provides set of parameters (DataSetGui classes) to
+The `styles` module provides set of parameters (DataSet classes) to
 configure `plot items` and `plot tools`.
 
 .. seealso::

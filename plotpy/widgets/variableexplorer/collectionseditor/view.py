@@ -480,14 +480,14 @@ class BaseTableView(QW.QTableView):
             import plotpy.widgets.plot.interactive  # analysis:ignore
 
             return True
-        except:
+        except ModuleNotFoundError:
             try:
                 if "matplotlib" not in sys.modules:
                     import matplotlib
 
                     matplotlib.use("Qt4Agg")
                 return True
-            except:
+            except ModuleNotFoundError:
                 QW.QMessageBox.warning(
                     self,
                     _("Import error"),

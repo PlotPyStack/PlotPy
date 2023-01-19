@@ -112,8 +112,8 @@ class ItemCenterTool(CommandTool):
             AnnotatedObliqueRectangle,
             AnnotatedRectangle,
         )
-        from plotpy.widgets.items.shapes import (
-            EllipseShape,
+        from plotpy.widgets.items.shapes.ellipse import EllipseShape
+        from plotpy.widgets.items.shapes.rectangle import (
             ObliqueRectangleShape,
             RectangleShape,
         )

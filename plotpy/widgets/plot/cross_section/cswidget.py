@@ -8,12 +8,12 @@ from plotpy.utils.gui import assert_interfaces_valid
 from plotpy.utils.misc_from_gui import add_actions, create_action
 from plotpy.widgets.interfaces import IPanel
 from plotpy.widgets.panels import ID_OCS, ID_XCS, ID_YCS, PanelWidget
-from plotpy.widgets.plot import PlotManager
 from plotpy.widgets.plot.cross_section.csplot import (
     ObliqueCrossSectionPlot,
     XCrossSectionPlot,
     YCrossSectionPlot,
 )
+from plotpy.widgets.plot.manager import PlotManager
 from plotpy.widgets.tools.item import ExportItemDataTool
 
 

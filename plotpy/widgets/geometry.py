@@ -44,7 +44,7 @@ def rotate(alpha):
 
 def colvector(x, y):
     """Return vector (NumPy matrix object) from coordinates"""
-    return matrix([x, y, 1]).T
+    return matrix([x, y, 1], dtype=object).T
 
 
 # ===============================================================================
@@ -80,8 +80,8 @@ def vector_angle(dx, dy):
         return 0.0
     else:
         sx, sy = sign(dx), sign(dy)
-        acos = arccos(dx / sqrt(dx ** 2 + dy ** 2))
-        return sy * (pi * (sy - 1) + acos) + pi * (1 - sy ** 2) * (1 - sx) * 0.5
+        acos = arccos(dx / sqrt(dx**2 + dy**2))
+        return sy * (pi * (sy - 1) + acos) + pi * (1 - sy**2) * (1 - sx) * 0.5
 
 
 # ===============================================================================

@@ -66,8 +66,8 @@ from plotpy.widgets.interfaces import (
 from plotpy.widgets.items.curve.base import CurveItem
 from plotpy.widgets.items.shapes.range import XRangeSelection
 from plotpy.widgets.panels import ID_CONTRAST, PanelWidget
-from plotpy.widgets.plot import PlotManager
 from plotpy.widgets.plot.base import BasePlot, PlotType
+from plotpy.widgets.plot.manager import PlotManager
 from plotpy.widgets.styles.curve import CurveParam
 from plotpy.widgets.styles.histogram import HistogramParam
 from plotpy.widgets.tools.curve import AntiAliasingTool, SelectPointTool

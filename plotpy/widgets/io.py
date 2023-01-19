@@ -400,7 +400,7 @@ def _imread_dcm(filename, **kwargs):
             "PixelRepresentation=%d, BitsAllocated=%d"
             % (dcm.PixelRepresentation, dcm.BitsAllocated)
         )
-    arr = np.fromstring(dcm.PixelData, dtype)
+    arr = np.frombuffer(dcm.PixelData, dtype)
     try:
         # pydicom 0.9.3:
         dcm_is_little_endian = dcm.isLittleEndian

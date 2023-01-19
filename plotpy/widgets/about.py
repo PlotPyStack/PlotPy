@@ -30,7 +30,7 @@ from qtpy.QtCore import QT_VERSION_STR
 from qwt import QWT_VERSION_STR
 
 import plotpy
-from plotpy.widgets.config import _
+from plotpy.config import _
 
 __version__ = "3.0.2"
 __description__ = (

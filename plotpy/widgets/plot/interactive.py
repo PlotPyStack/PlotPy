@@ -111,12 +111,13 @@ from qtpy import QtWidgets as QW
 from qtpy.QtPrintSupport import QPrinter
 
 import plotpy.widgets
+from plotpy.config import _
 from plotpy.widgets.builder import make
-from plotpy.widgets.config import _
-from plotpy.widgets.plot import PlotManager
-from plotpy.widgets.plot.base import BasePlot, PlotItemList, PlotType
+from plotpy.widgets.itemlist import PlotItemList
+from plotpy.widgets.plot.base import BasePlot, PlotType
 from plotpy.widgets.plot.cross_section.cswidget import XCrossSection, YCrossSection
 from plotpy.widgets.plot.histogram import ContrastAdjustment
+from plotpy.widgets.plot.plotwidget import PlotManager
 
 try:
     from plotpy._scaler import INTERP_AA, INTERP_LINEAR, INTERP_NEAREST
@@ -189,7 +190,9 @@ class Window(QW.QMainWindow):
         :param j:
         :param plot:
         """
-        self.layout.addWidget(plot, i, j)
+        i_int = int(i)
+        j_int = int(j)
+        self.layout.addWidget(plot, i_int, j_int)
         self.manager.add_plot(plot)
         self.plots.append(plot)
 
@@ -256,7 +259,7 @@ class Figure(object):
 
     def build_window(self):
         """ """
-        self.app = plotpy.gui.qapplication()
+        self.app = plotpy.widgets.qapplication()
         self.win = Window(wintitle=self.title)
         images = False
         for (i, j), ax in list(self.axes.items()):
@@ -345,7 +348,7 @@ def do_mainloop(mainloop):
     if not _current_fig:
         print("Warning: must create a figure before showing it", file=sys.stderr)
     elif mainloop:
-        app = plotpy.gui.qapplication()
+        app = plotpy.widgets.qapplication()
         app.exec_()
 
 
@@ -876,7 +879,7 @@ def colormap(name):
 
 
 def _add_colormaps(glbs):
-    from plotpy.gui.widgets.colormap import get_colormap_list
+    from plotpy.widgets.colormap import get_colormap_list
 
     for cmap_name in get_colormap_list():
         glbs[cmap_name] = lambda name=cmap_name: colormap(name)

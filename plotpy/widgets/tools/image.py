@@ -61,7 +61,7 @@ class ImageStatsRectangle(AnnotatedRectangle):
     # ----AnnotatedShape API-----------------------------------------------------
     def get_infos(self):
         """Return formatted string with informations on current shape"""
-        from plotpy.widgets.items.image import get_items_in_rectangle
+        from plotpy.widgets.items.image.misc import get_items_in_rectangle
 
         if self.image_item is None:
             return

@@ -192,7 +192,7 @@ class ItemParameters(object):
 
     @classmethod
     def register_multiselection(cls, klass, klass_ms):
-        """Register a DataSetGui couple: (DataSetGui, DataSet_for_MultiSelection)"""
+        """Register a DataSet couple: (DataSet, DataSet_for_MultiSelection)"""
         # Inserting element backwards because classes have to be registered
         # from children to parent (see 'add' method to fully understand why)
         cls.MULTISEL_DATASETS.insert(0, (klass, klass_ms))

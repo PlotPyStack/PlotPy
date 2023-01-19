@@ -52,14 +52,14 @@ from guidata.dataset.dataitems import (
     IntItem,
     StringItem,
 )
-from guidata.dataset.datatypes import DataSet, update_dataset
+from guidata.dataset.datatypes import DataSet
+from guidata.utils import restore_dataset, update_dataset
 from numpy import inf  # Do not remove this import (used by optimization funcs)
 from qtpy import QtWidgets as QW
 from qtpy.QtCore import Qt
 
 import plotpy.widgets
 from plotpy.config import _
-from plotpy.core.utils.dataset import restore_dataset
 from plotpy.utils.misc_from_gui import create_groupbox
 from plotpy.widgets.builder import make
 from plotpy.widgets.plot.base import PlotType
@@ -847,7 +847,7 @@ def guifit(
     winpos=None,
 ):
     """GUI-based curve fitting tool"""
-    _app = plotpy.gui.qapplication()
+    _app = plotpy.widgets.qapplication()
     #    win = FitWidget(wintitle=wintitle, toolbar=True,
     #                    param_cols=param_cols, auto_fit=auto_fit,
     #                    options=dict(title=title, xlabel=xlabel, ylabel=ylabel))

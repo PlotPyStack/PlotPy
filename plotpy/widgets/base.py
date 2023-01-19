@@ -16,13 +16,13 @@ The `base` module provides base objects for internal use of the
 from guidata.configtools import get_icon
 from qtpy import QtWidgets as QW
 
+from plotpy._scaler import INTERP_LINEAR
+from plotpy.config import _
 from plotpy.utils.misc_from_gui import create_toolbutton
-from plotpy.widgets.config import _
-from plotpy.widgets.items.image import INTERP_LINEAR
 from plotpy.widgets.items.image.transform import TrImageItem
-from plotpy.widgets.plot import PlotDialog, PlotWidget
 from plotpy.widgets.plot.base import PlotType
 from plotpy.widgets.plot.histogram import lut_range_threshold
+from plotpy.widgets.plot.plotwidget import PlotDialog, PlotWidget
 
 
 class BaseTransformMixin(object):

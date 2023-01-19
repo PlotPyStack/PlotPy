@@ -73,7 +73,7 @@ def save_snapshot(plot, p0, p1, new_size=None):
     new_size: destination image size (tuple: (width, height))
     """
     from plotpy.widgets import io
-    from plotpy.widgets.items.image import (
+    from plotpy.widgets.items.image.misc import (
         compute_trimageitems_original_size,
         get_image_from_plot,
         get_items_in_rectangle,

@@ -79,9 +79,12 @@ class XRangeSelection(AbstractShape):
         dash.setStyle(QC.Qt.DashLine)
         dash.setWidth(1)
         painter.setPen(dash)
-        painter.drawLine(
-            rct2.center().x(), rct2.top(), rct2.center().x(), rct2.bottom()
-        )
+
+        center_x = int(rct2.center().x())
+        top = int(rct2.top())
+        bottom = int(rct2.bottom())
+        painter.drawLine(center_x, top, center_x, bottom)
+
         painter.setPen(pen)
         x0, x1, y = self.get_handles_pos()
         sym.drawSymbol(painter, QC.QPointF(x0, y))
