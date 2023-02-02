@@ -2,7 +2,7 @@
 from qwt import QwtPlotItem
 
 from plotpy.utils.gui import assert_interfaces_valid
-from plotpy.widgets.interfaces import IBasePlotItem, IShapeItemType
+from plotpy.widgets.interfaces.common import IBasePlotItem, IShapeItemType
 from plotpy.widgets.items.utils import canvas_to_axes
 
 

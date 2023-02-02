@@ -6,7 +6,7 @@
 # (see plotpy/__init__.py for details)
 
 """
-plotpy.gui.widgets.signals
+plotpy.widgets.signals
 --------------------------
 
 In `guiqwt` version 2, the `signals` module used to contain constants defining

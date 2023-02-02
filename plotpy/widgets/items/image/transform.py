@@ -8,7 +8,7 @@ from qtpy import QtGui as QG
 from plotpy.config import _
 from plotpy.utils.gui import assert_interfaces_valid
 from plotpy.widgets.geometry import colvector, scale, translate
-from plotpy.widgets.interfaces import (
+from plotpy.widgets.interfaces.common import (
     IBaseImageItem,
     IBasePlotItem,
     IExportROIImageItemType,

@@ -33,7 +33,7 @@ from plotpy.utils.path import get_conf_path, getcwd_or_home
 from plotpy.widgets.console.dochelpers import getargtxt, getdoc, getobjdir, getsource
 from plotpy.widgets.console.interpreter import Interpreter
 from plotpy.widgets.console.shell.python import PythonShellWidget
-from plotpy.widgets.variableexplorer.objecteditor import oedit
+from plotpy.widgets.variableexplorer.collectionseditor.collection import oedit
 
 builtins.oedit = oedit
 

@@ -13,7 +13,7 @@
 
 
 """
-plotpy.gui.widgets.qthelpers
+plotpy.widgets.qthelpers
 ----------------------------
 
 The :py:mod:``.qthelpers`` module provides helper functions for developing

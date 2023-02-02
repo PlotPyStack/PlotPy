@@ -330,7 +330,7 @@ class NumpyArrayDialog(QW.QDialog):
                     if self._force_float:
                         try:
                             num = str(float(e))
-                        except:
+                        except Exception:
                             pass
                     new_row.append(num)
                 new_values.append(ELEMENT_SEPARATOR.join(new_row))

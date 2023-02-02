@@ -46,6 +46,7 @@ Reference
    :members:
 """
 
+import pickle
 import sys
 from enum import Enum
 from math import fabs
@@ -70,7 +71,7 @@ from qwt import (
 from plotpy.config import CONF, _
 from plotpy.widgets import io
 from plotpy.widgets.events import StatefulEventFilter
-from plotpy.widgets.interfaces import (
+from plotpy.widgets.interfaces.common import (
     IBaseImageItem,
     IBasePlotItem,
     IColormapImageItemType,
@@ -102,10 +103,18 @@ class PlotType(Enum):
     different PlotItems types (curves and images)
     """
 
-    AUTO = 1  #: Automatic plot type. The first PlotItem attached to the plot sets the plot type (see CURVE and IMAGE values of the enum). All tools (curve and image related) are registered and accessible depending on the last selected PlotItem.
-    CURVE = 2  #: Curve specialized plot : the y axis is not reversed and the aspect ratio is not locked by default. Only CURVE typed tools are automatically registered.
-    IMAGE = 3  #: Image specialized plot : the y axis is reversed and the aspect ratio is locked by default. Only IMAGE typed tools are automatically registered.
-    MANUAL = 4  #: No assumption is made on the type of items to be displayed on the plot. Acts like the CURVE value of the enum for y axis and aspect ratio. No tool are automatically registered.
+    AUTO = 1  #: Automatic plot type. The first PlotItem attached to the plot sets the
+    # plot type (see CURVE and IMAGE values of the enum). All tools
+    # (curve and image related) are registered and accessible depending on the last
+    # selected PlotItem.
+    CURVE = 2  #: Curve specialized plot : the y axis is not reversed and the aspect
+    # ratio is not locked by default. Only CURVE typed tools are automatically
+    # registered.
+    IMAGE = 3  #: Image specialized plot : the y axis is reversed and the aspect ratio
+    # is locked by default. Only IMAGE typed tools are automatically registered.
+    MANUAL = 4  #: No assumption is made on the type of items to be displayed on the
+    # plot. Acts like the CURVE value of the enum for y axis and aspect ratio. No tool
+    # are automatically registered.
 
 
 PARAMETERS_TITLE_ICON = {
@@ -144,7 +153,7 @@ class BasePlot(QwtPlot):
     AUTOSCALE_TYPES = (CurveItem, BaseImageItem, PolygonMapItem)
     AUTOSCALE_EXCLUDES = []
 
-    #: Signal emitted by plot when an IBasePlotItem object was moved (args: x0, y0, x1, y1)
+    #: Signal emitted by plot when an IBasePlotItem object was moved (args: x0,y0,x1,y1)
     SIG_ITEM_MOVED = QC.Signal("PyQt_PyObject", float, float, float, float)
 
     #: Signal emitted by plot when an IBasePlotItem object was resized
@@ -193,7 +202,8 @@ class BasePlot(QwtPlot):
     #: Signal emitted by cross section plot when cross section curve data has changed
     SIG_CS_CURVE_CHANGED = QC.Signal("PyQt_PyObject")
 
-    #: Signal emitted by plot when plot axis has changed, e.g. when panning/zooming (arg: plot))
+    #: Signal emitted by plot when plot axis has changed, e.g. when panning/zooming
+    # (arg: plot))
     SIG_PLOT_AXIS_CHANGED = QC.Signal("PyQt_PyObject")
 
     EPSILON_ASPECT_RATIO = 1e-6
@@ -899,7 +909,7 @@ class BasePlot(QwtPlot):
         clipboard.setPixmap(pixmap)
 
     def save_widget(self, fname):
-        """Grab widget's window and save it to filename (\*.png, \*.pdf)"""
+        """Grab widget's window and save it to filename (/*.png, /*.pdf)"""
         fname = str(fname)
         if fname.lower().endswith(".pdf"):
             printer = QPrinter()
@@ -1093,7 +1103,6 @@ class BasePlot(QwtPlot):
         else:
             items = self.items[:]
         items = [item for item in items if ISerializableType in item.types()]
-        import pickle
 
         pickle.dump(items, iofile)
 
@@ -1104,7 +1113,6 @@ class BasePlot(QwtPlot):
 
         See also :py:meth:`.baseplot.BasePlot.save_items`
         """
-        import pickle
 
         items = pickle.load(iofile)
         for item in items:

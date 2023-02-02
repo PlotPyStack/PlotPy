@@ -184,9 +184,6 @@ class StatefulEventFilter(QC.QObject):
             return False
 
         state = self.states[self.state]
-        #        from pprint import pprint
-        #        print self.state
-        #        pprint(state.keys())
         for match, (call_list, next_state) in list(state.items()):
             if match(event):
                 self.set_state(next_state, event)
@@ -774,7 +771,7 @@ class ObjectHandler(object):
     def __move_or_resize_object(self, dist, distance, event, filter):
         if (
             self.active is not None
-            and self.active.can_move() == False
+            and self.active.can_move() is False
             and self.inside
             and self.active.can_rotate()
         ):

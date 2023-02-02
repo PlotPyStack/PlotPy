@@ -4,6 +4,7 @@ from guidata.dataset.datatypes import DataSet
 from qtpy import QtCore as QC
 
 from plotpy.config import _
+from plotpy.widgets.builder import make
 from plotpy.widgets.events import ClickHandler, setup_standard_tool_filter
 from plotpy.widgets.tools.base import DefaultToolbarID, InteractiveTool
 
@@ -79,7 +80,6 @@ class LabelTool(InteractiveTool):
         textparam = TextParam(_("Label text"), icon=self.ICON)
         if textparam.edit(plot):
             text = textparam.text.replace("\n", "<br>")
-            from plotpy.widgets.builder import make
 
             label = make.label(text, (0, 0), (10, 10), "TL")
             title = label.labelparam.label

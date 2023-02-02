@@ -6,7 +6,7 @@
 # (see plotpy/__init__.py for details)
 
 """
-plotpy.gui.widgets.qtdesigner
+plotpy.widgets.qtdesigner
 -----------------------------
 
 The `qtdesigner` module provides QtDesigner helper functions for `plotpy`:
@@ -78,7 +78,8 @@ def create_qtdesigner_plugin(
 
     Example:
     create_qtdesigner_plugin(group = "plotpy", module_name = "plotpy.baseplot",
-                             class_name = "PlotWidget",  widget_options={"type": PlotType.IMAGE},
+                             class_name = "PlotWidget",
+                             widget_options={"type": PlotType.IMAGE},
                              icon = "image.png", tooltip = "", whatsthis = ""):
     """
     Widget = getattr(__import__(module_name, fromlist=[class_name]), class_name)

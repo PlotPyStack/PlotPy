@@ -220,7 +220,7 @@ nitpick_ignore = [
 ]
 
 # patch some classes inherit from int to avoid sphinx warnings
-from PyQt5.QtWidgets import QWidget, QDialog, QFrame
+from qtpy.QtWidgets import QDialog, QFrame, QWidget
 
 
 def to_bytes(*args, **kwargs):

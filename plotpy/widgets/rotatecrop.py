@@ -26,12 +26,15 @@ Reference
    :inherited-members:
 """
 
+from guidata.configtools import get_icon
 from qtpy import QtWidgets as QW
 
 from plotpy.config import _
 from plotpy.widgets import base
 from plotpy.widgets.builder import make
 from plotpy.widgets.items.image.misc import get_image_in_shape
+from plotpy.widgets.items.image.transform import TrImageItem
+from plotpy.widgets.tools.base import CommandTool, DefaultToolbarID
 
 
 class RotateCropMixin(base.BaseTransformMixin):
@@ -123,6 +126,47 @@ class RotateCropDialog(base.BaseTransformDialog, RotateCropMixin):
             edit=edit,
             toolbar=toolbar,
         )
+
+
+class RotateCropTool(CommandTool):
+    """Rotate & Crop tool
+
+    See :py:class:`.rotatecrop.RotateCropDialog` dialog."""
+
+    def __init__(self, manager, toolbar_id=DefaultToolbarID, options=None):
+        super(RotateCropTool, self).__init__(
+            manager,
+            title=_("Rotate and crop"),
+            icon=get_icon("rotate.png"),
+            toolbar_id=toolbar_id,
+        )
+        self.options = options
+
+    def activate_command(self, plot, checked):
+        """Activate tool"""
+
+        for item in plot.get_selected_items():
+            if isinstance(item, TrImageItem):
+                z = item.z()
+                plot.del_item(item)
+                dlg = RotateCropDialog(plot.parent(), options=self.options)
+                dlg.set_item(item)
+                ok = dlg.exec_()
+                plot.add_item(item, z=z)
+                if not ok:
+                    break
+
+    def update_status(self, plot):
+        """
+
+        :param plot:
+        """
+        from plotpy.widgets.items.image.transform import TrImageItem
+
+        status = any(
+            [isinstance(item, TrImageItem) for item in plot.get_selected_items()]
+        )
+        self.action.setEnabled(status)
 
 
 class RotateCropWidget(base.BaseTransformWidget, RotateCropMixin):

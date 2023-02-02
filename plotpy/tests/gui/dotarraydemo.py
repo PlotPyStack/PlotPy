@@ -26,7 +26,7 @@ from qtpy.QtCore import QPointF, QRectF, Qt
 from qtpy.QtGui import QBrush, QColor, QPainter, QPen, QPixmap
 from qtpy.QtWidgets import QLabel, QMessageBox
 
-from plotpy.widgets.interfaces import IImageItemType
+from plotpy.widgets.interfaces.common import IImageItemType
 from plotpy.widgets.items.curve.errorbar import vmap
 from plotpy.widgets.items.image.base import RawImageItem
 from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType

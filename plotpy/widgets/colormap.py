@@ -8,7 +8,7 @@
 # pylint: disable=C0103
 
 """
-plotpy.gui.widgets.colormap
+plotpy.widgets.colormap
 ---------------------------
 
 The `colormap` module contains definition of common colormaps and tools
@@ -16,12 +16,17 @@ to manipulate and create them
 """
 
 from numpy import array, linspace, newaxis, uint8, zeros
-from qtpy import QtCore as QC
 from qtpy import QtGui as QG
-from qtpy import QtWidgets as QW
 from qwt import QwtInterval, QwtLinearColorMap, toQImage
 
 from plotpy.widgets import _cm  # Reuse matplotlib data
+
+# usefull to obtain a full color map
+FULLRANGE = QwtInterval(0.0, 1.0)
+
+COLORMAPS = {}
+EXTRA_COLORMAPS = []  # custom build colormaps
+ICON_CACHE = {}
 
 
 def _interpolate(val, vmin, vmax):
@@ -55,13 +60,6 @@ def _setup_colormap(cmap, cmdata):
         col = QG.QColor()
         col.setRgbF(compr, compg, compb)
         cmap.addColorStop(i, col)
-
-
-# usefull to obtain a full color map
-FULLRANGE = QwtInterval(0.0, 1.0)
-
-COLORMAPS = {}
-EXTRA_COLORMAPS = []  # custom build colormaps
 
 
 def get_cmap(name):
@@ -108,9 +106,6 @@ def build_icon_from_cmap(cmap, width=32, height=32):
     img = toQImage(data)
     img.setColorTable(cmap.colorTable(FULLRANGE))
     return QG.QIcon(QG.QPixmap.fromImage(img))
-
-
-ICON_CACHE = {}
 
 
 def build_icon_from_cmap_name(cmap_name):

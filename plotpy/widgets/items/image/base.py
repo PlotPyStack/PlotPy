@@ -10,11 +10,18 @@ from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qwt import QwtPlotItem
 
+from plotpy._scaler import (
+    INTERP_AA,
+    INTERP_LINEAR,
+    INTERP_NEAREST,
+    _histogram,
+    _scale_rect,
+)
 from plotpy.config import _
 from plotpy.utils.gui import assert_interfaces_valid
 from plotpy.widgets import io
 from plotpy.widgets.colormap import FULLRANGE, get_cmap, get_cmap_name
-from plotpy.widgets.interfaces import (
+from plotpy.widgets.interfaces.common import (
     IBaseImageItem,
     IBasePlotItem,
     IColormapImageItemType,
@@ -29,25 +36,6 @@ from plotpy.widgets.interfaces import (
 )
 from plotpy.widgets.items.shapes.rectangle import RectangleShape
 from plotpy.widgets.styles.image import RawImageParam
-
-try:
-    from plotpy._scaler import (
-        INTERP_AA,
-        INTERP_LINEAR,
-        INTERP_NEAREST,
-        _histogram,
-        _scale_rect,
-    )
-except ImportError:
-    print(
-        ("Module 'plotpy.widgets.items.image.base': missing C extension"),
-        file=sys.stderr,
-    )
-    print(
-        ("try running :" "python setup.py build_ext --inplace -c mingw32"),
-        file=sys.stderr,
-    )
-    raise
 
 LUT_SIZE = 1024
 LUT_MAX = float(LUT_SIZE - 1)

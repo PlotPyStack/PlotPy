@@ -45,7 +45,6 @@ def get_eol_chars(text):
 
 def get_error_match(text):
     """Return error match"""
-    import re
 
     return re.match(r'  File "(.*)", line (\d*)', text)
 

@@ -2,16 +2,16 @@
 
 # Note: the two following lines are not required
 #    if a QApplication has already been created
-import plotpy.gui
+import guidata.dataset.dataitems as di
+import guidata.dataset.datatypes as dt
 
-_app = plotpy.gui.qapplication()
+import plotpy.config  # load icons
+import plotpy.widgets
 
-import plotpy.gui.dataset.datatypes as dt
-import plotpy.core.dataset.dataitems as di
-import plotpy.core.config.config  # load icons
+_app = plotpy.widgets.qapplication()
 
 
-class Processing(dt.DataSetGui):
+class Processing(dt.DataSet):
     """Example"""
 
     a = di.FloatItem("Parameter #1", default=2.3)

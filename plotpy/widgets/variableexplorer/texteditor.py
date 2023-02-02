@@ -104,5 +104,5 @@ class TextEditor(QW.QDialog):
         try:
             str(value, "utf8")
             return True
-        except:
+        except Exception:
             return False

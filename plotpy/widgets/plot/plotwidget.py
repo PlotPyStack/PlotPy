@@ -6,6 +6,8 @@ from qtpy import QtWidgets as QW
 from plotpy.config import _
 from plotpy.widgets.itemlist import PlotItemList
 from plotpy.widgets.plot.base import BasePlot, PlotType
+from plotpy.widgets.plot.cross_section.cswidget import XCrossSection, YCrossSection
+from plotpy.widgets.plot.histogram.contrastadjustment import ContrastAdjustment
 from plotpy.widgets.plot.manager import PlotManager
 
 
@@ -33,7 +35,7 @@ class BasePlotWidget(QW.QSplitter):
         * A plot (:py:class:`.baseplot.BasePlot`)
         * An `item list` panel (:py:class:`.baseplot.PlotItemList`)
         * A `contrast adjustment` panel
-          (:py:class:`.histogram.ContrastAdjustment`)
+          (:py:class:`.histogram.contrastadjustment.ContrastAdjustment`)
         * An `X-axis cross section` panel
           (:py:class:`.cross_section.XCrossSection`)
         * An `Y-axis cross section` panel
@@ -99,8 +101,8 @@ class BasePlotWidget(QW.QSplitter):
         self.itemlist = PlotItemList(self)
         self.itemlist.setVisible(show_itemlist)
 
-        # for curves only plots, or MANUAL plots with the no_image_analysis_widgets option,
-        # don't add splitters and widgets dedicated to images since
+        # for curves only plots, or MANUAL plots with the no_image_analysis_widgets
+        # option, don't add splitters and widgets dedicated to images since
         # they make the widget more "laggy" when resized.
         if type == PlotType.CURVE or (
             type == PlotType.MANUAL and no_image_analysis_widgets is True
@@ -117,14 +119,10 @@ class BasePlotWidget(QW.QSplitter):
             self.setOrientation(QC.Qt.Orientation.Vertical)
             self.sub_splitter = QW.QSplitter(QC.Qt.Orientation.Horizontal, self)
 
-            from plotpy.widgets.plot.cross_section.cswidget import YCrossSection
-
             self.ycsw = YCrossSection(
                 self, position=ysection_pos, xsection_pos=xsection_pos
             )
             self.ycsw.setVisible(show_ysection)
-
-            from plotpy.widgets.plot.cross_section.cswidget import XCrossSection
 
             self.xcsw = XCrossSection(self)
             self.xcsw.setVisible(show_xsection)
@@ -161,7 +159,6 @@ class BasePlotWidget(QW.QSplitter):
             self.sub_splitter.addWidget(self.itemlist)
 
             # Contrast adjustment (Levels histogram)
-            from plotpy.widgets.plot.histogram import ContrastAdjustment
 
             self.contrast = ContrastAdjustment(self)
             self.contrast.setVisible(show_contrast)
@@ -265,7 +262,8 @@ class PlotWidgetMixin(PlotManager):
     def register_tools(self):
         """
         Register the plotting dialog box tools: the base implementation
-        provides standard, curve and/or image-related and other tools, depending on the plot type
+        provides standard, curve and/or image-related and other tools,
+        depending on the plot type
 
         This method may be overriden to provide a fully customized set of tools
         """
@@ -479,8 +477,8 @@ class PlotWidget(QW.QWidget, PlotWidgetMixin):
     def __init__(self, parent=None, options=None, panels=None):
         super(PlotWidget, self).__init__(parent=parent, options=options, panels=panels)
 
-        # to limit the API change of the old ImageWidget and PlotWidget classes and avoid
-        # calls to plotwidget.plot_widget.plot instead of plotwidget.plot
+        # to limit the API change of the old ImageWidget and PlotWidget classes and
+        # avoid calls to plotwidget.plot_widget.plot instead of plotwidget.plot
         self.plot = self.plot_widget.plot
 
     def setup_widget_layout(self):

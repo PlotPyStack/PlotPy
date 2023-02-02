@@ -9,8 +9,9 @@ import sys
 from guidata.configtools import get_icon
 from qwt import QwtPlotGrid
 
+from plotpy.config import _
 from plotpy.utils.gui import assert_interfaces_valid
-from plotpy.widgets.interfaces import IBasePlotItem, IDecoratorItemType
+from plotpy.widgets.interfaces.common import IBasePlotItem, IDecoratorItemType
 from plotpy.widgets.styles.base import GridParam
 
 

@@ -57,6 +57,7 @@ from guidata.utils import restore_dataset, update_dataset
 from numpy import inf  # Do not remove this import (used by optimization funcs)
 from qtpy import QtWidgets as QW
 from qtpy.QtCore import Qt
+from scipy.optimize import fmin, fmin_bfgs, fmin_cg, fmin_l_bfgs_b, fmin_powell, leastsq
 
 import plotpy.widgets
 from plotpy.config import _
@@ -665,7 +666,6 @@ class FitWidgetMixin(PlotWidgetMixin):
         :return:
         """
         prm = self.autofit_prm
-        from scipy.optimize import fmin
 
         x = fmin(self.get_norm_func(), x0, xtol=prm.xtol, ftol=prm.ftol)
         return x
@@ -677,7 +677,6 @@ class FitWidgetMixin(PlotWidgetMixin):
         :return:
         """
         prm = self.autofit_prm
-        from scipy.optimize import fmin_powell
 
         x = fmin_powell(self.get_norm_func(), x0, xtol=prm.xtol, ftol=prm.ftol)
         return x
@@ -689,7 +688,6 @@ class FitWidgetMixin(PlotWidgetMixin):
         :return:
         """
         prm = self.autofit_prm
-        from scipy.optimize import fmin_bfgs
 
         x = fmin_bfgs(self.get_norm_func(), x0, gtol=prm.gtol, norm=eval(prm.norm))
         return x
@@ -702,7 +700,6 @@ class FitWidgetMixin(PlotWidgetMixin):
         """
         prm = self.autofit_prm
         bounds = [(p.min, p.max) for p in self.fitparams]
-        from scipy.optimize import fmin_l_bfgs_b
 
         x, _f, _d = fmin_l_bfgs_b(
             self.get_norm_func(), x0, pgtol=prm.gtol, approx_grad=1, bounds=bounds
@@ -716,7 +713,6 @@ class FitWidgetMixin(PlotWidgetMixin):
         :return:
         """
         prm = self.autofit_prm
-        from scipy.optimize import fmin_cg
 
         x = fmin_cg(self.get_norm_func(), x0, gtol=prm.gtol, norm=eval(prm.norm))
         return x
@@ -737,8 +733,6 @@ class FitWidgetMixin(PlotWidgetMixin):
             """
             err = self.errorfunc(params)
             return err
-
-        from scipy.optimize import leastsq
 
         x, _ier = leastsq(func, x0, xtol=prm.xtol, ftol=prm.ftol)
         return x

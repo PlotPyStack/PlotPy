@@ -6,9 +6,10 @@ from qtpy import QtWidgets as QW
 from plotpy.config import _
 from plotpy.utils.misc_from_gui import add_actions, add_separator
 from plotpy.widgets.events import ZoomRectHandler, setup_standard_tool_filter
-from plotpy.widgets.interfaces import IImageItemType, IShapeItemType
+from plotpy.widgets.interfaces.common import IImageItemType, IShapeItemType
 from plotpy.widgets.items.image.misc import get_items_in_rectangle
 from plotpy.widgets.items.shapes.rectangle import RectangleShape
+from plotpy.widgets.plot.base import PARAMETERS_TITLE_ICON
 from plotpy.widgets.tools.base import (
     CommandTool,
     DefaultToolbarID,
@@ -55,7 +56,6 @@ class BasePlotMenuTool(CommandTool):
     def __init__(
         self, manager, key, title=None, icon=None, tip=None, toolbar_id=DefaultToolbarID
     ):
-        from plotpy.widgets.plot.base import PARAMETERS_TITLE_ICON
 
         default_title, default_icon = PARAMETERS_TITLE_ICON[key]
         if title is None:

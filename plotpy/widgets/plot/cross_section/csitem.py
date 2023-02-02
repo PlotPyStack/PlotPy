@@ -6,7 +6,7 @@ import numpy as np
 from qtpy import QtCore as QC
 
 from plotpy.widgets.geometry import rotate, translate, vector_angle, vector_norm
-from plotpy.widgets.interfaces import IBasePlotItem
+from plotpy.widgets.interfaces.common import IBasePlotItem
 from plotpy.widgets.items.curve.errorbar import ErrorBarCurveItem
 from plotpy.widgets.items.image.misc import get_image_from_qrect
 from plotpy.widgets.items.utils import axes_to_canvas, canvas_to_axes

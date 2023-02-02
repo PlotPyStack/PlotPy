@@ -8,7 +8,7 @@ from qwt import QwtPlotMarker
 
 from plotpy.config import CONF, _
 from plotpy.utils.gui import assert_interfaces_valid
-from plotpy.widgets.interfaces import IBasePlotItem, IShapeItemType
+from plotpy.widgets.interfaces.common import IBasePlotItem, IShapeItemType
 from plotpy.widgets.items.utils import canvas_to_axes
 from plotpy.widgets.styles.base import MARKERSTYLES
 from plotpy.widgets.styles.shape import MarkerParam
@@ -279,7 +279,7 @@ class Marker(QwtPlotMarker):
         return self.lineStyle() == QwtPlotMarker.HLine
 
     def center_handle(self, x, y):
-        """Center cursor handle depending on marker style (\|, -)"""
+        r"""Center cursor handle depending on marker style (\|, -)"""
         plot = self.plot()
         if plot is None:
             self._pending_center_handle = True

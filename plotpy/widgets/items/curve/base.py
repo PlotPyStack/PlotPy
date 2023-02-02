@@ -9,7 +9,7 @@ from qwt import QwtPlotCurve
 
 from plotpy.config import CONF, _
 from plotpy.utils.gui import assert_interfaces_valid
-from plotpy.widgets.interfaces import (
+from plotpy.widgets.interfaces.common import (
     IBasePlotItem,
     ICurveItemType,
     ISerializableType,

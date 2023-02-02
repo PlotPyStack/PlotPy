@@ -11,7 +11,11 @@ from qwt import QwtSymbol
 
 from plotpy.config import CONF, _
 from plotpy.utils.gui import assert_interfaces_valid
-from plotpy.widgets.interfaces import IBasePlotItem, ISerializableType, IShapeItemType
+from plotpy.widgets.interfaces.common import (
+    IBasePlotItem,
+    ISerializableType,
+    IShapeItemType,
+)
 from plotpy.widgets.items.shapes.base import AbstractShape
 from plotpy.widgets.items.utils import canvas_to_axes
 from plotpy.widgets.styles.shape import ShapeParam

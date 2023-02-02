@@ -26,7 +26,7 @@ import platform
 import sys
 import time
 
-from qtpy.QtCore import QT_VERSION_STR
+from qtpy import QT_VERSION
 from qwt import QWT_VERSION_STR
 
 import plotpy
@@ -39,7 +39,7 @@ __description__ = (
 )
 
 
-def about(html=True, copyright_only=False):
+def about(_html=True, _copyright_only=False):
     """Return text about this package"""
 
     plotpy_version = plotpy.__version__
@@ -47,7 +47,7 @@ def about(html=True, copyright_only=False):
     python_version = "{} {}".format(
         platform.python_version(), "64 bits" if sys.maxsize > 2**32 else "32 bits"
     )
-    qt_version = QT_VERSION_STR
+    qt_version = QT_VERSION
     qwt_version = QWT_VERSION_STR
     os_name = platform.system()
 

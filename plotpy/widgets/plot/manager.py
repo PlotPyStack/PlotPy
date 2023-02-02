@@ -6,7 +6,8 @@ from qtpy import QtWidgets as QW
 
 from plotpy.utils.gui import assert_interfaces_valid
 from plotpy.utils.misc_from_gui import create_action
-from plotpy.widgets.interfaces import IPlotManager
+from plotpy.widgets import panels
+from plotpy.widgets.interfaces.plotmanager import InterfacePlotManager
 from plotpy.widgets.plot.base import BasePlot
 from plotpy.widgets.tools.annotations import (
     AnnotatedCircleTool,
@@ -69,7 +70,7 @@ class PlotManager(object):
     tools (see :py:mod:`.tools`) and toolbars
     """
 
-    __implements__ = (IPlotManager,)
+    __implements__ = (InterfacePlotManager,)
 
     def __init__(self, main):
         self.main = main  # The main parent widget
@@ -323,8 +324,6 @@ class PlotManager(object):
 
         Return None if the item list panel has not been added to this manager
         """
-        from plotpy.widgets import panels
-
         return self.get_panel(panels.ID_ITEMLIST)
 
     def get_contrast_panel(self):
@@ -334,7 +333,6 @@ class PlotManager(object):
         Return None if the contrast adjustment panel has not been added
         to this manager
         """
-        from plotpy.widgets import panels
 
         return self.get_panel(panels.ID_CONTRAST)
 
@@ -358,7 +356,6 @@ class PlotManager(object):
         Return None if the X-axis cross section panel has not been added
         to this manager
         """
-        from plotpy.widgets import panels
 
         return self.get_panel(panels.ID_XCS)
 
@@ -369,7 +366,6 @@ class PlotManager(object):
         Return None if the Y-axis cross section panel has not been added
         to this manager
         """
-        from plotpy.widgets import panels
 
         return self.get_panel(panels.ID_YCS)
 
@@ -457,12 +453,7 @@ class PlotManager(object):
         self.add_tool(DoAutoscaleTool)
         self.add_tool(BasePlotMenuTool, "item")
         self.add_tool(ExportItemDataTool)
-        try:
-            import plotpy.widgets.variableexplorer.objecteditor  # analysis:ignore
-
-            self.add_tool(EditItemDataTool)
-        except ImportError:
-            pass
+        self.add_tool(EditItemDataTool)
         self.add_tool(ItemCenterTool)
         self.add_tool(DeleteItemTool)
         self.add_separator_tool()

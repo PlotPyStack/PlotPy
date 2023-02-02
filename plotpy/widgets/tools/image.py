@@ -11,7 +11,7 @@ from plotpy.config import _
 from plotpy.utils.misc_from_gui import add_actions
 from plotpy.widgets.colormap import build_icon_from_cmap, get_cmap, get_colormap_list
 from plotpy.widgets.events import QtDragHandler, setup_standard_tool_filter
-from plotpy.widgets.interfaces import (
+from plotpy.widgets.interfaces.common import (
     IColormapImageItemType,
     IStatsImageItemType,
     IVoiImageItemType,

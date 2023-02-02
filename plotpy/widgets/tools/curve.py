@@ -6,9 +6,11 @@ from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
 from plotpy.config import _
+from plotpy.widgets.builder import make
 from plotpy.widgets.events import QtDragHandler, setup_standard_tool_filter
-from plotpy.widgets.interfaces import ICurveItemType
+from plotpy.widgets.interfaces.common import ICurveItemType
 from plotpy.widgets.items.shapes.marker import Marker
+from plotpy.widgets.items.shapes.range import XRangeSelection
 from plotpy.widgets.tools.base import (
     SHAPE_Z_OFFSET,
     DefaultToolbarID,
@@ -16,6 +18,7 @@ from plotpy.widgets.tools.base import (
     ToggleTool,
 )
 from plotpy.widgets.tools.cursor import BaseCursorTool
+from plotpy.widgets.variableexplorer.objecteditor.editor import oedit
 
 
 class CurveStatsTool(BaseCursorTool):
@@ -47,7 +50,6 @@ class CurveStatsTool(BaseCursorTool):
 
         :return:
         """
-        from plotpy.widgets.items.shapes.range import XRangeSelection
 
         return XRangeSelection(0, 0)
 
@@ -61,7 +63,6 @@ class CurveStatsTool(BaseCursorTool):
         if self.label is None:
             plot = filter.plot
             curve = self.get_associated_item(plot)
-            from plotpy.widgets.builder import make
 
             self.label = make.computations(
                 self.shape,
@@ -312,7 +313,6 @@ def edit_curve_data(item):
     else:
         x, y = item_data
         data = np.array([x, y]).T
-    from plotpy.widgets.variableexplorer.objecteditor import oedit
 
     if oedit(data) is not None:
         if data.shape[1] > 2:

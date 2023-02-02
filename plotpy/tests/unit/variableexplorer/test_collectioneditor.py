@@ -25,7 +25,7 @@ from flaky import flaky
 from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QWidget
 
-from plotpy.widgets.variableexplorer.collectionseditor.editor import (
+from plotpy.widgets.variableexplorer.collectionseditor.collection import (
     CollectionsEditor,
     CollectionsEditorTableView,
 )
@@ -167,7 +167,7 @@ def test_shows_dataframeeditor_when_editing_datetimeindex(qtbot, monkeypatch):
     MockDataFrameEditor = Mock()
     mockDataFrameEditor_instance = MockDataFrameEditor()
     monkeypatch.setattr(
-        "plotpy.widgets.variableexplorer.collectionseditor.DataFrameEditor",
+        "plotpy.widgets.variableexplorer.collectionseditor.collection.DataFrameEditor",
         MockDataFrameEditor,
     )
     rng = pandas.date_range("10/1/2016", periods=25, freq="bq")
@@ -259,27 +259,24 @@ def test_edit_mutable_and_immutable_types(monkeypatch):
     Regression test for issue #5991 .
     """
     MockQLineEdit = Mock()
-    attr_to_patch_qlineedit = (
-        "plotpy.widgets.variableexplorer." + "collectionseditor.QLineEdit"
-    )
+    attr_to_patch_qlineedit = "qtpy.QtWidgets.QLineEdit"
     monkeypatch.setattr(attr_to_patch_qlineedit, MockQLineEdit)
 
     MockTextEditor = Mock()
     attr_to_patch_textedit = (
-        "plotpy.widgets.variableexplorer." + "collectionseditor.TextEditor"
+        "plotpy.widgets.variableexplorer." + "texteditor.TextEditor"
     )
     monkeypatch.setattr(attr_to_patch_textedit, MockTextEditor)
 
     MockQDateTimeEdit = Mock()
-    attr_to_patch_qdatetimeedit = (
-        "plotpy.widgets.variableexplorer." + "collectionseditor.QDateTimeEdit"
-    )
+    attr_to_patch_qdatetimeedit = "qtpy.QtWidgets.QDateTimeEdit"
     monkeypatch.setattr(attr_to_patch_qdatetimeedit, MockQDateTimeEdit)
 
     MockCollectionsEditor = Mock()
     mockCollectionsEditor_instance = MockCollectionsEditor()
     attr_to_patch_coledit = (
-        "plotpy.widgets.variableexplorer." + "collectionseditor.CollectionsEditor"
+        "plotpy.widgets.variableexplorer."
+        + "collectionseditor.collection.CollectionsEditor"
     )
     monkeypatch.setattr(attr_to_patch_coledit, MockCollectionsEditor)
 

@@ -102,10 +102,22 @@ BRUSHSTYLE_CHOICES = [
     ("BDiagPattern", _("Backward diagonal lines"), "bdiagpattern.png"),
     ("FDiagPattern", _("Forward diagonal lines"), "fdiagpattern.png"),
     ("DiagCrossPattern", _("Crossing diagonal lines"), "diagcrosspattern.png"),
-    #    ("LinearGradientPattern", _("Linear gradient (set using a dedicated QBrush constructor)"), "none.png"),
-    #    ("ConicalGradientPattern", _("Conical gradient (set using a dedicated QBrush constructor)"), "none.png"),
-    #    ("RadialGradientPattern", _("Radial gradient (set using a dedicated QBrush constructor)"), "none.png"),
-    #    ("TexturePattern", _("Custom pattern (see QBrush::setTexture())"), "none.png"),
+    # (
+    #     "LinearGradientPattern",
+    #     _("Linear gradient (set using a dedicated QBrush constructor)"),
+    #     "none.png",
+    # ),
+    # (
+    #     "ConicalGradientPattern",
+    #     _("Conical gradient (set using a dedicated QBrush constructor)"),
+    #     "none.png",
+    # ),
+    # (
+    #     "RadialGradientPattern",
+    #     _("Radial gradient (set using a dedicated QBrush constructor)"),
+    #     "none.png",
+    # ),
+    # ("TexturePattern", _("Custom pattern (see QBrush::setTexture())"), "none.png"),
 ]
 
 MARKERSTYLE_CHOICES = [

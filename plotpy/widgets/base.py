@@ -21,7 +21,7 @@ from plotpy.config import _
 from plotpy.utils.misc_from_gui import create_toolbutton
 from plotpy.widgets.items.image.transform import TrImageItem
 from plotpy.widgets.plot.base import PlotType
-from plotpy.widgets.plot.histogram import lut_range_threshold
+from plotpy.widgets.plot.histogram.utils import lut_range_threshold
 from plotpy.widgets.plot.plotwidget import PlotDialog, PlotWidget
 
 

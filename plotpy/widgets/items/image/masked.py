@@ -4,8 +4,9 @@ import sys
 import numpy as np
 from qtpy import QtCore as QC
 
+from plotpy._scaler import INTERP_NEAREST, _scale_rect, _scale_xy
 from plotpy.config import _
-from plotpy.widgets.interfaces import (
+from plotpy.widgets.interfaces.common import (
     IBaseImageItem,
     IBasePlotItem,
     IHistDataSource,
@@ -15,19 +16,6 @@ from plotpy.widgets.items.image.image_items import ImageItem, XYImageItem
 from plotpy.widgets.items.image.masked_area import MaskedArea
 from plotpy.widgets.items.image.mixin import MaskedImageMixin
 from plotpy.widgets.styles.image import MaskedImageParam, MaskedXYImageParam
-
-try:
-    from plotpy._scaler import INTERP_NEAREST, _scale_rect, _scale_xy
-except ImportError:
-    print(
-        ("Module 'plotpy.widgets.items.image.filter': missing C extension"),
-        file=sys.stderr,
-    )
-    print(
-        ("try running :" "python setup.py build_ext --inplace -c mingw32"),
-        file=sys.stderr,
-    )
-    raise
 
 
 class MaskedImageItem(ImageItem, MaskedImageMixin):

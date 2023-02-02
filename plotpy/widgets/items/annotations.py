@@ -81,7 +81,11 @@ from plotpy.widgets.geometry import (
     compute_distance,
     compute_rect_size,
 )
-from plotpy.widgets.interfaces import IBasePlotItem, ISerializableType, IShapeItemType
+from plotpy.widgets.interfaces.common import (
+    IBasePlotItem,
+    ISerializableType,
+    IShapeItemType,
+)
 from plotpy.widgets.items.label import DataInfoLabel
 from plotpy.widgets.items.shapes.base import AbstractShape
 from plotpy.widgets.items.shapes.ellipse import EllipseShape

@@ -8,7 +8,7 @@
 # pylint: disable=C0103
 
 """
-plotpy.gui.widgets.scaler
+plotpy.widgets.scaler
 -------------
 
 The `scaler` module wraps features provided by the C++ scaler engine

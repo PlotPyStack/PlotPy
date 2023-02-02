@@ -9,7 +9,6 @@ from plotpy.widgets.events import (
     RectangularSelectionHandler,
     setup_standard_tool_filter,
 )
-from plotpy.widgets.interfaces import IPlotManager
 from plotpy.widgets.items.shapes.rectangle import RectangleShape
 
 SHAPE_Z_OFFSET = 1000
@@ -25,7 +24,6 @@ class GuiTool(QC.QObject):
     def __init__(self, manager, toolbar_id=DefaultToolbarID):
         """Constructor"""
         super(GuiTool, self).__init__()
-        assert IPlotManager in manager.__implements__
         self.manager = manager
         self.parent_tool = None
         self.plots = set()

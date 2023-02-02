@@ -323,7 +323,7 @@ has the same effect as typing a particular string at the help> prompt.
         assert isinstance(text, str)
         try:
             return eval(text, self.locals), True
-        except:
+        except Exception:
             return None, False
 
     def is_defined(self, objtxt, force_import=False):

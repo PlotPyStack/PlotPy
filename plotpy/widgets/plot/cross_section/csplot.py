@@ -6,7 +6,7 @@ from qtpy import QtWidgets as QW
 
 from plotpy.config import CONF, _
 from plotpy.widgets.builder import make
-from plotpy.widgets.interfaces import ICSImageItemType
+from plotpy.widgets.interfaces.common import ICSImageItemType
 from plotpy.widgets.items.image.base import LUT_MAX
 from plotpy.widgets.plot.base import BasePlot, PlotType
 from plotpy.widgets.plot.cross_section.csitem import (

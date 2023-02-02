@@ -12,6 +12,7 @@ from guidata.dataset.dataitems import (
 from guidata.dataset.datatypes import BeginGroup, DataSet, EndGroup, GetAttrProp
 from qtpy import QtGui as QG
 
+from plotpy._scaler import INTERP_AA, INTERP_LINEAR, INTERP_NEAREST
 from plotpy.config import _
 from plotpy.widgets.colormap import build_icon_from_cmap_name, get_colormap_list
 from plotpy.widgets.styles.base import ItemParameters
@@ -68,7 +69,6 @@ class BaseImageParam(DataSet):
         self.colormap = image.get_color_map_name()
         interpolation = image.get_interpolation()
         mode = interpolation[0]
-        from plotpy._scaler import INTERP_LINEAR, INTERP_NEAREST
 
         if mode == INTERP_NEAREST:
             self.interpolation = 0
@@ -90,7 +90,6 @@ class BaseImageParam(DataSet):
         image.setTitle(self.label)
         image.set_color_map(self.colormap)
         size = self.interpolation
-        from plotpy._scaler import INTERP_AA, INTERP_LINEAR, INTERP_NEAREST
 
         if size == 0:
             mode = INTERP_NEAREST

@@ -93,7 +93,7 @@ cdef class Contour:
             self.seg_map[p0] = [seg]
         else:
             self.seg_map[p0].append(seg)
-        
+
         if p1 not in self.seg_map:
             self.seg_map[p1] = [seg]
         else:
@@ -303,7 +303,7 @@ cdef void compute_contour_2d(double [:, :] data, coord, double[:] values, list c
 cdef contour_2d_coord(double [:, :] data, coord, np.ndarray[double, ndim=1] values):
 
     cdef np.ndarray[double, ndim=2] points;
-    cdef np.ndarray[long, ndim=2] offsets;
+    cdef np.ndarray[int, ndim=2] offsets;
     cdef array.array vpts = array.array('d', [])
     cdef array.array voff = array.array('i',[0])
     cdef array.array vval = array.array('i', [0])
@@ -327,7 +327,7 @@ cdef contour_2d_coord(double [:, :] data, coord, np.ndarray[double, ndim=1] valu
         points[k//2, 0] = vpts.data.as_doubles[k]
         points[k//2, 1] = vpts.data.as_doubles[k+1]
 
-    offsets = np.zeros((int(len(voff)), 2), np.long)
+    offsets = np.zeros((int(len(voff)), 2), np.int32)
     for k in range(0, len(voff)):
         offsets[k,0] = vval.data.as_ints[k]
         offsets[k,1] = voff.data.as_ints[k]//2

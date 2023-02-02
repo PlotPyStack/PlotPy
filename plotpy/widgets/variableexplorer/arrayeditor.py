@@ -281,7 +281,7 @@ class ArrayModel(QC.QAbstractTableModel):
         if isinstance(value, bytes):
             try:
                 value = str(value, "utf8")
-            except:
+            except Exception:
                 pass
         if role == QC.Qt.DisplayRole:
             if value is np.ma.masked:
@@ -554,7 +554,7 @@ class ArrayView(QW.QTableView):
                 delimiter="\t",
                 fmt=self.model().get_format(),
             )
-        except:
+        except Exception:
             QW.QMessageBox.warning(
                 self,
                 _("Warning"),
@@ -644,7 +644,7 @@ class ArrayEditorWidget(QW.QWidget):
             format = str(format)
             try:
                 format % 1.1
-            except:
+            except Exception:
                 QW.QMessageBox.critical(
                     self, _("Error"), _("Format (%s) is incorrect") % format
                 )

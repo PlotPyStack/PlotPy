@@ -5,6 +5,7 @@ from qtpy import QtCore as QC
 from plotpy.config import _
 from plotpy.widgets.events import QtDragHandler, setup_standard_tool_filter
 from plotpy.widgets.items.shapes.marker import Marker
+from plotpy.widgets.items.shapes.range import XRangeSelection
 from plotpy.widgets.tools.base import SHAPE_Z_OFFSET, DefaultToolbarID, InteractiveTool
 
 
@@ -93,7 +94,6 @@ class HRangeTool(BaseCursorTool):
 
         :return:
         """
-        from plotpy.widgets.items.shapes.range import XRangeSelection
 
         return XRangeSelection(0, 0)
 

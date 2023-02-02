@@ -7,7 +7,7 @@ from guidata.utils import update_dataset
 from qtpy import QtCore as QC
 
 from plotpy.utils.gui import assert_interfaces_valid
-from plotpy.widgets.interfaces import (
+from plotpy.widgets.interfaces.common import (
     IBaseImageItem,
     IBasePlotItem,
     IColormapImageItemType,

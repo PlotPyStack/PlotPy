@@ -57,7 +57,11 @@ from qwt import QwtPlotItem
 
 from plotpy.config import CONF, _
 from plotpy.utils.gui import assert_interfaces_valid
-from plotpy.widgets.interfaces import IBasePlotItem, ISerializableType, IShapeItemType
+from plotpy.widgets.interfaces.common import (
+    IBasePlotItem,
+    ISerializableType,
+    IShapeItemType,
+)
 from plotpy.widgets.items.curve.base import CurveItem
 from plotpy.widgets.styles.label import LabelParam
 

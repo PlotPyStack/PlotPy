@@ -22,10 +22,14 @@ The current version is qtpandas/models/DataFrameModel.py of the
 """
 
 import io
+import sys
 
 import numpy as np
 from guidata.configtools import get_font, get_icon
+from numpy import nan
 from pandas import DataFrame, DatetimeIndex, Series
+from pandas.errors import OutOfBoundsDatetime
+from pandas.util.testing import assert_frame_equal, assert_series_equal
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
@@ -39,12 +43,6 @@ from plotpy.utils.misc_from_gui import (
 )
 from plotpy.widgets import qapplication
 from plotpy.widgets.variableexplorer.arrayeditor import get_idx_rect
-
-try:
-    from pandas._libs.tslib import OutOfBoundsDatetime
-except ImportError:  # For pandas version < 0.20
-    from pandas.tslib import OutOfBoundsDatetime
-
 
 # Supported Numbers and complex numbers
 REAL_NUMBER_TYPES = (float, int, np.int64, np.int32)
@@ -253,7 +251,7 @@ class DataFrameModel(QC.QAbstractTableModel):
             value = self.df.iat[row, column]
         except OutOfBoundsDatetime:
             value = self.df.iloc[:, column].astype(str).iat[row]
-        except:
+        except Exception:
             value = self.df.iloc[row, column]
         return value
 
@@ -502,10 +500,7 @@ class FrozenTableView(QW.QTableView):
         self.setModel(parent.model())
         self.setFocusPolicy(QC.Qt.FocusPolicy.NoFocus)
         self.verticalHeader().hide()
-        try:
-            self.horizontalHeader().setSectionResizeMode(QW.QHeaderView.Fixed)
-        except:  # support for qtpy<1.2.0
-            self.horizontalHeader().setResizeMode(QW.QHeaderView.Fixed)
+        self.horizontalHeader().setSectionResizeMode(QW.QHeaderView.Fixed)
 
         parent.viewport().stackUnder(self)
 
@@ -843,7 +838,7 @@ class DataFrameEditor(QW.QDialog):
             format = str(format)
             try:
                 format % 1.1
-            except:
+            except Exception:
                 msg = _("Format ({}) is incorrect").format(format)
                 QW.QMessageBox.critical(self, _("Error"), msg)
                 return
@@ -885,15 +880,12 @@ def test_edit(data, title="", parent=None):
         dlg.exec_()
         return dlg.get_value()
     else:
-        import sys
 
         sys.exit(1)
 
 
 def test():
     """DataFrame editor test"""
-    from numpy import nan
-    from pandas.util.testing import assert_frame_equal, assert_series_equal
 
     df1 = DataFrame(
         [

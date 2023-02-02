@@ -8,7 +8,7 @@
 # pylint: disable=C0103
 
 """
-plotpy.gui.widgets.io
+plotpy.widgets.io
 ---------------------
 
 The `io` module provides input/output helper functions:
@@ -29,13 +29,16 @@ Reference
 
 from __future__ import print_function
 
+import logging
 import os.path as osp
 import re
 import sys
 
 import numpy as np
+from pydicom import dicomio
 
 from plotpy.config import _
+from plotpy.widgets.plot.histogram.utils import hist_range_threshold
 
 
 def scale_data_to_dtype(data, dtype):
@@ -54,8 +57,6 @@ def scale_data_to_dtype(data, dtype):
 def eliminate_outliers(data, percent=2.0, bins=256):
     """Eliminate data histogram outliers"""
     hist, bin_edges = np.histogram(data, bins)
-    from plotpy.widgets.plot.histogram import hist_range_threshold
-
     vmin, vmax = hist_range_threshold(hist, bin_edges, percent)
     return data.clip(vmin, vmax)
 
@@ -231,7 +232,8 @@ class ImageIOHandler(object):
             # on essait avec le path proposé
             filename = osp.join(self.prec_path, basename)
             if not osp.exists(filename):
-                # on essait avec le path proposé et la fin du path précédent (cas de la double numérisation)
+                # on essait avec le path proposé et la fin du path précédent
+                # (cas de la double numérisation)
                 head, tail = osp.split(old_path)
                 filename = osp.join(self.prec_path, tail, basename)
                 if not osp.exists(filename):
@@ -366,27 +368,14 @@ def _imwrite_pil(filename, arr):
 def _import_dcm():
     """DICOM Import function (checking for required libraries):
     DICOM support requires library `pydicom`"""
-    import logging
 
     logger = logging.getLogger("pydicom")
     logger.setLevel(logging.CRITICAL)
-    try:
-        # pydicom 1.0
-        from pydicom import dicomio  # analysis:ignore
-    except ImportError:
-        # pydicom 0.9
-        import dicom as dicomio  # analysis:ignore
     logger.setLevel(logging.WARNING)
 
 
 def _imread_dcm(filename, **kwargs):
     """Open DICOM image with pydicom and return a NumPy array"""
-    try:
-        # pydicom 1.0
-        from pydicom import dicomio
-    except ImportError:
-        # pydicom 0.9
-        import dicom as dicomio
     dcm = dicomio.read_file(filename, force=True)
     # **********************************************************************
     # The following is necessary until pydicom numpy support is improved:
@@ -603,21 +592,33 @@ def register_serializable_items(modname, classnames):
 
 # Curves
 register_serializable_items(
-    "plotpy.gui.widgets.items.curve",
-    ["CurveItem", "PolygonMapItem", "ErrorBarCurveItem"],
+    "plotpy.widgets.items.curve.base",
+    ["CurveItem"],
+)
+register_serializable_items(
+    "plotpy.widgets.items.polygon",
+    ["PolygonMapItem"],
+)
+register_serializable_items(
+    "plotpy.widgets.items.curve.errorbar",
+    ["ErrorBarCurveItem"],
 )
 # Images
 register_serializable_items(
-    "plotpy.gui.widgets.items.image",
-    [
-        "RawImageItem",
-        "ImageItem",
-        "TrImageItem",
-        "XYImageItem",
-        "RGBImageItem",
-        "MaskedImageItem",
-        "MaskedXYImageItem",
-    ],
+    "plotpy.widgets.items.image.base",
+    ["RawImageItem"],
+)
+register_serializable_items(
+    "plotpy.widgets.items.image.image_items",
+    ["ImageItem", "XYImageItem", "RGBImageItem"],
+)
+register_serializable_items(
+    "plotpy.widgets.items.image.transform",
+    ["TrImageItem"],
+)
+register_serializable_items(
+    "plotpy.widgets.items.image.masked",
+    ["MaskedImageItem", "MaskedXYImageItem"],
 )
 # Shapes
 register_serializable_items(

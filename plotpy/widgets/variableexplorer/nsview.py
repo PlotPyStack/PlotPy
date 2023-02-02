@@ -9,130 +9,35 @@
 """
 Utilities
 """
-
-# ==============================================================================
-# Date and datetime objects support
-# ==============================================================================
 import datetime
 import re
 from itertools import islice
 
+import numpy as np
+from bs4.element import NavigableString
+from dateutil.parser import parse as dateparse
+from pandas import DataFrame, DatetimeIndex, Series
+from PIL.Image import Image
+
 NUMERIC_TYPES = (int, float, complex)
-
-
-# ==============================================================================
-# FakeObject
-# ==============================================================================
-class FakeObject(object):
-    """Fake class used in replacement of missing modules"""
-
-    pass
-
-
-# ==============================================================================
-# Numpy arrays and numeric types support
-# ==============================================================================
-try:
-    from numpy import (
-        array,
-        bool_,
-        complex64,
-        complex128,
-        float16,
-        float32,
-        float64,
-        get_printoptions,
-        int8,
-        int16,
-        int32,
-        int64,
-        matrix,
-        ndarray,
-        recarray,
-    )
-    from numpy import savetxt as np_savetxt
-    from numpy import set_printoptions, uint8, uint16, uint32, uint64
-    from numpy.ma import MaskedArray
-except:
-    ndarray = (
-        array
-    ) = (
-        matrix
-    ) = (
-        recarray
-    ) = (
-        MaskedArray
-    ) = (
-        np_savetxt
-    ) = (
-        int64
-    ) = (
-        int32
-    ) = (
-        int16
-    ) = (
-        int8
-    ) = (
-        uint64
-    ) = (
-        uint32
-    ) = (
-        uint16
-    ) = (
-        uint8
-    ) = float64 = float32 = float16 = complex64 = complex128 = bool_ = FakeObject
 
 
 def get_numpy_dtype(obj):
     """Return NumPy data type associated to obj
     Return None if NumPy is not available
     or if obj is not a NumPy array or scalar"""
-    if ndarray is not FakeObject:
-        # NumPy is available
-        import numpy as np
 
-        if isinstance(obj, np.generic) or isinstance(obj, np.ndarray):
-            # Numpy scalars all inherit from np.generic.
-            # Numpy arrays all inherit from np.ndarray.
-            # If we check that we are certain we have one of these
-            # types then we are less likely to generate an exception below.
-            try:
-                return obj.dtype.type
-            except (AttributeError, RuntimeError):
-                #  AttributeError: some NumPy objects have no dtype attribute
-                #  RuntimeError: happens with NetCDF objects (Issue 998)
-                return
-
-
-# ==============================================================================
-# Pandas support
-# ==============================================================================
-try:
-    from pandas import DataFrame, DatetimeIndex, Series
-except:
-    DataFrame = DatetimeIndex = Series = FakeObject
-
-
-# ==============================================================================
-# PIL Images support
-# ==============================================================================
-try:
-    import PIL.Image
-
-    Image = PIL.Image.Image
-except:
-    Image = FakeObject  # analysis:ignore
-
-
-# ==============================================================================
-# BeautifulSoup support (see Issue 2448)
-# ==============================================================================
-try:
-    import bs4
-
-    NavigableString = bs4.element.NavigableString
-except:
-    NavigableString = FakeObject  # analysis:ignore
+    if isinstance(obj, np.generic) or isinstance(obj, np.ndarray):
+        # Numpy scalars all inherit from np.generic.
+        # Numpy arrays all inherit from np.ndarray.
+        # If we check that we are certain we have one of these
+        # types then we are less likely to generate an exception below.
+        try:
+            return obj.dtype.type
+        except (AttributeError, RuntimeError):
+            #  AttributeError: some NumPy objects have no dtype attribute
+            #  RuntimeError: happens with NetCDF objects (Issue 998)
+            return
 
 
 # ==============================================================================
@@ -158,7 +63,7 @@ def get_size(item):
     """Return size of an item of arbitrary type"""
     if isinstance(item, (list, tuple, dict)):
         return len(item)
-    elif isinstance(item, (ndarray, MaskedArray)):
+    elif isinstance(item, (np.ndarray, np.ma.MaskedArray)):
         return item.shape
     elif isinstance(item, Image):
         return item.size
@@ -178,15 +83,6 @@ def get_object_attrs(obj):
     if not attrs:
         attrs = dir(obj)
     return attrs
-
-
-try:
-    from dateutil.parser import parse as dateparse
-except:
-
-    def dateparse(datestr):  # analysis:ignore
-        """Just for 'year, month, day' strings"""
-        return datetime.datetime(*list(map(int, datestr.split(","))))
 
 
 def datestr_to_datetime(value):
@@ -238,7 +134,14 @@ COLORS = {
     dict: "#00ffff",
     tuple: "#c0c0c0",
     (str,): "#800000",
-    (ndarray, MaskedArray, matrix, DataFrame, Series, DatetimeIndex): ARRAY_COLOR,
+    (
+        np.ndarray,
+        np.ma.MaskedArray,
+        np.matrix,
+        DataFrame,
+        Series,
+        DatetimeIndex,
+    ): ARRAY_COLOR,
     Image: "#008000",
     datetime.date: "#808000",
     datetime.timedelta: "#808000",
@@ -287,7 +190,7 @@ def sort_against(list1, list2, reverse=False):
                 zip(list2, list1), key=lambda x: x[0], reverse=reverse
             )
         ]
-    except:
+    except Exception:
         return list1
 
 
@@ -309,7 +212,7 @@ def default_display(value, with_module=True):
             return name + " object of " + module + " module"
         else:
             return name
-    except:
+    except Exception:
         type_str = str(object_type)
         return type_str[1:-1]
 
@@ -364,40 +267,38 @@ def collections_display(value, level):
 def value_to_display(value, minmax=False, level=0):
     """Convert value for display purpose"""
     # To save current Numpy threshold
-    np_threshold = FakeObject
 
     try:
         numeric_numpy_types = (
-            int64,
-            int32,
-            int16,
-            int8,
-            uint64,
-            uint32,
-            uint16,
-            uint8,
-            float64,
-            float32,
-            float16,
-            complex128,
-            complex64,
-            bool_,
+            np.int64,
+            np.int32,
+            np.int16,
+            np.int8,
+            np.uint64,
+            np.uint32,
+            np.uint16,
+            np.uint8,
+            np.float64,
+            np.float32,
+            np.float16,
+            np.complex128,
+            np.complex64,
+            np.bool_,
         )
-        if ndarray is not FakeObject:
-            # Save threshold
-            np_threshold = get_printoptions().get("threshold")
-            # Set max number of elements to show for Numpy arrays
-            # in our display
-            set_printoptions(threshold=10)
-        if isinstance(value, recarray):
+        # Save threshold
+        np_threshold = np.get_printoptions().get("threshold")
+        # Set max number of elements to show for Numpy arrays
+        # in our display
+        np.set_printoptions(threshold=10)
+        if isinstance(value, np.recarray):
             if level == 0:
                 fields = value.names
                 display = "Field names: " + ", ".join(fields)
             else:
                 display = "Recarray"
-        elif isinstance(value, MaskedArray):
+        elif isinstance(value, np.ma.MaskedArray):
             display = "Masked array"
-        elif isinstance(value, ndarray):
+        elif isinstance(value, np.ndarray):
             if level == 0:
                 if minmax:
                     try:
@@ -448,7 +349,7 @@ def value_to_display(value, minmax=False, level=0):
                     display = str(value, "utf8")
                     if level > 0:
                         display = "'" + display + "'"
-                except:
+                except Exception:
                     display = value
                     if level > 0:
                         display = b"'" + display + b"'"
@@ -476,7 +377,7 @@ def value_to_display(value, minmax=False, level=0):
                 display = default_display(value)
             else:
                 display = default_display(value, with_module=False)
-    except:
+    except Exception:
         display = default_display(value)
 
     # Truncate display at 70 chars to avoid freezing Spyder
@@ -489,8 +390,7 @@ def value_to_display(value, minmax=False, level=0):
         display = display[:70].rstrip() + ellipses
 
     # Restore Numpy threshold
-    if np_threshold is not FakeObject:
-        set_printoptions(threshold=np_threshold)
+    np.set_printoptions(threshold=np_threshold)
 
     return display
 
@@ -561,12 +461,12 @@ def get_type_string(item):
 def is_known_type(item):
     """Return True if object has a known type"""
     # Unfortunately, the masked array case is specific
-    return isinstance(item, MaskedArray) or get_type_string(item) is not None
+    return isinstance(item, np.ma.MaskedArray) or get_type_string(item) is not None
 
 
 def get_human_readable_type(item):
     """Return human-readable type string of an item"""
-    if isinstance(item, (ndarray, MaskedArray)):
+    if isinstance(item, (np.ndarray, np.ma.MaskedArray)):
         return item.dtype.name
     elif isinstance(item, Image):
         return "Image"
@@ -667,21 +567,10 @@ def get_supported_types():
     from datetime import date, timedelta
 
     editable_types = [int, float, complex, list, dict, tuple, date, timedelta, str]
-    try:
-        from numpy import generic, matrix, ndarray
-
-        editable_types += [ndarray, matrix, generic]
-    except:
-        pass
-    try:
-        from pandas import DataFrame, DatetimeIndex, Series
-
-        editable_types += [DataFrame, Series, DatetimeIndex]
-    except:
-        pass
+    editable_types += [np.ndarray, np.matrix, np.generic]
+    editable_types += [DataFrame, Series, DatetimeIndex]
     picklable_types = editable_types[:]
-    if Image is not FakeObject:
-        editable_types.append(Image)
+    editable_types.append(Image)
 
     return dict(picklable=picklable_types, editable=editable_types)
 

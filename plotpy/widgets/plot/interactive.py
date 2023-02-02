@@ -8,7 +8,7 @@
 # pylint: disable=C0103
 
 """
-plotpy.gui.widgets.pyplot
+plotpy.widgets.pyplot
 -------------------------
 
 The `pyplot` module provides an interactive plotting interface similar to
@@ -41,7 +41,7 @@ Examples
 ~~~~~~~~
 
 >>> import numpy as np
->>> from plotpy.gui.widgets.pyplot import * # ugly but acceptable in an interactive session
+>>> from plotpy.gui.widgets.pyplot import * # acceptable in an interactive session
 >>> ion() # switching to interactive mode
 >>> x = np.linspace(-5, 5, 1000)
 >>> figure(1)
@@ -104,6 +104,7 @@ from __future__ import print_function
 
 import sys
 
+import numpy as np
 from guidata.configtools import get_icon
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
@@ -111,26 +112,17 @@ from qtpy import QtWidgets as QW
 from qtpy.QtPrintSupport import QPrinter
 
 import plotpy.widgets
+from plotpy._scaler import INTERP_AA, INTERP_LINEAR, INTERP_NEAREST
 from plotpy.config import _
+from plotpy.widgets import io
 from plotpy.widgets.builder import make
+from plotpy.widgets.colormap import get_colormap_list
 from plotpy.widgets.itemlist import PlotItemList
 from plotpy.widgets.plot.base import BasePlot, PlotType
 from plotpy.widgets.plot.cross_section.cswidget import XCrossSection, YCrossSection
-from plotpy.widgets.plot.histogram import ContrastAdjustment
-from plotpy.widgets.plot.plotwidget import PlotManager
+from plotpy.widgets.plot.histogram.contrastadjustment import ContrastAdjustment
+from plotpy.widgets.plot.manager import PlotManager
 
-try:
-    from plotpy._scaler import INTERP_AA, INTERP_LINEAR, INTERP_NEAREST
-except ImportError:
-    print(
-        ("Module 'plotpy.gui.widgets.items.image': missing C extension"),
-        file=sys.stderr,
-    )
-    print(
-        ("try running :" "python setup.py build_ext --inplace -c mingw32"),
-        file=sys.stderr,
-    )
-    raise
 _interactive = False
 _figures = {}
 _current_fig = None
@@ -323,9 +315,8 @@ class Figure(object):
             self.build_window()
         W = device.width()
         H = device.height()
-        from numpy import array
 
-        coords = array(list(self.axes.keys()))
+        coords = np.array(list(self.axes.keys()))
         imin = coords[:, 0].min()
         imax = coords[:, 0].max()
         jmin = coords[:, 1].min()
@@ -729,7 +720,6 @@ def errorbar(*args, **kwargs):
 
 def imread(fname, to_grayscale=False):
     """Read data from *fname*"""
-    from plotpy.gui.widgets import io
 
     return io.imread(fname, to_grayscale=to_grayscale)
 
@@ -749,7 +739,6 @@ def imshow(data, interpolation=None, mask=None):
         show()
     """
     axe = gca()
-    import numpy as np
 
     if isinstance(data, np.ma.MaskedArray) and mask is None:
         mask = data.mask
@@ -879,7 +868,6 @@ def colormap(name):
 
 
 def _add_colormaps(glbs):
-    from plotpy.widgets.colormap import get_colormap_list
 
     for cmap_name in get_colormap_list():
         glbs[cmap_name] = lambda name=cmap_name: colormap(name)

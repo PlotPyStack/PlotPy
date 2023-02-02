@@ -6,12 +6,23 @@ import numpy as np
 from guidata.configtools import get_icon
 from guidata.dataset.dataitems import BoolItem, ChoiceItem
 from guidata.dataset.datatypes import BeginGroup, DataSet, EndGroup
+from pydicom import dicomio
 from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 from qtpy.QtPrintSupport import QPrintDialog, QPrinter
 
 from plotpy.config import _
 from plotpy.utils.icons import get_std_icon
+from plotpy.widgets import io
+from plotpy.widgets.about import about
+from plotpy.widgets.interfaces.common import IImageItemType
+from plotpy.widgets.items.image.misc import (
+    compute_trimageitems_original_size,
+    get_image_from_plot,
+    get_items_in_rectangle,
+    get_plot_qrect,
+)
+from plotpy.widgets.resizedialog import ResizeDialog
 from plotpy.widgets.tools.base import (
     CommandTool,
     DefaultToolbarID,
@@ -36,7 +47,6 @@ class SaveAsTool(CommandTool):
         # --> until this bug is fixed internally, disabling PDF output format
         #     when plot has image items.
         formats = "%s (*.png)" % _("PNG image")
-        from plotpy.widgets.interfaces import IImageItemType
 
         for item in plot.get_items():
             if IImageItemType in item.types():
@@ -72,14 +82,6 @@ def save_snapshot(plot, p0, p1, new_size=None):
     p0, p1: resp. top left and bottom right points (`QPointF` objects)
     new_size: destination image size (tuple: (width, height))
     """
-    from plotpy.widgets import io
-    from plotpy.widgets.items.image.misc import (
-        compute_trimageitems_original_size,
-        get_image_from_plot,
-        get_items_in_rectangle,
-        get_plot_qrect,
-    )
-
     items = get_items_in_rectangle(plot, p0, p1)
     if not items:
         QW.QMessageBox.critical(
@@ -93,8 +95,6 @@ def save_snapshot(plot, p0, p1, new_size=None):
 
     if new_size is None:
         new_size = (p1.x() - p0.x() + 1, p1.y() - p0.y() + 1)  # Screen size
-
-    from plotpy.widgets.resizedialog import ResizeDialog
 
     dlg = ResizeDialog(
         plot, new_size=new_size, old_size=original_size, text=_("Destination size:")
@@ -172,15 +172,11 @@ def save_snapshot(plot, p0, p1, new_size=None):
     options = {}
     if not fname:
         return
+
     elif ext.lower() == ".png":
         options.update(dict(dtype=np.uint8, max_range=True))
+
     elif ext.lower() == ".dcm":
-        try:
-            # pydicom 1.0
-            from pydicom import dicomio
-        except ImportError:
-            # pydicom 0.9
-            import dicom as dicomio
         model_dcm = dicomio.read_file(model_fname)
         try:
             ps_attr = "ImagerPixelSpacing"
@@ -259,7 +255,6 @@ class AboutTool(CommandTool):
 
     def activate_command(self, plot, checked):
         """Activate tool"""
-        from plotpy.widgets.about import about
 
         QW.QMessageBox.about(plot, _("About") + " plotpy", about(html=True))
 

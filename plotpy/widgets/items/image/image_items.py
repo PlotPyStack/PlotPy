@@ -14,7 +14,7 @@ from plotpy.config import _
 from plotpy.utils.gui import assert_interfaces_valid
 from plotpy.widgets import io
 from plotpy.widgets.geometry import colvector
-from plotpy.widgets.interfaces import (
+from plotpy.widgets.interfaces.common import (
     IBaseImageItem,
     IBasePlotItem,
     IColormapImageItemType,

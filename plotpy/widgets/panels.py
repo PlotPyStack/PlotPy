@@ -6,7 +6,7 @@
 # (see plotpy/__init__.py for details)
 
 """
-plotpy.gui.widgets.panels
+plotpy.widgets.panels
 -------------------------
 
 The `panels` module provides :py:class:`.panels.PanelWidget` (the

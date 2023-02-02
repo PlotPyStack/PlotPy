@@ -13,7 +13,7 @@ import os
 from qtpy import QtWidgets as QW
 
 from plotpy.widgets.builder import make
-from plotpy.widgets.plot.histogram import ContrastAdjustment
+from plotpy.widgets.plot.histogram.contrastadjustment import ContrastAdjustment
 from plotpy.widgets.plot.manager import PlotManager
 from plotpy.widgets.plot.plotwidget import BasePlot, PlotItemList, PlotType
 

@@ -34,7 +34,7 @@
 
 
 """
-plotpy.gui.widgets.labels
+plotpy.widgets.labels
 -------------------------
 
 The ``plotpy.gui.widgets.labels`` module provides ready-to-use or generic widgets

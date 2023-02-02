@@ -81,7 +81,7 @@ class ReadOnlyCollectionsModel(QC.QAbstractTableModel):
         self.total_rows = None
         self.showndata = None
         self.keys = None
-        self.title = str(title)  # in case title is not a string
+        self.title = str(title)  # in case title is not a string FIXME: D'où ?
         if self.title:
             self.title = self.title + " - "
         self.sizes = []
@@ -150,22 +150,11 @@ class ReadOnlyCollectionsModel(QC.QAbstractTableModel):
         else:
             fetch_more = True
 
-        # Ignore pandas warnings that certain attributes are deprecated
-        # and will be removed, since they will only be accessed if they exist.
-        with warnings.catch_warnings():
-            warnings.filterwarnings(
-                "ignore",
-                message=(
-                    r"^\w+\.\w+ is deprecated and "
-                    "will be removed in a future version"
-                ),
-            )
-
-            sizes = [get_size(data[self.keys[index]]) for index in range(start, stop)]
-            types = [
-                get_human_readable_type(data[self.keys[index]])
-                for index in range(start, stop)
-            ]
+        sizes = [get_size(data[self.keys[index]]) for index in range(start, stop)]
+        types = [
+            get_human_readable_type(data[self.keys[index]])
+            for index in range(start, stop)
+        ]
 
         if fetch_more:
             self.sizes = self.sizes + sizes
@@ -182,21 +171,21 @@ class ReadOnlyCollectionsModel(QC.QAbstractTableModel):
             self.types = sort_against(self.types, self.keys, reverse)
             try:
                 self.keys.sort(reverse=reverse)
-            except:
+            except Exception:
                 pass
         elif column == 1:
             self.keys[: self.rows_loaded] = sort_against(self.keys, self.types, reverse)
             self.sizes = sort_against(self.sizes, self.types, reverse)
             try:
                 self.types.sort(reverse=reverse)
-            except:
+            except Exception:
                 pass
         elif column == 2:
             self.keys[: self.rows_loaded] = sort_against(self.keys, self.sizes, reverse)
             self.types = sort_against(self.types, self.sizes, reverse)
             try:
                 self.sizes.sort(reverse=reverse)
-            except:
+            except Exception:
                 pass
         elif column == 3:
             values = [self._data[key] for key in self.keys]

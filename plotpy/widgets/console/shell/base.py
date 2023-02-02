@@ -582,7 +582,7 @@ class ShellBaseWidget(ConsoleBaseWidget, SaveHistoryMixin, BrowseHistoryMixin):
             text = b"".join(self.__buffer)
             try:
                 text = text.decode(locale.getdefaultlocale()[1])
-            except:
+            except Exception:
                 pass
 
         self.__buffer = []

@@ -20,24 +20,24 @@ Example
 Before creating any widget, a `QApplication` must be instantiated
 (that is a `Qt` internal requirement):
 
->>> import plotpy.gui
->>> app = plotpy.gui.qapplication()
+>>> import plotpy.widgets
+>>> app = plotpy.widgets.qapplication()
 
 that is mostly equivalent to the following (the only difference is that
 the `plotpy` helper function also installs the `Qt` translation
 corresponding to the system locale):
 
->>> from PyQt5.QtWidgets import QApplication
+>>> from qtpy.QtWidgets import QApplication
 >>> app = QApplication([])
 
 now that a `QApplication` object exists, we may create the plotting widget:
 
->>> from plotpy.gui.widgets.plot import PlotWidget
+>>> from plotpy.widgets.plot.plotwidget import PlotWidget
 >>> widget = PlotWidget()
 
 create curves, images, histograms, etc. and attach them to the plot:
 
->>> from plotpy.gui.widgets.builder import make
+>>> from plotpy.widgets.builder import make
 >>> curve = make.mcure(x, y, 'r+')
 >>> image = make.image(data)
 >>> hist = make.histogram(data, 100)
@@ -92,7 +92,8 @@ from plotpy.widgets.items.shapes.range import XRangeSelection
 from plotpy.widgets.items.shapes.rectangle import RectangleShape
 from plotpy.widgets.items.shapes.segment import SegmentShape
 from plotpy.widgets.plot.base import BasePlot
-from plotpy.widgets.plot.histogram import HistogramItem, lut_range_threshold
+from plotpy.widgets.plot.histogram.common import HistogramItem
+from plotpy.widgets.plot.histogram.utils import lut_range_threshold
 from plotpy.widgets.styles.base import (
     COLORS,
     MARKERS,
@@ -798,7 +799,8 @@ class PlotItemBuilder(object):
         """
         if x is not None or y is not None:
             assert pixel_size is None and center_on is None, (
-                "Ambiguous parameters: both `x`/`y` and `pixel_size`/`center_on`/`xdata`/`ydata`"
+                "Ambiguous parameters:"
+                "both `x`/`y` and `pixel_size`/`center_on`/`xdata`/`ydata`"
                 " were specified"
             )
             return self.xyimage(
@@ -904,7 +906,8 @@ class PlotItemBuilder(object):
         """
         if x is not None or y is not None:
             assert pixel_size is None and center_on is None, (
-                "Ambiguous parameters: both `x`/`y` and `pixel_size`/`center_on`/`xdata`/`ydata`"
+                "Ambiguous parameters:"
+                "both `x`/`y` and `pixel_size`/`center_on`/`xdata`/`ydata`"
                 " were specified"
             )
             return self.maskedxyimage(

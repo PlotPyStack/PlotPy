@@ -3,7 +3,16 @@ from qtpy import QtWidgets as QW
 
 from plotpy.config import _
 from plotpy.utils.icons import get_std_icon
-from plotpy.widgets.interfaces import ICurveItemType
+from plotpy.widgets.interfaces.common import ICurveItemType
+from plotpy.widgets.items.annotations import (
+    AnnotatedCircle,
+    AnnotatedEllipse,
+    AnnotatedObliqueRectangle,
+    AnnotatedRectangle,
+)
+from plotpy.widgets.items.image.base import RawImageItem
+from plotpy.widgets.items.shapes.ellipse import EllipseShape
+from plotpy.widgets.items.shapes.rectangle import ObliqueRectangleShape, RectangleShape
 from plotpy.widgets.panels import ID_ITEMLIST
 from plotpy.widgets.tools.base import CommandTool, DefaultToolbarID, PanelTool
 from plotpy.widgets.tools.curve import edit_curve_data, export_curve_data
@@ -36,7 +45,6 @@ class ItemManipulationBaseTool(CommandTool):
             for item in plot.get_items(item_type=ICurveItemType)
             if not item.is_empty()
         ]
-        from plotpy.widgets.items.image.base import RawImageItem
 
         all_items += [
             item
@@ -106,18 +114,6 @@ class ItemCenterTool(CommandTool):
         :param plot:
         :return:
         """
-        from plotpy.widgets.items.annotations import (
-            AnnotatedCircle,
-            AnnotatedEllipse,
-            AnnotatedObliqueRectangle,
-            AnnotatedRectangle,
-        )
-        from plotpy.widgets.items.shapes.ellipse import EllipseShape
-        from plotpy.widgets.items.shapes.rectangle import (
-            ObliqueRectangleShape,
-            RectangleShape,
-        )
-
         item_types = (
             RectangleShape,
             EllipseShape,

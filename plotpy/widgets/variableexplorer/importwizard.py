@@ -15,19 +15,27 @@ import io
 from functools import partial as ft_partial
 from itertools import zip_longest
 
+import pandas as pd
 from guidata.configtools import get_icon
-from numpy import nan
+from numpy import array, nan, ndarray
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
 
 from plotpy.config import _
 from plotpy.utils.misc_from_gui import add_actions, create_action
+from plotpy.widgets import qapplication
 
 try:
-    import pandas as pd
-except:
-    pd = None
+    from dateutil.parser import parse as dateparse
+except ImportError:
+
+    def dateparse(datestr, dayfirst=True):  # analysis:ignore
+        """Just for 'day/month/year' strings"""
+        _a, _b, _c = list(map(int, datestr.split("/")))
+        if dayfirst:
+            return datetime.datetime(_c, _b, _a)
+        return datetime.datetime(_c, _a, _b)
 
 
 def try_to_parse(value):
@@ -56,35 +64,6 @@ def try_to_eval(value):
         return eval(value)
     except (NameError, SyntaxError, ImportError):
         return value
-
-
-# ----Numpy arrays support
-class FakeObject(object):
-    """Fake class used in replacement of missing modules"""
-
-    pass
-
-
-try:
-    from numpy import array, ndarray
-except:
-
-    class ndarray(FakeObject):  # analysis:ignore
-        """Fake ndarray"""
-
-        pass
-
-
-try:
-    from dateutil.parser import parse as dateparse
-except:
-
-    def dateparse(datestr, dayfirst=True):  # analysis:ignore
-        """Just for 'day/month/year' strings"""
-        _a, _b, _c = list(map(int, datestr.split("/")))
-        if dayfirst:
-            return datetime.datetime(_c, _b, _a)
-        return datetime.datetime(_c, _a, _b)
 
 
 def datestr_to_datetime(value, dayfirst=True):
@@ -292,11 +271,11 @@ class PreviewTableModel(QC.QAbstractTableModel):
         QC.QAbstractTableModel.__init__(self, parent)
         self._data = data
 
-    def rowCount(self, parent=QC.QModelIndex()):
+    def rowCount(self, _parent=QC.QModelIndex()):
         """Return row count"""
         return len(self._data)
 
-    def columnCount(self, parent=QC.QModelIndex()):
+    def columnCount(self, _parent=QC.QModelIndex()):
         """Return column count"""
         return len(self._data[0])
 
@@ -316,7 +295,7 @@ class PreviewTableModel(QC.QAbstractTableModel):
             return int(QC.Qt.AlignRight | QC.Qt.AlignVCenter)
         return None
 
-    def setData(self, index, value, role=QC.Qt.EditRole):
+    def setData(self, _index, _value, _role=QC.Qt.EditRole):
         """Set model data"""
         return False
 
@@ -490,8 +469,6 @@ class PreviewWidget(QW.QWidget):
         type_layout.addWidget(type_label)
 
         self.array_btn = array_btn = QW.QRadioButton(_("array"))
-        array_btn.setEnabled(ndarray is not FakeObject)
-        array_btn.setChecked(ndarray is not FakeObject)
         type_layout.addWidget(array_btn)
 
         list_btn = QW.QRadioButton(_("list"))
@@ -715,7 +692,6 @@ class ImportWizard(QW.QDialog):
 
 def test(text):
     """Test"""
-    from plotpy.gui import qapplication
 
     _app = qapplication()  # analysis:ignore
     dialog = ImportWizard(None, text)
