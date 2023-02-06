@@ -33,7 +33,7 @@
 # knowledge of the CeCILL license and that you accept its terms.
 
 """
-plotpy.gui.widgets.tools
+plotpy.widgets.tools
 ------------------------
 
 The `tools` module provides a collection of `plot tools` :
@@ -93,8 +93,8 @@ the :py:mod:`.plot` module for more details on the procedure).
 
 The `BasePlot` widget do not provide any `PlotManager`: the
 manager has to be created separately. On the contrary, the ready-to-use widget
-:py:class:`.plot.PlotWidget` are higher-level plotting widgets with integrated manager, tools and
-panels.
+:py:class:`.plot.PlotWidget` are higher-level plotting widgets with integrated manager,
+tools and panels.
 
 .. seealso::
 
@@ -267,3 +267,100 @@ Reference
    :members:
    :inherited-members:
 """
+from plotpy.widgets.tools.annotations import (
+    AnnotatedCircleTool,
+    AnnotatedEllipseTool,
+    AnnotatedObliqueRectangleTool,
+    AnnotatedPointTool,
+    AnnotatedRectangleTool,
+    AnnotatedSegmentTool,
+)
+from plotpy.widgets.tools.axes import AxisScaleTool, PlaceAxesTool
+from plotpy.widgets.tools.base import (
+    CommandTool,
+    GuiTool,
+    InteractiveTool,
+    PanelTool,
+    RectangularActionTool,
+    ToggleTool,
+)
+from plotpy.widgets.tools.cross_section import (
+    AverageCrossSectionTool,
+    CrossSectionTool,
+    ObliqueCrossSectionTool,
+    OCSPanelTool,
+    XCSPanelTool,
+    YCSPanelTool,
+)
+from plotpy.widgets.tools.cursor import (
+    BaseCursorTool,
+    HCursorTool,
+    HRangeTool,
+    VCursorTool,
+    XCursorTool,
+)
+from plotpy.widgets.tools.curve import (
+    AntiAliasingTool,
+    CurveStatsTool,
+    SelectPointTool,
+    edit_curve_data,
+    export_curve_data,
+)
+from plotpy.widgets.tools.image import (
+    AspectRatioParam,
+    AspectRatioTool,
+    ColormapTool,
+    ContrastPanelTool,
+    ImageMaskTool,
+    ImageStatsRectangle,
+    ImageStatsTool,
+    LockTrImageTool,
+    OpenImageTool,
+    ReverseYAxisTool,
+    RotateCropTool,
+    RotationCenterTool,
+    edit_image_data,
+    export_image_data,
+    update_image_tool_status,
+)
+from plotpy.widgets.tools.item import (
+    DeleteItemTool,
+    EditItemDataTool,
+    ExportItemDataTool,
+    ItemCenterTool,
+    ItemManipulationBaseTool,
+    LoadItemsTool,
+    SaveItemsTool,
+)
+from plotpy.widgets.tools.label import LabelTool
+from plotpy.widgets.tools.misc import (
+    AboutTool,
+    CopyToClipboardTool,
+    FilterTool,
+    HelpTool,
+    OpenFileTool,
+    PrintTool,
+    SaveAsTool,
+    SnapshotTool,
+    save_snapshot,
+)
+from plotpy.widgets.tools.plot import (
+    BasePlotMenuTool,
+    DisplayCoordsTool,
+    DoAutoscaleTool,
+    DummySeparatorTool,
+    RectangularSelectionTool,
+    RectZoomTool,
+)
+from plotpy.widgets.tools.selection import SelectTool
+from plotpy.widgets.tools.shapes import (
+    CircleTool,
+    EllipseTool,
+    FreeFormTool,
+    MultiLineTool,
+    ObliqueRectangleShape,
+    PointTool,
+    RectangleTool,
+    RectangularShapeTool,
+    SegmentTool,
+)

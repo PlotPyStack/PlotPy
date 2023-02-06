@@ -48,6 +48,7 @@ def _simplify_poly(pts, off, scale, bounds):
 
 
 try:
+    # XXX: gshhs
     from gshhs import simplify_poly
 except ImportError:
     simplify_poly = _simplify_poly

@@ -11,11 +11,11 @@
 import gettext
 import unittest
 
-from qtpy.QtCore import QSize, Qt
-from qtpy.QtGui import QBrush, QPen
+from qtpy import QtCore as QC
+from qtpy import QtGui as QG
 from qwt import QwtSymbol
 
-from plotpy.config import UserConfig
+from plotpy.config import UserConfig, _
 from plotpy.widgets.styles.base import LineStyleParam, SymbolParam
 
 gettext.install("test")
@@ -30,7 +30,12 @@ class TestSymbol(unittest.TestCase):
         _obj = sym.build_symbol()
 
     def test_update(self):
-        obj = QwtSymbol(QwtSymbol.Rect, QBrush(Qt.black), QPen(Qt.yellow), QSize(3, 3))
+        obj = QwtSymbol(
+            QwtSymbol.Rect,
+            QG.QBrush(QC.Qt.black),
+            QG.QPen(QC.Qt.yellow),
+            QC.QSize(3, 3),
+        )
         sym = SymbolParam(_("Symbol"))
         sym.update_param(obj)
         self.assertEqual(sym.marker, "Rect")
@@ -45,7 +50,12 @@ class TestSymbol(unittest.TestCase):
         sym.read_config(CONF, "sym", "")
 
     def test_changeconfig(self):
-        obj = QwtSymbol(QwtSymbol.Rect, QBrush(Qt.black), QPen(Qt.yellow), QSize(3, 3))
+        obj = QwtSymbol(
+            QwtSymbol.Rect,
+            QG.QBrush(QC.Qt.black),
+            QG.QPen(QC.Qt.yellow),
+            QC.QSize(3, 3),
+        )
         sym = SymbolParam(_("Symbol"))
         sym.update_param(obj)
         sym.write_config(CONF, "sym", "")
@@ -64,7 +74,7 @@ class TestLineStyle(unittest.TestCase):
         _obj = ls.build_pen()
 
     def test_update(self):
-        obj = QPen(Qt.red, 2, Qt.SolidLine)
+        obj = QG.QPen(QC.Qt.red, 2, QC.Qt.SolidLine)
         ls = LineStyleParam(_("Line style"))
         ls.update_param(obj)
         self.assertEqual(ls.width, 2)
@@ -78,7 +88,7 @@ class TestLineStyle(unittest.TestCase):
         ls.read_config(CONF, "ls", "")
 
     def test_changeconfig(self):
-        obj = QPen(Qt.red, 2, Qt.SolidLine)
+        obj = QG.QPen(QC.Qt.red, 2, QC.Qt.SolidLine)
         ls = LineStyleParam(_("Line style"))
         ls.update_param(obj)
         ls.write_config(CONF, "ls", "")

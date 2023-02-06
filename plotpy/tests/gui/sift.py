@@ -25,26 +25,16 @@ from guidata.dataset.dataitems import (
 )
 from guidata.dataset.datatypes import DataSet, ValueProp, update_dataset
 from guidata.dataset.qtwidgets import DataSetEditGroupBox
+from pydicom import dicomio
 from PyQt5.QtCore import pyqtSignal as Signal
-from qtpy.QtCore import Qt
-from qtpy.QtGui import QCursor
-from qtpy.QtWidgets import (
-    QApplication,
-    QFileDialog,
-    QHBoxLayout,
-    QListWidget,
-    QMainWindow,
-    QMenu,
-    QMessageBox,
-    QSplitter,
-    QTabWidget,
-    QVBoxLayout,
-    QWidget,
-)
+from qtpy import QtCore as QC
+from qtpy import QtGui as QG
+from qtpy import QtWidgets as QW
 
 from plotpy.config import _
 from plotpy.utils.icons import get_std_icon
 from plotpy.utils.misc_from_gui import add_actions, create_action, get_icon
+from plotpy.widgets import qapplication
 from plotpy.widgets.builder import make
 from plotpy.widgets.dockable_console import DockableConsole
 from plotpy.widgets.dockables import DockableWidget, DockableWidgetMixin
@@ -219,7 +209,7 @@ class ImageParamNew(DataSet):
     )
 
 
-class ObjectFT(QSplitter):
+class ObjectFT(QW.QSplitter):
     """Object handling the item list, the selected item properties and plot"""
 
     PARAMCLASS = None
@@ -228,7 +218,7 @@ class ObjectFT(QSplitter):
     SIG_STATUS_MESSAGE = Signal(str)
 
     def __init__(self, parent, plot):
-        super(ObjectFT, self).__init__(Qt.Vertical, parent)
+        super(ObjectFT, self).__init__(QC.Qt.Vertical, parent)
         self.plot = plot
         self.objects = []  # signals or images
         self.items = []  # associated plot items
@@ -251,9 +241,9 @@ class ObjectFT(QSplitter):
 
     # ------Setup widget, menus, actions
     def setup(self, toolbar):
-        self.listwidget = QListWidget()
+        self.listwidget = QW.QListWidget()
         self.listwidget.setAlternatingRowColors(True)
-        self.listwidget.setSelectionMode(QListWidget.ExtendedSelection)
+        self.listwidget.setSelectionMode(QW.QListWidget.ExtendedSelection)
         self.properties = DataSetEditGroupBox(_("Properties"), self.PARAMCLASS)
         self.properties.setEnabled(False)
 
@@ -261,11 +251,11 @@ class ObjectFT(QSplitter):
         self.listwidget.itemSelectionChanged.connect(self.selection_changed)
         self.properties.SIG_APPLY_BUTTON_CLICKED.connect(self.properties_changed)
 
-        properties_stretched = QWidget()
-        hlayout = QHBoxLayout()
+        properties_stretched = QW.QWidget()
+        hlayout = QW.QHBoxLayout()
         hlayout.addWidget(self.properties)
         #        hlayout.addStretch()
-        vlayout = QVBoxLayout()
+        vlayout = QW.QVBoxLayout()
         vlayout.addLayout(hlayout)
         vlayout.addStretch()
         properties_stretched.setLayout(vlayout)
@@ -427,7 +417,7 @@ class ObjectFT(QSplitter):
             import traceback
 
             traceback.print_exc()
-            QMessageBox.critical(
+            QW.QMessageBox.critical(
                 self.parent(), APP_NAME, _("Error:") + "\n{}".format(str(msg))
             )
             return
@@ -450,7 +440,7 @@ class ObjectFT(QSplitter):
             import traceback
 
             traceback.print_exc()
-            QMessageBox.critical(
+            QW.QMessageBox.critical(
                 self.parent(), APP_NAME, _("Error:") + "\n{}".format(str(msg))
             )
             return
@@ -473,7 +463,7 @@ class ObjectFT(QSplitter):
             import traceback
 
             traceback.print_exc()
-            QMessageBox.critical(
+            QW.QMessageBox.critical(
                 self.parent(), APP_NAME, _("Error:") + "\n{}".format(str(msg))
             )
             return
@@ -491,7 +481,7 @@ class ObjectFT(QSplitter):
             import traceback
 
             traceback.print_exc()
-            QMessageBox.critical(
+            QW.QMessageBox.critical(
                 self.parent(), APP_NAME, _("Error:") + "\n{}".format(msg)
             )
             return
@@ -509,7 +499,7 @@ class ObjectFT(QSplitter):
             import traceback
 
             traceback.print_exc()
-            QMessageBox.critical(
+            QW.QMessageBox.critical(
                 self.parent(), APP_NAME, _("Error:") + "\n{}".format(msg)
             )
             return
@@ -540,7 +530,7 @@ class ObjectFT(QSplitter):
                 obj.title += "|" + suffix(param)
             obj.copy_data_from(orig)
             self.SIG_STATUS_MESSAGE.emit(_("Computing:") + " " + obj.title)
-            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+            QW.QApplication.setOverrideCursor(QG.QCursor(QC.Qt.WaitCursor))
             self.repaint()
             try:
                 self.apply_11_func(obj, orig, func, param)
@@ -550,13 +540,13 @@ class ObjectFT(QSplitter):
                 import traceback
 
                 traceback.print_exc()
-                QMessageBox.critical(
+                QW.QMessageBox.critical(
                     self.parent(), APP_NAME, _("Error:") + "\n{}".format(msg)
                 )
                 return
             finally:
                 self.SIG_STATUS_MESSAGE.emit("")
-                QApplication.restoreOverrideCursor()
+                QW.QApplication.restoreOverrideCursor()
             self.add_object(obj)
 
 
@@ -818,8 +808,13 @@ class SignalFT(ObjectFT):
         filters = "{} (*.txt *.csv)\n{} (*.npy)".format(
             _("Text files"), _("NumPy arrays")
         )
-        filenames, _filter = QFileDialog.getOpenFileNames(
-            self.parent(), _("Open"), "", filters, "", options=QFileDialog.ShowDirsOnly
+        filenames, _filter = QW.QFileDialog.getOpenFileNames(
+            self.parent(),
+            _("Open"),
+            "",
+            filters,
+            "",
+            options=QW.QFileDialog.ShowDirsOnly,
         )
         sys.stdin, sys.stdout, sys.stderr = saved_in, saved_out, saved_err
         filenames = list(filenames)
@@ -845,7 +840,7 @@ class SignalFT(ObjectFT):
                 import traceback
 
                 traceback.print_exc()
-                QMessageBox.critical(
+                QW.QMessageBox.critical(
                     self.parent(),
                     APP_NAME,
                     (_("{} could not be opened:").format(osp.basename(filename)))
@@ -873,14 +868,14 @@ class SignalFT(ObjectFT):
         """Save selected signal"""
         rows = self._get_selected_rows()
         for row in rows:
-            filename, _filter = QFileDialog.getSaveFileName(
+            filename, _filter = QW.QFileDialog.getSaveFileName(
                 self,
                 _("Save as"),
                 "",
                 _("CSV files") + " (*.csv)",
                 "",
                 "",
-                options=QFileDialog.ShowDirsOnly,
+                options=QW.QFileDialog.ShowDirsOnly,
             )
             if not filename:
                 return
@@ -893,7 +888,7 @@ class SignalFT(ObjectFT):
                 import traceback
 
                 traceback.print_exc()
-                QMessageBox.critical(
+                QW.QMessageBox.critical(
                     self.parent(),
                     APP_NAME,
                     (_("{} could not be written:").format(osp.basename(filename)))
@@ -937,7 +932,7 @@ class ImageFT(ObjectFT):
         self.file_actions = [new_action, open_action, save_action]
 
         # Operation actions
-        rotate_menu = QMenu(_("Rotation"), self)
+        rotate_menu = QW.QMenu(_("Rotation"), self)
         hflip_action = create_action(
             self, _("Flip horizontally"), triggered=self.flip_horizontally
         )
@@ -1127,7 +1122,7 @@ class ImageFT(ObjectFT):
         objs = self.objects
         for row in rows:
             if objs[row].size != objs[rows[0]].size:
-                QMessageBox.warning(
+                QW.QMessageBox.warning(
                     self.parent(),
                     APP_NAME,
                     _("Warning:")
@@ -1231,7 +1226,7 @@ class ImageFT(ObjectFT):
             import traceback
 
             traceback.print_exc()
-            QMessageBox.critical(
+            QW.QMessageBox.critical(
                 self.parent(), APP_NAME, _("Error:") + "\n{}".format(msg)
             )
             return
@@ -1336,12 +1331,6 @@ class ImageFT(ObjectFT):
             image.title = filename
             image.data = data
             if osp.splitext(filename)[1].lower() == ".dcm":
-                try:
-                    # pydicom 1.0
-                    from pydicom import dicomio
-                except ImportError:
-                    # pydicom 0.9
-                    import dicom as dicomio
                 image.template = dicomio.read_file(filename, stop_before_pixels=True)
             self.add_object(image)
 
@@ -1360,12 +1349,12 @@ class ImageFT(ObjectFT):
 
 
 class DockablePlotWidget(DockableWidget):
-    LOCATION = Qt.RightDockWidgetArea
+    LOCATION = QC.Qt.RightDockWidgetArea
 
     def __init__(self, parent, plotwidgetclass, toolbar, options):
         super(DockablePlotWidget, self).__init__(parent)
         self.toolbar = toolbar
-        layout = QVBoxLayout()
+        layout = QW.QVBoxLayout()
         self.plotwidget = plotwidgetclass(options=options)
         layout.addWidget(self.plotwidget)
         self.setLayout(layout)
@@ -1389,8 +1378,8 @@ class DockablePlotWidget(DockableWidget):
         self.toolbar.setVisible(enable)
 
 
-class DockableTabWidget(QTabWidget, DockableWidgetMixin):
-    LOCATION = Qt.LeftDockWidgetArea
+class DockableTabWidget(QW.QTabWidget, DockableWidgetMixin):
+    LOCATION = QC.Qt.LeftDockWidgetArea
 
     def __init__(self, parent):
         super(DockableTabWidget, self).__init__(parent, parent=parent)
@@ -1403,9 +1392,9 @@ class SiftProxy(object):
         self.i = self.win.imageft.objects
 
 
-class MainWindow(QMainWindow):
+class MainWindow(QW.QMainWindow):
     def __init__(self):
-        QMainWindow.__init__(self)
+        QW.QMainWindow.__init__(self)
 
         self.setWindowIcon(get_icon("sift.svg"))
         self.setWindowTitle(APP_NAME)
@@ -1584,7 +1573,7 @@ class MainWindow(QMainWindow):
     def about(self):
         from plotpy.widgets.about import about
 
-        QMessageBox.about(
+        QW.QMessageBox.about(
             self,
             _("About ") + APP_NAME,
             "<b>{}</b> v{} : {}"
@@ -1604,8 +1593,7 @@ class MainWindow(QMainWindow):
 
 
 def run():
-    from plotpy.widgets import qapplication
-
+    """run method"""
     app = qapplication()
     window = MainWindow()
     window.show()

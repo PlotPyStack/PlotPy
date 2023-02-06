@@ -1,7 +1,7 @@
 from plotpy.widgets.plot.base import BasePlot
 
 
-class InterfacePlotManager(object):
+class IPlotManager(object):
     """A 'controller' that organizes relations between
     plots (BasePlot), panels, tools (GuiTool) and toolbar
     """

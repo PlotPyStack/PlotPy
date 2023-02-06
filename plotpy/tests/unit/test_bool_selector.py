@@ -14,7 +14,7 @@ using one group parameter (a boolean item).
 
 from guidata.dataset.qtitemwidgets import CheckBoxWidget, FloatSliderWidget, GroupWidget
 from guidata.dataset.qtwidgets import DataSetEditDialog
-from qtpy.QtCore import Qt, QTimer
+from qtpy import QtCore as QC
 from qtpy.QtWidgets import QApplication
 
 from plotpy.tests.scripts.bool_selector import GroupSelection
@@ -36,13 +36,13 @@ def validate_edit_dialog(qtbot):
     Before calling anything that may show a QMessageBox call:
     QTimer.singleShot(1000, lambda: validate_edit_dialog(qtbot))
     """
-    qtbot.keyClick(get_edit_dialog(), Qt.Key_Enter)
+    qtbot.keyClick(get_edit_dialog(), QC.Qt.Key_Enter)
 
 
 def test_bool_selector(qtbot):
     """Test group selection when user doesn't not edit fields"""
     prm = GroupSelection()
-    QTimer.singleShot(500, lambda: validate_edit_dialog(qtbot))
+    QC.QTimer.singleShot(500, lambda: validate_edit_dialog(qtbot))
     edited = prm.edit()
     assert edited
     assert not prm.enable1
@@ -71,17 +71,17 @@ def test_bool_selector_interaction(qtbot):
 
     # Click on the "enable1" check box
     assert isinstance(widgets[0], CheckBoxWidget)
-    qtbot.mouseClick(widgets[0].checkbox, Qt.LeftButton)
+    qtbot.mouseClick(widgets[0].checkbox, QC.Qt.LeftButton)
 
     # Change values of param1_1 and param2_2
     assert isinstance(widgets[1], FloatSliderWidget)
-    qtbot.keyClick(widgets[1].edit, Qt.Key_Backspace)
+    qtbot.keyClick(widgets[1].edit, QC.Qt.Key_Backspace)
     qtbot.keyClicks(widgets[1].edit, "2.3")
     assert isinstance(widgets[2], FloatSliderWidget)
     widgets[2].edit.setText("0.5")
 
     # Validate the dialog
-    qtbot.keyClick(dialog, Qt.Key_Enter)
+    qtbot.keyClick(dialog, QC.Qt.Key_Enter)
 
     assert prm.enable1
     assert prm.enable2

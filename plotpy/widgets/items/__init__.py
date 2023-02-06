@@ -31,6 +31,16 @@ Module plotpy.gui.widgets.items
 # economic rights,  and the successive licensors  have only  limited
 # liability.
 
+from plotpy.widgets.items.annotations import (
+    AnnotatedCircle,
+    AnnotatedEllipse,
+    AnnotatedObliqueRectangle,
+    AnnotatedPoint,
+    AnnotatedRectangle,
+    AnnotatedSegment,
+    AnnotatedShape,
+)
+
 # In this respect, the user's attention is drawn to the risks associated
 # with loading,  using,  modifying and/or developing or reproducing the
 # software by the user in light of its specific status of free software,
@@ -41,3 +51,51 @@ Module plotpy.gui.widgets.items
 # requirements in conditions enabling the security of their systems and/or
 # data to be ensured and,  more generally, to use and operate it in the
 # same conditions as regards security.
+from plotpy.widgets.items.curve import CurveItem, ErrorBarCurveItem
+from plotpy.widgets.items.grid import GridItem
+from plotpy.widgets.items.image import (
+    BaseImageItem,
+    Histogram2DItem,
+    ImageFilterItem,
+    ImageItem,
+    MaskedArea,
+    MaskedImageItem,
+    MaskedXYImageItem,
+    QuadGridItem,
+    RawImageItem,
+    RGBImageItem,
+    TrImageItem,
+    XYImageFilterItem,
+    XYImageItem,
+    assemble_imageitems,
+    compute_trimageitems_original_size,
+    get_image_from_plot,
+    get_image_from_qrect,
+    get_image_in_shape,
+    get_items_in_rectangle,
+    get_plot_qrect,
+)
+from plotpy.widgets.items.label import (
+    AbstractLabelItem,
+    DataInfoLabel,
+    LabelItem,
+    LegendBoxItem,
+    ObjectInfo,
+    RangeComputation,
+    RangeComputation2d,
+    RangeInfo,
+    SelectedLegendBoxItem,
+)
+from plotpy.widgets.items.polygon import PolygonMapItem
+from plotpy.widgets.items.shapes import (
+    AbstractShape,
+    Axes,
+    EllipseShape,
+    Marker,
+    ObliqueRectangleShape,
+    PointShape,
+    PolygonShape,
+    RectangleShape,
+    SegmentShape,
+    XRangeSelection,
+)

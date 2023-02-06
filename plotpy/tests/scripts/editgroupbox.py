@@ -11,6 +11,8 @@ DataSetEditGroupBox and DataSetShowGroupBox demo
 These group box widgets are intended to be integrated in a GUI application
 layout, showing read-only parameter sets or allowing to edit parameter values.
 """
+import sys
+
 from guidata.dataset.dataitems import (
     ChoiceItem,
     DirectoryItem,
@@ -26,18 +28,20 @@ from guidata.dataset.datatypes import (
     EndTabGroup,
 )
 from guidata.dataset.qtwidgets import DataSetEditGroupBox, DataSetShowGroupBox
-from qtpy.QtWidgets import QMainWindow, QSplitter
+from qtpy import QtWidgets as QW
 
+# import config to add plotlib/images/ path to images lookup directories
+import plotpy.config  # pylint: disable=unused-import
 from plotpy.utils.icons import get_std_icon
 from plotpy.utils.misc_from_gui import add_actions, create_action, get_icon
-
-SHOW = True  # Show test in GUI-based test launcher
 
 # Local test import:
 try:
     from tests.scripts.activable_dataset import ExampleDataSet
 except ImportError:
     from plotpy.tests.scripts.activable_dataset import ExampleDataSet
+
+SHOW = True  # Show test in GUI-based test launcher
 
 
 class AnotherDataSet(DataSet):
@@ -85,9 +89,9 @@ class OtherDataSet(DataSet):
     opacity = FloatItem("Opacity", default=1.0, min=0.1, max=1)
 
 
-class MainWindow(QMainWindow):
+class MainWindow(QW.QMainWindow):
     def __init__(self):
-        QMainWindow.__init__(self)
+        QW.QMainWindow.__init__(self)
         self.setWindowIcon(get_icon("python.png"))
         self.setWindowTitle("Application example")
 
@@ -107,7 +111,7 @@ class MainWindow(QMainWindow):
         self.groupbox3.SIG_APPLY_BUTTON_CLICKED.connect(self.update_window)
         self.update_groupboxes()
 
-        splitter = QSplitter(self)
+        splitter = QW.QSplitter(self)
         splitter.addWidget(self.groupbox1)
         splitter.addWidget(self.groupbox2)
         splitter.addWidget(self.groupbox3)
@@ -169,14 +173,8 @@ class MainWindow(QMainWindow):
 
 
 if __name__ == "__main__":
-    import sys
 
-    from qtpy.QtWidgets import QApplication
-
-    # import config to add plotlib/images/ path to images lookup directories
-    import plotpy.config  # pylint: disable=unused-import
-
-    app = QApplication(sys.argv)
+    app = QW.QApplication(sys.argv)
     window = MainWindow()
     window.show()
     sys.exit(app.exec_())

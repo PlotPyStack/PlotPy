@@ -11,8 +11,8 @@
 import os
 
 import numpy as np
-from qtpy.QtCore import QRectF
-from qtpy.QtGui import QImage
+from qtpy import QtCore as QC
+from qtpy import QtGui as QG
 
 from plotpy.widgets import io
 from plotpy.widgets.builder import make
@@ -24,29 +24,28 @@ DEFAULT_CHARS = "".join([chr(c) for c in range(32, 256)])
 
 
 def get_font_array(sz, chars=DEFAULT_CHARS):
-    from qtpy.QtGui import QColor, QFont, QPainter
 
-    font = QFont()
+    font = QG.QFont()
     font.setFixedPitch(True)
     font.setPixelSize(sz)
-    font.setStyleStrategy(QFont.NoAntialias)
-    dummy = QImage(10, 10, QImage.Format_ARGB32)
-    pnt = QPainter(dummy)
+    font.setStyleStrategy(QG.QFont.NoAntialias)
+    dummy = QG.QImage(10, 10, QG.QImage.Format_ARGB32)
+    pnt = QG.QPainter(dummy)
     pnt.setFont(font)
     metric = pnt.fontMetrics()
     rct = metric.boundingRect(chars)
     pnt.end()
     h = rct.height()
     w = rct.width()
-    img = QImage(w, h, QImage.Format_ARGB32)
-    paint = QPainter()
+    img = QG.QImage(w, h, QG.QImage.Format_ARGB32)
+    paint = QG.QPainter()
     paint.begin(img)
     paint.setFont(font)
-    paint.setBrush(QColor(255, 255, 255))
-    paint.setPen(QColor(255, 255, 255))
+    paint.setBrush(QG.QColor(255, 255, 255))
+    paint.setPen(QG.QColor(255, 255, 255))
     paint.drawRect(0, 0, w + 1, h + 1)
-    paint.setPen(QColor(0, 0, 0))
-    paint.setBrush(QColor(0, 0, 0))
+    paint.setPen(QG.QColor(0, 0, 0))
+    paint.setBrush(QG.QColor(0, 0, 0))
     paint.drawText(0, paint.fontMetrics().ascent(), chars)
     paint.end()
     try:
@@ -130,7 +129,7 @@ def compute_image(NX, NY):
 
 
 def get_bbox(items):
-    r = QRectF()
+    r = QC.QRectF()
     for it in items:
         r = r.united(it.boundingRect())
     return r

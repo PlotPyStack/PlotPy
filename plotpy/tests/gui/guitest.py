@@ -15,19 +15,9 @@ import sys
 
 from guidata.configtools import MONOSPACE, get_family, get_icon
 from guidata.widgets.codeeditor import CodeEditor
-from qtpy.QtCore import QSize, Qt
-from qtpy.QtGui import QFont, QKeySequence
-from qtpy.QtWidgets import (
-    QGroupBox,
-    QHBoxLayout,
-    QLabel,
-    QListWidget,
-    QPushButton,
-    QShortcut,
-    QSplitter,
-    QVBoxLayout,
-    QWidget,
-)
+from qtpy import QtCore as QC
+from qtpy import QtGui as QG
+from qtpy import QtWidgets as QW
 
 from plotpy.config import _
 from plotpy.utils.icons import get_std_icon
@@ -82,22 +72,22 @@ class TestModule(object):
         subprocess.Popen(" ".join(command), shell=True)
 
 
-class TestPropertiesWidget(QWidget):
+class TestPropertiesWidget(QW.QWidget):
     def __init__(self, parent):
-        QWidget.__init__(self, parent)
-        font = QFont(get_family(MONOSPACE), 10, QFont.Normal)
+        QW.QWidget.__init__(self, parent)
+        font = QG.QFont(get_family(MONOSPACE), 10, QG.QFont.Normal)
 
-        info_icon = QLabel()
+        info_icon = QW.QLabel()
         icon = get_std_icon("MessageBoxInformation").pixmap(24, 24)
         info_icon.setPixmap(icon)
         info_icon.setFixedWidth(32)
-        info_icon.setAlignment(Qt.AlignTop)
-        self.desc_label = QLabel()
+        info_icon.setAlignment(QC.Qt.AlignTop)
+        self.desc_label = QW.QLabel()
         self.desc_label.setWordWrap(True)
-        self.desc_label.setAlignment(Qt.AlignTop)
+        self.desc_label.setAlignment(QC.Qt.AlignTop)
         self.desc_label.setFont(font)
-        group_desc = QGroupBox(_("Description"), self)
-        layout = QHBoxLayout()
+        group_desc = QW.QGroupBox(_("Description"), self)
+        layout = QW.QHBoxLayout()
         layout.addWidget(info_icon)
         layout.addWidget(self.desc_label)
         group_desc.setLayout(layout)
@@ -105,19 +95,21 @@ class TestPropertiesWidget(QWidget):
         self.editor = CodeEditor(self)
         self.editor.setup_editor(linenumbers=True, font=font)
         self.editor.setReadOnly(True)
-        group_code = QGroupBox(_("Source code"), self)
-        layout = QVBoxLayout()
+        group_code = QW.QGroupBox(_("Source code"), self)
+        layout = QW.QVBoxLayout()
         layout.addWidget(self.editor)
         group_code.setLayout(layout)
 
-        self.run_button = QPushButton(get_icon("apply.png"), _("Run this script"), self)
-        self.quit_button = QPushButton(get_icon("exit.png"), _("Quit"), self)
-        hlayout = QHBoxLayout()
+        self.run_button = QW.QPushButton(
+            get_icon("apply.png"), _("Run this script"), self
+        )
+        self.quit_button = QW.QPushButton(get_icon("exit.png"), _("Quit"), self)
+        hlayout = QW.QHBoxLayout()
         hlayout.addWidget(self.run_button)
         hlayout.addStretch()
         hlayout.addWidget(self.quit_button)
 
-        vlayout = QVBoxLayout()
+        vlayout = QW.QVBoxLayout()
         vlayout.addWidget(group_desc)
         vlayout.addWidget(group_code)
         vlayout.addLayout(hlayout)
@@ -128,9 +120,9 @@ class TestPropertiesWidget(QWidget):
         self.editor.set_text_from_file(test.filename)
 
 
-class TestLauncherWindow(QSplitter):
+class TestLauncherWindow(QW.QSplitter):
     def __init__(self, package, test_package_name, parent=None):
-        QSplitter.__init__(self, parent)
+        QW.QSplitter.__init__(self, parent)
         self.setWindowTitle(_("Tests - {} module").format(package.__name__))
         self.setWindowIcon(get_icon("{}.svg".format(package.__name__), "guidata.svg"))
 
@@ -144,7 +136,7 @@ class TestLauncherWindow(QSplitter):
         test_package = sys.modules[test_package_name]
 
         tests = get_tests(test_package)
-        listwidget = QListWidget(self)
+        listwidget = QW.QListWidget(self)
         listwidget.addItems([os.path.basename(test.filename) for test in tests])
 
         self.properties = TestPropertiesWidget(self)
@@ -162,19 +154,18 @@ class TestLauncherWindow(QSplitter):
         listwidget.itemActivated.connect(lambda: tests[listwidget.currentRow()].run())
         listwidget.setCurrentRow(0)
 
-        QShortcut(QKeySequence("Escape"), self, self.close)
+        QW.QShortcut(QG.QKeySequence("Escape"), self, self.close)
 
         self.setSizes([150, 1])
         self.setStretchFactor(1, 1)
-        self.resize(QSize(950, 600))
+        self.resize(QC.QSize(950, 600))
         self.properties.set_item(tests[0])
 
 
 def run_testlauncher(package, test_package_name=None):
     """Run test launcher"""
-    from qtpy.QtWidgets import QApplication
 
-    app = QApplication([])
+    app = QW.QApplication([])
     win = TestLauncherWindow(package, test_package_name)
     win.show()
     app.exec_()

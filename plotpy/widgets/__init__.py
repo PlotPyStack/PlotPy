@@ -42,7 +42,7 @@ Module plotpy.widgets
 # data to be ensured and,  more generally, to use and operate it in the
 # same conditions as regards security.
 
-from qtpy.QtCore import QLibraryInfo, QLocale, QTranslator
+from qtpy import QtCore as QC
 from qtpy.QtWidgets import QApplication
 
 QT_TRANSLATOR = None
@@ -66,10 +66,10 @@ def install_translator(qapp):
     global QT_TRANSLATOR
     if QT_TRANSLATOR is None:
 
-        locale = QLocale.system().name()
+        locale = QC.QLocale.system().name()
         # Qt-specific translator
-        qt_translator = QTranslator()
-        paths = QLibraryInfo.location(QLibraryInfo.TranslationsPath)
+        qt_translator = QC.QTranslator()
+        paths = QC.QLibraryInfo.location(QC.QLibraryInfo.TranslationsPath)
 
         # in following line, modify qt_ to qtbase_ to switch from pyqt4 to pyqt5
         if qt_translator.load("qtbase_" + locale, paths):

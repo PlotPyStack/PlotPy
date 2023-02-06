@@ -9,9 +9,10 @@
 
 
 from guidata.configtools import get_icon
-from qtpy.QtWidgets import QMenu, QToolButton
+from qtpy import QtWidgets as QW
 
 from plotpy.utils.misc_from_gui import add_actions, create_toolbutton
+from plotpy.widgets import qapplication
 from plotpy.widgets.fliprotate import FlipRotateDialog, FlipRotateWidget
 from plotpy.widgets.tools.image import RotationCenterTool
 
@@ -47,8 +48,8 @@ def dialog_test(fname, interactive=True):
     action = tool.action
 
     rot_point_btn = create_toolbutton(dlg, icon=get_icon("rotationcenter.jpg"))
-    rot_point_btn.setPopupMode(QToolButton.InstantPopup)
-    rotation_tool_menu = QMenu(dlg)
+    rot_point_btn.setPopupMode(QW.QToolButton.InstantPopup)
+    rotation_tool_menu = QW.QMenu(dlg)
     add_actions(rotation_tool_menu, (action,))
     rot_point_btn.setMenu(rotation_tool_menu)
     dlg.toolbar.addWidget(rot_point_btn)
@@ -61,7 +62,6 @@ def dialog_test(fname, interactive=True):
 
 
 if __name__ == "__main__":
-    from plotpy.widgets import qapplication
 
     qapp = qapplication()  # analysis:ignore
 

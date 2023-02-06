@@ -8,9 +8,13 @@
 """Simple filter testing application based on PyQt and plotpy"""
 
 
+import numpy as np
+import scipy.ndimage as spi
+import scipy.signal as sps
 from guidata.configtools import get_icon
-from qtpy.QtWidgets import QHBoxLayout, QPushButton, QVBoxLayout, QWidget
+from qtpy import QtWidgets as QW
 
+import plotpy.config  # Loading icons
 from plotpy.widgets.builder import make
 
 # ---Import plot widget base class
@@ -20,7 +24,7 @@ SHOW = True  # Show test in GUI-based test launcher
 # ---
 
 
-class FilterTestWidget(QWidget):
+class FilterTestWidget(QW.QWidget):
     """
     Filter testing widget
     parent: parent widget (QWidget)
@@ -29,7 +33,7 @@ class FilterTestWidget(QWidget):
     """
 
     def __init__(self, parent, x, y, func):
-        QWidget.__init__(self, parent)
+        QW.QWidget.__init__(self, parent)
         self.setMinimumSize(320, 200)
         self.x = x
         self.y = y
@@ -47,9 +51,9 @@ class FilterTestWidget(QWidget):
         curvewidget.plot.set_antialiasing(True)
         # ---
 
-        button = QPushButton("Test filter: {}".format(title))
+        button = QW.QPushButton("Test filter: {}".format(title))
         button.clicked.connect(self.process_data)
-        vlayout = QVBoxLayout()
+        vlayout = QW.QVBoxLayout()
         vlayout.addWidget(curvewidget)
         vlayout.addWidget(button)
         self.setLayout(vlayout)
@@ -67,12 +71,12 @@ class FilterTestWidget(QWidget):
         # ---
 
 
-class TestWindow(QWidget):
+class TestWindow(QW.QWidget):
     def __init__(self):
-        QWidget.__init__(self)
+        QW.QWidget.__init__(self)
         self.setWindowTitle("Signal filtering (plotpy)")
         self.setWindowIcon(get_icon("plotpy.svg"))
-        hlayout = QHBoxLayout()
+        hlayout = QW.QHBoxLayout()
         self.setLayout(hlayout)
 
     def add_plot(self, x, y, func, title):
@@ -83,14 +87,8 @@ class TestWindow(QWidget):
 
 def test():
     """Testing this simple Qt/plotpy example"""
-    import numpy as np
-    import scipy.ndimage as spi
-    import scipy.signal as sps
-    from qtpy.QtWidgets import QApplication
 
-    import plotpy.config  # Loading icons
-
-    app = QApplication([])
+    app = QW.QApplication([])
     win = TestWindow()
 
     x = np.linspace(-10, 10, 500)

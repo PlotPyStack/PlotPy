@@ -1,7 +1,7 @@
 from plotpy.widgets.panels import PanelWidget
 
 
-class InterfacePanel(object):
+class IPanel(object):
     """Interface for panels controlled by PlotManager"""
 
     @staticmethod

@@ -10,7 +10,6 @@ from guidata.configtools import get_font, get_icon
 from numpy.ma import MaskedArray
 from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
-from qtpy.QtWidgets import QMessageBox
 
 import plotpy.widgets.plot.interactive as plt
 from plotpy.config import CONF, _
@@ -581,7 +580,7 @@ class CollectionsDelegate(QW.QItemDelegate):
                     value, self.get_value(index), ignore_errors=False
                 )
             except Exception as msg:
-                QMessageBox.critical(
+                QW.QMessageBox.critical(
                     editor,
                     _("Edit item"),
                     _(

@@ -20,9 +20,9 @@ import numpy
 import pytest
 from flaky import flaky
 from pandas import DataFrame, concat, date_range, read_csv
-from qtpy.QtCore import Qt, QTimer
+from qtpy import QtCore as QC
+from qtpy import QtWidgets as QW
 from qtpy.QtGui import QColor
-from qtpy.QtWidgets import QApplication, QMessageBox
 
 from plotpy.widgets.variableexplorer import dataframeeditor
 from plotpy.widgets.variableexplorer.dataframeeditor import (
@@ -77,10 +77,10 @@ def close_message_box(qtbot):
     Before calling anything that may show a QMessageBox call:
     QTimer.singleShot(1000, lambda: close_message_box(qtbot))
     """
-    top_level_widgets = QApplication.topLevelWidgets()
+    top_level_widgets = QW.QApplication.topLevelWidgets()
     for w in top_level_widgets:
-        if isinstance(w, QMessageBox):
-            qtbot.keyClick(w, Qt.Key_Enter)
+        if isinstance(w, QW.QMessageBox):
+            qtbot.keyClick(w, QC.Qt.Key_Enter)
 
 
 # =============================================================================
@@ -301,7 +301,7 @@ def test_header_bom():
     editor = DataFrameEditor(None)
     editor.setup_and_check(df)
     model = editor.dataModel
-    assert model.headerData(1, orientation=Qt.Horizontal) == "Date (MMM-YY)"
+    assert model.headerData(1, orientation=QC.Qt.Horizontal) == "Date (MMM-YY)"
 
 
 def test_dataframeeditor_with_datetimeindex():
@@ -340,7 +340,7 @@ def test_sort_dataframe_with_duplicate_column(qtbot):
     editor = DataFrameEditor(None)
     editor.setup_and_check(df)
     dfm = editor.dataModel
-    QTimer.singleShot(1000, lambda: close_message_box(qtbot))
+    QC.QTimer.singleShot(1000, lambda: close_message_box(qtbot))
     editor.dataModel.sort(1)
     assert [data(dfm, row, 1) for row in range(len(df))] == ["1", "3", "2"]
     assert [data(dfm, row, 2) for row in range(len(df))] == ["4", "6", "5"]
@@ -410,19 +410,19 @@ def test_dataframeeditor_edit_overflow(qtbot, monkeypatch):
         qtbot.waitForWindowShown(dialog)
         view = dialog.dataTable
 
-        qtbot.keyClick(view, Qt.Key_Right)
+        qtbot.keyClick(view, QC.Qt.Key_Right)
         qtbot.keyClicks(view, "5")
-        qtbot.keyClick(view, Qt.Key_Down)
-        qtbot.keyClick(view, Qt.Key_Space)
-        qtbot.keyClick(view.focusWidget(), Qt.Key_Backspace)
+        qtbot.keyClick(view, QC.Qt.Key_Down)
+        qtbot.keyClick(view, QC.Qt.Key_Space)
+        qtbot.keyClick(view.focusWidget(), QC.Qt.Key_Backspace)
         qtbot.keyClicks(view.focusWidget(), str(int(2**bit_exponet)))
-        qtbot.keyClick(view.focusWidget(), Qt.Key_Down)
+        qtbot.keyClick(view.focusWidget(), QC.Qt.Key_Down)
         MockQMessageBox.critical.assert_called_with(ANY, "Error", ANY)
         assert MockQMessageBox.critical.call_count == idx
         qtbot.keyClicks(view, "7")
-        qtbot.keyClick(view, Qt.Key_Up)
+        qtbot.keyClick(view, QC.Qt.Key_Up)
         qtbot.keyClicks(view, "6")
-        qtbot.keyClick(view, Qt.Key_Down)
+        qtbot.keyClick(view, QC.Qt.Key_Down)
         qtbot.wait(200)
         dialog.accept()
         qtbot.wait(500)
@@ -486,17 +486,17 @@ def test_dataframeeditor_edit_complex(qtbot, monkeypatch):
         qtbot.waitForWindowShown(dialog)
         view = dialog.dataTable
 
-        qtbot.keyClick(view, Qt.Key_Right)
-        qtbot.keyClick(view, Qt.Key_Down)
-        qtbot.keyClick(view, Qt.Key_Space)
-        qtbot.keyClick(view.focusWidget(), Qt.Key_Backspace)
+        qtbot.keyClick(view, QC.Qt.Key_Right)
+        qtbot.keyClick(view, QC.Qt.Key_Down)
+        qtbot.keyClick(view, QC.Qt.Key_Space)
+        qtbot.keyClick(view.focusWidget(), QC.Qt.Key_Backspace)
         qtbot.keyClicks(view.focusWidget(), "42")
-        qtbot.keyClick(view.focusWidget(), Qt.Key_Down)
+        qtbot.keyClick(view.focusWidget(), QC.Qt.Key_Down)
         MockQMessageBox.critical.assert_called_with(ANY, "Error", ANY)
         assert MockQMessageBox.critical.call_count == count * 2 - 1
-        qtbot.keyClick(view, Qt.Key_Down)
+        qtbot.keyClick(view, QC.Qt.Key_Down)
         qtbot.keyClick(view, "1")
-        qtbot.keyClick(view.focusWidget(), Qt.Key_Down)
+        qtbot.keyClick(view.focusWidget(), QC.Qt.Key_Down)
         MockQMessageBox.critical.assert_called_with(
             ANY,
             "Error",
@@ -567,12 +567,12 @@ def test_dataframeeditor_edit_bool(qtbot, monkeypatch):
         qtbot.waitForWindowShown(dialog)
         view = dialog.dataTable
 
-        qtbot.keyClick(view, Qt.Key_Right)
+        qtbot.keyClick(view, QC.Qt.Key_Right)
         for test_str in test_strs:
-            qtbot.keyClick(view, Qt.Key_Space)
-            qtbot.keyClick(view.focusWidget(), Qt.Key_Backspace)
+            qtbot.keyClick(view, QC.Qt.Key_Space)
+            qtbot.keyClick(view.focusWidget(), QC.Qt.Key_Backspace)
             qtbot.keyClicks(view.focusWidget(), test_str)
-            qtbot.keyClick(view.focusWidget(), Qt.Key_Down)
+            qtbot.keyClick(view.focusWidget(), QC.Qt.Key_Down)
             assert not MockQMessageBox.critical.called
         qtbot.wait(200)
         dialog.accept()
@@ -607,7 +607,7 @@ def test_no_convert_strings_to_unicode():
     )
     dfm = DataFrameModel(df)
 
-    assert dfm.headerData(1, orientation=Qt.Horizontal) != "Это"
+    assert dfm.headerData(1, orientation=QC.Qt.Horizontal) != "Это"
     assert data(dfm, 0, 0) != "пример"
     assert data(dfm, 0, 1) != "файла"
 

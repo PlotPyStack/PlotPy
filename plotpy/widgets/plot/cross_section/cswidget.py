@@ -6,7 +6,7 @@ from qtpy import QtWidgets as QW
 from plotpy.config import _
 from plotpy.utils.gui import assert_interfaces_valid
 from plotpy.utils.misc_from_gui import add_actions, create_action
-from plotpy.widgets.interfaces.panel import InterfacePanel
+from plotpy.widgets.interfaces.panel import IPanel
 from plotpy.widgets.panels import ID_OCS, ID_XCS, ID_YCS, PanelWidget
 from plotpy.widgets.plot.cross_section.csplot import (
     ObliqueCrossSectionPlot,
@@ -25,7 +25,7 @@ class CrossSectionWidget(PanelWidget):
     PANEL_ICON = "csection.png"
     CrossSectionPlotKlass = None
 
-    __implements__ = (InterfacePanel,)
+    __implements__ = (IPanel,)
 
     def __init__(self, parent=None):
         super(CrossSectionWidget, self).__init__(parent)

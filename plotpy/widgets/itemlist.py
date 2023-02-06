@@ -6,7 +6,7 @@ from qtpy import QtWidgets as QW
 from plotpy.config import _
 from plotpy.utils.gui import assert_interfaces_valid
 from plotpy.utils.misc_from_gui import add_actions, create_action
-from plotpy.widgets.interfaces.panel import InterfacePanel
+from plotpy.widgets.interfaces.panel import IPanel
 from plotpy.widgets.panels import ID_ITEMLIST, PanelWidget
 
 
@@ -289,7 +289,7 @@ class ItemListWidget(QW.QListWidget):
 class PlotItemList(PanelWidget):
     """Construct the `plot item list panel`"""
 
-    __implements__ = (InterfacePanel,)
+    __implements__ = (IPanel,)
     PANEL_ID = ID_ITEMLIST
     PANEL_TITLE = _("Item list")
     PANEL_ICON = "item_list.png"

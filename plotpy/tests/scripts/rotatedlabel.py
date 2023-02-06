@@ -11,19 +11,20 @@ RotatedLabel test
 RotatedLabel is derived from QLabel: it provides rotated text display.
 """
 
+import sys
 
+from qtpy import QtWidgets as QW
 from qtpy.QtCore import Qt
-from qtpy.QtWidgets import QFrame, QGridLayout
 
 from plotpy.widgets.labels import RotatedLabel
 
 SHOW = True  # Show test in GUI-based test launcher
 
 
-class Frame(QFrame):
+class Frame(QW.QFrame):
     def __init__(self, parent=None):
-        QFrame.__init__(self, parent)
-        layout = QGridLayout()
+        QW.QFrame.__init__(self, parent)
+        layout = QW.QGridLayout()
         self.setLayout(layout)
         angle = 0
         for row in range(7):
@@ -40,11 +41,7 @@ class Frame(QFrame):
 
 
 if __name__ == "__main__":
-    import sys
-
-    from qtpy.QtWidgets import QApplication
-
-    app = QApplication([])
+    app = QW.QApplication([])
     frame = Frame()
     frame.show()
     sys.exit(app.exec_())

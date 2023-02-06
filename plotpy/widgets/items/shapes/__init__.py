@@ -98,3 +98,12 @@ Reference
    :members:
    :inherited-members:
 """
+from plotpy.widgets.items.shapes.axis import Axes
+from plotpy.widgets.items.shapes.base import AbstractShape
+from plotpy.widgets.items.shapes.ellipse import EllipseShape
+from plotpy.widgets.items.shapes.marker import Marker
+from plotpy.widgets.items.shapes.point import PointShape
+from plotpy.widgets.items.shapes.polygon import PolygonShape
+from plotpy.widgets.items.shapes.range import XRangeSelection
+from plotpy.widgets.items.shapes.rectangle import ObliqueRectangleShape, RectangleShape
+from plotpy.widgets.items.shapes.segment import SegmentShape

@@ -13,7 +13,7 @@ from pathlib import Path
 import numpy as np
 from qtpy.QtGui import QImage
 
-from plotpy.utils.config.misc import add_image_path, get_image_file_path
+from plotpy.utils.config.getters import add_image_path, get_image_file_path
 from plotpy.widgets.io import imread, imwrite
 
 

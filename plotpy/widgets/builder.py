@@ -92,7 +92,7 @@ from plotpy.widgets.items.shapes.range import XRangeSelection
 from plotpy.widgets.items.shapes.rectangle import RectangleShape
 from plotpy.widgets.items.shapes.segment import SegmentShape
 from plotpy.widgets.plot.base import BasePlot
-from plotpy.widgets.plot.histogram.common import HistogramItem
+from plotpy.widgets.plot.histogram.base import HistogramItem
 from plotpy.widgets.plot.histogram.utils import lut_range_threshold
 from plotpy.widgets.styles.base import (
     COLORS,

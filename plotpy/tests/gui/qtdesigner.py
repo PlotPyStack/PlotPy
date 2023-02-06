@@ -17,7 +17,7 @@ embedding in GUI layouts directly from QtDesigner.
 import os
 import sys
 
-from qtpy.QtWidgets import QApplication
+from qtpy import QtWidgets as QW
 
 from plotpy.widgets.builder import make
 from plotpy.widgets.qtdesigner import loadui
@@ -35,7 +35,7 @@ class TestWindow(FormClass):
 
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
+    app = QW.QApplication(sys.argv)
     try:
         from tests.gui.image import compute_image
     except ImportError:

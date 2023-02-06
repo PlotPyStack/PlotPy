@@ -140,3 +140,76 @@ Reference
    :inherited-members:
 
 """
+from plotpy.widgets.styles.axes import (
+    AxesParam,
+    AxeStyleParam,
+    AxisItem,
+    AxisItemWidget,
+    AxisParam,
+    ImageAxesParam,
+)
+from plotpy.widgets.styles.base import (
+    BrushStyleItem,
+    BrushStyleItemWidget,
+    BrushStyleParam,
+    FontItem,
+    FontItemWidget,
+    FontParam,
+    GridParam,
+    ItemParameters,
+    LineStyleItem,
+    LineStyleItemWidget,
+    LineStyleParam,
+    SymbolItem,
+    SymbolItemWidget,
+    SymbolParam,
+    TextStyleItem,
+    TextStyleItemWidget,
+    TextStyleParam,
+    style_generator,
+    update_style_attr,
+)
+from plotpy.widgets.styles.curve import CurveParam, CurveParam_MS
+from plotpy.widgets.styles.errorbar import ErrorBarParam
+from plotpy.widgets.styles.histogram import (
+    Histogram2DParam,
+    Histogram2DParam_MS,
+    HistogramParam,
+)
+from plotpy.widgets.styles.image import (
+    BaseImageParam,
+    ImageFilterParam,
+    ImageParam,
+    ImageParam_MS,
+    ImageParamMixin,
+    MaskedImageParam,
+    MaskedImageParam_MS,
+    MaskedImageParamMixin,
+    MaskedXYImageParam,
+    MaskedXYImageParam_MS,
+    QuadGridParam,
+    RawImageParam,
+    RawImageParam_MS,
+    RGBImageParam,
+    TransformParamMixin,
+    TrImageParam,
+    TrImageParam_MS,
+    XYImageParam,
+    XYImageParam_MS,
+)
+from plotpy.widgets.styles.label import (
+    LabelParam,
+    LabelParam_MS,
+    LabelParamWithContents,
+    LabelParamWithContents_MS,
+    LegendParam,
+    LegendParam_MS,
+)
+from plotpy.widgets.styles.shape import (
+    AnnotationParam,
+    AnnotationParam_MS,
+    AxesShapeParam,
+    MarkerParam,
+    RangeShapeParam,
+    ShapeParam,
+)

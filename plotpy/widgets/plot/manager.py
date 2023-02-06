@@ -7,7 +7,7 @@ from qtpy import QtWidgets as QW
 from plotpy.utils.gui import assert_interfaces_valid
 from plotpy.utils.misc_from_gui import create_action
 from plotpy.widgets import panels
-from plotpy.widgets.interfaces.plotmanager import InterfacePlotManager
+from plotpy.widgets.interfaces.plotmanager import IPlotManager
 from plotpy.widgets.plot.base import BasePlot
 from plotpy.widgets.tools.annotations import (
     AnnotatedCircleTool,
@@ -70,7 +70,7 @@ class PlotManager(object):
     tools (see :py:mod:`.tools`) and toolbars
     """
 
-    __implements__ = (InterfacePlotManager,)
+    __implements__ = (IPlotManager,)
 
     def __init__(self, main):
         self.main = main  # The main parent widget

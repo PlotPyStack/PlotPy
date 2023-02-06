@@ -22,8 +22,8 @@ import numpy
 import pandas
 import pytest
 from flaky import flaky
+from qtpy import QtWidgets as QW
 from qtpy.QtCore import Qt
-from qtpy.QtWidgets import QWidget
 
 from plotpy.widgets.variableexplorer.collectionseditor.collection import (
     CollectionsEditor,
@@ -393,7 +393,7 @@ def test_editor_parent_set(monkeypatch):
     Regression test for issue #5696 .
     """
     # Mocking and setup
-    test_parent = QWidget()
+    test_parent = QW.QWidget()
 
     MockCollectionsEditor = Mock()
     attr_to_patch_coledit = (

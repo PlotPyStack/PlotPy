@@ -10,3 +10,5 @@ plotpy.widgets.objecteditor
 
 Object editor
 """
+from plotpy.widgets.variableexplorer.objecteditor.createdialog import create_dialog
+from plotpy.widgets.variableexplorer.objecteditor.editor import keeper, oedit

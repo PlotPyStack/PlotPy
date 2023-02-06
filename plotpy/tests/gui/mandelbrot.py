@@ -9,7 +9,7 @@
 
 
 import numpy as np
-from qtpy.QtCore import QPointF, QRectF
+from qtpy import QtCore as QC
 
 from plotpy.config import _
 from plotpy.mandelbrot import mandelbrot
@@ -42,7 +42,7 @@ class FullScale(ToggleTool):
 class MandelItem(RawImageItem):
     def __init__(self, xmin, xmax, ymin, ymax):
         super(MandelItem, self).__init__(np.zeros((1, 1), np.uint8))
-        self.bounds = QRectF(QPointF(xmin, ymin), QPointF(xmax, ymax))
+        self.bounds = QC.QRectF(QC.QPointF(xmin, ymin), QC.QPointF(xmax, ymax))
         self.update_border()
         self.IMAX = 80
         self.set_lut_range([0, self.IMAX])

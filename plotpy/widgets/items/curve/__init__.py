@@ -64,7 +64,7 @@ Create a basic curve plotting widget:
       the `plotpy` helper function also installs the `Qt` translation
       corresponding to the system locale):
 
->>> from PyQt5.QtWidgets import QApplication
+>>> from qtpy.QtWidgets import QApplication
 >>> app = QApplication([])
 
     * now that a `QApplication` object exists, we may create the plotting
@@ -110,3 +110,5 @@ Reference
    :members:
    :inherited-members:
 """
+from plotpy.widgets.items.curve.base import CurveItem
+from plotpy.widgets.items.curve.errorbar import ErrorBarCurveItem

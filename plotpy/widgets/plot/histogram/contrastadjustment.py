@@ -45,9 +45,9 @@ from plotpy.config import _
 from plotpy.utils.gui import assert_interfaces_valid
 from plotpy.utils.misc_from_gui import add_actions, create_action
 from plotpy.widgets.interfaces.common import IVoiImageItemType
-from plotpy.widgets.interfaces.panel import InterfacePanel
+from plotpy.widgets.interfaces.panel import IPanel
 from plotpy.widgets.panels import ID_CONTRAST, PanelWidget
-from plotpy.widgets.plot.histogram.common import EliminateOutliersParam, LevelsHistogram
+from plotpy.widgets.plot.histogram.base import EliminateOutliersParam, LevelsHistogram
 from plotpy.widgets.plot.manager import PlotManager
 from plotpy.widgets.tools.curve import AntiAliasingTool, SelectPointTool
 from plotpy.widgets.tools.plot import BasePlotMenuTool
@@ -57,7 +57,7 @@ from plotpy.widgets.tools.selection import SelectTool
 class ContrastAdjustment(PanelWidget):
     """Contrast adjustment tool"""
 
-    __implements__ = (InterfacePanel,)
+    __implements__ = (IPanel,)
     PANEL_ID = ID_CONTRAST
     PANEL_TITLE = _("Contrast adjustment tool")
     PANEL_ICON = "contrast.png"

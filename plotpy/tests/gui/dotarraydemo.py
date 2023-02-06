@@ -22,9 +22,9 @@ import guidata.dataset.datatypes as gdt
 import guidata.dataset.qtwidgets as gdq
 import numpy as np
 from guidata.configtools import get_image_file_path
-from qtpy.QtCore import QPointF, QRectF, Qt
-from qtpy.QtGui import QBrush, QColor, QPainter, QPen, QPixmap
-from qtpy.QtWidgets import QLabel, QMessageBox
+from qtpy import QtCore as QC
+from qtpy import QtGui as QG
+from qtpy import QtWidgets as QW
 
 from plotpy.widgets.interfaces.common import IImageItemType
 from plotpy.widgets.items.curve.errorbar import vmap
@@ -70,32 +70,34 @@ class DotArrayItem(RawImageItem):
     def boundingRect(self):
         param = self.param
         if param is not None:
-            return QRectF(
-                QPointF(-0.5 * param.size, -0.5 * param.size),
-                QPointF(param.dim_h + 0.5 * param.size, param.dim_v + 0.5 * param.size),
+            return QC.QRectF(
+                QC.QPointF(-0.5 * param.size, -0.5 * param.size),
+                QC.QPointF(
+                    param.dim_h + 0.5 * param.size, param.dim_v + 0.5 * param.size
+                ),
             )
 
     def types(self):
         return (IImageItemType,)
 
     def draw_image(self, painter, canvasRect, srcRect, dstRect, xMap, yMap):
-        painter.setRenderHint(QPainter.Antialiasing, True)
+        painter.setRenderHint(QG.QPainter.Antialiasing, True)
         param = self.param
         xcoords = vmap(xMap, np.arange(0, param.dim_h + 1, param.step_x))
         ycoords = vmap(yMap, np.arange(0, param.dim_v + 1, param.step_y))
         rx = 0.5 * param.size * xMap.pDist() / xMap.sDist()
         ry = 0.5 * param.size * yMap.pDist() / yMap.sDist()
-        color = QColor(param.color)
-        painter.setPen(QPen(color))
-        painter.setBrush(QBrush(color))
+        color = QG.QColor(param.color)
+        painter.setPen(QG.QPen(color))
+        painter.setBrush(QG.QBrush(color))
         for xc in xcoords:
             for yc in ycoords:
-                painter.drawEllipse(QPointF(xc, yc), rx, ry)
+                painter.drawEllipse(QC.QPointF(xc, yc), rx, ry)
 
 
 class CustomHelpTool(HelpTool):
     def activate_command(self, plot, checked):
-        QMessageBox.information(
+        QW.QMessageBox.information(
             plot,
             "Help",
             """**to be customized**
@@ -136,12 +138,12 @@ class DotArrayDialog(PlotDialog):
 
     def create_plot(self, options):
         logo_path = get_image_file_path("plotpy.svg")
-        logo = QLabel()
-        logo.setPixmap(QPixmap(logo_path))
-        logo.setAlignment(Qt.AlignCenter)
+        logo = QW.QLabel()
+        logo.setPixmap(QG.QPixmap(logo_path))
+        logo.setAlignment(QC.Qt.AlignCenter)
         self.plot_layout.addWidget(logo, 1, 1)
-        logo_txt = QLabel("Powered by <b>plotpy</b>")
-        logo_txt.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
+        logo_txt = QW.QLabel("Powered by <b>plotpy</b>")
+        logo_txt.setAlignment(QC.Qt.AlignHCenter | QC.Qt.AlignTop)
         self.plot_layout.addWidget(logo_txt, 2, 1)
         self.stamp_gbox = gdq.DataSetEditGroupBox("Dots", DotArrayParam)
         self.stamp_gbox.SIG_APPLY_BUTTON_CLICKED.connect(self.apply_params)

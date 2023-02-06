@@ -14,8 +14,8 @@ from guidata.dataset.dataitems import ChoiceItem, FloatArrayItem, IntItem, Strin
 from guidata.dataset.datatypes import DataSet, GetAttrProp, update_dataset
 from guidata.dataset.qtwidgets import DataSetEditGroupBox
 from qtpy import QT_VERSION
-from qtpy.QtCore import PYQT_VERSION_STR, QSize, Qt
-from qtpy.QtWidgets import QFileDialog, QListWidget, QMainWindow, QMessageBox, QSplitter
+from qtpy import QtCore as QC
+from qtpy import QtWidgets as QW
 
 from plotpy.config import _
 from plotpy.utils.icons import get_std_icon
@@ -48,21 +48,21 @@ class ImageParamNew(ImageParam):
     type = ChoiceItem(_("Type"), (("rand", _("random")), ("zeros", _("zeros"))))
 
 
-class ImageListWithProperties(QSplitter):
+class ImageListWithProperties(QW.QSplitter):
     def __init__(self, parent):
-        QSplitter.__init__(self, parent)
-        self.imagelist = QListWidget(self)
+        QW.QSplitter.__init__(self, parent)
+        self.imagelist = QW.QListWidget(self)
         self.addWidget(self.imagelist)
         self.properties = DataSetEditGroupBox(_("Properties"), ImageParam)
         self.properties.setEnabled(False)
         self.addWidget(self.properties)
 
 
-class CentralWidget(QSplitter):
+class CentralWidget(QW.QSplitter):
     def __init__(self, parent, toolbar):
-        QSplitter.__init__(self, parent)
+        QW.QSplitter.__init__(self, parent)
         self.setContentsMargins(10, 10, 10, 10)
-        self.setOrientation(Qt.Vertical)
+        self.setOrientation(QC.Qt.Vertical)
 
         imagelistwithproperties = ImageListWithProperties(self)
         self.addWidget(imagelistwithproperties)
@@ -146,16 +146,16 @@ class CentralWidget(QSplitter):
         self.add_image(image)
 
 
-class MainWindow(QMainWindow):
+class MainWindow(QW.QMainWindow):
     def __init__(self):
-        QMainWindow.__init__(self)
+        QW.QMainWindow.__init__(self)
         self.setup()
 
     def setup(self):
         """Setup window parameters"""
         self.setWindowIcon(get_icon("python.png"))
         self.setWindowTitle(APP_NAME)
-        self.resize(QSize(600, 800))
+        self.resize(QC.QSize(600, 800))
 
         # Welcome message in statusbar:
         status = self.statusBar()
@@ -209,7 +209,7 @@ class MainWindow(QMainWindow):
 
     # ------?
     def about(self):
-        QMessageBox.about(
+        QW.QMessageBox.about(
             self,
             _("About ") + APP_NAME,
             """<b>{}</b> v{}<p>{} Pierre Raybaut
@@ -220,7 +220,7 @@ class MainWindow(QMainWindow):
                 _("Developped by"),
                 platform.python_version(),
                 QT_VERSION,
-                PYQT_VERSION_STR,
+                QC.PYQT_VERSION_STR,
                 _("on"),
                 platform.system(),
             ),
@@ -244,13 +244,13 @@ class MainWindow(QMainWindow):
         """Open image file"""
         saved_in, saved_out, saved_err = sys.stdin, sys.stdout, sys.stderr
         sys.stdout = None
-        filename, _filter = QFileDialog.getOpenFileName(
+        filename, _filter = QW.QFileDialog.getOpenFileName(
             self,
             _("Open"),
             "",
             io.iohandler.get_filters("load"),
             "",
-            options=QFileDialog.ShowDirsOnly,
+            options=QW.QFileDialog.ShowDirsOnly,
         )
         sys.stdin, sys.stdout, sys.stderr = saved_in, saved_out, saved_err
         if filename:

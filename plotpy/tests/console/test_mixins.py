@@ -6,12 +6,12 @@
 
 
 import pytest
-from qtpy.QtWidgets import QPlainTextEdit
+from qtpy import QtWidgets as QW
 
 from plotpy.widgets.console import mixins
 
 
-class BaseWidget(QPlainTextEdit, mixins.BaseEditMixin):
+class BaseWidget(QW.QPlainTextEdit, mixins.BaseEditMixin):
     pass
 
 

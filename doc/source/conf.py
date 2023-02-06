@@ -16,6 +16,9 @@
 # import sys
 # sys.path.insert(0, os.path.abspath("."))
 
+# -- Imports -----------------------------------------------------
+# patch some classes inherit from int to avoid sphinx warnings
+from qtpy import QtWidgets as QW
 
 # -- Project information -----------------------------------------------------
 
@@ -219,9 +222,6 @@ nitpick_ignore = [
     ("py:meth", "setLabelRotation"),
 ]
 
-# patch some classes inherit from int to avoid sphinx warnings
-from qtpy.QtWidgets import QDialog, QFrame, QWidget
-
 
 def to_bytes(*args, **kwargs):
     return int.to_bytes(*args, **kwargs)
@@ -237,12 +237,12 @@ def from_bytes(*args, **kwargs):
 to_bytes.__doc__ = int.to_bytes.__doc__.replace("`sys.byteorder'", "`sys.byteorder`")
 
 for cls in (
-    QWidget.RenderFlag,
-    QWidget.PaintDeviceMetric,
-    QFrame.Shadow,
-    QFrame.Shape,
-    QFrame.StyleMask,
-    QDialog.DialogCode,
+    QW.QWidget.RenderFlag,
+    QW.QWidget.PaintDeviceMetric,
+    QW.QFrame.Shadow,
+    QW.QFrame.Shape,
+    QW.QFrame.StyleMask,
+    QW.QDialog.DialogCode,
 ):
     cls.to_bytes = to_bytes
     cls.from_bytes = from_bytes

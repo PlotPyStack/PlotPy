@@ -9,7 +9,7 @@
 from unittest.mock import patch
 
 import numpy as np
-from qtpy.QtWidgets import QFileDialog
+from qtpy import QtWidgets as QW
 
 from plotpy.widgets.builder import make
 from plotpy.widgets.tools.curve import export_curve_data
@@ -22,7 +22,7 @@ def test_export_curve(tmpdir):
     curve = make.curve(x, y, color="g")
 
     dest = tmpdir / "output.txt"
-    with patch.object(QFileDialog, "getSaveFileName") as gsf_mock:
+    with patch.object(QW.QFileDialog, "getSaveFileName") as gsf_mock:
         gsf_mock.return_value = (str(dest), "")
         export_curve_data(curve)
 
