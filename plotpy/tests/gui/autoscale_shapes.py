@@ -53,13 +53,13 @@ def create_window():
         AnnotatedSegmentTool,
         AnnotatedPointTool,
     ):
-        win.add_tool(toolklass)
+        win.manager.add_tool(toolklass)
     return win
 
 
 def test():
     win = create_window()
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     plot.set_aspect_ratio(lock=True)
     plot.set_antialiasing(False)
     win.get_itemlist_panel().show()

@@ -24,7 +24,6 @@ DEFAULT_CHARS = "".join([chr(c) for c in range(32, 256)])
 
 
 def get_font_array(sz, chars=DEFAULT_CHARS):
-
     font = QG.QFont()
     font.setFixedPitch(True)
     font.setPixelSize(sz)
@@ -91,7 +90,7 @@ def imshow(items, title=""):
     y = 0
     x = 0
     w = None
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     print("-" * 80)
     for i, item in enumerate(items):
         h = item.boundingRect().height()

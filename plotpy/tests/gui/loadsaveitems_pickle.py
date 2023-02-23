@@ -111,9 +111,9 @@ class IOTest(object):
             ),
         )
         dlg.add_separator_tool()
-        dlg.add_tool(LoadItemsTool)
-        dlg.add_tool(SaveItemsTool)
-        dlg.add_tool(ImageMaskTool)
+        dlg.utils.add_tool(LoadItemsTool)
+        dlg.utils.add_tool(SaveItemsTool)
+        dlg.utils.add_tool(ImageMaskTool)
 
     def add_items(self):
         if os.access(self.FNAME, os.R_OK):

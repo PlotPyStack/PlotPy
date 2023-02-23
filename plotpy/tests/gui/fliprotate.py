@@ -27,8 +27,8 @@ SHOW = True  # Show test in GUI-based test launcher
 def widget_test(fname, qapp):
     """Test the rotate/crop widget"""
     array0, item = create_test_data(fname)
-    widget = FlipRotateWidget(None)
-    widget.set_item(item)
+    widget = FlipRotateWidget(None, toolbar=True)
+    widget.tools.set_item(item)
     widget.set_parameters(-90, True, False)
     widget.show()
     qapp.exec_()
@@ -38,7 +38,7 @@ def dialog_test(fname, interactive=True):
     """Test the rotate/crop dialog with rotation point changeable"""
     array0, item = create_test_data(fname)
     dlg = FlipRotateDialog(None, toolbar=True)
-    tool = dlg.add_tool(
+    tool = dlg.manager.add_tool(
         RotationCenterTool,
         rotation_center=False,
         rotation_point_move_with_shape=True,
@@ -47,22 +47,23 @@ def dialog_test(fname, interactive=True):
     )
     action = tool.action
 
-    rot_point_btn = create_toolbutton(dlg, icon=get_icon("rotationcenter.jpg"))
+    rot_point_btn = create_toolbutton(
+        dlg.imagewidget, icon=get_icon("rotationcenter.jpg")
+    )
     rot_point_btn.setPopupMode(QW.QToolButton.InstantPopup)
-    rotation_tool_menu = QW.QMenu(dlg)
+    rotation_tool_menu = QW.QMenu(dlg.imagewidget)
     add_actions(rotation_tool_menu, (action,))
     rot_point_btn.setMenu(rotation_tool_menu)
     dlg.toolbar.addWidget(rot_point_btn)
 
-    dlg.set_item(item)
-    if dlg.exec_():
-        array1 = dlg.output_array
+    dlg.tools.set_item(item)
+    if dlg.exec():
+        array1 = dlg.tools.output_array
         imshow(array0, title="array0")
         imshow(array1, title="array1")
 
 
 if __name__ == "__main__":
-
     qapp = qapplication()  # analysis:ignore
 
     widget_test("brain.png", qapp)

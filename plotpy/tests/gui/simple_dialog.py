@@ -60,7 +60,7 @@ class ExampleDialog(PlotDialog):
         self.resize(600, 600)
 
     def register_tools(self):
-        opentool = self.add_tool(OpenImageTool)
+        opentool = self.manager.add_tool(OpenImageTool)
         opentool.SIG_OPEN_FILE.connect(self.open_image)
         self.register_all_image_tools()
         self.activate_default_tool()

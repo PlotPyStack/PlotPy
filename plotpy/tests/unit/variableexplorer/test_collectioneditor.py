@@ -397,25 +397,25 @@ def test_editor_parent_set(monkeypatch):
 
     MockCollectionsEditor = Mock()
     attr_to_patch_coledit = (
-        "plotpy.widgets.variableexplorer." + "collectionseditor.CollectionsEditor"
+        "plotpy.widgets.variableexplorer.collectionseditor.collection.CollectionsEditor"
     )
     monkeypatch.setattr(attr_to_patch_coledit, MockCollectionsEditor)
 
     MockArrayEditor = Mock()
     attr_to_patch_arredit = (
-        "plotpy.widgets.variableexplorer." + "collectionseditor.ArrayEditor"
+        "plotpy.widgets.variableexplorer." + "arrayeditor.ArrayEditor"
     )
     monkeypatch.setattr(attr_to_patch_arredit, MockArrayEditor)
 
     MockDataFrameEditor = Mock()
     attr_to_patch_dfedit = (
-        "plotpy.widgets.variableexplorer." + "collectionseditor.DataFrameEditor"
+        "plotpy.widgets.variableexplorer." + "dataframeeditor.DataFrameEditor"
     )
     monkeypatch.setattr(attr_to_patch_dfedit, MockDataFrameEditor)
 
     MockTextEditor = Mock()
     attr_to_patch_textedit = (
-        "plotpy.widgets.variableexplorer." + "collectionseditor.TextEditor"
+        "plotpy.widgets.variableexplorer." + "texteditor.TextEditor"
     )
     monkeypatch.setattr(attr_to_patch_textedit, MockTextEditor)
 

@@ -23,7 +23,7 @@ def xyimagebug(offset):
     y = numpy.arange(100)
     image = make.xyimage(x, y, data=data)
     win = PlotDialog(options={"type": PlotType.IMAGE})
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     plot.add_item(image)
     plot.select_item(image)  # this helps in seeing where the image should be
     win.exec_()

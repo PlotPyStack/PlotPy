@@ -74,8 +74,8 @@ def mandel():
         options=dict(yreverse=False, type=PlotType.IMAGE),
     )
     mandel = MandelItem(-1.5, 0.5, -1.0, 1.0)
-    win.add_tool(FullScale, mandel)
-    plot = win.get_plot()
+    win.manager.add_tool(FullScale, mandel)
+    plot = win.manager.get_plot()
     plot.set_aspect_ratio(lock=False)
     plot.add_item(mandel)
     plot.set_full_scale(mandel)

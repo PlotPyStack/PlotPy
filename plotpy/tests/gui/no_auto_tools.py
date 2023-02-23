@@ -24,7 +24,7 @@ def plot(*items):
             title="Title", xlabel="xlabel", ylabel="ylabel", type=PlotType.CURVE
         ),
     )
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     for item in items:
         plot.add_item(item)
     win.get_itemlist_panel().show()

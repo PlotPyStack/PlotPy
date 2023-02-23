@@ -33,7 +33,7 @@ def get_point(*args):
         edit=True,
         options={"type": PlotType.CURVE},
     )
-    default = win.add_tool(
+    default = win.manager.add_tool(
         SelectPointTool,
         title="Test",
         on_active_item=True,
@@ -41,7 +41,7 @@ def get_point(*args):
         end_callback=test_function,
     )
     default.activate()
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     for cx, cy in args:
         item = make.mcurve(cx, cy)
         plot.add_item(item)

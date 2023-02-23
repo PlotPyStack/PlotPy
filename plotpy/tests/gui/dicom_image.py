@@ -35,7 +35,7 @@ def test():
     if pydicom:
         filename = os.path.join(os.path.dirname(__file__), "mr-brain.dcm")
         image = make.image(filename=filename, title="DICOM img", colormap="gray")
-        plot = win.get_plot()
+        plot = win.manager.get_plot()
         plot.add_item(image)
         plot.select_item(image)
         contrast = win.get_contrast_panel()

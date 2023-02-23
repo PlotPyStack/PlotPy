@@ -27,13 +27,13 @@ SHOW = True  # Show test in GUI-based test launcher
 def get_segment(item):
     """Show image and return selected segment coordinates"""
     win = PlotDialog(_("Select a segment then press OK to accept"), edit=True)
-    default = win.add_tool(SelectTool)
+    default = win.manager.add_tool(SelectTool)
     win.set_default_tool(default)
-    segtool = win.add_tool(
+    segtool = win.manager.add_tool(
         AnnotatedSegmentTool, title="Test", switch_to_default_tool=True
     )
     segtool.activate()
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     plot.add_item(item)
     plot.set_active_item(item)
     win.show()

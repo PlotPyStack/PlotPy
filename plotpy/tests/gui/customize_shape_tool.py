@@ -51,7 +51,7 @@ def create_window():
         MultiLineTool,
         FreeFormTool,
     ):
-        win.add_tool(toolklass, handle_final_shape_cb=customize_shape)
+        win.manager.add_tool(toolklass, handle_final_shape_cb=customize_shape)
     return win
 
 
@@ -65,7 +65,7 @@ def test():
     filename = os.path.join(os.path.dirname(__file__), "brain.png")
     win = create_window()
     image = make.image(filename=filename, colormap="bone", alpha_mask=True)
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     plot.add_item(image)
     win.exec_()
 

@@ -52,7 +52,7 @@ COLORS = [
 
 def test():
     win = PlotDialog(edit=True, toolbar=True, wintitle="Sample multi-polygon item")
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     plot.set_aspect_ratio(lock=True)
     plot.set_antialiasing(False)
     plot.set_axis_direction("left", False)

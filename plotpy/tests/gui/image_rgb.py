@@ -27,7 +27,7 @@ def imshow(filename):
         options={"type": PlotType.IMAGE},
     )
     item = make.rgbimage(filename=filename, xdata=[-1, 1], ydata=[-1, 1])
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     plot.add_item(item)
     win.show()
     win.exec_()

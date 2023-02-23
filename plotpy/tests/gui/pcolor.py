@@ -23,7 +23,7 @@ def imshow(items):
         options={"yreverse": False, "type": PlotType.IMAGE},
         wintitle="Pcolor test",
     )
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     for item in items:
         plot.add_item(item)
     win.show()

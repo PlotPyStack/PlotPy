@@ -74,7 +74,7 @@ def test():
             title="Title", xlabel="xlabel", ylabel="ylabel", type=PlotType.CURVE
         ),
     )
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     plot.add_item(curve)
     plot.setAutoReplot()
     _app.plot = plot

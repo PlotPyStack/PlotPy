@@ -8,11 +8,11 @@
 # pylint: disable=C0103
 
 """
-plotpy.gui.widgets.baseplot
+plotpy.gui.widgets.base
 ---------------------------
 
-The `baseplot` module provides the `plotpy` plotting widget base class:
-:py:class:`.baseplot.BasePlot`. This is an enhanced version of
+The `base` module provides the `plotpy` plotting widget base class:
+:py:class:`.base.BasePlot`. This is an enhanced version of
 `PythonQwt`'s QwtPlot plotting widget which supports the following features:
 
     * add to plot, del from plot, hide/show and save/restore `plot items` easily
@@ -40,10 +40,7 @@ Reference
 .. autoclass:: BasePlot
    :members:
    :inherited-members:
-.. autoclass:: ItemListWidget
-   :members:
-.. autoclass:: PlotItemList
-   :members:
+
 """
 
 import pickle

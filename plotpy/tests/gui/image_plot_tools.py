@@ -66,7 +66,7 @@ def create_window():
         AnnotatedSegmentTool,
         AnnotatedPointTool,
     ):
-        win.add_tool(toolklass)
+        win.manager.add_tool(toolklass)
     return win
 
 
@@ -80,7 +80,7 @@ def test():
     filename = os.path.join(os.path.dirname(__file__), "brain.png")
     win = create_window()
     image = make.image(filename=filename, colormap="bone")
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     plot.add_item(image)
     win.exec_()
 

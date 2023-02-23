@@ -31,7 +31,7 @@ def create_window():
         options=dict(gridparam=gridparam, type=PlotType.IMAGE),
     )
     for toolklass in (RectangleTool, EllipseTool, FreeFormTool, PlaceAxesTool):
-        win.add_tool(toolklass)
+        win.manager.add_tool(toolklass)
     return win
 
 
@@ -50,7 +50,7 @@ def test():
     )
     data2 = np.array(image1.data.T[200:], copy=True)
     image2 = make.image(data2, title="Modified")  # , alpha_mask=True)
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     plot.add_item(image1, z=0)
     plot.add_item(image2, z=1)
     plot.set_items_readonly(False)

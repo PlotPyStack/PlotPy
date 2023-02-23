@@ -30,7 +30,7 @@ def test():
     item = make.error(x, y, None, y * 0.23)
 
     win = PlotDialog(options={"type": PlotType.CURVE})
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     plot.set_axis_scale("left", "log")
     plot.set_axis_scale("bottom", "log")
     #    plot.set_axis_limits("left", 4.53999297625e-05, 22026.4657948)

@@ -26,7 +26,7 @@ def imshow(x, y, data):
         ),
     )
     item = make.xyimage(x, y, data)
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     plot.add_item(item)
     win.show()
     win.exec_()

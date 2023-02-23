@@ -22,7 +22,7 @@ SHOW = True  # Show test in GUI-based test launcher
 def test():
     _app = plotpy.widgets.qapplication()
     win = PlotDialog(edit=True, toolbar=True, wintitle="Sample contour plotting")
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     plot.set_aspect_ratio(lock=True)
     plot.set_antialiasing(False)
     win.get_itemlist_panel().show()
@@ -38,7 +38,7 @@ def test():
 
     # show the image
     item = make.image(Z)
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     plot.add_item(item)
 
     # compute the contour

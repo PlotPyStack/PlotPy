@@ -49,7 +49,7 @@ class BaseBM(object):
         )
         win.show()
         QW.QApplication.processEvents()
-        plot = win.get_plot()
+        plot = win.manager.get_plot()
 
         # Create item (ignore this step in benchmark result!)
         self.make_item()

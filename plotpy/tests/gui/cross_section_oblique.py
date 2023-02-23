@@ -27,7 +27,7 @@ class OCSImageDialog(PlotDialog):
     def register_image_tools(self):
         PlotDialog.register_image_tools(self)
         for tool in (ObliqueCrossSectionTool, OCSPanelTool, ImageMaskTool):
-            self.add_tool(tool)
+            self.utils.add_tool(tool)
 
     def create_plot(self, options, row=0, column=0, rowspan=1, columnspan=1):
         PlotDialog.create_plot(self, options, row, column, rowspan, columnspan)

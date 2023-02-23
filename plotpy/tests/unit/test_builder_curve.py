@@ -18,7 +18,7 @@ from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
 def plot_qtbot_curve(qtbot, curve):
     """Plot *curve* in a dialog managed by *qtbot*"""
     win = PlotDialog(options={"type": PlotType.CURVE})
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     plot.add_item(curve)
     qtbot.addWidget(win)
     win.show()

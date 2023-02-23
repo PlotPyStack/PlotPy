@@ -7,7 +7,7 @@ Deployment example
 Deployment script using `plotpy.core.disthelpers` (py2exe or cx_Freeze)
 """
 
-from plotpy.core.utils.packaging_helpers import Distribution
+from plotpy.utils.packaging_helpers import Distribution
 
 
 def create_exe():

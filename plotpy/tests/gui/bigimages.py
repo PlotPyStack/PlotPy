@@ -26,7 +26,7 @@ def imshow():
         ),
     )
 
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
 
     for i in range(10):
         plot.add_item(make.image(compute_image(i)))

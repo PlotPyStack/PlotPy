@@ -25,7 +25,7 @@ def test():
         wintitle="Histogram test",
         options={"type": PlotType.CURVE},
     )
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     plot.add_item(make.histogram(data))
     win.show()
     win.exec_()

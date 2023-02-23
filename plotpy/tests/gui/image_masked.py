@@ -32,7 +32,7 @@ if __name__ == "__main__":
         wintitle="Masked image item test",
         options={"type": PlotType.IMAGE},
     )
-    win.add_tool(ImageMaskTool)
+    win.manager.add_tool(ImageMaskTool)
     if os.access(FNAME, os.R_OK):
         print("Restoring mask...", end=" ")
         iofile = open(FNAME, "rb")
@@ -48,7 +48,7 @@ if __name__ == "__main__":
             xdata=[0, 20],
             ydata=[0, 25],
         )
-    win.get_plot().add_item(image)
+    win.manager.get_plot().add_item(image)
     win.show()
     win.exec_()
     iofile = open(FNAME, "wb")

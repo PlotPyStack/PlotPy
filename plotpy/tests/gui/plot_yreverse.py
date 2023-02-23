@@ -28,7 +28,7 @@ def test():
     item = make.curve(x, y, color="b")
 
     win = PlotDialog(options={"type": PlotType.CURVE})
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     plot.add_item(item)
     plot.set_axis_direction("left", True)
     plot.set_axis_direction("bottom", True)

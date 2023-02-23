@@ -25,7 +25,7 @@ def test_plot_curve(qtbot):
     curve.setTitle("Curve")
 
     win = PlotDialog(toolbar=True, options={"type": PlotType.CURVE})
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     plot.add_item(curve)
 
     qtbot.addWidget(win)
@@ -36,7 +36,7 @@ def test_plot_curve(qtbot):
 
     # Check that specific curve tools are added
     for curve_tool_class in (CurveStatsTool, AntiAliasingTool, AxisScaleTool):
-        tool = win.get_tool(curve_tool_class)
+        tool = win.manager.get_tool(curve_tool_class)
         assert tool is not None, f"Tool of type {curve_tool_class} not found"
 
     qtbot.keyClick(win, Qt.Key_Enter)
@@ -50,7 +50,7 @@ def test_plot_curve_anti_aliasing(qtbot):
     curve = make.curve(x, y, color="g")
 
     win = PlotDialog(toolbar=True, options={"type": PlotType.CURVE})
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     plot.add_item(curve)
 
     qtbot.addWidget(win)
@@ -59,7 +59,7 @@ def test_plot_curve_anti_aliasing(qtbot):
     assert isinstance(win.plot_widget, BasePlotWidget)
     assert win.plot_widget.plot == plot
 
-    anti_aliasing_tool = win.get_tool(AntiAliasingTool)
+    anti_aliasing_tool = win.manager.get_tool(AntiAliasingTool)
     assert anti_aliasing_tool is not None, "AntiAliasingTool not found"
 
     original_img = plot.grab().toImage()

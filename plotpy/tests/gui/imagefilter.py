@@ -26,7 +26,7 @@ def imshow(x, y, data, filter_area, yreverse=True):
         ),
     )
     image = make.xyimage(x, y, data)
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     plot.add_item(image)
     xmin, xmax, ymin, ymax = filter_area
     flt = make.imagefilter(

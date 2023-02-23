@@ -26,7 +26,7 @@ def hist2d_func(X, Y, Z):
     )
     hist2d = make.histogram2D(X, Y, 200, 200, Z=Z, computation=2)
     curve = make.curve(X[::50], Y[::50], linestyle="", marker="+", title=_("Markers"))
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     plot.set_aspect_ratio(lock=False)
     plot.set_antialiasing(False)
     plot.add_item(hist2d)

@@ -71,7 +71,7 @@ def test():
         options=dict(xlabel="Concentration", xunit="ppm", type=PlotType.IMAGE),
     )
     item = make.image(data)
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     plot.add_item(item)
     win.show()
 

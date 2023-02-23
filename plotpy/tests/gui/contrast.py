@@ -32,7 +32,7 @@ def test():
         wintitle="Contrast test",
         options=dict(show_contrast=True, type=PlotType.IMAGE),
     )
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     plot.add_item(image)
     win.resize(600, 600)
     win.show()
