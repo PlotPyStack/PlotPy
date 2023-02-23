@@ -25,13 +25,15 @@ from plotpy.widgets.plot.histogram.utils import lut_range_threshold
 from plotpy.widgets.plot.plotwidget import PlotDialog, PlotWidget
 
 
-class BaseTransformMixin(object):
+class BaseTransform:
     """Base transform widget mixin class (for manipulating TrImageItem objects)
 
     This is to be mixed with a class providing the get_plot method,
     like PlotDialog, or BaseTransformWidget (see below)"""
 
-    def __init__(self):
+    def __init__(self, parent, manager):
+        self.parent = parent
+        self.manager = manager
         self.item = None
         self.item_original_state = None
         self.item_original_crop = None
@@ -39,34 +41,6 @@ class BaseTransformMixin(object):
         self.output_array = None
 
     # ------Public API----------------------------------------------------------
-    def add_reset_button(self, layout):
-        """Add the standard reset button"""
-        edit_options_btn = create_toolbutton(
-            self,
-            text=_("Reset"),
-            icon=get_icon("eraser.png"),
-            triggered=self.reset,
-            autoraise=False,
-        )
-        layout.addWidget(edit_options_btn)
-        layout.addStretch()
-
-    def add_apply_button(self, layout):
-        """Add the standard apply button"""
-        apply_btn = create_toolbutton(
-            self,
-            text=_("Apply"),
-            icon=get_icon("apply.png"),
-            triggered=self.apply_transformation,
-            autoraise=False,
-        )
-        layout.addWidget(apply_btn)
-        layout.addStretch()
-
-    def add_buttons_to_layout(self, layout):
-        """Add tool buttons to layout"""
-        self.add_reset_button(layout)
-        self.add_apply_button(layout)
 
     def set_item(self, item):
         """Set associated item -- must be a TrImageItem object"""
@@ -88,7 +62,7 @@ class BaseTransformMixin(object):
 
         item.set_lut_range(lut_range_threshold(item, 256, 2.0))
         item.set_interpolation(INTERP_LINEAR)
-        plot = self.get_plot()
+        plot = self.manager.get_plot()
         plot.add_item(self.item)
 
         # Setting the item as active item (even if the cropping rectangle item
@@ -99,7 +73,7 @@ class BaseTransformMixin(object):
 
     def unset_item(self):
         """Unset the associated item, freeing memory"""
-        plot = self.get_plot()
+        plot = self.manager.get_plot()
         plot.del_item(self.item)
         self.item = None
 
@@ -148,55 +122,17 @@ class BaseTransformMixin(object):
         self.item.set_transform(*self.item_original_transform)
 
 
-class BaseTransformDialog(PlotDialog):
-    """Rotate & Crop Dialog
-
-    Rotate and crop a :py:class:`.image.TrImageItem` plot item"""
-
-    def __init__(
-        self,
-        parent,
-        wintitle=None,
-        options=None,
-        resize_to=None,
-        edit=True,
-        toolbar=False,
-    ):
-        if wintitle is None:
-            wintitle = _("Rotate & Crop")
-        PlotDialog.__init__(
-            self,
-            wintitle=wintitle,
-            edit=edit,
-            toolbar=toolbar,
-            options=options,
-            parent=parent,
-        )
-        if resize_to is not None:
-            width, height = resize_to
-            self.resize(width, height)
-        self.accepted.connect(self.accept_changes)
-        self.rejected.connect(self.reject_changes)
-
-    def install_button_layout(self):
-        """Reimplemented PlotDialog method"""
-        self.add_buttons_to_layout(self.button_layout)
-        super(BaseTransformDialog, self).install_button_layout()
-
-
 class BaseTransformWidget(QW.QWidget):
     """Base transform widget: see for example rotatecrop.py"""
 
-    def __init__(self, parent, options=None):
-        QW.QWidget.__init__(self, parent=parent)
-
+    def __init__(self, parent, toolbar=False, options=None):
+        super(BaseTransformWidget, self).__init__()
         if options is None:
             options = {}
         self.imagewidget = PlotWidget(
-            self, options=dict(type=PlotType.IMAGE), **options
+            parent=self, options=dict(type=PlotType.IMAGE), toolbar=toolbar, **options
         )
-        self.imagewidget.register_all_image_tools()
-
+        self.imagewidget.manager.register_all_image_tools()
         hlayout = QW.QHBoxLayout()
         self.add_buttons_to_layout(hlayout)
 
@@ -207,7 +143,44 @@ class BaseTransformWidget(QW.QWidget):
 
     def get_plot(self):
         """Required for BaseTransformMixin"""
-        return self.imagewidget.get_plot()
+        return self.imagewidget.plot.get_plot()
+
+    def add_buttons_to_layout(self, layout, apply=True, reset=True):
+        """Add tool buttons to layout"""
+        if reset:
+            self.__add_reset_button(layout)
+        if apply:
+            self.__add_apply_button(layout)
+
+    def __add_apply_button(self, layout):
+        """Add the standard apply button"""
+        apply_btn = create_toolbutton(
+            self.imagewidget,
+            text=_("Apply"),
+            icon=get_icon("apply.png"),
+            triggered=self.apply_transformation,
+            autoraise=False,
+        )
+        layout.addWidget(apply_btn)
+        layout.addStretch()
+
+    def __add_reset_button(self, layout):
+        """Add the standard reset button"""
+        edit_options_btn = create_toolbutton(
+            self.imagewidget,
+            text=_("Reset"),
+            icon=get_icon("eraser.png"),
+            triggered=self.reset,
+            autoraise=False,
+        )
+        layout.addWidget(edit_options_btn)
+        layout.addStretch()
+
+    def reset(self):
+        return NotImplementedError
+
+    def apply_transformation(self):
+        return NotImplementedError
 
 
 class BaseMultipleTransformWidget(QW.QTabWidget):
@@ -230,7 +203,7 @@ class BaseMultipleTransformWidget(QW.QTabWidget):
     def add_item(self, item):
         """Add item to widget"""
         widget = self.TRANSFORM_WIDGET_CLASS(self, options=self.options)
-        widget.set_item(item)
+        widget.tools.set_item(item)
         self.addTab(widget, item.title().text())
         return widget
 
@@ -251,8 +224,8 @@ class BaseMultipleTransformWidget(QW.QTabWidget):
         self.output_arrays = []
         for index in range(self.count()):
             widget = self.widget(index)
-            widget.accept_changes()
-            self.output_arrays.append(widget.output_array)
+            widget.tools.accept_changes()
+            self.output_arrays.append(widget.tools.output_array)
 
     def reject_changes(self):
         """Reject all changes"""

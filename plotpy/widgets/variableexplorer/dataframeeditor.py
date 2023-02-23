@@ -29,7 +29,7 @@ from guidata.configtools import get_font, get_icon
 from numpy import nan
 from pandas import DataFrame, DatetimeIndex, Series
 from pandas.errors import OutOfBoundsDatetime
-from pandas.util.testing import assert_frame_equal, assert_series_equal
+from pandas.testing import assert_frame_equal, assert_series_equal
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
@@ -880,7 +880,6 @@ def test_edit(data, title="", parent=None):
         dlg.exec_()
         return dlg.get_value()
     else:
-
         sys.exit(1)
 
 

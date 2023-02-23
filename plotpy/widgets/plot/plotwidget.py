@@ -107,7 +107,6 @@ class BasePlotWidget(QW.QSplitter):
         if type == PlotType.CURVE or (
             type == PlotType.MANUAL and no_image_analysis_widgets is True
         ):
-
             self.setOrientation(QC.Qt.Orientation.Horizontal)
             self.addWidget(self.plot)
             self.addWidget(self.itemlist)
@@ -191,8 +190,10 @@ class BasePlotWidget(QW.QSplitter):
             self.adjust_ycsw_height(0)
 
 
-class PlotWidgetMixin(PlotManager):
-    """Mixin used by PlotWidget, PlotDialog and PlotWindow
+class SimplePlot(PlotManager):
+    """class SimplePlot is a manger used for one single plot.
+    Used by PlotWidget, and PlotWindow, composition
+
 
     .. py:attribute:: plot_layout
 
@@ -201,6 +202,7 @@ class PlotWidgetMixin(PlotManager):
 
     def __init__(
         self,
+        parent,
         wintitle="plotpy plot",
         icon="plotpy.svg",
         toolbar=False,
@@ -208,10 +210,9 @@ class PlotWidgetMixin(PlotManager):
         options=None,
         panels=None,
     ):
-        PlotManager.__init__(self, main=self)
-
+        PlotManager.__init__(self, main=parent)
+        self.parent = parent
         self.plot_layout = QW.QGridLayout()
-
         if options is None:
             options = {}
         self.plot_widget = None
@@ -234,7 +235,10 @@ class PlotWidgetMixin(PlotManager):
 
     def setup_widget_layout(self):
         """ """
-        raise NotImplementedError
+        vlayout = QW.QVBoxLayout(self.parent)
+        vlayout.addWidget(self.toolbar)
+        vlayout.addLayout(self.plot_layout)
+        self.parent.setLayout(vlayout)
 
     def setup_plot_manager(self, auto_tools=True):
         """
@@ -251,13 +255,13 @@ class PlotWidgetMixin(PlotManager):
         :param wintitle:
         :param icon:
         """
-        self.setWindowTitle(wintitle)
+        self.parent.setWindowTitle(wintitle)
         if isinstance(icon, str):
             icon = get_icon(icon)
         if icon is not None:
-            self.setWindowIcon(icon)
-        self.setMinimumSize(320, 240)
-        self.resize(640, 480)
+            self.parent.setWindowIcon(icon)
+        self.parent.setMinimumSize(320, 240)
+        self.parent.resize(640, 480)
 
     def register_tools(self):
         """
@@ -285,7 +289,7 @@ class PlotWidgetMixin(PlotManager):
         May be overriden to customize the plot layout
         (:py:attr:`.PlotWidgetMixin.plot_layout`)
         """
-        self.plot_widget = BasePlotWidget(self, **options)
+        self.plot_widget = BasePlotWidget(self.parent, **options)
         self.plot_layout.addWidget(self.plot_widget, row, column, rowspan, columnspan)
 
         # Configuring plot manager
@@ -299,7 +303,7 @@ class PlotWidgetMixin(PlotManager):
             self.add_panel(self.plot_widget.contrast)
 
 
-class PlotDialog(QW.QDialog, PlotWidgetMixin):
+class PlotDialog(QW.QDialog):
     """
     Construct a PlotDialog object: plotting dialog box with integrated
     plot manager
@@ -328,26 +332,24 @@ class PlotDialog(QW.QDialog, PlotWidgetMixin):
         options=None,
         parent=None,
         panels=None,
-    ):
+    ) -> None:
+        super().__init__(parent)
         self.edit = edit
         self.button_box = None
         self.button_layout = None
-        super(PlotDialog, self).__init__(
-            parent,
-            wintitle=wintitle,
-            icon=icon,
-            toolbar=toolbar,
-            auto_tools=auto_tools,
-            options=options,
-            panels=panels,
-        )
+        self.widget = PlotWidget(self, options, panels, toolbar)
+        dialogvlayout = QW.QVBoxLayout()
+        dialogvlayout.addWidget(self.widget)
+        self.setLayout(dialogvlayout)
+
         self.setWindowFlags(QC.Qt.WindowType.Window)
+
+        self.manager = self.widget.manager
+        self.plot_widget = self.widget.manager.plot_widget
 
     def setup_widget_layout(self):
         """ """
         vlayout = QW.QVBoxLayout(self)
-        vlayout.addWidget(self.toolbar)
-        vlayout.addLayout(self.plot_layout)
         self.setLayout(vlayout)
         if self.edit:
             self.button_layout = QW.QHBoxLayout()
@@ -409,7 +411,7 @@ class SubplotWidget(QW.QSplitter):
         self.manager.add_plot(plot, plot_id)
 
 
-class PlotWindow(QW.QMainWindow, PlotWidgetMixin):
+class PlotWindow(QW.QMainWindow):
     """
     Construct a PlotWindow object: plotting window with integrated plot
     manager
@@ -433,8 +435,9 @@ class PlotWindow(QW.QMainWindow, PlotWidgetMixin):
         parent=None,
         panels=None,
     ):
-        super(PlotWindow, self).__init__(
-            parent,
+        super(PlotWindow, self).__init__()
+        self.manager = SimplePlot(
+            parent=self,
             wintitle=wintitle,
             icon=icon,
             toolbar=toolbar,
@@ -463,7 +466,7 @@ class PlotWindow(QW.QMainWindow, PlotWidgetMixin):
         QW.QMainWindow.closeEvent(self, event)
 
 
-class PlotWidget(QW.QWidget, PlotWidgetMixin):
+class PlotWidget(QW.QWidget):
     """
     Construct a PlotWidget object: plotting widget with integrated
     plot manager
@@ -474,18 +477,15 @@ class PlotWidget(QW.QWidget, PlotWidgetMixin):
         * panels (optional): additionnal panels (list, tuple)
     """
 
-    def __init__(self, parent=None, options=None, panels=None):
-        super(PlotWidget, self).__init__(parent=parent, options=options, panels=panels)
+    def __init__(self, parent=None, options=None, panels=None, toolbar=False):
+        super(PlotWidget, self).__init__()
+        self.manager = SimplePlot(
+            parent=self, options=options, panels=panels, toolbar=toolbar
+        )
 
         # to limit the API change of the old ImageWidget and PlotWidget classes and
         # avoid calls to plotwidget.plot_widget.plot instead of plotwidget.plot
-        self.plot = self.plot_widget.plot
-
-    def setup_widget_layout(self):
-        """ """
-        vlayout = QW.QVBoxLayout(self)
-        vlayout.addLayout(self.plot_layout)
-        self.setLayout(vlayout)
+        self.plot = self.manager.plot_widget.plot
 
     def setup_plot_manager(self, auto_tools):
         """

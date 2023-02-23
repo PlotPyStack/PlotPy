@@ -64,7 +64,7 @@ from plotpy.config import _
 from plotpy.utils.misc_from_gui import create_groupbox
 from plotpy.widgets.builder import make
 from plotpy.widgets.plot.base import PlotType
-from plotpy.widgets.plot.plotwidget import PlotWidgetMixin
+from plotpy.widgets.plot.plotwidget import SimplePlot
 
 
 class AutoFitParam(DataSet):
@@ -338,11 +338,12 @@ def add_fitparam_widgets_to(
                 layout.setColumnStretch(col_nb * w_colums - 1, 1)
 
 
-class FitWidgetMixin(PlotWidgetMixin):
+class FitWidgetTools(SimplePlot):
     """ """
 
     def __init__(
         self,
+        parent=None,
         wintitle="plotpy plot",
         icon="plotpy.svg",
         toolbar=False,
@@ -352,6 +353,7 @@ class FitWidgetMixin(PlotWidgetMixin):
         legend_anchor="TR",
         auto_fit=True,
     ):
+        self.parent = parent
         if wintitle is None:
             wintitle = _("Curve fitting")
 
@@ -377,8 +379,9 @@ class FitWidgetMixin(PlotWidgetMixin):
         self.fit_layout = None
         self.params_layout = None
 
-        PlotWidgetMixin.__init__(
+        SimplePlot.__init__(
             self,
+            parent=self.parent,
             wintitle=wintitle,
             icon=icon,
             toolbar=toolbar,
@@ -421,7 +424,7 @@ class FitWidgetMixin(PlotWidgetMixin):
 
         :param options:
         """
-        PlotWidgetMixin.create_plot(self, options)
+        SimplePlot.create_plot(self.parent, options)
         for plot in self.get_plots():
             plot.SIG_RANGE_CHANGED.connect(self.range_changed)
 
@@ -742,7 +745,7 @@ class FitWidgetMixin(PlotWidgetMixin):
         return [param.value for param in self.fitparams]
 
 
-class FitWidget(QW.QWidget, FitWidgetMixin):
+class FitWidget(QW.QWidget):
     """ """
 
     def __init__(
@@ -758,20 +761,21 @@ class FitWidget(QW.QWidget, FitWidgetMixin):
         auto_fit=False,
     ):
         QW.QWidget.__init__(self, parent)
-        FitWidgetMixin.__init__(
+        self.tools = FitWidgetTools(
             self,
-            wintitle,
-            icon,
-            toolbar,
-            options,
-            panels,
-            param_cols,
-            legend_anchor,
-            auto_fit,
+            parent=self,
+            wintitle=wintitle,
+            icon=icon,
+            toolbar=toolbar,
+            options=options,
+            panels=panels,
+            param_cols=param_cols,
+            legend_anchor=legend_anchor,
+            auto_fit=auto_fit,
         )
 
 
-class FitDialog(QW.QDialog, FitWidgetMixin):
+class FitDialog(QW.QDialog):
     """ """
 
     def __init__(
@@ -789,8 +793,8 @@ class FitDialog(QW.QDialog, FitWidgetMixin):
     ):
         self.edit = edit
         self.button_layout = None
-        super(FitDialog, self).__init__(
-            parent,
+        self.tools = FitWidgetTools(
+            parent=self,
             wintitle=wintitle,
             icon=icon,
             toolbar=toolbar,
@@ -800,11 +804,12 @@ class FitDialog(QW.QDialog, FitWidgetMixin):
             legend_anchor=legend_anchor,
             auto_fit=auto_fit,
         )
+        super(FitDialog, self).__init__(parent)
         self.setWindowFlags(Qt.Window)
 
     def setup_widget_layout(self):
         """ """
-        FitWidgetMixin.setup_widget_layout(self)
+        self.tools.setup_widget_layout(self)
         if self.edit:
             self.install_button_layout()
 

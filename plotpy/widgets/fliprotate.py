@@ -27,6 +27,7 @@ Reference
 """
 import numpy as np
 from guidata.configtools import get_icon
+from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
 from plotpy.config import _
@@ -34,68 +35,26 @@ from plotpy.utils.misc_from_gui import create_toolbutton
 from plotpy.widgets import base
 
 
-class FlipRotateMixin(base.BaseTransformMixin):
+class FlipRotateTransform(base.BaseTransform):
     """Rotate & Crop mixin class, to be mixed with a class providing the
     get_plot method, like PlotDialog or FlipRotateWidget (see below)"""
 
-    ROTATION_ANGLES = [str((i - 1) * 90) for i in range(4)]
+    def __init__(self, parent, manager):
+        super(FlipRotateTransform, self).__init__(parent, manager)
+        self.parent = parent
+        self.manager = manager
 
     # ------BaseTransformMixin API----------------------------------------------
-    def add_buttons_to_layout(self, layout):
-        """Add tool buttons to layout"""
-        # Image orientation
-        angle_label = QW.QLabel(_("Angle (°):"))
-        layout.addWidget(angle_label)
-        self.angle_combo = QW.QComboBox(self)
-        self.angle_combo.addItems(self.ROTATION_ANGLES)
-        self.angle_combo.setCurrentIndex(1)
-        self.angle_combo.currentIndexChanged.connect(
-            lambda index: self.apply_transformation()
-        )
-        layout.addWidget(self.angle_combo)
-        layout.addSpacing(10)
-
-        # Image flipping
-        flip_label = QW.QLabel(_("Flip:"))
-        layout.addWidget(flip_label)
-        hflip = create_toolbutton(
-            self,
-            text="",
-            icon=get_icon("hflip.png"),
-            toggled=lambda state: self.apply_transformation(),
-            autoraise=False,
-        )
-        self.hflip_btn = hflip
-        layout.addWidget(hflip)
-        vflip = create_toolbutton(
-            self,
-            text="",
-            icon=get_icon("vflip.png"),
-            toggled=lambda state: self.apply_transformation(),
-            autoraise=False,
-        )
-        self.vflip_btn = vflip
-        layout.addWidget(vflip)
-        layout.addSpacing(15)
-
-        self.add_reset_button(layout)
-
-    def reset_transformation(self):
-        """Reset transformation"""
-        self.angle_combo.setCurrentIndex(1)
-        self.hflip_btn.setChecked(False)
-        self.vflip_btn.setChecked(False)
-
     def apply_transformation(self):
         """Apply transformation, e.g. crop or rotate"""
-        angle, hflip, vflip = self.get_parameters()
+        angle, hflip, vflip = self.parent.get_parameters()
         x, y, _a, px, py, _hf, _vf = self.item.get_transform()
         self.item.set_transform(x, y, angle * np.pi / 180, px, py, hflip, vflip)
-        self.get_plot().replot()
+        self.manager.get_plot().replot()
 
     def compute_transformation(self):
         """Compute transformation, return compute output array"""
-        angle, hflip, vflip = self.get_parameters()
+        angle, hflip, vflip = self.parent.get_parameters()
         data = self.item.data.copy()
         if hflip:
             data = np.fliplr(data)
@@ -106,23 +65,8 @@ class FlipRotateMixin(base.BaseTransformMixin):
             data = np.rot90(data, k)
         return data
 
-    # ------Public API----------------------------------------------------------
-    def get_parameters(self):
-        """Return transform parameters"""
-        angle = int(str(self.angle_combo.currentText()))
-        hflip = self.hflip_btn.isChecked()
-        vflip = self.vflip_btn.isChecked()
-        return angle, hflip, vflip
 
-    def set_parameters(self, angle, hflip, vflip):
-        """Set transform parameters"""
-        angle_index = self.ROTATION_ANGLES.index(str(angle))
-        self.angle_combo.setCurrentIndex(angle_index)
-        self.hflip_btn.setChecked(hflip)
-        self.vflip_btn.setChecked(vflip)
-
-
-class FlipRotateDialog(base.BaseTransformDialog, FlipRotateMixin):
+class FlipRotateDialog(QW.QDialog):
     """Flip & Rotate Dialog
 
     Flip and rotate a :py:class:`.image.TrImageItem` plot item"""
@@ -136,26 +80,134 @@ class FlipRotateDialog(base.BaseTransformDialog, FlipRotateMixin):
         edit=True,
         toolbar=False,
     ):
-        FlipRotateMixin.__init__(self)
-        base.BaseTransformDialog.__init__(
-            self,
-            parent,
-            wintitle=wintitle,
+        super(FlipRotateDialog, self).__init__(parent)
+
+        if resize_to is not None:
+            width, height = resize_to
+            self.resize(width, height)
+
+        self.button_box = None
+
+        if wintitle is None:
+            wintitle = _("Flip & Rotate")
+        self.widget = FlipRotateWidget(
+            parent=parent,
             options=options,
-            resize_to=resize_to,
-            edit=edit,
+            # resize_to=resize_to,
+            # edit=edit,
             toolbar=toolbar,
         )
+        self.setWindowFlags(QC.Qt.WindowType.Window)
+
+        buttonhlayout = QW.QHBoxLayout()
+        self.add_buttons_to_layout(buttonhlayout, edit)
+
+        dialogvlayout = QW.QVBoxLayout()
+        dialogvlayout.addWidget(self.widget)
+        dialogvlayout.addLayout(buttonhlayout)
+        self.setLayout(dialogvlayout)
+
+        self.tools = self.widget.tools
+        self.manager = self.widget.manager
+        self.imagewidget = self.widget.imagewidget
+        self.toolbar = self.manager.toolbar
+
+    def add_buttons_to_layout(self, layout, edit):
+        if edit:
+            self.button_box = bbox = QW.QDialogButtonBox(
+                QW.QDialogButtonBox.Ok | QW.QDialogButtonBox.Cancel
+            )
+            bbox.accepted.connect(self.accept)
+            bbox.rejected.connect(self.reject)
+            layout.addWidget(bbox)
+
+    def accept(self) -> None:
+        self.tools.accept_changes()
+        return super().accept()
+
+    def reject(self) -> None:
+        self.tools.reject_changes()
+        return super().reject()
 
 
-class FlipRotateWidget(base.BaseTransformWidget, FlipRotateMixin):
+class FlipRotateWidget(base.BaseTransformWidget):
     """Flip & Rotate Widget
 
     Flip and rotate a :py:class:`.image.TrImageItem` plot item"""
 
-    def __init__(self, parent, options=None):
-        base.BaseTransformWidget.__init__(self, parent, options=options)
-        FlipRotateMixin.__init__(self)
+    ROTATION_ANGLES = [str((i - 1) * 90) for i in range(4)]
+
+    def __init__(self, parent, toolbar=False, options=None):
+        self.angle_combo = None
+        self.hflip_btn = None
+        self.vflip_btn = None
+        base.BaseTransformWidget.__init__(self, parent, toolbar, options=options)
+        self.tools = FlipRotateTransform(self, self.imagewidget.manager)
+        self.manager = self.imagewidget.manager
+
+    def add_buttons_to_layout(self, layout):
+        """Add tool buttons to layout"""
+        # Image orientation
+        angle_label = QW.QLabel(_("Angle (°):"))
+        layout.addWidget(angle_label)
+        self.angle_combo = QW.QComboBox(self)
+        self.angle_combo.addItems(self.ROTATION_ANGLES)
+        self.angle_combo.setCurrentIndex(1)
+        self.angle_combo.currentIndexChanged.connect(
+            lambda index: self.tools.apply_transformation()
+        )
+        layout.addWidget(self.angle_combo)
+        layout.addSpacing(10)
+
+        # Image flipping
+        flip_label = QW.QLabel(_("Flip:"))
+        layout.addWidget(flip_label)
+        hflip = create_toolbutton(
+            self,
+            text="",
+            icon=get_icon("hflip.png"),
+            toggled=lambda state: self.tools.apply_transformation(),
+            autoraise=False,
+        )
+        self.hflip_btn = hflip
+        layout.addWidget(hflip)
+        vflip = create_toolbutton(
+            self,
+            text="",
+            icon=get_icon("vflip.png"),
+            toggled=lambda state: self.tools.apply_transformation(),
+            autoraise=False,
+        )
+        self.vflip_btn = vflip
+        layout.addWidget(vflip)
+        layout.addSpacing(15)
+
+        # self.add_reset_button(layout)
+        base.BaseTransformWidget.add_buttons_to_layout(self, layout, apply=False)
+
+    def apply_transformation(self):
+        angle, hflip, vflip = self.get_parameters()
+        self.tools.apply_transformation(angle, hflip, vflip)
+
+    def reset(self):
+        """Reset transformation"""
+        self.angle_combo.setCurrentIndex(1)
+        self.hflip_btn.setChecked(False)
+        self.vflip_btn.setChecked(False)
+
+    def set_parameters(self, angle, hflip, vflip):
+        """Set transform parameters"""
+        angle_index = self.ROTATION_ANGLES.index(str(angle))
+        self.angle_combo.setCurrentIndex(angle_index)
+        self.hflip_btn.setChecked(hflip)
+        self.vflip_btn.setChecked(vflip)
+
+    def get_parameters(self):
+        """Return transform parameters"""
+        angle = int(str(self.angle_combo.currentText()))
+        hflip = self.hflip_btn.isChecked()
+        vflip = self.vflip_btn.isChecked()
+        return angle, hflip, vflip
 
 
 class MultipleFlipRotateWidget(base.BaseMultipleTransformWidget):

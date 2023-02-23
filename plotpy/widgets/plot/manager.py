@@ -59,11 +59,11 @@ from plotpy.widgets.tools.plot import (
 from plotpy.widgets.tools.selection import SelectTool
 
 
-class DefaultPlotID(object):
+class DefaultPlotID:
     pass
 
 
-class PlotManager(object):
+class PlotManager:
     """
     Construct a PlotManager object, a 'controller' that organizes relations
     between plots (i.e. :py:class:`.baseplot.BasePlot`, panels,
@@ -196,11 +196,14 @@ class PlotManager(object):
             # This is the very first tool to be added to this manager
             self._first_tool_flag = False
             self.configure_panels()
-        tool = ToolKlass(self, *args, **kwargs)
-        self.tools.append(tool)
-        for plot in list(self.plots.values()):
-            tool.register_plot(plot)
-        if len(self.tools) == 1:
+        if not any(isinstance(x, ToolKlass) for x in self.tools):
+            tool = ToolKlass(self, *args, **kwargs)
+            self.tools.append(tool)
+            for plot in list(self.plots.values()):
+                tool.register_plot(plot)
+        else:
+            tool = self.get_tool(ToolKlass)
+        if len(self.tools) == 1 or self.default_tool is None:
             self.default_tool = tool
         return tool
 
@@ -683,7 +686,7 @@ class PlotManager(object):
         plot_id = plot.plot_id
         if plot_id not in self.synchronized_plots:
             return
-        for (axis, other_plot_id) in self.synchronized_plots[plot_id]:
+        for axis, other_plot_id in self.synchronized_plots[plot_id]:
             scalediv = plot.axisScaleDiv(axis)
             map = plot.canvasMap(axis)
             other = self.get_plot(other_plot_id)
