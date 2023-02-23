@@ -65,30 +65,3 @@ Reference
 .. autoclass:: YCrossSectionPlot
    :members:
 """
-from plotpy.widgets.plot.cross_section.csitem import (
-    CrossSectionItem,
-    ObliqueCrossSectionItem,
-    XCrossSectionItem,
-    YCrossSectionItem,
-    compute_oblique_section,
-    get_object_coordinates,
-    get_plot_average_x_section,
-    get_plot_average_y_section,
-    get_plot_x_section,
-    get_plot_y_section,
-    get_rectangular_area,
-)
-from plotpy.widgets.plot.cross_section.csplot import (
-    CrossSectionPlot,
-    HorizontalCrossSectionPlot,
-    ObliqueCrossSectionPlot,
-    VerticalCrossSectionPlot,
-    XCrossSectionItem,
-    YCrossSectionItem,
-)
-from plotpy.widgets.plot.cross_section.cswidget import (
-    CrossSectionWidget,
-    ObliqueCrossSection,
-    XCrossSection,
-    YCrossSection,
-)

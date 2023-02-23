@@ -63,7 +63,7 @@
                 "/c",
                 "run_pylint.bat",
                 "--disable=fixme",
-                "plotpy",
+                "plotpy/widgets",
             ],
             "options": {
                 "cwd": "scripts",
@@ -118,7 +118,7 @@
             //     "Build documentation",
             // ]
         },
-        /* {
+        {
             "label": "Build documentation",
             "type": "shell",
             "command": "cmd",
@@ -147,7 +147,7 @@
                 "showReuseMessage": true,
                 "clear": true
             }
-        }, */
+        },
         /* {
             "label": "Run Coverage",
             "type": "shell",
