@@ -80,4 +80,5 @@ tomlkit                       0.11.6
 typeguard                     2.13.3
 typing_extensions             4.4.0
 urllib3                       1.26.13
+wheel                         0.38.4
 wrapt                         1.14.1
