@@ -2,3 +2,4 @@
 parallel = True
 omit =
     */plotpy/tests/*
+    *.vscode/extensions*

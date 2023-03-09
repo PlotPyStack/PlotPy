@@ -14,24 +14,12 @@ file.
 """
 import os
 
-try:
-    import plotpy.utils.io.hdf5io  # @UnusedImport
-
-    hdf5_is_available = True
-except ImportError:
-    hdf5_is_available = False
-
-
 from guidata.dataset.dataitems import StringItem
 
+from plotpy.tests.scripts.all_items import TestParameters
 from plotpy.utils.io.hdf5io import HDF5Reader, HDF5Writer
 
-try:
-    from tests.scripts.all_items import TestParameters
-except ImportError:
-    from plotpy.tests.scripts.all_items import TestParameters
-
-SHOW = hdf5_is_available  # Show test in GUI-based test launcher
+SHOW = True  # Show test in GUI-based test launcher
 
 
 class TestParameters_Light(TestParameters):

@@ -86,7 +86,7 @@ class TextEditor(QW.QDialog):
             self.text = bytes(self.edit.toPlainText(), "utf8")
         else:
             self.text = str(self.edit.toPlainText())
-        if self.btn_save_and_close:
+        if self.btn_save_and_close is not None:
             self.btn_save_and_close.setEnabled(True)
             self.btn_save_and_close.setAutoDefault(True)
             self.btn_save_and_close.setDefault(True)

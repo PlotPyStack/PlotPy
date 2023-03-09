@@ -9,12 +9,10 @@
 """
 Tests for the Variable Explorer Collections Editor.
 """
-
-
 import copy
 import datetime
 import os  # Example module for testing display inside CollecitonsEditor
-from os import path
+from importlib import reload
 from unittest.mock import Mock
 from xml.dom.minidom import parseString
 
@@ -25,10 +23,8 @@ from flaky import flaky
 from qtpy import QtWidgets as QW
 from qtpy.QtCore import Qt
 
-from plotpy.widgets.variableexplorer.collectionseditor.collection import (
-    CollectionsEditor,
-    CollectionsEditorTableView,
-)
+import plotpy.widgets
+from plotpy.widgets.variableexplorer.collectionseditor import collection
 from plotpy.widgets.variableexplorer.collectionseditor.model import (
     LARGE_NROWS,
     ROWS_TO_LOAD,
@@ -39,7 +35,14 @@ from plotpy.widgets.variableexplorer.collectionseditor.model import (
 # Constants
 # =============================================================================
 # Full path to this file's parent directory for loading data
-LOCATION = path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+LOCATION = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+# XXX: Temporary hack, usage of global variables to not use unittest Mock and pytest
+# monkeyatch at the same time, should create class to mimic mathods like
+# called_ones_with_param from unittest.Mock
+CALLED: int = 0
+PARAM: str = ""
+
+_app = plotpy.widgets.qapplication()
 
 
 # =============================================================================
@@ -79,27 +82,43 @@ def nonsettable_objects_data():
     return zip(test_objs, expected_objs, keys_test)
 
 
+@pytest.fixture
+def temp_nonset_obj_data():
+    test_objs = [pandas.Categorical([1, 2, 42])]
+    expected_objs = [pandas.Categorical([1, 2, 42])]
+    keys_test = [["_typ", "nbytes", "ndim"]]
+    return zip(test_objs, expected_objs, keys_test)
+
+
+@pytest.fixture
+def mock_api(monkeypatch):
+    def mock_set_format(_instance, format_) -> None:
+        global CALLED, PARAM
+        CALLED += 1
+        PARAM += format_
+
+    monkeypatch.setattr(
+        "plotpy.widgets.variableexplorer.dataframeeditor.DataFrameModel.set_format",
+        mock_set_format,
+    )
+
+
 # =============================================================================
 # Tests
 # ============================================================================
-def test_create_dataframeeditor_with_correct_format(qtbot, monkeypatch):
+def test_create_dataframeeditor_with_correct_format(qtbot, mock_api):
     """
 
     :param qtbot:
     :param monkeypatch:
     """
-    MockDataFrameEditor = Mock()
-    mockDataFrameEditor_instance = MockDataFrameEditor()
-    monkeypatch.setattr(
-        "plotpy.widgets.variableexplorer.dataframeeditor.DataFrameEditor",
-        MockDataFrameEditor,
-    )
     df = pandas.DataFrame(["foo", "bar"])
-    editor = CollectionsEditorTableView(None, {"df": df})
+    editor = collection.CollectionsEditorTableView(None, {"df": df})
     qtbot.addWidget(editor)
     editor.set_dataframe_format("%10d")
     editor.delegate.createEditor(None, None, editor.model.createIndex(0, 3))
-    mockDataFrameEditor_instance.dataModel.set_format.assert_called_once_with("%10d")
+    assert CALLED == 1
+    assert PARAM == "%10d"
 
 
 def test_accept_sig_option_changed_from_dataframeeditor(qtbot, monkeypatch):
@@ -109,7 +128,7 @@ def test_accept_sig_option_changed_from_dataframeeditor(qtbot, monkeypatch):
     :param monkeypatch:
     """
     df = pandas.DataFrame(["foo", "bar"])
-    editor = CollectionsEditorTableView(None, {"df": df})
+    editor = collection.CollectionsEditorTableView(None, {"df": df})
     qtbot.addWidget(editor)
     editor.set_dataframe_format("%10d")
     assert editor.model.dataframe_format == "%10d"
@@ -148,7 +167,7 @@ def test_collectionsmodel_with_datetimeindex():
     # Regression test for issue #3380
     rng = pandas.date_range("10/1/2016", periods=25, freq="bq")
     coll = {"rng": rng}
-    cm = CollectionsModel(None, coll)
+    cm = collection.CollectionsModel(None, coll)
     assert data(cm, 0, 0) == "rng"
     assert data(cm, 0, 1) == "DatetimeIndex"
     assert data(cm, 0, 2) == "(25,)" or data(cm, 0, 2) == "(25L,)"
@@ -172,7 +191,7 @@ def test_shows_dataframeeditor_when_editing_datetimeindex(qtbot, monkeypatch):
     )
     rng = pandas.date_range("10/1/2016", periods=25, freq="bq")
     coll = {"rng": rng}
-    editor = CollectionsEditorTableView(None, coll)
+    editor = collection.CollectionsEditorTableView(None, coll)
     editor.delegate.createEditor(None, None, editor.model.createIndex(0, 3))
     mockDataFrameEditor_instance.show.assert_called_once_with()
 
@@ -180,7 +199,7 @@ def test_shows_dataframeeditor_when_editing_datetimeindex(qtbot, monkeypatch):
 def test_sort_collectionsmodel():
     """ """
     coll = [1, 3, 2]
-    cm = CollectionsModel(None, coll)
+    cm = collection.CollectionsModel(None, coll)
     assert cm.rowCount() == 3
     assert cm.columnCount() == 4
     cm.sort(0)  # sort by index
@@ -240,7 +259,7 @@ def test_rename_and_duplicate_item_in_collection_editor():
     }
     for coll, rename_enabled, duplicate_enabled in collections.values():
         coll_copy = copy.copy(coll)
-        editor = CollectionsEditorTableView(None, coll)
+        editor = collection.CollectionsEditorTableView(None, coll)
         assert editor.rename_action.isEnabled()
         assert editor.duplicate_action.isEnabled()
         editor.setCurrentIndex(editor.model.createIndex(0, 0))
@@ -272,6 +291,7 @@ def test_edit_mutable_and_immutable_types(monkeypatch):
     attr_to_patch_qdatetimeedit = "qtpy.QtWidgets.QDateTimeEdit"
     monkeypatch.setattr(attr_to_patch_qdatetimeedit, MockQDateTimeEdit)
 
+    reload(collection)
     MockCollectionsEditor = Mock()
     mockCollectionsEditor_instance = MockCollectionsEditor()
     attr_to_patch_coledit = (
@@ -279,7 +299,6 @@ def test_edit_mutable_and_immutable_types(monkeypatch):
         + "collectionseditor.collection.CollectionsEditor"
     )
     monkeypatch.setattr(attr_to_patch_coledit, MockCollectionsEditor)
-
     list_test = [
         1,
         "012345678901234567901234567890123456789012",
@@ -290,7 +309,7 @@ def test_edit_mutable_and_immutable_types(monkeypatch):
     tup_test = tuple(list_test)
 
     # Tests for mutable type (list) #
-    editor_list = CollectionsEditorTableView(None, list_test)
+    editor_list = collection.CollectionsEditorTableView(None, list_test)
 
     # Directly editable values inside list
     editor_list_value = editor_list.delegate.createEditor(
@@ -322,7 +341,7 @@ def test_edit_mutable_and_immutable_types(monkeypatch):
     assert mockCollectionsEditor_instance.setup.call_args[1]["readonly"]
 
     # Tests for immutable type (tuple) #
-    editor_tup = CollectionsEditorTableView(None, tup_test)
+    editor_tup = collection.CollectionsEditorTableView(None, tup_test)
 
     # Directly editable values inside tuple
     editor_tup_value = editor_tup.delegate.createEditor(
@@ -361,7 +380,7 @@ def test_view_module_in_coledit():
 
     Also check that they are set as readonly. Regression test for issue #6080 .
     """
-    editor = CollectionsEditor()
+    editor = collection.CollectionsEditor()
     editor.setup(os, "module_test", readonly=False)
     assert editor.widget.editor.readonly
 
@@ -395,12 +414,6 @@ def test_editor_parent_set(monkeypatch):
     # Mocking and setup
     test_parent = QW.QWidget()
 
-    MockCollectionsEditor = Mock()
-    attr_to_patch_coledit = (
-        "plotpy.widgets.variableexplorer.collectionseditor.collection.CollectionsEditor"
-    )
-    monkeypatch.setattr(attr_to_patch_coledit, MockCollectionsEditor)
-
     MockArrayEditor = Mock()
     attr_to_patch_arredit = (
         "plotpy.widgets.variableexplorer." + "arrayeditor.ArrayEditor"
@@ -419,6 +432,14 @@ def test_editor_parent_set(monkeypatch):
     )
     monkeypatch.setattr(attr_to_patch_textedit, MockTextEditor)
 
+    reload(collection)
+
+    MockCollectionsEditor = Mock()
+    attr_to_patch_coledit = (
+        "plotpy.widgets.variableexplorer.collectionseditor.collection.CollectionsEditor"
+    )
+    monkeypatch.setattr(attr_to_patch_coledit, MockCollectionsEditor)
+
     editor_data = [
         [0, 1, 2, 3, 4],
         numpy.array([1.0, 42.0, 1337.0]),
@@ -426,7 +447,7 @@ def test_editor_parent_set(monkeypatch):
         "012345678901234567890123456789012345678901234567890123456",
         os,
     ]
-    col_editor = CollectionsEditorTableView(test_parent, editor_data)
+    col_editor = collection.CollectionsEditorTableView(test_parent, editor_data)
     assert col_editor.parent() is test_parent
 
     for idx, mock_class in enumerate(
@@ -451,14 +472,14 @@ def test_xml_dom_element_view():
 
     Regression test for issue #5642 .
     """
-    xml_path = path.join(LOCATION, "dom_element_test.xml")
+    xml_path = os.path.join(LOCATION, "dom_element_test.xml")
     with open(xml_path) as xml_file:
         xml_data = xml_file.read()
 
     xml_content = parseString(xml_data)
     xml_element = xml_content.getElementsByTagName("note")[0]
 
-    col_editor = CollectionsEditor(None)
+    col_editor = collection.CollectionsEditor(None)
     col_editor.setup(xml_element)
     col_editor.show()
     assert col_editor.get_value()
@@ -472,20 +493,20 @@ def test_pandas_dateoffset_view():
     Regression test for issue #6729 .
     """
     test_dateoffset = pandas.DateOffset()
-    col_editor = CollectionsEditor(None)
+    col_editor = collection.CollectionsEditor(None)
     col_editor.setup(test_dateoffset)
     col_editor.show()
     assert col_editor.get_value()
     col_editor.accept()
 
 
-def test_set_nonsettable_objects(nonsettable_objects_data):
+def test_set_nonsettable_objects(temp_nonset_obj_data):
     """
     Test that errors trying to set attributes in ColEdit are handled properly.
 
     Unit regression test for issues #6727 and #6728 .
     """
-    for test_obj, expected_obj, keys in nonsettable_objects_data:
+    for test_obj, expected_obj, keys in temp_nonset_obj_data:
         col_model = CollectionsModel(None, test_obj)
         indicies = [col_model.get_index_from_key(key) for key in keys]
         for idx in indicies:
@@ -512,7 +533,7 @@ def test_edit_nonsettable_objects(qtbot, nonsettable_objects_data):
     Integration regression test for issues #6727 and #6728 .
     """
     for test_obj, expected_obj, keys in nonsettable_objects_data:
-        col_editor = CollectionsEditor(None)
+        col_editor = collection.CollectionsEditor(None)
         col_editor.setup(test_obj)
         col_editor.show()
         qtbot.waitForWindowShown(col_editor)
@@ -567,7 +588,7 @@ def test_collectionseditor_with_class_having_buggy_copy(qtbot):
         pass
 
     md = MyDictWithBuggyCopy({1: 2})
-    editor = CollectionsEditor()
+    editor = collection.CollectionsEditor()
     editor.setup(md)
     assert editor.widget.editor.readonly
 
@@ -587,7 +608,7 @@ def test_collectionseditor_with_class_having_correct_copy(qtbot):
             return MyDictWithCorrectCopy(self)
 
     md = MyDictWithCorrectCopy({1: 2})
-    editor = CollectionsEditor()
+    editor = collection.CollectionsEditor()
     editor.setup(md)
     assert not editor.widget.editor.readonly
 

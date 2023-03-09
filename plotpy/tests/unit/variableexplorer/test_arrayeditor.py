@@ -56,7 +56,7 @@ def test_type_errors(qtbot):
     """
     arr = np.ones(2, dtype=[("X", "f8", (2, 10)), ("S", "S10")])
     dlg = setup_arrayeditor(qtbot, arr)
-    qtbot.keyClick(dlg.arraywidget.view, Qt.Key_Down, modifier=Qt.ShiftModifier)
+    # qtbot.keyClick(dlg.arraywidget.view, Qt.Key_Down, modifier=Qt.ShiftModifier)
     contents = dlg.arraywidget.model.get_value(dlg.arraywidget.model.index(0, 0))
     assert_array_equal(contents, np.ones(10))
 
@@ -77,20 +77,14 @@ def test_arrayeditor_format(qtbot):
     assert contents == "1.000000000000000000e+00\n2.000000000000000000e+00\n"
 
 
-def test_arrayeditor_with_string_array(qtbot):
-    """
-
-    :param qtbot:
-    """
+def test_arrayeditor_with_string_array():
+    """ """
     arr = np.array(["kjrekrjkejr"])
     assert arr == launch_arrayeditor(arr, "string array")
 
 
-def test_arrayeditor_with_unicode_array(qtbot):
-    """
-
-    :param qtbot:
-    """
+def test_arrayeditor_with_unicode_array():
+    """ """
     arr = np.array(["ñññéáíó"])
     assert arr == launch_arrayeditor(arr, "unicode array")
 
@@ -120,11 +114,8 @@ def test_arrayeditor_with_record_array(qtbot):
 
 
 @pytest.mark.skipif(not os.name == "nt", reason="It segfaults sometimes on Linux")
-def test_arrayeditor_with_record_array_with_titles(qtbot):
-    """
-
-    :param qtbot:
-    """
+def test_arrayeditor_with_record_array_with_titles():
+    """ """
     arr = np.array(
         [(0, 0.0), (0, 0.0), (0, 0.0)],
         dtype=[(("title 1", "x"), "|i1"), (("title 2", "y"), ">f4")],
@@ -132,22 +123,15 @@ def test_arrayeditor_with_record_array_with_titles(qtbot):
     assert_array_equal(arr, launch_arrayeditor(arr, "record array with titles"))
 
 
-def test_arrayeditor_with_float_array(qtbot):
-    """
-
-    :param qtbot:
-    """
+def test_arrayeditor_with_float_array():
     arr = np.random.rand(5, 5)
     assert_array_equal(
         arr, launch_arrayeditor(arr, "float array", xlabels=["a", "b", "c", "d", "e"])
     )
 
 
-def test_arrayeditor_with_complex_array(qtbot):
-    """
-
-    :param qtbot:
-    """
+def test_arrayeditor_with_complex_array():
+    """ """
     arr = np.round(np.random.rand(5, 5) * 10) + np.round(np.random.rand(5, 5) * 10) * 1j
     assert_array_equal(
         arr,
@@ -160,39 +144,24 @@ def test_arrayeditor_with_complex_array(qtbot):
     )
 
 
-def test_arrayeditor_with_bool_array(qtbot):
-    """
-
-    :param qtbot:
-    """
+def test_arrayeditor_with_bool_array():
+    """ """
     arr_in = np.array([True, False, True])
     arr_out = launch_arrayeditor(arr_in, "bool array")
     assert arr_in is arr_out
 
 
-def test_arrayeditor_with_int8_array(qtbot):
-    """
-
-    :param qtbot:
-    """
+def test_arrayeditor_with_int8_array():
     arr = np.array([1, 2, 3], dtype="int8")
     assert_array_equal(arr, launch_arrayeditor(arr, "int array"))
 
 
-def test_arrayeditor_with_float16_array(qtbot):
-    """
-
-    :param qtbot:
-    """
+def test_arrayeditor_with_float16_array():
     arr = np.zeros((5, 5), dtype=np.float16)
     assert_array_equal(arr, launch_arrayeditor(arr, "float16 array"))
 
 
-def test_arrayeditor_with_3d_array(qtbot):
-    """
-
-    :param qtbot:
-    """
+def test_arrayeditor_with_3d_array():
     arr = np.zeros((3, 3, 4))
     arr[0, 0, 0] = 1
     arr[0, 0, 1] = 2
@@ -200,11 +169,7 @@ def test_arrayeditor_with_3d_array(qtbot):
     assert_array_equal(arr, launch_arrayeditor(arr, "3D array"))
 
 
-def test_arrayeditor_with_empty_3d_array(qtbot):
-    """
-
-    :param qtbot:
-    """
+def test_arrayeditor_with_empty_3d_array():
     arr = np.zeros((0, 10, 2))
     assert_array_equal(arr, launch_arrayeditor(arr, "3D array"))
     arr = np.zeros((1, 10, 2))

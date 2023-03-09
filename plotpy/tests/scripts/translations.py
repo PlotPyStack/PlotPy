@@ -14,6 +14,14 @@ SHOW = False  # Do not show test in GUI-based test launcher
 
 translations = (_("Some required entries are incorrect"),)
 
+
+def test_translation():
+    # TODO: 0 traiter en fonction de la langue paramétré sur l'os ?
+    english_text = "Some required entries are incorrect"
+    french_text = "Les champs surlignés n'ont pas été remplis correctement."
+    translations = (_(english_text),)
+    assert translations == french_text
+
+
 if __name__ == "__main__":
-    for text in translations:
-        print(text)
+    test_translation()

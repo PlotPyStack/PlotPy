@@ -32,14 +32,9 @@ from qtpy import QtWidgets as QW
 
 # import config to add plotlib/images/ path to images lookup directories
 import plotpy.config  # pylint: disable=unused-import
+from plotpy.tests.scripts.activable_dataset import ExampleDataSet
 from plotpy.utils.icons import get_std_icon
 from plotpy.utils.misc_from_gui import add_actions, create_action, get_icon
-
-# Local test import:
-try:
-    from tests.scripts.activable_dataset import ExampleDataSet
-except ImportError:
-    from plotpy.tests.scripts.activable_dataset import ExampleDataSet
 
 SHOW = True  # Show test in GUI-based test launcher
 
@@ -173,7 +168,6 @@ class MainWindow(QW.QMainWindow):
 
 
 if __name__ == "__main__":
-
     app = QW.QApplication(sys.argv)
     window = MainWindow()
     window.show()

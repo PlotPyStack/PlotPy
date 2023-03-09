@@ -18,20 +18,9 @@ present). CxFreeze or py2exe must be installed.
 
 import os
 
+from plotpy.utils.packaging_helpers import Distribution
+
 SHOW = True  # Show test in GUI-based test launcher
-
-if os.name == "nt":
-    try:
-        from plotpy.utils.packaging_helpers import Distribution
-    except ImportError:
-        print(
-            "disthelpers test is not shown because packaging.py, "
-            "cx_freeze or py2exe are not available."
-        )
-        SHOW = False
-else:
-    SHOW = False
-
 
 if __name__ == "__main__":
     dist = Distribution()

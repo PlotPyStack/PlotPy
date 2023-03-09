@@ -21,6 +21,9 @@ So this example with dialog boxes may be confusing.
 from guidata.dataset.dataitems import BoolItem, ChoiceItem, ColorItem, FloatItem
 from guidata.dataset.datatypes import ActivableDataSet, DataSet
 
+import plotpy.config
+import plotpy.widgets
+
 SHOW = True  # Show test in GUI-based test launcher
 
 
@@ -44,10 +47,8 @@ class ExampleDataSet(ActivableDataSet, DataSet):
 ExampleDataSet.active_setup()
 
 
-if __name__ == "__main__":
+def test_activable_dataset():
     # Create QApplication
-    import plotpy.config
-    import plotpy.widgets
 
     _app = plotpy.widgets.qapplication()
 
@@ -59,3 +60,7 @@ if __name__ == "__main__":
     # Showing mode:
     prm.set_readonly()
     prm.view()
+
+
+if __name__ == "__main__":
+    test_activable_dataset()

@@ -53,11 +53,10 @@ def qapplication():
     Return QApplication instance
     Creates it if it doesn't already exist
     """
-
     app = QApplication.instance()
     if not app:
         app = QApplication([])
-    install_translator(app)
+        install_translator(app)
     return app
 
 
@@ -65,7 +64,6 @@ def install_translator(qapp):
     """Install Qt translator to the QApplication instance"""
     global QT_TRANSLATOR
     if QT_TRANSLATOR is None:
-
         locale = QC.QLocale.system().name()
         # Qt-specific translator
         qt_translator = QC.QTranslator()

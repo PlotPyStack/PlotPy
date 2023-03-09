@@ -16,10 +16,7 @@ application is to extend a parameter set with additionnal parameters.
 from guidata.dataset.dataitems import BoolItem, FloatItem
 from guidata.dataset.datatypes import BeginGroup, EndGroup
 
-try:
-    from tests.scripts.all_features import TestParameters
-except ImportError:
-    from plotpy.tests.scripts.all_features import TestParameters
+from plotpy.tests.scripts.all_features import TestParameters
 
 SHOW = True  # Show test in GUI-based test launcher
 

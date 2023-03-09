@@ -11,15 +11,11 @@
 from guidata.configtools import get_icon
 from qtpy import QtWidgets as QW
 
+from plotpy.tests.gui.test_rotatecrop import create_test_data, imshow
 from plotpy.utils.misc_from_gui import add_actions, create_toolbutton
 from plotpy.widgets import qapplication
 from plotpy.widgets.fliprotate import FlipRotateDialog, FlipRotateWidget
 from plotpy.widgets.tools.image import RotationCenterTool
-
-try:
-    from tests.gui.rotatecrop import create_test_data, imshow
-except ImportError:
-    from plotpy.tests.gui.rotatecrop import create_test_data, imshow
 
 SHOW = True  # Show test in GUI-based test launcher
 

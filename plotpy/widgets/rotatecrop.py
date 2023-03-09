@@ -227,6 +227,9 @@ class RotateCropWidget(base.BaseTransformWidget):
     def reset(self):
         self.tools.reset()
 
+    def reject_changes(self):
+        self.tools.reject_changes()
+
     def show_crop_rect(self, state):
         self.tools.show_crop_rect(state)
 

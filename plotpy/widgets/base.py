@@ -125,12 +125,18 @@ class BaseTransform:
 class BaseTransformWidget(QW.QWidget):
     """Base transform widget: see for example rotatecrop.py"""
 
-    def __init__(self, parent, toolbar=False, options=None):
+    def __init__(self, parent, toolbar=False, options=None, plot_options=None):
         super(BaseTransformWidget, self).__init__()
         if options is None:
             options = {}
+        if plot_options is None:
+            plot_options = {}
         self.imagewidget = PlotWidget(
-            parent=self, options=dict(type=PlotType.IMAGE), toolbar=toolbar, **options
+            parent=self,
+            options=dict(type=PlotType.IMAGE),
+            toolbar=toolbar,
+            **options,
+            plot_options=plot_options,
         )
         self.imagewidget.manager.register_all_image_tools()
         hlayout = QW.QHBoxLayout()
@@ -219,7 +225,7 @@ class BaseMultipleTransformWidget(QW.QTabWidget):
         for index in range(self.count()):
             self.widget(index).reset()
 
-    def accept_changes(self):
+    def accept_changes(self) -> None:
         """Accept all changes"""
         self.output_arrays = []
         for index in range(self.count()):
@@ -227,7 +233,7 @@ class BaseMultipleTransformWidget(QW.QTabWidget):
             widget.tools.accept_changes()
             self.output_arrays.append(widget.tools.output_array)
 
-    def reject_changes(self):
+    def reject_changes(self) -> None:
         """Reject all changes"""
         for index in range(self.count()):
             self.widget(index).reject_changes()

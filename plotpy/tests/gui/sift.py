@@ -1351,11 +1351,11 @@ class ImageFT(ObjectFT):
 class DockablePlotWidget(DockableWidget):
     LOCATION = QC.Qt.RightDockWidgetArea
 
-    def __init__(self, parent, plotwidgetclass, toolbar, options):
+    def __init__(self, parent, plotwidgetclass, toolbar, options, plot_options=None):
         super(DockablePlotWidget, self).__init__(parent)
         self.toolbar = toolbar
         layout = QW.QVBoxLayout()
-        self.plotwidget = plotwidgetclass(options=options)
+        self.plotwidget = plotwidgetclass(plot_options=plot_options, options=options)
         layout.addWidget(self.plotwidget)
         self.setLayout(layout)
         self.setup()
@@ -1365,11 +1365,11 @@ class DockablePlotWidget(DockableWidget):
 
     def setup(self):
         title = str(self.toolbar.windowTitle())
-        self.plotwidget.add_toolbar(self.toolbar, title)
+        self.plotwidget.manager.add_toolbar(self.toolbar, title)
         if self.plotwidget.plot.type == PlotType.IMAGE:
-            self.plotwidget.register_all_image_tools()
+            self.plotwidget.manager.register_all_image_tools()
         else:
-            self.plotwidget.register_all_curve_tools()
+            self.plotwidget.manager.register_all_curve_tools()
 
     # ------DockableWidget API
     def visibility_changed(self, enable):

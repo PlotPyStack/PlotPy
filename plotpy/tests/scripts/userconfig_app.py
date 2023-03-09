@@ -30,3 +30,4 @@ uc.set_application("app", "1.0.0")
 ds.write_config(uc, "a", "b")
 
 print("Settings saved in: ", uc.filename())
+# TODO: vérifier si le fichier existe et si ou s'il contient bien les infos

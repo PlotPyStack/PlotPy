@@ -424,7 +424,7 @@ class FitWidgetTools(SimplePlot):
 
         :param options:
         """
-        SimplePlot.create_plot(self.parent, options)
+        SimplePlot.create_plot(self, options)
         for plot in self.get_plots():
             plot.SIG_RANGE_CHANGED.connect(self.range_changed)
 

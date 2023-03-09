@@ -11,11 +11,13 @@ from plotpy.widgets.plot.histogram.contrastadjustment import ContrastAdjustment
 from plotpy.widgets.plot.manager import PlotManager
 
 
-def configure_plot_splitter(qsplit, decreasing_size=True):
-    """
+def configure_plot_splitter(qsplit: QW.QSplitter, decreasing_size: bool = True) -> None:
+    """_summary_
 
-    :param qsplit:
-    :param decreasing_size:
+    Args:
+        qsplit (QW.QSplitter): QSplitter instance
+        decreasing_size (bool, optional): Specify if child widgets can be resized down
+            to size 0 by the user. Defaults to True.
     """
     qsplit.setChildrenCollapsible(False)
     qsplit.setHandleWidth(4)
@@ -207,6 +209,7 @@ class SimplePlot(PlotManager):
         icon="plotpy.svg",
         toolbar=False,
         auto_tools=True,
+        plot_options=None,
         options=None,
         panels=None,
     ):
@@ -215,8 +218,10 @@ class SimplePlot(PlotManager):
         self.plot_layout = QW.QGridLayout()
         if options is None:
             options = {}
+        if plot_options is None:
+            plot_options = {}
         self.plot_widget = None
-        self.create_plot(options)
+        self.create_plot(options, **plot_options)
 
         if panels is not None:
             for panel in panels:
@@ -330,6 +335,7 @@ class PlotDialog(QW.QDialog):
         toolbar=False,
         auto_tools=True,
         options=None,
+        plot_options=None,
         parent=None,
         panels=None,
     ) -> None:
@@ -337,7 +343,7 @@ class PlotDialog(QW.QDialog):
         self.edit = edit
         self.button_box = None
         self.button_layout = None
-        self.widget = PlotWidget(self, options, panels, toolbar)
+        self.widget = PlotWidget(self, options, plot_options, panels, toolbar)
         dialogvlayout = QW.QVBoxLayout()
         dialogvlayout.addWidget(self.widget)
         self.setLayout(dialogvlayout)
@@ -432,6 +438,7 @@ class PlotWindow(QW.QMainWindow):
         toolbar=False,
         auto_tools=True,
         options=None,
+        plot_options=None,
         parent=None,
         panels=None,
     ):
@@ -443,6 +450,7 @@ class PlotWindow(QW.QMainWindow):
             toolbar=toolbar,
             auto_tools=auto_tools,
             options=options,
+            plot_options=plot_options,
             panels=panels,
         )
 
@@ -461,8 +469,8 @@ class PlotWindow(QW.QMainWindow):
         # Closing panels (necessary if at least one of these panels has no
         # parent widget: otherwise, this panel will stay open after the main
         # window has been closed which is not the expected behavior)
-        for panel in self.panels:
-            self.get_panel(panel).close()
+        for panel in self.manager.panels:
+            self.manager.get_panel(panel).close()
         QW.QMainWindow.closeEvent(self, event)
 
 
@@ -477,10 +485,16 @@ class PlotWidget(QW.QWidget):
         * panels (optional): additionnal panels (list, tuple)
     """
 
-    def __init__(self, parent=None, options=None, panels=None, toolbar=False):
+    def __init__(
+        self, parent=None, options=None, plot_options=None, panels=None, toolbar=False
+    ):
         super(PlotWidget, self).__init__()
         self.manager = SimplePlot(
-            parent=self, options=options, panels=panels, toolbar=toolbar
+            parent=self,
+            options=options,
+            plot_options=plot_options,
+            panels=panels,
+            toolbar=toolbar,
         )
 
         # to limit the API change of the old ImageWidget and PlotWidget classes and

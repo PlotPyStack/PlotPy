@@ -11,11 +11,7 @@
 import unittest
 
 from plotpy.config import UserConfig
-
-try:
-    from tests.scripts.all_features import TestParameters
-except ImportError:
-    from plotpy.tests.scripts.all_features import TestParameters
+from plotpy.tests.scripts.all_features import TestParameters
 
 SHOW = False  # Do not show test in GUI-based test launcher
 

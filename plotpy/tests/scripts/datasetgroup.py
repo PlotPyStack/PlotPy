@@ -13,12 +13,9 @@ in a single dialog box (with one tab per DataSet object).
 """
 
 
-from guidata.dataset.datatypes import DataSetGroupGui
+from guidata.dataset.datatypes import DataSetGroup
 
-try:
-    from tests.scripts.all_features import TestParameters
-except ImportError:
-    from plotpy.tests.scripts.all_features import TestParameters
+from plotpy.tests.scripts.all_features import TestParameters
 
 SHOW = True  # Show test in GUI-based test launcher
 
@@ -31,7 +28,7 @@ if __name__ == "__main__":
 
     e1 = TestParameters("DataSet #1")
     e2 = TestParameters("DataSet #2")
-    g = DataSetGroupGui([e1, e2], title="Parameters group")
+    g = DataSetGroup([e1, e2], title="Parameters group")
     g.edit()
     print(e1)
     g.edit()
