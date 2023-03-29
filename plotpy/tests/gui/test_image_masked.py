@@ -18,6 +18,7 @@ import pickle
 import plotpy.widgets
 from plotpy.widgets.builder import make
 from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.qthelpers_guidata import qt_app_context
 from plotpy.widgets.tools.image import ImageMaskTool
 
 SHOW = True  # Show test in GUI-based test launcher
@@ -26,31 +27,33 @@ FNAME = "image_masked.pickle"
 
 
 def test_image_masked():
-    _app = plotpy.widgets.qapplication()
-    win = PlotDialog(
-        toolbar=True,
-        wintitle="Masked image item test",
-        options={"type": PlotType.IMAGE},
-    )
-    win.manager.add_tool(ImageMaskTool)
-    if os.access(FNAME, os.R_OK):
-        print("Restoring mask...", end=" ")
-        iofile = open(FNAME, "rb")
-        image = pickle.load(iofile)
-        iofile.close()
-        print("OK")
-    else:
-        fname = os.path.join(os.path.abspath(os.path.dirname(__file__)), "brain.png")
-        image = make.maskedimage(
-            filename=fname,
-            colormap="gray",
-            show_mask=True,
-            xdata=[0, 20],
-            ydata=[0, 25],
+    with qt_app_context(exec_loop=True):
+        win = PlotDialog(
+            toolbar=True,
+            wintitle="Masked image item test",
+            options={"type": PlotType.IMAGE},
         )
-    win.manager.get_plot().add_item(image)
-    win.show()
-    win.exec_()
+        win.manager.add_tool(ImageMaskTool)
+        if os.access(FNAME, os.R_OK):
+            print("Restoring mask...", end=" ")
+            iofile = open(FNAME, "rb")
+            image = pickle.load(iofile)
+            iofile.close()
+            print("OK")
+        else:
+            fname = os.path.join(
+                os.path.abspath(os.path.dirname(__file__)), "brain.png"
+            )
+            image = make.maskedimage(
+                filename=fname,
+                colormap="gray",
+                show_mask=True,
+                xdata=[0, 20],
+                ydata=[0, 25],
+            )
+        win.manager.get_plot().add_item(image)
+        win.show()
+
     iofile = open(FNAME, "wb")
     pickle.dump(image, iofile)
 

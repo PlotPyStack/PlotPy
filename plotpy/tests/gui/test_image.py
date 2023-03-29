@@ -16,22 +16,23 @@ import numpy as np
 import plotpy.widgets
 from plotpy.widgets.builder import make
 from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.qthelpers_guidata import qt_app_context
 
 SHOW = True  # Show test in GUI-based test launcher
 
 
 def imshow(data):
-    win = PlotDialog(
-        edit=False,
-        toolbar=True,
-        wintitle="PlotDialog test",
-        options=dict(xlabel="Concentration", xunit="ppm", type=PlotType.IMAGE),
-    )
-    item = make.image(data)
-    plot = win.manager.get_plot()
-    plot.add_item(item)
-    win.show()
-    win.exec_()
+    with qt_app_context(exec_loop=True):
+        win = PlotDialog(
+            edit=False,
+            toolbar=True,
+            wintitle="PlotDialog test",
+            options=dict(xlabel="Concentration", xunit="ppm", type=PlotType.IMAGE),
+        )
+        item = make.image(data)
+        plot = win.manager.get_plot()
+        plot.add_item(item)
+        win.show()
 
 
 def compute_image(N=2000, grid=True):
@@ -114,11 +115,7 @@ def compute_image_3():
 
 
 def test_image():
-    """Test"""
-    # -- Create QApplication
-
-    _app = plotpy.widgets.qapplication()
-    # --
+    """Test image"""
     for func in (compute_image, compute_image_2, compute_image_3):
         img = func()
         print(img.dtype)

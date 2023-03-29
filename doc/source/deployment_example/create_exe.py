@@ -7,7 +7,9 @@ Deployment example
 Deployment script using `plotpy.core.disthelpers` (py2exe or cx_Freeze)
 """
 
-from plotpy.utils.packaging_helpers import Distribution
+from guidata.disthelpers import Distribution
+
+from plotpy.utils.packaging_helpers import add_plotpy
 
 
 def create_exe():
@@ -19,6 +21,8 @@ def create_exe():
         "simpledialog.pyw",
         excludes=["IPython", "tkinter", "scipy"],
     )
+    if "plotpy" not in dist.module_import_func_dict.keys():
+        dist.module_import_func_dict["plotpy"] = add_plotpy
     dist.add_modules("plotpy")
     dist.build_cx_freeze()  # use `build_py2exe` to use py2exe instead
 

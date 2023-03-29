@@ -13,6 +13,7 @@ import os
 import plotpy.widgets
 from plotpy.widgets.builder import make
 from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.qthelpers_guidata import qt_app_context
 from plotpy.widgets.tools.annotations import (
     AnnotatedCircleTool,
     AnnotatedEllipseTool,
@@ -73,16 +74,12 @@ def create_window():
 
 def test_image_plot_tools():
     """Test"""
-    # -- Create QApplication
-
-    _app = plotpy.widgets.qapplication()
-    # --
-    filename = os.path.join(os.path.dirname(__file__), "brain.png")
-    win = create_window()
-    image = make.image(filename=filename, colormap="bone")
-    plot = win.manager.get_plot()
-    plot.add_item(image)
-    win.exec_()
+    with qt_app_context(exec_loop=True):
+        filename = os.path.join(os.path.dirname(__file__), "brain.png")
+        win = create_window()
+        image = make.image(filename=filename, colormap="bone")
+        plot = win.manager.get_plot()
+        plot.add_item(image)
 
 
 if __name__ == "__main__":

@@ -18,6 +18,7 @@ from qtpy import QtWidgets as QW
 import plotpy
 from plotpy.widgets.builder import make
 from plotpy.widgets.plot.plotwidget import PlotType, PlotWindow
+from plotpy.widgets.qthelpers_guidata import qt_app_context
 
 SHOW = False  # Show test in GUI-based test launcher
 
@@ -45,7 +46,7 @@ class BaseBM(object):
         assert self._item is not None
         plot.add_item(self._item)
 
-    def start(self, close=False):
+    def start(self):
         # Create plot window
         win = PlotWindow(
             toolbar=True, wintitle=self.name, options={"type": self.WIN_TYPE}
@@ -64,8 +65,7 @@ class BaseBM(object):
         print("    N  = {}".format(self.nsamples))
         plot.replot()  # Force replot
         print("    dt = {} ms".format((time.time() - t0) * 1e3))
-        if close:
-            win.close()
+        return win
 
 
 class CurveBM(BaseBM):
@@ -143,22 +143,29 @@ def test_benchmarks():
     _app = plotpy.widgets.qapplication()
 
     # Run benchmarks
-    close = False
-    # XXX: Error 'BasePlot' object has no attribute '_QwtPlot__data', when handeling
-    # ErrorBarBM's graphical change of position
-    for benchmark in (
-        CurveBM("Simple curve", 5e6),
-        CurveBM("Curve with markers", 2e5, marker="Ellipse", markersize=10),
-        CurveBM("Curve with sticks", 1e6, curvestyle="Sticks"),
-        ErrorBarBM("Error bar curve (vertical bars only)", 1e4),
-        ErrorBarBM("Error bar curve (horizontal and vertical bars)", 1e4, dx=True),
-        HistogramBM("Simple histogram", 1e6, bins=int(1e5)),
-        PColorBM("Polar pcolor", 1e3),
-        ImageBM("Simple image", 7e3, interpolation="antialiasing"),
-    ):
-        benchmark.start(close=close)
-    if not close:
-        _app.exec_()
+    _persist_plot_list = []
+    with qt_app_context(exec_loop=True):
+        # XXX: Error 'BasePlot' object has no attribute '_QwtPlot__data', when handeling
+        # ErrorBarBM's graphical change of position
+        for benchmark in (
+            _persist_plot_list.append(CurveBM("Simple curve", 5e6)),
+            _persist_plot_list.append(
+                CurveBM("Curve with markers", 2e5, marker="Ellipse", markersize=10)
+            ),
+            _persist_plot_list.append(
+                CurveBM("Curve with sticks", 1e6, curvestyle="Sticks")
+            ),
+            # ErrorBarBM("Error bar curve (vertical bars only)", 1e4)),
+            # ErrorBarBM("Error bar curve (horizontal and vertical bars)", 1e4, dx=True)),
+            _persist_plot_list.append(
+                HistogramBM("Simple histogram", 1e6, bins=int(1e5))
+            ),
+            _persist_plot_list.append(PColorBM("Polar pcolor", 1e3)),
+            _persist_plot_list.append(
+                ImageBM("Simple image", 7e3, interpolation="antialiasing")
+            ),
+        ):
+            benchmark.start()
 
 
 if __name__ == "__main__":

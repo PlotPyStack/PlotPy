@@ -14,6 +14,7 @@ import plotpy.widgets.plot.cross_section
 from plotpy.widgets.builder import make
 from plotpy.widgets.plot.cross_section.cswidget import ObliqueCrossSection
 from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.qthelpers_guidata import qt_app_context
 from plotpy.widgets.tools.cross_section import ObliqueCrossSectionTool, OCSPanelTool
 from plotpy.widgets.tools.image import ImageMaskTool
 
@@ -40,29 +41,25 @@ class OCSImageDialog(PlotDialog):
 
 
 def test_cross_section_oblique():
-    """Test"""
-    # -- Create QApplication
-    import plotpy.widgets
+    """Test cross section oblique"""
+    with qt_app_context(exec_loop=True):
+        win = OCSImageDialog(
+            toolbar=True,
+            wintitle="Oblique averaged cross section test",
+            options={"type": PlotType.IMAGE},
+        )
+        win.resize(600, 600)
 
-    _app = plotpy.widgets.qapplication()
-    # --
-    win = OCSImageDialog(
-        toolbar=True,
-        wintitle="Oblique averaged cross section test",
-        options={"type": PlotType.IMAGE},
-    )
-    win.resize(600, 600)
+        #    from tests.gui.image import compute_image
+        #    data = np.array((compute_image(4000, grid=False)+1)*32e3, dtype=np.uint16)
+        #    image = make.maskedimage(data, colormap="bone", show_mask=True)
 
-    #    from tests.gui.image import compute_image
-    #    data = np.array((compute_image(4000, grid=False)+1)*32e3, dtype=np.uint16)
-    #    image = make.maskedimage(data, colormap="bone", show_mask=True)
+        filename = osp.join(osp.dirname(__file__), "brain_cylinder.png")
+        image = make.maskedimage(filename=filename, colormap="bone")
 
-    filename = osp.join(osp.dirname(__file__), "brain_cylinder.png")
-    image = make.maskedimage(filename=filename, colormap="bone")
-
-    plot = win.manager.get_plot()
-    plot.add_item(image)
-    win.exec_()
+        plot = win.manager.get_plot()
+        plot.add_item(image)
+        win.show()
 
 
 if __name__ == "__main__":

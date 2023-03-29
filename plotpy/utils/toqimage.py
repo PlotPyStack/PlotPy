@@ -16,13 +16,24 @@ import numpy as np
 from qtpy import QtGui as QG
 
 
-def array_to_qimage(arr, copy=False):
-    """
-    Convert NumPy array to QImage object
+def array_to_qimage(arr: np.ndarray, copy: bool = False) -> QG.QImage:
+    """Convert NumPy array to QImage object
 
     :param numpy.array arr: NumPy array
     :param bool copy: if True, make a copy of the array
     :return: QImage object
+
+    Args:
+        arr (np.ndarray): array to convert
+        copy (bool, optional): if True, make a copy of the array. Defaults to False.
+
+    Raises:
+        NotImplementedError: Unsupported array data shape
+        TypeError: Invalid third axis dimension
+        NotImplementedError: Unsupported array data type
+
+    Returns:
+        QG.QImage: QImage object
     """
     # https://gist.githubusercontent.com/smex/5287589/raw/toQImage.py
     if arr is None:

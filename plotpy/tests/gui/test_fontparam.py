@@ -7,19 +7,17 @@
 
 """FontParam test"""
 
-
-import plotpy.widgets
+from plotpy.widgets.qthelpers_guidata import qt_app_context
 from plotpy.widgets.styles.base import FontParam
 
 SHOW = False  # Do not show test in GUI-based test launcher
 
 
 def test_fontparam():
-    _app = plotpy.widgets.qapplication()
-
-    fp = FontParam()
-    fp.edit()
-    fp.edit()
+    with qt_app_context(exec_loop=True):
+        fp = FontParam()
+        fp.edit()
+        fp.edit()
 
 
 if __name__ == "__main__":

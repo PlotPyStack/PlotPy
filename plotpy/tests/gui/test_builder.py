@@ -12,6 +12,7 @@ import numpy as np
 
 from plotpy.widgets.builder import make
 from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.qthelpers_guidata import qt_app_context
 
 SHOW = True  # Show test in GUI-based test launcher
 
@@ -49,98 +50,96 @@ def compute_image(N=2000, grid=True):
 def test_builder():
     """Test"""
     # -- Create QApplication
-    import plotpy.widgets
+    # import plotpy.widgets
 
-    _app = plotpy.widgets.qapplication()
+    # _app = plotpy.widgets.qapplication()
+    with qt_app_context(exec_loop=True):
+        win0 = PlotDialog(
+            edit=False,
+            toolbar=True,
+            wintitle="Pink colormap test",
+            options=dict(xlabel="Concentration", xunit="ppm", type=PlotType.IMAGE),
+        )
+        data = compute_image()
+        plot0 = win0.manager.get_plot()
+        plot0.add_item(make.image(data, colormap="pink"))
+        win0.show()
 
-    win0 = PlotDialog(
-        edit=False,
-        toolbar=True,
-        wintitle="Pink colormap test",
-        options=dict(xlabel="Concentration", xunit="ppm", type=PlotType.IMAGE),
-    )
-    data = compute_image()
-    plot0 = win0.manager.get_plot()
-    plot0.add_item(make.image(data, colormap="pink"))
-    win0.show()
+        win = PlotDialog(
+            edit=False,
+            toolbar=True,
+            wintitle="Default LUT range",
+            options=dict(xlabel="Concentration", xunit="ppm", type=PlotType.IMAGE),
+        )
+        item = make.image(data)
+        plot = win.manager.get_plot()
+        plot.add_item(item)
+        win.show()
 
-    win = PlotDialog(
-        edit=False,
-        toolbar=True,
-        wintitle="Default LUT range",
-        options=dict(xlabel="Concentration", xunit="ppm", type=PlotType.IMAGE),
-    )
-    item = make.image(data)
-    plot = win.manager.get_plot()
-    plot.add_item(item)
-    win.show()
+        win2 = PlotDialog(
+            edit=False,
+            toolbar=True,
+            wintitle="0->1 LUT range",
+            options=dict(xlabel="Concentration", xunit="ppm", type=PlotType.IMAGE),
+        )
+        item2 = make.image(data)
+        item2.set_lut_range([0, 1])
+        plot2 = win2.manager.get_plot()
+        plot2.add_item(item2)
+        win2.show()
 
-    win2 = PlotDialog(
-        edit=False,
-        toolbar=True,
-        wintitle="0->1 LUT range",
-        options=dict(xlabel="Concentration", xunit="ppm", type=PlotType.IMAGE),
-    )
-    item2 = make.image(data)
-    item2.set_lut_range([0, 1])
-    plot2 = win2.manager.get_plot()
-    plot2.add_item(item2)
-    win2.show()
+        win3 = PlotDialog(
+            edit=False,
+            toolbar=True,
+            wintitle="0->1 LUT range through builder",
+            options=dict(xlabel="Concentration", xunit="ppm", type=PlotType.IMAGE),
+        )
+        item3 = make.image(data, lut_range=[0, 1])
+        plot3 = win3.manager.get_plot()
+        plot3.add_item(item3)
+        win3.show()
 
-    win3 = PlotDialog(
-        edit=False,
-        toolbar=True,
-        wintitle="0->1 LUT range through builder",
-        options=dict(xlabel="Concentration", xunit="ppm", type=PlotType.IMAGE),
-    )
-    item3 = make.image(data, lut_range=[0, 1])
-    plot3 = win3.manager.get_plot()
-    plot3.add_item(item3)
-    win3.show()
+        x = np.linspace(1, 10, 200)
+        y = np.sin(x)
 
-    x = np.linspace(1, 10, 200)
-    y = np.sin(x)
+        win4 = PlotDialog(
+            toolbar=True,
+            wintitle="Error bars with make.curve()",
+            options={"type": PlotType.CURVE},
+        )
+        plot4 = win4.manager.get_plot()
 
-    win4 = PlotDialog(
-        toolbar=True,
-        wintitle="Error bars with make.curve()",
-        options={"type": PlotType.CURVE},
-    )
-    plot4 = win4.manager.get_plot()
+        plot4.add_item(make.curve(x, y, dx=x * 0.1, dy=y * 0.23))
+        plot4.add_item(make.curve(x, np.cos(x), color="#FF0000"))
 
-    plot4.add_item(make.curve(x, y, dx=x * 0.1, dy=y * 0.23))
-    plot4.add_item(make.curve(x, np.cos(x), color="#FF0000"))
+        win4.show()
 
-    win4.show()
+        win5 = PlotDialog(
+            toolbar=True, wintitle="2x2 image", options={"type": PlotType.IMAGE}
+        )
+        plot5 = win5.manager.get_plot()
 
-    win5 = PlotDialog(
-        toolbar=True, wintitle="2x2 image", options={"type": PlotType.IMAGE}
-    )
-    plot5 = win5.manager.get_plot()
+        img22 = np.zeros((2, 2), np.float32)
+        img22[0, 0] = 1
+        img22[0, 1] = 2
+        img22[1, 0] = 3
+        img22[1, 1] = 4
+        plot5.add_item(
+            make.image(img22, xdata=[-1, 3], ydata=[-1, 3], interpolation="nearest")
+        )
 
-    img22 = np.zeros((2, 2), np.float32)
-    img22[0, 0] = 1
-    img22[0, 1] = 2
-    img22[1, 0] = 3
-    img22[1, 1] = 4
-    plot5.add_item(
-        make.image(img22, xdata=[-1, 3], ydata=[-1, 3], interpolation="nearest")
-    )
+        win5.show()
 
-    win5.show()
+        win6 = PlotDialog(
+            toolbar=True,
+            wintitle="Equivalent 2x2 XY image",
+            options={"type": PlotType.IMAGE},
+        )
+        plot6 = win6.manager.get_plot()
 
-    win6 = PlotDialog(
-        toolbar=True,
-        wintitle="Equivalent 2x2 XY image",
-        options={"type": PlotType.IMAGE},
-    )
-    plot6 = win6.manager.get_plot()
+        plot6.add_item(make.image(img22, x=[0, 2], y=[0, 2], interpolation="nearest"))
 
-    plot6.add_item(make.image(img22, x=[0, 2], y=[0, 2], interpolation="nearest"))
-
-    win6.show()
-
-    _app.exec_()
+        win6.show()
 
 
 if __name__ == "__main__":

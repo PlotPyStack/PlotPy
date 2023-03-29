@@ -12,9 +12,12 @@ This plotpy tool provide a MATLAB-like "ginput" feature.
 """
 
 
+from numpy import linspace, sin
+
 from plotpy.config import _
 from plotpy.widgets.builder import make
 from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.qthelpers_guidata import qt_app_context
 from plotpy.widgets.tools.curve import SelectPointTool
 
 SHOW = True  # Show test in GUI-based test launcher
@@ -46,25 +49,19 @@ def get_point(*args):
         item = make.mcurve(cx, cy)
         plot.add_item(item)
     plot.set_active_item(item)
-    # win.show()
-    # if win.exec_():
-    return default.get_coordinates()
+    win.show()
+    return win, default.get_coordinates()
 
 
 def test_get_point():
     """Test"""
-    # -- Create QApplication
-    import plotpy.widgets
-
-    _app = plotpy.widgets.qapplication()
-    # --
-    from numpy import linspace, sin
-
-    x = linspace(-10, 10, 1000)
-    y = sin(sin(sin(x)))
-    x2 = linspace(-10, 10, 20)
-    y2 = sin(sin(sin(x2)))
-    print(get_point((x, y), (x2, y2), (x, sin(2 * y))))
+    with qt_app_context(exec_loop=True):
+        x = linspace(-10, 10, 1000)
+        y = sin(sin(sin(x)))
+        x2 = linspace(-10, 10, 20)
+        y2 = sin(sin(sin(x2)))
+        _persist_dialog, coordinates = get_point((x, y), (x2, y2), (x, sin(2 * y)))
+        print(coordinates)
 
 
 if __name__ == "__main__":

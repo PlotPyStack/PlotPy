@@ -109,7 +109,7 @@ class TrImageItem(TransformImageMixin, RawImageItem):
         handles = self.itr * self.points
         center = handles.sum(axis=1) / 4
         self.set_rotation_point(
-            center[0], center[1], rotation_point_move_with_shape=True
+            center.item(0), center.item(1), rotation_point_move_with_shape=True
         )
 
     def set_locked(self, state):

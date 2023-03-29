@@ -7,58 +7,51 @@
 
 """Image filter demo"""
 
+import os
+
+import numpy as np
 from scipy.ndimage import gaussian_filter
 
-import plotpy.widgets
 from plotpy.tests.gui.test_imagexy import compute_image
+from plotpy.widgets import io
 from plotpy.widgets.builder import make
 from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.qthelpers_guidata import qt_app_context
 
 SHOW = True  # Show test in GUI-based test launcher
 
 
 def imshow(x, y, data, filter_area, yreverse=True):
-    win = PlotDialog(
-        edit=False,
-        toolbar=True,
-        wintitle="Image filter demo",
-        options=dict(
-            xlabel="x (cm)", ylabel="y (cm)", yreverse=yreverse, type=PlotType.IMAGE
-        ),
-    )
-    image = make.xyimage(x, y, data)
-    plot = win.manager.get_plot()
-    plot.add_item(image)
-    xmin, xmax, ymin, ymax = filter_area
-    flt = make.imagefilter(
-        xmin,
-        xmax,
-        ymin,
-        ymax,
-        image,
-        filter=lambda x, y, data: gaussian_filter(data, 5),
-    )
-    plot.add_item(flt, z=1)
-    plot.replot()
-    win.show()
-    win.exec_()
+    with qt_app_context(exec_loop=True):
+        win = PlotDialog(
+            edit=False,
+            toolbar=True,
+            wintitle="Image filter demo",
+            options=dict(
+                xlabel="x (cm)", ylabel="y (cm)", yreverse=yreverse, type=PlotType.IMAGE
+            ),
+        )
+        image = make.xyimage(x, y, data)
+        plot = win.manager.get_plot()
+        plot.add_item(image)
+        xmin, xmax, ymin, ymax = filter_area
+        flt = make.imagefilter(
+            xmin,
+            xmax,
+            ymin,
+            ymax,
+            image,
+            filter=lambda x, y, data: gaussian_filter(data, 5),
+        )
+        plot.add_item(flt, z=1)
+        plot.replot()
+        win.show()
 
 
 def test_imagefilter():
-    """Test"""
-    # -- Create QApplication
-
-    _app = plotpy.widgets.qapplication()
-    # -
-
+    """Test image filter"""
     x, y, data = compute_image()
     imshow(x, y, data, filter_area=(-3.0, -1.0, 0.0, 2.0), yreverse=False)
-    # --
-    import os
-
-    import numpy as np
-
-    from plotpy.widgets import io
 
     filename = os.path.join(os.path.dirname(__file__), "brain.png")
     data = io.imread(filename, to_grayscale=True)

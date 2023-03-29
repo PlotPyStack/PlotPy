@@ -32,6 +32,7 @@ from plotpy.widgets.interfaces.common import IImageItemType
 from plotpy.widgets.items.curve.errorbar import vmap
 from plotpy.widgets.items.image.base import RawImageItem
 from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.qthelpers_guidata import qt_app_context
 from plotpy.widgets.tools.misc import (
     CopyToClipboardTool,
     HelpTool,
@@ -176,13 +177,10 @@ class DotArrayDialog(PlotDialog):
 
 
 def test_dot_array():
-    _app = plotpy.widgets.qapplication()
-
-    dlg = DotArrayDialog()
-    dlg.apply_params()
-    dlg.exec_()
+    with qt_app_context(exec_loop=True):
+        dlg = DotArrayDialog()
+        dlg.apply_params()
 
 
 if __name__ == "__main__":
-    # -- Create QApplication
     test_dot_array()

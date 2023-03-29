@@ -11,15 +11,17 @@ AnnotatedSegmentTool test
 This plotpy tool provide a MATLAB-like "ginput" feature.
 """
 
+import gc
 import os
 
 import numpy as np
 import qtpy.QtCore as QC
+from guidata.env import execenv
 
-import plotpy.widgets
 from plotpy.config import _
 from plotpy.widgets.builder import make
 from plotpy.widgets.plot.plotwidget import PlotDialog
+from plotpy.widgets.qthelpers_guidata import qt_app_context
 from plotpy.widgets.tools.annotations import AnnotatedSegmentTool
 from plotpy.widgets.tools.selection import SelectTool
 
@@ -45,31 +47,35 @@ def get_segment(*items):
     for item in items:
         plot.add_item(item)
         plot.set_active_item(item)
-    # TODO A jouter un mode unatended, ajoute un segement segement sans action opérateur
-    p0 = QC.QPointF(SEG_COORDINATES_INPUT[0], SEG_COORDINATES_INPUT[1])
-    p1 = QC.QPointF(SEG_COORDINATES_INPUT[2], SEG_COORDINATES_INPUT[3])
-    segtool.add_shape_to_plot(
-        win.manager.get_plot(),
-        p0,
-        p1,
-    )
+    if execenv.unattended:
+        p0 = QC.QPointF(SEG_COORDINATES_INPUT[0], SEG_COORDINATES_INPUT[1])
+        p1 = QC.QPointF(SEG_COORDINATES_INPUT[2], SEG_COORDINATES_INPUT[3])
+        segtool.add_shape_to_plot(
+            win.manager.get_plot(),
+            p0,
+            p1,
+        )
     win.show()
-    win.exec_()
-    shape = segtool.get_last_final_shape()
-    return shape.get_rect()
+    return win, segtool
 
 
 def test_get_segment():
     """Test"""
-    # -- Create QApplication
-    _app = plotpy.widgets.qapplication()
-    # --
     filename = os.path.join(os.path.dirname(__file__), "brain.png")
-    image = make.image(filename=filename, colormap="bone")
-    rect = get_segment(image)
-    rect_int = [int(i) for i in list(rect)]
-    assert rect_int == SEG_COORDINATES_OUTPUT
-    print("Distance:", np.sqrt((rect[2] - rect[0]) ** 2 + (rect[3] - rect[1]) ** 2))
+    with qt_app_context(exec_loop=True):
+        image = make.image(filename=filename, colormap="bone")
+        _win_persist, segtool = get_segment(image)
+
+    shape = segtool.get_last_final_shape()
+    rect = shape.get_rect()
+    if execenv.unattended and shape is not None:
+        rect_int = [int(i) for i in list(rect)]
+        assert rect_int == SEG_COORDINATES_OUTPUT
+    elif rect is not None:
+        print(
+            "Distance:",
+            np.sqrt((rect[2] - rect[0]) ** 2 + (rect[3] - rect[1]) ** 2),
+        )
 
 
 if __name__ == "__main__":

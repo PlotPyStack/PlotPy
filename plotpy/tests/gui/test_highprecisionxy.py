@@ -9,14 +9,13 @@
 import numpy
 import pytest
 
-import plotpy.widgets
 from plotpy.widgets.builder import make
 from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.qthelpers_guidata import qt_app_context
 
 SHOW = False  # Show test in GUI-based test launcher
 
 list_offsets = [1e3, 1e6, 1e9, 1e12]
-_app = plotpy.widgets.qapplication()
 
 
 @pytest.mark.parametrize("offset", list_offsets)
@@ -24,12 +23,12 @@ def test_xyimagebug(offset):
     data = numpy.random.rand(100, 100)
     x = numpy.arange(100) + offset
     y = numpy.arange(100)
-    image = make.xyimage(x, y, data=data)
-    win = PlotDialog(options={"type": PlotType.IMAGE})
-    plot = win.manager.get_plot()
-    plot.add_item(image)
-    plot.select_item(image)  # this helps in seeing where the image should be
-    win.exec_()
+    with qt_app_context(exec_loop=True):
+        image = make.xyimage(x, y, data=data)
+        win = PlotDialog(options={"type": PlotType.IMAGE})
+        plot = win.manager.get_plot()
+        plot.add_item(image)
+        plot.select_item(image)  # this helps in seeing where the image should be
 
 
 if __name__ == "__main__":

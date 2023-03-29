@@ -13,24 +13,28 @@ import numpy as np
 import plotpy.widgets
 from plotpy.widgets.builder import make
 from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.qthelpers_guidata import qt_app_context
 
 SHOW = True  # Show test in GUI-based test launcher
 
 
 def imshow(x, y, data):
-    win = PlotDialog(
-        edit=False,
-        toolbar=True,
-        wintitle="Image with custom X/Y axes scales",
-        options=dict(
-            xlabel="x (a.u.)", ylabel="y (a.u.)", yreverse=False, type=PlotType.IMAGE
-        ),
-    )
-    item = make.xyimage(x, y, data)
-    plot = win.manager.get_plot()
-    plot.add_item(item)
-    win.show()
-    win.exec_()
+    with qt_app_context(exec_loop=True):
+        win = PlotDialog(
+            edit=False,
+            toolbar=True,
+            wintitle="Image with custom X/Y axes scales",
+            options=dict(
+                xlabel="x (a.u.)",
+                ylabel="y (a.u.)",
+                yreverse=False,
+                type=PlotType.IMAGE,
+            ),
+        )
+        item = make.xyimage(x, y, data)
+        plot = win.manager.get_plot()
+        plot.add_item(item)
+        win.show()
 
 
 def compute_image():
@@ -65,12 +69,7 @@ def compute_image():
 
 
 def test_imagexy():
-    """Test"""
-    # -- Create QApplication
-    import plotpy.widgets
-
-    _app = plotpy.widgets.qapplication()
-    # --
+    """Test image xy"""
     imshow(*compute_image())
 
 

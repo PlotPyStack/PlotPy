@@ -12,6 +12,7 @@ import os
 
 from plotpy.widgets.builder import make
 from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.qthelpers_guidata import qt_app_context
 from plotpy.widgets.styles.base import style_generator, update_style_attr
 from plotpy.widgets.tools.shapes import (
     EllipseTool,
@@ -57,17 +58,12 @@ def create_window():
 
 def test_customize_shape_tool():
     """Test"""
-    # -- Create QApplication
-    import plotpy.widgets
-
-    _app = plotpy.widgets.qapplication()
-    # --
-    filename = os.path.join(os.path.dirname(__file__), "brain.png")
-    win = create_window()
-    image = make.image(filename=filename, colormap="bone", alpha_mask=True)
-    plot = win.manager.get_plot()
-    plot.add_item(image)
-    win.exec_()
+    with qt_app_context(exec_loop=True):
+        filename = os.path.join(os.path.dirname(__file__), "brain.png")
+        win = create_window()
+        image = make.image(filename=filename, colormap="bone", alpha_mask=True)
+        plot = win.manager.get_plot()
+        plot.add_item(image)
 
 
 if __name__ == "__main__":

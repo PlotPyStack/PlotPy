@@ -17,6 +17,7 @@ from plotpy.config import _
 from plotpy.mandelbrot import mandelbrot
 from plotpy.widgets.items.image.base import RawImageItem
 from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.qthelpers_guidata import qt_app_context
 from plotpy.widgets.tools.base import ToggleTool
 
 SHOW = True  # Show test in GUI-based test launcher
@@ -69,21 +70,20 @@ class MandelItem(RawImageItem):
 
 
 def test_mandel():
-    _app = plotpy.widgets.qapplication()
-    win = PlotDialog(
-        edit=True,
-        toolbar=True,
-        wintitle="Mandelbrot",
-        options=dict(yreverse=False, type=PlotType.IMAGE),
-    )
-    mandel = MandelItem(-1.5, 0.5, -1.0, 1.0)
-    win.manager.add_tool(FullScale, mandel)
-    plot = win.manager.get_plot()
-    plot.set_aspect_ratio(lock=False)
-    plot.add_item(mandel)
-    plot.set_full_scale(mandel)
-    win.show()
-    win.exec_()
+    with qt_app_context(exec_loop=True):
+        win = PlotDialog(
+            edit=True,
+            toolbar=True,
+            wintitle="Mandelbrot",
+            options=dict(yreverse=False, type=PlotType.IMAGE),
+        )
+        mandel = MandelItem(-1.5, 0.5, -1.0, 1.0)
+        win.manager.add_tool(FullScale, mandel)
+        plot = win.manager.get_plot()
+        plot.set_aspect_ratio(lock=False)
+        plot.add_item(mandel)
+        plot.set_full_scale(mandel)
+        win.show()
 
 
 if __name__ == "__main__":

@@ -8,15 +8,16 @@
 
 """Create a stand-alone executable"""
 
+import os
 import pathlib
 import sys
 
-sys.path.insert(0, str(pathlib.Path(__file__).absolute().parent.parent))
-
-from plotpy.core.utils.packaging_helpers import Distribution
+from plotpy.utils.packaging_helpers import Distribution
 
 # Importing modules to be bundled
-from tests.gui import sift
+from sift import app
+
+sys.path.insert(0, str(pathlib.Path(__file__).absolute().parent.parent))
 
 
 def create_executable():
@@ -24,16 +25,16 @@ def create_executable():
 
     dir_path = pathlib.Path(__file__).parent
     icon_path = str(dir_path / "sift.ico")
-    script_path = str(dir_path / "sift.pyw")
+    script_path = os.path.join(dir_path, "run.pyw")
     dist = Distribution()
     dist.setup(
         name="Sift",
-        version=sift.VERSION,
+        version=app.VERSION,
         description="Signal and Image Filtering Tool",
         script=script_path,
         target_name="sift.exe",
-        target_dir="{}-{}".format("Sift", sift.VERSION),
-        icon=icon_path
+        target_dir="{}-{}".format("Sift", app.VERSION),
+        icon=icon_path,
     )
     dist.add_modules("plotpy", "tests", "scipy")
     dist.excludes += ["IPython", "tkinter", "scipy.spatial.cKDTree"]

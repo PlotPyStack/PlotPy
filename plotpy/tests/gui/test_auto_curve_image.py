@@ -9,9 +9,13 @@
 
 
 import numpy as np
+from numpy import linspace, sin
 
+import plotpy.widgets
+from plotpy.env import execenv
 from plotpy.widgets.builder import make
 from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.qthelpers_guidata import qt_app_context
 
 SHOW = True  # Show test in GUI-based test launcher
 
@@ -61,21 +65,18 @@ def plot(*items):
     win.manager.get_itemlist_panel().show()
     plot.set_items_readonly(False)
     win.show()
-    # win.exec_()
+    return win
 
 
 def test_auto_curve_image():
-    """Test"""
-    # -- Create QApplication
-    import plotpy.widgets
-
-    _app = plotpy.widgets.qapplication()
-    # --
-    from numpy import linspace, sin
+    """Test auto curve image"""
 
     x = linspace(0, 2000, 20000)
     y = (sin(sin(sin(x / 50))) - 1) * -1000
-    plot(make.image(compute_image()), make.curve(x, y, color="b"), make.legend("TR"))
+    with qt_app_context(exec_loop=True):
+        _persist_obj = plot(
+            make.image(compute_image()), make.curve(x, y, color="b"), make.legend("TR")
+        )
 
 
 if __name__ == "__main__":

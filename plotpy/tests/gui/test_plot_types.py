@@ -9,9 +9,11 @@
 
 
 import numpy as np
+from numpy import linspace, sin
 
 from plotpy.widgets.builder import make
 from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.qthelpers_guidata import qt_app_context
 
 SHOW = True  # Show test in GUI-based test launcher
 
@@ -60,53 +62,58 @@ def plot(*items, type=PlotType.AUTO, title=""):
     win.manager.get_itemlist_panel().show()
     plot.set_items_readonly(False)
     win.show()
-    win.exec_()
+    return win
 
 
 def test_plot_types():
-    """Test"""
-    # -- Create QApplication
-    import plotpy.widgets
+    """Test plot types"""
+    _perist_plot_list = []
+    with qt_app_context(exec_loop=True):
+        x = linspace(-10, 10, 200)
+        y = sin(sin(sin(x)))
 
-    _app = plotpy.widgets.qapplication()
-    # --
-    from numpy import linspace, sin
+        _perist_plot_list.append(
+            plot(
+                make.curve(x, y, color="b"),
+                make.image(compute_image()),
+                type=PlotType.CURVE,
+                title="Curve specialized plot",
+            )
+        )
 
-    x = linspace(-10, 10, 200)
-    y = sin(sin(sin(x)))
+        _perist_plot_list.append(
+            plot(
+                make.curve(x, y, color="b"),
+                make.image(compute_image()),
+                type=PlotType.IMAGE,
+                title="Image specialized plot",
+            )
+        )
 
-    plot(
-        make.curve(x, y, color="b"),
-        make.image(compute_image()),
-        type=PlotType.CURVE,
-        title="Curve specialized plot",
-    )
+        _perist_plot_list.append(
+            plot(
+                make.curve(x, y, color="b"),
+                make.image(compute_image()),
+                title="PlotType = AUTO with curve added first",
+            )
+        )
 
-    plot(
-        make.curve(x, y, color="b"),
-        make.image(compute_image()),
-        type=PlotType.IMAGE,
-        title="Image specialized plot",
-    )
+        _perist_plot_list.append(
+            plot(
+                make.image(compute_image()),
+                make.curve(x, y, color="b"),
+                title="PlotType = AUTO with image added first",
+            )
+        )
 
-    plot(
-        make.curve(x, y, color="b"),
-        make.image(compute_image()),
-        title="PlotType = AUTO with curve added first",
-    )
-
-    plot(
-        make.image(compute_image()),
-        make.curve(x, y, color="b"),
-        title="PlotType = AUTO with image added first",
-    )
-
-    plot(
-        make.curve(x, y, color="b"),
-        make.image(compute_image()),
-        type=PlotType.MANUAL,
-        title="PlotType = MANUAL",
-    )
+        _perist_plot_list.append(
+            plot(
+                make.curve(x, y, color="b"),
+                make.image(compute_image()),
+                type=PlotType.MANUAL,
+                title="PlotType = MANUAL",
+            )
+        )
 
 
 if __name__ == "__main__":

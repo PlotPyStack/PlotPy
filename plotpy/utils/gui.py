@@ -34,10 +34,10 @@
 
 
 """
-plotpy.gui.utils.gui
+plotpy.utils.gui
 --------------------
 
-The ``plotpy.gui.utils.gui`` module provides various utility helper functions
+The ``plotpy.utils.gui`` module provides various utility helper functions
 (pure python).
 """
 

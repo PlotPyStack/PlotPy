@@ -9,27 +9,26 @@
 
 from numpy.random import normal
 
-import plotpy.widgets
 from plotpy.widgets.builder import make
 from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.qthelpers_guidata import qt_app_context
 
 SHOW = True  # Show test in GUI-based test launcher
 
 
 def test_histogram():
     """Test"""
-    _app = plotpy.widgets.qapplication()
-    data = normal(0, 1, (2000,))
-    win = PlotDialog(
-        edit=False,
-        toolbar=True,
-        wintitle="Histogram test",
-        options={"type": PlotType.CURVE},
-    )
-    plot = win.manager.get_plot()
-    plot.add_item(make.histogram(data))
-    win.show()
-    win.exec_()
+    with qt_app_context(exec_loop=True):
+        data = normal(0, 1, (2000,))
+        win = PlotDialog(
+            edit=False,
+            toolbar=True,
+            wintitle="Histogram test",
+            options={"type": PlotType.CURVE},
+        )
+        plot = win.manager.get_plot()
+        plot.add_item(make.histogram(data))
+        win.show()
 
 
 if __name__ == "__main__":

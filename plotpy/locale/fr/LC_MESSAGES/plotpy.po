@@ -120,7 +120,7 @@ msgstr ""
 
 #: console/widgets/arraybuilder.py:386
 msgid "Array dimensions not valid"
-msgstr ""
+msgstr "Dimensions du tablleau non valide"
 
 #: console/widgets/internalshell.py:345
 msgid "Help..."
@@ -133,7 +133,7 @@ msgstr "Aide"
 
 #: console/widgets/internalshell.py:367
 msgid "Shell special commands:"
-msgstr ""
+msgstr "Commandes spéciales du shell :"
 
 #: console/widgets/internalshell.py:368
 msgid "Internal editor:"
@@ -149,7 +149,7 @@ msgstr "Exécuter ce script :"
 
 #: console/widgets/internalshell.py:371
 msgid "Remove references:"
-msgstr ""
+msgstr "Supprimer les références :"
 
 #: console/widgets/internalshell.py:372
 msgid "System commands:"
@@ -157,11 +157,11 @@ msgstr "Commandes système :"
 
 #: console/widgets/internalshell.py:373
 msgid "Python help:"
-msgstr ""
+msgstr "Aide Python:"
 
 #: console/widgets/internalshell.py:374
 msgid "GUI-based editor:"
-msgstr ""
+msgstr "Éditeur basé sur l'interface graphique:"
 
 #: console/widgets/internalshell.py:496
 msgid ""
@@ -195,7 +195,7 @@ msgstr "Enregistrer l'historique sous..."
 
 #: console/widgets/shell.py:162
 msgid "Save current history log (i.e. all inputs and outputs) in a text file"
-msgstr ""
+msgstr "Enregistrer le journal de l'historique actuel (càd toutes les entrées et sorties) dans un fichier texte"
 
 #: console/widgets/shell.py:169
 msgid "Delete"
@@ -211,7 +211,7 @@ msgstr "Enregistrer l'historique"
 
 #: console/widgets/shell.py:304
 msgid "History logs"
-msgstr ""
+msgstr "Journaux d'historique"
 
 #: console/widgets/shell.py:748
 msgid "Copy without prompts"
@@ -227,7 +227,7 @@ msgstr "Effacer la console"
 
 #: console/widgets/shell.py:765
 msgid "Clear shell contents ('cls' command)"
-msgstr ""
+msgstr "Effacer le contenu du shell (commande 'cls')"
 
 #: core/dataset/dataitems.py:79
 msgid "integer"
@@ -323,7 +323,7 @@ msgstr "sur"
 
 #: gui/widgets/base.py:44
 msgid "Reset"
-msgstr ""
+msgstr "Réinitialiser"
 
 #: gui/widgets/base.py:156
 msgid "Rotate & Crop"
@@ -618,15 +618,15 @@ msgstr "Valeur"
 
 #: gui/widgets/fit.py:115
 msgid "Min"
-msgstr ""
+msgstr "Min"
 
 #: gui/widgets/fit.py:116
 msgid "Max"
-msgstr ""
+msgstr "Max"
 
 #: gui/widgets/fit.py:117 gui/widgets/styles.py:374
 msgid "Steps"
-msgstr ""
+msgstr "Pas"
 
 #: gui/widgets/fit.py:118 gui/widgets/variableexplorer/arrayeditor.py:628
 #: gui/widgets/variableexplorer/arrayeditor.py:663
@@ -637,7 +637,7 @@ msgstr "Format"
 
 #: gui/widgets/fit.py:119
 msgid "Logarithmic"
-msgstr ""
+msgstr "Logarithmique"
 
 #: gui/widgets/fit.py:119 gui/widgets/styles.py:745 gui/widgets/tools.py:2563
 msgid "Scale"
@@ -645,7 +645,7 @@ msgstr ""
 
 #: gui/widgets/fit.py:120 gui/widgets/styles.py:734
 msgid "Unit"
-msgstr ""
+msgstr "Unité"
 
 #: gui/widgets/fit.py:156
 msgid "Curve fitting parameter"
@@ -678,7 +678,7 @@ msgstr "Options"
 
 #: gui/widgets/fit.py:523 gui/widgets/styles.py:1650
 msgid "Bounds"
-msgstr ""
+msgstr "Bornes"
 
 #: gui/widgets/fit.py:531
 msgid "Automatic fit"
@@ -686,7 +686,7 @@ msgstr "Ajustement automatique"
 
 #: gui/widgets/fit.py:580 gui/widgets/variableexplorer/arrayeditor.py:795
 msgid "Data"
-msgstr ""
+msgstr "Données"
 
 #: gui/widgets/fit.py:585
 msgid "Fit"
@@ -1208,15 +1208,15 @@ msgstr "Borne supérieure de l'axe des ordonnées"
 
 #: gui/widgets/styles.py:831
 msgid "Z Axis"
-msgstr "Niveaux"
+msgstr "Axe Z"
 
 #: gui/widgets/styles.py:832
 msgid "Lower z-axis limit"
-msgstr "Borne inférieure des niveaux"
+msgstr "Limite inférieure de l'axe z"
 
 #: gui/widgets/styles.py:833
 msgid "Upper z-axis limit"
-msgstr "Borne supérieure des niveaux"
+msgstr "Limite supérieure de l'axe z"
 
 #: gui/widgets/styles.py:874 gui/widgets/styles.py:878
 msgid "Contents"
@@ -1520,6 +1520,8 @@ msgstr ""
 msgid ""
 "Image interpolation type, Flat mode use fixed u,v interpolation parameters"
 msgstr ""
+"Type d'interpolation d'image, le mode flat utilise des paramètres d'interpolation u,"
+" v fixes"
 
 #: gui/widgets/styles.py:1403
 msgid "Fixed U interpolation parameter"
@@ -1527,11 +1529,11 @@ msgstr ""
 
 #: gui/widgets/styles.py:1407 gui/widgets/styles.py:1414
 msgid "For flat mode only"
-msgstr ""
+msgstr "Paramètre d'interpolation U fixe"
 
 #: gui/widgets/styles.py:1410
 msgid "Fixed V interpolation parameter"
-msgstr ""
+msgstr "Paramètre d'interpolation V fixe"
 
 #: gui/widgets/styles.py:1416
 msgid "Show grid"
@@ -1891,7 +1893,7 @@ msgstr "Anticrénelage (courbes)"
 
 #: gui/widgets/tools.py:1958
 msgid "Markers"
-msgstr ""
+msgstr "Marqueurs"
 
 #: gui/widgets/tools.py:1969
 msgid "Free"
@@ -1931,7 +1933,7 @@ msgstr "Déverrouiller"
 
 #: gui/widgets/tools.py:2051
 msgid "1:1"
-msgstr "Rapport unité"
+msgstr "1:1"
 
 #: gui/widgets/tools.py:2054
 msgid "Edit..."
@@ -1981,7 +1983,7 @@ msgstr "La sélection ne contient aucun objet image pris en charge."
 
 #: gui/widgets/tools.py:2263
 msgid "Destination size:"
-msgstr ""
+msgstr "Taille de destination:"
 
 #: gui/widgets/tools.py:2269 gui/widgets/tools.py:2273
 msgid "Image levels adjustments"
@@ -2076,7 +2078,7 @@ msgstr ""
 
 #: gui/widgets/tools.py:2677 gui/widgets/tools.py:2684
 msgid "About"
-msgstr ""
+msgstr "A propos"
 
 #: gui/widgets/tools.py:2758 gui/widgets/tools.py:2768
 msgid "Export"
@@ -2159,18 +2161,18 @@ msgstr "Souhaitez-vous vraiment effacer le masque ?"
 #: gui/widgets/variableexplorer/collectionseditor.py:1311
 #: gui/widgets/variableexplorer/collectionseditor.py:1324
 msgid "Warning"
-msgstr ""
+msgstr "Avertissement"
 
 #: gui/widgets/variableexplorer/arrayeditor.py:584
 msgid "It was not possible to copy values for this array"
-msgstr ""
+msgstr "Il n'a pas été possible de copier les valeurs de ce tableau"
 
 #: gui/widgets/variableexplorer/arrayeditor.py:664
 #: gui/widgets/variableexplorer/dataframeeditor.py:842
 #, fuzzy
 #| msgid "String formatting"
 msgid "Float formatting"
-msgstr "Format"
+msgstr "Formatage flottant"
 
 #: gui/widgets/variableexplorer/arrayeditor.py:674
 #, python-format
@@ -2234,13 +2236,15 @@ msgstr "Indice :"
 
 #: gui/widgets/variableexplorer/arrayeditor.py:824
 msgid "<u>Warning</u>: changes are applied separately"
-msgstr ""
+msgstr "<u>Attention</u> : les modifications sont appliquées séparément"
 
 #: gui/widgets/variableexplorer/arrayeditor.py:827
 msgid ""
 "For performance reasons, changes applied to masked array won't be reflected "
 "in array's data (and vice-versa)."
 msgstr ""
+"Pour des raisons de performances, les modifications appliquées aux tableaux masqués ne"
+"seront pas reflétées dans les données du tableau (et vice-versa)."
 
 #: gui/widgets/variableexplorer/arrayeditor.py:837
 #: gui/widgets/variableexplorer/collectionseditor.py:1580
@@ -2307,10 +2311,9 @@ msgid ""
 msgstr ""
 
 #: gui/widgets/variableexplorer/collectionseditor.py:760
-#, fuzzy
 #| msgid "Load items"
 msgid "Edit item"
-msgstr "Charger les objets plotpy"
+msgstr "Modifier l'élément"
 
 #: gui/widgets/variableexplorer/collectionseditor.py:762
 #, python-format
@@ -2324,7 +2327,6 @@ msgid "Resize rows to contents"
 msgstr ""
 
 #: gui/widgets/variableexplorer/collectionseditor.py:841
-#, fuzzy
 #| msgid "Edit..."
 msgid "Edit"
 msgstr "Modifier..."
@@ -2376,13 +2378,13 @@ msgstr "Souhaitez-vous vraiment supprimer les éléments sélectionnés ?"
 #, fuzzy
 #| msgid "variable_name"
 msgid "New variable name:"
-msgstr "nom_de_variable"
+msgstr "Nouveau nom de variable :"
 
 #: gui/widgets/variableexplorer/collectionseditor.py:1160
 #, fuzzy
 #| msgid "variable_name"
 msgid "Variable name:"
-msgstr "nom_de_variable"
+msgstr "Nom de variable :"
 
 #: gui/widgets/variableexplorer/collectionseditor.py:1200
 msgid "Key:"
@@ -2393,10 +2395,8 @@ msgid "Value:"
 msgstr "Valeur :"
 
 #: gui/widgets/variableexplorer/collectionseditor.py:1229
-#, fuzzy
-#| msgid "Memory error"
 msgid "Import error"
-msgstr "Mémoire insuffisante"
+msgstr "Erreur lors de l'import"
 
 #: gui/widgets/variableexplorer/collectionseditor.py:1230
 #, fuzzy
@@ -2430,7 +2430,7 @@ msgstr ""
 
 #: gui/widgets/variableexplorer/collectionseditor.py:1325
 msgid "It was not possible to copy this dataframe"
-msgstr ""
+msgstr "Il n'a pas été possible de copier cette structure de données"
 
 #: gui/widgets/variableexplorer/collectionseditor.py:1347
 msgid "Clipboard contents"
@@ -2456,11 +2456,11 @@ msgstr ""
 
 #: gui/widgets/variableexplorer/dataframeeditor.py:674
 msgid "To bool"
-msgstr ""
+msgstr "Vers booléen"
 
 #: gui/widgets/variableexplorer/dataframeeditor.py:675
 msgid "To complex"
-msgstr ""
+msgstr "Vers complèxe"
 
 #: gui/widgets/variableexplorer/dataframeeditor.py:676
 msgid "To int"
@@ -2470,11 +2470,11 @@ msgstr ""
 #, fuzzy
 #| msgid "float"
 msgid "To float"
-msgstr "flottant"
+msgstr "Vers flottant"
 
 #: gui/widgets/variableexplorer/dataframeeditor.py:678
 msgid "To str"
-msgstr ""
+msgstr "Vers chaîne de caractère"
 
 #: gui/widgets/variableexplorer/dataframeeditor.py:758
 #, fuzzy, python-format
@@ -2484,7 +2484,7 @@ msgstr "Éditeur de tableaux"
 
 #: gui/widgets/variableexplorer/dataframeeditor.py:793
 msgid "Column min/max"
-msgstr ""
+msgstr "Colonne min/max"
 
 #: gui/widgets/variableexplorer/dataframeeditor.py:851
 msgid "Format ({}) is incorrect"
@@ -2492,7 +2492,7 @@ msgstr "Le format ({}) est incorrect"
 
 #: gui/widgets/variableexplorer/dataframeeditor.py:855
 msgid "Format ({}) should start with '%'"
-msgstr ""
+msgstr "Le format ({}) devrait commencer avec '%'s"
 
 #: gui/widgets/variableexplorer/importwizard.py:162
 #: gui/widgets/variableexplorer/importwizard.py:514
@@ -2524,7 +2524,7 @@ msgstr "Tab"
 
 #: gui/widgets/variableexplorer/importwizard.py:190
 msgid "Whitespace"
-msgstr ""
+msgstr "Espace"
 
 #: gui/widgets/variableexplorer/importwizard.py:193
 #: gui/widgets/variableexplorer/importwizard.py:211
@@ -2576,7 +2576,7 @@ msgstr "Assistant d'importation"
 #, fuzzy
 #| msgid "Label text"
 msgid "Raw text"
-msgstr "Texte de l'étiquette"
+msgstr "Texte brut"
 
 #: gui/widgets/variableexplorer/importwizard.py:595
 msgid "variable_name"
@@ -2594,7 +2594,7 @@ msgstr "Aperçu"
 #, fuzzy
 #| msgid "variable_name"
 msgid "Variable Name"
-msgstr "nom_de_variable"
+msgstr "Nom de la variable"
 
 #: gui/widgets/variableexplorer/importwizard.py:619
 msgid "Cancel"

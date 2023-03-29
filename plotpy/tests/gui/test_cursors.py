@@ -8,8 +8,11 @@
 """Horizontal/vertical cursors test"""
 
 
+from numpy import linspace, sin
+
 from plotpy.widgets.builder import make
 from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.qthelpers_guidata import qt_app_context
 
 SHOW = True  # Show test in GUI-based test launcher
 
@@ -20,28 +23,21 @@ def plot(*items):
     for item in items:
         plot.add_item(item)
     win.show()
-    win.exec_()
+    return win
 
 
 def test_cursor():
-    """Test"""
-    # -- Create QApplication
-    import plotpy.widgets
-
-    _app = plotpy.widgets.qapplication()
-    # --
-    from numpy import linspace, sin
-
+    """Test cursor"""
     x = linspace(-10, 10, 1000) + 1
     y = sin(sin(sin(x))) + 3
-
-    curve = make.curve(x, y, "ab", "b")
-    hcursor = make.hcursor(3.2, label="y = %.2f")
-    vcursor = make.vcursor(7, label="x = %.2f")
-    vcursor2 = make.vcursor(-1, label="NOT MOVABLE = %.2f", movable=False)
-    xcursor = make.xcursor(-4, 2.5, label="x = %.2f<br>y = %.2f")
-    legend = make.legend("TR")
-    plot(curve, hcursor, vcursor, vcursor2, xcursor, legend)
+    with qt_app_context(exec_loop=True):
+        curve = make.curve(x, y, "ab", "b")
+        hcursor = make.hcursor(3.2, label="y = %.2f")
+        vcursor = make.vcursor(7, label="x = %.2f")
+        vcursor2 = make.vcursor(-1, label="NOT MOVABLE = %.2f", movable=False)
+        xcursor = make.xcursor(-4, 2.5, label="x = %.2f<br>y = %.2f")
+        legend = make.legend("TR")
+        persist_obj = plot(curve, hcursor, vcursor, vcursor2, xcursor, legend)
 
 
 if __name__ == "__main__":

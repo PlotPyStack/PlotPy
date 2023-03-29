@@ -8,8 +8,11 @@
 """PlotDialog test"""
 
 
+from numpy import linspace, sin
+
 from plotpy.widgets.builder import make
 from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.qthelpers_guidata import qt_app_context
 
 SHOW = True  # Show test in GUI-based test launcher
 
@@ -30,21 +33,16 @@ def plot(*items):
     win.manager.get_itemlist_panel().show()
     plot.set_items_readonly(False)
     win.show()
-    win.exec_()
+    return win
 
 
 def test_no_auto_tools():
-    """Test"""
-    # -- Create QApplication
-    import plotpy.widgets
-
-    _app = plotpy.widgets.qapplication()
-    # --
-    from numpy import linspace, sin
+    """Test no auto tools"""
 
     x = linspace(-10, 10, 200)
     y = sin(sin(sin(x)))
-    plot(make.curve(x, y, color="b"))
+    with qt_app_context(exec_loop=True):
+        _persist_plot = plot(make.curve(x, y, color="b"))
 
 
 if __name__ == "__main__":

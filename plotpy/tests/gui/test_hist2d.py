@@ -14,50 +14,54 @@ import plotpy.widgets
 from plotpy.config import _
 from plotpy.widgets.builder import make
 from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.qthelpers_guidata import qt_app_context
 
 SHOW = True  # Show test in GUI-based test launcher
 
 
 def hist2d_func(X, Y, Z):
-    win = PlotDialog(
-        edit=True,
-        toolbar=True,
-        wintitle="2-D Histogram X0=(0,1), X1=(-1,-1)",
-        options={"type": PlotType.IMAGE},
-    )
-    hist2d = make.histogram2D(X, Y, 200, 200, Z=Z, computation=2)
-    curve = make.curve(X[::50], Y[::50], linestyle="", marker="+", title=_("Markers"))
-    plot = win.manager.get_plot()
-    plot.set_aspect_ratio(lock=False)
-    plot.set_antialiasing(False)
-    plot.add_item(hist2d)
-    plot.add_item(curve)
-    plot.set_item_visible(curve, False)
-    win.show()
-    win.exec_()
+    with qt_app_context(exec_loop=True):
+        win = PlotDialog(
+            edit=True,
+            toolbar=True,
+            wintitle="2-D Histogram X0=(0,1), X1=(-1,-1)",
+            options={"type": PlotType.IMAGE},
+        )
+        hist2d = make.histogram2D(X, Y, 200, 200, Z=Z, computation=2)
+        curve = make.curve(
+            X[::50], Y[::50], linestyle="", marker="+", title=_("Markers")
+        )
+        plot = win.manager.get_plot()
+        plot.set_aspect_ratio(lock=False)
+        plot.set_antialiasing(False)
+        plot.add_item(hist2d)
+        plot.add_item(curve)
+        plot.set_item_visible(curve, False)
+        win.show()
 
 
 def hist2d(X, Y):
-    win = PlotDialog(
-        edit=True,
-        toolbar=True,
-        wintitle="2-D Histogram X0=(0,1), X1=(-1,-1)",
-        options={"type": PlotType.IMAGE},
-    )
-    hist2d = make.histogram2D(X, Y, 200, 200)
-    curve = make.curve(X[::50], Y[::50], linestyle="", marker="+", title=_("Markers"))
-    plot = win.manager.get_plot()
-    plot.set_aspect_ratio(lock=False)
-    plot.set_antialiasing(False)
-    plot.add_item(hist2d)
-    plot.add_item(curve)
-    plot.set_item_visible(curve, False)
-    win.show()
-    win.exec_()
+    with qt_app_context(exec_loop=True):
+        win = PlotDialog(
+            edit=True,
+            toolbar=True,
+            wintitle="2-D Histogram X0=(0,1), X1=(-1,-1)",
+            options={"type": PlotType.IMAGE},
+        )
+        hist2d = make.histogram2D(X, Y, 200, 200)
+        curve = make.curve(
+            X[::50], Y[::50], linestyle="", marker="+", title=_("Markers")
+        )
+        plot = win.manager.get_plot()
+        plot.set_aspect_ratio(lock=False)
+        plot.set_antialiasing(False)
+        plot.add_item(hist2d)
+        plot.add_item(curve)
+        plot.set_item_visible(curve, False)
+        win.show()
 
 
 def test_hist_2d():
-    _app = plotpy.widgets.qapplication()
     N = 150000
     m = array([[1.0, 0.2], [-0.2, 3.0]])
     X1 = random.normal(0, 0.3, size=(N, 2))
@@ -67,7 +71,6 @@ def test_hist_2d():
 
 
 def test_hist_2d_func():
-    _app = plotpy.widgets.qapplication()
     N = 150000
     m = array([[1.0, 0.2], [-0.2, 3.0]])
     X1 = random.normal(0, 0.3, size=(N, 2))

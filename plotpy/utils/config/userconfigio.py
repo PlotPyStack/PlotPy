@@ -51,7 +51,7 @@ import datetime
 import numpy
 
 
-class GroupContext(object):
+class GroupContext:
     """Group context object"""
 
     def __init__(self, handler, group_name):
@@ -67,12 +67,12 @@ class GroupContext(object):
         return False
 
 
-class BaseIOHandler(object):
+class BaseIOHandler:
     """Base I/O Handler with group context manager
-    (see olotpy.core.io.hdf5io for another example of this handler usage)"""
+    (see plotpy.core.io.hdf5io for another example of this handler usage)"""
 
     def __init__(self):
-        self.option = []
+        self.option: list = []
 
     def group(self, group_name):
         """Enter a group. This returns a context manager, to be used with
@@ -84,6 +84,10 @@ class BaseIOHandler(object):
 
         :param section:
         """
+        try:
+            print(self.sender())
+        except:
+            print(self, section)
         self.option.append(section)
 
     def end(self, section):
@@ -96,9 +100,7 @@ class BaseIOHandler(object):
 
 
 class UserConfigIOHandler(BaseIOHandler):
-    """
-
-    """
+    """ """
 
     def __init__(self, conf, section, option):
         self.conf = conf
@@ -157,7 +159,8 @@ class WriterMixin(object):
         elif isinstance(val, datetime.date):
             self.write_int(val.toordinal())
         elif hasattr(val, "serialize") and isinstance(
-            val.serialize, collections.Callable
+            val.serialize,
+            collections.Callable,  # TODO collections has not attr Callable
         ):
             # The object has a DataSet-like `serialize` method
             val.serialize(self)
@@ -183,9 +186,7 @@ class UserConfigWriter(UserConfigIOHandler, WriterMixin):
     write_unicode = write_str
 
     def write_none(self):
-        """
-
-        """
+        """ """
         self.write_any(None)
 
 

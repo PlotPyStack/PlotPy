@@ -168,13 +168,3 @@ class ResizeDialog(QW.QDialog):
             return self.width / self.old_width
         else:
             return self.height / self.old_height
-
-
-if __name__ == "__main__":
-    import plotpy.widgets
-
-    qapp = plotpy.widgets.qapplication()
-    test = ResizeDialog(None, (150, 100), (300, 200), "Enter the new size:")
-    if test.exec_():
-        print(test.width)
-        print(test.get_zoom())

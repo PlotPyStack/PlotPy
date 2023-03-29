@@ -37,7 +37,8 @@
     "python.testing.pytestArgs": [
         "-v",
         "--cov",
-        "--cov-report=xml",
+        "--cov-report=html",
+        "--mode=unattended",
         "plotpy",
     ],
 }

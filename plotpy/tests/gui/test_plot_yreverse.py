@@ -8,32 +8,28 @@
 """Reverse y-axis test for curve plotting"""
 
 
+import numpy as np
+
 from plotpy.widgets.builder import make
 from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.qthelpers_guidata import qt_app_context
 
 SHOW = False  # Do not show test in GUI-based test launcher
 
 
 def test_plot_yreverse():
-    """Test"""
-    # -- Create QApplication
-    import plotpy.widgets
+    """Test plot reverse"""
+    with qt_app_context(exec_loop=True):
+        x = np.linspace(-10, 10, 200)
+        y = x * np.exp(-x)
+        item = make.curve(x, y, color="b")
 
-    _app = plotpy.widgets.qapplication()
-    # --
-    import numpy as np
-
-    x = np.linspace(-10, 10, 200)
-    y = x * np.exp(-x)
-    item = make.curve(x, y, color="b")
-
-    win = PlotDialog(options={"type": PlotType.CURVE})
-    plot = win.manager.get_plot()
-    plot.add_item(item)
-    plot.set_axis_direction("left", True)
-    plot.set_axis_direction("bottom", True)
-    win.show()
-    win.exec_()
+        win = PlotDialog(options={"type": PlotType.CURVE})
+        plot = win.manager.get_plot()
+        plot.add_item(item)
+        plot.set_axis_direction("left", True)
+        plot.set_axis_direction("bottom", True)
+        win.show()
 
 
 if __name__ == "__main__":

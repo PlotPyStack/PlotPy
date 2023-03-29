@@ -15,6 +15,7 @@ import numpy as np
 from plotpy._scaler import _scale_quads
 from plotpy.widgets.builder import make
 from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.qthelpers_guidata import qt_app_context
 
 SHOW = True  # Show test in GUI-based test launcher
 
@@ -30,7 +31,7 @@ def imshow(items):
     for item in items:
         plot.add_item(item)
     win.show()
-    win.exec_()
+    return win
 
 
 def polar_demo(N=300):
@@ -77,14 +78,10 @@ def compute_quads3():
 
 
 def test_pcolor():
-    """Test"""
-    # -- Create QApplication
-    import plotpy.widgets
-
-    _app = plotpy.widgets.qapplication()
-    # --
-    items = compute_quads() + compute_quads3()
-    imshow(items)
+    """Test pcolor"""
+    with qt_app_context(exec_loop=True):
+        items = compute_quads() + compute_quads3()
+        _persist_plot = imshow(items)
 
 
 def test_valgrind(K=200):
@@ -109,4 +106,4 @@ def test_valgrind(K=200):
 
 if __name__ == "__main__":
     test_pcolor()
-    # valgrind_test()
+    test_valgrind()

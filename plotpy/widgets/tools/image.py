@@ -21,6 +21,7 @@ from plotpy.widgets.items.image.transform import TrImageItem
 from plotpy.widgets.items.shapes.ellipse import EllipseShape
 from plotpy.widgets.items.shapes.rectangle import RectangleShape
 from plotpy.widgets.panels import ID_CONTRAST
+from plotpy.widgets.qthelpers import exec_image_save_dialog
 from plotpy.widgets.tools.base import (
     CommandTool,
     DefaultToolbarID,
@@ -30,6 +31,7 @@ from plotpy.widgets.tools.base import (
 )
 from plotpy.widgets.tools.misc import OpenFileTool
 from plotpy.widgets.tools.shapes import CircleTool, RectangleTool, RectangularShapeTool
+from plotpy.widgets.variableexplorer.objecteditor import oedit
 
 
 class ImageStatsRectangle(AnnotatedRectangle):
@@ -894,13 +896,11 @@ def update_image_tool_status(tool, plot):
 
 def export_image_data(item):
     """Export image item data to file"""
-    from plotpy.widgets.qthelpers import exec_image_save_dialog
 
     exec_image_save_dialog(item.plot(), item.data)
 
 
 def edit_image_data(item):
     """Edit image item data to file"""
-    from plotpy.widgets.variableexplorer.objecteditor import oedit
 
     oedit(item.data)

@@ -136,10 +136,10 @@ class TransformImageMixin:
         if self.can_rotate():
             if self.rotation_point is None:
                 self.set_rotation_point_to_center()
-            vec0 = handles[:, handle] - self.rotation_point
+            vec0 = handles.T.A[0] - self.rotation_point
             vec1 = p0 - self.rotation_point
-            a0 = np.arctan2(vec0[1, 0], vec0[0, 0])
-            a1 = np.arctan2(vec1[1, 0], vec1[0, 0])
+            a0 = np.arctan2(vec0[1], vec0[0])
+            a1 = np.arctan2(vec1[1], vec1[0])
             # compute angles
             angle += a1 - a0
             angle = float(angle)
@@ -148,8 +148,8 @@ class TransformImageMixin:
             rot = rotate(a1 - a0)
             tr = tr1.I * rot * tr1
             vc = colvector(x0, y0)
-            new_vc = tr * vc
-            x0, y0 = float(new_vc[0]), float(new_vc[1])
+            new_vc = tr.A.dot(vc)
+            x0, y0 = new_vc[0], new_vc[1]
             if self.plot():
                 self.plot().SIG_ITEM_ROTATED.emit(self, angle)
 
@@ -157,17 +157,17 @@ class TransformImageMixin:
             if self.rotation_point is None:
                 self.set_rotation_point_to_center()
             center = handles.sum(axis=1) / 4
-            vec0 = handles[:, handle] - center
+            vec0 = handles.T.A[0] - center
             vec1 = p0 - center
             # compute pixel size
             zoom = np.linalg.norm(vec1) / np.linalg.norm(vec0)
             dx = float(zoom * dx)
             dy = float(zoom * dy)
             self.rotation_point[0] = (
-                center[0] + (self.rotation_point[0] - center[0]) * zoom
+                center.item(0) + (self.rotation_point[0] - center.item(0)) * zoom
             )
             self.rotation_point[1] = (
-                center[1] + (self.rotation_point[1] - center[1]) * zoom
+                center.item(1) + (self.rotation_point[1] - center.item(1)) * zoom
             )
             if self.plot():
                 self.plot().SIG_ITEM_RESIZED.emit(self, zoom, zoom)

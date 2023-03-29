@@ -7,17 +7,17 @@
 
 """RGB Image test, creating the RGBImageItem object via make.rgbimage"""
 
-import os.path as osp
+import os
 
 import plotpy
-import plotpy.widgets
 from plotpy.widgets.builder import make
 from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.qthelpers_guidata import qt_app_context
 
 SHOW = True  # Show test in GUI-based test launcher
 
-PLOTPYDIR = osp.abspath(osp.dirname(plotpy.__file__))
-IMGFILE = osp.join(PLOTPYDIR, "images", "items", "image.png")
+PLOTPYDIR = os.path.abspath(os.path.dirname(plotpy.__file__))
+IMGFILE = os.path.join(PLOTPYDIR, "images", "items", "image.png")
 
 
 def imshow(filename):
@@ -31,16 +31,13 @@ def imshow(filename):
     plot = win.manager.get_plot()
     plot.add_item(item)
     win.show()
-    win.exec_()
+    return win
 
 
 def test_image_rgb():
     """Test"""
-    # -- Create QApplication
-
-    _app = plotpy.widgets.qapplication()
-    # --
-    imshow(IMGFILE)
+    with qt_app_context(exec_loop=True):
+        _win_persist = imshow(IMGFILE)
 
 
 if __name__ == "__main__":

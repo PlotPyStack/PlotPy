@@ -14,6 +14,7 @@ import numpy as np
 
 from plotpy.widgets.builder import make
 from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.qthelpers_guidata import qt_app_context
 from plotpy.widgets.tools.axes import PlaceAxesTool
 from plotpy.widgets.tools.shapes import EllipseTool, FreeFormTool, RectangleTool
 
@@ -36,28 +37,23 @@ def create_window():
 
 
 def test_imagesuperp():
-    """Test"""
-    # -- Create QApplication
-    import plotpy.widgets
+    """Test image superposition"""
 
-    _app = plotpy.widgets.qapplication()
-    # --
     filename = os.path.join(os.path.dirname(__file__), "brain.png")
-
-    win = create_window()
-    image1 = make.image(
-        filename=filename, title="Original", alpha_mask=False, colormap="gray"
-    )
-    data2 = np.array(image1.data.T[200:], copy=True)
-    image2 = make.image(data2, title="Modified")  # , alpha_mask=True)
-    plot = win.manager.get_plot()
-    plot.add_item(image1, z=0)
-    plot.add_item(image2, z=1)
-    plot.set_items_readonly(False)
-    image2.set_readonly(True)
-    win.manager.get_itemlist_panel().show()
-    win.show()
-    win.exec_()
+    with qt_app_context(exec_loop=True):
+        win = create_window()
+        image1 = make.image(
+            filename=filename, title="Original", alpha_mask=False, colormap="gray"
+        )
+        data2 = np.array(image1.data.T[200:], copy=True)
+        image2 = make.image(data2, title="Modified")  # , alpha_mask=True)
+        plot = win.manager.get_plot()
+        plot.add_item(image1, z=0)
+        plot.add_item(image2, z=1)
+        plot.set_items_readonly(False)
+        image2.set_readonly(True)
+        win.manager.get_itemlist_panel().show()
+        win.show()
 
 
 if __name__ == "__main__":

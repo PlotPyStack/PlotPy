@@ -46,3 +46,4 @@ doc/source/deployment_example/qt.conf
 
 # Virtual env
 .venv/
+htmlcov

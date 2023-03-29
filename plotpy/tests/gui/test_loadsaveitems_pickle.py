@@ -15,9 +15,9 @@ import os
 
 import numpy as np
 
-import plotpy.widgets
 from plotpy.widgets.builder import make
 from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.widgets.qthelpers_guidata import qt_app_context
 from plotpy.widgets.tools.axes import Axes
 from plotpy.widgets.tools.image import ImageMaskTool
 from plotpy.widgets.tools.item import LoadItemsTool, SaveItemsTool
@@ -97,7 +97,7 @@ class IOTest(object):
         """Run test"""
         self.create_dialog()
         self.add_items()
-        self.dlg.exec_()
+        self.dlg.show()
         print("Saving items...", end=" ")
         self.save_items()
         print("OK")
@@ -148,9 +148,9 @@ class PickleTest(IOTest):
 
 
 def test_pickle():
-    _app = plotpy.widgets.qapplication()
-    test = PickleTest()
-    test.run()
+    with qt_app_context(exec_loop=True):
+        test = PickleTest()
+        test.run()
 
 
 if __name__ == "__main__":

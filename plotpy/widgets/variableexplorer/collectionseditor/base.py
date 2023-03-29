@@ -4,6 +4,7 @@ import re
 
 import numpy as np
 from guidata.configtools import get_icon
+from guidata.qthelpers import mimedata2url
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
@@ -11,7 +12,6 @@ from qtpy import QtWidgets as QW
 from plotpy.config import _
 from plotpy.utils.misc_from_gui import add_actions, create_action
 from plotpy.utils.path import getcwd_or_home
-from plotpy.widgets.qthelpers import mimedata2url
 from plotpy.widgets.variableexplorer.importwizard import ImportWizard
 from plotpy.widgets.variableexplorer.nsview import (
     DataFrame,
