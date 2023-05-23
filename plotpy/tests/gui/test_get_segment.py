@@ -17,13 +17,13 @@ import os
 import numpy as np
 import qtpy.QtCore as QC
 from guidata.env import execenv
+from guidata.qthelpers import qt_app_context
 
 from plotpy.config import _
-from plotpy.widgets.builder import make
-from plotpy.widgets.plot.plotwidget import PlotDialog
-from plotpy.widgets.qthelpers_guidata import qt_app_context
-from plotpy.widgets.tools.annotations import AnnotatedSegmentTool
-from plotpy.widgets.tools.selection import SelectTool
+from plotpy.core.builder import make
+from plotpy.core.plot.plotwidget import PlotDialog
+from plotpy.core.tools.annotations import AnnotatedSegmentTool
+from plotpy.core.tools.selection import SelectTool
 
 SHOW = True  # Show test in GUI-based test launcher
 # Input coordinate in pixel, in window reference frame

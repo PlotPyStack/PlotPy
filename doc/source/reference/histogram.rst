@@ -1,1 +1,1 @@
-.. automodule:: plotpy.gui.widgets.histogram
+.. automodule:: plotpy.core.plot.histogram

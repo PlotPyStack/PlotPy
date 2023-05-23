@@ -10,10 +10,10 @@ import numpy as np
 from qtpy.QtCore import Qt
 from qwt import QwtPlotItem
 
-from plotpy.widgets.builder import make
-from plotpy.widgets.plot.plotwidget import BasePlotWidget, PlotDialog, PlotType
-from plotpy.widgets.tools.axes import AxisScaleTool
-from plotpy.widgets.tools.curve import AntiAliasingTool, CurveStatsTool
+from plotpy.core.builder import make
+from plotpy.core.plot.plotwidget import BasePlotWidget, PlotDialog, PlotType
+from plotpy.core.tools.axes import AxisScaleTool
+from plotpy.core.tools.curve import AntiAliasingTool, CurveStatsTool
 
 
 def test_plot_curve(qtbot):

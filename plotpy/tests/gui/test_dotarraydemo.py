@@ -10,7 +10,7 @@ Dot array example
 =================
 
 Example showing how to create a custom item (drawing dots of variable size)
-and integrate the associated `plotpy.gui` dataset (GUI-based form) to edit its
+and integrate the associated `guidata` dataset (GUI-based form) to edit its
 parameters (directly into the same window as the plot itself, *and* within
 the custom item parameters: right-click on the selectable item to open the
 associated dialog box).
@@ -22,23 +22,18 @@ import guidata.dataset.datatypes as gdt
 import guidata.dataset.qtwidgets as gdq
 import numpy as np
 from guidata.configtools import get_image_file_path
+from guidata.qthelpers import qt_app_context
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
 
 import plotpy.config  # Loading icons
 import plotpy.widgets
-from plotpy.widgets.interfaces.common import IImageItemType
-from plotpy.widgets.items.curve.errorbar import vmap
-from plotpy.widgets.items.image.base import RawImageItem
-from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
-from plotpy.widgets.qthelpers_guidata import qt_app_context
-from plotpy.widgets.tools.misc import (
-    CopyToClipboardTool,
-    HelpTool,
-    PrintTool,
-    SaveAsTool,
-)
+from plotpy.core.interfaces.common import IImageItemType
+from plotpy.core.items.curve.errorbar import vmap
+from plotpy.core.items.image.base import RawImageItem
+from plotpy.core.plot.plotwidget import PlotDialog, PlotType
+from plotpy.core.tools.misc import CopyToClipboardTool, HelpTool, PrintTool, SaveAsTool
 
 SHOW = True  # Show test in GUI-based test launcher
 

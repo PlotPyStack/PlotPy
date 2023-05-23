@@ -12,9 +12,9 @@ import pytest
 from pytest import approx
 from qtpy.QtCore import Qt
 
-from plotpy.widgets.builder import make
-from plotpy.widgets.plot.plotwidget import BasePlot, PlotDialog, PlotType
-from plotpy.widgets.tools.image import ColormapTool
+from plotpy.core.builder import make
+from plotpy.core.plot.plotwidget import BasePlot, PlotDialog, PlotType
+from plotpy.core.tools.image import ColormapTool
 
 
 def compute_image():

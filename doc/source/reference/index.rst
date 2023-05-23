@@ -5,13 +5,8 @@ plotpy API:
 
 .. toctree::
     :maxdepth: 2
-    
-    dataset
+
     qthelpers
-    disthelpers
-    configtools
-    userconfig
-    utils
     pyplot
     widgets_fit
     plot
@@ -29,7 +24,6 @@ plotpy API:
     label
     tools
     styles
-    console
     io
     interfaces
     widgets_resizedialog

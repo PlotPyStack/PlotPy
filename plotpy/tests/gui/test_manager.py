@@ -11,14 +11,14 @@
 import os
 
 import pytest
+from guidata.qthelpers import qt_app_context, win32_fix_title_bar_background
 from qtpy import QtWidgets as QW
 
+from plotpy.core.builder import make
+from plotpy.core.plot.histogram.contrastadjustment import ContrastAdjustment
+from plotpy.core.plot.manager import PlotManager
+from plotpy.core.plot.plotwidget import BasePlot, PlotItemList, PlotType
 from plotpy.tests.gui.test_image import compute_image
-from plotpy.widgets.builder import make
-from plotpy.widgets.plot.histogram.contrastadjustment import ContrastAdjustment
-from plotpy.widgets.plot.manager import PlotManager
-from plotpy.widgets.plot.plotwidget import BasePlot, PlotItemList, PlotType
-from plotpy.widgets.qthelpers_guidata import qt_app_context
 
 SHOW = True  # Show test in GUI-based test launcher
 
@@ -52,7 +52,8 @@ class CentralWidget(QW.QWidget):
 
 class Window(QW.QMainWindow):
     def __init__(self):
-        QW.QMainWindow.__init__(self)
+        super().__init__()
+        win32_fix_title_bar_background(self)
 
         filename = os.path.join(os.path.dirname(__file__), "brain.png")
         image1 = make.image(filename=filename, title="Original", colormap="gray")

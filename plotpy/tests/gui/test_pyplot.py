@@ -11,11 +11,10 @@ pyplot test
 Interactive plotting interface with MATLAB-like syntax
 """
 
-
 import numpy as np
+import pytest
 
-from plotpy.widgets import qapplication
-from plotpy.widgets.plot.interactive import (
+from plotpy.core.plot.interactive import (
     errorbar,
     figure,
     hist,
@@ -35,8 +34,8 @@ from plotpy.widgets.plot.interactive import (
 SHOW = True  # Show test in GUI-based test launcher
 
 
+@pytest.mark.skip(reason="Not relevant in automated test suite")
 def test_pyplot():
-    app = qapplication()
     x = np.linspace(-5, 5, 1000)
     figure(1)
     subplot(2, 1, 1)

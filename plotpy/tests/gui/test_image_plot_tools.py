@@ -10,11 +10,12 @@
 
 import os
 
+from guidata.qthelpers import qt_app_context
+
 import plotpy.widgets
-from plotpy.widgets.builder import make
-from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
-from plotpy.widgets.qthelpers_guidata import qt_app_context
-from plotpy.widgets.tools.annotations import (
+from plotpy.core.builder import make
+from plotpy.core.plot.plotwidget import PlotDialog, PlotType
+from plotpy.core.tools.annotations import (
     AnnotatedCircleTool,
     AnnotatedEllipseTool,
     AnnotatedObliqueRectangleTool,
@@ -27,15 +28,10 @@ from plotpy.widgets.tools.annotations import (
     RectangleTool,
     SegmentTool,
 )
-from plotpy.widgets.tools.axes import PlaceAxesTool
-from plotpy.widgets.tools.cursor import (
-    HCursorTool,
-    HRangeTool,
-    VCursorTool,
-    XCursorTool,
-)
-from plotpy.widgets.tools.label import LabelTool
-from plotpy.widgets.tools.shapes import FreeFormTool, MultiLineTool
+from plotpy.core.tools.axes import PlaceAxesTool
+from plotpy.core.tools.cursor import HCursorTool, HRangeTool, VCursorTool, XCursorTool
+from plotpy.core.tools.label import LabelTool
+from plotpy.core.tools.shapes import FreeFormTool, MultiLineTool
 
 SHOW = True  # Show test in GUI-based test launcher
 

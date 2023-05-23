@@ -8,7 +8,7 @@
 # pylint: disable=C0103
 
 """
-plotpy.gui.widgets.fit
+plotpy.widgets.fit
 ----------------------
 
 The `fit` module provides an interactive curve fitting widget/dialog allowing:
@@ -41,8 +41,7 @@ Reference
    :inherited-members:
 """
 
-from __future__ import division, print_function
-
+import guidata
 import numpy as np
 from guidata.configtools import get_icon
 from guidata.dataset.dataitems import (
@@ -53,21 +52,25 @@ from guidata.dataset.dataitems import (
     StringItem,
 )
 from guidata.dataset.datatypes import DataSet
+from guidata.qthelpers import (
+    create_groupbox,
+    exec_dialog,
+    win32_fix_title_bar_background,
+)
 from guidata.utils import restore_dataset, update_dataset
 from numpy import inf  # Do not remove this import (used by optimization funcs)
 from qtpy import QtWidgets as QW
 from qtpy.QtCore import Qt
 from scipy.optimize import fmin, fmin_bfgs, fmin_cg, fmin_l_bfgs_b, fmin_powell, leastsq
 
-import plotpy.widgets
 from plotpy.config import _
-from plotpy.utils.misc_from_gui import create_groupbox
-from plotpy.widgets.builder import make
-from plotpy.widgets.plot.base import PlotType
-from plotpy.widgets.plot.plotwidget import SimplePlot
+from plotpy.core.builder import make
+from plotpy.core.plot.base import PlotType
+from plotpy.core.plot.plotwidget import SimplePlot
 
 
 class AutoFitParam(DataSet):
+    """Automatic fit parameters"""
     xmin = FloatItem("xmin")
     xmax = FloatItem("xmax")
     method = ChoiceItem(
@@ -100,6 +103,7 @@ class AutoFitParam(DataSet):
 
 
 class FitParamDataSet(DataSet):
+    """Fit parameter dataset"""
     name = StringItem(_("Name"))
     value = FloatItem(_("Value"), default=0.0)
     min = FloatItem(_("Min"), default=-1.0)
@@ -110,8 +114,8 @@ class FitParamDataSet(DataSet):
     unit = StringItem(_("Unit"), default="").set_pos(col=1)
 
 
-class FitParam(object):
-    """ """
+class FitParam:
+    """Fit parameters"""
 
     def __init__(
         self,
@@ -158,7 +162,7 @@ class FitParam(object):
         )
 
     def create_widgets(self, parent, refresh_callback):
-        """
+        """Create widgets
 
         :param parent:
         :param refresh_callback:
@@ -193,21 +197,21 @@ class FitParam(object):
         )
 
     def add_widgets(self, widgets):
-        """
+        """Add widgets
 
         :param widgets:
         """
         self._widgets += widgets
 
     def get_widgets(self):
-        """
+        """Get widgets
 
         :return:
         """
         return self._widgets
 
     def set_scale(self, state):
-        """
+        """Set scale
 
         :param state:
         """
@@ -215,7 +219,7 @@ class FitParam(object):
         self.update_slider_value()
 
     def set_text(self, fmt=None):
-        """
+        """Set text
 
         :param fmt:
         """
@@ -228,10 +232,10 @@ class FitParam(object):
                 fmt = self.format
             value_str = fmt % self.value
         self.lineedit.setText(value_str)
-        self.lineedit.setDisabled(self.value == self.min and self.max == self.min)
+        self.lineedit.setDisabled(bool(self.value == self.min and self.max == self.min))
 
     def line_editing_finished(self):
-        """ """
+        """Line editing finished"""
         try:
             self.value = float(self.lineedit.text())
         except ValueError:
@@ -240,7 +244,7 @@ class FitParam(object):
         self._refresh_callback()
 
     def slider_value_changed(self, int_value):
-        """
+        """Slider value changed
 
         :param int_value:
         """
@@ -256,7 +260,7 @@ class FitParam(object):
         self._refresh_callback()
 
     def update_slider_value(self):
-        """ """
+        """Update slider value"""
         if self.value is None or self.min is None or self.max is None:
             self.slider.setEnabled(False)
             if self.slider.parent() and self.slider.parent().isVisible():
@@ -279,7 +283,7 @@ class FitParam(object):
             self.slider.blockSignals(False)
 
     def edit_param(self, parent):
-        """
+        """Edit param
 
         :param parent:
         """
@@ -293,7 +297,7 @@ class FitParam(object):
             self.update()
 
     def update(self, refresh=True):
-        """
+        """Update
 
         :param refresh:
         """
@@ -308,7 +312,7 @@ class FitParam(object):
 def add_fitparam_widgets_to(
     layout, fitparams, refresh_callback, param_cols=1, stretch_col=1
 ):
-    """
+    """Add fitparam widgets to layout
 
     :param layout:
     :param fitparams:
@@ -339,7 +343,7 @@ def add_fitparam_widgets_to(
 
 
 class FitWidgetTools(SimplePlot):
-    """ """
+    """Fit widget tools"""
 
     def __init__(
         self,
@@ -393,7 +397,7 @@ class FitWidgetTools(SimplePlot):
 
     # QWidget API --------------------------------------------------------------
     def resizeEvent(self, event):
-        """
+        """Reimplement Qt method
 
         :param event:
         """
@@ -402,11 +406,11 @@ class FitWidgetTools(SimplePlot):
 
     # PlotWidgetMixin API -----------------------------------------------------
     def setup_widget_layout(self):
-        """ """
+        """Setup widget layout"""
         self.fit_layout = QW.QHBoxLayout()
         self.params_layout = QW.QGridLayout()
         params_group = create_groupbox(
-            self, _("Fit parameters"), layout=self.params_layout
+            self.parent, _("Fit parameters"), layout=self.params_layout
         )
         if self.auto_fit_enabled:
             auto_group = self.create_autofit_group()
@@ -414,13 +418,14 @@ class FitWidgetTools(SimplePlot):
         self.fit_layout.addWidget(params_group)
         self.plot_layout.addLayout(self.fit_layout, 1, 0)
 
-        vlayout = QW.QVBoxLayout(self)
+        parent = self.parent
+        vlayout = QW.QVBoxLayout(parent)
         vlayout.addWidget(self.toolbar)
         vlayout.addLayout(self.plot_layout)
-        self.setLayout(vlayout)
+        parent.setLayout(vlayout)
 
     def create_plot(self, options):
-        """
+        """Create plot
 
         :param options:
         """
@@ -432,7 +437,7 @@ class FitWidgetTools(SimplePlot):
     def set_data(
         self, x, y, fitfunc=None, fitparams=None, fitargs=None, fitkwargs=None
     ):
-        """
+        """Set data
 
         :param x:
         :param y:
@@ -462,7 +467,7 @@ class FitWidgetTools(SimplePlot):
         self.refresh()
 
     def set_fit_data(self, fitfunc, fitparams, fitargs=None, fitkwargs=None):
-        """
+        """Set fit data
 
         :param fitfunc:
         :param fitparams:
@@ -479,7 +484,7 @@ class FitWidgetTools(SimplePlot):
         self.refresh()
 
     def clear_params_layout(self):
-        """ """
+        """Clear params layout"""
         for i, param in enumerate(self.fitparams):
             for widget in param.get_widgets():
                 if widget is not None:
@@ -487,21 +492,22 @@ class FitWidgetTools(SimplePlot):
                     widget.hide()
 
     def populate_params_layout(self):
-        """ """
+        """Populate params layout"""
         add_fitparam_widgets_to(
             self.params_layout, self.fitparams, self.refresh, param_cols=self.param_cols
         )
 
     def create_autofit_group(self):
-        """
+        """Create autofit group
 
         :return:
         """
-        auto_button = QW.QPushButton(get_icon("apply.png"), _("Run"), self)
+        parent = self.parent
+        auto_button = QW.QPushButton(get_icon("apply.png"), _("Run"), parent)
         auto_button.clicked.connect(self.autofit)
-        autoprm_button = QW.QPushButton(get_icon("settings.png"), _("Settings"), self)
+        autoprm_button = QW.QPushButton(get_icon("settings.png"), _("Settings"), parent)
         autoprm_button.clicked.connect(self.edit_parameters)
-        xrange_button = QW.QPushButton(get_icon("xrange.png"), _("Bounds"), self)
+        xrange_button = QW.QPushButton(get_icon("xrange.png"), _("Bounds"), parent)
         xrange_button.setCheckable(True)
         xrange_button.toggled.connect(self.toggle_xrange)
         auto_layout = QW.QVBoxLayout()
@@ -509,7 +515,7 @@ class FitWidgetTools(SimplePlot):
         auto_layout.addWidget(autoprm_button)
         auto_layout.addWidget(xrange_button)
         self.button_list += [auto_button, autoprm_button, xrange_button]
-        return create_groupbox(self, _("Automatic fit"), layout=auto_layout)
+        return create_groupbox(parent, _("Automatic fit"), layout=auto_layout)
 
     def get_fitfunc_arguments(self):
         """Return fitargs and fitkwargs"""
@@ -571,7 +577,7 @@ class FitWidgetTools(SimplePlot):
         plot.disable_autoscale()
 
     def range_changed(self, xrange_obj, xmin, xmax):
-        """
+        """Range changed
 
         :param xrange_obj:
         :param xmin:
@@ -581,7 +587,7 @@ class FitWidgetTools(SimplePlot):
         self.compute_imin_imax()
 
     def toggle_xrange(self, state):
-        """
+        """Toggle xrange visibility
 
         :param state:
         """
@@ -593,7 +599,7 @@ class FitWidgetTools(SimplePlot):
         self.show_xrange = state
 
     def edit_parameters(self):
-        """ """
+        """Edit fit parameters"""
         if self.autofit_prm.edit(parent=self):
             self.xrange.set_range(self.autofit_prm.xmin, self.autofit_prm.xmax)
             plot = self.get_plot()
@@ -601,12 +607,12 @@ class FitWidgetTools(SimplePlot):
             self.compute_imin_imax()
 
     def compute_imin_imax(self):
-        """ """
+        """Compute i_min and i_max"""
         self.i_min = self.x.searchsorted(self.autofit_prm.xmin)
         self.i_max = self.x.searchsorted(self.autofit_prm.xmax, side="right")
 
     def errorfunc(self, params):
-        """
+        """Get error function
 
         :param params:
         :return:
@@ -617,7 +623,7 @@ class FitWidgetTools(SimplePlot):
         return y - self.fitfunc(x, params, *fitargs, **fitkwargs)
 
     def autofit(self):
-        """
+        """Autofit
 
         :return:
         """
@@ -644,7 +650,7 @@ class FitWidgetTools(SimplePlot):
             prm.update()
 
     def get_norm_func(self):
-        """
+        """Get norm function
 
         :return:
         """
@@ -663,7 +669,7 @@ class FitWidgetTools(SimplePlot):
         return func
 
     def autofit_simplex(self, x0):
-        """
+        """Autofit using simplex
 
         :param x0:
         :return:
@@ -674,7 +680,7 @@ class FitWidgetTools(SimplePlot):
         return x
 
     def autofit_powel(self, x0):
-        """
+        """Autofit using Powell
 
         :param x0:
         :return:
@@ -685,7 +691,7 @@ class FitWidgetTools(SimplePlot):
         return x
 
     def autofit_bfgs(self, x0):
-        """
+        """Autofit using BFGS
 
         :param x0:
         :return:
@@ -696,7 +702,7 @@ class FitWidgetTools(SimplePlot):
         return x
 
     def autofit_l_bfgs(self, x0):
-        """
+        """Autofit using L-BFGS-B
 
         :param x0:
         :return:
@@ -710,7 +716,7 @@ class FitWidgetTools(SimplePlot):
         return x
 
     def autofit_cg(self, x0):
-        """
+        """Autofit using conjugate gradient
 
         :param x0:
         :return:
@@ -721,7 +727,7 @@ class FitWidgetTools(SimplePlot):
         return x
 
     def autofit_lq(self, x0):
-        """
+        """Autofit using leastsq
 
         :param x0:
         :return:
@@ -746,7 +752,7 @@ class FitWidgetTools(SimplePlot):
 
 
 class FitWidget(QW.QWidget):
-    """ """
+    """Fit widget"""
 
     def __init__(
         self,
@@ -760,7 +766,7 @@ class FitWidget(QW.QWidget):
         legend_anchor="TR",
         auto_fit=False,
     ):
-        QW.QWidget.__init__(self, parent)
+        super().__init__(parent)
         self.tools = FitWidgetTools(
             self,
             parent=self,
@@ -776,7 +782,7 @@ class FitWidget(QW.QWidget):
 
 
 class FitDialog(QW.QDialog):
-    """ """
+    """Fit dialog box"""
 
     def __init__(
         self,
@@ -791,6 +797,8 @@ class FitDialog(QW.QDialog):
         legend_anchor="TR",
         auto_fit=False,
     ):
+        super().__init__(parent)
+        win32_fix_title_bar_background(self)
         self.edit = edit
         self.button_layout = None
         self.tools = FitWidgetTools(
@@ -804,17 +812,16 @@ class FitDialog(QW.QDialog):
             legend_anchor=legend_anchor,
             auto_fit=auto_fit,
         )
-        super(FitDialog, self).__init__(parent)
         self.setWindowFlags(Qt.Window)
 
     def setup_widget_layout(self):
-        """ """
+        """Setup widget layout"""
         self.tools.setup_widget_layout(self)
         if self.edit:
             self.install_button_layout()
 
     def install_button_layout(self):
-        """ """
+        """Install button box"""
         bbox = QW.QDialogButtonBox(QW.QDialogButtonBox.Ok | QW.QDialogButtonBox.Cancel)
         bbox.accepted.connect(self.accept)
         bbox.rejected.connect(self.reject)
@@ -846,10 +853,7 @@ def guifit(
     winpos=None,
 ):
     """GUI-based curve fitting tool"""
-    _app = plotpy.widgets.qapplication()
-    #    win = FitWidget(wintitle=wintitle, toolbar=True,
-    #                    param_cols=param_cols, auto_fit=auto_fit,
-    #                    options=dict(title=title, xlabel=xlabel, ylabel=ylabel))
+    _app = guidata.qapplication()
     win = FitDialog(
         edit=True,
         wintitle=wintitle,
@@ -858,18 +862,13 @@ def guifit(
         auto_fit=auto_fit,
         options=dict(title=title, xlabel=xlabel, ylabel=ylabel, type=PlotType.CURVE),
     )
-    win.set_data(x, y, fitfunc, fitparams, fitargs, fitkwargs)
+    win.tools.set_data(x, y, fitfunc, fitparams, fitargs, fitkwargs)
     if winsize is not None:
         win.resize(*winsize)
     if winpos is not None:
         win.move(*winpos)
-    if win.exec_():
+    if exec_dialog(win):
         return win.get_values()
-
-
-#    win.show()
-#    _app.exec_()
-#    return win.get_values()
 
 
 if __name__ == "__main__":

@@ -15,9 +15,9 @@ import os
 
 import h5py
 from guidata.hdf5io import HDF5Reader, HDF5Writer
+from guidata.qthelpers import qt_app_context
 
 from plotpy.tests.gui.test_loadsaveitems_pickle import IOTest
-from plotpy.widgets.qthelpers_guidata import qt_app_context
 
 SHOW = True  # Show test in GUI-based test launcher
 

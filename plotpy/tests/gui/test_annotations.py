@@ -9,11 +9,11 @@
 
 
 import numpy as np
+from guidata.qthelpers import qt_app_context
 from numpy import linspace, sin
 
-from plotpy.widgets.builder import make
-from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
-from plotpy.widgets.qthelpers_guidata import qt_app_context
+from plotpy.core.builder import make
+from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 
 SHOW = True  # Show test in GUI-based test launcher
 
@@ -81,11 +81,11 @@ def test_annotation():
     """Test annotation"""
     x = linspace(-10, 10, 200)
     y = sin(sin(sin(x)))
-    persist_list = []
+    persist = []
     with qt_app_context(exec_loop=True):
-        persist_list.append(plot(make.curve(x, y, color="b"), type=PlotType.CURVE))
-        persist_list.append(plot(make.image(compute_image()), type=PlotType.IMAGE))
-        persist_list.append(make.curve(x, y, color="b"), make.image(compute_image()))
+        persist.append(plot(make.curve(x, y, color="b"), type=PlotType.CURVE))
+        persist.append(plot(make.image(compute_image()), type=PlotType.IMAGE))
+        persist.append(plot(make.curve(x, y, color="b"), make.image(compute_image())))
 
 
 if __name__ == "__main__":

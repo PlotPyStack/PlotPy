@@ -10,15 +10,16 @@
 
 import os
 
+import guidata
 import numpy as np
+from guidata.qthelpers import exec_dialog
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 
-import plotpy.widgets
-from plotpy.widgets import io
-from plotpy.widgets.builder import make
-from plotpy.widgets.items.image.misc import assemble_imageitems
-from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.core import io
+from plotpy.core.builder import make
+from plotpy.core.items.image.misc import assemble_imageitems
+from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 
 SHOW = True  # Show test in GUI-based test launcher
 DEFAULT_CHARS = "".join([chr(c) for c in range(32, 256)])
@@ -109,7 +110,7 @@ def imshow(items, title=""):
         plot.add_item(item)
         print("Done")
     win.show()
-    win.exec_()
+    exec_dialog(win)
 
 
 def compute_image(NX, NY):
@@ -166,7 +167,7 @@ def build_image(items):
 
 def test_transform(img_show=True):
     """Test"""
-    _app = plotpy.widgets.qapplication()
+    _app = guidata.qapplication()
     N = 500
     data = compute_image(N, N)
     m = data.min()

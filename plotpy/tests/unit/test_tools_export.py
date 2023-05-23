@@ -11,8 +11,8 @@ from unittest.mock import patch
 import numpy as np
 from qtpy import QtWidgets as QW
 
-from plotpy.widgets.builder import make
-from plotpy.widgets.tools.curve import export_curve_data
+from plotpy.core.builder import make
+from plotpy.core.tools.curve import export_curve_data
 
 
 def test_export_curve(tmpdir):

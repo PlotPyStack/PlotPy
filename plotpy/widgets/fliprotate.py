@@ -27,20 +27,20 @@ Reference
 """
 import numpy as np
 from guidata.configtools import get_icon
+from guidata.qthelpers import create_toolbutton, win32_fix_title_bar_background
 from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
 from plotpy.config import _
-from plotpy.utils.misc_from_gui import create_toolbutton
-from plotpy.widgets import base
+from plotpy.widgets import basetransform
 
 
-class FlipRotateTransform(base.BaseTransform):
+class FlipRotateTransform(basetransform.BaseTransform):
     """Rotate & Crop mixin class, to be mixed with a class providing the
     get_plot method, like PlotDialog or FlipRotateWidget (see below)"""
 
     def __init__(self, parent, manager):
-        super(FlipRotateTransform, self).__init__(parent, manager)
+        super().__init__(parent, manager)
         self.parent = parent
         self.manager = manager
 
@@ -81,6 +81,7 @@ class FlipRotateDialog(QW.QDialog):
         toolbar=False,
     ):
         super(FlipRotateDialog, self).__init__(parent)
+        win32_fix_title_bar_background(self)
 
         if resize_to is not None:
             width, height = resize_to
@@ -107,12 +108,16 @@ class FlipRotateDialog(QW.QDialog):
         dialogvlayout.addLayout(buttonhlayout)
         self.setLayout(dialogvlayout)
 
-        self.tools = self.widget.tools
+        self.transf = self.widget.transf
         self.manager = self.widget.manager
         self.imagewidget = self.widget.imagewidget
         self.toolbar = self.manager.toolbar
 
+        self.accepted.connect(self.transf.accept_changes)
+        self.rejected.connect(self.transf.reject_changes)
+
     def add_buttons_to_layout(self, layout, edit):
+        """Add buttons to layout"""
         if edit:
             self.button_box = bbox = QW.QDialogButtonBox(
                 QW.QDialogButtonBox.Ok | QW.QDialogButtonBox.Cancel
@@ -121,16 +126,8 @@ class FlipRotateDialog(QW.QDialog):
             bbox.rejected.connect(self.reject)
             layout.addWidget(bbox)
 
-    def accept(self) -> None:
-        self.tools.accept_changes()
-        return super().accept()
 
-    def reject(self) -> None:
-        self.tools.reject_changes()
-        return super().reject()
-
-
-class FlipRotateWidget(base.BaseTransformWidget):
+class FlipRotateWidget(basetransform.BaseTransformWidget):
     """Flip & Rotate Widget
 
     Flip and rotate a :py:class:`.image.TrImageItem` plot item"""
@@ -141,8 +138,8 @@ class FlipRotateWidget(base.BaseTransformWidget):
         self.angle_combo = None
         self.hflip_btn = None
         self.vflip_btn = None
-        base.BaseTransformWidget.__init__(self, parent, toolbar, options=options)
-        self.tools = FlipRotateTransform(self, self.imagewidget.manager)
+        basetransform.BaseTransformWidget.__init__(self, parent, toolbar, options=options)
+        self.transf = FlipRotateTransform(self, self.imagewidget.manager)
         self.manager = self.imagewidget.manager
 
     def add_buttons_to_layout(self, layout):
@@ -154,7 +151,7 @@ class FlipRotateWidget(base.BaseTransformWidget):
         self.angle_combo.addItems(self.ROTATION_ANGLES)
         self.angle_combo.setCurrentIndex(1)
         self.angle_combo.currentIndexChanged.connect(
-            lambda index: self.tools.apply_transformation()
+            lambda index: self.transf.apply_transformation()
         )
         layout.addWidget(self.angle_combo)
         layout.addSpacing(10)
@@ -166,7 +163,7 @@ class FlipRotateWidget(base.BaseTransformWidget):
             self,
             text="",
             icon=get_icon("hflip.png"),
-            toggled=lambda state: self.tools.apply_transformation(),
+            toggled=lambda state: self.transf.apply_transformation(),
             autoraise=False,
         )
         self.hflip_btn = hflip
@@ -175,7 +172,7 @@ class FlipRotateWidget(base.BaseTransformWidget):
             self,
             text="",
             icon=get_icon("vflip.png"),
-            toggled=lambda state: self.tools.apply_transformation(),
+            toggled=lambda state: self.transf.apply_transformation(),
             autoraise=False,
         )
         self.vflip_btn = vflip
@@ -183,11 +180,11 @@ class FlipRotateWidget(base.BaseTransformWidget):
         layout.addSpacing(15)
 
         # self.add_reset_button(layout)
-        base.BaseTransformWidget.add_buttons_to_layout(self, layout, apply=False)
+        basetransform.BaseTransformWidget.add_buttons_to_layout(self, layout, apply=False)
 
     def apply_transformation(self):
         angle, hflip, vflip = self.get_parameters()
-        self.tools.apply_transformation(angle, hflip, vflip)
+        self.transf.apply_transformation(angle, hflip, vflip)
 
     def reset(self):
         """Reset transformation"""
@@ -210,7 +207,7 @@ class FlipRotateWidget(base.BaseTransformWidget):
         return angle, hflip, vflip
 
 
-class MultipleFlipRotateWidget(base.BaseMultipleTransformWidget):
+class MultipleFlipRotateWidget(basetransform.BaseMultipleTransformWidget):
     """Multiple Flip & Rotate Widget
 
     Flip and rotate several :py:class:`.image.TrImageItem` plot items"""

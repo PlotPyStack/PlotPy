@@ -12,13 +12,13 @@ This plotpy tool provide a MATLAB-like "ginput" feature.
 """
 
 
+from guidata.qthelpers import qt_app_context
 from numpy import linspace, sin
 
 from plotpy.config import _
-from plotpy.widgets.builder import make
-from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
-from plotpy.widgets.qthelpers_guidata import qt_app_context
-from plotpy.widgets.tools.curve import SelectPointTool
+from plotpy.core.builder import make
+from plotpy.core.plot.plotwidget import PlotDialog, PlotType
+from plotpy.core.tools.curve import SelectPointTool
 
 SHOW = True  # Show test in GUI-based test launcher
 

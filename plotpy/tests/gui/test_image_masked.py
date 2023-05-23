@@ -15,11 +15,11 @@ ignored in computations, like the average cross sections.
 import os
 import pickle
 
-import plotpy.widgets
-from plotpy.widgets.builder import make
-from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
-from plotpy.widgets.qthelpers_guidata import qt_app_context
-from plotpy.widgets.tools.image import ImageMaskTool
+from guidata.qthelpers import qt_app_context
+
+from plotpy.core.builder import make
+from plotpy.core.plot.plotwidget import PlotDialog, PlotType
+from plotpy.core.tools.image import ImageMaskTool
 
 SHOW = True  # Show test in GUI-based test launcher
 

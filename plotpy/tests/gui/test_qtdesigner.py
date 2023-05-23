@@ -17,11 +17,12 @@ embedding in GUI layouts directly from QtDesigner.
 import os
 import sys
 
+import guidata
 import pytest
 from qtpy import QtWidgets as QW
 
+from plotpy.core.builder import make
 from plotpy.tests.gui.test_image import compute_image
-from plotpy.widgets.builder import make
 from plotpy.widgets.qtdesigner import loadui
 
 SHOW = True  # Show test in GUI-based test launcher
@@ -36,13 +37,12 @@ class WindowTest(FormClass):
         self.setWindowTitle("QtDesigner plugins example")
 
 
-@pytest.mark.skip(reason="Explose le framework en runtime")
 def test_qtdesigner():
-    app = QW.QApplication(sys.argv)
+    _app = guidata.qapplication()
 
     form = WindowTest(compute_image())
     form.show()
-    # sys.exit(app.exec_())
+    # sys.exit(app.exec())
 
 
 if __name__ == "__main__":

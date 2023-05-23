@@ -10,16 +10,17 @@
 
 import os.path as osp
 
-import plotpy.widgets.plot.cross_section
-from plotpy.widgets.builder import make
-from plotpy.widgets.plot.cross_section.cswidget import ObliqueCrossSection
-from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
-from plotpy.widgets.qthelpers_guidata import qt_app_context
-from plotpy.widgets.tools.cross_section import ObliqueCrossSectionTool, OCSPanelTool
-from plotpy.widgets.tools.image import ImageMaskTool
+from guidata.qthelpers import qt_app_context
+
+import plotpy.core.plot.cross_section
+from plotpy.core.builder import make
+from plotpy.core.plot.cross_section.cswidget import ObliqueCrossSection
+from plotpy.core.plot.plotwidget import PlotDialog, PlotType
+from plotpy.core.tools.cross_section import ObliqueCrossSectionTool, OCSPanelTool
+from plotpy.core.tools.image import ImageMaskTool
 
 # debug mode shows the ROI in the top-left corner of the image plot:
-plotpy.widgets.plot.cross_section.csitem.DEBUG = True
+plotpy.core.plot.cross_section.csitem.DEBUG = True
 
 SHOW = True  # Show test in GUI-based test launcher
 

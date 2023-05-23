@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 import qtpy.QtCore as QC
 
-from plotpy.widgets.items.curve.base import seg_dist, seg_dist_v
+from plotpy.core.items.curve.base import seg_dist, seg_dist_v
 
 param_list = [
     ((200, 100), (150, 196), (250, 180), 86),
@@ -11,7 +11,6 @@ param_list = [
 ]
 
 
-# @pytest.mark.skip(reason="Explose le framework en runtime")
 @pytest.mark.parametrize("point_1,point_2,point_3,output", param_list)
 def test_seg_dist(point_1, point_2, point_3, output):
     """ """
@@ -19,7 +18,6 @@ def test_seg_dist(point_1, point_2, point_3, output):
     assert int(ret) == output
 
 
-# @pytest.mark.skip(reason="Explose le framework en runtime")
 def test_seg_dist_v():
     """Test de seg_dist_v"""
     a = (np.arange(10.0) ** 2).reshape(5, 2)

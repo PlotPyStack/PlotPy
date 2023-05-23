@@ -10,15 +10,15 @@
 
 
 import numpy as np
+from guidata.qthelpers import qt_app_context
 from qtpy import QtCore as QC
 
 import plotpy.widgets
 from plotpy.config import _
+from plotpy.core.items.image.base import RawImageItem
+from plotpy.core.plot.plotwidget import PlotDialog, PlotType
+from plotpy.core.tools.base import ToggleTool
 from plotpy.mandelbrot import mandelbrot
-from plotpy.widgets.items.image.base import RawImageItem
-from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
-from plotpy.widgets.qthelpers_guidata import qt_app_context
-from plotpy.widgets.tools.base import ToggleTool
 
 SHOW = True  # Show test in GUI-based test launcher
 

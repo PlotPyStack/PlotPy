@@ -9,15 +9,14 @@
 
 
 import numpy as np
-import pytest
 
 from plotpy.widgets.fit import FitParam, guifit
 
 SHOW = True  # Show test in GUI-based test launcher
 
 
-@pytest.mark.skip(reason="Explose le framework en runtime")
 def test_fit():
+    """Test the curve fitting tool"""
     x = np.linspace(-10, 10, 1000)
     y = np.cos(1.5 * x) + np.random.rand(x.shape[0]) * 0.2
 

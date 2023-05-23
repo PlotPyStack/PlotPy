@@ -11,12 +11,12 @@
 import os
 
 import numpy as np
-import pytest
-from qtpy.QtWidgets import QApplication
+from guidata.qthelpers import exec_dialog, qt_app_context
 
-from plotpy.widgets import io, qapplication
-from plotpy.widgets.builder import make
-from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.core import io
+from plotpy.core.builder import make
+from plotpy.core.plot.plotwidget import PlotDialog, PlotType
+from plotpy.env import execenv
 from plotpy.widgets.rotatecrop import (
     MultipleRotateCropWidget,
     RotateCropDialog,
@@ -24,19 +24,10 @@ from plotpy.widgets.rotatecrop import (
 )
 
 SHOW = True  # Show test in GUI-based test launcher
-APP = qapplication()
-
-
-def imshow(data, title=None, hold=False):
-    dlg = PlotDialog(wintitle=title, options={"type": PlotType.IMAGE})
-    dlg.manager.get_plot().add_item(make.image(data))
-    if hold:
-        dlg.show()
-    else:
-        dlg.exec_()
 
 
 def create_test_data(fname, func=None):
+    """Create test data"""
     array0 = io.imread(
         os.path.join(os.path.dirname(__file__), fname), to_grayscale=True
     )
@@ -46,62 +37,65 @@ def create_test_data(fname, func=None):
     return array0, item0
 
 
-def test_widget(fname="brain.png"):
+def widget_test(fname="brain.png"):
     """Test the rotate/crop widget"""
-    _qapp = APP
     _array0, item = create_test_data(fname)
     widget = RotateCropWidget(None, toolbar=True)
-    widget.tools.set_item(item)
+    widget.transf.set_item(item)
     widget.show()
-    widget.tools.accept_changes()
+    return widget
 
 
-def test_multiple_widget(fname="brain.png"):
+def multiple_widget_test(fname="brain.png"):
     """Test the multiple rotate/crop widget"""
-    _qapp = APP
     _array0, item0 = create_test_data(fname)
     _array1, item1 = create_test_data(fname, func=lambda arr: np.rot90(arr, 1))
     _array2, item2 = create_test_data(fname, func=lambda arr: np.rot90(arr, 2))
     widget = MultipleRotateCropWidget(None)
     widget.set_items(item0, item1, item2)
     widget.show()
-    widget.accept_changes()
-    widget.reject_changes()
-    widget.reset()
+    return widget
 
 
-def test_dialog(fname="brain.png", interactive=False):
+def imshow(data, title=None, hold=False):
+    """Show image"""
+    dlg = PlotDialog(wintitle=title, options={"type": PlotType.IMAGE})
+    dlg.manager.get_plot().add_item(make.image(data))
+    if hold:
+        dlg.show()
+    else:
+        exec_dialog(dlg)
+
+
+def dialog_test(fname="brain.png"):
     """Test the rotate/crop dialog"""
-    _qapp = APP
     array0, item = create_test_data(fname)
     dlg = RotateCropDialog(None)
-    dlg.tools.set_item(item)
-    if interactive:
-        ok = dlg.exec()
-    else:
-        dlg.show()
-        dlg.accept()
-        ok = True
-    if ok:
-        array1 = dlg.tools.output_array
+    dlg.transf.set_item(item)
+    if exec_dialog(dlg) == dlg.Accepted:
+        array1 = dlg.transf.output_array
         if array0.shape == array1.shape:
-            if (array1 == array0).all() and not interactive:
-                print("Test passed successfully.")
-                return
+            assert (array1 == array0).all()
             imshow(array1 - array0, title="array1-array0")
         else:
             print(array0.shape, "-->", array1.shape)
-        imshow(array0, title="array0", hold=True)
-        imshow(array1, title="array1")
+        img1 = imshow(array0, title="array0")
+        img2 = imshow(array1, title="array1")
+        return dlg, img1, img2
+
+
+def test_rotate_crop():
+    """Test the flip/rotate widget and dialog"""
+    persist_list = []
+    with qt_app_context(exec_loop=not execenv.unattended):
+        persist_list.append(multiple_widget_test("brain.png"))
+    with qt_app_context(exec_loop=not execenv.unattended):
+        persist_list.append(widget_test("brain.png"))
+    with qt_app_context(exec_loop=False):
+        persist_list.append(dialog_test("brain.png"))
 
 
 if __name__ == "__main__":
-    qapp = qapplication()  # analysis:ignore
-
-    test_multiple_widget("brain.png")
-
-    test_widget("brain.png")
-
-    test_dialog(fname="brain.png", interactive=False)
-    # dialog_test(fname="contrast.png", interactive=False)
-    # test_dialog(fname="brain.png", interactive=True)
+    test_rotate_crop()
+    # dialog_test("contrast.png", interactive=False)
+    # test_dialog("brain.png", interactive=True)

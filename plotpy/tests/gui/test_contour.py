@@ -8,14 +8,14 @@
 
 
 import numpy as np
+from guidata.qthelpers import qt_app_context
 
 import plotpy.widgets
-from plotpy.widgets.builder import make
-from plotpy.widgets.contour import contour
-from plotpy.widgets.items.shapes.polygon import PolygonShape
-from plotpy.widgets.plot.plotwidget import PlotDialog
-from plotpy.widgets.qthelpers_guidata import qt_app_context
-from plotpy.widgets.styles.shape import ShapeParam
+from plotpy.core.builder import make
+from plotpy.core.items.shapes.polygon import PolygonShape
+from plotpy.core.plot.plotwidget import PlotDialog
+from plotpy.core.styles.shape import ShapeParam
+from plotpy.utils.contour import contour
 
 SHOW = True  # Show test in GUI-based test launcher
 

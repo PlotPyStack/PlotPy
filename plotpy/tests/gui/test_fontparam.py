@@ -7,8 +7,9 @@
 
 """FontParam test"""
 
-from plotpy.widgets.qthelpers_guidata import qt_app_context
-from plotpy.widgets.styles.base import FontParam
+from guidata.qthelpers import qt_app_context
+
+from plotpy.core.styles.base import FontParam
 
 SHOW = False  # Do not show test in GUI-based test launcher
 

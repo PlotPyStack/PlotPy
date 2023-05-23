@@ -10,11 +10,12 @@
 
 import os
 
-from plotpy.widgets.builder import make
-from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
-from plotpy.widgets.qthelpers_guidata import qt_app_context
-from plotpy.widgets.styles.base import style_generator, update_style_attr
-from plotpy.widgets.tools.shapes import (
+from guidata.qthelpers import qt_app_context
+
+from plotpy.core.builder import make
+from plotpy.core.plot.plotwidget import PlotDialog, PlotType
+from plotpy.core.styles.base import style_generator, update_style_attr
+from plotpy.core.tools.shapes import (
     EllipseTool,
     FreeFormTool,
     MultiLineTool,

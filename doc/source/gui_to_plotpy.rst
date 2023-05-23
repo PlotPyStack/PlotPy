@@ -137,28 +137,6 @@ one by one.
 
 See demo script `test/gui/annotations.py`.
 
-Integrated spyder components
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The spyder interactive python console used by some applications using guiData and/or guiQwt and
-by the :ref:`sift example <sift-page>`, as well as some other spyder components (for example the
-arrayeditor module) have been integrated directly to the plotpy package.
-
-If your code has spyder as a dependency, you may be able to remove it, and import used classes
-from plotpy.console instead of spyder.
-
-For example, you can replace :
-
-.. code-block:: python
-
-    from spyder.widgets.internalshell import InternalShell
-
-by :
-
-.. code-block:: python
-
-    from plotpy.console.widgets.internalshell import InternalShell
-
 New contour function
 ~~~~~~~~~~~~~~~~~~~~~~~~
 

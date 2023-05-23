@@ -8,42 +8,63 @@ import time
 
 import numpy as np
 import pytest
-from PyQt5.QtCore import QTimer
-from PyQt5.QtGui import QPolygonF
-from PyQt5.QtWidgets import QApplication
+from guidata.qthelpers import exec_dialog
+from qtpy import QtCore as QC
+from qtpy import QtWidgets as QW
 
+from plotpy.core.builder import make
+from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 from plotpy.env import execenv
-from plotpy.widgets.builder import make
-from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
 
 NPOINTS = 500000
 NB_FRAMES_FOR_MEAN_FPS = 10
 
 
-class TestApp(QApplication):
-    def __init__(self, argv):
-        super(QApplication, self).__init__(argv)
+class AnimationApp(QW.QApplication):
+    """Test application"""
+
+    def __init__(self):
+        super(QW.QApplication, self).__init__(sys.argv)
+
+        self.x = None
+        self.y = None
+        self.curve = None
+        self.plot = None
 
         self.last_phase = 0
         self.last_time = time.time()
         self.count = 0
 
-    def updateDataToDraw(self):
+        self.timer = QC.QTimer()
+        self.timer.timeout.connect(self.update_plot)
+
+        self.plotdialog = PlotDialog(
+            edit=False,
+            toolbar=True,
+            wintitle="PlotDialog test",
+            options=dict(
+                title="Title", xlabel="xlabel", ylabel="ylabel", type=PlotType.CURVE
+            ),
+        )
+
+    def start_animation(self):
+        """Start animation"""
+        self.x = x = np.linspace(0.0, 4 * np.pi, NPOINTS)
+        self.y = y = np.sin(x)
+        self.curve = make.curve(x, y, color="b")
+        self.plot = plot = self.plotdialog.manager.get_plot()
+        plot.add_item(self.curve)
+        plot.setAutoReplot()
+        self.plotdialog.manager.get_itemlist_panel().show()
+        plot.set_items_readonly(False)
+        self.plotdialog.show()
+        self.timer.start(1)
+
+    def update_plot(self):
+        """Update plot"""
         self.last_phase = (self.last_phase + np.pi / 16) % (2 * np.pi)
-
         self.y[:] = np.sin(self.x + self.last_phase)
-        size = len(self.x)
-        polyline = QPolygonF(size)
-
-        pointer = polyline.data()
-        dtype, tinfo = np.single, np.finfo
-        pointer.setsize(2 * size * tinfo(dtype).dtype.itemsize)
-        memory = np.frombuffer(pointer, dtype)
-        memory[: (size - 1) * 2 + 1 : 2] = self.x
-        memory[1 : (size - 1) * 2 + 2 : 2] = self.y
-
-        self.curve.setSamples(memory)
-
+        self.curve.set_data(self.x, self.y)
         self.count = self.count + 1
         if self.count % NB_FRAMES_FOR_MEAN_FPS == 0:
             current_time = time.time()
@@ -53,42 +74,14 @@ class TestApp(QApplication):
             self.last_time = current_time
 
 
-@pytest.mark.skip(reason="Explose le framework en runtime")
+@pytest.mark.skip(reason="Test not working with pytest")
 def test_annimation():
     """Test"""
-    # -- Create QApplication
-    _app = TestApp(sys.argv)
-
-    x = np.linspace(0.0, 4 * np.pi, NPOINTS)
-    y = np.sin(x)
-    curve = make.curve(x, y, color="b")
-    _app.x = x
-    _app.curve = curve
-    _app.y = y
-
-    win = PlotDialog(
-        edit=False,
-        toolbar=True,
-        wintitle="PlotDialog test",
-        options=dict(
-            title="Title", xlabel="xlabel", ylabel="ylabel", type=PlotType.CURVE
-        ),
-    )
-    plot = win.manager.get_plot()
-    plot.add_item(curve)
-    plot.setAutoReplot()
-    _app.plot = plot
-
-    win.manager.get_itemlist_panel().show()
-    plot.set_items_readonly(False)
-
-    timer = QTimer()
-    timer.timeout.connect(_app.updateDataToDraw)
-    timer.start(1)
-
-    win.show()
-    if not execenv.unattended:
-        win.exec_()
+    app = AnimationApp()
+    if execenv.unattended:
+        return
+    app.start_animation()
+    exec_dialog(app.plotdialog)
 
 
 if __name__ == "__main__":

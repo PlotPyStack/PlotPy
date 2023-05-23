@@ -1,1 +1,1 @@
-.. automodule:: plotpy.gui.widgets.baseplot
+.. automodule:: plotpy.core.plot.baseplot

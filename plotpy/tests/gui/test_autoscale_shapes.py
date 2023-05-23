@@ -10,12 +10,12 @@
 import numpy as np
 from guidata.qthelpers import qt_app_context
 
-from plotpy.widgets.items.annotations import AnnotatedRectangle
-from plotpy.widgets.items.shapes.ellipse import EllipseShape
-from plotpy.widgets.items.shapes.polygon import PolygonShape
-from plotpy.widgets.plot.plotwidget import PlotDialog
-from plotpy.widgets.styles.shape import AnnotationParam, ShapeParam
-from plotpy.widgets.tools.annotations import (
+from plotpy.core.items.annotations import AnnotatedRectangle
+from plotpy.core.items.shapes.ellipse import EllipseShape
+from plotpy.core.items.shapes.polygon import PolygonShape
+from plotpy.core.plot.plotwidget import PlotDialog
+from plotpy.core.styles.shape import AnnotationParam, ShapeParam
+from plotpy.core.tools.annotations import (
     AnnotatedCircleTool,
     AnnotatedEllipseTool,
     AnnotatedObliqueRectangleTool,
@@ -28,9 +28,9 @@ from plotpy.widgets.tools.annotations import (
     RectangleTool,
     SegmentTool,
 )
-from plotpy.widgets.tools.axes import PlaceAxesTool
-from plotpy.widgets.tools.label import LabelTool
-from plotpy.widgets.tools.shapes import FreeFormTool, MultiLineTool
+from plotpy.core.tools.axes import PlaceAxesTool
+from plotpy.core.tools.label import LabelTool
+from plotpy.core.tools.shapes import FreeFormTool, MultiLineTool
 
 SHOW = True  # Show test in GUI-based test launcher
 

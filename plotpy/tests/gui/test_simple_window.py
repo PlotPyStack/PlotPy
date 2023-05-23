@@ -10,19 +10,24 @@ import platform
 import sys
 
 import numpy as np
+from guidata.configtools import get_icon
 from guidata.dataset.dataitems import ChoiceItem, FloatArrayItem, IntItem, StringItem
 from guidata.dataset.datatypes import DataSet, GetAttrProp, update_dataset
 from guidata.dataset.qtwidgets import DataSetEditGroupBox
+from guidata.qthelpers import (
+    add_actions,
+    create_action,
+    get_std_icon,
+    win32_fix_title_bar_background,
+)
 from qtpy import QT_VERSION
 from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
 from plotpy.config import _
-from plotpy.utils.icons import get_std_icon
-from plotpy.utils.misc_from_gui import add_actions, create_action, get_icon
-from plotpy.widgets import io
-from plotpy.widgets.builder import make
-from plotpy.widgets.plot.plotwidget import PlotType, PlotWidget
+from plotpy.core import io
+from plotpy.core.builder import make
+from plotpy.core.plot.plotwidget import PlotType, PlotWidget
 
 APP_NAME = _("Application example")
 VERSION = "1.0.0"
@@ -148,7 +153,8 @@ class CentralWidget(QW.QSplitter):
 
 class MainWindow(QW.QMainWindow):
     def __init__(self):
-        QW.QMainWindow.__init__(self)
+        super().__init__()
+        win32_fix_title_bar_background(self)
         self.setup()
 
     def setup(self):
@@ -258,10 +264,11 @@ class MainWindow(QW.QMainWindow):
 
 
 if __name__ == "__main__":
+    from guidata import qapplication
+
     import plotpy.config  # Loading icons
-    from plotpy.widgets import qapplication
 
     app = qapplication()
     window = MainWindow()
     window.show()
-    app.exec_()
+    app.exec()

@@ -12,13 +12,21 @@ Requires pydicom (>=0.9.3)"""
 
 import os
 
-from plotpy.widgets.builder import make
-from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
-from plotpy.widgets.qthelpers_guidata import qt_app_context
+import pytest
+from guidata.qthelpers import qt_app_context
+
+from plotpy.core.builder import make
+from plotpy.core.plot.plotwidget import PlotDialog, PlotType
+
+try:
+    import pydicom  # type:ignore
+except ImportError:
+    pydicom = None
 
 SHOW = True  # Show test in GUI-based test launcher
 
 
+@pytest.mark.skipif(pydicom is None, reason="pydicom not installed")
 def test_dicom_image():
     with qt_app_context(exec_loop=True):
         win = PlotDialog(

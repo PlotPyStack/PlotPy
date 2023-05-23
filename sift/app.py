@@ -18,6 +18,8 @@ import traceback
 import numpy as np
 import scipy.ndimage as spi
 import scipy.signal as sps
+from guidata import qapplication
+from guidata.configtools import get_icon
 from guidata.dataset.dataitems import (
     BoolItem,
     ChoiceItem,
@@ -27,24 +29,28 @@ from guidata.dataset.dataitems import (
     IntItem,
     StringItem,
 )
-from guidata.dataset.datatypes import DataSet, ValueProp, update_dataset
+from guidata.dataset.datatypes import DataSet, ValueProp
 from guidata.dataset.qtwidgets import DataSetEditGroupBox
-from pydicom import dicomio
+from guidata.qthelpers import (
+    add_actions,
+    create_action,
+    get_std_icon,
+    win32_fix_title_bar_background,
+)
+from guidata.qtwidgets import DockableWidget, DockableWidgetMixin
+from guidata.utils import update_dataset
+from guidata.widgets.console import DockableConsole
 from PyQt5.QtCore import pyqtSignal as Signal
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
 
 from plotpy.config import _
-from plotpy.utils.icons import get_std_icon
-from plotpy.utils.misc_from_gui import add_actions, create_action, get_icon
-from plotpy.widgets import io, qapplication
+from plotpy.core import io
+from plotpy.core.builder import make
+from plotpy.core.plot.plotwidget import PlotType, PlotWidget
+from plotpy.utils.qthelpers import exec_image_save_dialog, exec_images_open_dialog
 from plotpy.widgets.about import about
-from plotpy.widgets.builder import make
-from plotpy.widgets.dockable_console import DockableConsole
-from plotpy.widgets.dockables import DockableWidget, DockableWidgetMixin
-from plotpy.widgets.plot.plotwidget import PlotType, PlotWidget
-from plotpy.widgets.qthelpers import exec_image_save_dialog, exec_images_open_dialog
 from plotpy.widgets.resizedialog import ResizeDialog
 
 sys.path.append(osp.abspath(osp.dirname(__file__)))
@@ -1123,7 +1129,7 @@ class ImageFT(ObjectFT):
             old_size=original_size,
             text=_("Destination size:"),
         )
-        if not dlg.exec_():
+        if not dlg.exec():
             return
         boundaries = ("constant", "nearest", "reflect", "wrap")
         prop = ValueProp(False)
@@ -1309,6 +1315,11 @@ class ImageFT(ObjectFT):
             image.title = filename
             image.data = data
             if osp.splitext(filename)[1].lower() == ".dcm":
+                # This import statement must stay here because if pydicom is not
+                # installed, the extension .dcm is not registered in the io module,
+                # so we will not get here.
+                from pydicom import dicomio  # pylint: disable=import-outside-toplevel
+
                 image.template = dicomio.read_file(filename, stop_before_pixels=True)
             self.add_object(image)
 
@@ -1371,7 +1382,8 @@ class SiftProxy(object):
 
 class MainWindow(QW.QMainWindow):
     def __init__(self):
-        QW.QMainWindow.__init__(self)
+        super().__init__()
+        win32_fix_title_bar_background(self)
 
         self.setWindowIcon(get_icon("sift.svg"))
         self.setWindowTitle(APP_NAME)
@@ -1567,7 +1579,7 @@ def run():
     app = qapplication()
     window = MainWindow()
     window.show()
-    app.exec_()
+    app.exec()
 
 
 if __name__ == "__main__":

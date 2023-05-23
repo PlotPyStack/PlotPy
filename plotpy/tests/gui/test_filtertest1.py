@@ -9,18 +9,17 @@
 
 
 import numpy as np
-import pytest
 import scipy.ndimage as spi
 import scipy.signal as sps
 from guidata.configtools import get_icon
+from guidata.qthelpers import qt_app_context
 from qtpy import QtWidgets as QW
 
 import plotpy.config  # Loading icons
-from plotpy.widgets.builder import make
+from plotpy.core.builder import make
 
 # ---Import plot widget base class
-from plotpy.widgets.plot.plotwidget import PlotType, PlotWidget
-from plotpy.widgets.qthelpers_guidata import qt_app_context
+from plotpy.core.plot.plotwidget import PlotType, PlotWidget
 
 SHOW = True  # Show test in GUI-based test launcher
 # ---
@@ -87,18 +86,14 @@ class WindowTest(QW.QWidget):
         self.layout().addWidget(widget)
 
 
-@pytest.mark.skip(reason="Explose le framework en runtime")
 def test_filtre1():
     """Testing this simple Qt/plotpy example"""
-
     x = np.linspace(-10, 10, 500)
     y = np.random.rand(len(x)) + 5 * np.sin(2 * x**2) / x
     with qt_app_context(exec_loop=True):
         win = WindowTest()
-
         win.add_plot(x, y, lambda x: spi.gaussian_filter1d(x, 1.0), "Gaussian")
         win.add_plot(x, y, sps.wiener, "Wiener")
-
         win.show()
 
 

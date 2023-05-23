@@ -1,1 +1,1 @@
-.. automodule:: plotpy.gui.widgets.items.curve
+.. automodule:: plotpy.core.items.curve

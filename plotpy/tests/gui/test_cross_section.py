@@ -11,10 +11,10 @@
 import os
 
 import numpy as np
+from guidata.qthelpers import qt_app_context
 
-from plotpy.widgets.builder import make
-from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
-from plotpy.widgets.qthelpers_guidata import qt_app_context
+from plotpy.core.builder import make
+from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 
 SHOW = True  # Show test in GUI-based test launcher
 

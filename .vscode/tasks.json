@@ -4,6 +4,34 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Run Coverage",
+            "type": "shell",
+            "command": "cmd",
+            "args": [
+                "/c",
+                "run_coverage.bat",
+            ],
+            "options": {
+                "cwd": "scripts",
+                "env": {
+                    "UNATTENDED": "1",
+                    "PYTHON": "${env:PLOTPY_PYTHON_DEV}",
+                }
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": true,
+                "clear": true
+            }
+        },
+        {
             "label": "Clean Up",
             "type": "shell",
             "command": "cmd",

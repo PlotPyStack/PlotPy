@@ -11,8 +11,8 @@ import pytest
 from qtpy.QtCore import Qt
 from qwt import QwtPlotCurve
 
-from plotpy.widgets.builder import make
-from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.core.builder import make
+from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 
 
 def plot_qtbot_curve(qtbot, curve):
@@ -28,7 +28,6 @@ def plot_qtbot_curve(qtbot, curve):
 _COLOR_TO_HEX = {"red": "#ff0000", "blue": "#0000ff"}
 
 
-# @pytest.mark.skip(reason="Explose le framework en runtime")
 @pytest.mark.parametrize("shade", [0, 0.4, 1.0])
 @pytest.mark.parametrize("curvestyle", ["Lines", "Sticks", "Steps", "Dots", "NoCurve"])
 @pytest.mark.parametrize("baseline", [0.0, 1.0])
@@ -46,7 +45,6 @@ def test_builder_curve_curve_params(qtbot, shade, curvestyle, baseline):
     plot_qtbot_curve(qtbot, curve)
 
 
-# @pytest.mark.skip(reason="Explose le framework en runtime")
 @pytest.mark.parametrize("color", ["red", "blue"])
 @pytest.mark.parametrize(
     "linestyle",
@@ -67,7 +65,6 @@ def test_builder_curve_line_params(qtbot, color, linestyle, linewidth):
     plot_qtbot_curve(qtbot, curve)
 
 
-# @pytest.mark.skip(reason="Explose le framework en runtime")
 @pytest.mark.parametrize(
     "marker",
     [

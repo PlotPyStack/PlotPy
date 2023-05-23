@@ -9,10 +9,10 @@
 
 
 import numpy as np
+from guidata.qthelpers import qt_app_context
 
-from plotpy.widgets.builder import make
-from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
-from plotpy.widgets.qthelpers_guidata import qt_app_context
+from plotpy.core.builder import make
+from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 
 SHOW = True  # Show test in GUI-based test launcher
 
@@ -50,9 +50,9 @@ def compute_image(N=2000, grid=True):
 def test_builder():
     """Test"""
     # -- Create QApplication
-    # import plotpy.widgets
+    # import guidata
 
-    # _app = plotpy.widgets.qapplication()
+    # _app = guidata.qapplication()
     with qt_app_context(exec_loop=True):
         win0 = PlotDialog(
             edit=False,

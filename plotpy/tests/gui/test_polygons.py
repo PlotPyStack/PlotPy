@@ -13,10 +13,10 @@ several hundreds of independent polygons.
 
 
 import numpy as np
+from guidata.qthelpers import qt_app_context
 
-import plotpy.widgets
-from plotpy.widgets.items.polygon import PolygonMapItem
-from plotpy.widgets.plot.plotwidget import PlotDialog
+from plotpy.core.items.polygon import PolygonMapItem
+from plotpy.core.plot.plotwidget import PlotDialog
 
 SHOW = True  # Show test in GUI-based test launcher
 
@@ -51,37 +51,37 @@ COLORS = [
 
 
 def test_polygons():
-    _app = plotpy.widgets.qapplication()
-    win = PlotDialog(edit=True, toolbar=True, wintitle="Sample multi-polygon item")
-    plot = win.manager.get_plot()
-    plot.set_aspect_ratio(lock=True)
-    plot.set_antialiasing(False)
-    plot.set_axis_direction("left", False)
-    plot.set_axis_title("bottom", "Lon")
-    plot.set_axis_title("left", "Lat")
+    """Test"""
+    with qt_app_context(exec_loop=True):
+        win = PlotDialog(edit=True, toolbar=True, wintitle="Sample multi-polygon item")
+        plot = win.manager.get_plot()
+        plot.set_aspect_ratio(lock=True)
+        plot.set_antialiasing(False)
+        plot.set_axis_direction("left", False)
+        plot.set_axis_title("bottom", "Lon")
+        plot.set_axis_title("left", "Lat")
 
-    points = []
-    offsets = np.zeros((NCIRC, 2), np.int32)
-    colors = np.zeros((NCIRC, 2), np.uint32)
-    npts = 0
-    for k in range(NCIRC):
-        pts = create_circle()
-        offsets[k, 0] = k
-        offsets[k, 1] = npts
-        npts += pts.shape[0]
-        points.append(pts)
-        colors[k, 0] = COLORS[k % len(COLORS)][0]
-        colors[k, 1] = COLORS[(3 * k) % len(COLORS)][1]
-    points = np.concatenate(points)
+        points = []
+        offsets = np.zeros((NCIRC, 2), np.int32)
+        colors = np.zeros((NCIRC, 2), np.uint32)
+        npts = 0
+        for k in range(NCIRC):
+            pts = create_circle()
+            offsets[k, 0] = k
+            offsets[k, 1] = npts
+            npts += pts.shape[0]
+            points.append(pts)
+            colors[k, 0] = COLORS[k % len(COLORS)][0]
+            colors[k, 1] = COLORS[(3 * k) % len(COLORS)][1]
+        points = np.concatenate(points)
 
-    print(NCIRC, "Polygons")
-    print(points.shape[0], "Points")
+        print(NCIRC, "Polygons")
+        print(points.shape[0], "Points")
 
-    crv = PolygonMapItem()
-    crv.set_data(points, offsets, colors)
-    plot.add_item(crv, z=0)
-    win.show()
-    win.exec_()
+        crv = PolygonMapItem()
+        crv.set_data(points, offsets, colors)
+        plot.add_item(crv, z=0)
+        win.show()
 
 
 if __name__ == "__main__":

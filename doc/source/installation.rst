@@ -6,18 +6,16 @@ Dependencies
 
 Requirements:
 
-    * Python 3.6
+    * Python >= 3.8
     * PyQt5 5.x (x>=5)
     * PythonQwt >=0.5
     * NumPy
     * SciPy
     * Pillow
-    
+
 Optional Python modules:
 
     * h5py (HDF5 files I/O)
-    * cx_Freze or py2exe (application deployment on Windows platforms)
-    * spyderlib 2.1 for Sift embedded Python console
     * pydicom >=0.9.3 for DICOM files I/O features
 
 Other optional modules for developers:

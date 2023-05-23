@@ -21,8 +21,7 @@ Reference
    :inherited-members:
 """
 
-from __future__ import division, print_function
-
+from guidata.qthelpers import win32_fix_title_bar_background
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
 from qtpy.QtCore import Qt
@@ -44,10 +43,11 @@ def is_edit_valid(edit):
 
 
 class ResizeDialog(QW.QDialog):
-    """ """
+    """Resize dialog box"""
 
     def __init__(self, parent, new_size, old_size, text="", keep_original_size=False):
         QW.QDialog.__init__(self, parent)
+        win32_fix_title_bar_background(self)
 
         intfunc = lambda tup: [int(val) for val in tup]
         if intfunc(new_size) == intfunc(old_size):

@@ -10,9 +10,12 @@ SIFT, the Signal and Image Filtering Tool
 Simple signal and image processing application based on plotpy
 """
 
+import pytest
+
 from sift.app import run
 
 
+@pytest.mark.skip(reason="Not relevant in automated test suite")
 def test_sift():
     """run method"""
     run()

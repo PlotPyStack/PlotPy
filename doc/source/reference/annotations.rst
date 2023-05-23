@@ -1,1 +1,1 @@
-.. automodule:: plotpy.gui.widgets.items.annotations
+.. automodule:: plotpy.core.items.annotations

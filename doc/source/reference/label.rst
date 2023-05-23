@@ -1,1 +1,1 @@
-.. automodule:: plotpy.gui.widgets.items.label
+.. automodule:: plotpy.core.items.label

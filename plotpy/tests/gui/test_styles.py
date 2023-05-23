@@ -16,7 +16,7 @@ from qtpy import QtGui as QG
 from qwt import QwtSymbol
 
 from plotpy.config import UserConfig, _
-from plotpy.widgets.styles.base import LineStyleParam, SymbolParam
+from plotpy.core.styles.base import LineStyleParam, SymbolParam
 
 gettext.install("test")
 SHOW = False  # Do not show test in GUI-based test launcher

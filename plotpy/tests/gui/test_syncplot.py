@@ -13,11 +13,11 @@
 # ===============================================================================
 
 
+import guidata
 import numpy as np
 
-import plotpy.widgets
-from plotpy.widgets.builder import make
-from plotpy.widgets.plot.plotwidget import (
+from plotpy.core.builder import make
+from plotpy.core.plot.plotwidget import (
     BasePlot,
     PlotDialog,
     PlotManager,
@@ -68,14 +68,14 @@ def plot(items1, items2, items3, items4):
         plot.set_items_readonly(False)
     win.get_panel("itemlist").show()
     win.show()
-    win.exec_()
+    win.exec()
 
 
 def nottest_syncplot():
     """Test"""
     # -- Create QApplication
 
-    _app = plotpy.widgets.qapplication()
+    _app = guidata.qapplication()
     # --
 
     x = np.linspace(-10, 10, 200)

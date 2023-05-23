@@ -1,1 +1,1 @@
-.. automodule:: plotpy.gui.widgets.fit
+.. automodule:: plotpy.widgets.fit
