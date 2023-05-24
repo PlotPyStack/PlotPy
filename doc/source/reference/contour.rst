@@ -1,1 +1,1 @@
-.. automodule:: plotpy.gui.widgets.contour
+.. automodule:: plotpy.utils.contour

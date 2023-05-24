@@ -14,5 +14,5 @@ A plotpy plot widget plugin for Qt Designer
 from plotpy.widgets.qtdesigner import create_qtdesigner_plugin
 
 Plugin = create_qtdesigner_plugin(
-    "plotpy", "plotpy.gui.widgets.plot", "PlotWidget", icon="curve.png"
+    "plotpy", "plotpy.core.plot", "PlotWidget", icon="curve.png"
 )

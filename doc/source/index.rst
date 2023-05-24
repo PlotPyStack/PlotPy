@@ -16,7 +16,6 @@ Welcome to Plotpy's documentation!
    examples
    examples_gui
    sift
-   disthelpers
    reference/index
    development
    licenses

@@ -425,12 +425,13 @@ PyObject *py_vert_line(PyObject *self, PyObject *args)
 	PyErr_SetString(PyExc_TypeError, "imin, imax must be ndarray");
 	return NULL;
     }
-    if (PyArray_TYPE(p_min) != NPY_INT ||
-	PyArray_TYPE(p_max) != NPY_INT) {
+	if (PyArray_TYPE(p_min) != NPY_INT32 ||
+		PyArray_TYPE(p_max) != NPY_INT32)
+	{
 	PyErr_SetString(PyExc_TypeError, "imin, imax must be int ndarray");
 	return NULL;
-    }
-    Array1D<int> pmin(p_min), pmax(p_max);
+	}
+	Array1D<int> pmin(p_min), pmax(p_max);
     vector<int> imin, imax;
     int nx = int(max(y0,y1))+1;
     if (pmin.ni<nx || pmax.ni<nx) {

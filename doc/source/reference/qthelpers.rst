@@ -1,2 +1,2 @@
-.. automodule:: plotpy.gui.widgets.qthelpers
+.. automodule:: plotpy.utils.qthelpers
    :members:

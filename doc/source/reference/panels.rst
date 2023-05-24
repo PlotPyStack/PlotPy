@@ -1,2 +1,2 @@
-.. automodule:: plotpy.gui.widgets.panels
+.. automodule:: plotpy.core.panels
    :members:

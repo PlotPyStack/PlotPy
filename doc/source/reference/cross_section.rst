@@ -1,1 +1,1 @@
-.. automodule:: plotpy.gui.widgets.cross_section
+.. automodule:: plotpy.core.plot.cross_section

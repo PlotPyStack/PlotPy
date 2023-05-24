@@ -1,1 +1,1 @@
-.. automodule:: plotpy.gui.widgets.signals
+.. automodule:: plotpy.core.signals

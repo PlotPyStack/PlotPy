@@ -4,6 +4,34 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Run Coverage",
+            "type": "shell",
+            "command": "cmd",
+            "args": [
+                "/c",
+                "run_coverage.bat",
+            ],
+            "options": {
+                "cwd": "scripts",
+                "env": {
+                    "UNATTENDED": "1",
+                    "PYTHON": "${env:PLOTPY_PYTHON_DEV}",
+                }
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": true,
+                "clear": true
+            }
+        },
+        {
             "label": "Clean Up",
             "type": "shell",
             "command": "cmd",
@@ -56,6 +84,34 @@
             }
         },
         {
+            "label": "Run gui tests runner",
+            "type": "shell",
+            "command": "cmd",
+            "args": [
+                "/c",
+                "gui_tests_runner.bat"
+            ],
+            "options": {
+                "cwd": "scripts",
+                "env": {
+                    "UNATTENDED": "1",
+                    "PYTHON": "${env:PLOTPY_PYTHON_DEV}",
+                }
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            }
+        },
+        {
             "label": "Run Pylint",
             "type": "shell",
             "command": "cmd",
@@ -63,7 +119,7 @@
                 "/c",
                 "run_pylint.bat",
                 "--disable=fixme",
-                "plotpy",
+                "plotpy/widgets",
             ],
             "options": {
                 "cwd": "scripts",
@@ -118,7 +174,7 @@
             //     "Build documentation",
             // ]
         },
-        /* {
+        {
             "label": "Build documentation",
             "type": "shell",
             "command": "cmd",
@@ -147,7 +203,31 @@
                 "showReuseMessage": true,
                 "clear": true
             }
-        }, */
+        },
+        {
+            "label": "Display Coverage",
+            "type": "shell",
+            "command": "cmd",
+            "args": [
+                "/c",
+                "display_cov.bat",
+            ],
+            "options": {
+                "cwd": "scripts",
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "never",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": true
+            }
+        },
         /* {
             "label": "Run Coverage",
             "type": "shell",

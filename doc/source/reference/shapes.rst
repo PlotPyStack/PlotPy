@@ -1,1 +1,1 @@
-.. automodule:: plotpy.gui.widgets.items.shapes
+.. automodule:: plotpy.core.items.shapes

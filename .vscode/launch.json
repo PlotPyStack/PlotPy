@@ -11,7 +11,7 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "envFile": "${workspaceFolder}/.env",
-            "python": "${env:PYTHON_PLOTPY_DEV}",
+            // "python": "${env:PYTHON_PLOTPY_DEV}",
             "justMyCode": false,
             "args": [],
             "env": {}
@@ -24,5 +24,19 @@
             "console": "integratedTerminal",
             "python": "${env:PYTHON_PLOTPY_RLS}",
         },
+        {
+            "name": "Python: Debug Tests",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "purpose": [
+                "debug-test"
+            ],
+            "console": "integratedTerminal",
+            "env": {
+                "PYTEST_ADDOPTS": "--no-cov"
+            },
+            "justMyCode": false
+        }
     ]
 }

@@ -1,12 +1,12 @@
 .. _examples:
 
-Examples of plotpy.gui
-======================
+Examples of plotpy
+==================
 
 The test launcher
 -----------------
 
-A lot of examples are available in the `plotpy.tests.gui` test module ::
+A lot of examples are available in the `plotpy.tests` test module ::
 
     from plotpy.tests.gui import run
     run()

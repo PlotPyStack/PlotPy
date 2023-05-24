@@ -2,50 +2,6 @@
 Overview
 ========
 
-plotpy.core
-===========
-
-When developping scientific software, from the simplest script to the 
-most complex application, one systematically needs to manipulate data sets 
-(e.g. parameters for a data processing feature).
-These data sets may consist of various data types: real numbers (e.g. physical 
-quantities), integers (e.g. array indexes), strings (e.g. filenames), 
-booleans (e.g. enable/disable an option), and so on.
-
-Most of the time, the programmer will need the following features:
-
-    * allow the user to enter each parameter through a graphical user interface,
-      using widgets which are adapted to data types (e.g. a single combo box or 
-      check boxes are suitable for presenting an option selection among 
-      multiple choices)
-
-    * entered values have to be stored by the program with a convention which 
-      is again adapted to data types (e.g. when storing a combo box selection 
-      value, should we store the option string, the list index or an 
-      associated key?)
-
-    * using the stored values easily (e.g. for data processing) by regrouping 
-      parameters in data structures
-      
-    * showing the stored values in a dialog box or within a graphical user 
-      interface layout, again with widgets adapted to data types
-
-This library aims to provide these features thanks to automatic graphical user 
-interface generation for data set editing and display. Widgets inside GUIs are 
-automatically generated depending on each data item type.
-
-The `plotpy.core` library also provides the following features:
-
-    * :py:mod:`plotpy.core.utils.disthelpers`: `py2ex` helpers
-    * :py:mod:`plotpy.core.config.userconfig`: `.ini` configuration management helpers
-      (based on Python standard module :py:mod:`configparser`)
-    * :py:mod:`plotpy.core.config.misc`: library/application data management
-    * :py:mod:`plotpy.core.utils.misc`: miscelleneous utilities
-
-
-plotpy.gui
-==========
-
 Based on `PythonQwt` (plotting widgets for Python-Qt graphical user
 interfaces) and on the scientific modules `NumPy` and `SciPy`, `plotpy` is a
 Python library providing efficient 2D data-plotting features (curve/image
@@ -59,10 +15,10 @@ The most popular Python module for data plotting is currently `matplotlib`,
 an open-source library providing a lot of plot types and an API (the `pylab`
 interface) which is very close to MATLAB's plotting interface.
 
-`plotpy.gui` plotting features are quite limited in terms of plot types compared
+`plotpy` plotting features are quite limited in terms of plot types compared
 to `matplotlib`. However the currently implemented plot types are much more
 efficient.
-For example, the `plotpy` image showing function (:py:func:`plotpy.gui.widgets.pyplot.imshow`)
+For example, the `plotpy` image showing function (:py:func:`plotpy.widgets.pyplot.imshow`)
 do not make any copy of the displayed data, hence allowing to show images which
 are much larger than with its `matplotlib`'s counterpart. In other terms, when
 showing a 30-MB image (16-bits unsigned integers for example) with `plotpu`,
@@ -74,7 +30,7 @@ times using 64-bits float data types).
 Features
 ~~~~~~~~
 
-The `plotpy.gui` library also provides the following features:
+The `plotpy` library also provides the following features:
 
     * :py:mod:`.pyplot`: equivalent to :py:mod:`matplotlib.pyplot`, at
       least for the implemented functions
@@ -126,13 +82,13 @@ The `plotpy.gui` library also provides the following features:
         * ready-to-use curve and image plot widgets and dialog boxes
           (see :py:mod:`.plot`)
         * load/save graphical objects (curves, images, shapes)
-        * a lot of test scripts which demonstrate `plotpy.gui` features
+        * a lot of test scripts which demonstrate `plotpy` features
           (see :ref:`examples`)
 
 How it works
 ~~~~~~~~~~~~
 
-A `plotpy.gui`-based plotting widget may be constructed using one of the following
+A `plotpy`-based plotting widget may be constructed using one of the following
 methods:
 
     * *Interactive mode*: when manipulating and visualizing data in an interactive
@@ -147,13 +103,13 @@ methods:
       and so on, you should rather use plotting widget classes instead of
       the `pyplot` helper functions.
 
-There are two kinds of plotting widgets defined in `plotpy.gui`:
+There are two kinds of plotting widgets defined in `plotpy`:
 
     * low-level plotting widget: :py:class:`.baseplot.BasePlot`
 
     * high-level plotting widgets (ready-to-use widgets with integrated tools
       and panels): :py:class:`.plot.PlotWidget` and corresponding dialog box
-      :py:class:`.plot.PlotDialog` and window 
+      :py:class:`.plot.PlotDialog` and window
       :py:class:`.plot.PlotWindow`
 
 Curve-related widgets with integrated plot manager:

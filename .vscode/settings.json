@@ -30,4 +30,15 @@
     ],
     "python.linting.pycodestyleEnabled": true,
     "python.formatting.provider": "black",
+    "esbonio.sphinx.confDir": "",
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "python.testing.pytestPath": "pytest",
+    "python.testing.pytestArgs": [
+        "-v",
+        "--cov",
+        "--cov-report=html",
+        "--mode=unattended",
+        "plotpy",
+    ],
 }

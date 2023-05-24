@@ -1,1 +1,1 @@
-.. automodule:: plotpy.gui.widgets.items.image
+.. automodule:: plotpy.core.items.image

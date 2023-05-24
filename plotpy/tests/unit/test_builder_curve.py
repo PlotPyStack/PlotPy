@@ -11,14 +11,14 @@ import pytest
 from qtpy.QtCore import Qt
 from qwt import QwtPlotCurve
 
-from plotpy.widgets.builder import make
-from plotpy.widgets.plot.plotwidget import PlotDialog, PlotType
+from plotpy.core.builder import make
+from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 
 
 def plot_qtbot_curve(qtbot, curve):
     """Plot *curve* in a dialog managed by *qtbot*"""
     win = PlotDialog(options={"type": PlotType.CURVE})
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     plot.add_item(curve)
     qtbot.addWidget(win)
     win.show()

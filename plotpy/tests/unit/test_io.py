@@ -11,10 +11,16 @@ import os
 from pathlib import Path
 
 import numpy as np
+import pytest
+from guidata.configtools import add_image_path, get_image_file_path
 from qtpy.QtGui import QImage
 
-from plotpy.utils.config.getters import add_image_path, get_image_file_path
-from plotpy.widgets.io import imread, imwrite
+try:
+    import pydicom  # type:ignore
+except ImportError:
+    pydicom = None
+
+from plotpy.core.io import imread, imwrite
 
 
 def compute_image(N=1000, M=1000):
@@ -94,6 +100,7 @@ def test_imread_python_icon_grayscale():
     assert data.shape == (16, 16)
 
 
+@pytest.mark.skipif(pydicom is None, reason="pydicom not installed")
 def test_imread_dcm():
     """Test reading of dcm file"""
     brain_path = Path(__file__).parents[1] / "gui" / "mr-brain.dcm"

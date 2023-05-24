@@ -14,13 +14,13 @@ import subprocess
 import sys
 
 from guidata.configtools import MONOSPACE, get_family, get_icon
+from guidata.qthelpers import get_std_icon
 from guidata.widgets.codeeditor import CodeEditor
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
 
 from plotpy.config import _
-from plotpy.utils.icons import get_std_icon
 
 
 def get_tests(test_package):
@@ -93,7 +93,7 @@ class TestPropertiesWidget(QW.QWidget):
         group_desc.setLayout(layout)
 
         self.editor = CodeEditor(self)
-        self.editor.setup_editor(linenumbers=True, font=font)
+        self.editor.setup(font=font)
         self.editor.setReadOnly(True)
         group_code = QW.QGroupBox(_("Source code"), self)
         layout = QW.QVBoxLayout()
@@ -168,4 +168,4 @@ def run_testlauncher(package, test_package_name=None):
     app = QW.QApplication([])
     win = TestLauncherWindow(package, test_package_name)
     win.show()
-    app.exec_()
+    app.exec()

@@ -12,9 +12,9 @@ import pytest
 from pytest import approx
 from qtpy.QtCore import Qt
 
-from plotpy.widgets.builder import make
-from plotpy.widgets.plot.plotwidget import BasePlot, PlotDialog, PlotType
-from plotpy.widgets.tools.image import ColormapTool
+from plotpy.core.builder import make
+from plotpy.core.plot.plotwidget import BasePlot, PlotDialog, PlotType
+from plotpy.core.tools.image import ColormapTool
 
 
 def compute_image():
@@ -34,7 +34,7 @@ def plot_image(qtbot, item):
         wintitle="PlotDialog image test",
         options=dict(type=PlotType.IMAGE),
     )
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     assert isinstance(plot, BasePlot)
     plot.add_item(item)
     assert item in plot.items
@@ -113,7 +113,7 @@ def test_set_aspect_ratio(qtbot, ratio):
     It ensures that the new height is correctly set."""
     win = PlotDialog(options=dict(type=PlotType.IMAGE))
     item = make.image(compute_image())
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     plot.add_item(item, autoscale=False)
     win.show()
     qtbot.addWidget(win)
@@ -140,13 +140,13 @@ def test_colormap_tool(qtbot):
     """Test ColorMapTool on an image"""
     win = PlotDialog(toolbar=True, options={"type": PlotType.IMAGE})
     item = make.image(compute_image())
-    plot = win.get_plot()
+    plot = win.manager.get_plot()
     plot.add_item(item)
     win.show()
     qtbot.addWidget(win)
 
     # default color map should be "jet"
-    color_map_tool = win.get_tool(ColormapTool)
+    color_map_tool = win.manager.get_tool(ColormapTool)
     assert item.get_color_map_name() == "jet"
     jet_img = plot.grab().toImage()
 

@@ -1,2 +1,2 @@
-.. automodule:: plotpy.gui.widgets.interfaces
+.. automodule:: plotpy.core.interfaces
    :members:

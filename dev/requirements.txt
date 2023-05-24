@@ -21,6 +21,9 @@ matplotlib
 Cython
 pytest
 pytest-qt
+pytest-cov
+pytest-html
 pytest-xvfb
 flaky
 pydicom
+beautifulsoup4
