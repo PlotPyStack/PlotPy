@@ -65,7 +65,9 @@ import os.path as osp
 from numpy import arange, array, meshgrid, ndarray, zeros
 
 from plotpy.config import CONF, _, make_title
+from plotpy.core import io
 from plotpy.core.items.annotations import (
+    AnnotatedCircle,
     AnnotatedEllipse,
     AnnotatedRectangle,
     AnnotatedSegment,
@@ -745,8 +747,6 @@ class PlotItemBuilder(object):
     def _get_image_data(self, data, filename, title, to_grayscale):
         if data is None:
             assert filename is not None
-            from plotpy.core import io
-
             data = io.imread(filename, to_grayscale=to_grayscale)
         if title is None and filename is not None:
             title = osp.basename(filename)
@@ -1587,19 +1587,19 @@ class PlotItemBuilder(object):
         """
         return self.__shape(RectangleShape, x0, y0, x1, y1, title)
 
-    def ellipse(self, x0, y0, x1, y1, title=None):
+    def ellipse(self, x0, y0, x1, y1, x2=None, y2=None, x3=None, y3=None, title=None):
         """
         Make an ellipse shape `plot item`
-        (:py:class:`.shapes.EllipseShape` object)
+        (:py:class:`guiqwt.shapes.EllipseShape` object)
 
-            * x0, y0, x1, y1: ellipse x-axis coordinates
+            * x0, y0, x1, y1, x2, y2, x3, y3: ellipse coordinates
             * title: label name (optional)
         """
-        shape = EllipseShape(x0, y0, x1, y1)
-        shape.set_style("plot", "shape/drag")
-        if title is not None:
-            shape.setTitle(title)
-        return shape
+        item = self.__shape(EllipseShape, x0, y0, x1, y1, title)
+        item.switch_to_ellipse()
+        if x2 is not None and y2 is not None and x3 is not None and y3 is not None:
+            item.set_ydiameter(x2, y2, x3, y3)
+        return item
 
     def circle(self, x0, y0, x1, y1, title=None):
         """
@@ -1609,7 +1609,9 @@ class PlotItemBuilder(object):
             * x0, y0, x1, y1: circle diameter coordinates
             * title: label name (optional)
         """
-        return self.ellipse(x0, y0, x1, y1, title=title)
+        item = self.__shape(EllipseShape, x0, y0, x1, y1, title)
+        item.switch_to_circle()
+        return item
 
     def segment(self, x0, y0, x1, y1, title=None):
         """
@@ -1647,29 +1649,40 @@ class PlotItemBuilder(object):
             AnnotatedRectangle, x0, y0, x1, y1, title, subtitle
         )
 
-    def annotated_ellipse(self, x0, y0, x1, y1, ratio, title=None, subtitle=None):
+    def annotated_ellipse(
+        self,
+        x0,
+        y0,
+        x1,
+        y1,
+        x2=None,
+        y2=None,
+        x3=None,
+        y3=None,
+        title=None,
+        subtitle=None,
+    ):
         """
         Make an annotated ellipse `plot item`
-        (:py:class:`.annotations.AnnotatedEllipse` object)
+        (:py:class:`guiqwt.annotations.AnnotatedEllipse` object)
 
-            * x0, y0, x1, y1: ellipse rectangle coordinates
-            * ratio: ratio between y-axis and x-axis lengths
+            * x0, y0, x1, y1, x2, y2, x3, y3: ellipse coordinates
             * title, subtitle: strings
         """
-        param = self.__get_annotationparam(title, subtitle)
-        shape = AnnotatedEllipse(x0, y0, x1, y1, ratio, param)
-        shape.set_style("plot", "shape/drag")
-        return shape
+        item = self.__annotated_shape(AnnotatedEllipse, x0, y0, x1, y1, title, subtitle)
+        if x2 is not None and y2 is not None and x3 is not None and y3 is not None:
+            item.set_ydiameter(x2, y2, x3, y3)
+        return item
 
-    def annotated_circle(self, x0, y0, x1, y1, ratio, title=None, subtitle=None):
+    def annotated_circle(self, x0, y0, x1, y1, title=None, subtitle=None):
         """
         Make an annotated circle `plot item`
-        (:py:class:`.annotations.AnnotatedCircle` object)
+        (:py:class:`guiqwt.annotations.AnnotatedCircle` object)
 
             * x0, y0, x1, y1: circle diameter coordinates
             * title, subtitle: strings
         """
-        return self.annotated_ellipse(x0, y0, x1, y1, 1.0, title, subtitle)
+        return self.__annotated_shape(AnnotatedCircle, x0, y0, x1, y1, title, subtitle)
 
     def annotated_segment(self, x0, y0, x1, y1, title=None, subtitle=None):
         """

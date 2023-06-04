@@ -73,6 +73,7 @@ def test_image_plot_tools():
     with qt_app_context(exec_loop=True):
         filename = os.path.join(os.path.dirname(__file__), "brain.png")
         win = create_window()
+        win.show()
         image = make.image(filename=filename, colormap="bone")
         plot = win.manager.get_plot()
         plot.add_item(image)

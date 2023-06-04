@@ -59,6 +59,7 @@ class AnnotatedEllipseTool(EllipseTool):
         :return:
         """
         annotation = AnnotatedEllipse(0, 0, 1, 1)
+        annotation.shape.switch_to_circle()
         self.set_shape_style(annotation)
         return annotation, 0, 1
 
