@@ -115,7 +115,7 @@ The following example add all the existing image tools to an `PlotWidget` object
 for testing purpose:
 
 .. literalinclude:: ../../../tests/gui/image_plot_tools.py
-   :start-after: SHOW
+   :start-after: guitest:
 
 
 .. image:: /images/screenshots/image_plot_tools.png

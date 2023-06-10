@@ -22,7 +22,7 @@ from plotpy.core.tools.image import ImageMaskTool
 # debug mode shows the ROI in the top-left corner of the image plot:
 plotpy.core.plot.cross_section.csitem.DEBUG = True
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 
 
 class OCSImageDialog(PlotDialog):

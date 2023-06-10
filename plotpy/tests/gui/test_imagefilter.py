@@ -18,7 +18,7 @@ from plotpy.core.builder import make
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 from plotpy.tests.gui.test_imagexy import compute_image
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 
 
 def imshow(x, y, data, filter_area, yreverse=True):

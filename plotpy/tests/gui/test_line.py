@@ -13,7 +13,6 @@ import pytest
 
 from plotpy._scaler import _line_test as line
 
-SHOW = False  # Show test in GUI-based test launcher
 N = 10
 imin = np.full((N,), N, dtype=int)
 imax = np.full((N,), 0, dtype=int)

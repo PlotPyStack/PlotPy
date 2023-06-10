@@ -22,7 +22,7 @@ from plotpy.core.builder import make
 # ---Import plot widget base class
 from plotpy.core.plot.plotwidget import BasePlot, PlotManager, PlotType
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 # ---
 
 

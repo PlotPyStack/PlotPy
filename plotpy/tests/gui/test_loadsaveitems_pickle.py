@@ -23,7 +23,7 @@ from plotpy.core.tools.image import ImageMaskTool
 from plotpy.core.tools.item import LoadItemsTool, SaveItemsTool
 from plotpy.core.tools.shapes import PolygonShape
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 
 
 def build_items():

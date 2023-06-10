@@ -12,7 +12,7 @@ import numpy as np
 
 from plotpy.widgets.fit import FitParam, guifit
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 
 
 def test_fit():

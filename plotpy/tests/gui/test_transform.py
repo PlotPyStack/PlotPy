@@ -21,7 +21,7 @@ from plotpy.core.builder import make
 from plotpy.core.items.image.misc import assemble_imageitems
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 DEFAULT_CHARS = "".join([chr(c) for c in range(32, 256)])
 
 

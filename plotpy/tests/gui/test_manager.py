@@ -20,7 +20,7 @@ from plotpy.core.plot.manager import PlotManager
 from plotpy.core.plot.plotwidget import BasePlot, PlotItemList, PlotType
 from plotpy.tests.gui.test_image import compute_image
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 
 
 class CentralWidget(QW.QWidget):

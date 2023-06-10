@@ -25,7 +25,7 @@ from plotpy.core.plot.plotwidget import PlotDialog
 from plotpy.core.tools.annotations import AnnotatedSegmentTool
 from plotpy.core.tools.selection import SelectTool
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 # Input coordinate in pixel, in window reference frame
 SEG_COORDINATES_INPUT = [0, 0, 0, 0]
 # output coordinate in pixel, in plot reference frame

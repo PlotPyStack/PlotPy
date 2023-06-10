@@ -20,7 +20,7 @@ Example
 ~~~~~~~
 
 .. literalinclude:: ../../../tests/gui/fit.py
-   :start-after: SHOW
+   :start-after: guitest:
 
 
 .. image:: /images/screenshots/fit.png

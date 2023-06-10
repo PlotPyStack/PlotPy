@@ -18,7 +18,7 @@ from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 from plotpy.core.tools.axes import PlaceAxesTool
 from plotpy.core.tools.shapes import EllipseTool, FreeFormTool, RectangleTool
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 
 
 def create_window():

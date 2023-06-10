@@ -21,7 +21,7 @@ from plotpy.core.builder import make
 # ---Import plot widget base class
 from plotpy.core.plot.plotwidget import PlotType, PlotWidget
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 # ---
 
 

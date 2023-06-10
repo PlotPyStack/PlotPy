@@ -21,8 +21,6 @@ import plotpy
 from plotpy.core.builder import make
 from plotpy.core.plot.plotwidget import PlotType, PlotWindow
 
-SHOW = False  # Show test in GUI-based test launcher
-
 
 class BaseBM(object):
     """Benchmark object"""

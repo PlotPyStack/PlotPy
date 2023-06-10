@@ -33,7 +33,7 @@ from plotpy.core.tools.cursor import HCursorTool, HRangeTool, VCursorTool, XCurs
 from plotpy.core.tools.label import LabelTool
 from plotpy.core.tools.shapes import FreeFormTool, MultiLineTool
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 
 
 def create_window():

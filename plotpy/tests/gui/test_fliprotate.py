@@ -21,7 +21,7 @@ from plotpy.core.tools.image import RotationCenterTool
 from plotpy.tests.gui.test_rotatecrop import create_test_data, imshow
 from plotpy.widgets.fliprotate import FlipRotateDialog, FlipRotateWidget
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 
 
 def widget_test(fname):

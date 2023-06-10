@@ -17,7 +17,7 @@ from plotpy.core.plot.plotwidget import PlotDialog
 from plotpy.core.styles.shape import ShapeParam
 from plotpy.utils.contour import contour
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 
 
 def test_contour():

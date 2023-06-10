@@ -17,7 +17,7 @@ from plotpy.core.builder import make
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 from plotpy.env import execenv
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 
 
 def compute_image(N=2000, grid=True):

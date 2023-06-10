@@ -21,7 +21,7 @@ from plotpy.core.builder import make
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 from plotpy.core.tools.image import ImageMaskTool
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 
 FNAME = "image_masked_xy.pickle"
 

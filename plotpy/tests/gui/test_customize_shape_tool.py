@@ -23,7 +23,7 @@ from plotpy.core.tools.shapes import (
     SegmentTool,
 )
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 STYLE = style_generator()
 
 

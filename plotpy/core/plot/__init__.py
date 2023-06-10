@@ -87,7 +87,7 @@ Examples
 Simple example *without* the `plot manager`:
 
 .. literalinclude:: ../../../tests/gui/filtertest1.py
-   :start-after: SHOW
+   :start-after: guitest:
 
 Simple example *with* the `plot manager`:
 even if this simple example does not justify the use of the `plot manager`
@@ -96,7 +96,7 @@ complex applications, using the `plot manager` allows to design highly versatile
 graphical user interfaces.
 
 .. literalinclude:: ../../../tests/gui/filtertest2.py
-   :start-after: SHOW
+   :start-after: guitest:
 
 Reference
 ~~~~~~~~~

@@ -15,7 +15,7 @@ import plotpy
 from plotpy.core.builder import make
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 
 PLOTPYDIR = os.path.abspath(os.path.dirname(plotpy.__file__))
 IMGFILE = os.path.join(PLOTPYDIR, "images", "items", "image.png")

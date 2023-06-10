@@ -19,7 +19,6 @@ from plotpy.config import UserConfig, _
 from plotpy.core.styles.base import LineStyleParam, SymbolParam
 
 gettext.install("test")
-SHOW = False  # Do not show test in GUI-based test launcher
 CONF = UserConfig({})
 CONF.set_application("plotpy", version="0.0.0", load=False)
 

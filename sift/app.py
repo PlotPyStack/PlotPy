@@ -56,7 +56,7 @@ from plotpy.widgets.resizedialog import ResizeDialog
 sys.path.append(osp.abspath(osp.dirname(__file__)))
 
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 APP_NAME = _("Sift")
 APP_DESC = _(
     """Signal and Image Filtering Tool<br>

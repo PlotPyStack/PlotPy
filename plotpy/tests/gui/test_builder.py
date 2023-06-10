@@ -14,7 +14,7 @@ from guidata.qthelpers import qt_app_context
 from plotpy.core.builder import make
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 
 
 def compute_image(N=2000, grid=True):

@@ -14,8 +14,6 @@ from guidata.qthelpers import qt_app_context
 from plotpy.core.builder import make
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 
-SHOW = False  # Do not show test in GUI-based test launcher
-
 
 def test_plot_log():
     """Test plot log"""

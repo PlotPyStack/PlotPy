@@ -23,7 +23,7 @@ try:
 except ImportError:
     pydicom = None
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 
 
 @pytest.mark.skipif(pydicom is None, reason="pydicom not installed")

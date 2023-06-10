@@ -25,7 +25,7 @@ from plotpy.core.builder import make
 from plotpy.tests.gui.test_image import compute_image
 from plotpy.widgets.qtdesigner import loadui
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 FormClass = loadui(os.path.splitext(__file__)[0] + ".ui")
 
 

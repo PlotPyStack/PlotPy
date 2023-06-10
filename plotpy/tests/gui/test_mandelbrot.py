@@ -20,7 +20,7 @@ from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 from plotpy.core.tools.base import ToggleTool
 from plotpy.mandelbrot import mandelbrot
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 
 
 class FullScale(ToggleTool):

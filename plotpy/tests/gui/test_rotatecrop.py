@@ -23,7 +23,7 @@ from plotpy.widgets.rotatecrop import (
     RotateCropWidget,
 )
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 
 
 def create_test_data(fname, func=None):

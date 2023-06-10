@@ -18,7 +18,7 @@ from guidata.qthelpers import qt_app_context
 from plotpy.core.items.polygon import PolygonMapItem
 from plotpy.core.plot.plotwidget import PlotDialog
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 
 # Create a sample dataset consisting of tesselated circles randomly placed
 # in a box

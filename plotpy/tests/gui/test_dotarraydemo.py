@@ -35,7 +35,7 @@ from plotpy.core.items.image.base import RawImageItem
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 from plotpy.core.tools.misc import CopyToClipboardTool, HelpTool, PrintTool, SaveAsTool
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 
 
 class DotArrayParam(gdt.DataSet):

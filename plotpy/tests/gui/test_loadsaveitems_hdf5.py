@@ -19,7 +19,7 @@ from guidata.qthelpers import qt_app_context
 
 from plotpy.tests.gui.test_loadsaveitems_pickle import IOTest
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 TEST_FILE_NAME = "loadsavecanvas.h5"

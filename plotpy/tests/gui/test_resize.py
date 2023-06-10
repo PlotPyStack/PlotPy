@@ -12,7 +12,7 @@ import os
 from plotpy.core import io, scaler
 from plotpy.core.plot.interactive import imshow, show
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 
 
 def test_resize():

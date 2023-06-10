@@ -31,7 +31,7 @@ from plotpy.core.plot.plotwidget import PlotType, PlotWidget
 
 APP_NAME = _("Application example")
 VERSION = "1.0.0"
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 
 
 class ImageParam(DataSet):

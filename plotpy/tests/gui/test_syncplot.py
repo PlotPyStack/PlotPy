@@ -25,8 +25,6 @@ from plotpy.core.plot.plotwidget import (
     PlotWidget,
 )
 
-SHOW = False  # Show test in GUI-based test launcher
-
 
 class MyPlotDialog(PlotDialog):
     def __init__(self, edit, toolbar, wintitle, options):

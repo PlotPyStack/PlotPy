@@ -20,7 +20,7 @@ from plotpy.core.builder import make
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 from plotpy.core.tools.image import OpenImageTool
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 
 
 class ImageParam(DataSet):

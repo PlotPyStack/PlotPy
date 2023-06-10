@@ -11,8 +11,6 @@ from guidata.qthelpers import qt_app_context
 
 from plotpy.core.styles.base import FontParam
 
-SHOW = False  # Do not show test in GUI-based test launcher
-
 
 def test_fontparam():
     with qt_app_context(exec_loop=True):

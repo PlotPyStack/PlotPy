@@ -31,7 +31,7 @@ from plotpy.core.plot.interactive import (
     zlabel,
 )
 
-SHOW = True  # Show test in GUI-based test launcher
+# guitest: show
 
 
 @pytest.mark.skip(reason="Not relevant in automated test suite")
