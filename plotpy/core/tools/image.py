@@ -10,6 +10,7 @@ from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
 from plotpy.config import _
+from plotpy.core import io
 from plotpy.core.events import QtDragHandler, setup_standard_tool_filter
 from plotpy.core.interfaces.common import (
     IColormapImageItemType,
@@ -17,10 +18,13 @@ from plotpy.core.interfaces.common import (
     IVoiImageItemType,
 )
 from plotpy.core.items.annotations import AnnotatedRectangle
+from plotpy.core.items.image.masked import MaskedImageMixin
+from plotpy.core.items.image.misc import get_items_in_rectangle
 from plotpy.core.items.image.transform import TrImageItem
 from plotpy.core.items.shapes.ellipse import EllipseShape
 from plotpy.core.items.shapes.rectangle import RectangleShape
 from plotpy.core.panels import ID_CONTRAST
+from plotpy.core.plot.base import PlotType
 from plotpy.core.tools.base import (
     CommandTool,
     DefaultToolbarID,
@@ -63,8 +67,6 @@ class ImageStatsRectangle(AnnotatedRectangle):
     # ----AnnotatedShape API-----------------------------------------------------
     def get_infos(self):
         """Return formatted string with informations on current shape"""
-        from plotpy.core.items.image.misc import get_items_in_rectangle
-
         if self.image_item is None:
             return
         plot = self.image_item.plot()
@@ -585,8 +587,6 @@ class ImageMaskTool(CommandTool):
         :return:
         """
         item = plot.get_active_item()
-        from plotpy.core.items.image.masked import MaskedImageMixin
-
         if isinstance(item, MaskedImageMixin):
             return item
         else:
@@ -722,8 +722,6 @@ class OpenImageTool(OpenFileTool):
     """ """
 
     def __init__(self, manager, toolbar_id=DefaultToolbarID):
-        from plotpy.core import io
-
         super(OpenImageTool, self).__init__(
             manager,
             title=_("Open image"),
@@ -853,7 +851,11 @@ class RotateCropTool(CommandTool):
 
     def activate_command(self, plot, checked):
         """Activate tool"""
-        from plotpy.core.items.image.transform import TrImageItem
+        # This import can't be done at the module level because it creates a
+        # circular import: we create a dialog that itself instantiates a
+        # PlotWidget, so it needs to import plotpy.widgets.plotwidget at some
+        # point.
+        # pylint: disable=import-outside-toplevel
         from plotpy.widgets.rotatecrop import RotateCropDialog
 
         for item in plot.get_selected_items():
@@ -872,8 +874,6 @@ class RotateCropTool(CommandTool):
 
         :param plot:
         """
-        from plotpy.core.items.image.transform import TrImageItem
-
         status = any(
             [isinstance(item, TrImageItem) for item in plot.get_selected_items()]
         )
@@ -887,8 +887,6 @@ def update_image_tool_status(tool, plot):
     :param plot:
     :return:
     """
-    from plotpy.core.plot.base import PlotType
-
     enabled = plot.type != PlotType.CURVE
     tool.action.setEnabled(enabled)
     return enabled
