@@ -37,7 +37,7 @@ def rewrite_test_file_content():
         for item in list(f.keys()):
             if item not in image_name_list:
                 continue
-            print(f[item].attrs["fname"])
+            # print(f[item].attrs["fname"])
             f[item].attrs["fname"] = os.path.join(DIR_PATH, IMG_BRAIN)
 
 

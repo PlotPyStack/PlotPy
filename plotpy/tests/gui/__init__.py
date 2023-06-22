@@ -13,11 +13,12 @@ plotpy test package
 
 def run():
     """Run plotpy test launcher"""
+    from guidata.guitest import run_testlauncher
+
     import plotpy
     import plotpy.config  # Loading icons
-    from plotpy.tests.gui.guitest import run_testlauncher
 
-    run_testlauncher(plotpy, "tests.gui")
+    run_testlauncher(plotpy)
 
 
 if __name__ == "__main__":
