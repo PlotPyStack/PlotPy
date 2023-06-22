@@ -118,63 +118,6 @@ class ItemListWidget(QW.QListWidget):
             for action in [self.moveup_ac, self.movedown_ac]:
                 action.setEnabled(self.__is_selection_contiguous())
 
-    # def __get_item_icon(self, item):
-    #     from plotpy.core.items.label import LegendBoxItem, LabelItem
-    #     from plotpy.core.items.annotations import (
-    #         AnnotatedShape,
-    #         AnnotatedRectangle,
-    #         AnnotatedCircle,
-    #         AnnotatedEllipse,
-    #         AnnotatedPoint,
-    #         AnnotatedSegment,
-    #     )
-    #     from plotpy.core.items.shapes import (
-    #         SegmentShape,
-    #         RectangleShape,
-    #         EllipseShape,
-    #         PointShape,
-    #         PolygonShape,
-    #         Axes,
-    #         XRangeSelection,
-    #     )
-    #     from plotpy.core.items.image import (
-    #         BaseImageItem,
-    #         Histogram2DItem,
-    #         ImageFilterItem,
-    #     )
-    #     from plotpy.widgets.histogram import HistogramItem
-    #
-    #     icon_name = "item.png"
-    #     for klass, icon in (
-    #         (HistogramItem, "histogram.png"),
-    #         (ErrorBarCurveItem, "errorbar.png"),
-    #         (CurveItem, "curve.png"),
-    #         (GridItem, "grid.png"),
-    #         (LegendBoxItem, "legend.png"),
-    #         (LabelItem, "label.png"),
-    #         (AnnotatedSegment, "segment.png"),
-    #         (AnnotatedPoint, "point_shape.png"),
-    #         (AnnotatedCircle, "circle.png"),
-    #         (AnnotatedEllipse, "ellipse_shape.png"),
-    #         (AnnotatedRectangle, "rectangle.png"),
-    #         (AnnotatedShape, "annotation.png"),
-    #         (SegmentShape, "segment.png"),
-    #         (RectangleShape, "rectangle.png"),
-    #         (PointShape, "point_shape.png"),
-    #         (EllipseShape, "ellipse_shape.png"),
-    #         (Axes, "gtaxes.png"),
-    #         (Marker, "marker.png"),
-    #         (XRangeSelection, "xrange.png"),
-    #         (PolygonShape, "freeform.png"),
-    #         (Histogram2DItem, "histogram2d.png"),
-    #         (ImageFilterItem, "funct.png"),
-    #         (BaseImageItem, "image.png"),
-    #     ):
-    #         if isinstance(item, klass):
-    #             icon_name = icon
-    #             break
-    #     return get_icon(icon_name)
-
     def __get_item_icon(self, item):
         icon = item.icon()
         if icon is None:
