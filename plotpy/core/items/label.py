@@ -776,8 +776,6 @@ class RangeComputation(ObjectInfo):
             if vector is None:
                 vectors.append(None)
             elif i0 == i1:
-                import numpy as np
-
                 vectors.append(np.array([np.NaN]))
             else:
                 vectors.append(vector[i0:i1])

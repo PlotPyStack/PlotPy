@@ -37,6 +37,7 @@ for each kind of panel:
         Module providing the `plot tools`
 """
 
+from guidata.configtools import get_icon
 from guidata.qtwidgets import DockableWidget
 from qtpy import QtCore as QC
 
@@ -79,8 +80,6 @@ class PanelWidget(DockableWidget):
         if self.PANEL_TITLE is not None:
             self.setWindowTitle(self.PANEL_TITLE)
         if self.PANEL_ICON is not None:
-            from guidata.configtools import get_icon
-
             self.setWindowIcon(get_icon(self.PANEL_ICON))
 
     def showEvent(self, event):

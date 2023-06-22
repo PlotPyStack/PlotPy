@@ -9,19 +9,21 @@
 
 import os
 
+from guidata.qthelpers import qt_app_context
+
 from plotpy.core import io, scaler
-from plotpy.core.plot.interactive import imshow, show
+from plotpy.tests.gui.test_rotatecrop import imshow
 
 # guitest: show
 
 
 def test_resize():
     """Test"""
-    filename = os.path.join(os.path.dirname(__file__), "brain.png")
-    data = io.imread(filename)
-    dst_image = scaler.resize(data, (2000, 3000))
-    imshow(dst_image, interpolation="nearest")
-    show()
+    with qt_app_context(exec_loop=False):
+        filename = os.path.join(os.path.dirname(__file__), "brain.png")
+        data = io.imread(filename)
+        dst_image = scaler.resize(data, (2000, 3000))
+        imshow(dst_image)
 
 
 if __name__ == "__main__":

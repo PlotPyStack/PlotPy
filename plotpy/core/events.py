@@ -16,14 +16,13 @@ plotpy.core.events
 The `event` module handles event management (states, event filter, ...).
 """
 
-
-
 import weakref
 
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 
 from plotpy.config import CONF
+from plotpy.core.items.utils import axes_to_canvas, canvas_to_axes
 from plotpy.utils.debug import buttons_to_str, evt_type_to_str
 
 CursorShape = type(QC.Qt.CursorShape.ArrowCursor)
@@ -521,8 +520,6 @@ class UndoMoveObject(object):
 
     def __init__(self, obj, pos1, pos2):
         self.obj = obj
-        from plotpy.core.items.utils import canvas_to_axes
-
         self.coords1 = canvas_to_axes(obj, pos1)
         self.coords2 = canvas_to_axes(obj, pos2)
 
@@ -538,8 +535,6 @@ class UndoMoveObject(object):
 
         :return:
         """
-        from plotpy.core.items.utils import axes_to_canvas
-
         pos1 = QC.QPointF(*axes_to_canvas(self.obj, *self.coords1))
         pos2 = QC.QPointF(*axes_to_canvas(self.obj, *self.coords2))
         return pos1, pos2

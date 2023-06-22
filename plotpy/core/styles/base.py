@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+from copy import deepcopy
+from math import atan2, pi, sqrt
+
 from guidata.dataset.dataitems import (
     BoolItem,
     ButtonItem,
@@ -241,8 +244,6 @@ class ItemParameters(object):
         :param key:
         :return:
         """
-        from copy import deepcopy
-
         return deepcopy(self.paramdict.get(key))
 
     def update(self, plot):
@@ -453,8 +454,6 @@ class BrushStyleParam(DataSet):
 
         :param brush:
         """
-        from math import atan2, pi, sqrt
-
         tr = brush.transform()
         pt = tr.map(QC.QPointF(1.0, 0.0))
         self.sx = sqrt(pt.x() ** 2 + pt.y() ** 2)

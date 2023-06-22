@@ -27,14 +27,14 @@ Reference
 .. autofunction:: save_items
 """
 
-
-
 import logging
 import os.path as osp
 import re
 import sys
 
 import numpy as np
+import PIL.Image
+import PIL.TiffImagePlugin  # py2exe
 
 from plotpy.config import _
 from plotpy.core.plot.histogram.utils import hist_range_threshold
@@ -275,9 +275,6 @@ DTYPES = {
 
 def _imread_pil(filename, to_grayscale=False, **kwargs):
     """Open image with PIL and return a NumPy array"""
-    import PIL.Image
-    import PIL.TiffImagePlugin  # py2exe
-
     PIL.TiffImagePlugin.OPEN_INFO[(PIL.TiffImagePlugin.II, 0, 1, 1, (16,), ())] = (
         "I;16",
         "I;16",
@@ -335,9 +332,6 @@ def _imread_pil(filename, to_grayscale=False, **kwargs):
 
 def _imwrite_pil(filename, arr):
     """Write `arr` NumPy array to `filename` using PIL"""
-    import PIL.Image
-    import PIL.TiffImagePlugin  # py2exe
-
     for mode, (dtype_str, extra) in list(DTYPES.items()):
         if dtype_str == arr.dtype.str:
             if extra is None:  # mode for grayscale images
@@ -373,14 +367,16 @@ def _import_dcm():
 
     # This import statement must stay here because the purpose of this function
     # is to check if pydicom is installed:
-    from pydicom import dicomio  # pylint: disable=import-outside-toplevel # type:ignore
+    from pydicom import \
+        dicomio  # pylint: disable=import-outside-toplevel # type:ignore
 
     logger.setLevel(logging.WARNING)
 
 
 def _imread_dcm(filename, **kwargs):
     """Open DICOM image with pydicom and return a NumPy array"""
-    from pydicom import dicomio  # pylint: disable=import-outside-toplevel # type:ignore
+    from pydicom import \
+        dicomio  # pylint: disable=import-outside-toplevel # type:ignore
     dcm = dicomio.read_file(filename, force=True)
     # **********************************************************************
     # The following is necessary until pydicom numpy support is improved:
