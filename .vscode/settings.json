@@ -7,8 +7,11 @@
     ],
     "files.exclude": {
         "**/__pycache__": true,
+        "**/.pytest_cache": true,
+        "**/.hypothesis": true,
         "**/*.pyc": true,
         "**/*.pyo": true,
+        "**/*.pyd": true,
         ".venv": true
     },
     "files.trimFinalNewlines": true,
@@ -22,14 +25,15 @@
     "[python]": {
         "editor.codeActionsOnSave": {
             "source.organizeImports": true
-        }
+        },
+        "editor.defaultFormatter": "ms-python.black-formatter"
     },
     "python.linting.pycodestyleArgs": [
         "--max-line-length=88",
         "--ignore=E203,W503"
     ],
     "python.linting.pycodestyleEnabled": true,
-    "python.formatting.provider": "black",
+    "python.formatting.provider": "none",
     "esbonio.sphinx.confDir": "",
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
@@ -41,4 +45,5 @@
         "--mode=unattended",
         "plotpy",
     ],
+    "python.analysis.autoFormatStrings": true,
 }

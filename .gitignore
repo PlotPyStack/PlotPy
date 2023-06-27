@@ -21,6 +21,7 @@ MANIFEST
 
 # Tests
 .tox/
+.hypothesis/
 .coverage
 .coverage.*
 .cache
@@ -29,11 +30,13 @@ coverage.xml
 coverage/
 .pytest_cache/
 pylint_report.txt
-
+/*.h5
+/*.png
+/*.tif
+/*.pickle
 
 # Sphinx documentation
 docs/build/
-
 
 # Generated cython c file
 src/contour2d.c
