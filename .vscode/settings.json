@@ -16,7 +16,7 @@
     },
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
-    "python.defaultInterpreterPath": "${env:PLOTPY_PYTHON_DEV}",
+    "python.defaultInterpreterPath": "${env:PLOTPY_PYTHONEXE}",
     "editor.formatOnSave": true,
     "isort.args": [
         "--profile",

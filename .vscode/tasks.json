@@ -15,7 +15,7 @@
                 "cwd": "scripts",
                 "env": {
                     "UNATTENDED": "1",
-                    "PYTHON": "${env:PLOTPY_PYTHON_DEV}",
+                    "PYTHON": "${env:PLOTPY_PYTHONEXE}",
                 }
             },
             "group": {
@@ -67,7 +67,7 @@
                 "cwd": "scripts",
                 "env": {
                     "UNATTENDED": "1",
-                    "PYTHON": "${env:PLOTPY_PYTHON_DEV}",
+                    "PYTHON": "${env:PLOTPY_PYTHONEXE}",
                 }
             },
             "group": {
@@ -95,7 +95,7 @@
                 "cwd": "scripts",
                 "env": {
                     "UNATTENDED": "1",
-                    "PYTHON": "${env:PLOTPY_PYTHON_DEV}",
+                    "PYTHON": "${env:PLOTPY_PYTHONEXE}",
                 }
             },
             "group": {
@@ -125,7 +125,7 @@
                 "cwd": "scripts",
                 "env": {
                     "UNATTENDED": "1",
-                    "PYTHON": "${env:PLOTPY_PYTHON_DEV}",
+                    "PYTHON": "${env:PLOTPY_PYTHONEXE}",
                 }
             },
             "group": {
@@ -148,7 +148,7 @@
             "options": {
                 "cwd": "scripts",
                 "env": {
-                    "PYTHON": "${env:PLOTPY_PYTHON_DEV}",
+                    "PYTHON": "${env:PLOTPY_PYTHONEXE}",
                     "UNATTENDED": "1",
                 }
             },
@@ -181,7 +181,7 @@
             "options": {
                 "cwd": "scripts",
                 "env": {
-                    "PYTHON": "${env:PLOTPY_PYTHON_DEV}",
+                    "PYTHON": "${env:PLOTPY_PYTHONEXE}",
                     "PYTHONPATH": "${env:PYTHONPATH_CODRAFT}",
                     "UNATTENDED": "1",
                 }

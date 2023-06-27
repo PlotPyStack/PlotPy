@@ -30,7 +30,4 @@ Specific environment variables
 Visual Studio Code configuration used in `launch.json` and `tasks.json`
 (examples) :
 
-    @REM Development environment
-    set PYTHON_PLOTPY_DEV=path\to\python.exe
-    @REM Release environment
-    set PYTHON_PLOTPY_RLS=path\to\python.exe
+    set PLOTPY_PYTHONEXE=path\to\python.exe
