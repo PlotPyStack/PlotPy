@@ -27,4 +27,4 @@ def test_seg_dist_v():
 
 
 if __name__ == "__main__":
-    pytest.main()
+    test_seg_dist_v()

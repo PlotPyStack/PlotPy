@@ -1339,11 +1339,11 @@ class ImageFT(ObjectFT):
 class DockablePlotWidget(DockableWidget):
     LOCATION = QC.Qt.RightDockWidgetArea
 
-    def __init__(self, parent, plotwidgetclass, toolbar, options, plot_options=None):
+    def __init__(self, parent, plotwidgetclass, toolbar, options):
         super(DockablePlotWidget, self).__init__(parent)
         self.toolbar = toolbar
         layout = QW.QVBoxLayout()
-        self.plotwidget = plotwidgetclass(plot_options=plot_options, options=options)
+        self.plotwidget = plotwidgetclass(self, options=options)
         layout.addWidget(self.plotwidget)
         self.setLayout(layout)
         self.setup()
@@ -1370,7 +1370,7 @@ class DockableTabWidget(QW.QTabWidget, DockableWidgetMixin):
     LOCATION = QC.Qt.LeftDockWidgetArea
 
     def __init__(self, parent):
-        super(DockableTabWidget, self).__init__(parent, parent=parent)
+        super().__init__(parent)
 
 
 class SiftProxy(object):

@@ -12,6 +12,7 @@ import scipy.ndimage
 from guidata.dataset.dataitems import ChoiceItem, IntItem, StringItem
 from guidata.dataset.datatypes import DataSet
 from guidata.dataset.qtwidgets import DataSetEditGroupBox, DataSetShowGroupBox
+from guidata.qthelpers import qt_app_context
 from guidata.utils import update_dataset
 
 from plotpy.config import _
@@ -47,34 +48,34 @@ class ExampleDialog(PlotDialog):
     def __init__(
         self,
         wintitle=_("Example dialog box"),
-        icon="guidata.svg",
         options=dict(show_contrast=True, type=PlotType.IMAGE),
         edit=False,
     ):
         self.filter_gbox = None
         self.data = None
         self.item = None
-        super(ExampleDialog, self).__init__(
-            wintitle=wintitle, icon=icon, toolbar=True, edit=edit, options=options
+        options.update(dict(title=_("Image title"), zlabel=_("z-axis scale label")))
+        super().__init__(
+            wintitle=wintitle,
+            toolbar=True,
+            edit=edit,
+            options=options,
         )
         self.resize(600, 600)
-
-    def register_tools(self):
         opentool = self.manager.add_tool(OpenImageTool)
         opentool.SIG_OPEN_FILE.connect(self.open_image)
-        self.register_all_image_tools()
-        self.activate_default_tool()
+        self.manager.register_all_image_tools()
+        self.manager.activate_default_tool()
 
-    def create_plot(self, options):
+    def populate_plot_layout(self):
+        """Populate the plot layout"""
         self.filter_gbox = DataSetEditGroupBox(_("Filter parameters"), FilterParam)
         self.filter_gbox.setEnabled(False)
         self.filter_gbox.SIG_APPLY_BUTTON_CLICKED.connect(self.apply_filter)
-        self.plot_layout.addWidget(self.filter_gbox, 0, 0)
+        self.add_widget(self.filter_gbox, 0, 0)
         self.param_gbox = DataSetShowGroupBox(_("Image parameters"), ImageParam)
-        self.plot_layout.addWidget(self.param_gbox, 0, 1)
-
-        options = dict(title=_("Image title"), zlabel=_("z-axis scale label"))
-        PlotDialog.create_plot(self, options, 1, 0, 1, 0)
+        self.add_widget(self.param_gbox, 0, 1)
+        self.add_widget(self.plot_widget, 1, 0, 1, 0)
 
     def open_image(self, filename):
         """Opening image *filename*"""
@@ -88,7 +89,7 @@ class ExampleDialog(PlotDialog):
         self.filter_gbox.setEnabled(True)
 
     def show_data(self, data):
-        plot = self.get_plot()
+        plot = self.manager.get_plot()
         if self.item is not None:
             self.item.set_data(data)
         else:
@@ -105,10 +106,6 @@ class ExampleDialog(PlotDialog):
 
 
 if __name__ == "__main__":
-    from guidata import qapplication
-
-    import plotpy.config  # Loading icons
-
-    _app = qapplication()
-    dlg = ExampleDialog()
-    dlg.exec()  # No need to call app.exec: a dialog box has its own event loop
+    with qt_app_context():
+        dlg = ExampleDialog()
+        dlg.exec()

@@ -13,13 +13,9 @@ These plugins provide PlotWidget objects
 embedding in GUI layouts directly from QtDesigner.
 """
 
-
 import os
-import sys
 
-import guidata
-import pytest
-from qtpy import QtWidgets as QW
+from guidata.qthelpers import qt_app_context
 
 from plotpy.core.builder import make
 from plotpy.tests.gui.test_image import compute_image
@@ -38,12 +34,10 @@ class WindowTest(FormClass):
 
 
 def test_qtdesigner():
-    _app = guidata.qapplication()
-
-    form = WindowTest(compute_image())
-    form.show()
-    # sys.exit(app.exec())
+    with qt_app_context(exec_loop=True):
+        form = WindowTest(compute_image())
+        form.show()
 
 
 if __name__ == "__main__":
-    pytest.main()
+    test_qtdesigner()

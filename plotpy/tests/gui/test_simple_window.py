@@ -20,6 +20,7 @@ from guidata.qthelpers import (
     add_actions,
     create_action,
     get_std_icon,
+    qt_app_context,
     win32_fix_title_bar_background,
 )
 from qtpy import QtCore as QC
@@ -78,14 +79,16 @@ class CentralWidget(QW.QSplitter):
         self.properties = imagelistwithproperties.properties
         self.properties.SIG_APPLY_BUTTON_CLICKED.connect(self.properties_changed)
 
-        self.imagewidget = PlotWidget(self, options={"type": PlotType.IMAGE})
-        self.imagewidget.plot.SIG_LUT_CHANGED.connect(self.lut_range_changed)
+        self.plot_widget = PlotWidget(
+            self, options={"type": PlotType.IMAGE}, auto_tools=False
+        )
+        self.plot_widget.plot.SIG_LUT_CHANGED.connect(self.lut_range_changed)
         self.item = None  # image item
 
-        self.imagewidget.manager.add_toolbar(toolbar, "default")
-        self.imagewidget.register_all_image_tools()
+        self.plot_widget.manager.add_toolbar(toolbar, "default")
+        self.plot_widget.register_tools()
 
-        self.addWidget(self.imagewidget)
+        self.addWidget(self.plot_widget)
 
         self.images = []  # List of ImageParam instances
         self.lut_ranges = []  # List of LUT ranges
@@ -96,6 +99,7 @@ class CentralWidget(QW.QSplitter):
         self.setSizes([1, 2])
 
     def refresh_list(self):
+        """Refresh image list"""
         self.imagelist.clear()
         self.imagelist.addItems([image.title for image in self.images])
 
@@ -112,17 +116,19 @@ class CentralWidget(QW.QSplitter):
         self.properties.get()
 
     def lut_range_changed(self):
+        """LUT range changed"""
         row = self.imagelist.currentRow()
         self.lut_ranges[row] = self.item.get_lut_range()
 
     def show_data(self, data, lut_range=None):
-        plot = self.imagewidget.plot
+        """Show image data"""
+        plot = self.plot_widget.plot
         if self.item is not None:
             self.item.set_data(data)
             if lut_range is None:
                 lut_range = self.item.get_lut_range()
-            self.imagewidget.set_contrast_range(*lut_range)
-            self.imagewidget.update_cross_sections()
+            self.plot_widget.manager.set_contrast_range(*lut_range)
+            self.plot_widget.manager.update_cross_sections()
         else:
             self.item = make.image(data)
             plot.add_item(self.item, z=0)
@@ -137,14 +143,16 @@ class CentralWidget(QW.QSplitter):
         self.show_data(image.data)
 
     def add_image(self, image):
+        """Add image"""
         self.images.append(image)
         self.lut_ranges.append(None)
         self.refresh_list()
         self.imagelist.setCurrentRow(len(self.images) - 1)
-        plot = self.imagewidget.plot
+        plot = self.plot_widget.plot
         plot.do_autoscale()
 
     def add_image_from_file(self, filename):
+        """Add image from file"""
         image = ImageParam()
         image.title = str(filename)
         image.data = io.imread(filename, to_grayscale=True)
@@ -153,6 +161,8 @@ class CentralWidget(QW.QSplitter):
 
 
 class MainWindow(QW.QMainWindow):
+    """Main Window"""
+
     def __init__(self):
         super().__init__()
         win32_fix_title_bar_background(self)
@@ -261,11 +271,6 @@ class MainWindow(QW.QMainWindow):
 
 
 if __name__ == "__main__":
-    from guidata import qapplication
-
-    import plotpy.config  # Loading icons
-
-    app = qapplication()
-    window = MainWindow()
-    window.show()
-    app.exec()
+    with qt_app_context(exec_loop=True):
+        window = MainWindow()
+        window.show()

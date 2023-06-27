@@ -104,11 +104,7 @@ Reference
 .. autoclass:: PlotManager
    :members:
    :inherited-members:
-.. autoclass:: BasePlotWidget
-   :members:
 .. autoclass:: PlotWidget
-   :members:
-.. autoclass:: PlotWidgetMixin
    :members:
 .. autoclass:: PlotDialog
    :members:

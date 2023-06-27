@@ -48,10 +48,10 @@ def dialog_test(fname):
     action = tool.action
 
     rot_point_btn = create_toolbutton(
-        dlg.imagewidget, icon=get_icon("rotationcenter.jpg")
+        dlg.plot_widget, icon=get_icon("rotationcenter.jpg")
     )
     rot_point_btn.setPopupMode(QW.QToolButton.InstantPopup)
-    rotation_tool_menu = QW.QMenu(dlg.imagewidget)
+    rotation_tool_menu = QW.QMenu(dlg.plot_widget)
     add_actions(rotation_tool_menu, (action,))
     rot_point_btn.setMenu(rotation_tool_menu)
     dlg.toolbar.addWidget(rot_point_btn)

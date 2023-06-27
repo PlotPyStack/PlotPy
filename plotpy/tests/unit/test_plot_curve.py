@@ -11,7 +11,7 @@ from qtpy.QtCore import Qt
 from qwt import QwtPlotItem
 
 from plotpy.core.builder import make
-from plotpy.core.plot.plotwidget import BasePlotWidget, PlotDialog, PlotType
+from plotpy.core.plot.plotwidget import PlotDialog, PlotType, PlotWidget
 from plotpy.core.tools.axes import AxisScaleTool
 from plotpy.core.tools.curve import AntiAliasingTool, CurveStatsTool
 
@@ -31,7 +31,7 @@ def test_plot_curve(qtbot):
     qtbot.addWidget(win)
     win.show()
 
-    assert isinstance(win.plot_widget, BasePlotWidget)
+    assert isinstance(win.plot_widget, PlotWidget)
     assert win.plot_widget.plot == plot
 
     # Check that specific curve tools are added
@@ -56,7 +56,7 @@ def test_plot_curve_anti_aliasing(qtbot):
     qtbot.addWidget(win)
     win.show()
 
-    assert isinstance(win.plot_widget, BasePlotWidget)
+    assert isinstance(win.plot_widget, PlotWidget)
     assert win.plot_widget.plot == plot
 
     anti_aliasing_tool = win.manager.get_tool(AntiAliasingTool)

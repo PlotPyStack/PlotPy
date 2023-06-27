@@ -16,7 +16,6 @@ the custom item parameters: right-click on the selectable item to open the
 associated dialog box).
 """
 
-
 import guidata.dataset.dataitems as gdi
 import guidata.dataset.datatypes as gdt
 import guidata.dataset.qtwidgets as gdq
@@ -54,18 +53,23 @@ class DotArrayParam(gdt.DataSet):
     _g2 = gdt.EndGroup("Grid pattern properties")
 
     def update_item(self, obj):
+        """Update item from parameters"""
         self._update_cb()
 
     def update_param(self, obj):
+        """Update parameters from object"""
         pass
 
 
 class DotArrayItem(RawImageItem):
+    """Dot array item"""
+
     def __init__(self, imageparam=None):
         super(DotArrayItem, self).__init__(np.zeros((1, 1)), imageparam)
         self.update_border()
 
     def boundingRect(self):
+        """Reimplemented to return the bounding rectangle of the item"""
         param = self.param
         if param is not None:
             return QC.QRectF(
@@ -76,9 +80,11 @@ class DotArrayItem(RawImageItem):
             )
 
     def types(self):
+        """Returns item types"""
         return (IImageItemType,)
 
     def draw_image(self, painter, canvasRect, srcRect, dstRect, xMap, yMap):
+        """Draw image"""
         painter.setRenderHint(QG.QPainter.Antialiasing, True)
         param = self.param
         xcoords = vmap(xMap, np.arange(0, param.dim_h + 1, param.step_x))
@@ -94,7 +100,10 @@ class DotArrayItem(RawImageItem):
 
 
 class CustomHelpTool(HelpTool):
+    """Custom help tool"""
+
     def activate_command(self, plot, checked):
+        """Activate command"""
         QW.QMessageBox.information(
             plot,
             "Help",
@@ -111,53 +120,53 @@ Keyboard/mouse shortcuts:
 
 
 class DotArrayDialog(PlotDialog):
+    """Dot array dialog"""
+
     def __init__(self):
         self.item = None
         self.stamp_gbox = None
         super(DotArrayDialog, self).__init__(
             wintitle="Dot array example",
-            #            icon="path/to/your_icon.png",
             options=dict(title="Main plot", type=PlotType.IMAGE),
-            plot_options=dict(
-                row=0,
-                column=0,
-                rowspan=3,
-                columnspan=1,
-            ),
             toolbar=True,
             edit=True,
         )
         self.resize(900, 600)
-        self.create_plot()
 
     def register_tools(self):
-        self.register_standard_tools()
-        self.add_separator_tool()
-        self.utils.add_tool(SaveAsTool)
-        self.utils.add_tool(CopyToClipboardTool)
-        self.utils.add_tool(PrintTool)
-        self.utils.add_tool(CustomHelpTool)
-        self.activate_default_tool()
-        plot = self.get_plot()
+        """Register tools"""
+        manager = self.plot_widget.manager
+        manager.register_standard_tools()
+        manager.add_separator_tool()
+        manager.add_tool(SaveAsTool)
+        manager.add_tool(CopyToClipboardTool)
+        manager.add_tool(PrintTool)
+        manager.add_tool(CustomHelpTool)
+        manager.activate_default_tool()
+        plot = manager.get_plot()
         plot.enableAxis(plot.yRight, False)
         plot.set_aspect_ratio(lock=True)
 
-    def create_plot(self):
+    def populate_plot_layout(self):
+        """Populate the plot layout
+
+        Reimplements the method from PlotDialog"""
+        self.add_widget(self.plot_widget, row=0, column=0, rowspan=3, columnspan=1)
         logo_path = get_image_file_path("plotpy.svg")
         logo = QW.QLabel()
         logo.setPixmap(QG.QPixmap(logo_path))
         logo.setAlignment(QC.Qt.AlignCenter)
-        self.manager.plot_layout.addWidget(logo, 1, 1)
+        self.add_widget(logo, 1, 1)
         logo_txt = QW.QLabel("Powered by <b>plotpy</b>")
         logo_txt.setAlignment(QC.Qt.AlignHCenter | QC.Qt.AlignTop)
-        self.manager.plot_layout.addWidget(logo_txt, 2, 1)
+        self.add_widget(logo_txt, 2, 1)
         self.stamp_gbox = gdq.DataSetEditGroupBox("Dots", DotArrayParam)
         self.stamp_gbox.SIG_APPLY_BUTTON_CLICKED.connect(self.apply_params)
-        self.manager.plot_layout.addWidget(self.stamp_gbox, 0, 1)
-        options = dict(title="Main plot", type=PlotType.IMAGE)
+        self.add_widget(self.stamp_gbox, 0, 1)
 
     def show_data(self, param):
-        plot = self.manager.get_plot()
+        """Show data"""
+        plot = self.plot_widget.plot
         if self.item is None:
             param._update_cb = lambda: self.stamp_gbox.get()
             self.item = DotArrayItem(param)
@@ -167,14 +176,17 @@ class DotArrayDialog(PlotDialog):
         plot.do_autoscale()
 
     def apply_params(self):
+        """Apply parameters"""
         param = self.stamp_gbox.dataset
         self.show_data(param)
 
 
 def test_dot_array():
+    """Test dot array dialog"""
     with qt_app_context(exec_loop=True):
         dlg = DotArrayDialog()
         dlg.apply_params()
+        dlg.show()
 
 
 if __name__ == "__main__":

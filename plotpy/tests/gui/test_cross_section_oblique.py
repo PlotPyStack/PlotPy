@@ -26,19 +26,28 @@ plotpy.core.plot.cross_section.csitem.DEBUG = True
 
 
 class OCSImageDialog(PlotDialog):
-    def register_image_tools(self):
-        PlotDialog.register_image_tools(self)
+    """Oblique averaged cross section test"""
+
+    def __init__(self, parent=None, toolbar=True, wintitle=None, options=None):
+        super().__init__(
+            parent=parent,
+            toolbar=toolbar,
+            wintitle=wintitle,
+            options=options,
+            auto_tools=True,
+        )
         for tool in (ObliqueCrossSectionTool, OCSPanelTool, ImageMaskTool):
             self.manager.add_tool(tool)
 
-    def create_plot(self, options, row=0, column=0, rowspan=1, columnspan=1):
-        PlotDialog.create_plot(self, options, row, column, rowspan, columnspan)
+    def populate_plot_layout(self) -> None:
+        """Populate the plot layout"""
+        super().populate_plot_layout()
         ra_panel = ObliqueCrossSection(self)
         splitter = self.plot_widget.xcsw_splitter
         splitter.addWidget(ra_panel)
         splitter.setStretchFactor(splitter.count() - 1, 1)
         splitter.setSizes(list(splitter.sizes()) + [2])
-        self.add_panel(ra_panel)
+        self.manager.add_panel(ra_panel)
 
 
 def test_cross_section_oblique():

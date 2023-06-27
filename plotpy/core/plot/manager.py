@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import weakref
+from typing import Any
 
 from guidata.qthelpers import create_action
 from guidata.utils import assert_interfaces_valid
@@ -72,7 +73,7 @@ class PlotManager:
 
     __implements__ = (IPlotManager,)
 
-    def __init__(self, main):
+    def __init__(self, main: QW.QWidget) -> None:
         self.main = main  # The main parent widget
         self.plots = {}  # maps ids to instances of BasePlot
         self.panels = {}  # Qt widgets that need to know about the plots
@@ -87,7 +88,7 @@ class PlotManager:
         # Keep track of the registration sequence (plots, panels, tools):
         self._first_tool_flag = True
 
-    def add_plot(self, plot, plot_id=DefaultPlotID):
+    def add_plot(self, plot: BasePlot, plot_id: Any = DefaultPlotID) -> None:
         """
         Register a plot to the plot manager:
             * plot: :py:class:`.baseplot.BasePlot`
@@ -115,7 +116,7 @@ class PlotManager:
         plot.SIG_ACTIVE_ITEM_CHANGED.connect(self.update_tools_status)
         plot.SIG_PLOT_AXIS_CHANGED.connect(self.plot_axis_changed)
 
-    def set_default_plot(self, plot):
+    def set_default_plot(self, plot: BasePlot) -> None:
         """
         Set default plot
 
@@ -123,7 +124,7 @@ class PlotManager:
         """
         self.default_plot = plot
 
-    def get_default_plot(self):
+    def get_default_plot(self) -> BasePlot:
         """
         Return default plot
 
@@ -131,7 +132,7 @@ class PlotManager:
         """
         return self.default_plot
 
-    def add_panel(self, panel):
+    def add_panel(self, panel: panels.PanelWidget) -> None:
         """
         Register a panel to the plot manager
 
@@ -145,7 +146,7 @@ class PlotManager:
         self.panels[panel.PANEL_ID] = panel
         panel.register_panel(self)
 
-    def configure_panels(self):
+    def configure_panels(self) -> None:
         """
         Call all the registred panels 'configure_panel' methods to finalize the
         object construction (this allows to use tools registered to the same
@@ -156,7 +157,7 @@ class PlotManager:
             panel = self.get_panel(panel_id)
             panel.configure_panel()
 
-    def add_toolbar(self, toolbar, toolbar_id="default"):
+    def add_toolbar(self, toolbar: QW.QToolBar, toolbar_id: str = "default") -> None:
         """
         Add toolbar to the plot manager
             toolbar: a QToolBar object
@@ -167,13 +168,13 @@ class PlotManager:
         if self.default_toolbar is None:
             self.default_toolbar = toolbar
 
-    def set_default_toolbar(self, toolbar):
+    def set_default_toolbar(self, toolbar: QW.QToolBar) -> None:
         """
         Set default toolbar
         """
         self.default_toolbar = toolbar
 
-    def get_default_toolbar(self):
+    def get_default_toolbar(self) -> QW.QToolBar:
         """
         Return default toolbar
         """
