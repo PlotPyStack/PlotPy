@@ -44,7 +44,7 @@ def rotate(alpha):
 
 def colvector(x, y):
     """Return vector (NumPy matrix object) from coordinates"""
-    return array([x, y, 1], dtype=object).T
+    return matrix([x, y, 1]).T
 
 
 # ===============================================================================

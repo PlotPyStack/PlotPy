@@ -25,6 +25,7 @@ except ImportError:
     raise
 
 DEBUG = False
+TEMP_ITEM = None
 
 
 def get_rectangular_area(obj):
