@@ -6,7 +6,9 @@
 # (see plotpy/__init__.py for details)
 
 """Simple application based on plotpy"""
-import platform
+
+# guitest: show
+
 import sys
 
 import numpy as np
@@ -20,7 +22,6 @@ from guidata.qthelpers import (
     get_std_icon,
     win32_fix_title_bar_background,
 )
-from qtpy import QT_VERSION
 from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
@@ -28,10 +29,10 @@ from plotpy.config import _
 from plotpy.core import io
 from plotpy.core.builder import make
 from plotpy.core.plot.plotwidget import PlotType, PlotWidget
+from plotpy.widgets.about import about
 
 APP_NAME = _("Application example")
 VERSION = "1.0.0"
-# guitest: show
 
 
 class ImageParam(DataSet):
@@ -215,20 +216,16 @@ class MainWindow(QW.QMainWindow):
 
     # ------?
     def about(self):
+        """About box"""
         QW.QMessageBox.about(
             self,
             _("About ") + APP_NAME,
-            """<b>{}</b> v{}<p>{} Pierre Raybaut
-              <br>Copyright &copy; 2009-2010 CEA
-              <p>Python {}, Qt {}, PyQt {} {} {}""".format(
+            "<b>{}</b> v{}"
+            "<p>{} Pierre Raybaut<br><br>{}".format(
                 APP_NAME,
                 VERSION,
                 _("Developped by"),
-                platform.python_version(),
-                QT_VERSION,
-                QC.PYQT_VERSION_STR,
-                _("on"),
-                platform.system(),
+                about(html=True, copyright_only=True),
             ),
         )
 

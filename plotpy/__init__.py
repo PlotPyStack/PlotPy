@@ -1,50 +1,31 @@
+# -*- coding: utf-8 -*-
 """
-Module __init__
-===============
+plotpy
+======
 
-:synopsis: allow to initiate plotpy module and make some starting checks
+Based on `PythonQwt` (plotting widgets for Qt graphical user interfaces) and
+on the scientific modules NumPy and SciPy, `plotpy` is a Python library
+providing efficient 2D data-plotting features (curve/image visualization
+and related tools) for interactive computing and signal/image processing
+application development.
 
-:moduleauthor: CEA
+.. image:: images/panorama.png
 
-:platform: All
 
+External resources:
+    * Python Package Index: `PyPI`_
+    * Bug reports and feature requests: `GitHub`_
+
+.. _PyPI: https://pypi.python.org/pypi/plotpy
+.. _GitHub: https://github.com/PierreRaybaut/plotpy
 """
 
-
-# Copyright CEA (2018)
-
-# http://www.cea.fr/
-
-# This software is a computer program whose purpose is to provide an
-# Automatic GUI generation for easy dataset editing and display with
-# Python.
-
-# This software is governed by the CeCILL license under French law and
-# abiding by the rules of distribution of free software.  You can  use,
-# modify and/ or redistribute the software under the terms of the CeCILL
-# license as circulated by CEA, CNRS and INRIA at the following URL
-# "http://www.cecill.info".
-
-# As a counterpart to the access to the source code and  rights to copy,
-# modify and redistribute granted by the license, users are provided only
-# with a limited warranty  and the software's author,  the holder of the
-# economic rights,  and the successive licensors  have only  limited
-# liability.
-
-# In this respect, the user's attention is drawn to the risks associated
-# with loading,  using,  modifying and/or developing or reproducing the
-# software by the user in light of its specific status of free software,
-# that may mean  that it is complicated to manipulate,  and  that  also
-# therefore means  that it is reserved for developers  and  experienced
-# professionals having in-depth computer knowledge. Users are therefore
-# encouraged to load and test the software's suitability as regards their
-# requirements in conditions enabling the security of their systems and/or
-# data to be ensured and,  more generally, to use and operate it in the
-# same conditions as regards security.
-
-# The fact that you are presently reading this means that you have had
-# knowledge of the CeCILL license and that you accept its terms.
-
-
-__version__ = "1.2.1"
+__version__ = "1.999.0"
 __VERSION__ = tuple([int(number) for number in __version__.split(".")])
+
+# --- Important note: DATAPATH and LOCALEPATH are used by guidata.configtools
+# ---                 to retrieve data and translation files paths
+#
+# Dear (Debian, RPM, ...) package makers, please feel free to customize the
+# following path to module's data (images) and translations:
+DATAPATH = LOCALEPATH = ""
