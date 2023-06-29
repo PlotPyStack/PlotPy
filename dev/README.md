@@ -30,4 +30,4 @@ Specific environment variables
 Visual Studio Code configuration used in `launch.json` and `tasks.json`
 (examples) :
 
-    set PLOTPY_PYTHONEXE=path\to\python.exe
+    set GUIDATA_PYTHONEXE=path\to\python.exe

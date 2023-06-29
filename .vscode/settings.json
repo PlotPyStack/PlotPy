@@ -16,7 +16,7 @@
     },
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
-    "python.defaultInterpreterPath": "${env:PLOTPY_PYTHONEXE}",
+    "python.defaultInterpreterPath": "${env:GUIDATA_PYTHONEXE}",
     "editor.formatOnSave": true,
     "isort.args": [
         "--profile",
@@ -43,7 +43,7 @@
         "--cov",
         "--cov-report=html",
         "--unattended",
-        "plotpy",
+        "plotpy"
     ],
     "python.analysis.autoFormatStrings": true,
 }
