@@ -9,13 +9,13 @@
 
 
 import numpy as np
+from guidata.env import execenv
 from guidata.qthelpers import qt_app_context
 from numpy import linspace, sin
 
 import plotpy.widgets
 from plotpy.core.builder import make
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
-from plotpy.env import execenv
 
 # guitest: show
 

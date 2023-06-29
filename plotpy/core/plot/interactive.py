@@ -105,6 +105,7 @@ import sys
 import guidata
 import numpy as np
 from guidata.configtools import get_icon
+from guidata.env import execenv
 from guidata.qthelpers import win32_fix_title_bar_background
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
@@ -120,7 +121,6 @@ from plotpy.core.plot.base import BasePlot, PlotType
 from plotpy.core.plot.cross_section.cswidget import XCrossSection, YCrossSection
 from plotpy.core.plot.histogram.contrastadjustment import ContrastAdjustment
 from plotpy.core.plot.manager import PlotManager
-from plotpy.env import execenv
 from plotpy.utils.colormap import get_colormap_list
 
 _qapp = None

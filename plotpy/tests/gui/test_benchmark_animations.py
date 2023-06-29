@@ -8,13 +8,13 @@ import time
 
 import numpy as np
 import pytest
+from guidata.env import execenv
 from guidata.qthelpers import exec_dialog
 from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
 from plotpy.core.builder import make
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
-from plotpy.env import execenv
 
 NPOINTS = 500000
 NB_FRAMES_FOR_MEAN_FPS = 10
