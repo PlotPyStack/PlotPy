@@ -97,7 +97,7 @@ class TransformImageMixin:
         tpos = np.dot(self.itr, self.points)
         self.border_rect.set_points(tpos.T[:, :2])
 
-    def debug_transform(self, pt):
+    def debug_transform(self, pt):  # pragma: no cover
         """
         Print debug data on how the given point is moved.
 
