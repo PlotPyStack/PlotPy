@@ -5,6 +5,8 @@ ResizeDialog test
 Interactive plotting interface with MATLAB-like syntax
 """
 
+# guitest: show
+
 import guidata
 import pytest
 from qtpy.QtCore import Qt

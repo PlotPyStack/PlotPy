@@ -11,7 +11,8 @@ AnnotatedSegmentTool test
 This plotpy tool provide a MATLAB-like "ginput" feature.
 """
 
-import gc
+# guitest: show
+
 import os
 
 import numpy as np
@@ -25,7 +26,6 @@ from plotpy.core.plot.plotwidget import PlotDialog
 from plotpy.core.tools.annotations import AnnotatedSegmentTool
 from plotpy.core.tools.selection import SelectTool
 
-# guitest: show
 # Input coordinate in pixel, in window reference frame
 SEG_COORDINATES_INPUT = [0, 0, 0, 0]
 # output coordinate in pixel, in plot reference frame

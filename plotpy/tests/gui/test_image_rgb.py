@@ -7,6 +7,8 @@
 
 """RGB Image test, creating the RGBImageItem object via make.rgbimage"""
 
+# guitest: show
+
 import os
 
 from guidata.qthelpers import qt_app_context
@@ -14,8 +16,6 @@ from guidata.qthelpers import qt_app_context
 import plotpy
 from plotpy.core.builder import make
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
-
-# guitest: show
 
 PLOTPYDIR = os.path.abspath(os.path.dirname(plotpy.__file__))
 IMGFILE = os.path.join(PLOTPYDIR, "images", "items", "image.png")

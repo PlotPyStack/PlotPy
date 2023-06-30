@@ -9,7 +9,7 @@
 
 """
 plotpy.core.items.annotations
-------------------------------------
+-----------------------------
 
 The `annotations` module provides annotated shapes:
     * :py:class:`.annotations.AnnotatedPoint`
@@ -49,29 +49,24 @@ Reference
 
 .. autoclass:: AnnotatedPoint
    :members:
-   :inherited-members:
 .. autoclass:: AnnotatedSegment
    :members:
-   :inherited-members:
 .. autoclass:: AnnotatedRectangle
    :members:
-   :inherited-members:
 .. autoclass:: AnnotatedObliqueRectangle
    :members:
-   :inherited-members:
 .. autoclass:: AnnotatedEllipse
    :members:
-   :inherited-members:
 .. autoclass:: AnnotatedCircle
    :members:
-   :inherited-members:
 """
 
 from __future__ import unicode_literals
 
 import numpy as np
 from guidata.configtools import get_icon
-from guidata.utils import assert_interfaces_valid, update_dataset
+from guidata.utils import update_dataset
+from guidata.utils.misc import assert_interfaces_valid
 
 from plotpy.config import CONF, _
 from plotpy.core.interfaces.common import (

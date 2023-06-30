@@ -7,12 +7,11 @@
 
 """Curve fitting tools"""
 
+# guitest: show
 
 import numpy as np
 
 from plotpy.widgets.fit import FitParam, guifit
-
-# guitest: show
 
 
 def test_fit():

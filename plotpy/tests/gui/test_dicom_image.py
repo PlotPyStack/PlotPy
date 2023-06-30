@@ -9,6 +9,7 @@
 
 Requires pydicom (>=0.9.3)"""
 
+# guitest: show
 
 import os
 
@@ -22,8 +23,6 @@ try:
     import pydicom  # type:ignore
 except ImportError:
     pydicom = None
-
-# guitest: show
 
 
 @pytest.mark.skipif(pydicom is None, reason="pydicom not installed")

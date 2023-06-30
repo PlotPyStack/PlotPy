@@ -8,6 +8,7 @@
 """Simple filter testing application based on PyQt and plotpy
 filtertest1.py + plot manager"""
 
+# guitest: show
 
 import numpy as np
 import scipy.ndimage as spi
@@ -18,12 +19,7 @@ from qtpy import QtWidgets as QW
 
 import plotpy.config  # Loading icons
 from plotpy.core.builder import make
-
-# ---Import plot widget base class
 from plotpy.core.plot.plotwidget import BasePlot, PlotManager, PlotType
-
-# guitest: show
-# ---
 
 
 class FilterTestWidget(QW.QWidget):

@@ -7,6 +7,7 @@
 
 """Simple dialog box based on plotpy"""
 
+# guitest: show
 
 import scipy.ndimage
 from guidata.dataset.dataitems import ChoiceItem, IntItem, StringItem

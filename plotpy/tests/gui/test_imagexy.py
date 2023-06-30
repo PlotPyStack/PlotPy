@@ -7,15 +7,13 @@
 
 """Image with custom X/Y axes linear scales"""
 
+# guitest: show
 
 import numpy as np
 from guidata.qthelpers import qt_app_context
 
-import plotpy.widgets
 from plotpy.core.builder import make
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
-
-# guitest: show
 
 
 def imshow(x, y, data):

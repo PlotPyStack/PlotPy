@@ -367,16 +367,15 @@ def _import_dcm():
 
     # This import statement must stay here because the purpose of this function
     # is to check if pydicom is installed:
-    from pydicom import \
-        dicomio  # pylint: disable=import-outside-toplevel # type:ignore
+    from pydicom import dicomio  # pylint: disable=import-outside-toplevel # type:ignore
 
     logger.setLevel(logging.WARNING)
 
 
 def _imread_dcm(filename, **kwargs):
     """Open DICOM image with pydicom and return a NumPy array"""
-    from pydicom import \
-        dicomio  # pylint: disable=import-outside-toplevel # type:ignore
+    from pydicom import dicomio  # pylint: disable=import-outside-toplevel # type:ignore
+
     dcm = dicomio.read_file(filename, force=True)
     # **********************************************************************
     # The following is necessary until pydicom numpy support is improved:
@@ -695,7 +694,7 @@ def load_item(reader, group_name):
 
 def save_items(writer, items):
     """Save items to HDF5 file:
-    * writer: :py:class:`guidata.hdf5io.HDF5Writer` object
+    * writer: :py:class:`guidata.dataset.hdf5io.HDF5Writer` object
     * items: serializable plot items"""
     counts = {}
     names = []
@@ -716,7 +715,7 @@ def save_items(writer, items):
 
 def load_items(reader):
     """Load items from HDF5 file:
-    * reader: :py:class:`guidata.hdf5io.HDF5Reader` object"""
+    * reader: :py:class:`guidata.dataset.hdf5io.HDF5Reader` object"""
     with reader.group("plot_items"):
         names = reader.read_sequence()
     items = []
@@ -725,9 +724,7 @@ def load_items(reader):
             name_str = name.decode()
         except AttributeError:
             name_str = name
-        klass_name = re.match(
-            r"([A-Z]+[A-Za-z0-9\_]*)\_([0-9]*)", name_str
-        ).groups()[0]
+        klass_name = re.match(r"([A-Z]+[A-Za-z0-9\_]*)\_([0-9]*)", name_str).groups()[0]
         klass = item_class_from_name(klass_name)
         item = klass()
         with reader.group(name):

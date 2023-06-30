@@ -11,14 +11,13 @@ PolygonMapItem is intended to display maps ie items containing
 several hundreds of independent polygons.
 """
 
+# guitest: show
 
 import numpy as np
 from guidata.qthelpers import qt_app_context
 
 from plotpy.core.items.polygon import PolygonMapItem
 from plotpy.core.plot.plotwidget import PlotDialog
-
-# guitest: show
 
 # Create a sample dataset consisting of tesselated circles randomly placed
 # in a box

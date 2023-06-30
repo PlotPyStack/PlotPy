@@ -6,6 +6,7 @@
 # (see plotpy/__init__.py for details)
 
 """Plot computations test"""
+
 import numpy
 import pytest
 from guidata.qthelpers import qt_app_context

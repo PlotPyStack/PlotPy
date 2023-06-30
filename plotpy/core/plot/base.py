@@ -39,7 +39,6 @@ Reference
    :members:
 .. autoclass:: BasePlot
    :members:
-   :inherited-members:
 
 """
 
@@ -1107,7 +1106,7 @@ class BasePlot(QwtPlot):
     def serialize(self, writer, selected=False):
         """
         Save (serializable) items to HDF5 file:
-            * writer: :py:class:`guidata.hdf5io.HDF5Writer` object
+            * writer: :py:class:`guidata.dataset.hdf5io.HDF5Writer` object
             * selected=False: if True, will save only selected items
 
         See also :py:meth:`.baseplot.BasePlot.restore_items`
@@ -1122,7 +1121,7 @@ class BasePlot(QwtPlot):
     def deserialize(self, reader):
         """
         Restore items from HDF5 file:
-            * reader: :py:class:`guidata.hdf5io.HDF5Reader` object
+            * reader: :py:class:`guidata.dataset.hdf5io.HDF5Reader` object
 
         See also :py:meth:`.baseplot.BasePlot.save_items`
         """

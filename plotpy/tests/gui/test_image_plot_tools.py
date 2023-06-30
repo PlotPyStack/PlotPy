@@ -7,6 +7,7 @@
 
 """All image and plot tools test"""
 
+# guitest: show
 
 import os
 
@@ -32,8 +33,6 @@ from plotpy.core.tools.axes import PlaceAxesTool
 from plotpy.core.tools.cursor import HCursorTool, HRangeTool, VCursorTool, XCursorTool
 from plotpy.core.tools.label import LabelTool
 from plotpy.core.tools.shapes import FreeFormTool, MultiLineTool
-
-# guitest: show
 
 
 def create_window():

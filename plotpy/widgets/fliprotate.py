@@ -20,10 +20,8 @@ Reference
 
 .. autoclass:: FlipRotateDialog
    :members:
-   :inherited-members:
 .. autoclass:: FlipRotateWidget
    :members:
-   :inherited-members:
 """
 
 from __future__ import annotations

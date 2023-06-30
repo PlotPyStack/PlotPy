@@ -10,6 +10,8 @@ SIFT, the Signal and Image Filtering Tool
 Simple signal and image processing application based on plotpy
 """
 
+# guitest: show
+
 import pytest
 
 from sift.app import run

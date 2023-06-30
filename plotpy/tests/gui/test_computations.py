@@ -7,14 +7,13 @@
 
 """Plot computations test"""
 
+# guitest: show
 
 from guidata.qthelpers import qt_app_context
 from numpy import linspace, sin, trapz
 
 from plotpy.core.builder import make
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
-
-# guitest: show
 
 
 def plot(*items):

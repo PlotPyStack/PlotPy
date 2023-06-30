@@ -7,6 +7,7 @@
 
 """Load/save items from/to HDF5 file"""
 
+# guitest: show
 
 # WARNING:
 # This script requires read/write permissions on current directory
@@ -14,12 +15,10 @@
 import os
 
 import h5py
-from guidata.hdf5io import HDF5Reader, HDF5Writer
+from guidata.dataset.hdf5io import HDF5Reader, HDF5Writer
 from guidata.qthelpers import qt_app_context
 
 from plotpy.tests.gui.test_loadsaveitems_pickle import IOTest
-
-# guitest: show
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 TEST_FILE_NAME = "loadsavecanvas.h5"

@@ -1,1 +1,0 @@
-.. automodule:: plotpy.core.signals

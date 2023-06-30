@@ -7,6 +7,7 @@
 
 """Flip/rotate test"""
 
+# guitest: show
 
 from guidata.configtools import get_icon
 from guidata.qthelpers import (
@@ -20,8 +21,6 @@ from qtpy import QtWidgets as QW
 from plotpy.core.tools.image import RotationCenterTool
 from plotpy.tests.gui.test_rotatecrop import create_test_data, imshow
 from plotpy.widgets.fliprotate import FlipRotateDialog, FlipRotateWidget
-
-# guitest: show
 
 
 def widget_test(fname):

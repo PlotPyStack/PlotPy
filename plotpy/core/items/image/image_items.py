@@ -6,7 +6,7 @@
 import sys
 
 import numpy as np
-from guidata.utils import assert_interfaces_valid
+from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
 
 from plotpy.config import _

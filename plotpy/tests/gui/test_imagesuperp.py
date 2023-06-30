@@ -7,6 +7,7 @@
 
 """Image superposition test"""
 
+# guitest: show
 
 import os
 
@@ -17,8 +18,6 @@ from plotpy.core.builder import make
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 from plotpy.core.tools.axes import PlaceAxesTool
 from plotpy.core.tools.shapes import EllipseTool, FreeFormTool, RectangleTool
-
-# guitest: show
 
 
 def create_window():

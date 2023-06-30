@@ -8,6 +8,7 @@
 
 """Mandelbrot demo"""
 
+# guitest: show
 
 import numpy as np
 from guidata.qthelpers import qt_app_context
@@ -19,8 +20,6 @@ from plotpy.core.items.image.base import RawImageItem
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 from plotpy.core.tools.base import ToggleTool
 from plotpy.mandelbrot import mandelbrot
-
-# guitest: show
 
 
 class FullScale(ToggleTool):

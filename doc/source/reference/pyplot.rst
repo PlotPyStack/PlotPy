@@ -1,1 +1,0 @@
-.. automodule:: plotpy.plot.interactive

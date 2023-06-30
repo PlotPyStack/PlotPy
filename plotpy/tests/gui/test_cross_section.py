@@ -7,6 +7,7 @@
 
 """Renders a cross section chosen by a cross marker"""
 
+# guitest: show
 
 import os
 
@@ -15,8 +16,6 @@ from guidata.qthelpers import qt_app_context
 
 from plotpy.core.builder import make
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
-
-# guitest: show
 
 
 def create_window():

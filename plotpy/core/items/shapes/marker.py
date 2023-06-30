@@ -2,7 +2,8 @@
 import math
 
 from guidata.configtools import get_icon
-from guidata.utils import assert_interfaces_valid, update_dataset
+from guidata.utils import update_dataset
+from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
 from qwt import QwtPlotMarker
 

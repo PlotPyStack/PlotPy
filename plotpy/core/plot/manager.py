@@ -3,7 +3,7 @@ import weakref
 from typing import Any
 
 from guidata.qthelpers import create_action
-from guidata.utils import assert_interfaces_valid
+from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 

@@ -27,19 +27,18 @@ Example
 
 Simple histogram plotting example:
 
-.. literalinclude:: ../../../tests/gui/histogram.py
+.. literalinclude:: ../plotpy/tests/gui/histogram.py
 
 Reference
 ~~~~~~~~~
 
 .. autoclass:: ContrastAdjustment
    :members:
-   :inherited-members:
 """
 
 from guidata.configtools import get_icon, get_image_layout
 from guidata.qthelpers import add_actions, create_action
-from guidata.utils import assert_interfaces_valid
+from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 

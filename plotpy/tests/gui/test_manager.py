@@ -7,6 +7,7 @@
 
 """PlotManager test"""
 
+# guitest: show
 
 import os
 
@@ -19,8 +20,6 @@ from plotpy.core.plot.histogram.contrastadjustment import ContrastAdjustment
 from plotpy.core.plot.manager import PlotManager
 from plotpy.core.plot.plotwidget import BasePlot, PlotItemList, PlotType
 from plotpy.tests.gui.test_image import compute_image
-
-# guitest: show
 
 
 class CentralWidget(QW.QWidget):

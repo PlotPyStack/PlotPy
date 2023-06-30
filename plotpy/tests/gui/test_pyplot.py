@@ -11,6 +11,8 @@ pyplot test
 Interactive plotting interface with MATLAB-like syntax
 """
 
+# guitest: show
+
 import numpy as np
 import pytest
 
@@ -30,8 +32,6 @@ from plotpy.core.plot.interactive import (
     ylabel,
     zlabel,
 )
-
-# guitest: show
 
 
 @pytest.mark.skip(reason="Not relevant in automated test suite")

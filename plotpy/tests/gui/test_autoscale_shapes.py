@@ -6,6 +6,7 @@
 
 """This example shows autoscaling of plot with various shapes."""
 
+# guitest: show
 
 import numpy as np
 from guidata.qthelpers import qt_app_context
@@ -31,8 +32,6 @@ from plotpy.core.tools.annotations import (
 from plotpy.core.tools.axes import PlaceAxesTool
 from plotpy.core.tools.label import LabelTool
 from plotpy.core.tools.shapes import FreeFormTool, MultiLineTool
-
-# guitest: show
 
 
 def create_window():

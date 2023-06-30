@@ -20,10 +20,8 @@ Reference
 
 .. autoclass:: RotateCropDialog
    :members:
-   :inherited-members:
 .. autoclass:: RotateCropWidget
    :members:
-   :inherited-members:
 """
 
 from __future__ import annotations

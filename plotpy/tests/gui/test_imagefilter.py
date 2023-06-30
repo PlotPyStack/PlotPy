@@ -7,6 +7,8 @@
 
 """Image filter demo"""
 
+# guitest: show
+
 import os
 
 import numpy as np
@@ -17,8 +19,6 @@ from plotpy.core import io
 from plotpy.core.builder import make
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 from plotpy.tests.gui.test_imagexy import compute_image
-
-# guitest: show
 
 
 def imshow(x, y, data, filter_area, yreverse=True):

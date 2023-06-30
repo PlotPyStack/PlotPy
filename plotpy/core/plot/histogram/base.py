@@ -27,20 +27,17 @@ Example
 
 Simple histogram plotting example:
 
-.. literalinclude:: ../../../tests/gui/histogram.py
+.. literalinclude:: ../plotpy/tests/gui/histogram.py
 
 Reference
 ~~~~~~~~~
 
 .. autoclass:: HistogramItem
    :members:
-   :inherited-members:
 .. autoclass:: ContrastAdjustment
    :members:
-   :inherited-members:
 .. autoclass:: LevelsHistogram
    :members:
-   :inherited-members:
 """
 
 import weakref
@@ -49,7 +46,8 @@ import numpy as np
 from guidata.configtools import get_icon
 from guidata.dataset.dataitems import FloatItem
 from guidata.dataset.datatypes import DataSet
-from guidata.utils import assert_interfaces_valid, update_dataset
+from guidata.utils import update_dataset
+from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
 from qwt import QwtPlotCurve
 

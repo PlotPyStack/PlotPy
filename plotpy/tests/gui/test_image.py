@@ -10,15 +10,13 @@
 # FIXME: unexpected behavior when changing the xmin/xmax/ymin/ymax values in
 #       the image parameters (2nd tab: "Axes")
 
+# guitest: show
 
 import numpy as np
 from guidata.qthelpers import qt_app_context
 
-import plotpy.widgets
 from plotpy.core.builder import make
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
-
-# guitest: show
 
 
 def imshow(data):

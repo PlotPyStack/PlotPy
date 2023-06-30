@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from guidata.utils import assert_interfaces_valid
+from guidata.utils.misc import assert_interfaces_valid
 from qwt import QwtPlotItem
 
 from plotpy.core.interfaces.common import IBasePlotItem, IShapeItemType

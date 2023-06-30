@@ -7,6 +7,7 @@
 
 """Logarithmic scale test for curve plotting"""
 
+# guitest: show
 
 import numpy as np
 from guidata.qthelpers import qt_app_context

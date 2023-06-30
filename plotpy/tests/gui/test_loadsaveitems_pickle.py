@@ -7,6 +7,7 @@
 
 """Load/save items using Python's pickle protocol"""
 
+# guitest: show
 
 # WARNING:
 # This script requires read/write permissions on current directory
@@ -22,8 +23,6 @@ from plotpy.core.tools.axes import Axes
 from plotpy.core.tools.image import ImageMaskTool
 from plotpy.core.tools.item import LoadItemsTool, SaveItemsTool
 from plotpy.core.tools.shapes import PolygonShape
-
-# guitest: show
 
 
 def build_items():

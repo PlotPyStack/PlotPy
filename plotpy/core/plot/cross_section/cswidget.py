@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from guidata.configtools import get_icon
 from guidata.qthelpers import add_actions, create_action
-from guidata.utils import assert_interfaces_valid
+from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
@@ -216,8 +216,10 @@ class XCrossSection(CrossSectionWidget):
         :param applylut:
         :param lockscales:
         """
-        assert self.manager is not None, f"Panel '{self.PANEL_ID}' must be "\
+        assert self.manager is not None, (
+            f"Panel '{self.PANEL_ID}' must be "
             "registered to plot manager before changing options"
+        )
 
         if autoscale is not None:
             self.autoscale_ac.setChecked(autoscale)

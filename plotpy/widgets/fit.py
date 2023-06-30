@@ -19,7 +19,7 @@ The `fit` module provides an interactive curve fitting widget/dialog allowing:
 Example
 ~~~~~~~
 
-.. literalinclude:: ../../../tests/gui/fit.py
+.. literalinclude:: ../../plotpy/tests/gui/test_fit.py
    :start-after: guitest:
 
 
@@ -32,13 +32,10 @@ Reference
 
 .. autoclass:: FitDialog
    :members:
-   :inherited-members:
 .. autoclass:: FitParam
    :members:
-   :inherited-members:
 .. autoclass:: AutoFitParam
    :members:
-   :inherited-members:
 """
 
 from __future__ import annotations

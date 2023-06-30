@@ -3,7 +3,8 @@ import math
 
 import numpy as np
 from guidata.configtools import get_icon
-from guidata.utils import assert_interfaces_valid, update_dataset
+from guidata.utils import update_dataset
+from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 

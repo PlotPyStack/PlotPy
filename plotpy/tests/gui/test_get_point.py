@@ -11,6 +11,7 @@ SelectPointTool test
 This plotpy tool provide a MATLAB-like "ginput" feature.
 """
 
+# guitest: show
 
 from guidata.qthelpers import qt_app_context
 from numpy import linspace, sin
@@ -19,8 +20,6 @@ from plotpy.config import _
 from plotpy.core.builder import make
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 from plotpy.core.tools.curve import SelectPointTool
-
-# guitest: show
 
 
 def callback_function(tool):

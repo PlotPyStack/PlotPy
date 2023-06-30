@@ -6,6 +6,7 @@
 
 """Contour test"""
 
+# guitest: show
 
 import numpy as np
 from guidata.qthelpers import qt_app_context
@@ -16,8 +17,6 @@ from plotpy.core.items.shapes.polygon import PolygonShape
 from plotpy.core.plot.plotwidget import PlotDialog
 from plotpy.core.styles.shape import ShapeParam
 from plotpy.utils.contour import contour
-
-# guitest: show
 
 
 def test_contour():

@@ -27,30 +27,24 @@ Reference
 
 .. autoclass:: LabelItem
    :members:
-   :inherited-members:
 .. autoclass:: LegendBoxItem
    :members:
-   :inherited-members:
 .. autoclass:: SelectedLegendBoxItem
    :members:
-   :inherited-members:
 .. autoclass:: RangeComputation
    :members:
-   :inherited-members:
 .. autoclass:: RangeComputation2d
    :members:
-   :inherited-members:
 .. autoclass:: DataInfoLabel
    :members:
-   :inherited-members:
 .. autoclass:: ObjectInfo
    :members:
-   :inherited-members:
 """
 
 import numpy as np
 from guidata.configtools import get_icon
-from guidata.utils import assert_interfaces_valid, update_dataset
+from guidata.utils import update_dataset
+from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qwt import QwtPlotItem

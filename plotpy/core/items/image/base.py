@@ -5,33 +5,25 @@ import sys
 
 import numpy as np
 from guidata.configtools import get_icon
-from guidata.utils import assert_interfaces_valid, update_dataset
+from guidata.utils import update_dataset
+from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qwt import QwtPlotItem
 
-from plotpy._scaler import (
-    INTERP_AA,
-    INTERP_LINEAR,
-    INTERP_NEAREST,
-    _histogram,
-    _scale_rect,
-)
+from plotpy._scaler import (INTERP_AA, INTERP_LINEAR, INTERP_NEAREST,
+                            _histogram, _scale_rect)
 from plotpy.config import _
 from plotpy.core import io
-from plotpy.core.interfaces.common import (
-    IBaseImageItem,
-    IBasePlotItem,
-    IColormapImageItemType,
-    ICSImageItemType,
-    IExportROIImageItemType,
-    IHistDataSource,
-    IImageItemType,
-    ISerializableType,
-    IStatsImageItemType,
-    ITrackableItemType,
-    IVoiImageItemType,
-)
+from plotpy.core.interfaces.common import (IBaseImageItem, IBasePlotItem,
+                                           IColormapImageItemType,
+                                           ICSImageItemType,
+                                           IExportROIImageItemType,
+                                           IHistDataSource, IImageItemType,
+                                           ISerializableType,
+                                           IStatsImageItemType,
+                                           ITrackableItemType,
+                                           IVoiImageItemType)
 from plotpy.core.items.shapes.rectangle import RectangleShape
 from plotpy.core.styles.image import RawImageParam
 from plotpy.utils.colormap import FULLRANGE, get_cmap, get_cmap_name
@@ -694,14 +686,10 @@ class BaseImageItem(QwtPlotItem):
             return [0], [0, 1]
         if self.histogram_cache is None or nbins != self.histogram_cache[0].shape[0]:
             if True:
-                # tic("histo1")
                 # Note: np.histogram does not accept data with NaN
                 res = np.histogram(self.data[~np.isnan(self.data)], nbins)
-                # toc("histo1")
             else:
-                # TODO: _histogram is faster, but caching is buggy
-                # in this version
-                # tic("histo2")
+                # TODO: _histogram is faster, but caching is buggy in this version
                 _min = _nanmin(self.data)
                 _max = _nanmax(self.data)
                 if self.data.dtype in (np.float64, np.float32):
@@ -714,7 +702,6 @@ class BaseImageItem(QwtPlotItem):
                     bins = np.arange(_min, _max + 2, dtype=self.data.dtype)
                 res2 = np.zeros((bins.size + 1,), np.uint32)
                 _histogram(self.data.flatten(), bins, res2)
-                # toc("histo2")
                 res = res2[1:-1], bins
             self.histogram_cache = res
         else:

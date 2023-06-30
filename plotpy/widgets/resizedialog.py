@@ -18,7 +18,6 @@ Reference
 
 .. autoclass:: ResizeDialog
    :members:
-   :inherited-members:
 """
 
 from guidata.qthelpers import win32_fix_title_bar_background

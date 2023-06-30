@@ -4,20 +4,23 @@ import sys
 import numpy as np
 from guidata.configtools import get_icon
 from guidata.dataset.datatypes import update_dataset
-from guidata.utils import assert_interfaces_valid
+from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
 
 from plotpy.config import _
 from plotpy.core import io
-from plotpy.core.interfaces.common import (IBaseImageItem, IBasePlotItem,
-                                           IColormapImageItemType,
-                                           ICSImageItemType,
-                                           IExportROIImageItemType,
-                                           IHistDataSource, IImageItemType,
-                                           ITrackableItemType,
-                                           IVoiImageItemType)
-from plotpy.core.items.image.base import (BaseImageItem, RawImageItem, _nanmax,
-                                          _nanmin)
+from plotpy.core.interfaces.common import (
+    IBaseImageItem,
+    IBasePlotItem,
+    IColormapImageItemType,
+    ICSImageItemType,
+    IExportROIImageItemType,
+    IHistDataSource,
+    IImageItemType,
+    ITrackableItemType,
+    IVoiImageItemType,
+)
+from plotpy.core.items.image.base import BaseImageItem, RawImageItem, _nanmax, _nanmin
 from plotpy.core.items.image.mixin import ImageMixin
 from plotpy.core.items.image.transform import TrImageItem
 from plotpy.core.items.utils import axes_to_canvas

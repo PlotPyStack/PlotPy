@@ -13,6 +13,8 @@ These plugins provide PlotWidget objects
 embedding in GUI layouts directly from QtDesigner.
 """
 
+# guitest: show
+
 import os
 
 from guidata.qthelpers import qt_app_context
@@ -21,7 +23,6 @@ from plotpy.core.builder import make
 from plotpy.tests.gui.test_image import compute_image
 from plotpy.widgets.qtdesigner import loadui
 
-# guitest: show
 FormClass = loadui(os.path.splitext(__file__)[0] + ".ui")
 
 

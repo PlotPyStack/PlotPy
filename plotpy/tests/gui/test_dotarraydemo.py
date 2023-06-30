@@ -16,6 +16,8 @@ the custom item parameters: right-click on the selectable item to open the
 associated dialog box).
 """
 
+# guitest: show
+
 import guidata.dataset.dataitems as gdi
 import guidata.dataset.datatypes as gdt
 import guidata.dataset.qtwidgets as gdq
@@ -33,8 +35,6 @@ from plotpy.core.items.curve.errorbar import vmap
 from plotpy.core.items.image.base import RawImageItem
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 from plotpy.core.tools.misc import CopyToClipboardTool, HelpTool, PrintTool, SaveAsTool
-
-# guitest: show
 
 
 class DotArrayParam(gdt.DataSet):

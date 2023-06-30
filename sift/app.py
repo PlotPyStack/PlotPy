@@ -37,9 +37,9 @@ from guidata.qthelpers import (
     get_std_icon,
     win32_fix_title_bar_background,
 )
-from guidata.qtwidgets import DockableWidget, DockableWidgetMixin
 from guidata.utils import update_dataset
 from guidata.widgets.console import DockableConsole
+from guidata.widgets.dockable import DockableWidget, DockableWidgetMixin
 from PyQt5.QtCore import pyqtSignal as Signal
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG

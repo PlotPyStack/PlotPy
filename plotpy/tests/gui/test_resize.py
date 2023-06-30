@@ -7,14 +7,14 @@
 
 """Resize test: using the scaler C++ engine to resize images"""
 
+# guitest: show
+
 import os
 
 from guidata.qthelpers import qt_app_context
 
 from plotpy.core import io, scaler
 from plotpy.tests.gui.test_rotatecrop import imshow
-
-# guitest: show
 
 
 def test_resize():

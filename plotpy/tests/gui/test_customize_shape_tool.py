@@ -7,6 +7,7 @@
 
 """Shows how to customize a shape created with a tool like RectangleTool"""
 
+# guitest: show
 
 import os
 
@@ -23,7 +24,6 @@ from plotpy.core.tools.shapes import (
     SegmentTool,
 )
 
-# guitest: show
 STYLE = style_generator()
 
 

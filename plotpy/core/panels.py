@@ -38,7 +38,7 @@ for each kind of panel:
 """
 
 from guidata.configtools import get_icon
-from guidata.qtwidgets import DockableWidget
+from guidata.widgets.dockable import DockableWidget
 from qtpy import QtCore as QC
 
 # ===============================================================================

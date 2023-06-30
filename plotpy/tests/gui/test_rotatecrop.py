@@ -7,6 +7,7 @@
 
 """Rotate/crop test: using the scaler C++ engine to rotate/crop images"""
 
+# guitest: show
 
 import os
 
@@ -22,8 +23,6 @@ from plotpy.widgets.rotatecrop import (
     RotateCropDialog,
     RotateCropWidget,
 )
-
-# guitest: show
 
 
 def create_test_data(fname, func=None):

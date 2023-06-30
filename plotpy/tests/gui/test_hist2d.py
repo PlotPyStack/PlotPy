@@ -7,16 +7,14 @@
 
 """2-D Histogram test"""
 
+# guitest: show
 
 from guidata.qthelpers import qt_app_context
 from numpy import array, concatenate, dot, random
 
-import plotpy.widgets
 from plotpy.config import _
 from plotpy.core.builder import make
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
-
-# guitest: show
 
 
 def hist2d_func(X, Y, Z):

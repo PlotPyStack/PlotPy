@@ -12,6 +12,8 @@ Masked image XY items are constructed using a masked array item. Masked data is
 ignored in computations, like the average cross sections.
 """
 
+# guitest: show
+
 import os
 import pickle
 
@@ -20,8 +22,6 @@ from guidata.qthelpers import qt_app_context
 from plotpy.core.builder import make
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 from plotpy.core.tools.image import ImageMaskTool
-
-# guitest: show
 
 FNAME = "image_masked_xy.pickle"
 

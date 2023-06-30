@@ -7,6 +7,7 @@
 
 """Contrast tool test"""
 
+# guitest: show
 
 import os.path as osp
 
@@ -14,8 +15,6 @@ from guidata.qthelpers import qt_app_context
 
 from plotpy.core.builder import make
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
-
-# guitest: show
 
 
 def test_contrast():
