@@ -13,5 +13,5 @@ call %FUNC% GetModName MODNAME
 call %FUNC% SetPythonPath
 set PYLINT_ARG=%*
 if "%PYLINT_ARG%"=="" set PYLINT_ARG=%MODNAME% --disable=fixme
-%PYTHON% -m pylint --rcfile=%SCRIPTPATH%\..\.pylintrc %PYLINT_ARG% 1> C:\_projets\plotpy\temp_pylint.txt
+%PYTHON% -m pylint --rcfile=%SCRIPTPATH%\..\.pylintrc %PYLINT_ARG%
 call %FUNC% EndOfScript
