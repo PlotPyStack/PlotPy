@@ -28,32 +28,24 @@ As a consequence :
 * The `CurvePlot` and `ImagePlot` classes have been removed.
   If you are using them in your code, you can replace them by the
   :py:class:`.BasePlot` class, and pass to its constructor the new keyword
-  `type` with the value :py:attr:`.PlotType.CURVE`
-  or :py:attr:`.PlotType.IMAGE` respectively to get
-  the equivalent specialized plot component.
+  `type` with the value :py:attr:`.PlotType.CURVE` or :py:attr:`.PlotType.IMAGE`
+  respectively to get the equivalent specialized plot component.
   See also the `Minor changes to the BasePlot class`_ section.
 
 * The `CurveWidget` and `ImageWidget` classes have been merged into the new class
   :py:class:`.PlotWidget`. If you are using them in your code,
   you can replace them by the :py:class:`.PlotWidget` class,
-  and pass to its constructor an `options` dict with the value
+  and pass to its constructor an `options` dictionary with the value
   :py:attr:`.PlotType.CURVE` or
   :py:attr:`.PlotType.IMAGE` for key `type`.*
-  See also the `Changes to the PlotWidget class`_ section.
 
 * The `CurveDialog` and `ImageDialog` classes have been merged into the new class
-  :py:class:`.PlotDialog`. If you are using them in your code,
-  you can replace them by the :py:class:`.PlotDialog` class,
-  and pass to its constructor an `options` dict with the value
-  :py:attr:`.PlotType.CURVE` or
-  :py:attr:`.PlotType.IMAGE` for key `type`.
+  :py:class:`.PlotDialog`. If you are using them in your code, you may proceed
+  as for the `CurveWidget` and `ImageWidget` classes.
 
 * The `CurveWindow` and `ImageWindow` classes have been merged into the new class
-  :py:class:`.PlotWindow`. If you are using them in your code,
-  you can replace them by the :py:class:`.PlotWindow` class,
-  and pass to its constructor an `options` dict with the value
-  :py:attr:`.PlotType.CURVE` or
-  :py:attr:`.PlotType.IMAGE` for key `type`.
+  :py:class:`.PlotWindow`. If you are using them in your code, you may proceed
+  as for the `CurveWidget` and `ImageWidget` classes.
 
 .. note::
 
@@ -89,21 +81,6 @@ to the `Generic PlotWidgets`_ may require some minor adaptation of your code:
   instantiating a `CurvePlot` or `ImagePlot`, you should adapt the new calls to the
   :py:class:`.BasePlot` constructor to meet the new arguments list.
 
-Changes to the PlotWidget class
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-The architecture of the new :py:class:`.PlotWidget` class
-(previously `CurveWidget` and `ImageWidget`) has been changed to be consistent
-with the :py:class:`.PlotDialog`
-and :py:class:`.PlotWindow` classes.
-
-As a consequence, the many constructor arguments of the
-:py:class:`.PlotWidget` class have been replaced by an `options`
-dictionary. You may have to change your calls accordingly if you used the
-old classes `CurveWidget` or `ImageWidget` and replaced them by the
-:py:class:`.PlotWidget` class.
-
-
 Renamed update_curve and update_image methods
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -131,10 +108,9 @@ The following subsections present new features that may help you to simplify
 you code using plotpy.
 
 New annotation tools registration methods
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Some new methods were added to classes :py:class:`.PlotWidget`,
-:py:class:`.PlotDialog` and :py:class:`.PlotWindow`:
+Some new methods were added to class :py:class:`.PlotManager`:
 
 * :py:meth:`.PlotManager.register_curve_annotation_tools`:
   register all curve related annotation tools,
@@ -208,4 +184,4 @@ Auto-scaling and shapes
 Auto-scaling takes now into account visible shapes
 (subclasses of :py:class:`.PolygonShape`).
 
-See demo script `tests/gui/autoscale_schapes.py`.
+See demo script `tests/gui/autoscale_shapes.py`.

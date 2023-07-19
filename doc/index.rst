@@ -10,6 +10,10 @@ Python library providing efficient 2D data-plotting features (curve/image
 visualization and related tools) for interactive computing and signal/image
 processing application development.
 
+.. figure:: images/panorama.png
+
+    A panorama of :mod:`plotpy`'s features.
+
 External resources:
 
 * Python Package Index: `PyPI`_

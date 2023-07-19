@@ -6,21 +6,19 @@ Dependencies
 
 Requirements:
 
-    * Python >= 3.8
-    * PyQt5 5.x (x>=5)
-    * PythonQwt >=0.5
-    * NumPy
-    * SciPy
-    * Pillow
+.. include:: ../install_requires.txt
 
-Optional Python modules:
+.. note::
 
-    * h5py (HDF5 files I/O)
-    * pydicom >=0.9.3 for DICOM files I/O features
+    Python 3.11 is the reference for production release
 
-Other optional modules for developers:
+Optional modules for development and testing:
 
-    * gettext (text translation support)
+.. include:: ../extras_require-dev.txt
+
+Optional modules for building the documentation:
+
+.. include:: ../extras_require-doc.txt
 
 Installation using the wheel
 ----------------------------
@@ -52,14 +50,3 @@ On Windows platforms with MinGW:
 
 On Windows platforms with Microsoft Visual C++ compiler:
     ``python setup.py build -c msvc install``
-
-Help and support
-----------------
-
-External resources:
-
-    * Bug reports and feature requests: `GitHub`_
-    * Help, support and discussions around the project: `GoogleGroup`_
-
-.. _GitHub: https://github.com/PierreRaybaut/guiqwt
-.. _GoogleGroup: http://groups.google.fr/group/guidata_guiqwt
