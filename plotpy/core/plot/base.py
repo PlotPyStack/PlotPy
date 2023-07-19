@@ -8,75 +8,33 @@
 # pylint: disable=C0103
 
 """
-plotpy.widgets.base
----------------------------
+Plotting widget base class
+--------------------------
 
-The `base` module provides the `plotpy` plotting widget base class:
-:py:class:`.base.BasePlot`. This is an enhanced version of
-`PythonQwt`'s QwtPlot plotting widget which supports the following features:
-
-    * add to plot, del from plot, hide/show and save/restore `plot items` easily
-    * item selection and multiple selection
-    * active item
-    * plot parameters editing
-
-.. seealso::
-
-    Module :py:mod:`.curve`
-        Module providing curve-related plot items
-
-    Module :py:mod:`.image`
-        Module providing image-related plot items
-
-    Module :py:mod:`.plot`
-        Module providing ready-to-use curve and image plotting widgets and
-        dialog boxes
-
-Reference
-~~~~~~~~~
-
-.. autoclass:: PlotType
-   :members:
-.. autoclass:: BasePlot
-   :members:
-
+The `base` module provides the :mod:`plotpy` plotting widget base class:
+:py:class:`.base.BasePlot`.
 """
+
+from __future__ import annotations
 
 import pickle
 import sys
 from enum import Enum
 from math import fabs
+from typing import TYPE_CHECKING
 
 import numpy as np
+import qwt
 from guidata.configtools import get_font
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
 from qtpy.QtPrintSupport import QPrinter
-from qwt import (
-    QwtInterval,
-    QwtLinearScaleEngine,
-    QwtLogScaleEngine,
-    QwtPlot,
-    QwtPlotCanvas,
-    QwtPlotCurve,
-    QwtPlotItem,
-    QwtText,
-)
 
 from plotpy.config import CONF, _
 from plotpy.core import io
 from plotpy.core.events import StatefulEventFilter
-from plotpy.core.interfaces.common import (
-    IBaseImageItem,
-    IBasePlotItem,
-    IColormapImageItemType,
-    ICurveItemType,
-    IImageItemType,
-    IItemType,
-    ISerializableType,
-    ITrackableItemType,
-)
+from plotpy.core.interfaces import common as itf
 from plotpy.core.items import annotations
 from plotpy.core.items.curve.base import CurveItem
 from plotpy.core.items.grid import GridItem
@@ -87,6 +45,16 @@ from plotpy.core.items.shapes.polygon import PolygonShape
 from plotpy.core.styles.axes import AxesParam, AxeStyleParam, AxisParam, ImageAxesParam
 from plotpy.core.styles.base import GridParam, ItemParameters
 
+if TYPE_CHECKING:
+    from typing import IO
+
+    from qwt.scale_widget import QwtScaleWidget
+
+    from plotpy.core.plot.manager import PlotManager
+
+    TrackableItem = CurveItem | BaseImageItem
+    import guidata.dataset.io
+
 
 class PlotType(Enum):
     """
@@ -94,18 +62,23 @@ class PlotType(Enum):
     different PlotItems types (curves and images)
     """
 
-    AUTO = 1  #: Automatic plot type. The first PlotItem attached to the plot sets the
-    # plot type (see CURVE and IMAGE values of the enum). All tools
-    # (curve and image related) are registered and accessible depending on the last
-    # selected PlotItem.
-    CURVE = 2  #: Curve specialized plot : the y axis is not reversed and the aspect
-    # ratio is not locked by default. Only CURVE typed tools are automatically
-    # registered.
-    IMAGE = 3  #: Image specialized plot : the y axis is reversed and the aspect ratio
-    # is locked by default. Only IMAGE typed tools are automatically registered.
-    MANUAL = 4  #: No assumption is made on the type of items to be displayed on the
-    # plot. Acts like the CURVE value of the enum for y axis and aspect ratio. No tool
-    # are automatically registered.
+    #: Automatic plot type. The first PlotItem attached to the plot sets the type.
+    #: All tools (curve and image related) are registered and accessible depending
+    #: on the last selected PlotItem.
+    AUTO = 1
+
+    #: Curve specialized plot. The y axis is not reversed and the aspect ratio is not
+    #: locked by default. Only CURVE typed tools are automatically registered.
+    CURVE = 2
+
+    #: Image specialized plot. The y axis is reversed and the aspect ratio is locked
+    #: by default. Only IMAGE typed tools are automatically registered.
+    IMAGE = 3
+
+    #: No assumption is made on the type of items to be displayed on the plot. Acts
+    #: like the CURVE value of the enum for y axis and aspect ratio. No tool are
+    #: automatically registered.
+    MANUAL = 4
 
 
 PARAMETERS_TITLE_ICON = {
@@ -115,7 +88,7 @@ PARAMETERS_TITLE_ICON = {
 }
 
 
-class BasePlot(QwtPlot):
+class BasePlot(qwt.QwtPlot):
     """
     An enhanced QwtPlot class that provides
     methods for handling plotitems and axes better
@@ -124,101 +97,179 @@ class BasePlot(QwtPlot):
 
     Activatable items must support IBasePlotItem interface and should
     be added to the plot using add_item methods.
+
+    Args:
+        parent (QWidget): parent widget
+        type (PlotType): the type of the plot
+        title (str): the plot title
+        xlabel (str): the x axis label
+        ylabel (str): the y axis label
+        zlabel (str): the z axis label
+        xunit (str): the x axis unit
+        yunit (str): the y axis unit
+        zunit (str): the z axis unit
+        yreverse (bool): whether the y axis is reversed
+        aspect_ratio (float): the aspect ratio
+        lock_aspect_ratio (bool): whether the aspect ratio is locked
+        gridparam (GridParam): the grid parameters
+        section (str): the section in the configuration file
+        axes_synchronised (bool): whether the axes are synchronised
+        force_colorbar_enabled (bool): whether the colorbar is forced to be enabled
     """
 
     Y_LEFT, Y_RIGHT, X_BOTTOM, X_TOP = (
-        QwtPlot.yLeft,
-        QwtPlot.yRight,
-        QwtPlot.xBottom,
-        QwtPlot.xTop,
+        qwt.QwtPlot.yLeft,
+        qwt.QwtPlot.yRight,
+        qwt.QwtPlot.xBottom,
+        qwt.QwtPlot.xTop,
     )
     #    # To be replaced by (in the near future):
     #    Y_LEFT, Y_RIGHT, X_BOTTOM, X_TOP = range(4)
     AXIS_IDS = (Y_LEFT, Y_RIGHT, X_BOTTOM, X_TOP)
     AXIS_NAMES = {"left": Y_LEFT, "right": Y_RIGHT, "bottom": X_BOTTOM, "top": X_TOP}
-    AXIS_TYPES = {"lin": QwtLinearScaleEngine, "log": QwtLogScaleEngine}
+    AXIS_TYPES = {"lin": qwt.QwtLinearScaleEngine, "log": qwt.QwtLogScaleEngine}
     AXIS_CONF_OPTIONS = ("axis", "axis", "axis", "axis")
     DEFAULT_ACTIVE_XAXIS = X_BOTTOM
     DEFAULT_ACTIVE_YAXIS = Y_LEFT
 
     AUTOSCALE_TYPES = (CurveItem, BaseImageItem, PolygonMapItem)
-    AUTOSCALE_EXCLUDES = []
+    AUTOSCALE_EXCLUDES: list[itf.IBasePlotItem] = []
 
-    #: Signal emitted by plot when an IBasePlotItem object was moved (args: x0,y0,x1,y1)
-    SIG_ITEM_MOVED = QC.Signal("PyQt_PyObject", float, float, float, float)
+    #: Signal emitted by plot when an IBasePlotItem object was moved
+    #:
+    #: Args:
+    #:     item: the moved item
+    #:     x0 (float): the old x position
+    #:     y0 (float): the old y position
+    #:     x1 (float): the new x position
+    #:     y1 (float): the new y position
+    SIG_ITEM_MOVED = QC.Signal(object, float, float, float, float)
 
     #: Signal emitted by plot when an IBasePlotItem object was resized
-    SIG_ITEM_RESIZED = QC.Signal("PyQt_PyObject", float, float)
+    #:
+    #: Args:
+    #:     item: the resized item
+    #:     zoom_dx (float): the zoom factor along the x axis
+    #:     zoom_dy (float): the zoom factor along the y axis
+    SIG_ITEM_RESIZED = QC.Signal(object, float, float)
 
-    #: Signal emitted by plot when an IBasePlotItem object was rotated (args: angle)
-    SIG_ITEM_ROTATED = QC.Signal("PyQt_PyObject", float)
+    #: Signal emitted by plot when an IBasePlotItem object was rotated
+    #:
+    #: Args:
+    #:     item: the rotated item
+    #:     angle (float): the new angle (in radians)
+    SIG_ITEM_ROTATED = QC.Signal(object, float)
 
     #: Signal emitted by plot when a shapes.Marker position changes
-    SIG_MARKER_CHANGED = QC.Signal("PyQt_PyObject")
+    #:
+    #: Args:
+    #:     marker: the moved marker
+    SIG_MARKER_CHANGED = QC.Signal(object)
 
     #: Signal emitted by plot when a shapes.Axes position (or the angle) changes
-    SIG_AXES_CHANGED = QC.Signal("PyQt_PyObject")
+    #:
+    #: Args:
+    #:     axes: the moved axes
+    SIG_AXES_CHANGED = QC.Signal(object)
 
     #: Signal emitted by plot when an annotation.AnnotatedShape position changes
-    SIG_ANNOTATION_CHANGED = QC.Signal("PyQt_PyObject")
+    #:
+    #: Args:
+    #:     annotation: the moved annotation
+    SIG_ANNOTATION_CHANGED = QC.Signal(object)
 
     #: Signal emitted by plot when the a shapes.XRangeSelection range changes
-    SIG_RANGE_CHANGED = QC.Signal("PyQt_PyObject", float, float)
+    #:
+    #: Args:
+    #:     selection: the selection item
+    #:     xmin (float): the new minimum x value
+    #:     xmax (float): the new maximum x value
+    SIG_RANGE_CHANGED = QC.Signal(object, float, float)
 
     #: Signal emitted by plot when item list has changed (item removed, added, ...)
-    SIG_ITEMS_CHANGED = QC.Signal("PyQt_PyObject")
+    #:
+    #: Args:
+    #:     plot: the plot
+    SIG_ITEMS_CHANGED = QC.Signal(object)
 
     #: Signal emitted by plot when selected item has changed
-    SIG_ACTIVE_ITEM_CHANGED = QC.Signal("PyQt_PyObject")
+    #:
+    #: Args:
+    #:     plot: the plot
+    SIG_ACTIVE_ITEM_CHANGED = QC.Signal(object)
 
     #: Signal emitted by plot when an item was deleted from the item list or using the
     #: delete item tool
-    SIG_ITEM_REMOVED = QC.Signal("PyQt_PyObject")
+    #:
+    #: Args:
+    #:     item: the deleted item
+    SIG_ITEM_REMOVED = QC.Signal(object)
 
     #: Signal emitted by plot when an item is selected
-    SIG_ITEM_SELECTION_CHANGED = QC.Signal("PyQt_PyObject")
+    #:
+    #: Args:
+    #:     item: the selected item
+    SIG_ITEM_SELECTION_CHANGED = QC.Signal(object)
 
     #: Signal emitted by plot when plot's title or any axis label has changed
-    SIG_PLOT_LABELS_CHANGED = QC.Signal("PyQt_PyObject")
+    #:
+    #: Args:
+    #:     plot: the plot
+    SIG_PLOT_LABELS_CHANGED = QC.Signal(object)
 
     #: Signal emitted by plot when any plot axis direction has changed
-    SIG_AXIS_DIRECTION_CHANGED = QC.Signal("PyQt_PyObject", "PyQt_PyObject")
+    #:
+    #: Args:
+    #:     plot: the plot
+    #:     axis_id: the axis id ("left", "right", "bottom", "top")
+    SIG_AXIS_DIRECTION_CHANGED = QC.Signal(object, object)
 
     #: Signal emitted by plot when LUT has been changed by the user
-    SIG_LUT_CHANGED = QC.Signal("PyQt_PyObject")
+    #:
+    #: Args:
+    #:     plot: the plot
+    SIG_LUT_CHANGED = QC.Signal(object)
 
     #: Signal emitted by plot when image mask has changed
-    SIG_MASK_CHANGED = QC.Signal("PyQt_PyObject")
+    #:
+    #: Args:
+    #:     plot: the plot
+    SIG_MASK_CHANGED = QC.Signal(object)
 
     #: Signal emitted by cross section plot when cross section curve data has changed
-    SIG_CS_CURVE_CHANGED = QC.Signal("PyQt_PyObject")
+    #:
+    #: Args:
+    #:     plot: the plot
+    SIG_CS_CURVE_CHANGED = QC.Signal(object)
 
     #: Signal emitted by plot when plot axis has changed, e.g. when panning/zooming
-    # (arg: plot))
-    SIG_PLOT_AXIS_CHANGED = QC.Signal("PyQt_PyObject")
+    #:
+    #: Args:
+    #:     plot: the plot
+    SIG_PLOT_AXIS_CHANGED = QC.Signal(object)
 
     EPSILON_ASPECT_RATIO = 1e-6
 
     def __init__(
         self,
-        parent=None,
-        type=PlotType.AUTO,
-        title=None,
-        xlabel=None,
-        ylabel=None,
-        zlabel=None,
-        xunit=None,
-        yunit=None,
-        zunit=None,
-        yreverse=None,
-        aspect_ratio=1.0,
-        lock_aspect_ratio=None,
-        gridparam=None,
-        section="plot",
-        axes_synchronised=False,
-        force_colorbar_enabled=False,
-    ):
-        super(BasePlot, self).__init__(parent)
+        parent: QW.QWidget | None = None,
+        type: PlotType = PlotType.AUTO,
+        title: str | None = None,
+        xlabel: str | None = None,
+        ylabel: str | None = None,
+        zlabel: str | None = None,
+        xunit: str | None = None,
+        yunit: str | None = None,
+        zunit: str | None = None,
+        yreverse: bool | None = None,
+        aspect_ratio: float = 1.0,
+        lock_aspect_ratio: bool | None = None,
+        gridparam: GridParam | None = None,
+        section: str = "plot",
+        axes_synchronised: bool = False,
+        force_colorbar_enabled: bool = False,
+    ) -> None:
+        super().__init__(parent)
 
         self.type = type
 
@@ -272,8 +323,8 @@ class BasePlot(QwtPlot):
         self.manager = None
         self.plot_id = None  # id assigned by it's manager
         self.filter = StatefulEventFilter(self)
-        self.items = []
-        self.active_item = None
+        self.items: list[itf.IBasePlotItem] = []
+        self.active_item: qwt.QwtPlotItem = None
         self.last_selected = {}  # a mapping from item type to last selected item
         self.axes_styles = [
             AxeStyleParam(_("Left")),
@@ -285,9 +336,9 @@ class BasePlot(QwtPlot):
         self._active_yaxis = self.DEFAULT_ACTIVE_YAXIS
         self.read_axes_styles(section, self.AXIS_CONF_OPTIONS)
         self.font_title = get_font(CONF, section, "title")
-        canvas = self.canvas()
+        canvas: qwt.QwtPlotCanvas = self.canvas()
         canvas.setFocusPolicy(QC.Qt.FocusPolicy.StrongFocus)
-        canvas.setFocusIndicator(QwtPlotCanvas.ItemFocusIndicator)
+        canvas.setFocusIndicator(qwt.QwtPlotCanvas.ItemFocusIndicator)
 
         self.SIG_ITEM_MOVED.connect(self._move_selected_items_together)
         self.SIG_ITEM_RESIZED.connect(self._resize_selected_items_together)
@@ -310,8 +361,8 @@ class BasePlot(QwtPlot):
 
         # Installing our own event filter:
         # (qwt's event filter does not fit our needs)
-        self.canvas().installEventFilter(self.filter)
-        self.canvas().setMouseTracking(True)
+        canvas.installEventFilter(self.filter)
+        canvas.setMouseTracking(True)
 
         self.cross_marker = Marker()
         self.curve_marker = Marker(
@@ -342,8 +393,20 @@ class BasePlot(QwtPlot):
         self.set_aspect_ratio(aspect_ratio, lock_aspect_ratio)
         self.replot()  # Workaround for the empty image widget bug
 
-    def replot(self):
-        QwtPlot.replot(self)
+    def replot(self) -> None:
+        """
+        Redraw the plot
+
+        If the `autoReplot` option is not set (which is the default)
+        or if any curves are attached to raw data, the plot has to
+        be refreshed explicitly in order to make changes visible.
+
+        .. seealso::
+
+            :py:meth:`qwt.plot.QwtPlot.updateAxes`,
+            :py:meth:`qwt.plot.QwtPlot.setAutoReplot`
+        """
+        super().replot()
         if self.lock_aspect_ratio:
             self.apply_aspect_ratio()
 
@@ -352,7 +415,7 @@ class BasePlot(QwtPlot):
         # Sometimes, an obscure exception happens when we quit an application
         # because if we don't remove the eventFilter it can still be called
         # after the filter object has been destroyed by Python.
-        canvas = self.canvas()
+        canvas: qwt.QwtPlotCanvas = self.canvas()
         if canvas:
             try:
                 canvas.removeEventFilter(self.filter)
@@ -363,69 +426,51 @@ class BasePlot(QwtPlot):
                 if "wrapped C/C++ object of type" not in str(exc):
                     raise
 
-    # generic helper methods
-    def canvas2plotitem(self, plot_item, x_canvas, y_canvas):
+    def on_active_curve(self, x: float, y: float) -> None:
         """
+        Callback called when the active curve is moved
 
-        :param plot_item:
-        :param x_canvas:
-        :param y_canvas:
-        :return:
+        Args:
+            x (float): the x position
+            y (float): the y position
         """
-        return (
-            self.invTransform(plot_item.xAxis(), x_canvas),
-            self.invTransform(plot_item.yAxis(), y_canvas),
-        )
-
-    def plotitem2canvas(self, plot_item, x, y):
-        """
-
-        :param plot_item:
-        :param x:
-        :param y:
-        :return:
-        """
-        return (
-            self.transform(plot_item.xAxis(), x),
-            self.transform(plot_item.yAxis(), y),
-        )
-
-    def on_active_curve(self, x, y):
-        """
-
-        :param x:
-        :param y:
-        :return:
-        """
-        curve = self.get_last_active_item(ITrackableItemType)
+        curve: CurveItem = self.get_last_active_item(itf.ITrackableItemType)
         if curve:
             x, y = curve.get_closest_coordinates(x, y)
         return x, y
 
-    def get_coordinates_str(self, x, y):
+    def get_coordinates_str(self, x: float, y: float) -> str:
         """
+        Return the coordinates string
 
-        :param x:
-        :param y:
-        :return:
+        Args:
+            x (float): the x position
+            y (float): the y position
+
+        Returns:
+            str: the coordinates string
         """
         title = _("Grid")
-        item = self.get_last_active_item(ITrackableItemType)
+        item: TrackableItem = self.get_last_active_item(itf.ITrackableItemType)
         if item:
             return item.get_coordinates_label(x, y)
         return f"<b>{title}</b><br>x = {x:g}<br>y = {y:g}"
 
-    def set_marker_axes(self):
-        """ """
-        curve = self.get_last_active_item(ITrackableItemType)
-        if curve:
-            self.cross_marker.setAxes(curve.xAxis(), curve.yAxis())
-            self.curve_marker.setAxes(curve.xAxis(), curve.yAxis())
-
-    def do_move_marker(self, event):
+    def set_marker_axes(self) -> None:
         """
+        Set the axes of the markers
+        """
+        item: TrackableItem = self.get_last_active_item(itf.ITrackableItemType)
+        if item:
+            self.cross_marker.setAxes(item.xAxis(), item.yAxis())
+            self.curve_marker.setAxes(item.xAxis(), item.yAxis())
 
-        :param event:
+    def do_move_marker(self, event: QG.QMouseEvent) -> None:
+        """
+        Move the marker
+
+        Args:
+            event (QMouseEvent): the event
         """
         pos = event.pos()
         self.set_marker_axes()
@@ -438,7 +483,6 @@ class BasePlot(QwtPlot):
             self.curve_marker.setVisible(True)
             self.curve_marker.move_local_point_to(0, pos)
             self.replot()
-            # self.move_curve_marker(self.curve_marker, xc, yc)
         elif (
             event.modifiers() & QC.Qt.KeyboardModifier.AltModifier
             or self.canvas_pointer
@@ -448,7 +492,6 @@ class BasePlot(QwtPlot):
             self.curve_marker.setVisible(False)
             self.cross_marker.move_local_point_to(0, pos)
             self.replot()
-            # self.move_canvas_marker(self.cross_marker, xc, yc)
         else:
             vis_cross = self.cross_marker.isVisible()
             vis_curve = self.curve_marker.isVisible()
@@ -457,12 +500,20 @@ class BasePlot(QwtPlot):
             if vis_cross or vis_curve:
                 self.replot()
 
-    def get_axes_to_update(self, dx, dy):
+    def __get_axes_to_update(
+        self,
+        dx: tuple[float, float, float, float],
+        dy: tuple[float, float, float, float],
+    ) -> list[tuple[float, float, float, float], int]:
         """
+        Return the axes to update
 
-        :param dx:
-        :param dy:
-        :return:
+        Args:
+            dx (tuple[float, float, float, float]): the x axis 'state' tuple
+            dy (tuple[float, float, float, float]): the y axis 'state' tuple
+
+        Returns:
+            list[tuple[float, float, float, float], int]: the axes to update
         """
         if self.axes_synchronised:
             axes = []
@@ -477,14 +528,24 @@ class BasePlot(QwtPlot):
             xaxis, yaxis = self.get_active_axes()
             return [(dx, xaxis), (dy, yaxis)]
 
-    def do_pan_view(self, dx, dy):
+    def do_pan_view(
+        self,
+        dx: tuple[float, float, float, float],
+        dy: tuple[float, float, float, float],
+    ) -> None:
         """
-        Translate the active axes by dx, dy
-        dx, dy are tuples composed of (initial pos, dest pos)
+        Translate the active axes according to dx, dy axis 'state' tuples
+
+        Args:
+            dx (tuple[float, float, float, float]): the x axis 'state' tuple
+            dy (tuple[float, float, float, float]): the y axis 'state' tuple
         """
+        # dx and dy are the output of the "DragHandler.get_move_state" method
+        # (see "plotpy/core/events.py")
+
         auto = self.autoReplot()
         self.setAutoReplot(False)
-        axes_to_update = self.get_axes_to_update(dx, dy)
+        axes_to_update = self.__get_axes_to_update(dx, dy)
 
         for (x1, x0, _start, _width), axis_id in axes_to_update:
             lbound, hbound = self.get_axis_limits(axis_id)
@@ -501,13 +562,20 @@ class BasePlot(QwtPlot):
         # we receiver won't see the new bounds (don't know why?)
         self.SIG_PLOT_AXIS_CHANGED.emit(self)
 
-    def do_zoom_view(self, dx, dy, lock_aspect_ratio=None):
+    def do_zoom_view(
+        self,
+        dx: tuple[float, float, float, float],
+        dy: tuple[float, float, float, float],
+        lock_aspect_ratio: bool | None = None,
+    ) -> None:
         """
         Change the scale of the active axes (zoom/dezoom) according to dx, dy
-        dx, dy are tuples composed of (initial pos, dest pos)
+        axis 'state' tuples
+
         We try to keep initial pos fixed on the canvas as the scale changes
         """
-        # See plotpy/gui/widgets/events.py where dx and dy are defined like this:
+        # dx and dy are the output of the "DragHandler.get_move_state" method
+        # (see "plotpy/core/events.py"):
         #   dx = (pos.x(), self.last.x(), self.start.x(), rct.width())
         #   dy = (pos.y(), self.last.y(), self.start.y(), rct.height())
         # where:
@@ -527,7 +595,7 @@ class BasePlot(QwtPlot):
         if lock_aspect_ratio:
             direction, x1, x0, start, width = dx
             F = 1 + 3 * direction * float(x1 - x0) / width
-        axes_to_update = self.get_axes_to_update(dx, dy)
+        axes_to_update = self.__get_axes_to_update(dx, dy)
 
         for (direction, x1, x0, start, width), axis_id in axes_to_update:
             lbound, hbound = self.get_axis_limits(axis_id)
@@ -554,13 +622,15 @@ class BasePlot(QwtPlot):
         # we receiver won't see the new bounds (don't know why?)
         self.SIG_PLOT_AXIS_CHANGED.emit(self)
 
-    def do_zoom_rect_view(self, start, end):
+    def do_zoom_rect_view(self, start: QC.QPointF, end: QC.QPointF) -> None:
         """
+        Zoom to rectangle defined by start and end points
 
-        :param start:
-        :param end:
+        Args:
+            start (QPointF): the start point
+            end (QPointF): the end point
         """
-        # XXX implement the case when axes are synchronised
+        # TODO: Implement the case when axes are synchronised
         x1, y1 = start.x(), start.y()
         x2, y2 = end.x(), end.y()
         xaxis, yaxis = self.get_active_axes()
@@ -581,27 +651,32 @@ class BasePlot(QwtPlot):
         if self.lock_aspect_ratio:
             self.apply_aspect_ratio()
 
-    def get_default_item(self):
+    def get_default_item(self) -> itf.IBasePlotItem | None:
         """Return default item, depending on plot's default item type
         (e.g. for a curve plot, this is a curve item type).
 
         Return nothing if there is more than one item matching
-        the default item type."""
+        the default item type.
+
+        Returns:
+            IBasePlotItem: the default item
+        """
         if self.type == PlotType.IMAGE:
-            items = self.get_items(item_type=IImageItemType)
+            items = self.get_items(item_type=itf.IImageItemType)
         elif self.type == PlotType.CURVE:
-            items = self.get_items(item_type=ICurveItemType)
+            items = self.get_items(item_type=itf.ICurveItemType)
         else:
             items = [
                 item
                 for item in self.items
-                if IImageItemType in item.types() or ICurveItemType in item.types()
+                if itf.IImageItemType in item.types()
+                or itf.ICurveItemType in item.types()
             ]
         if len(items) == 1:
             return items[0]
 
     # ---- QWidget API ---------------------------------------------------------
-    def mouseDoubleClickEvent(self, event):
+    def mouseDoubleClickEvent(self, event: QG.QMouseEvent) -> None:
         """Reimplement QWidget method"""
         for axis_id in self.AXIS_IDS:
             widget = self.axisWidget(axis_id)
@@ -609,84 +684,129 @@ class BasePlot(QwtPlot):
                 self.edit_axis_parameters(axis_id)
                 break
         else:
-            QwtPlot.mouseDoubleClickEvent(self, event)
+            qwt.QwtPlot.mouseDoubleClickEvent(self, event)
 
     # ---- QwtPlot API ---------------------------------------------------------
-    def showEvent(self, event):
+    def showEvent(self, event) -> None:
         """Reimplement Qwt method"""
         if self.lock_aspect_ratio:
             self._start_autoscaled = True
-        QwtPlot.showEvent(self, event)
+        qwt.QwtPlot.showEvent(self, event)
         if self._start_autoscaled:
             self.do_autoscale()
 
     def resizeEvent(self, event):
         """Reimplement Qt method to resize widget"""
-        QwtPlot.resizeEvent(self, event)
+        qwt.QwtPlot.resizeEvent(self, event)
         if self.lock_aspect_ratio:
             self.apply_aspect_ratio()
             self.replot()
 
     # ---- Public API ----------------------------------------------------------
-    def _move_selected_items_together(self, item, x0, y0, x1, y1):
-        """Selected items move together"""
+    def _move_selected_items_together(
+        self, item: itf.IBasePlotItem, x0: float, y0: float, x1: float, y1: float
+    ) -> None:
+        """Selected items move together
+
+        Args:
+            item (IBasePlotItem): the item
+            x0 (float): the old x position
+            y0 (float): the old y position
+            x1 (float): the new x position
+            y1 (float): the new y position
+        """
         for selitem in self.get_selected_items():
             if selitem is not item and selitem.can_move():
                 selitem.move_with_selection(x1 - x0, y1 - y0)
 
-    def _resize_selected_items_together(self, item, zoom_dx, zoom_dy):
-        """Selected items resize together"""
+    def _resize_selected_items_together(
+        self, item: itf.IBasePlotItem, zoom_dx: float, zoom_dy: float
+    ) -> None:
+        """Selected items resize together
+
+        Args:
+            item (IBasePlotItem): the item
+            zoom_dx (float): the zoom factor along the x axis
+            zoom_dy (float): the zoom factor along the y axis
+        """
         for selitem in self.get_selected_items():
             if (
                 selitem is not item
                 and selitem.can_resize()
-                and IBaseImageItem in selitem.__implements__
+                and itf.IBaseImageItem in selitem.__implements__
             ):
                 if zoom_dx != 0 or zoom_dy != 0:
                     selitem.resize_with_selection(zoom_dx, zoom_dy)
 
-    def _rotate_selected_items_together(self, item, angle):
-        """Selected items rotate together"""
+    def _rotate_selected_items_together(
+        self, item: itf.IBasePlotItem, angle: float
+    ) -> None:
+        """Selected items rotate together
+
+        Args:
+            item (IBasePlotItem): the item
+            angle (float): the new angle (in radians)
+        """
         for selitem in self.get_selected_items():
             if (
                 selitem is not item
                 and selitem.can_rotate()
-                and IBaseImageItem in selitem.__implements__
+                and itf.IBaseImageItem in selitem.__implements__
             ):
                 selitem.rotate_with_selection(angle)
 
-    def set_manager(self, manager, plot_id):
-        """Set the associated :py:class:`.plot.PlotManager` instance"""
+    def set_manager(self, manager: PlotManager, plot_id: int) -> None:
+        """Set the associated :py:class:`.plot.PlotManager` instance
+
+        Args:
+            manager (PlotManager): the manager
+            plot_id (int): the plot id
+        """
         self.manager = manager
         self.plot_id = plot_id
 
-    def sizeHint(self):
+    def sizeHint(self) -> QC.QSize:
         """Preferred size"""
         return QC.QSize(400, 300)
 
-    def get_title(self):
+    def get_title(self) -> str:
         """Get plot title"""
         return str(self.title().text())
 
-    def set_title(self, title):
-        """Set plot title"""
-        text = QwtText(title)
+    def set_title(self, title: str) -> None:
+        """Set plot title
+
+        Args:
+            title (str): the title
+        """
+        text = qwt.QwtText(title)
         text.setFont(self.font_title)
         self.setTitle(text)
         self.SIG_PLOT_LABELS_CHANGED.emit(self)
 
-    def get_axis_id(self, axis_name):
+    def get_axis_id(self, axis_name: str | int) -> int:
         """Return axis ID from axis name
-        If axis ID is passed directly, check the ID"""
+        If axis ID is passed directly, check the ID
+
+        Args:
+            axis_name (str | int): the axis name or ID
+
+        Returns:
+            int: the axis ID
+        """
         assert axis_name in self.AXIS_NAMES or axis_name in self.AXIS_IDS
         return self.AXIS_NAMES.get(axis_name, axis_name)
 
-    def read_axes_styles(self, section, options):
+    def read_axes_styles(self, section: str, options: list[str, str, str, str]) -> None:
         """
         Read axes styles from section and options (one option
         for each axis in the order left, right, bottom, top)
 
         Skip axis if option is None
+
+        Args:
+            section (str): the section
+            options (list[str, str, str, str]): the options
         """
         for prm, option in zip(self.axes_styles, options):
             if option is None:
@@ -694,49 +814,95 @@ class BasePlot(QwtPlot):
             prm.read_config(CONF, section, option)
         self.update_all_axes_styles()
 
-    def get_axis_title(self, axis_id):
-        """Get axis title"""
+    def get_axis_title(self, axis_id: int) -> str:
+        """Get axis title
+
+        Args:
+            axis_id (int): the axis id
+
+        Returns:
+            str: the axis title
+        """
         axis_id = self.get_axis_id(axis_id)
         return self.axes_styles[axis_id].title
 
-    def set_axis_title(self, axis_id, text):
-        """Set axis title"""
+    def set_axis_title(self, axis_id: int, text: str) -> None:
+        """Set axis title
+
+        Args:
+            axis_id (int): the axis id
+            text (str): the axis title
+        """
         axis_id = self.get_axis_id(axis_id)
         self.axes_styles[axis_id].title = text
         self.update_axis_style(axis_id)
 
-    def get_axis_unit(self, axis_id):
-        """Get axis unit"""
+    def get_axis_unit(self, axis_id: int) -> str:
+        """Get axis unit
+
+        Args:
+            axis_id (int): the axis id
+
+        Returns:
+            str: the axis unit
+        """
         axis_id = self.get_axis_id(axis_id)
         return self.axes_styles[axis_id].unit
 
-    def set_axis_unit(self, axis_id, text):
-        """Set axis unit"""
+    def set_axis_unit(self, axis_id: int, text: str) -> None:
+        """Set axis unit
+
+        Args:
+            axis_id (int): the axis id
+            text (str): the axis unit
+        """
         axis_id = self.get_axis_id(axis_id)
         self.axes_styles[axis_id].unit = text
         self.update_axis_style(axis_id)
 
-    def get_axis_font(self, axis_id):
-        """Get axis font"""
+    def get_axis_font(self, axis_id: int) -> QG.QFont:
+        """Get axis font
+
+        Args:
+            axis_id (int): the axis id
+
+        Returns:
+            QFont: the axis font
+        """
         axis_id = self.get_axis_id(axis_id)
         return self.axes_styles[axis_id].title_font.build_font()
 
-    def set_axis_font(self, axis_id, font):
-        """Set axis font"""
+    def set_axis_font(self, axis_id: int, font: QG.QFont) -> None:
+        """Set axis font
+
+        Args:
+            axis_id (int): the axis id
+            font (QFont): the axis font
+        """
         axis_id = self.get_axis_id(axis_id)
         self.axes_styles[axis_id].title_font.update_param(font)
         self.axes_styles[axis_id].ticks_font.update_param(font)
         self.update_axis_style(axis_id)
 
-    def get_axis_color(self, axis_id):
-        """Get axis color (color name, i.e. string)"""
+    def get_axis_color(self, axis_id: int) -> str:
+        """Get axis color (color name, i.e. string)
+
+        Args:
+            axis_id (int): the axis id
+
+        Returns:
+            str: the axis color
+        """
         axis_id = self.get_axis_id(axis_id)
         return self.axes_styles[axis_id].color
 
-    def set_axis_color(self, axis_id, color):
+    def set_axis_color(self, axis_id: int, color: str | QG.QColor) -> None:
         """
         Set axis color
-        color: color name (string) or QColor instance
+
+        Args:
+            axis_id (int): the axis id
+            color (str | QColor): the axis color
         """
         axis_id = self.get_axis_id(axis_id)
         if isinstance(color, str):
@@ -744,8 +910,12 @@ class BasePlot(QwtPlot):
         self.axes_styles[axis_id].color = str(color.name())
         self.update_axis_style(axis_id)
 
-    def update_axis_style(self, axis_id):
-        """Update axis style"""
+    def update_axis_style(self, axis_id: int) -> None:
+        """Update axis style
+
+        Args:
+            axis_id (int): the axis id
+        """
         axis_id = self.get_axis_id(axis_id)
         style = self.axes_styles[axis_id]
 
@@ -766,20 +936,35 @@ class BasePlot(QwtPlot):
         self.setAxisTitle(axis_id, axis_text)
         self.SIG_PLOT_LABELS_CHANGED.emit(self)
 
-    def update_all_axes_styles(self):
+    def update_all_axes_styles(self) -> None:
         """Update all axes styles"""
         for axis_id in self.AXIS_IDS:
             self.update_axis_style(axis_id)
 
-    def get_axis_limits(self, axis_id):
-        """Return axis limits (minimum and maximum values)"""
+    def get_axis_limits(self, axis_id: int) -> tuple[float, float]:
+        """Return axis limits (minimum and maximum values)
+
+        Args:
+            axis_id (int): the axis id
+
+        Returns:
+            tuple[float, float]: the axis limits
+        """
         axis_id = self.get_axis_id(axis_id)
         sdiv = self.axisScaleDiv(axis_id)
         return sdiv.lowerBound(), sdiv.upperBound()
 
-    def set_axis_limits(self, axis_id, vmin, vmax, stepsize=0):
-        """Set axis limits (minimum and maximum values) and optional
-        step size"""
+    def set_axis_limits(
+        self, axis_id: int, vmin: float, vmax: float, stepsize: int = 0
+    ) -> None:
+        """Set axis limits (minimum and maximum values) and step size
+
+        Args:
+            axis_id (int): the axis id
+            vmin (float): the minimum value
+            vmax (float): the maximum value
+            stepsize (int): the step size (optional, default=0)
+        """
         axis_id = self.get_axis_id(axis_id)
         vmin, vmax = sorted([vmin, vmax])
         if self.get_axis_direction(axis_id):
@@ -788,17 +973,31 @@ class BasePlot(QwtPlot):
             self.setAxisScale(axis_id, vmin, vmax, stepsize)
         self._start_autoscaled = False
 
-    def set_axis_ticks(self, axis_id, nmajor=None, nminor=None):
-        """Set axis maximum number of major ticks
-        and maximum of minor ticks"""
+    def set_axis_ticks(
+        self, axis_id: int, nmajor: int | None = None, nminor: int | None = None
+    ) -> None:
+        """Set axis maximum number of major ticks and maximum of minor ticks
+
+        Args:
+            axis_id (int): the axis id
+            nmajor (int): the maximum number of major ticks
+            nminor (int): the maximum number of minor ticks
+        """
         axis_id = self.get_axis_id(axis_id)
         if nmajor is not None:
             self.setAxisMaxMajor(axis_id, nmajor)
         if nminor is not None:
             self.setAxisMaxMinor(axis_id, nminor)
 
-    def get_axis_scale(self, axis_id):
-        """Return the name ('lin' or 'log') of the scale used by axis"""
+    def get_axis_scale(self, axis_id: int) -> str:
+        """Return the name ('lin' or 'log') of the scale used by axis
+
+        Args:
+            axis_id (int): the axis id
+
+        Returns:
+            str: the axis scale
+        """
         axis_id = self.get_axis_id(axis_id)
         engine = self.axisScaleEngine(axis_id)
         for axis_label, axis_type in list(self.AXIS_TYPES.items()):
@@ -806,22 +1005,39 @@ class BasePlot(QwtPlot):
                 return axis_label
         return "lin"  # unknown default to linear
 
-    def set_axis_scale(self, axis_id, scale, autoscale=True):
+    def set_axis_scale(self, axis_id: int, scale: str, autoscale: bool = True) -> None:
         """Set axis scale
-        Example: self.set_axis_scale(curve.yAxis(), 'lin')"""
+
+        Args:
+            axis_id (int): the axis id
+            scale (str): the axis scale ('lin' or 'log')
+            autoscale (bool): autoscale the axis (optional, default=True)
+
+        Example:
+            self.set_axis_scale(curve.yAxis(), 'lin')
+        """
         axis_id = self.get_axis_id(axis_id)
         self.setAxisScaleEngine(axis_id, self.AXIS_TYPES[scale]())
         if autoscale:
             self.do_autoscale(replot=False)
 
-    def get_scales(self):
-        """Return active curve scales"""
+    def get_scales(self) -> tuple[str, str]:
+        """Return active curve scales
+
+        Example:
+            self.get_scales() -> ('lin', 'lin')"""
         ax, ay = self.get_active_axes()
         return self.get_axis_scale(ax), self.get_axis_scale(ay)
 
-    def set_scales(self, xscale, yscale):
+    def set_scales(self, xscale: str, yscale: str) -> None:
         """Set active curve scales
-        Example: self.set_scales('lin', 'lin')"""
+
+        Args:
+            xscale (str): the x axis scale ('lin' or 'log')
+            yscale (str): the y axis scale ('lin' or 'log')
+
+        Example:
+            self.set_scales('lin', 'lin')"""
         ax, ay = self.get_active_axes()
         self.set_axis_scale(ax, xscale)
         self.set_axis_scale(ay, yscale)
@@ -856,9 +1072,19 @@ class BasePlot(QwtPlot):
         if has_image:
             self.enableAxis(self.colormap_axis)
 
-    def get_items(self, z_sorted=False, item_type=None):
+    def get_items(
+        self, z_sorted: bool = False, item_type: itf.IBasePlotItem | None = None
+    ) -> list[itf.IBasePlotItem]:
         """Return widget's item list
-        (items are based on IBasePlotItem's interface)"""
+        (items are based on IBasePlotItem's interface)
+
+        Args:
+            z_sorted (bool): sort items by z order (optional, default=False)
+            item_type (IItemType): the item type (optional, default=None)
+
+        Returns:
+            list[IBasePlotItem]: the item list
+        """
         if z_sorted:
             items = sorted(self.items, reverse=True, key=lambda x: x.z())
         else:
@@ -866,35 +1092,59 @@ class BasePlot(QwtPlot):
         if item_type is None:
             return items
         else:
-            assert issubclass(item_type, IItemType)
+            assert issubclass(item_type, itf.IItemType)
             return [item for item in items if item_type in item.types()]
 
-    def get_public_items(self, z_sorted=False, item_type=None):
+    def get_public_items(
+        self, z_sorted: bool = False, item_type: itf.IBasePlotItem | None = None
+    ) -> list[itf.IBasePlotItem]:
         """Return widget's public item list
-        (items are based on IBasePlotItem's interface)"""
+        (items are based on IBasePlotItem's interface)
+
+        Args:
+            z_sorted (bool): sort items by z order (optional, default=False)
+            item_type (IItemType): the item type (optional, default=None)
+
+        Returns:
+            list[IBasePlotItem]: the item list
+        """
         return [
             item
             for item in self.get_items(z_sorted=z_sorted, item_type=item_type)
             if not item.is_private()
         ]
 
-    def get_private_items(self, z_sorted=False, item_type=None):
+    def get_private_items(
+        self, z_sorted: bool = False, item_type: itf.IBasePlotItem | None = None
+    ) -> list[itf.IBasePlotItem]:
         """Return widget's private item list
-        (items are based on IBasePlotItem's interface)"""
+        (items are based on IBasePlotItem's interface)
+
+        Args:
+            z_sorted (bool): sort items by z order (optional, default=False)
+            item_type (IItemType): the item type (optional, default=None)
+
+        Returns:
+            list[IBasePlotItem]: the item list
+        """
         return [
             item
             for item in self.get_items(z_sorted=z_sorted, item_type=item_type)
             if item.is_private()
         ]
 
-    def copy_to_clipboard(self):
+    def copy_to_clipboard(self) -> None:
         """Copy widget's window to clipboard"""
         clipboard = QW.QApplication.clipboard()
         pixmap = self.grab()
         clipboard.setPixmap(pixmap)
 
-    def save_widget(self, fname):
-        """Grab widget's window and save it to filename (/*.png, /*.pdf)"""
+    def save_widget(self, fname: str) -> None:
+        """Grab widget's window and save it to filename (/*.png, /*.pdf)
+
+        Args:
+            fname (str): the filename
+        """
         fname = str(fname)
         if fname.lower().endswith(".pdf"):
             printer = QPrinter()
@@ -909,37 +1159,53 @@ class BasePlot(QwtPlot):
         else:
             raise RuntimeError(_("Unknown file extension"))
 
-    def get_selected_items(self, z_sorted=False, item_type=None):
-        """Return selected items"""
+    def get_selected_items(
+        self, z_sorted=False, item_type: itf.IBasePlotItem | None = None
+    ) -> list[itf.IBasePlotItem]:
+        """Return selected items
+
+        Args:
+            z_sorted (bool): sort items by z order (optional, default=False)
+            item_type (IItemType): the item type (optional, default=None)
+
+        Returns:
+            list[IBasePlotItem]: the selected items
+        """
         return [
             item
             for item in self.get_items(item_type=item_type, z_sorted=z_sorted)
             if item.selected
         ]
 
-    def get_max_z(self):
+    def get_max_z(self) -> int:
         """
         Return maximum z-order for all items registered in plot
         If there is no item, return 0
+
+        Returns:
+            int: the maximum z-order
         """
         if self.items:
             return max([_it.z() for _it in self.items])
         else:
             return 0
 
-    def add_item(self, item, z=None, autoscale=True):
+    def add_item(
+        self, item: itf.IBasePlotItem, z: int | None = None, autoscale: bool = True
+    ) -> None:
         """
-        Add a *plot item* instance to this *plot widget*
+        Add a plot item instance to this plot widget
 
-            * item: :py:class:`qwt.plot.QwtPlotItem` object implementing
-              the :py:class:`.interfaces.IBasePlotItem` interface
-            * z: item's z order (None -> z = max(self.get_items())+1)
+        Args:
+            item (IBasePlotItem): the item
+            z (int): the z order (optional, default=None)
+            autoscale (bool): autoscale the plot (optional, default=True)
         """
         assert hasattr(item, "__implements__")
-        assert IBasePlotItem in item.__implements__
+        assert itf.IBasePlotItem in item.__implements__
 
-        if isinstance(item, QwtPlotCurve):
-            item.setRenderHint(QwtPlotItem.RenderAntialiased, self.antialiased)
+        if isinstance(item, qwt.QwtPlotCurve):
+            item.setRenderHint(qwt.QwtPlotItem.RenderAntialiased, self.antialiased)
 
         item.attach(self)
         if z is not None:
@@ -989,7 +1255,7 @@ class BasePlot(QwtPlot):
         self.SIG_ITEMS_CHANGED.emit(self)
 
         if isinstance(item, BaseImageItem):
-            parent = self.parent()
+            parent: QW.QWidget = self.parent()
             if parent is not None:
                 parent.setUpdatesEnabled(False)
             self.update_colormap_axis(item)
@@ -998,9 +1264,13 @@ class BasePlot(QwtPlot):
             if parent is not None:
                 parent.setUpdatesEnabled(True)
 
-    def add_item_with_z_offset(self, item, zoffset):
+    def add_item_with_z_offset(self, item: itf.IBasePlotItem, zoffset: int) -> None:
         """
-        Add a plot *item* instance within a specified z range, over *zmin*
+        Add a plot item instance within a specified z range, over an offset
+
+        Args:
+            item (IBasePlotItem): the item
+            zoffset (int): the z offset
         """
         zlist = sorted(
             [_it.z() for _it in self.items if _it.z() >= zoffset] + [zoffset - 1]
@@ -1012,19 +1282,27 @@ class BasePlot(QwtPlot):
             z = zlist[int(dzlist[0])] + 1
         self.add_item(item, z=z)
 
-    def __clean_item_references(self, item):
+    def __clean_item_references(self, item: itf.IBasePlotItem) -> None:
         """Remove all reference to this item (active,
-        last_selected"""
+        last_selected
+
+        Args:
+            item (IBasePlotItem): the item
+        """
         if item is self.active_item:
-            self.active_item = None
+            self.active_item: qwt.QwtPlotItem = None
             self._active_xaxis = self.DEFAULT_ACTIVE_XAXIS
             self._active_yaxis = self.DEFAULT_ACTIVE_YAXIS
         for key, it in list(self.last_selected.items()):
             if item is it:
                 del self.last_selected[key]
 
-    def del_items(self, items):
-        """Remove item from widget"""
+    def del_items(self, items: list[itf.IBasePlotItem]) -> None:
+        """Remove item from widget
+
+        Args:
+            items (list[IBasePlotItem]): the items
+        """
         items = items[:]  # copy the list to avoid side effects when we empty it
         active_item = self.get_active_item()
         while items:
@@ -1038,18 +1316,34 @@ class BasePlot(QwtPlot):
         if active_item is not self.get_active_item():
             self.SIG_ACTIVE_ITEM_CHANGED.emit(self)
 
-    def del_item(self, item):
+    def del_item(self, item: itf.IBasePlotItem) -> None:
         """
         Remove item from widget
         Convenience function (see 'del_items')
+
+        Args:
+            item (IBasePlotItem): the item
         """
         try:
             self.del_items([item])
         except ValueError:
             raise ValueError("item not in plot")
 
-    def set_item_visible(self, item, state, notify=True, replot=True):
-        """Show/hide *item* and emit a SIG_ITEMS_CHANGED signal"""
+    def set_item_visible(
+        self,
+        item: itf.IBasePlotItem,
+        state: bool,
+        notify: bool = True,
+        replot: bool = True,
+    ) -> None:
+        """Show/hide *item* and emit a SIG_ITEMS_CHANGED signal
+
+        Args:
+            item (IBasePlotItem): the item
+            state (bool): the visibility state
+            notify (bool): notify the item list (optional, default=True)
+            replot (bool): replot the widget (optional, default=True)
+        """
         item.setVisible(state)
         if item is self.active_item and not state:
             self.set_active_item(None)  # Notify the item list (see baseplot)
@@ -1058,8 +1352,19 @@ class BasePlot(QwtPlot):
         if replot:
             self.replot()
 
-    def __set_items_visible(self, state, items=None, item_type=None):
-        """Show/hide items (if *items* is None, show/hide all items)"""
+    def __set_items_visible(
+        self,
+        state: bool,
+        items: list[itf.IBasePlotItem] | None = None,
+        item_type: itf.IBasePlotItem | None = None,
+    ) -> None:
+        """Show/hide items (if *items* is None, show/hide all items)
+
+        Args:
+            state (bool): the visibility state
+            items (list[IBasePlotItem]): the items (optional, default=None)
+            item_type (IBasePlotItem): the item type (optional, default=None)
+        """
         if items is None:
             items = self.get_items(item_type=item_type)
         for item in items:
@@ -1067,94 +1372,151 @@ class BasePlot(QwtPlot):
         self.SIG_ITEMS_CHANGED.emit(self)
         self.replot()
 
-    def show_items(self, items=None, item_type=None):
-        """Show items (if *items* is None, show all items)"""
+    def show_items(
+        self,
+        items: list[itf.IBasePlotItem] | None = None,
+        item_type: itf.IBasePlotItem | None = None,
+    ) -> None:
+        """Show items (if *items* is None, show all items)
+
+        Args:
+            items (list[IBasePlotItem]): the items (optional, default=None)
+            item_type (IBasePlotItem): the item type (optional, default=None)
+        """
         self.__set_items_visible(True, items, item_type=item_type)
 
-    def hide_items(self, items=None, item_type=None):
-        """Hide items (if *items* is None, hide all items)"""
+    def hide_items(
+        self,
+        items: list[itf.IBasePlotItem] | None = None,
+        item_type: itf.IBasePlotItem | None = None,
+    ) -> None:
+        """Hide items (if *items* is None, hide all items)
+
+        Args:
+            items (list[IBasePlotItem]): the items (optional, default=None)
+            item_type (IBasePlotItem): the item type (optional, default=None)
+        """
         self.__set_items_visible(False, items, item_type=item_type)
 
-    def save_items(self, iofile, selected=False):
+    def save_items(self, iofile: str | IO[str], selected: bool = False) -> None:
         """
         Save (serializable) items to file using the :py:mod:`pickle` protocol
-            * iofile: file object or filename
-            * selected=False: if True, will save only selected items
 
-        See also :py:meth:`.baseplot.BasePlot.restore_items`
+        Args:
+            iofile (str | IO[str]): the file object or filename
+            selected (bool): if True, will save only selected items
+             (optional, default=False)
+
+        See also :py:meth:`.BasePlot.restore_items`
         """
         if selected:
             items = self.get_selected_items()
         else:
             items = self.items[:]
-        items = [item for item in items if ISerializableType in item.types()]
+        items = [item for item in items if itf.ISerializableType in item.types()]
 
         pickle.dump(items, iofile)
 
-    def restore_items(self, iofile):
+    def restore_items(self, iofile: str | IO[str]) -> None:
         """
         Restore items from file using the :py:mod:`pickle` protocol
-            * iofile: file object or filename
 
-        See also :py:meth:`.baseplot.BasePlot.save_items`
+        Args:
+            iofile (str | IO[str]): the file object or filename
+
+        See also :py:meth:`.BasePlot.save_items`
         """
-
         items = pickle.load(iofile)
         for item in items:
             self.add_item(item)
 
-    def serialize(self, writer, selected=False):
+    def serialize(
+        self,
+        writer: guidata.dataset.io.INIWriter
+        | guidata.dataset.io.JSONWriter
+        | guidata.dataset.io.HDF5Writer,
+        selected: bool = False,
+    ) -> None:
         """
-        Save (serializable) items to HDF5 file:
-            * writer: :py:class:`guidata.dataset.hdf5io.HDF5Writer` object
-            * selected=False: if True, will save only selected items
+        Save (serializable) items to file (INI, JSON or HDF5)
 
-        See also :py:meth:`.baseplot.BasePlot.restore_items`
+        Args:
+            writer: the writer
+            selected: if True, will save only selected items
+
+        See also :py:meth:`.BasePlot.restore_items`
         """
         if selected:
             items = self.get_selected_items()
         else:
             items = self.items[:]
-        items = [item for item in items if ISerializableType in item.types()]
+        items = [item for item in items if itf.ISerializableType in item.types()]
         io.save_items(writer, items)
 
-    def deserialize(self, reader):
+    def deserialize(
+        self,
+        reader: guidata.dataset.io.INIReader
+        | guidata.dataset.io.JSONReader
+        | guidata.dataset.io.HDF5Reader,
+    ) -> None:
         """
-        Restore items from HDF5 file:
-            * reader: :py:class:`guidata.dataset.hdf5io.HDF5Reader` object
+        Restore items from file (INI, JSON or HDF5)
 
-        See also :py:meth:`.baseplot.BasePlot.save_items`
+        Args:
+            reader: the reader
+
+        See also :py:meth:`.BasePlot.save_items`
         """
         for item in io.load_items(reader):
             self.add_item(item)
 
-    def set_items(self, *args):
+    def set_items(self, *args: itf.IBasePlotItem) -> None:
         """Utility function used to quickly setup a plot
-        with a set of items"""
+        with a set of items
+
+        Args:
+            args: the items
+
+        Example:
+            self.set_items(item1, item2, item3)
+        """
         self.del_all_items()
         for item in args:
             self.add_item(item)
 
-    def del_all_items(self, except_grid=True):
-        """Del all items, eventually (default) except grid"""
+    def del_all_items(self, except_grid: bool = True) -> None:
+        """Del all items, eventually (default) except grid
+
+        Args:
+            except_grid (bool): if True, don't delete grid (optional, default=True)
+        """
         items = [
             item for item in self.items if not except_grid or item is not self.grid
         ]
         self.del_items(items)
 
-    def __swap_items_z(self, item1, item2):
+    def __swap_items_z(self, item1: qwt.QwtPlotItem, item2: qwt.QwtPlotItem) -> None:
+        """Swap items z-order
+
+        Args:
+            item1 (QwtPlotItem): the first item
+            item2 (QwtPlotItem): the second item
+        """
         old_item1_z, old_item2_z = item1.z(), item2.z()
         item1.setZ(max([_it.z() for _it in self.items]) + 1)
         item2.setZ(old_item1_z)
         item1.setZ(old_item2_z)
 
-    def move_up(self, item_list):
+    def move_up(self, item_list: list[itf.IBasePlotItem] | itf.IBasePlotItem) -> bool:
         """Move item(s) up, i.e. to the foreground
         (swap item with the next item in z-order)
 
-        item: plot item *or* list of plot items
+        Args:
+            item_list (list[IBasePlotItem] | IBasePlotItem): the item(s)
 
-        Return True if items have been moved effectively"""
+        Returns:
+            bool: True if items have been moved effectively
+        """
         objects = self.get_items(z_sorted=True)
         items = sorted(list(item_list), reverse=True, key=lambda x: objects.index(x))
         changed = False
@@ -1167,13 +1529,16 @@ class BasePlot(QwtPlot):
             self.SIG_ITEMS_CHANGED.emit(self)
         return changed
 
-    def move_down(self, item_list):
+    def move_down(self, item_list: list[itf.IBasePlotItem] | itf.IBasePlotItem) -> bool:
         """Move item(s) down, i.e. to the background
         (swap item with the previous item in z-order)
 
-        item: plot item *or* list of plot items
+        Args:
+            item_list (list[IBasePlotItem] | IBasePlotItem): the item(s)
 
-        Return True if items have been moved effectively"""
+        Returns:
+            bool: True if items have been moved effectively
+        """
         objects = self.get_items(z_sorted=True)
         items = sorted(list(item_list), reverse=False, key=lambda x: objects.index(x))
         changed = False
@@ -1186,31 +1551,50 @@ class BasePlot(QwtPlot):
             self.SIG_ITEMS_CHANGED.emit(self)
         return changed
 
-    def set_items_readonly(self, state):
+    def set_items_readonly(self, state: bool) -> None:
         """Set all items readonly state to *state*
-        Default item's readonly state: False (items may be deleted)"""
+        Default item's readonly state: False (items may be deleted)
+
+        Args:
+            state (bool): the readonly state
+        """
         for item in self.get_items():
             item.set_readonly(state)
         self.SIG_ITEMS_CHANGED.emit(self)
 
-    def select_item(self, item):
-        """Select item"""
+    def select_item(self, item: itf.IBasePlotItem) -> None:
+        """Select item
+
+        Args:
+            item (IBasePlotItem): the item
+        """
         item.select()
         for itype in item.types():
             self.last_selected[itype] = item
         self.SIG_ITEM_SELECTION_CHANGED.emit(self)
 
-    def unselect_item(self, item):
-        """Unselect item"""
+    def unselect_item(self, item: itf.IBasePlotItem) -> None:
+        """Unselect item
+
+        Args:
+            item (IBasePlotItem): the item
+        """
         item.unselect()
         self.SIG_ITEM_SELECTION_CHANGED.emit(self)
 
-    def get_last_active_item(self, item_type):
-        """Return last active item corresponding to passed `item_type`"""
-        assert issubclass(item_type, IItemType)
+    def get_last_active_item(self, item_type: itf.IItemType) -> itf.IBasePlotItem:
+        """Return last active item corresponding to passed `item_type`
+
+        Args:
+            item_type (IItemType): the item type
+
+        Returns:
+            IBasePlotItem: the item
+        """
+        assert issubclass(item_type, itf.IItemType)
         return self.last_selected.get(item_type)
 
-    def select_all(self):
+    def select_all(self) -> None:
         """Select all selectable items"""
         last_item = None
         block = self.blockSignals(True)
@@ -1222,7 +1606,7 @@ class BasePlot(QwtPlot):
         self.SIG_ITEM_SELECTION_CHANGED.emit(self)
         self.set_active_item(last_item)
 
-    def unselect_all(self):
+    def unselect_all(self) -> None:
         """Unselect all selected items"""
         for item in self.items:
             if item.can_select():
@@ -1230,8 +1614,12 @@ class BasePlot(QwtPlot):
         self.set_active_item(None)
         self.SIG_ITEM_SELECTION_CHANGED.emit(self)
 
-    def select_some_items(self, items):
-        """Select items"""
+    def select_some_items(self, items: list[itf.IBasePlotItem]) -> None:
+        """Select items
+
+        Args:
+            items (list[IBasePlotItem]): the items
+        """
         active = self.active_item
         block = self.blockSignals(True)
         self.unselect_all()
@@ -1251,9 +1639,13 @@ class BasePlot(QwtPlot):
             self.SIG_ACTIVE_ITEM_CHANGED.emit(self)
         self.SIG_ITEM_SELECTION_CHANGED.emit(self)
 
-    def set_active_item(self, item):
+    def set_active_item(self, item: itf.IBasePlotItem) -> None:
         """Set active item, and unselect the old active item. For CurveItems,
-        the grid axes are changed according to the selected item"""
+        the grid axes are changed according to the selected item
+
+        Args:
+            item (IBasePlotItem): the item
+        """
         old_active = self.active_item
         self.active_item = item
         if self.active_item is not None:
@@ -1270,18 +1662,28 @@ class BasePlot(QwtPlot):
             elif isinstance(item, BaseImageItem):
                 self.update_colormap_axis(item)
 
-    def get_active_axes(self):
-        """Return active axes"""
+    def get_active_axes(self) -> tuple[int, int]:
+        """Return active axes
+
+        Returns:
+            tuple[int, int]: the active axes IDs
+        """
         item = self.active_item
         if item is not None:
             self._active_xaxis = item.xAxis()
             self._active_yaxis = item.yAxis()
         return self._active_xaxis, self._active_yaxis
 
-    def get_active_item(self, force=False):
+    def get_active_item(self, force: bool = False) -> itf.IBasePlotItem | None:
         """
         Return active item
         Force item activation if there is no active item
+
+        Args:
+            force (bool): force item activation (optional, default=False)
+
+        Returns:
+            IBasePlotItem: the active item or None
         """
         if force and not self.active_item:
             for item in self.get_items():
@@ -1290,9 +1692,18 @@ class BasePlot(QwtPlot):
                     break
         return self.active_item
 
-    def get_nearest_object(self, pos, close_dist=0):
+    def get_nearest_object(
+        self, pos: QC.QPointF, close_dist: int = 0
+    ) -> tuple[itf.IBasePlotItem | None, float, int | None, bool]:
         """
         Return nearest item from position 'pos'
+
+        Args:
+            pos (QPointF): the position
+            close_dist (int): the distance (optional, default=0)
+
+        Returns:
+            tuple[IBasePlotItem | None, float, int | None, bool]: the nearest item
 
         If close_dist > 0:
 
@@ -1318,10 +1729,18 @@ class BasePlot(QwtPlot):
                 return other, 0, None, True
         return selobj, distance, handle, inside
 
-    def get_nearest_object_in_z(self, pos):
+    def get_nearest_object_in_z(
+        self, pos: QC.QPointF
+    ) -> tuple[itf.IBasePlotItem | None, int, bool | None, int | None]:
         """
         Return nearest item for which position 'pos' is inside of it
         (iterate over items with respect to their 'z' coordinate)
+
+        Args:
+            pos (QPointF): the position
+
+        Returns:
+            tuple[IBasePlotItem | None, int, bool | None, int | None]: the nearest item
         """
         selobj, distance, inside, handle = None, sys.maxsize, None, None
         for obj in self.get_items(z_sorted=True):
@@ -1333,25 +1752,36 @@ class BasePlot(QwtPlot):
                 break
         return selobj, distance, handle, inside
 
-    def get_context_menu(self):
-        """Return widget context menu"""
+    def get_context_menu(self) -> QW.QMenu:
+        """Return widget context menu
+
+        Returns:
+            QMenu: the context menu
+        """
         return self.manager.get_context_menu(self)
 
-    def get_plot_parameters_status(self, key):
+    def get_plot_parameters_status(self, key: str) -> bool:
         """
+        Return True if the plot parameters are available
 
-        :param key:
-        :return:
+        Args:
+            key (str): the parameter key
+
+        Returns:
+            bool: True if the plot parameters are available
         """
         if key == "item":
             return self.get_active_item() is not None
         else:
             return True
 
-    def get_selected_item_parameters(self, itemparams):
+    def get_selected_item_parameters(self, itemparams: ItemParameters) -> None:
         """
+        Return a list of DataSets for selected items parameters
+        the datasets will be edited and passed back to set_plot_parameters
 
-        :param itemparams:
+        Args:
+            itemparams (ItemParameters): the item parameters
         """
         for item in self.get_selected_items():
             item.get_item_parameters(itemparams)
@@ -1360,20 +1790,31 @@ class BasePlot(QwtPlot):
         active_item = self.get_active_item()
         active_item.get_item_parameters(itemparams)
 
-    def get_axesparam_class(self, item):
-        """Return AxesParam dataset class associated to item's type"""
+    def get_axesparam_class(self, item: itf.IBasePlotItem) -> AxesParam:
+        """Return AxesParam dataset class associated to item's type
+
+        Args:
+            item (IBasePlotItem): the item
+
+        Returns:
+            AxesParam: the AxesParam dataset class
+        """
         if isinstance(item, BaseImageItem):
             return ImageAxesParam
         else:
             return AxesParam
 
-    def get_plot_parameters(self, key, itemparams):
+    def get_plot_parameters(self, key: str, itemparams: ItemParameters) -> None:
         """
         Return a list of DataSets for a given parameter key
         the datasets will be edited and passed back to set_plot_parameters
 
         this is a generic interface to help building context menus
         using the BasePlotMenuTool
+
+        Args:
+            key (str): the parameter key
+            itemparams (ItemParameters): the item parameters
         """
         if key == "axes":
             for i, axeparam in enumerate(self.axes_styles):
@@ -1395,8 +1836,12 @@ class BasePlot(QwtPlot):
             axesparam.update_param(active_item)
             itemparams.add("AxesParam", self, axesparam)
 
-    def set_item_parameters(self, itemparams):
-        """Set item (plot, here) parameters"""
+    def set_item_parameters(self, itemparams: ItemParameters) -> None:
+        """Set item (plot, here) parameters
+
+        Args:
+            itemparams (ItemParameters): the item parameters
+        """
         # Grid style
         dataset = itemparams.get("GridParam")
         if dataset is not None:
@@ -1413,9 +1858,12 @@ class BasePlot(QwtPlot):
             active_item = self.get_active_item()
             dataset.update_axes(active_item)
 
-    def edit_plot_parameters(self, key):
+    def edit_plot_parameters(self, key: str) -> None:
         """
         Edit plot parameters
+
+        Args:
+            key (str): the parameter key
         """
         multiselection = len(self.get_selected_items()) > 1
         itemparams = ItemParameters(multiselection=multiselection)
@@ -1423,14 +1871,12 @@ class BasePlot(QwtPlot):
         title, icon = PARAMETERS_TITLE_ICON[key]
         itemparams.edit(self, title, icon)
 
-    def get_plot_names(self):
-        """
-        return names selected items   item.title().text()
-        """
-        return [item.get_filename() for item in self.get_items() if item.selected]
+    def edit_axis_parameters(self, axis_id: int) -> None:
+        """Edit axis parameters
 
-    def edit_axis_parameters(self, axis_id):
-        """Edit axis parameters"""
+        Args:
+            axis_id (int): the axis ID
+        """
         if axis_id != self.colormap_axis:
             if axis_id in (self.Y_LEFT, self.Y_RIGHT):
                 title = _("Y Axis")
@@ -1442,11 +1888,16 @@ class BasePlot(QwtPlot):
                 param.update_axis(self, axis_id)
                 self.replot()
 
-    def do_autoscale(self, replot=True, axis_id=None):
-        """Do autoscale on all axes"""
+    def do_autoscale(self, replot: bool = True, axis_id: int | None = None) -> None:
+        """Do autoscale on all axes
+
+        Args:
+            replot (bool): replot the widget (optional, default=True)
+            axis_id (int | None): the axis ID (optional, default=None)
+        """
         auto = self.autoReplot()
         self.setAutoReplot(False)
-        # XXX implement the case when axes are synchronised
+        # TODO: implement the case when axes are synchronised
         for axis_id in self.AXIS_IDS if axis_id is None else [axis_id]:
             vmin, vmax = None, None
             if not self.axisEnabled(axis_id):
@@ -1495,14 +1946,14 @@ class BasePlot(QwtPlot):
             self.replot()
         self.SIG_PLOT_AXIS_CHANGED.emit(self)
 
-    def disable_autoscale(self):
+    def disable_autoscale(self) -> None:
         """Re-apply the axis scales so as to disable autoscaling
         without changing the view"""
         for axis_id in self.AXIS_IDS:
             vmin, vmax = self.get_axis_limits(axis_id)
             self.set_axis_limits(axis_id, vmin, vmax)
 
-    def invalidate(self):
+    def invalidate(self) -> None:
         """Invalidate paint cache and schedule redraw
         use instead of replot when only the content
         of the canvas needs redrawing (axes, shouldn't change)
@@ -1510,28 +1961,38 @@ class BasePlot(QwtPlot):
         self.canvas().replot()
         self.update()
 
-    def get_axis_direction(self, axis_id):
+    def get_axis_direction(self, axis_id: int | str) -> bool:
         """
         Return axis direction of increasing values
 
-            * axis_id: axis id (BasePlot.Y_LEFT, BasePlot.X_BOTTOM, ...)
-              or string: 'bottom', 'left', 'top' or 'right'
+        Args:
+            axis_id (int | str): axis id (BasePlot.Y_LEFT, BasePlot.X_BOTTOM, ...)
+             or string: 'bottom', 'left', 'top' or 'right'
+
+        Returns:
+            bool: False (default)
         """
         axis_id = self.get_axis_id(axis_id)
         return self.axes_reverse[axis_id]
 
-    def set_axis_direction(self, axis_id, reverse=False):
+    def set_axis_direction(self, axis_id: int | str, reverse: bool = False) -> None:
         """
         Set axis direction of increasing values
 
-            * axis_id: axis id (BasePlot.Y_LEFT, BasePlot.X_BOTTOM, ...)
-              or string: 'bottom', 'left', 'top' or 'right'
-            * reverse: False (default)
-                - x-axis values increase from left to right
-                - y-axis values increase from bottom to top
-            * reverse: True
-                - x-axis values increase from right to left
-                - y-axis values increase from top to bottom
+        Args:
+            axis_id (int | str): axis id (BasePlot.Y_LEFT, BasePlot.X_BOTTOM, ...)
+                or string: 'bottom', 'left', 'top' or 'right'
+            reverse (bool): False (default)
+
+        If reverse is False:
+
+            - x-axis values increase from left to right
+            - y-axis values increase from bottom to top
+
+        If reverse is True:
+
+            - x-axis values increase from right to left
+            - y-axis values increase from top to bottom
         """
         axis_id = self.get_axis_id(axis_id)
         if reverse != self.axes_reverse[axis_id]:
@@ -1542,19 +2003,27 @@ class BasePlot(QwtPlot):
             self.updateAxes()
             self.SIG_AXIS_DIRECTION_CHANGED.emit(self, axis_id)
 
-    def set_titles(self, title=None, xlabel=None, ylabel=None, xunit=None, yunit=None):
+    def set_titles(
+        self,
+        title: str | None = None,
+        xlabel: str | tuple[str, str] | None = None,
+        ylabel: str | tuple[str, str] | None = None,
+        xunit: str | tuple[str, str] | None = None,
+        yunit: str | tuple[str, str] | None = None,
+    ) -> None:
         """
         Set plot and axes titles at once
 
-            * title: plot title
-            * xlabel: (bottom axis title, top axis title)
-              or bottom axis title only
-            * ylabel: (left axis title, right axis title)
-              or left axis title only
-            * xunit: (bottom axis unit, top axis unit)
-              or bottom axis unit only
-            * yunit: (left axis unit, right axis unit)
-              or left axis unit only
+        Args:
+            title (str): plot title
+            xlabel (str | tuple[str, str]): (bottom axis title, top axis title)
+             or bottom axis title only
+            ylabel (str | tuple[str, str]): (left axis title, right axis title)
+             or left axis title only
+            xunit (str | tuple[str, str]): (bottom axis unit, top axis unit)
+             or bottom axis unit only
+            yunit (str | tuple[str, str]): (left axis unit, right axis unit)
+             or left axis unit only
         """
         if title is not None:
             self.set_title(title)
@@ -1583,15 +2052,18 @@ class BasePlot(QwtPlot):
                 if unit is not None:
                     self.set_axis_unit(axis, unit)
 
-    def set_pointer(self, pointer_type):
+    def set_pointer(self, pointer_type: str | None) -> None:
         """
         Set pointer.
 
-        Valid values of `pointer_type`:
+        Args:
+            pointer_type (str): pointer type (None, 'canvas', 'curve')
+
+        Meaning of pointer_type:
 
             * None: disable pointer
-            * "canvas": enable canvas pointer
-            * "curve": enable on-curve pointer
+            * 'canvas': enable canvas pointer
+            * 'curve': enable on-curve pointer
         """
         self.canvas_pointer = False
         self.curve_pointer = False
@@ -1600,92 +2072,119 @@ class BasePlot(QwtPlot):
         elif pointer_type == "curve":
             self.curve_pointer = True
 
-    def set_antialiasing(self, checked):
-        """Toggle curve antialiasing"""
+    def set_antialiasing(self, checked: bool) -> None:
+        """Toggle curve antialiasing
+
+        Args:
+            checked (bool): True to enable antialiasing
+        """
         self.antialiased = checked
         for curve in self.itemList():
-            if isinstance(curve, QwtPlotCurve):
-                curve.setRenderHint(QwtPlotItem.RenderAntialiased, self.antialiased)
+            if isinstance(curve, qwt.QwtPlotCurve):
+                curve.setRenderHint(qwt.QwtPlotItem.RenderAntialiased, self.antialiased)
 
-    def set_plot_limits(self, x0, x1, y0, y1, xaxis="bottom", yaxis="left"):
-        """Set plot scale limits"""
+    def set_plot_limits(
+        self,
+        x0: float,
+        x1: float,
+        y0: float,
+        y1: float,
+        xaxis: str | int = "bottom",
+        yaxis: str | int = "left",
+    ) -> None:
+        """Set plot scale limits
+
+        Args:
+            x0 (float): x min
+            x1 (float): x max
+            y0 (float): y min
+            y1 (float): y max
+            xaxis (str | int): x axis name or id (optional, default='bottom')
+            yaxis (str | int): y axis name or id (optional, default='left')
+        """
         self.set_axis_limits(yaxis, y0, y1)
         self.set_axis_limits(xaxis, x0, x1)
         self.updateAxes()
         self.SIG_AXIS_DIRECTION_CHANGED.emit(self, self.get_axis_id(yaxis))
         self.SIG_AXIS_DIRECTION_CHANGED.emit(self, self.get_axis_id(xaxis))
 
-    def set_plot_limits_synchronised(self, x0, x1, y0, y1):
-        """
+    def get_plot_limits(
+        self, xaxis: str | int = "bottom", yaxis: str | int = "left"
+    ) -> tuple[float, float, float, float]:
+        """Return plot scale limits
 
-        :param x0:
-        :param x1:
-        :param y0:
-        :param y1:
-        """
-        for yaxis, xaxis in (("left", "bottom"), ("right", "top")):
-            self.set_plot_limits(x0, x1, y0, y1, xaxis=xaxis, yaxis=yaxis)
+        Args:
+            xaxis (str | int): x axis name or id (optional, default='bottom')
+            yaxis (str | int): y axis name or id (optional, default='left')
 
-    def get_plot_limits(self, xaxis="bottom", yaxis="left"):
-        """Return plot scale limits"""
+        Returns:
+            tuple[float, float, float, float]: x0, x1, y0, y1
+        """
         x0, x1 = self.get_axis_limits(xaxis)
         y0, y1 = self.get_axis_limits(yaxis)
         return x0, x1, y0, y1
 
-    def add_autoscale_types(self, item_types):
-        """add AUTOSCALE TYPES
-        item_types: tuple of types
+    def add_autoscale_types(self, item_types: tuple[type]) -> None:
+        """
+        Add item types to autoscale list
+
+        Args:
+            item_types (tuple[type]): the item types
         """
         self.AUTOSCALE_TYPES += item_types
 
-    def add_autoscale_excludes(self, items):
+    def add_autoscale_excludes(self, items: list[itf.IBasePlotItem]) -> None:
+        """Add items to autoscale excludes list
+
+        Args:
+            items (list[IBasePlotItem]): the items
+        """
         for item in items:
             if item not in self.AUTOSCALE_EXCLUDES:
                 self.AUTOSCALE_EXCLUDES.append(item)
 
-    # ---- Levels histogram-related API ----------------------------------------
-    def update_lut_range(self, _min, _max):
-        """update the LUT scale"""
-        # self.set_items_lut_range(_min, _max, replot=False)
-        self.updateAxes()
-
     # ---- Image scale/aspect ratio -related API -------------------------------
-    def set_full_scale(self, item):
-        """
+    def get_current_aspect_ratio(self) -> float:
+        """Return current aspect ratio
 
-        :param item:
+        Returns:
+            float: the current aspect ratio
         """
-        if item.can_setfullscale():
-            bounds = item.boundingRect()
-            self.set_plot_limits(
-                bounds.left(), bounds.right(), bounds.top(), bounds.bottom()
-            )
-
-    def get_current_aspect_ratio(self):
-        """Return current aspect ratio"""
         dx = self.axisScaleDiv(self.X_BOTTOM).range()
         dy = self.axisScaleDiv(self.Y_LEFT).range()
         h = self.canvasMap(self.Y_LEFT).pDist()
         w = self.canvasMap(self.X_BOTTOM).pDist()
         return fabs((h * dx) / (w * dy))
 
-    def get_aspect_ratio(self):
-        """Return aspect ratio"""
+    def get_aspect_ratio(self) -> float:
+        """Return aspect ratio
+
+        Returns:
+            float: the aspect ratio
+        """
         return self.__aspect_ratio
 
-    def set_aspect_ratio(self, ratio=None, lock=None):
-        """Set aspect ratio"""
+    def set_aspect_ratio(
+        self, ratio: float | None = None, lock: bool | None = None
+    ) -> None:
+        """Set aspect ratio
+
+        Args:
+            ratio (float): the aspect ratio (optional, default=None)
+            lock (bool): lock aspect ratio (optional, default=None)
+        """
         if ratio is not None:
             self.__aspect_ratio = ratio
         if lock is not None:
             self.lock_aspect_ratio = lock
         self.apply_aspect_ratio()
 
-    def apply_aspect_ratio(self, full_scale=False):
+    def apply_aspect_ratio(self, full_scale: bool = False) -> None:
         """
+        Apply aspect ratio
 
-        :param full_scale:
-        :return:
+        Args:
+            full_scale: if True, the aspect ratio is applied to the full scale
         """
         if not self.isVisible():
             return
@@ -1726,29 +2225,32 @@ class BasePlot(QwtPlot):
         self.set_plot_limits(x0, x1, y0, y1)
 
     # ---- LUT/colormap-related API --------------------------------------------
-    def notify_colormap_changed(self):
+    def notify_colormap_changed(self) -> None:
         """Levels histogram range has changed"""
-        item = self.get_last_active_item(IColormapImageItemType)
+        item = self.get_last_active_item(itf.IColormapImageItemType)
         if item is not None:
             self.update_colormap_axis(item)
         self.replot()
         self.SIG_LUT_CHANGED.emit(self)
         self.SIG_ACTIVE_ITEM_CHANGED.emit(self)
 
-    def update_colormap_axis(self, item):
+    def update_colormap_axis(self, item: itf.IColormapImageItemType) -> None:
         """
+        Update colormap axis
 
-        :param item:
-        :return:
+        Args:
+            item (IColormapImageItemType): the item
         """
-        if IColormapImageItemType not in item.types():
+        if itf.IColormapImageItemType not in item.types():
             return
         zaxis = self.colormap_axis
-        axiswidget = self.axisWidget(zaxis)
+        axiswidget: QwtScaleWidget = self.axisWidget(zaxis)
         self.setAxisScale(zaxis, item.min, item.max)
         # XXX: the colormap can't be displayed if min>max, to fix this
         # we should pass an inverted colormap along with _max, _min values
-        axiswidget.setColorMap(QwtInterval(item.min, item.max), item.get_color_map())
+        axiswidget.setColorMap(
+            qwt.QwtInterval(item.min, item.max), item.get_color_map()
+        )
         self.updateAxes()
 
     @classmethod

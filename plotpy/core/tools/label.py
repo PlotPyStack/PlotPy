@@ -4,7 +4,6 @@ from guidata.dataset.datatypes import DataSet
 from qtpy import QtCore as QC
 
 from plotpy.config import _
-from plotpy.core.builder import make
 from plotpy.core.events import ClickHandler, setup_standard_tool_filter
 from plotpy.core.tools.base import DefaultToolbarID, InteractiveTool
 
@@ -73,6 +72,10 @@ class LabelTool(InteractiveTool):
         :param event:
         """
         plot = filter.plot
+
+        # The following import is here to avoid circular imports
+        # pylint: disable=import-outside-toplevel
+        from plotpy.core.builder import make
 
         class TextParam(DataSet):
             text = TextItem("", _("Label"))

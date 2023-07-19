@@ -9,15 +9,13 @@
 plotpy.widget.interfaces
 -----------------------------
 
-The `interfaces` module provides object interface classes for `plotpy`.
+The `interfaces` module provides object interface classes for :mod:`plotpy`.
 """
 
 import numpy as np
 
-from plotpy.core.panels import PanelWidget
 
-
-class IItemType(object):
+class IItemType:
     """Item types are used to categorized items in a
     broader way than objects obeying IBasePlotItem.
 
@@ -179,7 +177,7 @@ class ISerializableType(IItemType):
 # area
 
 
-class IBasePlotItem(object):
+class IBasePlotItem:
     """
     This is the interface that QwtPlotItem objects must implement
     to be handled by *BasePlot* widgets
@@ -338,21 +336,13 @@ class IBasePlotItem(object):
         pass
 
 
-class IBaseImageItem(object):
+class IBaseImageItem:
     """
     QwtPlotItem image objects handled by *BasePlot* widgets must implement
     _both_ the IBasePlotItem interface and this one
     """
 
-    _can_setfullscale = True  # Image will be set full scale when added to plot
     _can_sethistogram = False  # A levels histogram will be bound to image
-
-    def can_setfullscale(self):
-        """
-
-        :return:
-        """
-        return self._can_setfullscale
 
     def can_sethistogram(self):
         """
@@ -362,7 +352,7 @@ class IBaseImageItem(object):
         return self._can_sethistogram
 
 
-class IHistDataSource(object):
+class IHistDataSource:
     def get_histogram(self, nbins):
         """
 

@@ -9,13 +9,13 @@ from qtpy import QtCore as QC
 from qwt import QwtPlotCurve
 
 from plotpy.config import CONF, _
+from plotpy.core.coords import canvas_to_axes
 from plotpy.core.interfaces.common import (
     IBasePlotItem,
     ICurveItemType,
     ISerializableType,
     ITrackableItemType,
 )
-from plotpy.core.items.utils import canvas_to_axes
 from plotpy.core.styles.base import SymbolParam
 from plotpy.core.styles.curve import CurveParam
 

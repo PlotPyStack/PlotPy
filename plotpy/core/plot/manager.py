@@ -1,14 +1,19 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import annotations
+
 import weakref
-from typing import Any
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any
 
 from guidata.qthelpers import create_action
 from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
+from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
 
-from plotpy.core import panels
 from plotpy.core.interfaces.plotmanager import IPlotManager
+from plotpy.core.panels.base import ID_CONTRAST, ID_ITEMLIST, ID_XCS, ID_YCS
 from plotpy.core.plot.base import BasePlot
 from plotpy.core.tools.annotations import (
     AnnotatedCircleTool,
@@ -59,6 +64,15 @@ from plotpy.core.tools.plot import (
 )
 from plotpy.core.tools.selection import SelectTool
 
+if TYPE_CHECKING:
+    from qwt import QwtPlotCanvas, QwtScaleDiv
+
+    from plotpy.core.panels.base import PanelWidget
+    from plotpy.core.panels.contrastadjustment import ContrastAdjustment
+    from plotpy.core.panels.csection import XCrossSection, YCrossSection
+    from plotpy.core.panels.itemlist import PlotItemList
+    from plotpy.core.tools.base import GuiTool
+
 
 class DefaultPlotID:
     pass
@@ -67,8 +81,10 @@ class DefaultPlotID:
 class PlotManager:
     """
     Construct a PlotManager object, a 'controller' that organizes relations
-    between plots (i.e. :py:class:`.baseplot.BasePlot`, panels,
-    tools (see :py:mod:`.tools`) and toolbars
+    between plots (:py:class:`.BasePlot`), panels, tools and toolbars
+
+    Args:
+        main (QWidget): The main parent widget
     """
 
     __implements__ = (IPlotManager,)
@@ -91,7 +107,7 @@ class PlotManager:
     def add_plot(self, plot: BasePlot, plot_id: Any = DefaultPlotID) -> None:
         """
         Register a plot to the plot manager:
-            * plot: :py:class:`.baseplot.BasePlot`
+            * plot: :py:class:`.BasePlot`
             * plot_id (default id is the plot object's id: ``id(plot)``):
               unique ID identifying the plot (any Python object),
               this ID will be asked by the manager to access this plot later.
@@ -132,7 +148,7 @@ class PlotManager:
         """
         return self.default_plot
 
-    def add_panel(self, panel: panels.PanelWidget) -> None:
+    def add_panel(self, panel: PanelWidget) -> None:
         """
         Register a panel to the plot manager
 
@@ -180,11 +196,10 @@ class PlotManager:
         """
         return self.default_toolbar
 
-    def add_tool(self, ToolKlass, *args, **kwargs):
+    def add_tool(self, ToolKlass: GuiTool, *args, **kwargs) -> GuiTool:
         """
         Register a tool to the manager
-            * ToolKlass: tool's class (`plotpy` builtin tools are defined in
-              module :py:mod:`.tools`)
+            * ToolKlass: tool's class (see :ref:`tools`)
             * args: arguments sent to the tool's class
             * kwargs: keyword arguments sent to the tool's class
 
@@ -208,16 +223,26 @@ class PlotManager:
             self.default_tool = tool
         return tool
 
-    def get_tool(self, ToolKlass):
-        """Return tool instance from its class"""
+    def get_tool(self, ToolKlass: GuiTool) -> GuiTool:
+        """Return tool instance from its class
+
+        Args:
+            ToolKlass: tool's class (see :ref:`tools`)
+
+        Returns:
+            GuiTool: tool instance
+        """
         for tool in self.tools:
             if isinstance(tool, ToolKlass):
                 return tool
 
-    def add_separator_tool(self, toolbar_id=None):
+    def add_separator_tool(self, toolbar_id: str | None = None) -> None:
         """
         Register a separator tool to the plot manager: the separator tool is
         just a tool which insert a separator in the plot context menu
+
+        Args:
+            toolbar_id: toolbar's id (default to None)
         """
         if toolbar_id is None:
             for _id, toolbar in list(self.toolbars.items()):
@@ -226,70 +251,95 @@ class PlotManager:
                     break
         self.add_tool(DummySeparatorTool, toolbar_id)
 
-    def set_default_tool(self, tool):
+    def set_default_tool(self, tool: GuiTool) -> None:
         """
         Set default tool
+
+        Args:
+            tool: tool instance
         """
         self.default_tool = tool
 
-    def get_default_tool(self):
+    def get_default_tool(self) -> GuiTool:
         """
         Get default tool
+
+        Returns:
+            GuiTool: tool instance
         """
         return self.default_tool
 
-    def activate_default_tool(self):
+    def activate_default_tool(self) -> None:
         """
         Activate default tool
         """
         self.get_default_tool().activate()
 
-    def get_active_tool(self):
+    def get_active_tool(self) -> GuiTool:
         """
         Return active tool
+
+        Returns:
+            GuiTool: tool instance
         """
         return self.active_tool
 
-    def set_active_tool(self, tool=None):
+    def set_active_tool(self, tool: GuiTool | None = None) -> None:
         """
         Set active tool (if tool argument is None, the active tool will be
         the default tool)
+
+        Args:
+            tool: tool instance or None
         """
         self.active_tool = tool
 
-    def get_plot(self, plot_id=DefaultPlotID):
+    def get_plot(self, plot_id: Any = DefaultPlotID) -> BasePlot:
         """
         Return plot associated to `plot_id` (if method is called without
         specifying the `plot_id` parameter, return the default plot)
+
+        Args:
+            plot_id: plot's id (optional, default to DefaultPlotID)
         """
         if plot_id is DefaultPlotID:
             return self.default_plot
         return self.plots[plot_id]
 
-    def get_plots(self):
+    def get_plots(self) -> list[BasePlot]:
         """
         Return all registered plots
+
+        Returns:
+            list[BasePlot]: list of plots
         """
         return list(self.plots.values())
 
-    def get_active_plot(self):
+    def get_active_plot(self) -> BasePlot:
         """
         Return the active plot
 
         The active plot is the plot whose canvas has the focus
         otherwise it's the "default" plot
+
+        Returns:
+            BasePlot: plot instance
         """
         for plot in list(self.plots.values()):
-            canvas = plot.canvas()
+            canvas: QwtPlotCanvas = plot.canvas()
             if canvas.hasFocus():
                 return plot
         return self.default_plot
 
-    def get_tool_group(self, groupname):
+    def get_tool_group(self, groupname: str) -> QW.QActionGroup:
         """
+        Return the QActionGroup associated to `groupname`
 
-        :param groupname:
-        :return:
+        Args:
+            groupname: group's name
+
+        Returns:
+            QActionGroup: action group
         """
         group = self.groups.get(groupname, None)
         if group is None:
@@ -299,48 +349,61 @@ class PlotManager:
         else:
             return group()
 
-    def get_main(self):
+    def get_main(self) -> QW.QWidget:
         """
         Return the main (parent) widget
 
         Note that for py:class:`.plot.PlotWidget` objects, this method will
         return the widget itself because the plot manager is integrated to it.
+
+        Returns:
+            QWidget: main widget
         """
         return self.main
 
-    def set_main(self, main):
+    def set_main(self, main: QW.QWidget) -> None:
         """
+        Set the main (parent) widget
 
-        :param main:
+        Args:
+            main: main widget
         """
         self.main = main
 
-    def get_panel(self, panel_id):
+    def get_panel(self, panel_id: str) -> PanelWidget:
         """
         Return panel from its ID
         Panel IDs are listed in module plotpy.core.panels
+
+        Args:
+            panel_id: panel's id
+
+        Returns:
+            PanelWidget: panel widget
         """
         return self.panels.get(panel_id, None)
 
-    def get_itemlist_panel(self):
+    def get_itemlist_panel(self) -> PlotItemList:
         """
         Convenience function to get the `item list panel`
 
         Return None if the item list panel has not been added to this manager
-        """
-        return self.get_panel(panels.ID_ITEMLIST)
 
-    def get_contrast_panel(self):
+        Returns:
+            PlotItemList: item list panel
+        """
+        return self.get_panel(ID_ITEMLIST)
+
+    def get_contrast_panel(self) -> ContrastAdjustment:
         """
         Convenience function to get the `contrast adjustment panel`
 
         Return None if the contrast adjustment panel has not been added
         to this manager
         """
+        return self.get_panel(ID_CONTRAST)
 
-        return self.get_panel(panels.ID_CONTRAST)
-
-    def set_contrast_range(self, zmin, zmax):
+    def set_contrast_range(self, zmin: float, zmax: float) -> None:
         """
         Convenience function to set the `contrast adjustment panel` range
 
@@ -350,30 +413,38 @@ class PlotManager:
             # (the same apply for PlotWidget or any
             #  class deriving from PlotManager)
             widget.get_contrast_panel().set_range(zmin, zmax)
+
+        Args:
+            zmin: minimum value
+            zmax: maximum value
         """
         self.get_contrast_panel().set_range(zmin, zmax)
 
-    def get_xcs_panel(self):
+    def get_xcs_panel(self) -> XCrossSection:
         """
         Convenience function to get the `X-axis cross section panel`
 
         Return None if the X-axis cross section panel has not been added
         to this manager
+
+        Returns:
+            XCrossSection: X-axis cross section panel
         """
+        return self.get_panel(ID_XCS)
 
-        return self.get_panel(panels.ID_XCS)
-
-    def get_ycs_panel(self):
+    def get_ycs_panel(self) -> YCrossSection:
         """
         Convenience function to get the `Y-axis cross section panel`
 
         Return None if the Y-axis cross section panel has not been added
         to this manager
+
+        Returns:
+            YCrossSection: Y-axis cross section panel
         """
+        return self.get_panel(ID_YCS)
 
-        return self.get_panel(panels.ID_YCS)
-
-    def update_cross_sections(self):
+    def update_cross_sections(self) -> None:
         """
         Convenience function to update the `cross section panels` at once
 
@@ -387,16 +458,27 @@ class PlotManager:
         self.get_xcs_panel().update_plot()
         self.get_ycs_panel().update_plot()
 
-    def get_toolbar(self, toolbar_id="default"):
+    def get_toolbar(self, toolbar_id: str = "default") -> QW.QToolBar:
         """
         Return toolbar from its ID
+
+        Args:
             toolbar_id: toolbar's id (default id is string "default")
+
+        Returns:
+            QToolBar: toolbar
         """
         return self.toolbars.get(toolbar_id, None)
 
-    def get_context_menu(self, plot=None):
+    def get_context_menu(self, plot: BasePlot | None = None) -> QW.QMenu:
         """
         Return widget context menu -- built using active tools
+
+        Args:
+            plot: plot instance (default to None)
+
+        Returns:
+            QMenu: context menu
         """
         if plot is None:
             plot = self.get_plot()
@@ -406,9 +488,12 @@ class PlotManager:
             tool.setup_context_menu(menu, plot)
         return menu
 
-    def update_tools_status(self, plot=None):
+    def update_tools_status(self, plot: BasePlot | None = None) -> None:
         """
         Update tools for current plot
+
+        Args:
+            plot: plot instance (default to None)
         """
         if plot is None:
             plot = self.get_plot()
@@ -417,18 +502,33 @@ class PlotManager:
 
     def create_action(
         self,
-        title,
-        triggered=None,
-        toggled=None,
-        shortcut=None,
-        icon=None,
-        tip=None,
-        checkable=None,
-        context=QC.Qt.ShortcutContext.WindowShortcut,
-        enabled=None,
+        title: str,
+        triggered: Callable | None = None,
+        toggled: Callable | None = None,
+        shortcut: QG.QKeySequence | None = None,
+        icon: QG.QIcon | None = None,
+        tip: str | None = None,
+        checkable: bool | None = None,
+        context: QC.Qt.ShortcutContext = QC.Qt.WindowShortcut,
+        enabled: bool | None = None,
     ):
         """
         Create a new QAction
+
+        Args:
+            parent (QWidget or None): Parent widget
+            title (str): Action title
+            triggered (Callable or None): Triggered callback
+            toggled (Callable or None): Toggled callback
+            shortcut (QKeySequence or None): Shortcut
+            icon (QIcon or None): Icon
+            tip (str or None): Tooltip
+            checkable (bool or None): Checkable
+            context (Qt.ShortcutContext): Shortcut context
+            enabled (bool or None): Enabled
+
+        Returns:
+            QAction: New action
         """
         return create_action(
             self.main,
@@ -445,7 +545,7 @@ class PlotManager:
 
     # The following methods provide some sets of tools that
     # are often registered together
-    def register_standard_tools(self):
+    def register_standard_tools(self) -> None:
         """
         Registering basic tools for standard plot dialog
         --> top of the context-menu
@@ -467,7 +567,7 @@ class PlotManager:
         if self.get_itemlist_panel():
             self.add_tool(ItemListPanelTool)
 
-    def register_curve_tools(self):
+    def register_curve_tools(self) -> None:
         """
         Register only curve-related tools
 
@@ -487,7 +587,7 @@ class PlotManager:
         self.add_tool(AntiAliasingTool)
         self.add_tool(AxisScaleTool)
 
-    def register_image_tools(self):
+    def register_image_tools(self) -> None:
         """
         Register only image-related tools
 
@@ -516,7 +616,7 @@ class PlotManager:
             self.add_tool(CrossSectionTool)
             self.add_tool(AverageCrossSectionTool)
 
-    def register_other_tools(self):
+    def register_other_tools(self) -> None:
         """
         Register other common tools
 
@@ -538,7 +638,7 @@ class PlotManager:
         self.add_tool(HelpTool)
         self.add_tool(AboutTool)
 
-    def register_all_curve_tools(self):
+    def register_all_curve_tools(self) -> None:
         """
         Register standard, curve-related and other tools
 
@@ -567,7 +667,7 @@ class PlotManager:
         self.update_tools_status()
         self.get_default_tool().activate()
 
-    def register_all_image_tools(self):
+    def register_all_image_tools(self) -> None:
         """
         Register standard, image-related and other tools
 
@@ -596,7 +696,7 @@ class PlotManager:
         self.update_tools_status()
         self.get_default_tool().activate()
 
-    def register_all_tools(self):
+    def register_all_tools(self) -> None:
         """
         Register standard, curve and image-related and other tools
 
@@ -627,7 +727,7 @@ class PlotManager:
         self.update_tools_status()
         self.get_default_tool().activate()
 
-    def register_all_annotation_tools(self):
+    def register_all_annotation_tools(self) -> None:
         """
         Register all annotation tools for the plot
         """
@@ -643,7 +743,7 @@ class PlotManager:
 
         self.add_tool(LabelTool)
 
-    def register_curve_annotation_tools(self):
+    def register_curve_annotation_tools(self) -> None:
         """
         Register all curve friendly annotation tools for the plot
         """
@@ -654,7 +754,7 @@ class PlotManager:
 
         self.add_tool(LabelTool)
 
-    def register_image_annotation_tools(self):
+    def register_image_annotation_tools(self) -> None:
         """
         Register all image friendly annotation tools for the plot
         """
@@ -663,38 +763,40 @@ class PlotManager:
         # register_all_annotation_tools function for now
         self.register_all_annotation_tools()
 
-    def synchronize_axis(self, axis, plots):
+    def synchronize_axis(self, axis_id: int, plot_ids: list[str]) -> None:
         """
+        Synchronize axis of plots
 
-        :param axis:
-        :param plots:
+        Args:
+            axis_id: axis id
+            plot_ids: list of plot ids
         """
-        for plot_id in plots:
+        for plot_id in plot_ids:
             synclist = self.synchronized_plots.setdefault(plot_id, [])
-            for plot2_id in plots:
+            for plot2_id in plot_ids:
                 if plot_id == plot2_id:
                     continue
-                item = (axis, plot2_id)
+                item = (axis_id, plot2_id)
                 if item not in synclist:
                     synclist.append(item)
 
-    def plot_axis_changed(self, plot):
+    def plot_axis_changed(self, plot: BasePlot) -> None:
         """
+        Plot axis changed, update other synchronized plots (if any)
 
-        :param plot:
-        :return:
+        Args:
+            plot: plot instance
         """
         plot_id = plot.plot_id
         if plot_id not in self.synchronized_plots:
             return
-        for axis, other_plot_id in self.synchronized_plots[plot_id]:
-            scalediv = plot.axisScaleDiv(axis)
-            map = plot.canvasMap(axis)
-            other = self.get_plot(other_plot_id)
+        for axis_id, other_plot_id in self.synchronized_plots[plot_id]:
+            scalediv: QwtScaleDiv = plot.axisScaleDiv(axis_id)
+            other_plot = self.get_plot(other_plot_id)
             lb = scalediv.lowerBound()
             ub = scalediv.upperBound()
-            other.setAxisScale(axis, lb, ub)
-            other.replot()
+            other_plot.setAxisScale(axis_id, lb, ub)
+            other_plot.replot()
 
 
 assert_interfaces_valid(PlotManager)

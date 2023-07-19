@@ -41,7 +41,7 @@ if TYPE_CHECKING:
 
 
 class BaseTransform:
-    """Base transform widget mixin class (for manipulating TrImageItem objects)
+    """Base transform class (for manipulating TrImageItem objects)
 
     This is to be mixed with a class providing the get_plot method,
     like PlotDialog, or BaseTransformWidget (see below)
@@ -120,7 +120,7 @@ class BaseTransform:
         """Compute transformation, return compute output array
 
         Returns:
-            np.ndarray: Output array
+            numpy.ndarray: Output array
         """
         raise NotImplementedError
 
@@ -155,8 +155,8 @@ class BaseTransformWidget(QW.QWidget):
 
     Args:
         parent (QWidget): Parent widget
-        toolbar (bool, optional): Whether to show toolbar. Defaults to False.
-        options (dict, optional): Plot options. Defaults to None.
+        toolbar (bool | None): Whether to show toolbar. Defaults to False.
+        options (dict | None): Plot options. Defaults to None.
     """
 
     def __init__(
@@ -189,9 +189,9 @@ class BaseTransformWidget(QW.QWidget):
         """Add tool buttons to layout
 
         Args:
-            layout (QW.QBoxLayout): Layout
-            apply (bool, optional): Add apply button. Defaults to True.
-            reset (bool, optional): Add reset button. Defaults to True.
+            layout (QBoxLayout): Layout
+            apply (bool | None): Add apply button. Defaults to True.
+            reset (bool | None): Add reset button. Defaults to True.
         """
         if reset:
             self.__add_reset_button(layout)
@@ -202,7 +202,7 @@ class BaseTransformWidget(QW.QWidget):
         """Add the standard apply button
 
         Args:
-            layout (QW.QBoxLayout): Layout
+            layout (QBoxLayout): Layout
         """
         apply_btn = create_toolbutton(
             self.plot_widget,
@@ -218,7 +218,7 @@ class BaseTransformWidget(QW.QWidget):
         """Add the standard reset button
 
         Args:
-            layout (QW.QBoxLayout): Layout
+            layout (QBoxLayout): Layout
         """
         edit_options_btn = create_toolbutton(
             self.plot_widget,
@@ -246,7 +246,7 @@ class BaseMultipleTransformWidget(QW.QTabWidget):
 
     Args:
         parent (QWidget): Parent widget
-        options (dict, optional): Plot options. Defaults to None.
+        options (dict | None): Plot options. Defaults to None.
     """
 
     TRANSFORM_WIDGET_CLASS: TransfWidget = None
@@ -272,7 +272,7 @@ class BaseMultipleTransformWidget(QW.QTabWidget):
             item (TrImageItem): Item
         """
         widget: TransfWidget = self.TRANSFORM_WIDGET_CLASS(self, options=self.options)
-        widget.transf.set_item(item)
+        widget.transform.set_item(item)
         self.addTab(widget, item.title().text())
         return widget
 

@@ -2,8 +2,8 @@
 from guidata.utils.misc import assert_interfaces_valid
 from qwt import QwtPlotItem
 
+from plotpy.core.coords import canvas_to_axes
 from plotpy.core.interfaces.common import IBasePlotItem, IShapeItemType
-from plotpy.core.items.utils import canvas_to_axes
 
 
 class AbstractShape(QwtPlotItem):

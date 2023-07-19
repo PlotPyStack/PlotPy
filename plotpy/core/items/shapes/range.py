@@ -9,8 +9,8 @@ from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 
 from plotpy.config import CONF, _
+from plotpy.core.coords import canvas_to_axes
 from plotpy.core.items.shapes.base import AbstractShape
-from plotpy.core.items.utils import canvas_to_axes
 from plotpy.core.styles.shape import RangeShapeParam
 
 

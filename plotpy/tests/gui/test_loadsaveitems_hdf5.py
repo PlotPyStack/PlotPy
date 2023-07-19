@@ -15,7 +15,7 @@
 import os
 
 import h5py
-from guidata.dataset.hdf5io import HDF5Reader, HDF5Writer
+from guidata.dataset.io import HDF5Reader, HDF5Writer
 from guidata.qthelpers import qt_app_context
 
 from plotpy.tests.gui.test_loadsaveitems_pickle import IOTest

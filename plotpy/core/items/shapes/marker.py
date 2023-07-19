@@ -8,8 +8,8 @@ from qtpy import QtCore as QC
 from qwt import QwtPlotMarker
 
 from plotpy.config import CONF, _
+from plotpy.core.coords import canvas_to_axes
 from plotpy.core.interfaces.common import IBasePlotItem, IShapeItemType
-from plotpy.core.items.utils import canvas_to_axes
 from plotpy.core.styles.base import MARKERSTYLES
 from plotpy.core.styles.shape import MarkerParam
 

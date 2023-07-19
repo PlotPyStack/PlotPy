@@ -8,16 +8,21 @@
 # pylint: disable=C0103
 
 """
-plotpy.widgets.fit
-----------------------
+Curve fitting widgets
+---------------------
 
-The `fit` module provides an interactive curve fitting widget/dialog allowing:
-    * to fit data manually (by moving sliders)
-    * or automatically (with standard optimization algorithms
-      provided by `scipy`).
+The :mod:`.widgets.fit` module provides interactive curve fitting widgets allowing:
+
+* to fit data manually (by moving sliders)
+* or automatically (with standard optimization algorithms provided by `scipy`).
+
+The :func:`guifit` function is a factory function that returns a dialog box
+allowing to fit data with a given function.
 
 Example
-~~~~~~~
+^^^^^^^
+
+Here is an example of use of the :func:`guifit` function:
 
 .. literalinclude:: ../../plotpy/tests/gui/test_fit.py
    :start-after: guitest:
@@ -26,7 +31,7 @@ Example
 .. image:: /images/screenshots/fit.png
 
 Reference
-~~~~~~~~~
+^^^^^^^^^
 
 .. autofunction:: guifit
 
@@ -59,6 +64,7 @@ from guidata.utils import restore_dataset, update_dataset
 from numpy import inf  # Do not remove this import (used by optimization funcs)
 from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
+from qtpy.QtWidgets import QWidget  # only to help intersphinx find QWidget
 from scipy.optimize import fmin, fmin_bfgs, fmin_cg, fmin_l_bfgs_b, fmin_powell, leastsq
 
 from plotpy.config import _
@@ -68,8 +74,7 @@ from plotpy.core.plot.plotwidget import PlotDialog, PlotWidget
 
 if TYPE_CHECKING:
     from plotpy.core.items.shapes.range import XRangeSelection
-    from plotpy.core.panels import PanelWidget
-    from plotpy.core.plot.base import BasePlot
+    from plotpy.core.panels.base import PanelWidget
 
 
 class AutoFitParam(DataSet):
@@ -120,19 +125,31 @@ class FitParamDataSet(DataSet):
 
 
 class FitParam:
-    """Fit parameters"""
+    """Fit parameters
+
+    Args:
+        name (str): name of the parameter
+        value (float): value of the parameter
+        min (float): minimum value of the parameter
+        max (float): maximum value of the parameter
+        logscale (bool): if True, the parameter is fitted in logscale. Default is False.
+        steps (int): number of steps for the slider. Default is 5000.
+        format (str): format of the parameter. Default is "%.3f".
+        size_offset (int): size offset of the parameter. Default is 0.
+        unit (str): unit of the parameter. Default is "".
+    """
 
     def __init__(
         self,
-        name,
-        value,
-        min,
-        max,
-        logscale=False,
-        steps=5000,
-        format="%.3f",
-        size_offset=0,
-        unit="",
+        name: str,
+        value: float,
+        min: float,
+        max: float,
+        logscale: bool = False,
+        steps: int = 5000,
+        format: str = "%.3f",
+        size_offset: int = 0,
+        unit: str = "",
     ):
         self.name = name
         self.value = value
@@ -152,8 +169,12 @@ class FitParam:
         self._refresh_callback = None
         self.dataset = FitParamDataSet(title=_("Curve fitting parameter"))
 
-    def copy(self):
-        """Return a copy of this fitparam"""
+    def copy(self) -> FitParam:
+        """Return a copy of this fitparam
+
+        Returns:
+            FitParam: copy of this fitparam
+        """
         return self.__class__(
             self.name,
             self.value,
@@ -166,11 +187,12 @@ class FitParam:
             self.unit,
         )
 
-    def create_widgets(self, parent, refresh_callback):
+    def create_widgets(self, parent: QWidget, refresh_callback: Callable) -> None:
         """Create widgets
 
-        :param parent:
-        :param refresh_callback:
+        Args:
+            parent (QWidget): parent widget
+            refresh_callback (Callable): callback function to refresh the plot
         """
         self._refresh_callback = refresh_callback
         self.prefix_label = QW.QLabel()
@@ -201,32 +223,36 @@ class FitParam:
             ]
         )
 
-    def add_widgets(self, widgets):
+    def add_widgets(self, widgets: list[QWidget]) -> None:
         """Add widgets
 
-        :param widgets:
+        Args:
+            widgets (list[QWidget]): list of widgets to add
         """
         self._widgets += widgets
 
-    def get_widgets(self):
+    def get_widgets(self) -> list[QWidget]:
         """Get widgets
 
-        :return:
+        Returns:
+            list[QWidget]: list of widgets
         """
         return self._widgets
 
-    def set_scale(self, state):
+    def set_scale(self, state: int) -> None:
         """Set scale
 
-        :param state:
+        Args:
+            state (int): state
         """
         self.logscale = state > 0
         self.update_slider_value()
 
-    def set_text(self, fmt=None):
+    def set_text(self, fmt: str = None) -> None:
         """Set text
 
-        :param fmt:
+        Args:
+            fmt (str): format (default: None)
         """
         style = "<span style='color: #444444'><b>{}</b></span>"
         self.prefix_label.setText(style.format(self.name))
@@ -248,10 +274,11 @@ class FitParam:
         self.update_slider_value()
         self._refresh_callback()
 
-    def slider_value_changed(self, int_value):
+    def slider_value_changed(self, int_value: int) -> None:
         """Slider value changed
 
-        :param int_value:
+        Args:
+            int_value (int): integer value
         """
         if self.logscale:
             total_delta = np.log10(1 + self.max - self.min)
@@ -287,10 +314,11 @@ class FitParam:
             self.slider.setValue(intval)
             self.slider.blockSignals(False)
 
-    def edit_param(self, parent):
+    def edit_param(self, parent: QWidget) -> None:
         """Edit param
 
-        :param parent:
+        Args:
+            parent (QWidget): parent widget
         """
         update_dataset(self.dataset, self)
         if self.dataset.edit(parent=parent):
@@ -301,10 +329,11 @@ class FitParam:
                 self.min = self.value
             self.update()
 
-    def update(self, refresh=True):
+    def update(self, refresh: bool = True) -> None:
         """Update
 
-        :param refresh:
+        Args:
+            refresh (bool | None): refresh (default: True)
         """
         self.unit_label.setText(self.unit)
         self.slider.setRange(0, self.steps - 1)
@@ -315,14 +344,20 @@ class FitParam:
 
 
 def add_fitparam_widgets_to(
-    layout, fitparams, refresh_callback, param_cols=1, stretch_col=1
-):
+    layout: QW.QGridLayout,
+    fitparams: list[FitParam],
+    refresh_callback: Callable,
+    param_cols: int = 1,
+    stretch_col: int = 1,
+) -> None:
     """Add fitparam widgets to layout
 
-    :param layout:
-    :param fitparams:
-    :param refresh_callback:
-    :param param_cols:
+    Args:
+        layout (QGridLayout): layout
+        fitparams (list[FitParam]): list of fitparams
+        refresh_callback (Callable): refresh callback
+        param_cols (int | None): number of columns (default: 1)
+        stretch_col (int | None): stretch column (default: 1)
     """
     row_contents = []
     row_nb = 0
@@ -347,14 +382,21 @@ def add_fitparam_widgets_to(
                 layout.setColumnStretch(col_nb * w_colums - 1, 1)
 
 
-class FitWidget(QW.QWidget):
-    """Fit widget"""
+class FitWidget(QWidget):
+    """Fit widget
+
+    Args:
+        parent (QWidget | None): parent widget (default: None)
+        param_cols (int | None): number of columns (default: 1)
+        legend_anchor (str | None): legend anchor (default: "TR")
+        auto_fit (bool | None): auto fit (default: False)
+    """
 
     SIG_TOGGLE_VALID_STATE = QC.Signal(bool)
 
     def __init__(
         self,
-        parent: QW.QWidget = None,
+        parent: QWidget = None,
         param_cols: int = 1,
         legend_anchor: str = "TR",
         auto_fit: bool = False,
@@ -387,16 +429,18 @@ class FitWidget(QW.QWidget):
     def set_plot_widget(self, plot_widget: PlotWidget) -> None:
         """Set plot widget
 
-        :param plot_widget:
+        Args:
+            plot_widget (PlotWidget): plot widget
         """
         self.plot_widget = plot_widget
         plot_widget.plot.SIG_RANGE_CHANGED.connect(self.range_changed)
         self.refresh()
 
-    def resizeEvent(self, event):
+    def resizeEvent(self, event) -> None:
         """Reimplement Qt method
 
-        :param event:
+        Args:
+            event (QEvent): event
         """
         super().resizeEvent(event)
         if self.plot_widget is not None:
@@ -418,7 +462,8 @@ class FitWidget(QW.QWidget):
     def create_autofit_group(self) -> QW.QGroupBox:
         """Create autofit group
 
-        :return:
+        Returns:
+            QGroupBox: autofit group
         """
         auto_button = QW.QPushButton(get_icon("apply.png"), _("Run"), self)
         auto_button.clicked.connect(self.autofit)
@@ -447,12 +492,12 @@ class FitWidget(QW.QWidget):
         """Set fit data
 
         Args:
-            x (np.ndarray): x data
-            y (np.ndarray): y data
-            fitfunc (Callable, optional): fit function. Defaults to None.
-            fitparams (list[FitParam], optional): fit parameters. Defaults to None.
-            fitargs (tuple, optional): fit args. Defaults to None.
-            fitkwargs (dict, optional): fit kwargs. Defaults to None.
+            x (numpy.ndarray): x data
+            y (numpy.ndarray): y data
+            fitfunc (Callable | None): fit function. Defaults to None.
+            fitparams (list[FitParam] | None): fit parameters. Defaults to None.
+            fitargs (tuple | None): fit args. Defaults to None.
+            fitkwargs (dict | None): fit kwargs. Defaults to None.
         """
         if self.fitparams is not None and fitparams is not None:
             self.clear_params_layout()
@@ -486,8 +531,8 @@ class FitWidget(QW.QWidget):
         Args:
             fitfunc (Callable): fit function
             fitparams (list[FitParam]): fit parameters
-            fitargs (tuple, optional): fit args. Defaults to None.
-            fitkwargs (dict, optional): fit kwargs. Defaults to None.
+            fitargs (tuple | None): fit args. Defaults to None.
+            fitkwargs (dict | None): fit kwargs. Defaults to None.
         """
         if self.fitparams is not None:
             self.clear_params_layout()
@@ -513,7 +558,11 @@ class FitWidget(QW.QWidget):
         )
 
     def get_fitfunc_arguments(self) -> tuple[list, dict]:
-        """Return fitargs and fitkwargs"""
+        """Return fitargs and fitkwargs
+
+        Returns:
+            tuple[list, dict]: fitargs and fitkwargs
+        """
         fitargs = self.fitargs
         if self.fitargs is None:
             fitargs = []
@@ -616,7 +665,7 @@ class FitWidget(QW.QWidget):
             params (list[float]): fit parameter values
 
         Returns:
-            np.ndarray: error function
+            numpy.ndarray: error function
         """
         x = self.x[self.i_min : self.i_max]
         y = self.y[self.i_min : self.i_max]
@@ -674,7 +723,7 @@ class FitWidget(QW.QWidget):
             x0 (float): initial value
 
         Returns:
-            np.ndarray: fitted values
+            numpy.ndarray: fitted values
         """
         prm = self.autofit_prm
 
@@ -688,7 +737,7 @@ class FitWidget(QW.QWidget):
             x0 (float): initial value
 
         Returns:
-            np.ndarray: fitted values
+            numpy.ndarray: fitted values
         """
         prm = self.autofit_prm
 
@@ -702,7 +751,7 @@ class FitWidget(QW.QWidget):
             x0 (float): initial value
 
         Returns:
-            np.ndarray: fitted values
+            numpy.ndarray: fitted values
         """
         prm = self.autofit_prm
 
@@ -716,7 +765,7 @@ class FitWidget(QW.QWidget):
             x0 (float): initial value
 
         Returns:
-            np.ndarray: fitted values
+            numpy.ndarray: fitted values
         """
         prm = self.autofit_prm
         bounds = [(p.min, p.max) for p in self.fitparams]
@@ -733,7 +782,7 @@ class FitWidget(QW.QWidget):
             x0 (float): initial value
 
         Returns:
-            np.ndarray: fitted values
+            numpy.ndarray: fitted values
         """
         prm = self.autofit_prm
 
@@ -747,7 +796,7 @@ class FitWidget(QW.QWidget):
             x0 (float): initial value
 
         Returns:
-            np.ndarray: fitted values
+            numpy.ndarray: fitted values
         """
         prm = self.autofit_prm
 
@@ -758,7 +807,7 @@ class FitWidget(QW.QWidget):
                 params (list[float]): fit parameter values
 
             Returns:
-                np.ndarray: error function
+                numpy.ndarray: error function
             """
             err = self.errorfunc(params)
             return err
@@ -776,7 +825,22 @@ class FitWidget(QW.QWidget):
 
 
 class FitDialog(PlotDialog):
-    """Fit dialog box"""
+    """Fit dialog box
+
+    Args:
+        wintitle (str | None): window title. Defaults to None.
+        icon (str | None): window icon. Defaults to "plotpy.svg".
+        edit (bool | None): enable/disable edit menu. Defaults to True.
+        toolbar (bool | None): enable/disable toolbar. Defaults to False.
+        auto_tools (bool | None): enable/disable auto tools. Defaults to True.
+        options (dict | None): plot options. Defaults to None.
+        parent (QWidget | None): parent widget. Defaults to None.
+        panels (list[PanelWidget] | None): list of panel widgets. Defaults to None.
+        param_cols (int | None): number of columns for parameter table.
+         Defaults to 1.
+        legend_anchor (str | None): legend anchor. Defaults to "TR".
+        auto_fit (bool | None): enable/disable auto fit. Defaults to False.
+    """
 
     def __init__(
         self,
@@ -786,7 +850,7 @@ class FitDialog(PlotDialog):
         toolbar: bool = False,
         auto_tools: bool = True,
         options: dict | None = None,
-        parent: QW.QWidget | None = None,
+        parent: QWidget | None = None,
         panels: list[PanelWidget] | None = None,
         param_cols: int = 1,
         legend_anchor: str = "TR",
@@ -826,12 +890,12 @@ class FitDialog(PlotDialog):
         """Set fit data
 
         Args:
-            x (np.ndarray): x data
-            y (np.ndarray): y data
-            fitfunc (Callable, optional): fit function. Defaults to None.
-            fitparams (list[FitParam], optional): fit parameters. Defaults to None.
-            fitargs (tuple, optional): fit args. Defaults to None.
-            fitkwargs (dict, optional): fit kwargs. Defaults to None.
+            x (numpy.ndarray): x data
+            y (numpy.ndarray): y data
+            fitfunc (Callable | None): fit function. Defaults to None.
+            fitparams (list[FitParam] | None): fit parameters. Defaults to None.
+            fitargs (tuple | None): fit args. Defaults to None.
+            fitkwargs (dict | None): fit kwargs. Defaults to None.
         """
         self.fit_widget.set_data(x, y, fitfunc, fitparams, fitargs, fitkwargs)
 
@@ -860,7 +924,27 @@ def guifit(
     winsize: tuple[int, int] | None = None,
     winpos: tuple[int, int] | None = None,
 ) -> list[float] | None:
-    """GUI-based curve fitting tool"""
+    """GUI-based curve fitting tool
+
+    Args:
+        x (numpy.ndarray): x data
+        y (numpy.ndarray): y data
+        fitfunc (Callable): fit function
+        fitparams (list[FitParam] | None): fit parameters. Defaults to None.
+        fitargs (tuple | None): fit args. Defaults to None.
+        fitkwargs (dict | None): fit kwargs. Defaults to None.
+        wintitle (str | None): window title. Defaults to None.
+        title (str | None): plot title. Defaults to None.
+        xlabel (str | None): x label. Defaults to None.
+        ylabel (str | None): y label. Defaults to None.
+        param_cols (int | None): number of columns for fit parameters. Defaults to 1.
+        auto_fit (bool | None): auto fit. Defaults to True.
+        winsize (tuple[int, int] | None): window size. Defaults to None.
+        winpos (tuple[int, int] | None): window position. Defaults to None.
+
+    Returns:
+        list[float] | None: fit parameter values
+    """
     _app = guidata.qapplication()
     win = FitDialog(
         edit=True,
@@ -888,11 +972,11 @@ if __name__ == "__main__":
         Fit function
 
         Args:
-            x (np.ndarray): x data
+            x (numpy.ndarray): x data
             params (list[float]): fit parameter values
 
         Returns:
-            np.ndarray: fit values
+            numpy.ndarray: fit values
         """
         a, b = params
         return np.cos(b * x) + a

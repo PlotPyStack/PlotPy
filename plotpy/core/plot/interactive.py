@@ -8,8 +8,8 @@
 # pylint: disable=C0103
 
 """
-plotpy.widgets.pyplot
--------------------------
+Interactive plot
+----------------
 
 The `pyplot` module provides an interactive plotting interface similar to
 `Matplotlib`'s, i.e. with MATLAB-like syntax.
@@ -17,7 +17,7 @@ The `pyplot` module provides an interactive plotting interface similar to
 The :py:mod:`.pyplot` module was designed to be as close as possible
 to the :py:mod:`matplotlib.pyplot` module, so that one could easily switch
 between these two modules by simply changing the import statement. Basically,
-if `plotpy` does support the plotting commands called in your script, replacing
+if :mod:`plotpy` does support the plotting commands called in your script, replacing
 ``import matplotlib.pyplot`` by ``import plotpy.widgets.pyplot`` should suffice, as
 shown in the following example:
 
@@ -29,7 +29,7 @@ shown in the following example:
         plt.plot(x, x**2, 'r+')
         plt.show()
 
-    * Switching from `matplotlib` to `plotpy` is trivial::
+    * Switching from `matplotlib` to :mod:`plotpy` is trivial::
 
         import plotpy.widgets.pyplot as plt # only this line has changed!
         import numpy as np
@@ -116,10 +116,10 @@ from plotpy._scaler import INTERP_AA, INTERP_LINEAR, INTERP_NEAREST
 from plotpy.config import _
 from plotpy.core import io
 from plotpy.core.builder import make
-from plotpy.core.itemlist import PlotItemList
+from plotpy.core.panels.contrastadjustment import ContrastAdjustment
+from plotpy.core.panels.csection.cswidget import XCrossSection, YCrossSection
+from plotpy.core.panels.itemlist import PlotItemList
 from plotpy.core.plot.base import BasePlot, PlotType
-from plotpy.core.plot.cross_section.cswidget import XCrossSection, YCrossSection
-from plotpy.core.plot.histogram.contrastadjustment import ContrastAdjustment
 from plotpy.core.plot.manager import PlotManager
 from plotpy.utils.colormap import get_colormap_list
 

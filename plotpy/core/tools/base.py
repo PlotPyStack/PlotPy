@@ -99,7 +99,7 @@ class InteractiveTool(GuiTool):
     SWITCH_TO_DEFAULT_TOOL = False  # switch to default tool when finished
 
     #: Signal emitted by InteractiveTool when validating tool action
-    SIG_VALIDATE_TOOL = QC.Signal("PyQt_PyObject")
+    SIG_VALIDATE_TOOL = QC.Signal(object)
 
     #: Signal emitted by InteractiveTool when tool job is finished
     SIG_TOOL_JOB_FINISHED = QC.Signal()

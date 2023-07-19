@@ -1,12 +1,6 @@
 """
-Module plotpy.core.items
-===============================
-
-:synopsis:
-
-:moduleauthor: CEA
-
-:platform: All
+plotpy.core.items
+=================
 
 """
 
@@ -22,6 +16,7 @@ from plotpy.core.items.annotations import (
 )
 from plotpy.core.items.curve import CurveItem, ErrorBarCurveItem
 from plotpy.core.items.grid import GridItem
+from plotpy.core.items.histogram import HistogramItem
 from plotpy.core.items.image import (
     BaseImageItem,
     Histogram2DItem,

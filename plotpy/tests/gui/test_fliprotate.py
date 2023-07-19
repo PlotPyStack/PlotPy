@@ -27,7 +27,7 @@ def widget_test(fname):
     """Test the flip/rotate widget"""
     array0, item = create_test_data(fname)
     widget = FlipRotateWidget(None, toolbar=True)
-    widget.transf.set_item(item)
+    widget.transform.set_item(item)
     widget.set_parameters(-90, True, False)
     widget.show()
     return widget
@@ -55,9 +55,9 @@ def dialog_test(fname):
     rot_point_btn.setMenu(rotation_tool_menu)
     dlg.toolbar.addWidget(rot_point_btn)
 
-    dlg.transf.set_item(item)
+    dlg.transform.set_item(item)
     if exec_dialog(dlg) == dlg.Accepted:
-        array1 = dlg.transf.output_array
+        array1 = dlg.transform.output_array
         img1 = imshow(array0, title="array0")
         img2 = imshow(array1, title="array1")
         return dlg, img1, img2

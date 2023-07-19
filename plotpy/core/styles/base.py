@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import annotations
+
 from copy import deepcopy
 from math import atan2, pi, sqrt
+from typing import TYPE_CHECKING
 
 from guidata.dataset.dataitems import (
     BoolItem,
@@ -27,6 +31,12 @@ from qtpy import QtWidgets as QW
 from qwt import QwtPlotCurve, QwtPlotMarker, QwtSymbol
 
 from plotpy.config import _
+
+if TYPE_CHECKING:
+    import guidata.dataset.datatypes
+
+    from plotpy.core.interfaces.common import IBasePlotItem
+    from plotpy.core.plot import BasePlot
 
 LINESTYLES = {"-": "SolidLine", "--": "DashLine", ":": "DotLine", "-.": "DashDotLine"}
 COLORS = {
@@ -185,8 +195,12 @@ def update_style_attr(style, param):
             break
 
 
-class ItemParameters(object):
-    """Class handling QwtPlotItem-like parameters"""
+class ItemParameters:
+    """Class handling QwtPlotItem-like parameters
+
+    Args:
+        multiselection (bool): if True, the class will handle
+    """
 
     MULTISEL_DATASETS = []
     # Customizing tab display order:
@@ -200,10 +214,10 @@ class ItemParameters(object):
         "AxesParam",
     )
 
-    def __init__(self, multiselection=False):
+    def __init__(self, multiselection: bool = False):
         self.multiselection = multiselection
-        self.paramdict = {}
-        self.items = set()
+        self.paramdict: dict[str, guidata.dataset.datatypes.DataSet] = {}
+        self.items: set[IBasePlotItem] = set()
 
     @classmethod
     def register_multiselection(cls, klass, klass_ms):
@@ -216,13 +230,19 @@ class ItemParameters(object):
         self.paramdict[key] = param
         self.items.add(item)
 
-    def add(self, key, item, param):
+    def add(
+        self,
+        key: str,
+        item: IBasePlotItem,
+        param: guidata.dataset.datatypes.DataSet,
+    ) -> None:
         """
+        Add parameters for a given item
 
-        :param key:
-        :param item:
-        :param param:
-        :return:
+        Args:
+            key: key to identify the item
+            item: item to be customized
+            param: parameters to be applied to the item
         """
         if self.multiselection:
             for klass, klass_ms in self.MULTISEL_DATASETS:
@@ -238,30 +258,35 @@ class ItemParameters(object):
                     return
         self.__add(key, item, param)
 
-    def get(self, key):
+    def get(self, key: str) -> guidata.dataset.datatypes.DataSet:
         """
+        Get parameters for a given item
 
-        :param key:
-        :return:
+        Args:
+            key: key to identify the item
         """
         return deepcopy(self.paramdict.get(key))
 
-    def update(self, plot):
+    def update(self, plot: BasePlot) -> None:
         """
+        Update plot items according to the parameters
 
-        :param plot:
+        Args:
+            plot: plot to be updated
         """
         for item in self.items:
             item.set_item_parameters(self)
         plot.replot()
         plot.SIG_ITEMS_CHANGED.emit(plot)
 
-    def edit(self, plot, title, icon):
+    def edit(self, plot: BasePlot, title: str, icon: str) -> None:
         """
+        Edit parameters
 
-        :param plot:
-        :param title:
-        :param icon:
+        Args:
+            plot: plot to be updated
+            title: title of the dialog
+            icon: icon of the dialog
         """
         paramdict = self.paramdict.copy()
         ending_parameters = []

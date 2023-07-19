@@ -7,6 +7,7 @@ from guidata.utils import update_dataset
 from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
 
+from plotpy.core.coords import canvas_to_axes
 from plotpy.core.interfaces.common import (
     IBaseImageItem,
     IBasePlotItem,
@@ -16,7 +17,6 @@ from plotpy.core.interfaces.common import (
     IVoiImageItemType,
 )
 from plotpy.core.items.image.base import BaseImageItem
-from plotpy.core.items.utils import canvas_to_axes
 
 try:
     from plotpy._scaler import _scale_xy
@@ -49,10 +49,10 @@ class ImageFilterItem(BaseImageItem):
     """
     Construct a rectangular area image filter item
 
-        * image: :py:class:`.image.RawImageItem` instance
+        * image: :py:class:`.RawImageItem` instance
         * filter: function (x, y, data) --> data
         * param: image filter parameters
-          (:py:class:`.styles.ImageFilterParam` instance)
+          (:py:class:`.ImageFilterParam` instance)
     """
 
     __implements__ = (IBasePlotItem, IBaseImageItem)
@@ -78,7 +78,7 @@ class ImageFilterItem(BaseImageItem):
         """
         Set the image item on which the filter will be applied
 
-            * image: :py:class:`.image.RawImageItem` instance
+            * image: :py:class:`.RawImageItem` instance
         """
         self.image = image
 
@@ -201,13 +201,6 @@ class ImageFilterItem(BaseImageItem):
             ITrackableItemType,
         )
 
-    def can_setfullscale(self):
-        """
-
-        :return:
-        """
-        return False
-
     def can_sethistogram(self):
         """
 
@@ -220,10 +213,10 @@ class XYImageFilterItem(ImageFilterItem):
     """
     Construct a rectangular area image filter item
 
-        * image: :py:class:`.image.XYImageItem` instance
+        * image: :py:class:`.XYImageItem` instance
         * filter: function (x, y, data) --> data
         * param: image filter parameters
-          (:py:class:`.styles.ImageFilterParam` instance)
+          (:py:class:`.ImageFilterParam` instance)
     """
 
     def __init__(self, image, filter, param):
@@ -233,7 +226,7 @@ class XYImageFilterItem(ImageFilterItem):
         """
         Set the image item on which the filter will be applied
 
-            * image: :py:class:`.image.XYImageItem` instance
+            * image: :py:class:`.XYImageItem` instance
         """
         ImageFilterItem.set_image(self, image)
 

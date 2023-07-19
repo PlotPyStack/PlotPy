@@ -84,11 +84,11 @@ class FlipRotateDialog(QW.QDialog):
 
     Args:
         parent (QWidget): Parent widget
-        wintitle (str, optional): Window title
-        options (dict, optional): Options
-        resize_to (tuple, optional): Resize to (width, height)
-        edit (bool, optional): Edit mode
-        toolbar (bool, optional): Show toolbar
+        wintitle (str | None): Window title
+        options (dict | None): Options
+        resize_to (tuple | None): Resize to (width, height)
+        edit (bool | None): Edit mode
+        toolbar (bool | None): Show toolbar
     """
 
     def __init__(
@@ -122,13 +122,13 @@ class FlipRotateDialog(QW.QDialog):
         dialogvlayout.addLayout(buttonhlayout)
         self.setLayout(dialogvlayout)
 
-        self.transf = self.widget.transf
+        self.transform = self.widget.transform
         self.plot_widget = plot_widget = self.widget.plot_widget
         self.manager = plot_widget.manager
         self.toolbar = plot_widget.toolbar
 
-        self.accepted.connect(self.transf.accept_changes)
-        self.rejected.connect(self.transf.reject_changes)
+        self.accepted.connect(self.transform.accept_changes)
+        self.rejected.connect(self.transform.reject_changes)
 
     def add_buttons_to_layout(self, layout: QW.QBoxLayout, edit: bool) -> None:
         """Add buttons to layout
@@ -153,8 +153,8 @@ class FlipRotateWidget(basetransform.BaseTransformWidget):
 
     Args:
         parent (QWidget): Parent widget
-        toolbar (bool, optional): Show toolbar
-        options (dict, optional): Options
+        toolbar (bool | None): Show toolbar
+        options (dict | None): Options
     """
 
     ROTATION_ANGLES = [str((i - 1) * 90) for i in range(4)]
@@ -166,7 +166,7 @@ class FlipRotateWidget(basetransform.BaseTransformWidget):
         self.hflip_btn = None
         self.vflip_btn = None
         super().__init__(parent, toolbar=toolbar, options=options)
-        self.transf = FlipRotateTransform(self, self.plot_widget.manager)
+        self.transform = FlipRotateTransform(self, self.plot_widget.manager)
         self.manager = self.plot_widget.manager
 
     def add_buttons_to_layout(self, layout: QW.QBoxLayout) -> None:
@@ -182,7 +182,7 @@ class FlipRotateWidget(basetransform.BaseTransformWidget):
         self.angle_combo.addItems(self.ROTATION_ANGLES)
         self.angle_combo.setCurrentIndex(1)
         self.angle_combo.currentIndexChanged.connect(
-            lambda index: self.transf.apply_transformation()
+            lambda index: self.transform.apply_transformation()
         )
         layout.addWidget(self.angle_combo)
         layout.addSpacing(10)
@@ -194,7 +194,7 @@ class FlipRotateWidget(basetransform.BaseTransformWidget):
             self,
             text="",
             icon=get_icon("hflip.png"),
-            toggled=lambda state: self.transf.apply_transformation(),
+            toggled=lambda state: self.transform.apply_transformation(),
             autoraise=False,
         )
         self.hflip_btn = hflip
@@ -203,7 +203,7 @@ class FlipRotateWidget(basetransform.BaseTransformWidget):
             self,
             text="",
             icon=get_icon("vflip.png"),
-            toggled=lambda state: self.transf.apply_transformation(),
+            toggled=lambda state: self.transform.apply_transformation(),
             autoraise=False,
         )
         self.vflip_btn = vflip
@@ -218,7 +218,7 @@ class FlipRotateWidget(basetransform.BaseTransformWidget):
     def apply_transformation(self) -> None:
         """Apply transformation"""
         angle, hflip, vflip = self.get_parameters()
-        self.transf.apply_transformation(angle, hflip, vflip)
+        self.transform.apply_transformation(angle, hflip, vflip)
 
     def reset(self) -> None:
         """Reset transformation"""

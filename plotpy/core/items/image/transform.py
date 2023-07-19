@@ -7,6 +7,7 @@ from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 
 from plotpy.config import _
+from plotpy.core.coords import axes_to_canvas
 from plotpy.core.interfaces.common import (
     IBaseImageItem,
     IBasePlotItem,
@@ -14,7 +15,6 @@ from plotpy.core.interfaces.common import (
 )
 from plotpy.core.items.image.base import RawImageItem
 from plotpy.core.items.image.mixin import TransformImageMixin
-from plotpy.core.items.utils import axes_to_canvas
 from plotpy.core.styles.image import TrImageParam
 from plotpy.utils.geometry import colvector, scale, translate
 

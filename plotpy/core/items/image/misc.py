@@ -9,6 +9,7 @@ from qtpy import QtCore as QC
 
 from plotpy.config import _
 from plotpy.core import io
+from plotpy.core.coords import axes_to_canvas
 from plotpy.core.interfaces.common import (
     IBaseImageItem,
     IBasePlotItem,
@@ -23,7 +24,6 @@ from plotpy.core.interfaces.common import (
 from plotpy.core.items.image.base import BaseImageItem, RawImageItem, _nanmax, _nanmin
 from plotpy.core.items.image.mixin import ImageMixin
 from plotpy.core.items.image.transform import TrImageItem
-from plotpy.core.items.utils import axes_to_canvas
 from plotpy.core.styles.image import ImageParam, QuadGridParam
 
 try:
@@ -323,13 +323,6 @@ class Histogram2DItem(ImageMixin, BaseImageItem):
         BaseImageItem.set_item_parameters(self, itemparams)
 
     # ---- IBaseImageItem API --------------------------------------------------
-    def can_setfullscale(self):
-        """
-
-        :return:
-        """
-        return True
-
     def can_sethistogram(self):
         """
 

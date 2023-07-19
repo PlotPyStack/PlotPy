@@ -7,7 +7,7 @@ from plotpy.core.items.annotations import (
     AnnotatedPoint,
     AnnotatedRectangle,
 )
-from plotpy.core.panels import ID_OCS, ID_XCS, ID_YCS
+from plotpy.core.panels.base import ID_OCS, ID_XCS, ID_YCS
 from plotpy.core.tools.base import PanelTool
 from plotpy.core.tools.shapes import RectangularShapeTool
 

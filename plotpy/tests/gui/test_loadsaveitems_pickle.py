@@ -81,7 +81,7 @@ def build_items():
     return items
 
 
-class IOTest(object):
+class IOTest:
     FNAME = None
 
     def __init__(self):

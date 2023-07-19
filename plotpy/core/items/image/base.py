@@ -11,19 +11,28 @@ from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qwt import QwtPlotItem
 
-from plotpy._scaler import (INTERP_AA, INTERP_LINEAR, INTERP_NEAREST,
-                            _histogram, _scale_rect)
+from plotpy._scaler import (
+    INTERP_AA,
+    INTERP_LINEAR,
+    INTERP_NEAREST,
+    _histogram,
+    _scale_rect,
+)
 from plotpy.config import _
 from plotpy.core import io
-from plotpy.core.interfaces.common import (IBaseImageItem, IBasePlotItem,
-                                           IColormapImageItemType,
-                                           ICSImageItemType,
-                                           IExportROIImageItemType,
-                                           IHistDataSource, IImageItemType,
-                                           ISerializableType,
-                                           IStatsImageItemType,
-                                           ITrackableItemType,
-                                           IVoiImageItemType)
+from plotpy.core.interfaces.common import (
+    IBaseImageItem,
+    IBasePlotItem,
+    IColormapImageItemType,
+    ICSImageItemType,
+    IExportROIImageItemType,
+    IHistDataSource,
+    IImageItemType,
+    ISerializableType,
+    IStatsImageItemType,
+    ITrackableItemType,
+    IVoiImageItemType,
+)
 from plotpy.core.items.shapes.rectangle import RectangleShape
 from plotpy.core.styles.image import RawImageParam
 from plotpy.utils.colormap import FULLRANGE, get_cmap, get_cmap_name
@@ -271,7 +280,7 @@ class BaseImageItem(QwtPlotItem):
 
         If x1,y1 are specified:
 
-          Return image levels (np.ndarray) in rectangular area (x0,y0,x1,y1)
+          Return image levels (numpy.ndarray) in rectangular area (x0,y0,x1,y1)
         """
         i0, j0 = self.get_closest_indexes(x0, y0)
         if x1 is None or y1 is None:
@@ -666,13 +675,6 @@ class BaseImageItem(QwtPlotItem):
         pass
 
     # ---- IBaseImageItem API --------------------------------------------------
-    def can_setfullscale(self):
-        """
-
-        :return:
-        """
-        return True
-
     def can_sethistogram(self):
         """
 
@@ -975,13 +977,6 @@ class RawImageItem(BaseImageItem):
         BaseImageItem.set_item_parameters(self, itemparams)
 
     # ---- IBaseImageItem API --------------------------------------------------
-    def can_setfullscale(self):
-        """
-
-        :return:
-        """
-        return True
-
     def can_sethistogram(self):
         """
 

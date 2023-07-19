@@ -18,6 +18,9 @@ eggs/
 .installed.cfg
 *.egg
 MANIFEST
+doc/install_requires.txt
+doc/extras_require-dev.txt
+doc/extras_require-doc.txt
 
 # Tests
 .tox/
@@ -50,3 +53,6 @@ doc/source/deployment_example/qt.conf
 # Virtual env
 .venv/
 htmlcov
+
+# Other
+*.bak

@@ -5,8 +5,8 @@
 # (see plotpy/__init__.py for details)
 
 """
-plotpy.widgets.contour
-==========================
+Contours
+========
 
 This module provides the :py:func:`.contour` function that computes contour lines.
 
@@ -85,8 +85,8 @@ def contour(X, Y, Z, levels):
         raise TypeError("Number of dimensions of x and y should match.")
 
     if x.ndim == 1:
-        nx, = x.shape
-        ny, = y.shape
+        (nx,) = x.shape
+        (ny,) = y.shape
 
         if nx != Nx:
             raise TypeError("Length of x must be number of columns in z.")

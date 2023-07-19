@@ -11,13 +11,13 @@ from qtpy import QtGui as QG
 from qwt import QwtSymbol
 
 from plotpy.config import CONF, _
+from plotpy.core.coords import canvas_to_axes
 from plotpy.core.interfaces.common import (
     IBasePlotItem,
     ISerializableType,
     IShapeItemType,
 )
 from plotpy.core.items.shapes.base import AbstractShape
-from plotpy.core.items.utils import canvas_to_axes
 from plotpy.core.styles.shape import ShapeParam
 
 

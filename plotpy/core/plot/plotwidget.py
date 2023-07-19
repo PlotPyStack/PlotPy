@@ -10,16 +10,17 @@ from guidata.qthelpers import win32_fix_title_bar_background
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
+from qtpy.QtWidgets import QWidget  # only to help intersphinx find QWidget
 
 from plotpy.config import _
-from plotpy.core.itemlist import PlotItemList
+from plotpy.core.panels.contrastadjustment import ContrastAdjustment
+from plotpy.core.panels.csection.cswidget import XCrossSection, YCrossSection
+from plotpy.core.panels.itemlist import PlotItemList
 from plotpy.core.plot.base import BasePlot, PlotType
-from plotpy.core.plot.cross_section.cswidget import XCrossSection, YCrossSection
-from plotpy.core.plot.histogram.contrastadjustment import ContrastAdjustment
 from plotpy.core.plot.manager import PlotManager
 
 if TYPE_CHECKING:
-    from plotpy.core.panels import PanelWidget
+    from plotpy.core.panels.base import PanelWidget
     from plotpy.core.styles import GridParam
 
 
@@ -27,8 +28,8 @@ def configure_plot_splitter(qsplit: QW.QSplitter, decreasing_size: bool = True) 
     """_summary_
 
     Args:
-        qsplit (QW.QSplitter): QSplitter instance
-        decreasing_size (bool, optional): Specify if child widgets can be resized down
+        qsplit (QSplitter): QSplitter instance
+        decreasing_size (bool | None): Specify if child widgets can be resized down
             to size 0 by the user. Defaults to True.
     """
     qsplit.setChildrenCollapsible(False)
@@ -46,23 +47,20 @@ def configure_plot_splitter(qsplit: QW.QSplitter, decreasing_size: bool = True) 
 class BasePlotWidget(QW.QSplitter):
     """
     Construct a BasePlotWidget object, which includes:
-        * A plot (:py:class:`.baseplot.BasePlot`)
-        * An `item list` panel (:py:class:`.baseplot.PlotItemList`)
-        * A `contrast adjustment` panel
-          (:py:class:`.histogram.contrastadjustment.ContrastAdjustment`)
-        * An `X-axis cross section` panel
-          (:py:class:`.cross_section.XCrossSection`)
-        * An `Y-axis cross section` panel
-          (:py:class:`.cross_section.YCrossSection`)
+        * A plot (:py:class:`.BasePlot`)
+        * An `item list` panel (:py:class:`.PlotItemList`)
+        * A `contrast adjustment` panel (:py:class:`.ContrastAdjustment`)
+        * An `X-axis cross section` panel (:py:class:`.XCrossSection`)
+        * An `Y-axis cross section` panel (:py:class:`.YCrossSection`)
 
     This object does nothing in itself because plot and panels are not
     connected to each other.
-    See class :py:class:`.plot.PlotWidget`
+    See class :py:class:`.PlotWidget`
     """
 
     def __init__(
         self,
-        parent: QW.QWidget = None,
+        parent: QWidget = None,
         title: str = "",
         xlabel: tuple[str, str] = ("", ""),
         ylabel: tuple[str, str] = ("", ""),
@@ -205,15 +203,17 @@ class PlotWidget(BasePlotWidget):
     Construct a PlotWidget object: plotting widget with integrated
     plot manager
 
-        * parent: parent widget
-        * options: options sent to the :py:class:`.baseplot.BasePlot` object
-          (dictionary)
-        * panels (optional): additionnal panels (list, tuple)
+    Args:
+        parent (QWidget): parent widget
+        toolbar (bool): show/hide toolbar
+        options (dict): options sent to the :py:class:`.BasePlot` object (dictionary)
+        panels (list, tuple): additionnal panels
+        auto_tools (bool): automatically register tools
     """
 
     def __init__(
         self,
-        parent: QW.QWidget,
+        parent: QWidget,
         toolbar: bool = False,
         options: dict = {},
         panels: tuple[PanelWidget] | None = None,
@@ -233,8 +233,8 @@ class PlotWidget(BasePlotWidget):
         """Configure the plot manager
 
         Args:
-            panels (tuple[PanelWidget], optional): additionnal panels (list, tuple). Defaults to None.
-            toolbar (bool, optional): [description]. Defaults to True.
+            panels (tuple[PanelWidget] | None): additionnal panels (list, tuple). Defaults to None.
+            toolbar (bool | None): [description]. Defaults to True.
         """
         self.manager.add_plot(self.plot)
         self.manager.add_panel(self.itemlist)
@@ -263,12 +263,12 @@ class PlotWidget(BasePlotWidget):
             self.manager.register_all_tools()
 
 
-def set_widget_title_icon(widget: QW.QWidget, wintitle: str, icon: QG.QIcon) -> None:
+def set_widget_title_icon(widget: QWidget, wintitle: str, icon: QG.QIcon) -> None:
     """Setups the widget title and icon
 
     Args:
         wintitle (str): The window title
-        icon (QG.QIcon): The window icon
+        icon (QIcon): The window icon
     """
     win32_fix_title_bar_background(widget)
     widget.setWindowTitle(wintitle)
@@ -282,7 +282,7 @@ def set_widget_title_icon(widget: QW.QWidget, wintitle: str, icon: QG.QIcon) -> 
 
 def add_widget_to_grid_layout(
     layout: QW.QGridLayout,
-    widget: QW.QWidget,
+    widget: QWidget,
     row: int | None = None,
     column: int | None = None,
     rowspan: int | None = None,
@@ -291,7 +291,7 @@ def add_widget_to_grid_layout(
     """Add widget to the grid layout
 
     Args:
-        layout (QW.QGridLayout): The layout
+        layout (QGridLayout): The layout
         widget (QWidget): The widget to add
         row (int): The row index
         column (int): The column index
@@ -345,7 +345,7 @@ class AbstractPlotDialogWindow(abc.ABC):
     @abc.abstractmethod
     def add_widget(
         self,
-        widget: QW.QWidget,
+        widget: QWidget,
         row: int | None = None,
         column: int | None = None,
         rowspan: int | None = None,
@@ -390,7 +390,7 @@ class PlotDialog(QW.QDialog, AbstractPlotDialogWindow, metaclass=PlotDialogMeta)
 
     Args:
         wintitle (str): The window title
-        icon (QG.QIcon): The window icon
+        icon (QIcon): The window icon
         edit (bool): If True, the plot is editable
         toolbar (bool): If True, the plot toolbar is displayed
         options (dict): Plot options
@@ -407,7 +407,7 @@ class PlotDialog(QW.QDialog, AbstractPlotDialogWindow, metaclass=PlotDialogMeta)
         edit: bool = False,
         toolbar: bool = False,
         options: dict = {},
-        parent: QW.QWidget | None = None,
+        parent: QWidget | None = None,
         panels: list[PanelWidget] | None = None,
         auto_tools: bool = True,
     ) -> None:
@@ -447,7 +447,7 @@ class PlotDialog(QW.QDialog, AbstractPlotDialogWindow, metaclass=PlotDialogMeta)
 
     def add_widget(
         self,
-        widget: QW.QWidget,
+        widget: QWidget,
         row: int | None = None,
         column: int | None = None,
         rowspan: int | None = None,
@@ -482,9 +482,7 @@ class PlotDialog(QW.QDialog, AbstractPlotDialogWindow, metaclass=PlotDialogMeta)
             vlayout.addLayout(self.button_layout)
 
     def install_button_layout(self) -> None:
-        """
-        Install standard buttons (OK, Cancel) in dialog button box layout
-        (:py:attr:`.plot.PlotDialog.button_layout`)
+        """Install standard buttons (OK, Cancel) in dialog button box layout
 
         This method may be overriden to customize the button box
         """
@@ -495,8 +493,7 @@ class PlotDialog(QW.QDialog, AbstractPlotDialogWindow, metaclass=PlotDialogMeta)
         self.button_box = bbox
 
     def register_tools(self):
-        """
-        Register the plotting tools: the base implementation of this method
+        """Register the plotting tools: the base implementation of this method
         register tools according to the plot type (curve, image, etc.)
 
         This method may be overriden to provide a fully customized set of tools
@@ -515,7 +512,7 @@ class PlotWindow(QW.QMainWindow, AbstractPlotDialogWindow, metaclass=PlotWindowM
 
     Args:
         wintitle (str): The window title
-        icon (QG.QIcon): The window icon
+        icon (QIcon): The window icon
         toolbar (bool): If True, the plot toolbar is displayed
         options (dict): Plot options
         parent (QWidget): The parent widget
@@ -530,7 +527,7 @@ class PlotWindow(QW.QMainWindow, AbstractPlotDialogWindow, metaclass=PlotWindowM
         icon: str = "plotpy.svg",
         toolbar: bool = False,
         options: dict = {},
-        parent: QW.QWidget | None = None,
+        parent: QWidget | None = None,
         panels: list[PanelWidget] | None = None,
         auto_tools: bool = True,
     ) -> None:
@@ -566,7 +563,7 @@ class PlotWindow(QW.QMainWindow, AbstractPlotDialogWindow, metaclass=PlotWindowM
 
     def add_widget(
         self,
-        widget: QW.QWidget,
+        widget: QWidget,
         row: int | None = None,
         column: int | None = None,
         rowspan: int | None = None,
@@ -592,7 +589,7 @@ class PlotWindow(QW.QMainWindow, AbstractPlotDialogWindow, metaclass=PlotWindowM
     def setup_layout(self) -> None:
         """Setup the widget layout"""
         self.addToolBar(self.plot_widget.toolbar)
-        widget = QW.QWidget()
+        widget = QWidget()
         widget.setLayout(self.plot_layout)
         self.setCentralWidget(widget)
 
@@ -609,7 +606,7 @@ class PlotWindow(QW.QMainWindow, AbstractPlotDialogWindow, metaclass=PlotWindowM
         """Reimplement the close event to close all panels
 
         Args:
-            event (QG.QCloseEvent): The close event
+            event (QCloseEvent): The close event
         """
         # Closing panels (necessary if at least one of these panels has no
         # parent widget: otherwise, this panel will stay open after the main
@@ -634,7 +631,7 @@ class SubplotWidget(QW.QSplitter):
     """
 
     def __init__(
-        self, manager: PlotManager, parent: QW.QWidget | None = None, **kwargs
+        self, manager: PlotManager, parent: QWidget | None = None, **kwargs
     ) -> None:
         super(SubplotWidget, self).__init__(parent, **kwargs)
         self.setOrientation(QC.Qt.Orientation.Horizontal)
@@ -642,7 +639,7 @@ class SubplotWidget(QW.QSplitter):
         self.manager = manager
         self.plots = []
         self.itemlist = None
-        main = QW.QWidget()
+        main = QWidget()
         self.plotlayout = QW.QGridLayout()
         main.setLayout(self.plotlayout)
         self.addWidget(main)
@@ -675,3 +672,6 @@ class SubplotWidget(QW.QSplitter):
         if plot_id is None:
             plot_id = id(plot)
         self.manager.add_plot(plot, plot_id)
+
+
+# TODO: Migrate DataLab's SyncPlotWindow right here

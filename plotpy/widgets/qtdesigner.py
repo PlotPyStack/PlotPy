@@ -9,7 +9,7 @@
 plotpy.widgets.qtdesigner
 -----------------------------
 
-The `qtdesigner` module provides QtDesigner helper functions for `plotpy`:
+The `qtdesigner` module provides QtDesigner helper functions for :mod:`plotpy`:
     * :py:func:`.qtdesigner.loadui`
     * :py:func:`.qtdesigner.compileui`
     * :py:func:`.qtdesigner.create_qtdesigner_plugins`

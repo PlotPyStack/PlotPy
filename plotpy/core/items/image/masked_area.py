@@ -1,4 +1,4 @@
-class MaskedArea(object):
+class MaskedArea:
     """Defines masked areas for a masked image item"""
 
     def __init__(self, geometry=None, x0=None, y0=None, x1=None, y1=None, inside=None):

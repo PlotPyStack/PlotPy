@@ -22,14 +22,14 @@ from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 
 from plotpy.config import CONF
-from plotpy.core.items.utils import axes_to_canvas, canvas_to_axes
+from plotpy.core.coords import axes_to_canvas, canvas_to_axes
 from plotpy.utils.debug import buttons_to_str, evt_type_to_str
 
 CursorShape = type(QC.Qt.CursorShape.ArrowCursor)
 
 
 # Sélection d'événements  ---------
-class EventMatch(object):
+class EventMatch:
     """A callable returning true if it matches an event"""
 
     def __call__(self, event):
@@ -380,7 +380,7 @@ class ClickHandler(QC.QObject):
     """
 
     #: Signal emitted by ClickHandler on mouse click
-    SIG_CLICK_EVENT = QC.Signal("PyQt_PyObject", "QEvent")
+    SIG_CLICK_EVENT = QC.Signal(object, "QEvent")
 
     def __init__(self, filter, btn, mods=QC.Qt.NoModifier, start_state=0):
         super(ClickHandler, self).__init__()
@@ -439,18 +439,17 @@ class MenuHandler(ClickHandler):
 
 
 class QtDragHandler(DragHandler):
-
     #: Signal emitted by QtDragHandler when starting tracking
-    SIG_START_TRACKING = QC.Signal("PyQt_PyObject", "QEvent")
+    SIG_START_TRACKING = QC.Signal(object, "QEvent")
 
     #: Signal emitted by QtDragHandler when stopping tracking and not moving
-    SIG_STOP_NOT_MOVING = QC.Signal("PyQt_PyObject", "QEvent")
+    SIG_STOP_NOT_MOVING = QC.Signal(object, "QEvent")
 
     #: Signal emitted by QtDragHandler when stopping tracking and moving
-    SIG_STOP_MOVING = QC.Signal("PyQt_PyObject", "QEvent")
+    SIG_STOP_MOVING = QC.Signal(object, "QEvent")
 
     #: Signal emitted by QtDragHandler when moving
-    SIG_MOVE = QC.Signal("PyQt_PyObject", "QEvent")
+    SIG_MOVE = QC.Signal(object, "QEvent")
 
     def start_tracking(self, filter, event):
         """
@@ -496,7 +495,7 @@ class AutoZoomHandler(ClickHandler):
         filter.plot.do_autoscale()
 
 
-class MoveHandler(object):
+class MoveHandler:
     """ """
 
     def __init__(
@@ -515,7 +514,7 @@ class MoveHandler(object):
         filter.plot.do_move_marker(event)
 
 
-class UndoMoveObject(object):
+class UndoMoveObject:
     """ """
 
     def __init__(self, obj, pos1, pos2):
@@ -586,7 +585,7 @@ class UndoRotatePoint(UndoMoveObject):
         self.obj.rotate_local_shape(pos2, pos1)
 
 
-class ObjectHandler(object):
+class ObjectHandler:
     """ """
 
     def __init__(
@@ -834,7 +833,7 @@ class RectangularSelectionHandler(DragHandler):
     """ """
 
     #: Signal emitted by RectangularSelectionHandler when ending selection
-    SIG_END_RECT = QC.Signal("PyQt_PyObject", "QPointF", "QPointF")
+    SIG_END_RECT = QC.Signal(object, "QPointF", "QPointF")
 
     def __init__(self, filter, btn, mods=QC.Qt.NoModifier, start_state=0):
         super(RectangularSelectionHandler, self).__init__(

@@ -11,54 +11,6 @@
 plotpy.core.items.annotations
 -----------------------------
 
-The `annotations` module provides annotated shapes:
-    * :py:class:`.annotations.AnnotatedPoint`
-    * :py:class:`.annotations.AnnotatedSegment`
-    * :py:class:`.annotations.AnnotatedRectangle`
-    * :py:class:`.annotations.AnnotatedObliqueRectangle`
-    * :py:class:`.annotations.AnnotatedEllipse`
-    * :py:class:`.annotations.AnnotatedCircle`
-
-An annotated shape is a plot item (derived from QwtPlotItem) that may be
-displayed on a plotting widget like :py:class:`.baseplot.BasePlot`.
-
-.. seealso:: module :py:mod:`.shapes`
-
-Examples
-~~~~~~~~
-
-An annotated shape may be created:
-    * from the associated plot item class (e.g. `AnnotatedCircle` to
-      create an annotated circle): the item properties are then assigned
-      by creating the appropriate style parameters object
-      (:py:class:`.styles.AnnotationParam`)
-
->>> from plotpy.core.items.annotations import AnnotatedCircle
->>> from plotpy.core.styles import AnnotationParam
->>> param = AnnotationParam()
->>> param.title = 'My circle'
->>> circle_item = AnnotatedCircle(0., 2., 4., 0., param)
-
-    * or using the `plot item builder` (see :py:func:`.builder.make`):
-
->>> from plotpy.core.builder import make
->>> circle_item = make.annotated_circle(0., 2., 4., 0., title='My circle')
-
-Reference
-~~~~~~~~~
-
-.. autoclass:: AnnotatedPoint
-   :members:
-.. autoclass:: AnnotatedSegment
-   :members:
-.. autoclass:: AnnotatedRectangle
-   :members:
-.. autoclass:: AnnotatedObliqueRectangle
-   :members:
-.. autoclass:: AnnotatedEllipse
-   :members:
-.. autoclass:: AnnotatedCircle
-   :members:
 """
 
 from __future__ import unicode_literals
@@ -69,6 +21,7 @@ from guidata.utils import update_dataset
 from guidata.utils.misc import assert_interfaces_valid
 
 from plotpy.config import CONF, _
+from plotpy.core.coords import canvas_to_axes
 from plotpy.core.interfaces.common import (
     IBasePlotItem,
     ISerializableType,
@@ -80,7 +33,6 @@ from plotpy.core.items.shapes.ellipse import EllipseShape
 from plotpy.core.items.shapes.point import PointShape
 from plotpy.core.items.shapes.rectangle import ObliqueRectangleShape, RectangleShape
 from plotpy.core.items.shapes.segment import SegmentShape
-from plotpy.core.items.utils import canvas_to_axes
 from plotpy.core.styles.label import LabelParam
 from plotpy.core.styles.shape import AnnotationParam
 from plotpy.utils.geometry import (

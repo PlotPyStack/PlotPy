@@ -105,7 +105,7 @@ class RotateCropTransform(basetransform.BaseTransform):
         """Compute transformation, return compute output array
 
         Returns:
-            np.ndarray: Compute output array
+            numpy.ndarray: Compute output array
         """
         return get_image_in_shape(self.crop_rect, apply_interpolation=False)
 
@@ -128,11 +128,11 @@ class RotateCropDialog(QW.QDialog):
 
     Args:
         parent (QWidget): Parent widget
-        wintitle (str, optional): Dialog title
-        options (dict, optional): Options dict
-        resize_to (tuple, optional): Resize dialog to (width, height)
-        edit (bool, optional): Show "Edit" button
-        toolbar (bool, optional): Show toolbar
+        wintitle (str | None): Dialog title
+        options (dict | None): Options dict
+        resize_to (tuple | None): Resize dialog to (width, height)
+        edit (bool | None): Show "Edit" button
+        toolbar (bool | None): Show toolbar
     """
 
     def __init__(
@@ -166,18 +166,18 @@ class RotateCropDialog(QW.QDialog):
         dialogvlayout.addLayout(buttonhlayout)
         self.setLayout(dialogvlayout)
 
-        self.transf = self.widget.transf
+        self.transform = self.widget.transform
         self.plot_widget = self.widget.plot_widget
         self.manager = self.widget.plot_widget.manager
 
-        self.accepted.connect(self.transf.accept_changes)
-        self.rejected.connect(self.transf.reject_changes)
+        self.accepted.connect(self.transform.accept_changes)
+        self.rejected.connect(self.transform.reject_changes)
 
     def add_buttons_to_layout(self, layout: QW.QBoxLayout, edit: bool) -> None:
         """Add buttons to layout
 
         Args:
-            layout (QW.QBoxLayout): Layout
+            layout (QBoxLayout): Layout
         """
         if edit:
             self.button_box = bbox = QW.QDialogButtonBox(
@@ -195,22 +195,22 @@ class RotateCropWidget(basetransform.BaseTransformWidget):
 
     Args:
         parent (QWidget): Parent widget
-        toolbar (bool, optional): Show toolbar
-        options (dict, optional): Options dict
+        toolbar (bool | None): Show toolbar
+        options (dict | None): Options dict
     """
 
     def __init__(
         self, parent: QW.QWidget, toolbar: bool = False, options: dict | None = None
     ) -> None:
         super().__init__(parent, toolbar=toolbar, options=options)
-        self.transf = RotateCropTransform(self, self.plot_widget.manager)
+        self.transform = RotateCropTransform(self, self.plot_widget.manager)
         self.manager = self.plot_widget.manager
 
     def add_buttons_to_layout(self, layout: QW.QBoxLayout) -> None:
         """Add tool buttons to layout
 
         Args:
-            layout (QW.QBoxLayout): Layout
+            layout (QBoxLayout): Layout
         """
         # Show crop rectangle checkbox
         show_crop = QW.QCheckBox(_("Show cropping rectangle"), self.plot_widget)
@@ -222,15 +222,15 @@ class RotateCropWidget(basetransform.BaseTransformWidget):
 
     def apply_transformation(self) -> None:
         """Apply transformation"""
-        self.transf.apply_transformation()
+        self.transform.apply_transformation()
 
     def reset(self) -> None:
         """Reset transformation"""
-        self.transf.reset()
+        self.transform.reset()
 
     def reject_changes(self) -> None:
         """Reject changes"""
-        self.transf.reject_changes()
+        self.transform.reject_changes()
 
     def show_crop_rect(self, state: bool) -> None:
         """Show/hide cropping rectangle shape
@@ -238,7 +238,7 @@ class RotateCropWidget(basetransform.BaseTransformWidget):
         Args:
             state (bool): Show/hide state
         """
-        self.transf.show_crop_rect(state)
+        self.transform.show_crop_rect(state)
 
 
 class MultipleRotateCropWidget(basetransform.BaseMultipleTransformWidget):

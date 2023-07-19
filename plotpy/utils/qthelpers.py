@@ -11,15 +11,18 @@
 # Licensed under the terms of the MIT License
 # (see spyder/__init__.py for details)
 
-
 """
-plotpy.utils.qthelpers
-----------------------------
+Qt helpers
+----------
+
+Overview
+^^^^^^^^
 
 The :py:mod:``.qthelpers`` module provides helper functions for developing
 easily Qt-based graphical user interfaces with plotpy.
 
 Ready-to-use open/save dialogs:
+
     :py:func:`.qthelpers.exec_image_save_dialog`
         Executes an image save dialog box (QFileDialog.getSaveFileName)
     :py:func:`.qthelpers.exec_image_open_dialog`
@@ -28,42 +31,53 @@ Ready-to-use open/save dialogs:
         Executes an image*s* open dialog box (QFileDialog.getOpenFileNames)
 
 Reference
-~~~~~~~~~
+^^^^^^^^^
 
 .. autofunction:: exec_image_save_dialog
 .. autofunction:: exec_image_open_dialog
 .. autofunction:: exec_images_open_dialog
 """
+
+from __future__ import annotations
+
 import os
 import os.path as osp
 import sys
+from typing import TYPE_CHECKING
 
+import numpy
 from qtpy import QtWidgets as QW
+from qtpy.QtWidgets import QWidget  # only to help intersphinx find QWidget
 
 from plotpy.config import _
 from plotpy.core import io
 
-# from plotpy.widgets.dialog import (
-#     get_open_filename,
-#     get_open_filenames,
-#     get_save_filename,
-# )
+if TYPE_CHECKING:
+    from qtpy import QtCore as QC
 
 
 # ===============================================================================
 # Ready-to-use open/save dialogs
 # ===============================================================================
-def exec_image_save_dialog(parent, data, template=None, basedir="", app_name=None):
-    """
-    Executes an image save dialog box (QFileDialog.getSaveFileName)
-        * parent: parent widget (None means no parent)
-        * data: image pixel array data
-        * template: image template (pydicom dataset) for DICOM files
-        * basedir: base directory ('' means current directory)
-        * app_name (opt.): application name (used as a title for an eventual
-          error message box in case something goes wrong when saving image)
+def exec_image_save_dialog(
+    parent: QWidget,
+    data: numpy.ndarray,
+    template: dict | None = None,
+    basedir: str = "",
+    app_name: str | None = None,
+) -> str | None:
+    """Executes an image save dialog box (QFileDialog.getSaveFileName)
 
-    Returns filename if dialog is accepted, None otherwise
+    Args:
+        parent (QWidget): parent widget (None means no parent)
+        data (numpy.ndarray): image pixel array data
+        template (dict | None): image template (pydicom dataset) for DICOM files
+        basedir (str | None): base directory ('' means current directory)
+        app_name (str | None): application name (used as a title for an eventual
+         error message box in case something goes wrong when saving image)
+
+    Returns:
+        str | None: filename if dialog is accepted, None otherwise
     """
     saved_in, saved_out, saved_err = sys.stdin, sys.stdout, sys.stderr
     sys.stdout = None
@@ -96,17 +110,25 @@ def exec_image_save_dialog(parent, data, template=None, basedir="", app_name=Non
 
 
 def exec_image_open_dialog(
-    parent, basedir="", app_name=None, to_grayscale=True, dtype=None
-):
-    """
-    Executes an image open dialog box (QFileDialog.getOpenFileName)
-        * parent: parent widget (None means no parent)
-        * basedir: base directory ('' means current directory)
-        * app_name (opt.): application name (used as a title for an eventual
-          error message box in case something goes wrong when saving image)
-        * to_grayscale (default=True): convert image to grayscale
+    parent: QWidget,
+    basedir: str = "",
+    app_name: str | None = None,
+    to_grayscale: bool = True,
+    dtype: numpy.dtype | None = None,
+) -> tuple[str, numpy.ndarray] | None:
+    """Executes an image open dialog box (QFileDialog.getOpenFileName)
 
-    Returns (filename, data) tuple if dialog is accepted, None otherwise
+    Args:
+        parent (QWidget): parent widget (None means no parent)
+        basedir (str | None): base directory ('' means current directory)
+        app_name (str | None): application name (used as a title for an eventual
+         error message box in case something goes wrong when saving image)
+        to_grayscale (bool | None): convert image to grayscale
+        dtype (numpy.dtype | None): data type of the image
+
+    Returns:
+        tuple[str, numpy.ndarray] | None: (filename, data) tuple if dialog is accepted,
+         None otherwise
     """
     saved_in, saved_out, saved_err = sys.stdin, sys.stdout, sys.stderr
     sys.stdout = None
@@ -132,17 +154,25 @@ def exec_image_open_dialog(
 
 
 def exec_images_open_dialog(
-    parent, basedir="", app_name=None, to_grayscale=True, dtype=None
-):
-    """
-    Executes an image*s* open dialog box (QFileDialog.getOpenFileNames)
-        * parent: parent widget (None means no parent)
-        * basedir: base directory ('' means current directory)
-        * app_name (opt.): application name (used as a title for an eventual
-          error message box in case something goes wrong when saving image)
-        * to_grayscale (default=True): convert image to grayscale
+    parent: QWidget,
+    basedir: str = "",
+    app_name: str | None = None,
+    to_grayscale: bool = True,
+    dtype: numpy.dtype | None = None,
+) -> list[tuple[str, numpy.ndarray]] | None:
+    """Executes an image*s* open dialog box (QFileDialog.getOpenFileNames)
 
-    Yields (filename, data) tuples if dialog is accepted, None otherwise
+    Args:
+        parent (QWidget): parent widget (None means no parent)
+        basedir (str | None): base directory ('' means current directory)
+        app_name (str | None): application name (used as a title for an eventual
+         error message box in case something goes wrong when saving image)
+        to_grayscale (bool | None): convert image to grayscale
+        dtype (numpy.dtype | None): data type
+
+    Returns:
+        list[tuple[str, numpy.ndarray]]|None: (filename, data) tuples if dialog
+         is accepted, None otherwise
     """
     saved_in, saved_out, saved_err = sys.stdin, sys.stdout, sys.stderr
     sys.stdout = None
@@ -168,7 +198,16 @@ def exec_images_open_dialog(
         yield filename, data
 
 
-def _process_mime_path(path, extlist):
+def _process_mime_path(path: str, extlist: list[str]) -> str | None:
+    """Process a path from a MIME data object
+
+    Args:
+        path (str): Path to process
+        extlist (list[str]): List of extensions to filter
+
+    Returns:
+        str: Processed path
+    """
     if path.startswith(r"file://"):
         if os.name == "nt":
             # On Windows platforms, a local path reads: file:///c:/...
@@ -185,10 +224,16 @@ def _process_mime_path(path, extlist):
             return path
 
 
-def mimedata2url(source, extlist=None):
-    """
-    Extract url list from MIME data
-    extlist: for example ('.py', '.pyw')
+def mimedata2url(source: QC.QMimeData, extlist: list[str] | None = None) -> list[str]:
+    """Extract url list from MIME data
+
+    Args:
+        source (QMimeData): MIME data
+        extlist (list[str] | None): List of file extensions to filter.
+         Defaults to None. Example: ('.py', '.pyw')
+
+    Returns:
+        list[str]: List of file paths
     """
     pathlist = []
     if source.hasUrls():

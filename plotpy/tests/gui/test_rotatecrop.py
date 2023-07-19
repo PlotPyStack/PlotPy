@@ -40,7 +40,7 @@ def widget_test(fname="brain.png"):
     """Test the rotate/crop widget"""
     _array0, item = create_test_data(fname)
     widget = RotateCropWidget(None, toolbar=True)
-    widget.transf.set_item(item)
+    widget.transform.set_item(item)
     widget.show()
     return widget
 
@@ -70,9 +70,9 @@ def dialog_test(fname="brain.png"):
     """Test the rotate/crop dialog"""
     array0, item = create_test_data(fname)
     dlg = RotateCropDialog(None)
-    dlg.transf.set_item(item)
+    dlg.transform.set_item(item)
     if exec_dialog(dlg) == dlg.Accepted:
-        array1 = dlg.transf.output_array
+        array1 = dlg.transform.output_array
         if array0.shape == array1.shape:
             assert (array1 == array0).all()
             imshow(array1 - array0, title="array1-array0")

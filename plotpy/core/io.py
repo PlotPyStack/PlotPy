@@ -8,18 +8,22 @@
 # pylint: disable=C0103
 
 """
-plotpy.core.io
----------------------
+Input/Output helper functions
+-----------------------------
 
-The `io` module provides input/output helper functions:
-    * :py:func:`.io.imread`: load an image (.png, .tiff,
-      .dicom, etc.) and return its data as a NumPy array
-    * :py:func:`.io.imwrite`: save an array to an image file
-    * :py:func:`.io.load_items`: load plot items from HDF5
-    * :py:func:`.io.save_items`: save plot items to HDF5
+Overview
+^^^^^^^^
+
+The `io` module provides the following input/output helper functions:
+
+* :py:func:`.io.imread`: load an image (.png, .tiff,
+    .dicom, etc.) and return its data as a NumPy array
+* :py:func:`.io.imwrite`: save an array to an image file
+* :py:func:`.io.load_items`: load plot items from HDF5
+* :py:func:`.io.save_items`: save plot items to HDF5
 
 Reference
-~~~~~~~~~
+^^^^^^^^^
 
 .. autofunction:: imread
 .. autofunction:: imwrite
@@ -37,7 +41,6 @@ import PIL.Image
 import PIL.TiffImagePlugin  # py2exe
 
 from plotpy.config import _
-from plotpy.core.plot.histogram.utils import hist_range_threshold
 
 
 def scale_data_to_dtype(data, dtype):
@@ -55,6 +58,11 @@ def scale_data_to_dtype(data, dtype):
 
 def eliminate_outliers(data, percent=2.0, bins=256):
     """Eliminate data histogram outliers"""
+
+    # The following import is here to avoid circular imports
+    # pylint: disable=import-outside-toplevel
+    from plotpy.core.plot.histogram.utils import hist_range_threshold
+
     hist, bin_edges = np.histogram(data, bins)
     vmin, vmax = hist_range_threshold(hist, bin_edges, percent)
     return data.clip(vmin, vmax)
@@ -63,7 +71,7 @@ def eliminate_outliers(data, percent=2.0, bins=256):
 # ===============================================================================
 # I/O File type definitions
 # ===============================================================================
-class FileType(object):
+class FileType:
     """Filetype object:
     * `name` : description of filetype,
     * `read_func`, `write_func` : I/O callbacks,
@@ -121,7 +129,7 @@ class FileType(object):
             return ""
 
 
-class ImageIOHandler(object):
+class ImageIOHandler:
     """I/O handler: regroup all FileType objects"""
 
     def __init__(self):
@@ -694,7 +702,7 @@ def load_item(reader, group_name):
 
 def save_items(writer, items):
     """Save items to HDF5 file:
-    * writer: :py:class:`guidata.dataset.hdf5io.HDF5Writer` object
+    * writer: :py:class:`guidata.dataset.io.HDF5Writer` object
     * items: serializable plot items"""
     counts = {}
     names = []
@@ -715,7 +723,7 @@ def save_items(writer, items):
 
 def load_items(reader):
     """Load items from HDF5 file:
-    * reader: :py:class:`guidata.dataset.hdf5io.HDF5Reader` object"""
+    * reader: :py:class:`guidata.dataset.io.HDF5Reader` object"""
     with reader.group("plot_items"):
         names = reader.read_sequence()
     items = []

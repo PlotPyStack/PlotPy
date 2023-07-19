@@ -11,6 +11,7 @@ from qtpy import QtCore as QC
 
 from plotpy.config import _
 from plotpy.core import io
+from plotpy.core.coords import canvas_to_axes
 from plotpy.core.interfaces.common import (
     IBaseImageItem,
     IBasePlotItem,
@@ -26,7 +27,6 @@ from plotpy.core.interfaces.common import (
 from plotpy.core.items.image.base import RawImageItem, pixelround
 from plotpy.core.items.image.filter import XYImageFilterItem, to_bins
 from plotpy.core.items.image.mixin import ImageMixin
-from plotpy.core.items.utils import canvas_to_axes
 from plotpy.core.styles.image import ImageParam, RGBImageParam, XYImageParam
 from plotpy.utils.geometry import colvector
 
@@ -549,13 +549,6 @@ class XYImageItem(ImageMixin, RawImageItem):
         )
 
     # ---- IBaseImageItem API --------------------------------------------------
-    def can_setfullscale(self):
-        """
-
-        :return:
-        """
-        return True
-
     def can_sethistogram(self):
         """
 
@@ -668,13 +661,6 @@ class RGBImageItem(ImageItem):
         return (IImageItemType, ITrackableItemType, ISerializableType)
 
     # ---- IBaseImageItem API --------------------------------------------------
-    def can_setfullscale(self):
-        """
-
-        :return:
-        """
-        return True
-
     def can_sethistogram(self):
         """
 

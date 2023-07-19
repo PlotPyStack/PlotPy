@@ -7,7 +7,6 @@ from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
 from plotpy.config import _
-from plotpy.core.builder import make
 from plotpy.core.events import QtDragHandler, setup_standard_tool_filter
 from plotpy.core.interfaces.common import ICurveItemType
 from plotpy.core.items.shapes.marker import Marker
@@ -59,7 +58,12 @@ class CurveStatsTool(BaseCursorTool):
         :param filter:
         :param event:
         """
-        super(CurveStatsTool, self).move(filter, event)
+        super().move(filter, event)
+
+        # The following import is here to avoid circular imports
+        # pylint: disable=import-outside-toplevel
+        from plotpy.core.builder import make
+
         if self.label is None:
             plot = filter.plot
             curve = self.get_associated_item(plot)

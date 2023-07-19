@@ -1,0 +1,40 @@
+guiqwt v4,plotpy v2,API changes
+``guiqwt.events``,``plotpy.core.events``
+``guiqwt.interfaces``,``plotpy.core.interfaces``
+``guiqwt.io``,``plotpy.core.io``
+``guiqwt.annotations``,``plotpy.core.items``
+``guiqwt.curve``,``plotpy.core.items``
+``guiqwt.image``,``plotpy.core.items``
+``guiqwt.label``,``plotpy.core.items``
+``guiqwt.shapes``,``plotpy.core.items``
+``guiqwt.histogram.HistogramItem``,``plotpy.core.items.HistogramItem``
+``guiqwt.histogram.HistDataSource``,``plotpy.core.items.histogram.HistDataSource``
+``guiqwt.image.get_items_in_rectangle``,``plotpy.core.items.get_items_in_rectangle``
+``guiqwt.curve.PlotItemList``,``plotpy.core.panels.itemlist.PlotItemList``
+``guiqwt.cross_section.XCrossSection``,``plotpy.core.panels.csection.cswidget.XCrossSection``
+``guiqwt.cross_section.YCrossSection``,``plotpy.core.panels.csection.cswidget.YCrossSection``
+``guiqwt.cross_section.ObliqueCrossSection``,``plotpy.core.panels.csection.cswidget.ObliqueCrossSection``
+``guiqwt.plot.PlotManager``,``plotpy.core.plot.PlotManager``
+``guiqwt.plot.CurveWindow``,``plotpy.core.plot.PlotWindow``,See `Generic PlotWidgets`_
+``guiqwt.plot.BaseImageWidget``,``plotpy.core.plot.BasePlotWidget``,See `Generic PlotWidgets`_
+``guiqwt.plot.CurveWidget``,``plotpy.core.plot.PlotWidget``,See `Generic PlotWidgets`_
+``guiqwt.plot.CurveWidgetMixin``,``*removed*``,See `Generic PlotWidgets`_
+``guiqwt.plot.CurveDialog``,``plotpy.core.plot.PlotDialog``,See `Generic PlotWidgets`_
+``guiqwt.curve.CurvePlot``,``plotpy.core.plot.baseplot.BasePlot``,See `Generic PlotWidgets`_
+``guiqwt.curve.CurvePlot.canvas2plotitem``,*removed*
+``guiqwt.curve.CurvePlot.plotitem2canvas``,*removed*
+``guiqwt.plot.SubplotWidget``,``plotpy.core.plot.SubplotWidget``
+``guiqwt.histogram.lut_range_threshold``,``plotpy.core.plot.histogram.utils.lut_range_threshold``
+``guiqwt.pyplot``,``plotpy.core.plot.interactive``
+``guiqwt.scaler``,``plotpy.core.scaler``
+``guiqwt.styles``,``plotpy.core.styles``
+``guiqwt.tools``,``plotpy.core.tools``
+``guiqwt.geometry``,``plotpy.utils.geometry``
+``guiqwt.qthelpers``,``plotpy.utils.qthelpers``
+``guiqwt.colormap``,``plotpy.utils.colormap``
+``guiqwt.debug``,``plotpy.utils.debug``
+``guiqwt.widgets.fit``,``plotpy.widgets.fit``
+``guiqwt.widgets.rotatecrop``,``plotpy.widgets.rotatecrop``
+``guiqwt.widgets.fliprotate``,``plotpy.widgets.fliprotate``
+``guiqwt.widgets.rotatecrop``,``plotpy.widgets.rotatecrop``
+``guiqwt.qtdesigner``,``plotpy.widgets.qtdesigner``

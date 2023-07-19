@@ -282,7 +282,10 @@ class PrintTool(CommandTool):
 class OpenFileTool(CommandTool):
     """ """
 
-    #: Signal emitted by OpenFileTool when a file was opened (arg: filename)
+    #: Signal emitted by OpenFileTool when a file was opened
+    #:
+    #: Args:
+    #:     filename (str): The name of the file that was opened
     SIG_OPEN_FILE = QC.Signal(str)
 
     def __init__(

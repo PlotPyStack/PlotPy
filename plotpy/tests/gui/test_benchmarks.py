@@ -22,7 +22,7 @@ from plotpy.core.builder import make
 from plotpy.core.plot.plotwidget import PlotType, PlotWindow
 
 
-class BaseBM(object):
+class BaseBM:
     """Benchmark object"""
 
     MAKE_FUNC = None

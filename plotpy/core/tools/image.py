@@ -23,7 +23,7 @@ from plotpy.core.items.image.misc import get_items_in_rectangle
 from plotpy.core.items.image.transform import TrImageItem
 from plotpy.core.items.shapes.ellipse import EllipseShape
 from plotpy.core.items.shapes.rectangle import RectangleShape
-from plotpy.core.panels import ID_CONTRAST
+from plotpy.core.panels.base import ID_CONTRAST
 from plotpy.core.plot.base import PlotType
 from plotpy.core.tools.base import (
     CommandTool,

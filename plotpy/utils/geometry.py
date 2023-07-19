@@ -1,6 +1,43 @@
 # -*- coding: utf-8 -*-
+
 """
 Basic geometry functions
+------------------------
+
+Overview
+^^^^^^^^
+
+The :py:mod:`.geometry` module provides basic geometry functions for
+computing 2D transformations and distances.
+
+The following functions are available:
+
+* :py:func:`.translate`
+* :py:func:`.scale`
+* :py:func:`.rotate`
+* :py:func:`.colvector`
+* :py:func:`.vector_norm`
+* :py:func:`.vector_projection`
+* :py:func:`.vector_angle`
+* :py:func:`.compute_center`
+* :py:func:`.compute_rect_size`
+* :py:func:`.compute_distance`
+* :py:func:`.compute_angle`
+
+Reference
+^^^^^^^^^
+
+.. autofunction:: translate
+.. autofunction:: scale
+.. autofunction:: rotate
+.. autofunction:: colvector
+.. autofunction:: vector_norm
+.. autofunction:: vector_projection
+.. autofunction:: vector_angle
+.. autofunction:: compute_center
+.. autofunction:: compute_rect_size
+.. autofunction:: compute_distance
+.. autofunction:: compute_angle
 """
 
 # pylint: disable=C0103

@@ -9,36 +9,8 @@
 
 """
 plotpy.widgets.label
-------------------------
+--------------------
 
-The `labels` module provides plot items related to labels and legends:
-    * :py:class:`.label.LabelItem`
-    * :py:class:`.label.LegendBoxItem`
-    * :py:class:`.label.SelectedLegendBoxItem`
-    * :py:class:`.label.RangeComputation`
-    * :py:class:`.label.RangeComputation2d`
-    * :py:class:`.label.DataInfoLabel`
-
-A label or a legend is a plot item (derived from QwtPlotItem) that may be
-displayed on a 2D plotting widget like :py:class:`.baseplot.BasePlot`.
-
-Reference
-~~~~~~~~~
-
-.. autoclass:: LabelItem
-   :members:
-.. autoclass:: LegendBoxItem
-   :members:
-.. autoclass:: SelectedLegendBoxItem
-   :members:
-.. autoclass:: RangeComputation
-   :members:
-.. autoclass:: RangeComputation2d
-   :members:
-.. autoclass:: DataInfoLabel
-   :members:
-.. autoclass:: ObjectInfo
-   :members:
 """
 
 import numpy as np
@@ -682,7 +654,7 @@ class SelectedLegendBoxItem(LegendBoxItem):
         self.itemlist.append(item)
 
 
-class ObjectInfo(object):
+class ObjectInfo:
     def get_text(self):
         """
 

@@ -81,7 +81,6 @@ def test_mandel():
         plot = win.manager.get_plot()
         plot.set_aspect_ratio(lock=False)
         plot.add_item(mandel)
-        plot.set_full_scale(mandel)
         win.show()
 
 

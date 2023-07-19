@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import annotations
+
 import warnings
+from typing import TYPE_CHECKING
 
 import numpy as np
 from guidata.configtools import get_icon
@@ -7,13 +11,15 @@ from guidata.utils import update_dataset
 from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
-from qtpy import QtWidgets as QW
 from qwt import QwtPlotCurve, QwtScaleMap
 
 from plotpy.config import _
 from plotpy.core.items.curve.base import CurveItem
 from plotpy.core.styles.curve import CurveParam
 from plotpy.core.styles.errorbar import ErrorBarParam
+
+if TYPE_CHECKING:
+    from plotpy.core.plot.base import BasePlot
 
 
 def _transform(map, v):
@@ -156,32 +162,29 @@ class ErrorBarCurveItem(CurveItem):
         :return:
         """
         # Surcharge d'une méthode de base de CurveItem
-        plot = self.plot()
-        ax = self.xAxis()
-        ay = self.yAxis()
-        xc = plot.transform(ax, x)
-        yc = plot.transform(ay, y)
+        plot: BasePlot = self.plot()
+        xc = plot.transform(self.xAxis(), x)
+        yc = plot.transform(self.yAxis(), y)
         _distance, i, _inside, _other = self.hit_test(QC.QPointF(xc, yc))
-        x0, y0 = self.plot().canvas2plotitem(self, xc, yc)
-        x = self._x[i]
-        y = self._y[i]
+        xi = self._x[i]
+        yi = self._y[i]
         xmin, xmax, ymin, ymax = self.get_minmax_arrays()
-        if abs(y0 - y) > abs(y0 - ymin[i]):
-            y = ymin[i]
-        elif abs(y0 - y) > abs(y0 - ymax[i]):
-            y = ymax[i]
-        if abs(x0 - x) > abs(x0 - xmin[i]):
-            x = xmin[i]
-        elif abs(x0 - x) > abs(x0 - xmax[i]):
-            x = xmax[i]
-        return x, y
+        if abs(y - y) > abs(y - ymin[i]):
+            yi = ymin[i]
+        elif abs(y - y) > abs(y - ymax[i]):
+            yi = ymax[i]
+        if abs(x - x) > abs(x - xmin[i]):
+            xi = xmin[i]
+        elif abs(x - x) > abs(x - xmax[i]):
+            xi = xmax[i]
+        return xi, yi
 
     def boundingRect(self):
         """Return the bounding rectangle of the data, error bars included"""
         xmin, xmax, ymin, ymax = self.get_minmax_arrays()
         if xmin is None or xmin.size == 0:
             return CurveItem.boundingRect(self)
-        plot = self.plot()
+        plot: BasePlot = self.plot()
         xminf, yminf = xmin[np.isfinite(xmin)], ymin[np.isfinite(ymin)]
         xmaxf, ymaxf = xmax[np.isfinite(xmax)], ymax[np.isfinite(ymax)]
         if plot is not None and "log" in (

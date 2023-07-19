@@ -1,8 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from qtpy import QtWidgets as QW
+import os
+import sys
 
-import plotpy
+sys.path.insert(0, os.path.abspath(".."))
+
+from guidata.utils.genreqs import generate_requirement_tables  # noqa: E402
+
+import plotpy  # noqa: E402
+
+generate_requirement_tables(plotpy, ["Python>=3.7", "PyQt>=5.11"])
 
 # -- Project information -----------------------------------------------------
 project = "Plotpy"
@@ -16,17 +23,25 @@ release = plotpy.__version__
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.todo",
-    "sphinx.ext.imgmath",
     "sphinx.ext.viewcode",
     "sphinx.ext.intersphinx",
     "sphinx.ext.napoleon",
+    "sphinx_qt_documentation",
 ]
+if "htmlhelp" in sys.argv:
+    extensions += ["sphinx.ext.imgmath"]
+else:
+    extensions += ["sphinx.ext.mathjax"]
 templates_path = ["_templates"]
 source_suffix = ".rst"
 master_doc = "index"
 exclude_patterns = []
 pygments_style = "sphinx"
-html_theme = "classic"
+
+if "htmlhelp" in sys.argv:
+    html_theme = "classic"
+else:
+    html_theme = "python_docs_theme"
 html_title = "%s %s Manual" % (project, version)
 html_short_title = "%s Manual" % project
 html_logo = "images/plotpy-vertical.png"
@@ -46,6 +61,9 @@ texinfo_documents = [
         "Miscellaneous",
     )
 ]
+autodoc_default_options = {
+    "member-order": "bysource",
+}
 
 # -- Options for todo extension ----------------------------------------------
 todo_include_todos = True
@@ -53,74 +71,17 @@ intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     "qwt": ("https://pythonqwt.readthedocs.io/en/latest/", None),
     "matplotlib": ("https://matplotlib.org/stable/", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/", None),
+    "guidata": ("https://guidata.readthedocs.io/en/latest/", None),
+    "guiqwt": ("https://guiqwt.readthedocs.io/en/latest/", None),
+    "h5py": ("https://docs.h5py.org/en/stable/", None),
 }
 nitpicky = True
+
 nitpick_ignore = [
-    ("py:class", "QBrush"),
-    ("py:class", "QColor"),
-    ("py:class", "QFont"),
-    ("py:class", "QPaintDevice"),
-    ("py:class", "QPainter"),
-    ("py:class", "QPen"),
-    ("py:class", "QPoint"),
-    ("py:class", "QPointF"),
-    ("py:class", "QPolygonF"),
-    ("py:class", "QPrinter"),
-    ("py:class", "QRectF"),
-    ("py:class", "QSize"),
-    ("py:class", "QSizeF"),
-    ("py:class", "QSvgGenerator"),
-    ("py:class", "QWidget"),
-    ("py:class", "Qt.Alignment"),
-    ("py:class", "Qt.Orientation"),
-    ("py:class", "Qt.PenStyle"),
-    ("py:class", "QwtPlot.LegendPosition"),
-    ("py:class", "fload"),
-    ("py:class", "qwt.legend.QwtAbstractLegend"),
-    ("py:class", "qwt.scale_map.QwtScaleMap"),
-    ("py:class", "qwt.scale_widget.QwtScaleWigdet"),
-    ("py:data", "QwtPlot.legendDataChanged"),
-    ("py:meth", "QwtPlot.autoRefresh"),
-    ("py:meth", "QwtPlot.getCanvasMarginsHint"),
-    ("py:meth", "QwtPlot.legendChanged"),
-    ("py:meth", "QwtPlot.updateCanvasMargins"),
-    ("py:meth", "QwtPlot.updateLegend"),
-    ("py:meth", "QwtPlotDict.itemList"),
-    ("py:meth", "QwtPlotItem.LegendInterest"),
-    ("py:meth", "QwtPlotItem.boundingRect"),
-    ("py:meth", "QwtPlotItem.getCanvasMarginHint"),
-    ("py:meth", "QwtPlotItem.getCanvasMarginsHint"),
-    ("py:meth", "QwtPlotItem.legendData"),
-    ("py:meth", "QwtPlotItem.updateCanvasMargin"),
-    ("py:meth", "QwtPlotItem.updateCanvasMargins"),
-    ("py:meth", "QwtPlotItem.updateLegend"),
-    ("py:meth", "brush"),
-    ("py:meth", "getCanvasMarginHint"),
-    ("py:meth", "pen"),
-    ("py:meth", "setLabelRotation"),
+    ("py:attr", "BasePlot.SIG_ITEM_MOVED"),
+    ("py:attr", "BasePlot.SIG_ITEM_RESIZED"),
+    ("py:attr", "BasePlot.SIG_RANGE_CHANGED"),
+    ("py:attr", "BasePlot.SIG_AXIS_DIRECTION_CHANGED"),
 ]
-
-
-def to_bytes(*args, **kwargs):
-    return int.to_bytes(*args, **kwargs)
-
-
-to_bytes.__doc__ = int.to_bytes.__doc__.replace("`sys.byteorder'", "`sys.byteorder`")
-
-
-def from_bytes(*args, **kwargs):
-    return int.from_bytes(*args, **kwargs)
-
-
-to_bytes.__doc__ = int.to_bytes.__doc__.replace("`sys.byteorder'", "`sys.byteorder`")
-
-for cls in (
-    QW.QWidget.RenderFlag,
-    QW.QWidget.PaintDeviceMetric,
-    QW.QFrame.Shadow,
-    QW.QFrame.Shape,
-    QW.QFrame.StyleMask,
-    QW.QDialog.DialogCode,
-):
-    cls.to_bytes = to_bytes
-    cls.from_bytes = from_bytes

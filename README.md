@@ -67,7 +67,7 @@ The plotpy library also provides the following features:
   * ready-to-use curve and image plot widgets and dialog boxes
       (see plot)
   * load/save graphical objects (curves, images, shapes)
-  * a lot of test scripts which demonstrate `plotpy` features
+  * a lot of test scripts which demonstrate :mod:`plotpy` features
       (see `examples`)
 
 Dependencies
