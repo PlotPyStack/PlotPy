@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright © 2009-2010 CEA
-# Pierre Raybaut
-# Licensed under the terms of the CECILL License
-# (see plotpy/__init__.py for details)
+# Licensed under the terms of the BSD 3-Clause
+# (see plotpy/LICENSE for details)
 
 # pylint: disable-msg=W0622,R0903
 # W0622: complains about filter being a builtin

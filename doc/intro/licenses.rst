@@ -2,11 +2,6 @@
 Licenses
 ========
 
-plotpy is licensed under the CeCILL license.
-
-Copyright CEA (2018-2019)
-
-
 General Information
 ===================
 
@@ -17,8 +12,8 @@ These files are listed here with their corresponding authors,
 permission notices, disclaimers, and copyright statements; these are also
 included in the files' directory and/or their headers, as appropriate.
 
-Any file not listed here is covered by plotpy's CeCILL license,
-described in the LICENSE-EN file in this repository and plotpy's __init__.py.
+Any file not listed here is covered by plotpy's license,
+described in the LICENSE file in this repository.
 
 Images, icons and font gyphs that include trademarked elements are used for
 informational purposes only, and do not necessarily constitute any endorsement,
@@ -31,7 +26,7 @@ All trademarks are the property of their respective owners.
 
 Source code licenses:
 
-* CeCILL license
+* plotpy License (BSD 3-Clause License)
 * MIT (Expat) License
 * 3-Clause ("Modified") BSD License
 * Python Software Foundation License Version 2
@@ -167,10 +162,10 @@ Files covered:
 Full License Text
 =================
 
-CeCILL License
+plotpy License
 --------------
 
-.. literalinclude:: ../../LICENSE-EN
+.. literalinclude:: ../../LICENSE
 
 MIT (Expat) License
 -------------------

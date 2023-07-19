@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2019 CEA
-# Licensed under the terms of the CECILL License
+# Licensed under the terms of the BSD 3-Clause
 # (see plotpy/__init__.py for details)
+
 
 import numpy as np
 cimport numpy as np

@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2012 CEA
-# Pierre Raybaut
-# Licensed under the terms of the CECILL License
-# (see guiqwt/__init__.py for details)
+# Licensed under the terms of the BSD 3-Clause
+# (see plotpy/__init__.py for details)
 
 """Mandelbrot algorithm"""
 
@@ -29,10 +27,10 @@ def mandelbrot(double x1, double y1, double x2, double y2,
     cdef unsigned int row, col
     cdef unsigned int rows = data.shape[0]
     cdef unsigned int cols = data.shape[1]
-    
+
     dx = (x2-x1)/(cols-1)
     dy = (y2-y1)/(rows-1)
-    
+
     for col in range(cols):
         real = x1 + col*dx
         for row in range(rows):

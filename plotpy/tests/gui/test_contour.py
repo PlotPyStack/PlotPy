@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright © 2019 CEA
-# Licensed under the terms of the CECILL License
-# (see plotpy/__init__.py for details)
+# Licensed under the terms of the BSD 3-Clause
+# (see plotpy/LICENSE for details)
 
 """Contour test"""
 

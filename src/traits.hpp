@@ -1,8 +1,7 @@
 /* -*- coding: utf-8;mode:c++;c-file-style:"stroustrup" -*- */
 /*
-  Copyright © 2009-2010 CEA
-  Licensed under the terms of the CECILL License
-  (see guiqwt/__init__.py for details)
+  Licensed under the terms of the BSD 3-Clause
+  (see plotpy/__init__.py for details)
 
 
   Two lines of the following code are distributed under LGPL license terms and

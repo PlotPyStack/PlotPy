@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2012 CEA
-# Pierre Raybaut
-# Licensed under the terms of the CECILL License
-# (see guiqwt/__init__.py for details)
+# Licensed under the terms of the BSD 3-Clause
+# (see plotpy/__init__.py for details)
 
 """2D-Histogram algorithm"""
 
@@ -75,7 +73,7 @@ def histogram2d_func(np.ndarray[double, ndim=1] X,
 
     cx = nx/(i1-i0)
     cy = ny/(j1-j0)
-    
+
     for i in range(n):
         #  Centered bins => - .5
         ix = (X[i] * xx + Y[i] * xy + x0 -i0)*cx - .5

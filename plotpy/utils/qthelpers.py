@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright © 2011 CEA
-# Pierre Raybaut
-# Licensed under the terms of the CECILL License
-# ((see plotpy/__init__.py for details))
+# Licensed under the terms of the BSD 3-Clause
+# (see plotpy/LICENSE for details)
 
 # _process_mime_path and mimedata2url
 # Origin: Spyder IDE 3.3.2, file spyder/utils/qthelper.py

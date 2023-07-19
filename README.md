@@ -1,19 +1,21 @@
-Plotpy: Plotting library based on Qwt
-=====================================
+# plotpy: Plotting library based on Qwt
 
-Copyright © 2018 CEA, licensed under the terms of the
-CECILL License (see ``Licence_CeCILL_V2-en.txt``).
+[![license](https://img.shields.io/pypi/l/plotpy.svg)](./LICENSE)
+[![pypi version](https://img.shields.io/pypi/v/plotpy.svg)](https://pypi.org/project/plotpy/)
+[![PyPI status](https://img.shields.io/pypi/status/plotpy.svg)](https://github.com/CODRA-Ingenierie-Informatique/plotpy/)
+[![PyPI pyversions](https://img.shields.io/pypi/pyversions/plotpy.svg)](https://pypi.python.org/pypi/plotpy/)
+[![download count](https://img.shields.io/conda/dn/conda-forge/plotpy.svg)](https://www.anaconda.com/download/)
 
-Overview
---------
+## Overview
 
 Based on PythonQwt and on the scientific modules NumPy and SciPy, plotpy is a
 Python library providing efficient 2D data-plotting features (curve/image
 visualization and related tools) for interactive computing and signal/image
 processing application development.
 
-Features
-^^^^^^^^
+<img src="https://raw.githubusercontent.com/CODRA-Ingenierie-Informatique/plotpy/master/doc/images/panorama.png">
+
+### Features
 
 The plotpy library also provides the following features:
 
@@ -70,34 +72,20 @@ The plotpy library also provides the following features:
   * a lot of test scripts which demonstrate :mod:`plotpy` features
       (see `examples`)
 
-Dependencies
-------------
+## Dependencies
 
-Requirements
-^^^^^^^^^^^^
+### Requirements
 
-    * Python 3.8
-    * PythonQwt > 0.9.0
-    * NumPy
-    * SciPy
-    * Pillow
+* Python 3.7+
+* [PyQt5](https://pypi.python.org/pypi/PyQt5) (Python Qt bindings)
+* [QtPy](https://pypi.org/project/QtPy/) (abstraction layer for Python-Qt binding libraries)
+* [PythonQwt](https://pypi.org/project/PythonQwt/) (Python wrapper for the Qwt C++ class library)
+* [guidata](https://pypi.org/project/guidata/) (Python library generating graphical user interfaces for easy dataset editing and display)
 
-Optional Python modules
-^^^^^^^^^^^^^^^^^^^^^^^
+## Installation
 
-    * h5py (HDF5 files I/O)
-    * pydicom >=0.9.3 for DICOM files I/O features
+### From the source package
 
-Other optional modules for developers
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-    * gettext (text translation support)
-
-Installation
-------------
-
-From the source package:
-
-    ```bash
-    python setup.py install
-    ```
+```bash
+python setup.py install
+```

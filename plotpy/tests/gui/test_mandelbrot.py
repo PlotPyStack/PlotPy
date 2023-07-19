@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright © 2009-2010 CEA
-# Pierre Raybaut
-# Licensed under the terms of the CECILL License
-# (see plotpy/__init__.py for details)
+# Licensed under the terms of the BSD 3-Clause
+# (see plotpy/LICENSE for details)
 # FIXME: Gros problème de perf si on zoom dans l'image, le process ne s'arrêtre pas
 
 """Mandelbrot demo"""

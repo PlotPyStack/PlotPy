@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright © 2012 CEA
-# Pierre Raybaut
-# Licensed under the terms of the CECILL License
-# (see plotpy/__init__.py for details)
+# Licensed under the terms of the BSD 3-Clause
+# (see plotpy/LICENSE for details)
 
 # pylint: disable=C0103
 
