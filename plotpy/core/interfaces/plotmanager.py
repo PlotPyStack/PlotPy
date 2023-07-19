@@ -12,7 +12,7 @@ class IPlotManager:
         :param plot:
         :param plot_id:
         """
-        assert id not in self.plots
+        assert id not in self.plots  # pylint: disable=no-member
         assert isinstance(plot, BasePlot)
 
     def add_panel(self, panel):
@@ -20,7 +20,7 @@ class IPlotManager:
 
         :param panel:
         """
-        assert id not in self.panels
+        assert id not in self.panels  # pylint: disable=no-member
 
     def add_toolbar(self, toolbar, toolbar_id="default"):
         """
@@ -28,7 +28,7 @@ class IPlotManager:
         :param toolbar:
         :param toolbar_id:
         """
-        assert id not in self.toolbars
+        assert id not in self.toolbars  # pylint: disable=no-member
 
     def get_active_plot(self):
         """The active plot is the plot whose canvas has the focus

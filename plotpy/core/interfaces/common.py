@@ -359,4 +359,5 @@ class IHistDataSource:
         """
         # this raises NameError but it's here to show what this method
         # should return
+        # pylint: disable=undefined-variable
         return np.histogram(data, nbins)

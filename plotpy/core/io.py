@@ -373,14 +373,18 @@ def _import_dcm():
 
     # This import statement must stay here because the purpose of this function
     # is to check if pydicom is installed:
-    from pydicom import dicomio  # pylint: disable=import-outside-toplevel # type:ignore
+    # pylint: disable=import-outside-toplevel
+    # pylint: disable=import-error
+    from pydicom import dicomio  # type:ignore
 
     logger.setLevel(logging.WARNING)
 
 
 def _imread_dcm(filename, **kwargs):
     """Open DICOM image with pydicom and return a NumPy array"""
-    from pydicom import dicomio  # pylint: disable=import-outside-toplevel # type:ignore
+    # pylint: disable=import-outside-toplevel
+    # pylint: disable=import-error
+    from pydicom import dicomio  # type:ignore
 
     dcm = dicomio.read_file(filename, force=True)
     # **********************************************************************

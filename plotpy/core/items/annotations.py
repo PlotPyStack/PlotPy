@@ -121,13 +121,10 @@ class AnnotatedShape(AbstractShape):
         if self.label.isVisible():
             self.label.draw(painter, xMap, yMap, canvasRect)
 
-    def boundingRect(self):
-        return self.shape.boundingRect()
-
     # ----Public API-------------------------------------------------------------
     def create_shape(self):
         """Return the shape object associated to this annotated shape object"""
-        shape = self.SHAPE_CLASS(0, 0, 1, 1)
+        shape = self.SHAPE_CLASS(0, 0, 1, 1)  # pylint: disable=not-callable
         return shape
 
     def create_label(self):
