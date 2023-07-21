@@ -56,3 +56,4 @@ htmlcov
 
 # Other
 *.bak
+/plotpy/tests/gui/loadsavecanvas.h5

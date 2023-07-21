@@ -238,6 +238,39 @@
             ]
         },
         {
+            "label": "Build extensions in place",
+            "type": "shell",
+            "command": "cmd",
+            "options": {
+                "cwd": "scripts",
+                "env": {
+                    "PYTHON": "${env:GUIDATA_PYTHONEXE}",
+                    "UNATTENDED": "1",
+                }
+            },
+            "args": [
+                "/c",
+                "build_inplace.bat"
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true
+            },
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Clean Up",
+            ]
+        },
+        {
             "label": "Display Coverage",
             "type": "shell",
             "command": "cmd",
