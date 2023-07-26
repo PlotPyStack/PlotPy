@@ -245,8 +245,8 @@ class XYImageFilterItem(ImageFilterItem):
 
         filt_qrect = bounds & self.image.boundingRect()
         x0, y0, x1, y1 = filt_qrect.getCoords()
-        i0, i1 = xMap.transform(x0), xMap.transform(x1)
-        j0, j1 = yMap.transform(y0), yMap.transform(y1)
+        i0, i1 = int(xMap.transform(x0)), int(xMap.transform(x1))
+        j0, j1 = int(yMap.transform(y0)), int(yMap.transform(y1))
 
         dstRect = QC.QRect(i0, j0, i1 - i0, j1 - j0)
         if not dstRect.intersects(canvasRect):
