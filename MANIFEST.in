@@ -1,7 +1,6 @@
 recursive-include plotpy *.png *.jpg *.svg *.po *.mo *.py *.ui *.h5 *.dcm
 recursive-include doc *.bat *.rst *.png *.py *.pyw *.ico
 recursive-include src *.hpp *.cpp *.pyx
-recursive-include sift *.py *.pyw *.ico
 include MANIFEST.in
 include Licence*.*
 include *.md

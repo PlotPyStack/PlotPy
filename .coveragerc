@@ -5,5 +5,4 @@ omit =
     */plotpy/utils/debug.py
     */plotpy/core/plot/interactive.py
     *.vscode/extensions*
-    */sift/*
     */guidata/*
