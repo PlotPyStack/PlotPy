@@ -104,7 +104,12 @@ class ExampleDialog(PlotDialog):
         self.show_data(data)
 
 
-if __name__ == "__main__":
-    with qt_app_context():
+def test_simple_dialog():
+    """Test simple dialog"""
+    with qt_app_context(exec_loop=True):
         dlg = ExampleDialog()
-        dlg.exec()
+        dlg.show()
+
+
+if __name__ == "__main__":
+    test_simple_dialog()

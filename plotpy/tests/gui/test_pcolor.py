@@ -81,7 +81,7 @@ def test_pcolor():
         _persist_plot = imshow(items)
 
 
-def test_valgrind(K=200):
+def test_valgrind(K=20):
     X, Y, Z = polar_demo()
     lut = (1.0, 0.0, None, np.zeros((1024,), np.uint32))
     offscreen = np.zeros((1200, 1920), np.uint32)
@@ -103,4 +103,4 @@ def test_valgrind(K=200):
 
 if __name__ == "__main__":
     test_pcolor()
-    test_valgrind()
+    test_valgrind(K=200)

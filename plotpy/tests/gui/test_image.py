@@ -17,20 +17,6 @@ from plotpy.core.builder import make
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 
 
-def imshow(data):
-    with qt_app_context(exec_loop=True):
-        win = PlotDialog(
-            edit=False,
-            toolbar=True,
-            wintitle="PlotDialog test",
-            options=dict(xlabel="Concentration", xunit="ppm", type=PlotType.IMAGE),
-        )
-        item = make.image(data)
-        plot = win.manager.get_plot()
-        plot.add_item(item)
-        win.show()
-
-
 def compute_image(N=2000, grid=True):
     T = np.float32
     x = np.array(np.linspace(-5, 5, N), T)
@@ -113,9 +99,18 @@ def compute_image_3():
 def test_image():
     """Test image"""
     for func in (compute_image, compute_image_2, compute_image_3):
-        img = func()
-        print(img.dtype)
-        imshow(img)
+        data = func()
+        with qt_app_context(exec_loop=True):
+            win = PlotDialog(
+                edit=False,
+                toolbar=True,
+                wintitle="PlotDialog test",
+                options=dict(xlabel="Concentration", xunit="ppm", type=PlotType.IMAGE),
+            )
+            item = make.image(data)
+            plot = win.manager.get_plot()
+            plot.add_item(item)
+            win.show()
 
 
 if __name__ == "__main__":

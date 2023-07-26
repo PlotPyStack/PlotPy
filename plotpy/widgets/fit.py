@@ -855,7 +855,7 @@ class FitDialog(PlotDialog):
         auto_fit: bool = False,
     ):
         super().__init__(
-            wintitle=wintitle,
+            wintitle=wintitle if wintitle is not None else _("Curve fitting"),
             icon=icon,
             edit=edit,
             toolbar=toolbar,

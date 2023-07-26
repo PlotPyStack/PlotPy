@@ -30,14 +30,10 @@ The `plot` module provides the following features:
 Class diagrams
 ^^^^^^^^^^^^^^
 
-Curve-related widgets with integrated plot manager:
+Plot widgets with integrated plot manager:
 
-.. image:: /images/curve_widgets.png
-
-Image-related widgets with integrated plot manager:
-
-.. image:: /images/image_widgets.png
+.. image:: ../../images/plot_widgets.png
 
 Building your own plot manager:
 
-.. image:: /images/my_plot_manager.png
+.. image:: ../../images/my_plot_manager.png

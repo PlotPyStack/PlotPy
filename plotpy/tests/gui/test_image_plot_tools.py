@@ -11,7 +11,6 @@ import os
 
 from guidata.qthelpers import qt_app_context
 
-import plotpy.widgets
 from plotpy.core.builder import make
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 from plotpy.core.tools.annotations import (

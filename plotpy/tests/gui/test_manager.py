@@ -9,7 +9,6 @@
 
 import os
 
-import pytest
 from guidata.qthelpers import qt_app_context, win32_fix_title_bar_background
 from qtpy import QtWidgets as QW
 

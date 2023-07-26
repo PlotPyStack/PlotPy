@@ -98,7 +98,7 @@ The :mod:`plotpy` library provides the following features:
 
 * application development helpers:
 
-    - ready-to-use curve and image plot widgets, dialog boxes and windows
-    - graphical objects (curves, images, shapes) serialization/deserialization
-      to/from ``.ini``, ``.h5`` or ``.json`` files
-    - a lot of test scripts (see :ref:`examples`)
+  - ready-to-use curve and image plot widgets, dialog boxes and windows
+  - graphical objects (curves, images, shapes) serialization/deserialization
+    to/from ``.ini``, ``.h5`` or ``.json`` files
+  - a lot of test scripts (see :ref:`examples`)

@@ -5,11 +5,11 @@ import sys
 
 sys.path.insert(0, os.path.abspath(".."))
 
-from guidata.utils.genreqs import generate_requirement_tables  # noqa: E402
+from guidata.utils.genreqs import gen_module_req_rst  # noqa: E402
 
 import plotpy  # noqa: E402
 
-generate_requirement_tables(plotpy, ["Python>=3.7", "PyQt>=5.11"])
+gen_module_req_rst(plotpy, ["Python>=3.7", "PyQt>=5.11"])
 
 # -- Project information -----------------------------------------------------
 project = "Plotpy"

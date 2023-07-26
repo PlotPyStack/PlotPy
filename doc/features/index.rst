@@ -25,13 +25,9 @@ There are two kinds of plotting widgets defined in :mod:`plotpy`:
   :py:class:`.plot.PlotDialog` and window
   :py:class:`.plot.PlotWindow`
 
-Curve-related widgets with integrated plot manager:
+Plot widgets with integrated plot manager:
 
-.. image:: ../images/curve_widgets.png
-
-Image-related widgets with integrated plot manager:
-
-.. image:: ../images/image_widgets.png
+.. image:: ../images/plot_widgets.png
 
 .. seealso::
 

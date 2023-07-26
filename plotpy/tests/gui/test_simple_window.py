@@ -268,7 +268,12 @@ class MainWindow(QW.QMainWindow):
             self.mainwidget.add_image_from_file(filename)
 
 
-if __name__ == "__main__":
+def test_simple_window():
+    """Test simple window"""
     with qt_app_context(exec_loop=True):
         window = MainWindow()
         window.show()
+
+
+if __name__ == "__main__":
+    test_simple_window()

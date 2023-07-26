@@ -25,7 +25,7 @@ def create_window():
     win = PlotDialog(
         edit=False,
         toolbar=True,
-        wintitle="Region of interest (ROI) test",
+        wintitle="Image superposition test",
         options=dict(gridparam=gridparam, type=PlotType.IMAGE),
     )
     for toolklass in (RectangleTool, EllipseTool, FreeFormTool, PlaceAxesTool):
