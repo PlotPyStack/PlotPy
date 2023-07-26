@@ -1,8 +1,0 @@
--r setup.txt
-pytest
-flaky
-pytest-qt
-pandas
-pytest-xvfb
-pytest-cov
-pydicom==1.2.1

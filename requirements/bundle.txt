@@ -1,6 +1,0 @@
--r codequality.txt
--r documentation.txt
--r testing.txt
-tox
-wheel
-.
