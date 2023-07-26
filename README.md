@@ -76,7 +76,7 @@ The plotpy library also provides the following features:
 
 ### Requirements
 
-* Python 3.7+
+* Python 3.8+
 * [PyQt5](https://pypi.python.org/pypi/PyQt5) (Python Qt bindings)
 * [QtPy](https://pypi.org/project/QtPy/) (abstraction layer for Python-Qt binding libraries)
 * [PythonQwt](https://pypi.org/project/PythonQwt/) (Python wrapper for the Qwt C++ class library)
@@ -86,6 +86,8 @@ The plotpy library also provides the following features:
 
 ### From the source package
 
+Using ``build``:
+
 ```bash
-python setup.py install
+python -m build
 ```
