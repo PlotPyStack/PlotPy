@@ -347,11 +347,18 @@ class IBaseImageItem:
 class IHistDataSource:
     def get_histogram(self, nbins):
         """
+        Return a tuple (hist, bins) where hist is a list of histogram values
 
-        :param nbins:
-        :return:
+        Args:
+            nbins (int): number of bins
+
+        Returns:
+            tuple: (hist, bins)
+
+        Example of implementation:
+
+        def get_histogram(self, nbins):
+            data = self.get_data()
+            return np.histogram(data, nbins)
         """
-        # this raises NameError but it's here to show what this method
-        # should return
-        # pylint: disable=undefined-variable
-        return np.histogram(data, nbins)
+        pass
