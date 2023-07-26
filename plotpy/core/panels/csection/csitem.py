@@ -24,7 +24,6 @@ except ImportError:
     )
     raise
 
-DEBUG = False
 TEMP_ITEM = None
 
 
@@ -185,7 +184,7 @@ def get_plot_average_y_section(obj, apply_lut=False):
     return x, y
 
 
-def compute_oblique_section(item, obj):
+def compute_oblique_section(item, obj, debug=False):
     """Return oblique averaged cross section"""
     global TEMP_ITEM
 
@@ -221,7 +220,7 @@ def compute_oblique_section(item, obj):
     mat = translate(ixr, iyr) * rotate(-angle) * translate(-0.5 * destw, -0.5 * desth)
     _scale_tr(data, mat, dst_image, dst_rect, (1.0, 0.0, np.nan), (INTERP_LINEAR,))
 
-    if DEBUG:
+    if debug:
         plot = obj.plot()
         if TEMP_ITEM is None:
             from plotpy.core.builder import make
@@ -241,7 +240,7 @@ def compute_oblique_section(item, obj):
             TEMP_ITEM.param.update_item(TEMP_ITEM)
         plot.replot()
 
-    ydata = np.ma.fix_invalid(dst_image, copy=DEBUG).mean(axis=1)
+    ydata = np.ma.fix_invalid(dst_image, copy=debug).mean(axis=1)
     xdata = item.get_x_values(0, ydata.size)[: ydata.size]
     try:
         xdata -= xdata[0]
@@ -311,7 +310,8 @@ class CrossSectionItem(ErrorBarCurveItem):
             sectx, secty = np.array([]), np.array([])
         elif self.param.curvestyle != "Steps":
             # Center the symbols at the middle of pixels
-            # Bugfix, we deactivate warnings only for numpy method call. (V1.0.10 => V1.0.11)
+            # Bugfix, we deactivate warnings only for numpy method call.
+            # (V1.0.10 => V1.0.11)
             # Deactivate following warnings after 20210218 mail
             # warnings.filterwarnings('ignore')
             sectx[:-1] += np.mean(np.diff(sectx) / 2)
@@ -414,6 +414,8 @@ class YCrossSectionItem(CrossSectionItem):
 class ObliqueCrossSectionItem(CrossSectionItem):
     """A Qwt item representing radially-averaged cross section data"""
 
+    DEBUG = False
+
     def __init__(self, curveparam=None, errorbarparam=None):
         CrossSectionItem.__init__(self, curveparam, errorbarparam)
 
@@ -427,7 +429,7 @@ class ObliqueCrossSectionItem(CrossSectionItem):
         if rect is not None and source.data is not None:
             #            x0, y0, x1, y1 = rect
             #            angle = obj.get_tr_angle()
-            sectx, secty = compute_oblique_section(source, obj)
+            sectx, secty = compute_oblique_section(source, obj, debug=self.DEBUG)
             if secty.size == 0 or np.all(np.isnan(secty)):
                 sectx, secty = np.array([]), np.array([])
             self.process_curve_data(sectx, secty, None, None)
