@@ -136,14 +136,12 @@ class TransformImageMixin:
         if self.can_rotate():
             if self.rotation_point is None:
                 self.set_rotation_point_to_center()
-            vec0 = handles.T.A[0] - self.rotation_point
+            vec0 = handles[:, handle] - self.rotation_point
             vec1 = p0 - self.rotation_point
             a0 = np.arctan2(vec0[1], vec0[0])
             a1 = np.arctan2(vec1[1], vec1[0])
             # compute angles
-            angle += a1 - a0
-            angle = float(angle)
-
+            angle = float(angle + a1 - a0)
             tr1 = translate(-self.rotation_point[0], -self.rotation_point[1])
             rot = rotate(a1 - a0)
             tr = tr1.I * rot * tr1
@@ -157,7 +155,7 @@ class TransformImageMixin:
             if self.rotation_point is None:
                 self.set_rotation_point_to_center()
             center = handles.sum(axis=1) / 4
-            vec0 = handles.T.A[0] - center
+            vec0 = handles[:, handle] - center
             vec1 = p0 - center
             # compute pixel size
             zoom = np.linalg.norm(vec1) / np.linalg.norm(vec0)

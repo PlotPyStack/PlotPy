@@ -9,9 +9,8 @@
 
 import os
 
-import guidata
 import numpy as np
-from guidata.qthelpers import exec_dialog
+from guidata.qthelpers import qt_app_context
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 
@@ -75,42 +74,6 @@ def txtwrite(data, x, y, sz, txt, range=None):
     data[y : y + dy, x : x + dx] = arr
 
 
-def imshow(items, title=""):
-    gridparam = make.gridparam(
-        background="black", minor_enabled=(False, False), major_style=(".", "gray", 1)
-    )
-    win = PlotDialog(
-        edit=False,
-        toolbar=True,
-        wintitle=title,
-        options=dict(gridparam=gridparam, type=PlotType.IMAGE),
-    )
-    nc = int(np.sqrt(len(items)) + 1.0)
-    maxy = 0
-    y = 0
-    x = 0
-    w = None
-    plot = win.manager.get_plot()
-    print("-" * 80)
-    for i, item in enumerate(items):
-        h = item.boundingRect().height()
-        if i % nc == 0:
-            x = 0
-            y += maxy
-            maxy = h
-        else:
-            x += w
-            maxy = max(maxy, h)
-        w = item.boundingRect().width()
-
-        item.set_transform(x, y, 0.0)
-        print("Adding item #{}...".format(i), end=" ")
-        plot.add_item(item)
-        print("Done")
-    win.show()
-    exec_dialog(win)
-
-
 def compute_image(NX, NY):
     BX, BY = 40, 40
     img = np.random.normal(0, 100, size=(BX, BY))
@@ -165,21 +128,50 @@ def build_image(items):
 
 def test_transform(img_show=True):
     """Test"""
-    _app = guidata.qapplication()
     N = 500
     data = compute_image(N, N)
     m = data.min()
     M = data.max()
-    items = [make.trimage(data, alpha_mask=True, colormap="jet")]
-    for type in (np.uint8, np.uint16, np.int8, np.int16):
-        info = np.iinfo(type().dtype)
-        s = float((info.max - info.min))
-        a1 = s * (data - m) / (M - m)
-        img = np.array(a1 + info.min, type)
-        txtwrite(img, 0, 0, int(N / 15.0), str(type))
-        items.append(make.trimage(img, colormap="jet"))
-    if img_show:
-        imshow(items, title="Transform test ({}x{} images)".format(N, N))
+    with qt_app_context(exec_loop=True):
+        items = [make.trimage(data, alpha_mask=True, colormap="jet")]
+        for type in (np.uint8, np.uint16, np.int8, np.int16):
+            info = np.iinfo(type().dtype)
+            s = float((info.max - info.min))
+            a1 = s * (data - m) / (M - m)
+            img = np.array(a1 + info.min, type)
+            txtwrite(img, 0, 0, int(N / 15.0), str(type))
+            items.append(make.trimage(img, colormap="jet"))
+        if img_show:
+            gridparam = make.gridparam(
+                background="black",
+                minor_enabled=(False, False),
+                major_style=(".", "gray", 1),
+            )
+            win = PlotDialog(
+                edit=False,
+                toolbar=True,
+                wintitle="Transform test ({}x{} images)".format(N, N),
+                options=dict(gridparam=gridparam, type=PlotType.IMAGE),
+            )
+            nc = int(np.sqrt(len(items)) + 1.0)
+            maxy = 0
+            y = 0
+            x = 0
+            w = None
+            plot = win.manager.get_plot()
+            for i, item in enumerate(items):
+                h = item.boundingRect().height()
+                if i % nc == 0:
+                    x = 0
+                    y += maxy
+                    maxy = h
+                else:
+                    x += w
+                    maxy = max(maxy, h)
+                w = item.boundingRect().width()
+                item.set_transform(x, y, 0.0)
+                plot.add_item(item)
+            win.show()
     return items
 
 
@@ -189,4 +181,4 @@ def test_build_image():
 
 
 if __name__ == "__main__":
-    test_build_image()
+    test_transform()
