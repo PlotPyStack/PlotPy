@@ -1,6 +1,3 @@
-recursive-include plotpy *.png *.jpg *.svg *.po *.mo *.py *.ui *.h5 *.dcm
-recursive-include doc *.bat *.rst *.png *.py *.pyw *.ico
-recursive-include src *.hpp *.cpp *.pyx
-include MANIFEST.in
-include Licence*.*
-include *.md
+graft doc
+graft qtdesigner
+graft src
