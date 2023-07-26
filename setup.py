@@ -1,27 +1,16 @@
 # -*- coding: utf-8 -*-
+
 import os
 import os.path as osp
 import sys
 from distutils.core import setup
 
 import numpy
+from Cython.Compiler import Main
 from setuptools import Distribution, Extension
 
-try:
-    from Cython.Compiler import Main
-except ImportError:
-
-    class Main:
-        """Fake class so that tox can analyse the setup before installing cython"""
-
-        @staticmethod
-        def compile(*args, **kwargs):
-            print("Skipping compilation of %r %r" % (args, kwargs))
-
-
 LIBNAME = "plotpy"
-BASEPATH = "."
-SRCPATH = osp.join(BASEPATH, "src")
+SRCPATH = osp.join(".", "src")
 
 
 # We create requirements for C/pyx dependencies compilation and integration into wheel
