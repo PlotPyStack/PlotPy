@@ -2,7 +2,6 @@
 #
 # Licensed under the terms of the BSD 3-Clause
 # (see plotpy/LICENSE for details)
-# FIXME: Gros problème de perf si on zoom dans l'image, le process ne s'arrêtre pas
 
 """Mandelbrot demo"""
 

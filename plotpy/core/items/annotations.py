@@ -11,8 +11,6 @@ plotpy.core.items.annotations
 
 """
 
-from __future__ import unicode_literals
-
 import numpy as np
 from guidata.configtools import get_icon
 from guidata.utils import update_dataset

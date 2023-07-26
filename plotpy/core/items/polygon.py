@@ -26,7 +26,8 @@ from plotpy.core.items.curve.base import SELECTED_SYMBOL
 from plotpy.core.styles.curve import CurveParam
 
 
-def _simplify_poly(pts, off, scale, bounds):
+def simplify_poly(pts, off, scale, bounds):
+    """Simplify a polygon by removing points outside the canvas"""
     ax, bx, ay, by = scale
     xm, ym, xM, yM = bounds
     a = np.array([[ax, ay]])
@@ -42,13 +43,6 @@ def _simplify_poly(pts, off, scale, bounds):
             i1 = pts.shape[0]
         poly.append((_pts[i0:i1], i))
     return poly
-
-
-try:
-    # XXX: gshhs
-    from gshhs import simplify_poly
-except ImportError:
-    simplify_poly = _simplify_poly
 
 
 class PolygonMapItem(QwtPlotItem):
@@ -275,14 +269,14 @@ class PolygonMapItem(QwtPlotItem):
         renvoie (dist, handle, inside)"""
         if self.is_empty():
             return maxsize, 0, False, None
-        # TODO
+        # TODO: Implement PolygonMapItem.hit_test
         return maxsize, 0, False, None
 
     def get_closest_coordinates(self, x, y):
         """Renvoie les coordonnées (x',y') du point le plus proche de (x,y)
         Méthode surchargée pour ErrorBarSignalCurve pour renvoyer
         les coordonnées des pointes des barres d'erreur"""
-        # TODO
+        # TODO: Implement PolygonMapItem.get_closest_coordinates
         return x, y
 
     def get_coordinates_label(self, xc, yc):

@@ -1895,7 +1895,7 @@ class BasePlot(qwt.QwtPlot):
         """
         auto = self.autoReplot()
         self.setAutoReplot(False)
-        # TODO: implement the case when axes are synchronised
+        # TODO: Implement the case when axes are synchronised
         for axis_id in self.AXIS_IDS if axis_id is None else [axis_id]:
             vmin, vmax = None, None
             if not self.axisEnabled(axis_id):
@@ -2244,7 +2244,7 @@ class BasePlot(qwt.QwtPlot):
         zaxis = self.colormap_axis
         axiswidget: QwtScaleWidget = self.axisWidget(zaxis)
         self.setAxisScale(zaxis, item.min, item.max)
-        # XXX: the colormap can't be displayed if min>max, to fix this
+        # XXX: The colormap can't be displayed if min>max, to fix this
         # we should pass an inverted colormap along with _max, _min values
         axiswidget.setColorMap(
             qwt.QwtInterval(item.min, item.max), item.get_color_map()

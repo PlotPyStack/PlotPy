@@ -169,12 +169,6 @@ class ISerializableType(IItemType):
         pass
 
 
-# XXX: we should differentiate shapes and annotation :
-# an annotation is a shape but is supposed to stay on the canvas
-# while a shape only could be the rectangle used to select the zoom
-# area
-
-
 class IBasePlotItem:
     """
     This is the interface that QwtPlotItem objects must implement

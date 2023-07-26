@@ -633,7 +633,7 @@ class SelectedLegendBoxItem(LegendBoxItem):
         self.itemlist = [] if itemlist is None else itemlist
 
     def __reduce__(self):
-        # XXX filter itemlist for picklabel items
+        # XXX Filter itemlist for picklabel items
         return (self.__class__, (self.labelparam, []))
 
     def include_item(self, item):

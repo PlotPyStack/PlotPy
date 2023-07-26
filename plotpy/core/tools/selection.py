@@ -6,11 +6,6 @@
 # pylint: disable=C0103
 
 
-# TODO: z(long-terme) à partir d'une sélection rectangulaire sur une image
-#      afficher un ArrayEditor montrant les valeurs de la zone sélectionnée
-
-from __future__ import unicode_literals
-
 import numpy as np
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG

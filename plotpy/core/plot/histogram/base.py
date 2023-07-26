@@ -177,7 +177,6 @@ class LevelsHistogram(BasePlot):
         """
         items = plot.get_selected_items(item_type=IVoiImageItemType)
         if not items:
-            # XXX: workaround
             return
 
         active = plot.get_last_active_item(IVoiImageItemType)

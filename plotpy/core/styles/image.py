@@ -318,7 +318,6 @@ class QuadGridParam(ImageParamMixin):
         image.set_color_map(self.colormap)
         image.interpolate = (self.interpolation, self.uflat, self.vflat)
         image.grid = self.grid
-        # TODO : gridcolor
         if plot is not None:
             plot.blockSignals(False)
 

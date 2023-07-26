@@ -380,7 +380,7 @@ def assemble_imageitems(
             "the `align` option is ignored",
             file=sys.stderr,
         )
-    align = 1  # XXX: byte alignment is disabled until further notice!
+    align = 1  # XXX: Byte alignment is disabled until further notice!
     aligned_destw = int(align * ((int(destw) + align - 1) / align))
     aligned_desth = int(desth * aligned_destw / destw)
 

@@ -17,7 +17,9 @@ import pytest
 from plotpy.core.plot.interactive import (
     errorbar,
     figure,
+    gray,
     hist,
+    hot,
     imshow,
     legend,
     pcolor,
@@ -49,8 +51,7 @@ def test_pyplot():
     xlabel("pixels")
     ylabel("pixels")
     zlabel("intensity")
-    # XXX: gray function not defined
-    # gray()
+    gray()
     imshow(img)
     #    savefig("D:\\test1.pdf", draft=True)
 
@@ -95,8 +96,7 @@ def test_pyplot():
 
     figure("pcolor 2")
     pcolor(Z)
-    # XXX: hot function not defined
-    # hot()
+    hot()
     show()
 
 

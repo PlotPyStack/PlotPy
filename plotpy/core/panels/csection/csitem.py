@@ -62,7 +62,7 @@ def get_plot_x_section(obj, apply_lut=False):
     else:
         yc1 = yc0 - 3
     try:
-        # TODO: eventually add an option to apply interpolation algorithm
+        # TODO: Eventually add an option to apply interpolation algorithm
         data = get_image_from_qrect(
             plot,
             QC.QPointF(xc0, yc0),

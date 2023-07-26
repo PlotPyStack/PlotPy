@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=C0103
 
-# FIXME: traceback in scaler when adding here 'from __future__ import division'
-
 import sys
 
 import numpy as np

@@ -136,8 +136,6 @@ class TrImageItem(TransformImageMixin, RawImageItem):
         raise NotImplementedError
         # TODO: Implement TrImageFilterItem
 
-    #        return TrImageFilterItem(self, filterobj, filterparam)
-
     def get_pixel_coordinates(self, xplot, yplot):
         """Return (image) pixel coordinates (from plot coordinates)"""
         v = self.tr * colvector(xplot, yplot)

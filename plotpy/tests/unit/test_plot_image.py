@@ -126,7 +126,7 @@ def test_set_aspect_ratio(qtbot, ratio):
     x0, x1, y0, y1 = plot.get_plot_limits()
     width = abs(x1 - x0)
     height = abs(y1 - y0)
-    # XXX: this is tested with gui, it depends on x/y image ration
+    # XXX: This is tested with gui, it depends on x/y image ration
     # assert original_width != width
     # assert original_height / height == pytest.approx(ratio)
     #    assert original_height == height
@@ -156,6 +156,6 @@ def test_colormap_tool(qtbot):
     assert item.get_color_map_name() == "Accent"
     accent_img = plot.grab().toImage()
     assert jet_img != accent_img
-    # TODO: check colormap of accent_img
+    # TODO: Check colormap of accent_img
 
     qtbot.keyClick(win, Qt.Key_Enter)

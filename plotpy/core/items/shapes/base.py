@@ -20,7 +20,7 @@ class AbstractShape(QwtPlotItem):
     _private = False
     _can_select = True
     _can_resize = True
-    _can_rotate = False  # TODO: implement shape rotation?
+    _can_rotate = False  # TODO: Implement shape rotation?
     _can_move = True
 
     def __init__(self):

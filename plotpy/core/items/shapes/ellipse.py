@@ -13,7 +13,6 @@ from plotpy.core.items.shapes.polygon import PolygonShape
 from plotpy.utils.geometry import compute_angle, compute_center
 
 
-# FIXME: EllipseShape's ellipse drawing is invalid when aspect_ratio != 1
 class EllipseShape(PolygonShape):
     """ """
 
