@@ -13,7 +13,10 @@
 import os
 
 import numpy as np
+from guidata.env import execenv
 from guidata.qthelpers import qt_app_context
+from qtpy import QtCore as QC
+from qtpy import QtWidgets as QW
 
 from plotpy.core.builder import make
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
@@ -24,6 +27,7 @@ from plotpy.core.tools.shapes import PolygonShape
 
 
 def build_items():
+    """Build items"""
     x = np.linspace(-10, 10, 200)
     y = np.sin(np.sin(np.sin(x)))
     filename = os.path.join(os.path.dirname(__file__), "brain.png")
@@ -79,28 +83,13 @@ def build_items():
     return items
 
 
-class IOTest:
-    FNAME = None
+class TestDialog(PlotDialog):
+    """Test dialog"""
+
+    SIG_SAVE_RESTORE_ITEMS = QC.Signal()
 
     def __init__(self):
-        self.dlg = None
-
-    @property
-    def plot(self):
-        if self.dlg is not None:
-            return self.dlg.manager.get_plot()
-
-    def run(self):
-        """Run test"""
-        self.create_dialog()
-        self.add_items()
-        self.dlg.show()
-        print("Saving items...", end=" ")
-        self.save_items()
-        print("OK")
-
-    def create_dialog(self):
-        self.dlg = dlg = PlotDialog(
+        super().__init__(
             edit=False,
             toolbar=True,
             wintitle="Load/save test",
@@ -108,46 +97,101 @@ class IOTest:
                 title="Title", xlabel="xlabel", ylabel="ylabel", type=PlotType.IMAGE
             ),
         )
-        dlg.manager.add_separator_tool()
-        dlg.manager.add_tool(LoadItemsTool)
-        dlg.manager.add_tool(SaveItemsTool)
-        dlg.manager.add_tool(ImageMaskTool)
+        self.manager.add_separator_tool()
+        self.manager.add_tool(LoadItemsTool)
+        self.manager.add_tool(SaveItemsTool)
+        self.manager.add_tool(ImageMaskTool)
+        self.manager.get_itemlist_panel().show()
 
-    def add_items(self):
-        if os.access(self.FNAME, os.R_OK):
-            print("Restoring items...", end=" ")
-            self.restore_items()
+    def populate_plot_layout(self) -> None:
+        """Populate the plot layout"""
+        super().populate_plot_layout()
+        if not execenv.unattended:
+            continue_btn = QW.QPushButton("Save and restore items")
+            continue_btn.clicked.connect(lambda: self.SIG_SAVE_RESTORE_ITEMS.emit())
+            self.add_widget(continue_btn)
+
+
+class IOTest:
+    """Base class for load/save items tests"""
+
+    FNAME = None
+
+    def __init__(self):
+        self.dlg = None
+
+    @property
+    def plot(self):
+        """Return the plot"""
+        if self.dlg is not None:
+            return self.dlg.manager.get_plot()
+
+    def run(self):
+        """Run test"""
+        with qt_app_context(exec_loop=True):
+            self.dlg = TestDialog()
+            self.dlg.SIG_SAVE_RESTORE_ITEMS.connect(self.save_and_restore_items)
+            print("Building items and add them to plotting canvas", end=" ")
+            self.add_items()
+            print("OK")
+            self.dlg.show()
+            if execenv.unattended:
+                self.save_and_restore_items()
+        print("Cleaning up...", end=" ")
+        if os.path.isfile(self.FNAME):
+            os.unlink(self.FNAME)
             print("OK")
         else:
-            for item in build_items():
-                self.plot.add_item(item)
-            print("Building items and add them to plotting canvas", end=" ")
+            print("No file to clean up")
+
+    def save_and_restore_items(self):
+        """Save and restore items"""
+        print("Saving items...", end=" ")
+        self.save_items()
+        print("OK")
+        print("Remove items from plotting canvas...", end=" ")
+        self.plot.del_all_items()
+        print("OK")
+        print("Restoring items...", end=" ")
+        self.restore_items()
+        print("OK")
+
+    def add_items(self):
+        """Add items to plotting canvas"""
+        for item in build_items():
+            self.plot.add_item(item)
         self.dlg.manager.get_itemlist_panel().show()
         self.plot.set_items_readonly(False)
 
     def restore_items(self):
+        """Restore items"""
         raise NotImplementedError
 
     def save_items(self):
+        """Save items"""
         raise NotImplementedError
 
 
 class PickleTest(IOTest):
+    """Test load/save items using Python's pickle protocol"""
+
     FNAME = "loadsavecanvas.pickle"
 
     def restore_items(self):
+        """Restore items"""
         f = open(self.FNAME, "rb")
         self.plot.restore_items(f)
 
     def save_items(self):
+        """Save items"""
         f = open(self.FNAME, "wb")
         self.plot.save_items(f)
 
 
 def test_pickle():
-    with qt_app_context(exec_loop=True):
-        test = PickleTest()
-        test.run()
+    """Test load/save items using Python's pickle protocol"""
+    test = PickleTest()
+    test.run()
 
 
 if __name__ == "__main__":

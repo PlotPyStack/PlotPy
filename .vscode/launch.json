@@ -13,7 +13,9 @@
             "envFile": "${workspaceFolder}/.env",
             "python": "${config:python.defaultInterpreterPath}",
             "justMyCode": false,
-            "args": [],
+            // "args": [
+            //     "--unattended"
+            // ],
             "env": {}
         },
         {
