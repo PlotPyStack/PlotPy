@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-import sys
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 import numpy as np
 from qtpy import QtCore as QC
@@ -16,6 +19,16 @@ from plotpy.core.items.image.image_items import ImageItem, XYImageItem
 from plotpy.core.items.image.masked_area import MaskedArea
 from plotpy.core.items.image.mixin import MaskedImageMixin
 from plotpy.core.styles.image import MaskedImageParam, MaskedXYImageParam
+
+if TYPE_CHECKING:
+    from guidata.dataset.io import (
+        HDF5Reader,
+        HDF5Writer,
+        INIReader,
+        INIWriter,
+        JSONReader,
+        JSONWriter,
+    )
 
 
 class MaskedImageItem(ImageItem, MaskedImageMixin):
@@ -85,13 +98,21 @@ class MaskedImageItem(ImageItem, MaskedImageMixin):
             self.set_masked_areas(masked_areas)
             self.apply_masked_areas()
 
-    def serialize(self, writer):
-        """Serialize object to HDF5 writer"""
+    def serialize(self, writer: HDF5Writer | INIWriter | JSONWriter) -> None:
+        """Serialize object to HDF5 writer
+
+        Args:
+            writer: HDF5, INI or JSON writer
+        """
         ImageItem.serialize(self, writer)
         MaskedImageMixin.serialize(self, writer)
 
-    def deserialize(self, reader):
-        """Deserialize object from HDF5 reader"""
+    def deserialize(self, reader: HDF5Reader | INIReader | JSONReader) -> None:
+        """Deserialize object from HDF5 reader
+
+        Args:
+            reader: HDF5, INI or JSON reader
+        """
         ImageItem.deserialize(self, reader)
         MaskedImageMixin.deserialize(self, reader)
 
@@ -222,13 +243,21 @@ class MaskedXYImageItem(XYImageItem, MaskedImageMixin):
             self.set_masked_areas(masked_areas)
             self.apply_masked_areas()
 
-    def serialize(self, writer):
-        """Serialize object to HDF5 writer"""
+    def serialize(self, writer: HDF5Writer | INIWriter | JSONWriter) -> None:
+        """Serialize object to HDF5 writer
+
+        Args:
+            writer: HDF5, INI or JSON writer
+        """
         XYImageItem.serialize(self, writer)
         MaskedImageMixin.serialize(self, writer)
 
-    def deserialize(self, reader):
-        """Deserialize object from HDF5 reader"""
+    def deserialize(self, reader: HDF5Reader | INIReader | JSONReader) -> None:
+        """Deserialize object from HDF5 reader
+
+        Args:
+            reader: HDF5, INI or JSON reader
+        """
         XYImageItem.deserialize(self, reader)
         MaskedImageMixin.deserialize(self, reader)
 

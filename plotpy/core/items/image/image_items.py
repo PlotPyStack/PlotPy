@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=C0103
 
+from __future__ import annotations
+
 import sys
+from typing import TYPE_CHECKING
 
 import numpy as np
 from guidata.utils.misc import assert_interfaces_valid
@@ -27,6 +30,19 @@ from plotpy.core.items.image.filter import XYImageFilterItem, to_bins
 from plotpy.core.items.image.mixin import ImageMixin
 from plotpy.core.styles.image import ImageParam, RGBImageParam, XYImageParam
 from plotpy.utils.geometry import colvector
+
+if TYPE_CHECKING:
+    from guidata.dataset.io import (
+        HDF5Reader,
+        HDF5Writer,
+        INIReader,
+        INIWriter,
+        JSONReader,
+        JSONWriter,
+    )
+    from qtpy.QtCore import QPointF
+
+    from plotpy.core.interfaces.common import IItemType
 
 try:
     from plotpy._scaler import INTERP_NEAREST, _scale_rect, _scale_xy
@@ -112,8 +128,12 @@ class ImageItem(RawImageItem):
         self.setZ(z)
         self.param.update_item(self)
 
-    def serialize(self, writer):
-        """Serialize object to HDF5 writer"""
+    def serialize(self, writer: HDF5Writer | INIWriter | JSONWriter) -> None:
+        """Serialize object to HDF5 writer
+
+        Args:
+            writer: HDF5, INI or JSON writer
+        """
         super(ImageItem, self).serialize(writer)
         (xmin, xmax), (ymin, ymax) = self.get_xdata(), self.get_ydata()
         writer.write(xmin, group_name="xmin")
@@ -121,8 +141,12 @@ class ImageItem(RawImageItem):
         writer.write(ymin, group_name="ymin")
         writer.write(ymax, group_name="ymax")
 
-    def deserialize(self, reader):
-        """Deserialize object from HDF5 reader"""
+    def deserialize(self, reader: HDF5Reader | INIReader | JSONReader) -> None:
+        """Deserialize object from HDF5 reader
+
+        Args:
+            reader: HDF5, INI or JSON reader
+        """
         super(ImageItem, self).deserialize(reader)
         for attr in ("xmin", "xmax", "ymin", "ymax"):
             # Note: do not be tempted to write the symetric code in `serialize`
@@ -197,7 +221,10 @@ class ImageItem(RawImageItem):
         :return:
         """
         xmin, xmax = self.get_xdata()
-        xfunc = lambda index: xmin + (xmax - xmin) * index / float(self.data.shape[1])
+
+        def xfunc(index):
+            return xmin + (xmax - xmin) * index / float(self.data.shape[1])
+
         return np.linspace(xfunc(i0), xfunc(i1), i1 - i0, endpoint=False)
 
     def get_y_values(self, j0, j1):
@@ -208,11 +235,23 @@ class ImageItem(RawImageItem):
         :return:
         """
         ymin, ymax = self.get_ydata()
-        yfunc = lambda index: ymin + (ymax - ymin) * index / float(self.data.shape[0])
+
+        def yfunc(index):
+            return ymin + (ymax - ymin) * index / float(self.data.shape[0])
+
         return np.linspace(yfunc(j0), yfunc(j1), j1 - j0, endpoint=False)
 
-    def get_closest_coordinates(self, x, y):
-        """Return closest image pixel coordinates"""
+    def get_closest_coordinates(self, x: float, y: float) -> tuple[float, float]:
+        """
+        Get the closest coordinates to the given point
+
+        Args:
+            x: X coordinate
+            y: Y coordinate
+
+        Returns:
+            tuple[float, float]: Closest coordinates
+        """
         (xmin, xmax), (ymin, ymax) = self.get_xdata(), self.get_ydata()
         i, j = self.get_closest_indexes(x, y)
         xpix = np.linspace(xmin, xmax, self.data.shape[1] + 1)
@@ -258,16 +297,28 @@ class ImageItem(RawImageItem):
 
     def export_roi(
         self,
-        src_rect,
-        dst_rect,
-        dst_image,
-        apply_lut=False,
-        apply_interpolation=False,
-        original_resolution=False,
-        force_interp_mode=None,
-        force_interp_size=None,
-    ):
-        """Export Region Of Interest to array"""
+        src_rect: tuple[float, float, float, float],
+        dst_rect: tuple[float, float, float, float],
+        dst_image: np.ndarray,
+        apply_lut: bool = False,
+        apply_interpolation: bool = False,
+        original_resolution: bool = False,
+        force_interp_mode: str = None,
+        force_interp_size: int = None,
+    ) -> None:
+        """
+        Export a rectangular area of the image to another image
+
+        Args:
+            src_rect: Source rectangle
+            dst_rect: Destination rectangle
+            dst_image: Destination image
+            apply_lut: Apply lut (Default value = False)
+            apply_interpolation: Apply interpolation (Default value = False)
+            original_resolution: Original resolution (Default value = False)
+            force_interp_mode: Force interpolation mode (Default value = None)
+            force_interp_size: Force interpolation size (Default value = None)
+        """
         if apply_lut:
             a, b, _bg, _cmap = self.lut
         else:
@@ -282,9 +333,14 @@ class ImageItem(RawImageItem):
             interp,
         )
 
-    def move_local_point_to(self, handle, pos, ctrl=None):
-        """Move a handle as returned by hit_test to the new position pos
-        ctrl: True if <Ctrl> button is being pressed, False otherwise"""
+    def move_local_point_to(self, handle: int, pos: QPointF, ctrl: bool = None) -> None:
+        """Move a handle as returned by hit_test to the new position
+
+        Args:
+            handle: Handle
+            pos: Position
+            ctrl: True if <Ctrl> button is being pressed, False otherwise
+        """
 
         nx, ny = canvas_to_axes(self, pos)
         xmin, xmax = self.get_xdata()
@@ -305,9 +361,13 @@ class ImageItem(RawImageItem):
         self.update_bounds()
         self.update_border()
 
-    def move_local_shape(self, old_pos, new_pos):
-        """Translate the shape such that old_pos becomes new_pos
-        in canvas coordinates"""
+    def move_local_shape(self, old_pos: QPointF, new_pos: QPointF) -> None:
+        """Translate the shape such that old_pos becomes new_pos in canvas coordinates
+
+        Args:
+            old_pos: Old position
+            new_pos: New position
+        """
         nx, ny = canvas_to_axes(self, new_pos)
         ox, oy = canvas_to_axes(self, old_pos)
         xmin, xmax = self.get_xdata()
@@ -319,10 +379,12 @@ class ImageItem(RawImageItem):
         if self.plot():
             self.plot().SIG_ITEM_MOVED.emit(self, ox, oy, nx, ny)
 
-    def move_with_selection(self, delta_x, delta_y):
-        """
-        Translate the shape together with other selected items
-        delta_x, delta_y: translation in plot coordinates
+    def move_with_selection(self, delta_x: float, delta_y: float) -> None:
+        """Translate the item together with other selected items
+
+        Args:
+            delta_x: Translation in plot coordinates along x-axis
+            delta_y: Translation in plot coordinates along y-axis
         """
         xmin, xmax = self.get_xdata()
         ymin, ymax = self.get_ydata()
@@ -400,14 +462,22 @@ class XYImageItem(ImageMixin, RawImageItem):
         self.param.update_item(self)
         self.set_transform(*self.get_transform())
 
-    def serialize(self, writer):
-        """Serialize object to HDF5 writer"""
+    def serialize(self, writer: HDF5Writer | INIWriter | JSONWriter) -> None:
+        """Serialize object to HDF5 writer
+
+        Args:
+            writer: HDF5, INI or JSON writer
+        """
         super(XYImageItem, self).serialize(writer)
         writer.write(self.x, group_name="Xdata")
         writer.write(self.y, group_name="Ydata")
 
-    def deserialize(self, reader):
-        """Deserialize object from HDF5 reader"""
+    def deserialize(self, reader: HDF5Reader | INIReader | JSONReader) -> None:
+        """Deserialize object from HDF5 reader
+
+        Args:
+            reader: HDF5, INI or JSON reader
+        """
         super(XYImageItem, self).deserialize(reader)
         x = reader.read(group_name="Xdata", func=reader.read_array)
         y = reader.read(group_name="Ydata", func=reader.read_array)
@@ -523,8 +593,17 @@ class XYImageItem(ImageMixin, RawImageItem):
         y = (self.itr * yv.T).A[1]
         return y[j0:j1]
 
-    def get_closest_coordinates(self, x, y):
-        """Return closest image pixel coordinates"""
+    def get_closest_coordinates(self, x: float, y: float) -> tuple[float, float]:
+        """
+        Get the closest coordinates to the given point
+
+        Args:
+            x: X coordinate
+            y: Y coordinate
+
+        Returns:
+            tuple[float, float]: Closest coordinates
+        """
         i, j = self.get_closest_indexes(x, y)
         xi, yi = self.x[i], self.y[j]
         v = self.itr * colvector(xi, yi)
@@ -532,10 +611,12 @@ class XYImageItem(ImageMixin, RawImageItem):
         return x, y
 
     # ---- IBasePlotItem API ---------------------------------------------------
-    def types(self):
-        """
+    def types(self) -> tuple[type[IItemType], ...]:
+        """Returns a group or category for this item.
+        This should be a tuple of class objects inheriting from IItemType
 
-        :return:
+        Returns:
+            tuple: Tuple of class objects inheriting from IItemType
         """
         return (
             IImageItemType,
@@ -547,10 +628,13 @@ class XYImageItem(ImageMixin, RawImageItem):
         )
 
     # ---- IBaseImageItem API --------------------------------------------------
-    def can_sethistogram(self):
+    def can_sethistogram(self) -> bool:
         """
+        Returns True if this item can be associated with a levels histogram
 
-        :return:
+        Returns:
+            bool: True if item can be associated with a levels histogram,
+             False otherwise
         """
         return True
 
@@ -651,18 +735,23 @@ class RGBImageItem(ImageItem):
         self.lut = None
 
     # ---- IBasePlotItem API ---------------------------------------------------
-    def types(self):
-        """
+    def types(self) -> tuple[type[IItemType], ...]:
+        """Returns a group or category for this item.
+        This should be a tuple of class objects inheriting from IItemType
 
-        :return:
+        Returns:
+            tuple: Tuple of class objects inheriting from IItemType
         """
         return (IImageItemType, ITrackableItemType, ISerializableType)
 
     # ---- IBaseImageItem API --------------------------------------------------
-    def can_sethistogram(self):
+    def can_sethistogram(self) -> bool:
         """
+        Returns True if this item can be associated with a levels histogram
 
-        :return:
+        Returns:
+            bool: True if item can be associated with a levels histogram,
+             False otherwise
         """
         return False
 

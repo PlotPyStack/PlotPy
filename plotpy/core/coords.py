@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+#
+# Licensed under the terms of the BSD 3-Clause
+# (see plotpy/LICENSE for details)
 
 """
 plotpy.core.coords
@@ -13,18 +16,45 @@ Reference
 .. autofunction:: axes_to_canvas
 """
 
+from __future__ import annotations
 
-def canvas_to_axes(item, pos):
-    """Convert (x,y) from canvas coordinates system to axes coordinates"""
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from qtpy.QtCore import QPointF
+    from qwt import QwtPlot, QwtPlotItem
+
+
+def canvas_to_axes(item: QwtPlotItem, pos: QPointF) -> tuple[float, float] | None:
+    """Convert position from canvas coordinates system to axes coordinates
+
+    Args:
+        item: Plot item
+        pos: Position in canvas coordinates system
+
+    Returns:
+        Position in axes coordinates system or None if item is None
+    """
     if item is None:
-        return
-    plot, ax, ay = item.plot(), item.xAxis(), item.yAxis()
+        return None
+    plot: QwtPlot = item.plot()
+    ax, ay = item.xAxis(), item.yAxis()
     return plot.invTransform(ax, pos.x()), plot.invTransform(ay, pos.y())
 
 
-def axes_to_canvas(item, x, y):
-    """Convert (x,y) from axes coordinates to canvas coordinates system"""
+def axes_to_canvas(item: QwtPlotItem, x: float, y: float) -> tuple[float, float] | None:
+    """Convert (x,y) from axes coordinates to canvas coordinates system
+
+    Args:
+        item: Plot item
+        x: X position in axes coordinates system
+        y: Y position in axes coordinates system
+
+    Returns:
+        Position in canvas coordinates system or None if item is None
+    """
     if item is None:
-        return
-    plot, ax, ay = item.plot(), item.xAxis(), item.yAxis()
+        return None
+    plot: QwtPlot = item.plot()
+    ax, ay = item.xAxis(), item.yAxis()
     return plot.transform(ax, x), plot.transform(ay, y)

@@ -19,7 +19,17 @@ from plotpy.core.styles.curve import CurveParam
 from plotpy.core.styles.errorbar import ErrorBarParam
 
 if TYPE_CHECKING:
+    from guidata.dataset.io import (
+        HDF5Reader,
+        HDF5Writer,
+        INIReader,
+        INIWriter,
+        JSONReader,
+        JSONWriter,
+    )
+
     from plotpy.core.plot.base import BasePlot
+    from plotpy.core.styles.base import ItemParameters
 
 
 def _transform(map, v):
@@ -54,16 +64,24 @@ class ErrorBarCurveItem(CurveItem):
         self._minmaxarrays = {}
         self.setIcon(get_icon("errorbar.png"))
 
-    def serialize(self, writer):
-        """Serialize object to HDF5 writer"""
+    def serialize(self, writer: HDF5Writer | INIWriter | JSONWriter) -> None:
+        """Serialize object to HDF5 writer
+
+        Args:
+            writer: HDF5, INI or JSON writer
+        """
         super(ErrorBarCurveItem, self).serialize(writer)
         writer.write(self._dx, group_name="dXdata")
         writer.write(self._dy, group_name="dYdata")
         self.errorbarparam.update_param(self)
         writer.write(self.errorbarparam, group_name="errorbarparam")
 
-    def deserialize(self, reader):
-        """Deserialize object from HDF5 reader"""
+    def deserialize(self, reader: HDF5Reader | INIReader | JSONReader) -> None:
+        """Deserialize object from HDF5 reader
+
+        Args:
+            reader: HDF5, INI or JSON reader
+        """
         self.param = CurveParam(_("Curve"), icon="curve.png")
         reader.read("curveparam", instance=self.param)
         self.errorbarparam = ErrorBarParam(_("Error bars"), icon="errorbar.png")
@@ -76,8 +94,11 @@ class ErrorBarCurveItem(CurveItem):
         self.setZ(reader.read("z"))
         self.update_params()
 
-    def unselect(self):
-        """Unselect item"""
+    def unselect(self) -> None:
+        """
+        Unselect the object and eventually restore its original appearance to
+        highlight the fact that it's not selected anymore
+        """
         CurveItem.unselect(self)
         self.errorbarparam.update_item(self)
 
@@ -154,12 +175,16 @@ class ErrorBarCurveItem(CurveItem):
                 )
         return self._minmaxarrays[all_values]
 
-    def get_closest_coordinates(self, x, y):
+    def get_closest_coordinates(self, x: float, y: float) -> tuple[float, float]:
         """
+        Get the closest coordinates to the given point
 
-        :param x:
-        :param y:
-        :return:
+        Args:
+            x: X coordinate
+            y: Y coordinate
+
+        Returns:
+            tuple[float, float]: Closest coordinates
         """
         # Surcharge d'une méthode de base de CurveItem
         plot: BasePlot = self.plot()
@@ -283,23 +308,29 @@ class ErrorBarCurveItem(CurveItem):
         self.errorbarparam.update_item(self)
         CurveItem.update_params(self)
 
-    def update_item_parameters(self):
-        """ """
+    def update_item_parameters(self) -> None:
+        """Update item parameters (dataset) from object properties"""
         CurveItem.update_item_parameters(self)
         self.errorbarparam.update_param(self)
 
-    def get_item_parameters(self, itemparams):
+    def get_item_parameters(self, itemparams: ItemParameters) -> None:
         """
+        Appends datasets to the list of DataSets describing the parameters
+        used to customize apearance of this item
 
-        :param itemparams:
+        Args:
+            itemparams: Item parameters
         """
         CurveItem.get_item_parameters(self, itemparams)
         itemparams.add("ErrorBarParam", self, self.errorbarparam)
 
-    def set_item_parameters(self, itemparams):
+    def set_item_parameters(self, itemparams: ItemParameters) -> None:
         """
+        Change the appearance of this item according
+        to the parameter set provided
 
-        :param itemparams:
+        Args:
+            itemparams: Item parameters
         """
         update_dataset(
             self.errorbarparam, itemparams.get("ErrorBarParam"), visible_only=True

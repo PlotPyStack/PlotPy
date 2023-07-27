@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import annotations
+
 import math
 import sys
+from typing import TYPE_CHECKING
 
 import numpy as np
 from guidata.configtools import get_icon
@@ -19,6 +23,20 @@ from plotpy.core.interfaces.common import (
 )
 from plotpy.core.items.shapes.base import AbstractShape
 from plotpy.core.styles.shape import ShapeParam
+
+if TYPE_CHECKING:
+    from guidata.dataset.io import (
+        HDF5Reader,
+        HDF5Writer,
+        INIReader,
+        INIWriter,
+        JSONReader,
+        JSONWriter,
+    )
+    from qtpy.QtCore import QPointF
+
+    from plotpy.core.interfaces.common import IItemType
+    from plotpy.core.styles.base import ItemParameters
 
 
 class PolygonShape(AbstractShape):
@@ -51,10 +69,12 @@ class PolygonShape(AbstractShape):
             self.set_points(points)
         self.setIcon(get_icon("freeform.png"))
 
-    def types(self):
-        """
+    def types(self) -> tuple[type[IItemType], ...]:
+        """Returns a group or category for this item.
+        This should be a tuple of class objects inheriting from IItemType
 
-        :return:
+        Returns:
+            tuple: Tuple of class objects inheriting from IItemType
         """
         return (IShapeItemType, ISerializableType)
 
@@ -68,16 +88,24 @@ class PolygonShape(AbstractShape):
         self.setZ(z)
         self.shapeparam.update_shape(self)
 
-    def serialize(self, writer):
-        """Serialize object to HDF5 writer"""
+    def serialize(self, writer: HDF5Writer | INIWriter | JSONWriter) -> None:
+        """Serialize object to HDF5 writer
+
+        Args:
+            writer: HDF5, INI or JSON writer
+        """
         self.shapeparam.update_param(self)
         writer.write(self.shapeparam, group_name="shapeparam")
         writer.write(self.points, group_name="points")
         writer.write(self.closed, group_name="closed")
         writer.write(self.z(), group_name="z")
 
-    def deserialize(self, reader):
-        """Deserialize object from HDF5 reader"""
+    def deserialize(self, reader: HDF5Reader | INIReader | JSONReader) -> None:
+        """Deserialize object from HDF5 reader
+
+        Args:
+            reader: HDF5, INI or JSON reader
+        """
         self.closed = reader.read("closed")
         self.shapeparam = ShapeParam(_("Shape"), icon="rectangle.png")
         reader.read("shapeparam", instance=self.shapeparam)
@@ -242,8 +270,25 @@ class PolygonShape(AbstractShape):
         inside = poly.containsPoint(QC.QPointF(Cx, Cy), QC.Qt.OddEvenFill)
         return math.sqrt(dist), handle, inside, None
 
-    def hit_test(self, pos):
-        """return (dist, handle, inside)"""
+    def hit_test(self, pos: QPointF) -> tuple[float, float, bool, None]:
+        """Return a tuple (distance, attach point, inside, other_object)
+
+        Args:
+            pos: Position
+
+        Returns:
+            tuple: Tuple with four elements: (distance, attach point, inside,
+             other_object).
+
+        Description of the returned values:
+
+        * distance: distance in pixels (canvas coordinates) to the closest
+           attach point
+        * attach point: handle of the attach point
+        * inside: True if the mouse button has been clicked inside the object
+        * other_object: if not None, reference of the object which will be
+           considered as hit instead of self
+        """
         if not self.plot():
             return sys.maxsize, 0, False, None
         return self.poly_hit_test(self.plot(), self.xAxis(), self.yAxis(), pos)
@@ -299,22 +344,28 @@ class PolygonShape(AbstractShape):
         dy = new_pos[1] - old_pos[1]
         self.points += np.array([[dx, dy]])
 
-    def update_item_parameters(self):
-        """ """
+    def update_item_parameters(self) -> None:
+        """Update item parameters (dataset) from object properties"""
         self.shapeparam.update_param(self)
 
-    def get_item_parameters(self, itemparams):
+    def get_item_parameters(self, itemparams: ItemParameters) -> None:
         """
+        Appends datasets to the list of DataSets describing the parameters
+        used to customize apearance of this item
 
-        :param itemparams:
+        Args:
+            itemparams: Item parameters
         """
         self.update_item_parameters()
         itemparams.add("ShapeParam", self, self.shapeparam)
 
-    def set_item_parameters(self, itemparams):
+    def set_item_parameters(self, itemparams: ItemParameters) -> None:
         """
+        Change the appearance of this item according
+        to the parameter set provided
 
-        :param itemparams:
+        Args:
+            itemparams: Item parameters
         """
         update_dataset(self.shapeparam, itemparams.get("ShapeParam"), visible_only=True)
         self.shapeparam.update_shape(self)

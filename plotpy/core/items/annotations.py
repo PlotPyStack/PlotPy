@@ -11,6 +11,10 @@ plotpy.core.items.annotations
 
 """
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 import numpy as np
 from guidata.configtools import get_icon
 from guidata.utils import update_dataset
@@ -37,6 +41,20 @@ from plotpy.utils.geometry import (
     compute_distance,
     compute_rect_size,
 )
+
+if TYPE_CHECKING:
+    from guidata.dataset.io import (
+        HDF5Reader,
+        HDF5Writer,
+        INIReader,
+        INIWriter,
+        JSONReader,
+        JSONWriter,
+    )
+    from qtpy.QtCore import QPointF
+
+    from plotpy.core.interfaces.common import IItemType
+    from plotpy.core.styles.base import ItemParameters
 
 
 class AnnotatedShape(AbstractShape):
@@ -65,10 +83,12 @@ class AnnotatedShape(AbstractShape):
             self.annotationparam.update_annotation(self)
         self.setIcon(get_icon("annotation.png"))
 
-    def types(self):
-        """
+    def types(self) -> tuple[type[IItemType], ...]:
+        """Returns a group or category for this item.
+        This should be a tuple of class objects inheriting from IItemType
 
-        :return:
+        Returns:
+            tuple: Tuple of class objects inheriting from IItemType
         """
         return (IShapeItemType, ISerializableType)
 
@@ -84,14 +104,22 @@ class AnnotatedShape(AbstractShape):
         self.annotationparam = param
         self.annotationparam.update_annotation(self)
 
-    def serialize(self, writer):
-        """Serialize object to HDF5 writer"""
+    def serialize(self, writer: HDF5Writer | INIWriter | JSONWriter) -> None:
+        """Serialize object to HDF5 writer
+
+        Args:
+            writer: HDF5, INI or JSON writer
+        """
         writer.write(self.annotationparam, group_name="annotationparam")
         self.shape.serialize(writer)
         self.label.serialize(writer)
 
-    def deserialize(self, reader):
-        """Deserialize object from HDF5 reader"""
+    def deserialize(self, reader: HDF5Reader | INIReader | JSONReader) -> None:
+        """Deserialize object from HDF5 reader
+
+        Args:
+            reader: HDF5, INI or JSON reader
+        """
         self.annotationparam = AnnotationParam(_("Annotation"), icon="annotation.png")
         reader.read("annotationparam", instance=self.annotationparam)
         self.annotationparam.update_annotation(self)
@@ -220,9 +248,13 @@ class AnnotatedShape(AbstractShape):
         xs, ys = self.get_tr_size()
         return "{} x {}".format(self.x_to_str(xs), self.y_to_str(ys))
 
-    def get_infos(self):
-        """Return formatted string with informations on current shape"""
-        pass
+    def get_infos(self) -> str:
+        """Get informations on current shape
+
+        Returns:
+            str: Formatted string with informations on current shape
+        """
+        return ""
 
     def set_label_position(self):
         """Set label position, for instance based on shape position"""
@@ -251,11 +283,24 @@ class AnnotatedShape(AbstractShape):
         return x1, y1, x2, y2
 
     # ----IBasePlotItem API------------------------------------------------------
-    def hit_test(self, pos):
-        """
+    def hit_test(self, pos: QPointF) -> tuple[float, float, bool, None]:
+        """Return a tuple (distance, attach point, inside, other_object)
 
-        :param pos:
-        :return:
+        Args:
+            pos: Position
+
+        Returns:
+            tuple: Tuple with four elements: (distance, attach point, inside,
+             other_object).
+
+        Description of the returned values:
+
+        * distance: distance in pixels (canvas coordinates) to the closest
+           attach point
+        * attach point: handle of the attach point
+        * inside: True if the mouse button has been clicked inside the object
+        * other_object: if not None, reference of the object which will be
+           considered as hit instead of self
         """
         return self.shape.poly_hit_test(self.plot(), self.xAxis(), self.yAxis(), pos)
 
@@ -280,11 +325,12 @@ class AnnotatedShape(AbstractShape):
         self.shape.move_shape(old_pos, new_pos)
         self.label.move_local_shape(old_pos, new_pos)
 
-    def move_local_shape(self, old_pos, new_pos):
-        """
+    def move_local_shape(self, old_pos: QPointF, new_pos: QPointF) -> None:
+        """Translate the shape such that old_pos becomes new_pos in canvas coordinates
 
-        :param old_pos:
-        :param new_pos:
+        Args:
+            old_pos: Old position
+            new_pos: New position
         """
         old_pt = canvas_to_axes(self, old_pos)
         new_pt = canvas_to_axes(self, new_pos)
@@ -294,39 +340,53 @@ class AnnotatedShape(AbstractShape):
             self.plot().SIG_ITEM_MOVED.emit(self, *(old_pt + new_pt))
             self.plot().SIG_ANNOTATION_CHANGED.emit(self)
 
-    def move_with_selection(self, delta_x, delta_y):
-        """
-        Translate the shape together with other selected items
-        delta_x, delta_y: translation in plot coordinates
+    def move_with_selection(self, delta_x: float, delta_y: float) -> None:
+        """Translate the item together with other selected items
+
+        Args:
+            delta_x: Translation in plot coordinates along x-axis
+            delta_y: Translation in plot coordinates along y-axis
         """
         self.shape.move_with_selection(delta_x, delta_y)
         self.label.move_with_selection(delta_x, delta_y)
         self.plot().SIG_ANNOTATION_CHANGED.emit(self)
 
-    def select(self):
-        """Select item"""
+    def select(self) -> None:
+        """
+        Select the object and eventually change its appearance to highlight the
+        fact that it's selected
+        """
         AbstractShape.select(self)
         self.shape.select()
 
-    def unselect(self):
-        """Unselect item"""
+    def unselect(self) -> None:
+        """
+        Unselect the object and eventually restore its original appearance to
+        highlight the fact that it's not selected anymore
+        """
         AbstractShape.unselect(self)
         self.shape.unselect()
 
-    def get_item_parameters(self, itemparams):
+    def get_item_parameters(self, itemparams: ItemParameters) -> None:
         """
+        Appends datasets to the list of DataSets describing the parameters
+        used to customize apearance of this item
 
-        :param itemparams:
+        Args:
+            itemparams: Item parameters
         """
         self.shape.get_item_parameters(itemparams)
         self.label.get_item_parameters(itemparams)
         self.annotationparam.update_param(self)
         itemparams.add("AnnotationParam", self, self.annotationparam)
 
-    def set_item_parameters(self, itemparams):
+    def set_item_parameters(self, itemparams: ItemParameters) -> None:
         """
+        Change the appearance of this item according
+        to the parameter set provided
 
-        :param itemparams:
+        Args:
+            itemparams: Item parameters
         """
         self.shape.set_item_parameters(itemparams)
         self.label.set_item_parameters(itemparams)
@@ -391,8 +451,12 @@ class AnnotatedPoint(AnnotatedShape):
         xt, yt = self.apply_transform_matrix(*self.shape.points[0])
         return xt, yt
 
-    def get_infos(self):
-        """Return formatted string with informations on current shape"""
+    def get_infos(self) -> str:
+        """Get informations on current shape
+
+        Returns:
+            str: Formatted string with informations on current shape
+        """
         xt, yt = self.apply_transform_matrix(*self.shape.points[0])
         s = "{title} ( {posx} ; {posy} )"
         s = s.format(
@@ -446,8 +510,12 @@ class AnnotatedSegment(AnnotatedShape):
         self.label.set_pos(*compute_center(x1, y1, x2, y2))
 
     # ----AnnotatedShape API-----------------------------------------------------
-    def get_infos(self):
-        """Return formatted string with informations on current shape"""
+    def get_infos(self) -> str:
+        """Get informations on current shape
+
+        Returns:
+            str: Formatted string with informations on current shape
+        """
         return "<br>".join(
             [
                 _("Center:") + " " + self.get_tr_center_str(),
@@ -505,8 +573,12 @@ class AnnotatedRectangle(AnnotatedShape):
         """Return shape size after applying transform matrix"""
         return compute_rect_size(*self.get_transformed_coords(0, 2))
 
-    def get_infos(self):
-        """Return formatted string with informations on current shape"""
+    def get_infos(self) -> str:
+        """Get informations on current shape
+
+        Returns:
+            str: Formatted string with informations on current shape
+        """
         return "<br>".join(
             [
                 _("Center:") + " " + self.get_tr_center_str(),
@@ -588,8 +660,12 @@ class AnnotatedObliqueRectangle(AnnotatedRectangle):
         return dx, dy
 
     # ----AnnotatedShape API-----------------------------------------------------
-    def get_infos(self):
-        """Return formatted string with informations on current shape"""
+    def get_infos(self) -> str:
+        """Get informations on current shape
+
+        Returns:
+            str: Formatted string with informations on current shape
+        """
         return "<br>".join(
             [
                 _("Center:") + " " + self.get_tr_center_str(),
@@ -688,8 +764,12 @@ class AnnotatedEllipse(AnnotatedShape):
             dx, dy = dy, dx
         return dx, dy
 
-    def get_infos(self):
-        """Return formatted string with informations on current shape"""
+    def get_infos(self) -> str:
+        """Get informations on current shape
+
+        Returns:
+            str: Formatted string with informations on current shape
+        """
         return "<br>".join(
             [
                 _("Center:") + " " + self.get_tr_center_str(),
@@ -715,8 +795,12 @@ class AnnotatedCircle(AnnotatedEllipse):
         return compute_distance(*self.get_transformed_coords(0, 1))
 
     # ----AnnotatedShape API-------------------------------------------------
-    def get_infos(self):
-        """Return formatted string with informations on current shape"""
+    def get_infos(self) -> str:
+        """Get informations on current shape
+
+        Returns:
+            str: Formatted string with informations on current shape
+        """
         return "<br>".join(
             [
                 _("Center:") + " " + self.get_tr_center_str(),

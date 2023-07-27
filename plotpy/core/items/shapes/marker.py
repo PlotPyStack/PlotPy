@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import annotations
+
 import math
+from typing import TYPE_CHECKING
 
 from guidata.configtools import get_icon
 from guidata.utils import update_dataset
@@ -12,6 +16,12 @@ from plotpy.core.coords import canvas_to_axes
 from plotpy.core.interfaces.common import IBasePlotItem, IShapeItemType
 from plotpy.core.styles.base import MARKERSTYLES
 from plotpy.core.styles.shape import MarkerParam
+
+if TYPE_CHECKING:
+    from qtpy.QtCore import QPointF
+
+    from plotpy.core.interfaces.common import IItemType
+    from plotpy.core.styles.base import ItemParameters
 
 
 class Marker(QwtPlotMarker):
@@ -58,75 +68,117 @@ class Marker(QwtPlotMarker):
         QwtPlotMarker.draw(self, painter, xmap, ymap, canvasrect)
 
     # ------IBasePlotItem API----------------------------------------------------
-    def set_selectable(self, state):
-        """Set item selectable state"""
+    def set_selectable(self, state: bool) -> None:
+        """Set item selectable state
+
+        Args:
+            state: True if item is selectable, False otherwise
+        """
         self._can_select = state
 
-    def set_resizable(self, state):
+    def set_resizable(self, state: bool) -> None:
         """Set item resizable state
-        (or any action triggered when moving an handle, e.g. rotation)"""
+        (or any action triggered when moving an handle, e.g. rotation)
+
+        Args:
+            state: True if item is resizable, False otherwise
+        """
         self._can_resize = state
 
-    def set_movable(self, state):
-        """Set item movable state"""
+    def set_movable(self, state: bool) -> None:
+        """Set item movable state
+
+        Args:
+            state: True if item is movable, False otherwise
+        """
         self._can_move = state
 
-    def set_rotatable(self, state):
-        """Set item rotatable state"""
+    def set_rotatable(self, state: bool) -> None:
+        """Set item rotatable state
+
+        Args:
+            state: True if item is rotatable, False otherwise
+        """
         self._can_rotate = state
 
-    def can_select(self):
+    def can_select(self) -> bool:
         """
+        Returns True if this item can be selected
 
-        :return:
+        Returns:
+            bool: True if item can be selected, False otherwise
         """
         return self._can_select
 
-    def can_resize(self):
+    def can_resize(self) -> bool:
         """
+        Returns True if this item can be resized
 
-        :return:
+        Returns:
+            bool: True if item can be resized, False otherwise
         """
         return self._can_resize
 
-    def can_rotate(self):
+    def can_rotate(self) -> bool:
         """
+        Returns True if this item can be rotated
 
-        :return:
+        Returns:
+            bool: True if item can be rotated, False otherwise
         """
         return self._can_rotate
 
-    def can_move(self):
+    def can_move(self) -> bool:
         """
+        Returns True if this item can be moved
 
-        :return:
+        Returns:
+            bool: True if item can be moved, False otherwise
         """
         return self._can_move
 
-    def types(self):
-        """Returns a group or category for this item
-        this should be a class object inheriting from
-        IItemType
+    def types(self) -> tuple[type[IItemType], ...]:
+        """Returns a group or category for this item.
+        This should be a tuple of class objects inheriting from IItemType
+
+        Returns:
+            tuple: Tuple of class objects inheriting from IItemType
         """
         return (IShapeItemType,)
 
-    def set_readonly(self, state):
-        """Set object readonly state"""
+    def set_readonly(self, state: bool) -> None:
+        """Set object readonly state
+
+        Args:
+            state: True if object is readonly, False otherwise
+        """
         self._readonly = state
 
-    def is_readonly(self):
-        """Return object readonly state"""
+    def is_readonly(self) -> bool:
+        """Return object readonly state
+
+        Returns:
+            bool: True if object is readonly, False otherwise
+        """
         return self._readonly
 
-    def set_private(self, state):
-        """Set object as private"""
+    def set_private(self, state: bool) -> None:
+        """Set object as private
+
+        Args:
+            state: True if object is private, False otherwise
+        """
         self._private = state
 
-    def is_private(self):
-        """Return True if object is private"""
+    def is_private(self) -> bool:
+        """Return True if object is private
+
+        Returns:
+            bool: True if object is private, False otherwise
+        """
         return self._private
 
-    def select(self):
+    def select(self) -> None:
         """
         Select the object and eventually change its appearance to highlight the
         fact that it's selected
@@ -138,7 +190,7 @@ class Marker(QwtPlotMarker):
         self.markerparam.update_marker(self)
         self.invalidate_plot()
 
-    def unselect(self):
+    def unselect(self) -> None:
         """
         Unselect the object and eventually restore its original appearance to
         highlight the fact that it's not selected anymore
@@ -147,21 +199,24 @@ class Marker(QwtPlotMarker):
         self.markerparam.update_marker(self)
         self.invalidate_plot()
 
-    def hit_test(self, pos):
-        """
-        Return a tuple with four elements:
-        (distance, attach point, inside, other_object)
+    def hit_test(self, pos: QPointF) -> tuple[float, float, bool, None]:
+        """Return a tuple (distance, attach point, inside, other_object)
 
-        distance:
-            distance in pixels (canvas coordinates)
-            to the closest attach point
-        attach point:
-            handle of the attach point
-        inside:
-            True if the mouse button has been clicked inside the object
-        other_object:
-            if not None, reference of the object which
-            will be considered as hit instead of self
+        Args:
+            pos: Position
+
+        Returns:
+            tuple: Tuple with four elements: (distance, attach point, inside,
+             other_object).
+
+        Description of the returned values:
+
+        * distance: distance in pixels (canvas coordinates) to the closest
+           attach point
+        * attach point: handle of the attach point
+        * inside: True if the mouse button has been clicked inside the object
+        * other_object: if not None, reference of the object which will be
+           considered as hit instead of self
         """
         plot = self.plot()
         xc, yc = pos.x(), pos.y()
@@ -181,14 +236,17 @@ class Marker(QwtPlotMarker):
         elif ms == "Cross":
             return math.sqrt(min((x - xc) ** 2, (y - yc) ** 2)), 0, False, None
 
-    def update_item_parameters(self):
-        """ """
+    def update_item_parameters(self) -> None:
+        """Update item parameters (dataset) from object properties"""
         self.markerparam.update_param(self)
 
-    def get_item_parameters(self, itemparams):
+    def get_item_parameters(self, itemparams: ItemParameters) -> None:
         """
         Appends datasets to the list of DataSets describing the parameters
         used to customize apearance of this item
+
+        Args:
+            itemparams: Item parameters
         """
         self.update_item_parameters()
         itemparams.add("MarkerParam", self, self.markerparam)
@@ -208,23 +266,34 @@ class Marker(QwtPlotMarker):
         if self.selected:
             self.select()
 
-    def move_local_point_to(self, handle, pos, ctrl=None):
-        """Move a handle as returned by hit_test to the new position pos
-        ctrl: True if <Ctrl> button is being pressed, False otherwise"""
+    def move_local_point_to(self, handle: int, pos: QPointF, ctrl: bool = None) -> None:
+        """Move a handle as returned by hit_test to the new position
+
+        Args:
+            handle: Handle
+            pos: Position
+            ctrl: True if <Ctrl> button is being pressed, False otherwise
+        """
         x, y = canvas_to_axes(self, pos)
         self.set_pos(x, y)
 
-    def move_local_shape(self, old_pos, new_pos):
-        """Translate the shape such that old_pos becomes new_pos
-        in canvas coordinates"""
+    def move_local_shape(self, old_pos: QPointF, new_pos: QPointF) -> None:
+        """Translate the shape such that old_pos becomes new_pos in canvas coordinates
+
+        Args:
+            old_pos: Old position
+            new_pos: New position
+        """
         old_pt = canvas_to_axes(self, old_pos)
         new_pt = canvas_to_axes(self, new_pos)
         self.move_shape(old_pt, new_pt)
 
-    def move_with_selection(self, delta_x, delta_y):
-        """
-        Translate the shape together with other selected items
-        delta_x, delta_y: translation in plot coordinates
+    def move_with_selection(self, delta_x: float, delta_y: float) -> None:
+        """Translate the item together with other selected items
+
+        Args:
+            delta_x: Translation in plot coordinates along x-axis
+            delta_y: Translation in plot coordinates along y-axis
         """
         self.move_shape([0, 0], [delta_x, delta_y])
 

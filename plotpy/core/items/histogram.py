@@ -6,7 +6,10 @@
 
 """
 
+from __future__ import annotations
+
 import weakref
+from typing import TYPE_CHECKING
 
 import numpy as np
 from guidata.configtools import get_icon
@@ -20,6 +23,9 @@ from plotpy.core.items.curve.base import CurveItem
 from plotpy.core.styles.curve import CurveParam
 from plotpy.core.styles.histogram import HistogramParam
 
+if TYPE_CHECKING:
+    from plotpy.core.styles.base import ItemParameters
+
 
 class HistDataSource:
     """An objects that provides an Histogram data source interface
@@ -31,8 +37,16 @@ class HistDataSource:
     def __init__(self, data):
         self.data = data
 
-    def get_histogram(self, nbins):
-        """Returns the histogram computed for nbins bins"""
+    def get_histogram(self, nbins: int) -> tuple[np.ndarray, np.ndarray]:
+        """
+        Return a tuple (hist, bins) where hist is a list of histogram values
+
+        Args:
+            nbins (int): number of bins
+
+        Returns:
+            tuple: (hist, bins)
+        """
         return np.histogram(self.data, nbins)
 
 
@@ -144,9 +158,13 @@ class HistogramItem(CurveItem):
         self.histparam.update_hist(self)
         CurveItem.update_params(self)
 
-    def get_item_parameters(self, itemparams):
+    def get_item_parameters(self, itemparams: ItemParameters) -> None:
         """
-        :param itemparams:
+        Appends datasets to the list of DataSets describing the parameters
+        used to customize apearance of this item
+
+        Args:
+            itemparams: Item parameters
         """
         CurveItem.get_item_parameters(self, itemparams)
         itemparams.add("HistogramParam", self, self.histparam)

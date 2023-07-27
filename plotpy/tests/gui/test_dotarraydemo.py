@@ -16,6 +16,10 @@ associated dialog box).
 
 # guitest: show
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 import guidata.dataset.dataitems as gdi
 import guidata.dataset.datatypes as gdt
 import guidata.dataset.qtwidgets as gdq
@@ -33,6 +37,9 @@ from plotpy.core.items.curve.errorbar import vmap
 from plotpy.core.items.image.base import RawImageItem
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 from plotpy.core.tools.misc import CopyToClipboardTool, HelpTool, PrintTool, SaveAsTool
+
+if TYPE_CHECKING:
+    from plotpy.core.interfaces.common import IItemType
 
 
 class DotArrayParam(gdt.DataSet):
@@ -77,8 +84,13 @@ class DotArrayItem(RawImageItem):
                 ),
             )
 
-    def types(self):
-        """Returns item types"""
+    def types(self) -> tuple[type[IItemType], ...]:
+        """Returns a group or category for this item.
+        This should be a tuple of class objects inheriting from IItemType
+
+        Returns:
+            tuple: Tuple of class objects inheriting from IItemType
+        """
         return (IImageItemType,)
 
     def draw_image(self, painter, canvasRect, srcRect, dstRect, xMap, yMap):

@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import annotations
+
 import sys
+from typing import TYPE_CHECKING
 
 import numpy as np
 from guidata.configtools import get_icon
@@ -30,6 +34,12 @@ except ImportError:
         file=sys.stderr,
     )
     raise
+
+if TYPE_CHECKING:
+    from qtpy.QtCore import QPointF
+
+    from plotpy.core.interfaces.common import IItemType
+    from plotpy.core.styles.base import ItemParameters
 
 
 # ==============================================================================
@@ -100,24 +110,30 @@ class ImageFilterItem(BaseImageItem):
         return QC.QRectF(x0, y0, x1 - x0, y1 - y0)
 
     # ---- IBasePlotItem API ----------------------------------------------------
-    def update_item_parameters(self):
-        """ """
+    def update_item_parameters(self) -> None:
+        """Update item parameters (dataset) from object properties"""
         BaseImageItem.update_item_parameters(self)
         self.imagefilterparam.update_param(self)
 
-    def get_item_parameters(self, itemparams):
+    def get_item_parameters(self, itemparams: ItemParameters) -> None:
         """
+        Appends datasets to the list of DataSets describing the parameters
+        used to customize apearance of this item
 
-        :param itemparams:
+        Args:
+            itemparams: Item parameters
         """
         BaseImageItem.get_item_parameters(self, itemparams)
         self.update_item_parameters()
         itemparams.add("ImageFilterParam", self, self.imagefilterparam)
 
-    def set_item_parameters(self, itemparams):
+    def set_item_parameters(self, itemparams: ItemParameters) -> None:
         """
+        Change the appearance of this item according
+        to the parameter set provided
 
-        :param itemparams:
+        Args:
+            itemparams: Item parameters
         """
         update_dataset(
             self.imagefilterparam, itemparams.get("ImageFilterParam"), visible_only=True
@@ -125,25 +141,36 @@ class ImageFilterItem(BaseImageItem):
         self.imagefilterparam.update_imagefilter(self)
         BaseImageItem.set_item_parameters(self, itemparams)
 
-    def move_local_point_to(self, handle, pos, ctrl=None):
-        """Move a handle as returned by hit_test to the new position pos
-        ctrl: True if <Ctrl> button is being pressed, False otherwise"""
+    def move_local_point_to(self, handle: int, pos: QPointF, ctrl: bool = None) -> None:
+        """Move a handle as returned by hit_test to the new position
+
+        Args:
+            handle: Handle
+            pos: Position
+            ctrl: True if <Ctrl> button is being pressed, False otherwise
+        """
         npos = canvas_to_axes(self, pos)
         self.border_rect.move_point_to(handle, npos)
 
-    def move_local_shape(self, old_pos, new_pos):
-        """Translate the shape such that old_pos becomes new_pos
-        in canvas coordinates"""
+    def move_local_shape(self, old_pos: QPointF, new_pos: QPointF) -> None:
+        """Translate the shape such that old_pos becomes new_pos in canvas coordinates
+
+        Args:
+            old_pos: Old position
+            new_pos: New position
+        """
         old_pt = canvas_to_axes(self, old_pos)
         new_pt = canvas_to_axes(self, new_pos)
         self.border_rect.move_shape(old_pt, new_pt)
         if self.plot():
             self.plot().SIG_ITEM_MOVED.emit(self, *(old_pt + new_pt))
 
-    def move_with_selection(self, delta_x, delta_y):
-        """
-        Translate the shape together with other selected items
-        delta_x, delta_y: translation in plot coordinates
+    def move_with_selection(self, delta_x: float, delta_y: float) -> None:
+        """Translate the item together with other selected items
+
+        Args:
+            delta_x: Translation in plot coordinates along x-axis
+            delta_y: Translation in plot coordinates along y-axis
         """
         self.border_rect.move_with_selection(delta_x, delta_y)
 
@@ -168,20 +195,26 @@ class ImageFilterItem(BaseImageItem):
         else:
             return BaseImageItem.get_color_map(self)
 
-    def get_lut_range(self):
-        """
+    def get_lut_range(self) -> tuple[float, float]:
+        """Get the current active lut range
 
-        :return:
+        Returns:
+            tuple[float, float]: Lut range, tuple(min, max)
         """
         if self.use_source_cmap:
             return self.image.get_lut_range()
         else:
             return BaseImageItem.get_lut_range(self)
 
-    def set_lut_range(self, lut_range):
+    def set_lut_range(self, lut_range: tuple[float, float]) -> None:
         """
+        Set the current active lut range
 
-        :param lut_range:
+        Args:
+            lut_range: Lut range, tuple(min, max)
+
+        Example:
+            >>> item.set_lut_range((0.0, 1.0))
         """
         if self.use_source_cmap:
             self.image.set_lut_range(lut_range)
@@ -189,10 +222,12 @@ class ImageFilterItem(BaseImageItem):
             BaseImageItem.set_lut_range(self, lut_range)
 
     # ---- IBaseImageItem API ---------------------------------------------------
-    def types(self):
-        """
+    def types(self) -> tuple[type[IItemType], ...]:
+        """Returns a group or category for this item.
+        This should be a tuple of class objects inheriting from IItemType
 
-        :return:
+        Returns:
+            tuple: Tuple of class objects inheriting from IItemType
         """
         return (
             IImageItemType,
@@ -201,10 +236,13 @@ class ImageFilterItem(BaseImageItem):
             ITrackableItemType,
         )
 
-    def can_sethistogram(self):
+    def can_sethistogram(self) -> bool:
         """
+        Returns True if this item can be associated with a levels histogram
 
-        :return:
+        Returns:
+            bool: True if item can be associated with a levels histogram,
+             False otherwise
         """
         return True
 

@@ -185,8 +185,17 @@ class TrImageItem(TransformImageMixin, RawImageItem):
             r = np.sqrt((y1 - y0) ** 2 + (x1 - x0) ** 2)
         return np.linspace(0, r, abs(j1 - j0))
 
-    def get_closest_coordinates(self, x, y):
-        """Return closest image pixel coordinates"""
+    def get_closest_coordinates(self, x: float, y: float) -> tuple[float, float]:
+        """
+        Get the closest coordinates to the given point
+
+        Args:
+            x: X coordinate
+            y: Y coordinate
+
+        Returns:
+            tuple[float, float]: Closest coordinates
+        """
         xi, yi = self.get_closest_indexes(x, y)
         v = self.itr * colvector(xi, yi)
         x, y, _ = v[:, 0].A.ravel()
@@ -242,16 +251,28 @@ class TrImageItem(TransformImageMixin, RawImageItem):
 
     def export_roi(
         self,
-        src_rect,
-        dst_rect,
-        dst_image,
-        apply_lut=False,
-        apply_interpolation=False,
-        original_resolution=False,
-        force_interp_mode=None,
-        force_interp_size=None,
-    ):
-        """Export Region Of Interest to array"""
+        src_rect: tuple[float, float, float, float],
+        dst_rect: tuple[float, float, float, float],
+        dst_image: np.ndarray,
+        apply_lut: bool = False,
+        apply_interpolation: bool = False,
+        original_resolution: bool = False,
+        force_interp_mode: str = None,
+        force_interp_size: int = None,
+    ) -> None:
+        """
+        Export a rectangular area of the image to another image
+
+        Args:
+            src_rect: Source rectangle
+            dst_rect: Destination rectangle
+            dst_image: Destination image
+            apply_lut: Apply lut (Default value = False)
+            apply_interpolation: Apply interpolation (Default value = False)
+            original_resolution: Original resolution (Default value = False)
+            force_interp_mode: Force interpolation mode (Default value = None)
+            force_interp_size: Force interpolation size (Default value = None)
+        """
         if apply_lut:
             a, b, _bg, _cmap = self.lut
         else:

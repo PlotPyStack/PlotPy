@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import annotations
+
 import sys
+from typing import TYPE_CHECKING
 
 import numpy as np
 from guidata.configtools import get_icon
@@ -40,6 +44,10 @@ except ImportError:
     )
     raise
 
+if TYPE_CHECKING:
+    from plotpy.core.interfaces.common import IItemType
+    from plotpy.core.styles.base import ItemParameters
+
 
 class QuadGridItem(ImageMixin, RawImageItem):
     """
@@ -77,10 +85,12 @@ class QuadGridItem(ImageMixin, RawImageItem):
         """Return instance of the default imageparam DataSet"""
         return QuadGridParam(_("Quadrilaterals"))
 
-    def types(self):
-        """
+    def types(self) -> tuple[type[IItemType], ...]:
+        """Returns a group or category for this item.
+        This should be a tuple of class objects inheriting from IItemType
 
-        :return:
+        Returns:
+            tuple: Tuple of class objects inheriting from IItemType
         """
         return (
             IImageItemType,
@@ -274,7 +284,10 @@ class Histogram2DItem(ImageMixin, BaseImageItem):
             self.set_lut_range([nmin, nmax])
             self.plot().update_colormap_axis(self)
         src_rect = (0, 0, self.nx_bins, self.ny_bins)
-        drawfunc = lambda *args: BaseImageItem.draw_image(self, *args)
+
+        def drawfunc(*args):
+            return BaseImageItem.draw_image(self, *args)
+
         if self.fill_canvas:
             x1, y1, x2, y2 = canvasRect.getCoords()
             drawfunc(painter, canvasRect, src_rect, (x1, y1, x2, y2), xMap, yMap)
@@ -283,10 +296,12 @@ class Histogram2DItem(ImageMixin, BaseImageItem):
             drawfunc(painter, canvasRect, src_rect, dst_rect, xMap, yMap)
 
     # ---- IBasePlotItem API ---------------------------------------------------
-    def types(self):
-        """
+    def types(self) -> tuple[type[IItemType], ...]:
+        """Returns a group or category for this item.
+        This should be a tuple of class objects inheriting from IItemType
 
-        :return:
+        Returns:
+            tuple: Tuple of class objects inheriting from IItemType
         """
         return (
             IColormapImageItemType,
@@ -297,23 +312,29 @@ class Histogram2DItem(ImageMixin, BaseImageItem):
             ICSImageItemType,
         )
 
-    def update_item_parameters(self):
-        """ """
+    def update_item_parameters(self) -> None:
+        """Update item parameters (dataset) from object properties"""
         BaseImageItem.update_item_parameters(self)
         self.histparam.update_param(self)
 
-    def get_item_parameters(self, itemparams):
+    def get_item_parameters(self, itemparams: ItemParameters) -> None:
         """
+        Appends datasets to the list of DataSets describing the parameters
+        used to customize apearance of this item
 
-        :param itemparams:
+        Args:
+            itemparams: Item parameters
         """
         BaseImageItem.get_item_parameters(self, itemparams)
         itemparams.add("Histogram2DParam", self, self.histparam)
 
-    def set_item_parameters(self, itemparams):
+    def set_item_parameters(self, itemparams: ItemParameters) -> None:
         """
+        Change the appearance of this item according
+        to the parameter set provided
 
-        :param itemparams:
+        Args:
+            itemparams: Item parameters
         """
         update_dataset(
             self.histparam, itemparams.get("Histogram2DParam"), visible_only=True
@@ -323,15 +344,26 @@ class Histogram2DItem(ImageMixin, BaseImageItem):
         BaseImageItem.set_item_parameters(self, itemparams)
 
     # ---- IBaseImageItem API --------------------------------------------------
-    def can_sethistogram(self):
+    def can_sethistogram(self) -> bool:
         """
+        Returns True if this item can be associated with a levels histogram
 
-        :return:
+        Returns:
+            bool: True if item can be associated with a levels histogram,
+             False otherwise
         """
         return True
 
-    def get_histogram(self, nbins):
-        """interface de IHistDataSource"""
+    def get_histogram(self, nbins: int) -> tuple[np.ndarray, np.ndarray]:
+        """
+        Return a tuple (hist, bins) where hist is a list of histogram values
+
+        Args:
+            nbins (int): number of bins
+
+        Returns:
+            tuple: (hist, bins)
+        """
         if self.data is None:
             return [0], [0, 1]
         _min = _nanmin(self.data)

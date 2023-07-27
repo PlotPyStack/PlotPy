@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import annotations
+
 import math
+from typing import TYPE_CHECKING
 
 import numpy as np
 from guidata.configtools import get_icon
@@ -11,6 +15,18 @@ from qtpy import QtGui as QG
 from plotpy.config import CONF, _
 from plotpy.core.items.shapes.polygon import PolygonShape
 from plotpy.core.styles.shape import AxesShapeParam
+
+if TYPE_CHECKING:
+    from guidata.dataset.io import (
+        HDF5Reader,
+        HDF5Writer,
+        INIReader,
+        INIWriter,
+        JSONReader,
+        JSONWriter,
+    )
+
+    from plotpy.core.styles.base import ItemParameters
 
 
 class Axes(PolygonShape):
@@ -50,14 +66,22 @@ class Axes(PolygonShape):
         self.axesparam = axesparam
         self.axesparam.update_axes(self)
 
-    def serialize(self, writer):
-        """Serialize object to HDF5 writer"""
+    def serialize(self, writer: HDF5Writer | INIWriter | JSONWriter) -> None:
+        """Serialize object to HDF5 writer
+
+        Args:
+            writer: HDF5, INI or JSON writer
+        """
         super(Axes, self).serialize(writer)
         self.axesparam.update_param(self)
         writer.write(self.axesparam, group_name="axesparam")
 
-    def deserialize(self, reader):
-        """Deserialize object from HDF5 reader"""
+    def deserialize(self, reader: HDF5Reader | INIReader | JSONReader) -> None:
+        """Deserialize object from HDF5 reader
+
+        Args:
+            reader: HDF5, INI or JSON reader
+        """
         super(Axes, self).deserialize(reader)
         self.axesparam = AxesShapeParam(_("Axes"), icon="gtaxes.png")
         reader.read("axesparam", instance=self.axesparam)
@@ -205,23 +229,29 @@ class Axes(PolygonShape):
         poly.append(QC.QPointF(a2x, a2y))
         painter.drawPolygon(poly)
 
-    def update_item_parameters(self):
-        """ """
+    def update_item_parameters(self) -> None:
+        """Update item parameters (dataset) from object properties"""
         self.axesparam.update_param(self)
 
-    def get_item_parameters(self, itemparams):
+    def get_item_parameters(self, itemparams: ItemParameters) -> None:
         """
+        Appends datasets to the list of DataSets describing the parameters
+        used to customize apearance of this item
 
-        :param itemparams:
+        Args:
+            itemparams: Item parameters
         """
         PolygonShape.get_item_parameters(self, itemparams)
         self.update_item_parameters()
         itemparams.add("AxesShapeParam", self, self.axesparam)
 
-    def set_item_parameters(self, itemparams):
+    def set_item_parameters(self, itemparams: ItemParameters) -> None:
         """
+        Change the appearance of this item according
+        to the parameter set provided
 
-        :param itemparams:
+        Args:
+            itemparams: Item parameters
         """
         PolygonShape.set_item_parameters(self, itemparams)
         update_dataset(

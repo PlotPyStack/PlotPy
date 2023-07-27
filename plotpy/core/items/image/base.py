@@ -1,7 +1,13 @@
 # -*- coding: utf-8 -*-
+#
+# Licensed under the terms of the BSD 3-Clause
+# (see plotpy/LICENSE for details)
+
+from __future__ import annotations
+
 import os
 import os.path as osp
-import sys
+from typing import TYPE_CHECKING
 
 import numpy as np
 from guidata.configtools import get_icon
@@ -36,6 +42,20 @@ from plotpy.core.interfaces.common import (
 from plotpy.core.items.shapes.rectangle import RectangleShape
 from plotpy.core.styles.image import RawImageParam
 from plotpy.utils.colormap import FULLRANGE, get_cmap, get_cmap_name
+
+if TYPE_CHECKING:
+    from guidata.dataset.io import (
+        HDF5Reader,
+        HDF5Writer,
+        INIReader,
+        INIWriter,
+        JSONReader,
+        JSONWriter,
+    )
+    from qtpy.QtCore import QPointF
+
+    from plotpy.core.interfaces.common import IItemType
+    from plotpy.core.styles.base import ItemParameters
 
 LUT_SIZE = 1024
 LUT_MAX = float(LUT_SIZE - 1)
@@ -295,22 +315,33 @@ class BaseImageItem(QwtPlotItem):
                 self.data[j0:j1, i0:i1],
             )
 
-    def get_closest_coordinates(self, x, y):
-        """Return closest image pixel coordinates"""
+    def get_closest_coordinates(self, x: float, y: float) -> tuple[float, float]:
+        """
+        Get the closest coordinates to the given point
+
+        Args:
+            x: X coordinate
+            y: Y coordinate
+
+        Returns:
+            tuple[float, float]: Closest coordinates
+        """
         return self.get_closest_indexes(x, y)
 
-    def get_coordinates_label(self, xc, yc):
+    def get_coordinates_label(self, x: float, y: float) -> str:
         """
+        Get the coordinates label for the given coordinates
 
-        :param xc:
-        :param yc:
-        :return:
+        Args:
+            x: X coordinate
+            y: Y coordinate
+
+        Returns:
+            str: Coordinates label
         """
         title = self.title().text()
-        z = self.get_data(xc, yc)
-        xc = int(xc)
-        yc = int(yc)
-        return f"{title}:<br>x = {xc:d}<br>y = {yc:d}<br>z = {z:g}"
+        z = self.get_data(x, y)
+        return f"{title}:<br>x = {int(x):d}<br>y = {int(y):d}<br>z = {z:g}"
 
     def set_background_color(self, qcolor):
         """
@@ -388,10 +419,15 @@ class BaseImageItem(QwtPlotItem):
         """Get interpolation mode"""
         return self.interpolate
 
-    def set_lut_range(self, lut_range):
+    def set_lut_range(self, lut_range: tuple[float, float]) -> None:
         """
-        Set LUT transform range
-        *lut_range* is a tuple: (min, max)
+        Set the current active lut range
+
+        Args:
+            lut_range: Lut range, tuple(min, max)
+
+        Example:
+            >>> item.set_lut_range((0.0, 1.0))
         """
         self.min, self.max = lut_range
         _a, _b, bg, cmap = self.lut
@@ -406,16 +442,28 @@ class BaseImageItem(QwtPlotItem):
                 cmap,
             )
 
-    def get_lut_range(self):
-        """Return the LUT transform range tuple: (min, max)"""
+    def get_lut_range(self) -> tuple[float, float]:
+        """Get the current active lut range
+
+        Returns:
+            tuple[float, float]: Lut range, tuple(min, max)
+        """
         return self.min, self.max
 
-    def get_lut_range_full(self):
-        """Return full dynamic range"""
+    def get_lut_range_full(self) -> tuple[float, float]:
+        """Return full dynamic range
+
+        Returns:
+            tuple[float, float]: Lut range, tuple(min, max)
+        """
         return _nanmin(self.data), _nanmax(self.data)
 
-    def get_lut_range_max(self):
-        """Get maximum range for this dataset"""
+    def get_lut_range_max(self) -> tuple[float, float]:
+        """Get maximum range for this dataset
+
+        Returns:
+            tuple[float, float]: Lut range, tuple(min, max)
+        """
         kind = self.data.dtype.kind
         if kind in np.typecodes["AllFloat"]:
             info = np.finfo(self.data.dtype)
@@ -449,16 +497,28 @@ class BaseImageItem(QwtPlotItem):
 
     def export_roi(
         self,
-        src_rect,
-        dst_rect,
-        dst_image,
-        apply_lut=False,
-        apply_interpolation=False,
-        original_resolution=False,
-        force_interp_mode=None,
-        force_interp_size=None,
-    ):
-        """Export Region Of Interest to array"""
+        src_rect: tuple[float, float, float, float],
+        dst_rect: tuple[float, float, float, float],
+        dst_image: np.ndarray,
+        apply_lut: bool = False,
+        apply_interpolation: bool = False,
+        original_resolution: bool = False,
+        force_interp_mode: str = None,
+        force_interp_size: int = None,
+    ) -> None:
+        """
+        Export a rectangular area of the image to another image
+
+        Args:
+            src_rect: Source rectangle
+            dst_rect: Destination rectangle
+            dst_image: Destination image
+            apply_lut: Apply lut (Default value = False)
+            apply_interpolation: Apply interpolation (Default value = False)
+            original_resolution: Original resolution (Default value = False)
+            force_interp_mode: Force interpolation mode (Default value = None)
+            force_interp_size: Force interpolation size (Default value = None)
+        """
         if apply_lut:
             a, b, _bg, _cmap = self.lut
         else:
@@ -523,10 +583,12 @@ class BaseImageItem(QwtPlotItem):
         QwtPlotItem.setVisible(self, enable)
 
     # ---- IBasePlotItem API ----------------------------------------------------
-    def types(self):
-        """
+    def types(self) -> tuple[type[IItemType], ...]:
+        """Returns a group or category for this item.
+        This should be a tuple of class objects inheriting from IItemType
 
-        :return:
+        Returns:
+            tuple: Tuple of class objects inheriting from IItemType
         """
         return (
             IImageItemType,
@@ -539,29 +601,51 @@ class BaseImageItem(QwtPlotItem):
             IStatsImageItemType,
         )
 
-    def set_readonly(self, state):
-        """Set object readonly state"""
+    def set_readonly(self, state: bool) -> None:
+        """Set object readonly state
+
+        Args:
+            state: True if object is readonly, False otherwise
+        """
         self._readonly = state
 
-    def is_readonly(self):
-        """Return object readonly state"""
+    def is_readonly(self) -> bool:
+        """Return object readonly state
+
+        Returns:
+            bool: True if object is readonly, False otherwise
+        """
         return self._readonly
 
-    def set_private(self, state):
-        """Set object as private"""
+    def set_private(self, state: bool) -> None:
+        """Set object as private
+
+        Args:
+            state: True if object is private, False otherwise
+        """
         self._private = state
 
-    def is_private(self):
-        """Return True if object is private"""
+    def is_private(self) -> bool:
+        """Return True if object is private
+
+        Returns:
+            bool: True if object is private, False otherwise
+        """
         return self._private
 
-    def select(self):
-        """Select item"""
+    def select(self) -> None:
+        """
+        Select the object and eventually change its appearance to highlight the
+        fact that it's selected
+        """
         self.selected = True
         self.border_rect.select()
 
-    def unselect(self):
-        """Unselect item"""
+    def unselect(self) -> None:
+        """
+        Unselect the object and eventually restore its original appearance to
+        highlight the fact that it's not selected anymore
+        """
         self.selected = False
         self.border_rect.unselect()
 
@@ -569,94 +653,148 @@ class BaseImageItem(QwtPlotItem):
         """Return True if item data is empty"""
         return self.data is None or self.data.size == 0
 
-    def set_selectable(self, state):
-        """Set item selectable state"""
+    def set_selectable(self, state: bool) -> None:
+        """Set item selectable state
+
+        Args:
+            state: True if item is selectable, False otherwise
+        """
         self._can_select = state
 
-    def set_resizable(self, state):
+    def set_resizable(self, state: bool) -> None:
         """Set item resizable state
-        (or any action triggered when moving an handle, e.g. rotation)"""
+        (or any action triggered when moving an handle, e.g. rotation)
+
+        Args:
+            state: True if item is resizable, False otherwise
+        """
         self._can_resize = state
 
-    def set_movable(self, state):
-        """Set item movable state"""
+    def set_movable(self, state: bool) -> None:
+        """Set item movable state
+
+        Args:
+            state: True if item is movable, False otherwise
+        """
         self._can_move = state
 
-    def set_rotatable(self, state):
-        """Set item rotatable state"""
+    def set_rotatable(self, state: bool) -> None:
+        """Set item rotatable state
+
+        Args:
+            state: True if item is rotatable, False otherwise
+        """
         self._can_rotate = state
 
-    def can_select(self):
+    def can_select(self) -> bool:
         """
+        Returns True if this item can be selected
 
-        :return:
+        Returns:
+            bool: True if item can be selected, False otherwise
         """
         return self._can_select
 
-    def can_resize(self):
+    def can_resize(self) -> bool:
         """
+        Returns True if this item can be resized
 
-        :return:
+        Returns:
+            bool: True if item can be resized, False otherwise
         """
         return self._can_resize and not getattr(self.param, "lock_position", False)
 
-    def can_move(self):
+    def can_move(self) -> bool:
         """
+        Returns True if this item can be moved
 
-        :return:
+        Returns:
+            bool: True if item can be moved, False otherwise
         """
         return self._can_move and not getattr(self.param, "lock_position", False)
 
-    def can_rotate(self):
+    def can_rotate(self) -> bool:
         """
+        Returns True if this item can be rotated
 
-        :return:
+        Returns:
+            bool: True if item can be rotated, False otherwise
         """
         return self._can_rotate and not getattr(self.param, "lock_position", False)
 
-    def hit_test(self, pos):
-        """
+    def hit_test(self, pos: QPointF) -> tuple[float, float, bool, None]:
+        """Return a tuple (distance, attach point, inside, other_object)
 
-        :param pos:
-        :return:
+        Args:
+            pos: Position
+
+        Returns:
+            tuple: Tuple with four elements: (distance, attach point, inside,
+             other_object).
+
+        Description of the returned values:
+
+        * distance: distance in pixels (canvas coordinates) to the closest
+           attach point
+        * attach point: handle of the attach point
+        * inside: True if the mouse button has been clicked inside the object
+        * other_object: if not None, reference of the object which will be
+           considered as hit instead of self
         """
         plot = self.plot()
         ax = self.xAxis()
         ay = self.yAxis()
         return self.border_rect.poly_hit_test(plot, ax, ay, pos)
 
-    def update_item_parameters(self):
-        """ """
+    def update_item_parameters(self) -> None:
+        """Update item parameters (dataset) from object properties"""
         pass
 
-    def get_item_parameters(self, itemparams):
+    def get_item_parameters(self, itemparams: ItemParameters) -> None:
         """
+        Appends datasets to the list of DataSets describing the parameters
+        used to customize apearance of this item
 
-        :param itemparams:
+        Args:
+            itemparams: Item parameters
         """
         itemparams.add("ShapeParam", self, self.border_rect.shapeparam)
 
-    def set_item_parameters(self, itemparams):
+    def set_item_parameters(self, itemparams: ItemParameters) -> None:
         """
+        Change the appearance of this item according
+        to the parameter set provided
 
-        :param itemparams:
+        Args:
+            itemparams: Item parameters
         """
         self.border_rect.set_item_parameters(itemparams)
 
-    def move_local_point_to(self, handle, pos, ctrl=None):
-        """Move a handle as returned by hit_test to the new position pos
-        ctrl: True if <Ctrl> button is being pressed, False otherwise"""
-        pass
+    def move_local_point_to(self, handle: int, pos: QPointF, ctrl: bool = None) -> None:
+        """Move a handle as returned by hit_test to the new position
 
-    def move_local_shape(self, old_pos, new_pos):
-        """Translate the shape such that old_pos becomes new_pos
-        in canvas coordinates"""
-        pass
-
-    def move_with_selection(self, delta_x, delta_y):
+        Args:
+            handle: Handle
+            pos: Position
+            ctrl: True if <Ctrl> button is being pressed, False otherwise
         """
-        Translate the shape together with other selected items
-        delta_x, delta_y: translation in plot coordinates
+        pass
+
+    def move_local_shape(self, old_pos: QPointF, new_pos: QPointF) -> None:
+        """Translate the shape such that old_pos becomes new_pos in canvas coordinates
+
+        Args:
+            old_pos: Old position
+            new_pos: New position
+        """
+        pass
+
+    def move_with_selection(self, delta_x: float, delta_y: float) -> None:
+        """Translate the item together with other selected items
+
+        Args:
+            delta_x: Translation in plot coordinates along x-axis
+            delta_y: Translation in plot coordinates along y-axis
         """
         pass
 
@@ -675,15 +813,26 @@ class BaseImageItem(QwtPlotItem):
         pass
 
     # ---- IBaseImageItem API --------------------------------------------------
-    def can_sethistogram(self):
+    def can_sethistogram(self) -> bool:
         """
+        Returns True if this item can be associated with a levels histogram
 
-        :return:
+        Returns:
+            bool: True if item can be associated with a levels histogram,
+             False otherwise
         """
         return False
 
-    def get_histogram(self, nbins):
-        """interface de IHistDataSource"""
+    def get_histogram(self, nbins: int) -> tuple[np.ndarray, np.ndarray]:
+        """
+        Return a tuple (hist, bins) where hist is a list of histogram values
+
+        Args:
+            nbins (int): number of bins
+
+        Returns:
+            tuple: (hist, bins)
+        """
         if self.data is None:
             return [0], [0, 1]
         if self.histogram_cache is None or nbins != self.histogram_cache[0].shape[0]:
@@ -717,9 +866,26 @@ class BaseImageItem(QwtPlotItem):
         else:
             return ydata
 
-    def get_stats(self, x0, y0, x1, y1, show_surface=False, show_integral=False):
+    def get_stats(
+        self,
+        x0: float,
+        y0: float,
+        x1: float,
+        y1: float,
+        show_surface: bool = False,
+        show_integral: bool = False,
+    ) -> str:
         """Return formatted string with stats on image rectangular area
-        (output should be compatible with AnnotatedShape.get_infos)"""
+        (output should be compatible with AnnotatedShape.get_infos)
+
+        Args:
+            x0: X0
+            y0: Y0
+            x1: X1
+            y1: Y1
+            show_surface: Show surface (Default value = False)
+            show_integral: Show integral (Default value = False)
+        """
         ix0, iy0, ix1, iy1 = self.get_closest_index_rect(x0, y0, x1, y1)
         data = self.data[iy0:iy1, ix0:ix1]
         xfmt = self.param.xformat
@@ -779,24 +945,53 @@ class BaseImageItem(QwtPlotItem):
                 infos = infos + "<br>" + _("density not computed : surface is null !")
         return infos
 
-    def get_xsection(self, y0, apply_lut=False):
-        """Return cross section along x-axis at y=y0"""
+    def get_xsection(self, y0: float | int, apply_lut: bool = False) -> np.ndarray:
+        """Return cross section along x-axis at y=y0
+
+        Args:
+            y0: Y0
+            apply_lut: Apply lut (Default value = False)
+
+        Returns:
+            np.ndarray: Cross section along x-axis at y=y0
+        """
         _ix, iy = self.get_closest_indexes(0, y0)
         return (
             self.get_x_values(0, self.data.shape[1]),
             self.__process_cross_section(self.data[iy, :], apply_lut),
         )
 
-    def get_ysection(self, x0, apply_lut=False):
-        """Return cross section along y-axis at x=x0"""
+    def get_ysection(self, x0: float | int, apply_lut: bool = False) -> np.ndarray:
+        """Return cross section along y-axis at x=x0
+
+        Args:
+            x0: X0
+            apply_lut: Apply lut (Default value = False)
+
+        Returns:
+            np.ndarray: Cross section along y-axis at x=x0
+        """
         ix, _iy = self.get_closest_indexes(x0, 0)
         return (
             self.get_y_values(0, self.data.shape[0]),
             self.__process_cross_section(self.data[:, ix], apply_lut),
         )
 
-    def get_average_xsection(self, x0, y0, x1, y1, apply_lut=False):
-        """Return average cross section along x-axis"""
+    def get_average_xsection(
+        self, x0: float, y0: float, x1: float, y1: float, apply_lut: bool = False
+    ) -> np.ndarray:
+        """Return average cross section along x-axis for the given rectangle
+
+        Args:
+            x0: X0 of top left corner
+            y0: Y0 of top left corner
+            x1: X1 of bottom right corner
+            y1: Y1 of bottom right corner
+            apply_lut: Apply lut (Default value = False)
+
+        Returns:
+            np.ndarray: Average cross section along x-axis
+        """
         ix0, iy0, ix1, iy1 = self.get_closest_index_rect(x0, y0, x1, y1)
         ydata = self.data[iy0:iy1, ix0:ix1]
         if ydata.size == 0:
@@ -807,8 +1002,21 @@ class BaseImageItem(QwtPlotItem):
             self.__process_cross_section(ydata, apply_lut),
         )
 
-    def get_average_ysection(self, x0, y0, x1, y1, apply_lut=False):
-        """Return average cross section along y-axis"""
+    def get_average_ysection(
+        self, x0: float, y0: float, x1: float, y1: float, apply_lut: bool = False
+    ) -> np.ndarray:
+        """Return average cross section along y-axis
+
+        Args:
+            x0: X0 of top left corner
+            y0: Y0 of top left corner
+            x1: X1 of bottom right corner
+            y1: Y1 of bottom right corner
+            apply_lut: Apply lut (Default value = False)
+
+        Returns:
+            np.ndarray: Average cross section along y-axis
+        """
         ix0, iy0, ix1, iy1 = self.get_closest_index_rect(x0, y0, x1, y1)
         ydata = self.data[iy0:iy1, ix0:ix1]
         if ydata.size == 0:
@@ -844,8 +1052,12 @@ class RawImageItem(BaseImageItem):
     )
 
     # ---- BaseImageItem API ---------------------------------------------------
-    def get_default_param(self):
-        """Return instance of the default imageparam DataSet"""
+    def get_default_param(self) -> RawImageParam:
+        """Return instance of the default imageparam DataSet
+
+        Returns:
+            RawImageParam: Default imageparam DataSet
+        """
         return RawImageParam(_("Image"))
 
     # ---- Serialization methods -----------------------------------------------
@@ -871,8 +1083,12 @@ class RawImageItem(BaseImageItem):
         self.setZ(z)
         self.param.update_item(self)
 
-    def serialize(self, writer):
-        """Serialize object to HDF5 writer"""
+    def serialize(self, writer: HDF5Writer | INIWriter | JSONWriter) -> None:
+        """Serialize object to HDF5 writer
+
+        Args:
+            writer: HDF5, INI or JSON writer
+        """
         fname = self.get_filename()
         load_from_fname = fname is not None
         data = None if load_from_fname else self.data
@@ -884,8 +1100,12 @@ class RawImageItem(BaseImageItem):
         self.param.update_param(self)
         writer.write(self.param, group_name="imageparam")
 
-    def deserialize(self, reader):
-        """Deserialize object from HDF5 reader"""
+    def deserialize(self, reader: HDF5Reader | INIReader | JSONReader) -> None:
+        """Deserialize object from HDF5 reader
+
+        Args:
+            reader: HDF5, INI or JSON reader
+        """
         lut_range = reader.read(group_name="lut_range")
         if reader.read(group_name="load_from_fname"):
             name = reader.read(group_name="fname", func=reader.read_unicode)
@@ -938,10 +1158,12 @@ class RawImageItem(BaseImageItem):
         self.bounds = QC.QRectF(0, 0, self.data.shape[1], self.data.shape[0])
 
     # ---- IBasePlotItem API ---------------------------------------------------
-    def types(self):
-        """
+    def types(self) -> tuple[type[IItemType], ...]:
+        """Returns a group or category for this item.
+        This should be a tuple of class objects inheriting from IItemType
 
-        :return:
+        Returns:
+            tuple: Tuple of class objects inheriting from IItemType
         """
         return (
             IImageItemType,
@@ -954,33 +1176,42 @@ class RawImageItem(BaseImageItem):
             IStatsImageItemType,
         )
 
-    def update_item_parameters(self):
-        """ """
+    def update_item_parameters(self) -> None:
+        """Update item parameters (dataset) from object properties"""
         self.param.update_param(self)
 
-    def get_item_parameters(self, itemparams):
+    def get_item_parameters(self, itemparams: ItemParameters) -> None:
         """
+        Appends datasets to the list of DataSets describing the parameters
+        used to customize apearance of this item
 
-        :param itemparams:
+        Args:
+            itemparams: Item parameters
         """
         BaseImageItem.get_item_parameters(self, itemparams)
         self.update_item_parameters()
         itemparams.add("ImageParam", self, self.param)
 
-    def set_item_parameters(self, itemparams):
+    def set_item_parameters(self, itemparams: ItemParameters) -> None:
         """
+        Change the appearance of this item according
+        to the parameter set provided
 
-        :param itemparams:
+        Args:
+            itemparams: Item parameters
         """
         update_dataset(self.param, itemparams.get("ImageParam"), visible_only=True)
         self.param.update_item(self)
         BaseImageItem.set_item_parameters(self, itemparams)
 
     # ---- IBaseImageItem API --------------------------------------------------
-    def can_sethistogram(self):
+    def can_sethistogram(self) -> bool:
         """
+        Returns True if this item can be associated with a levels histogram
 
-        :return:
+        Returns:
+            bool: True if item can be associated with a levels histogram,
+             False otherwise
         """
         return True
 

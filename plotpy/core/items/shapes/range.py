@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import annotations
+
 import math
+from typing import TYPE_CHECKING
 
 import numpy as np
 from guidata.configtools import get_icon
@@ -12,6 +16,11 @@ from plotpy.config import CONF, _
 from plotpy.core.coords import canvas_to_axes
 from plotpy.core.items.shapes.base import AbstractShape
 from plotpy.core.styles.shape import RangeShapeParam
+
+if TYPE_CHECKING:
+    from qtpy.QtCore import QPointF
+
+    from plotpy.core.styles.base import ItemParameters
 
 
 class XRangeSelection(AbstractShape):
@@ -90,11 +99,24 @@ class XRangeSelection(AbstractShape):
         sym.drawSymbol(painter, QC.QPointF(x0, y))
         sym.drawSymbol(painter, QC.QPointF(x1, y))
 
-    def hit_test(self, pos):
-        """
+    def hit_test(self, pos: QPointF) -> tuple[float, float, bool, None]:
+        """Return a tuple (distance, attach point, inside, other_object)
 
-        :param pos:
-        :return:
+        Args:
+            pos: Position
+
+        Returns:
+            tuple: Tuple with four elements: (distance, attach point, inside,
+             other_object).
+
+        Description of the returned values:
+
+        * distance: distance in pixels (canvas coordinates) to the closest
+           attach point
+        * attach point: handle of the attach point
+        * inside: True if the mouse button has been clicked inside the object
+        * other_object: if not None, reference of the object which will be
+           considered as hit instead of self
         """
         x, _y = pos.x(), pos.y()
         x0, x1, _yp = self.get_handles_pos()
@@ -107,9 +129,14 @@ class XRangeSelection(AbstractShape):
         inside = bool(x0 < x < x1)
         return dist, handle, inside, None
 
-    def move_local_point_to(self, handle, pos, ctrl=None):
-        """Move a handle as returned by hit_test to the new position pos
-        ctrl: True if <Ctrl> button is being pressed, False otherwise"""
+    def move_local_point_to(self, handle: int, pos: QPointF, ctrl: bool = None) -> None:
+        """Move a handle as returned by hit_test to the new position
+
+        Args:
+            handle: Handle
+            pos: Position
+            ctrl: True if <Ctrl> button is being pressed, False otherwise
+        """
         x, _y = canvas_to_axes(self, pos)
         self.move_point_to(handle, (x, 0))
 
@@ -164,22 +191,28 @@ class XRangeSelection(AbstractShape):
         self.plot().SIG_RANGE_CHANGED.emit(self, self._min, self._max)
         self.plot().replot()
 
-    def update_item_parameters(self):
-        """ """
+    def update_item_parameters(self) -> None:
+        """Update item parameters (dataset) from object properties"""
         self.shapeparam.update_param(self)
 
-    def get_item_parameters(self, itemparams):
+    def get_item_parameters(self, itemparams: ItemParameters) -> None:
         """
+        Appends datasets to the list of DataSets describing the parameters
+        used to customize apearance of this item
 
-        :param itemparams:
+        Args:
+            itemparams: Item parameters
         """
         self.update_item_parameters()
         itemparams.add("ShapeParam", self, self.shapeparam)
 
-    def set_item_parameters(self, itemparams):
+    def set_item_parameters(self, itemparams: ItemParameters) -> None:
         """
+        Change the appearance of this item according
+        to the parameter set provided
 
-        :param itemparams:
+        Args:
+            itemparams: Item parameters
         """
         update_dataset(self.shapeparam, itemparams.get("ShapeParam"), visible_only=True)
         self.shapeparam.update_range(self)

@@ -11,6 +11,10 @@ plotpy.widgets.label
 
 """
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 import numpy as np
 from guidata.configtools import get_icon
 from guidata.utils import update_dataset
@@ -27,6 +31,20 @@ from plotpy.core.interfaces.common import (
 )
 from plotpy.core.items.curve.base import CurveItem
 from plotpy.core.styles.label import LabelParam
+
+if TYPE_CHECKING:
+    from guidata.dataset.io import (
+        HDF5Reader,
+        HDF5Writer,
+        INIReader,
+        INIWriter,
+        JSONReader,
+        JSONWriter,
+    )
+    from qtpy.QtCore import QPointF
+
+    from plotpy.core.interfaces.common import IItemType
+    from plotpy.core.styles.base import ItemParameters
 
 ANCHORS = {
     "TL": lambda r: (r.left(), r.top()),
@@ -82,13 +100,21 @@ class AbstractLabelItem(QwtPlotItem):
     def __reduce__(self):
         return (self.__class__, (self.labelparam,))
 
-    def serialize(self, writer):
-        """Serialize object to HDF5 writer"""
+    def serialize(self, writer: HDF5Writer | INIWriter | JSONWriter) -> None:
+        """Serialize object to HDF5 writer
+
+        Args:
+            writer: HDF5, INI or JSON writer
+        """
         self.labelparam.update_param(self)
         writer.write(self.labelparam, group_name="labelparam")
 
-    def deserialize(self, reader):
-        """Deserialize object from HDF5 reader"""
+    def deserialize(self, reader: HDF5Reader | INIReader | JSONReader) -> None:
+        """Deserialize object from HDF5 reader
+
+        Args:
+            reader: HDF5, INI or JSON reader
+        """
         self.labelparam = LabelParam(_("Label"), icon="label.png")
         reader.read("labelparam", instance=self.labelparam)
         self.labelparam.update_label(self)
@@ -102,10 +128,12 @@ class AbstractLabelItem(QwtPlotItem):
         """
         return QC.QRectF(0.0, 0.0, 10.0, 10.0)
 
-    def types(self):
-        """
+    def types(self) -> tuple[type[IItemType], ...]:
+        """Returns a group or category for this item.
+        This should be a tuple of class objects inheriting from IItemType
 
-        :return:
+        Returns:
+            tuple: Tuple of class objects inheriting from IItemType
         """
         return (IShapeItemType,)
 
@@ -150,65 +178,105 @@ class AbstractLabelItem(QwtPlotItem):
             y0 = yMap.transform(self.G[1])
             return x0, y0
 
-    def set_selectable(self, state):
-        """Set item selectable state"""
+    def set_selectable(self, state: bool) -> None:
+        """Set item selectable state
+
+        Args:
+            state: True if item is selectable, False otherwise
+        """
         self._can_select = state
 
-    def set_resizable(self, state):
+    def set_resizable(self, state: bool) -> None:
         """Set item resizable state
-        (or any action triggered when moving an handle, e.g. rotation)"""
+        (or any action triggered when moving an handle, e.g. rotation)
+
+        Args:
+            state: True if item is resizable, False otherwise
+        """
         self._can_resize = state
 
-    def set_movable(self, state):
-        """Set item movable state"""
+    def set_movable(self, state: bool) -> None:
+        """Set item movable state
+
+        Args:
+            state: True if item is movable, False otherwise
+        """
         self._can_move = state
 
-    def set_rotatable(self, state):
-        """Set item rotatable state"""
+    def set_rotatable(self, state: bool) -> None:
+        """Set item rotatable state
+
+        Args:
+            state: True if item is rotatable, False otherwise
+        """
         self._can_rotate = state
 
-    def can_select(self):
+    def can_select(self) -> bool:
         """
+        Returns True if this item can be selected
 
-        :return:
+        Returns:
+            bool: True if item can be selected, False otherwise
         """
         return self._can_select
 
-    def can_resize(self):
+    def can_resize(self) -> bool:
         """
+        Returns True if this item can be resized
 
-        :return:
+        Returns:
+            bool: True if item can be resized, False otherwise
         """
         return self._can_resize
 
-    def can_move(self):
+    def can_move(self) -> bool:
         """
+        Returns True if this item can be moved
 
-        :return:
+        Returns:
+            bool: True if item can be moved, False otherwise
         """
         return self._can_move
 
-    def can_rotate(self):
+    def can_rotate(self) -> bool:
         """
+        Returns True if this item can be rotated
 
-        :return:
+        Returns:
+            bool: True if item can be rotated, False otherwise
         """
         return False  # TODO: Implement labels rotation?
 
-    def set_readonly(self, state):
-        """Set object readonly state"""
+    def set_readonly(self, state: bool) -> None:
+        """Set object readonly state
+
+        Args:
+            state: True if object is readonly, False otherwise
+        """
         self._readonly = state
 
-    def is_readonly(self):
-        """Return object readonly state"""
+    def is_readonly(self) -> bool:
+        """Return object readonly state
+
+        Returns:
+            bool: True if object is readonly, False otherwise
+        """
         return self._readonly
 
-    def set_private(self, state):
-        """Set object as private"""
+    def set_private(self, state: bool) -> None:
+        """Set object as private
+
+        Args:
+            state: True if object is private, False otherwise
+        """
         self._private = state
 
-    def is_private(self):
-        """Return True if object is private"""
+    def is_private(self) -> bool:
+        """Return True if object is private
+
+        Returns:
+            bool: True if object is private, False otherwise
+        """
         return self._private
 
     def invalidate_plot(self):
@@ -217,8 +285,11 @@ class AbstractLabelItem(QwtPlotItem):
         if plot:
             plot.invalidate()
 
-    def select(self):
-        """Select item"""
+    def select(self) -> None:
+        """
+        Select the object and eventually change its appearance to highlight the
+        fact that it's selected
+        """
         if self.selected:
             # Already selected
             return
@@ -227,17 +298,33 @@ class AbstractLabelItem(QwtPlotItem):
         self.border_pen.setWidth(w + 1)
         self.invalidate_plot()
 
-    def unselect(self):
-        """Unselect item"""
+    def unselect(self) -> None:
+        """
+        Unselect the object and eventually restore its original appearance to
+        highlight the fact that it's not selected anymore
+        """
         self.selected = False
         self.labelparam.update_label(self)
         self.invalidate_plot()
 
-    def hit_test(self, pos):
-        """
+    def hit_test(self, pos: QPointF) -> tuple[float, float, bool, None]:
+        """Return a tuple (distance, attach point, inside, other_object)
 
-        :param pos:
-        :return:
+        Args:
+            pos: Position
+
+        Returns:
+            tuple: Tuple with four elements: (distance, attach point, inside,
+             other_object).
+
+        Description of the returned values:
+
+        * distance: distance in pixels (canvas coordinates) to the closest
+           attach point
+        * attach point: handle of the attach point
+        * inside: True if the mouse button has been clicked inside the object
+        * other_object: if not None, reference of the object which will be
+           considered as hit instead of self
         """
         plot = self.plot()
         if plot is None:
@@ -263,37 +350,52 @@ class AbstractLabelItem(QwtPlotItem):
         """
         return 2.0, 1, True, None
 
-    def update_item_parameters(self):
-        """ """
+    def update_item_parameters(self) -> None:
+        """Update item parameters (dataset) from object properties"""
         self.labelparam.update_param(self)
 
-    def get_item_parameters(self, itemparams):
+    def get_item_parameters(self, itemparams: ItemParameters) -> None:
         """
+        Appends datasets to the list of DataSets describing the parameters
+        used to customize apearance of this item
 
-        :param itemparams:
+        Args:
+            itemparams: Item parameters
         """
         self.update_item_parameters()
         itemparams.add("LabelParam", self, self.labelparam)
 
-    def set_item_parameters(self, itemparams):
+    def set_item_parameters(self, itemparams: ItemParameters) -> None:
         """
+        Change the appearance of this item according
+        to the parameter set provided
 
-        :param itemparams:
+        Args:
+            itemparams: Item parameters
         """
         update_dataset(self.labelparam, itemparams.get("LabelParam"), visible_only=True)
         self.labelparam.update_label(self)
         if self.selected:
             self.select()
 
-    def move_local_point_to(self, handle, pos, ctrl=None):
-        """Move a handle as returned by hit_test to the new position pos
-        ctrl: True if <Ctrl> button is being pressed, False otherwise"""
+    def move_local_point_to(self, handle: int, pos: QPointF, ctrl: bool = None) -> None:
+        """Move a handle as returned by hit_test to the new position
+
+        Args:
+            handle: Handle
+            pos: Position
+            ctrl: True if <Ctrl> button is being pressed, False otherwise
+        """
         if handle != -1:
             return
 
-    def move_local_shape(self, old_pos, new_pos):
-        """Translate the shape such that old_pos becomes new_pos
-        in canvas coordinates"""
+    def move_local_shape(self, old_pos: QPointF, new_pos: QPointF) -> None:
+        """Translate the shape such that old_pos becomes new_pos in canvas coordinates
+
+        Args:
+            old_pos: Old position
+            new_pos: New position
+        """
         if self.G in ANCHORS or not self.labelparam.move_anchor:
             # Move canvas offset
             lx, ly = self.C
@@ -317,10 +419,12 @@ class AbstractLabelItem(QwtPlotItem):
             self.labelparam.xg, self.labelparam.yg = lx1, ly1
             plot.SIG_ITEM_MOVED.emit(self, lx0, ly0, lx1, ly1)
 
-    def move_with_selection(self, delta_x, delta_y):
-        """
-        Translate the shape together with other selected items
-        delta_x, delta_y: translation in plot coordinates
+    def move_with_selection(self, delta_x: float, delta_y: float) -> None:
+        """Translate the item together with other selected items
+
+        Args:
+            delta_x: Translation in plot coordinates along x-axis
+            delta_y: Translation in plot coordinates along y-axis
         """
         if self.G in ANCHORS or not self.labelparam.move_anchor:
             return
@@ -359,20 +463,30 @@ class LabelItem(AbstractLabelItem):
     def __reduce__(self):
         return (self.__class__, (self.text_string, self.labelparam))
 
-    def serialize(self, writer):
-        """Serialize object to HDF5 writer"""
+    def serialize(self, writer: HDF5Writer | INIWriter | JSONWriter) -> None:
+        """Serialize object to HDF5 writer
+
+        Args:
+            writer: HDF5, INI or JSON writer
+        """
         super(LabelItem, self).serialize(writer)
         writer.write(self.text_string, group_name="text")
 
-    def deserialize(self, reader):
-        """Deserialize object from HDF5 reader"""
+    def deserialize(self, reader: HDF5Reader | INIReader | JSONReader) -> None:
+        """Deserialize object from HDF5 reader
+
+        Args:
+            reader: HDF5, INI or JSON reader
+        """
         super(LabelItem, self).deserialize(reader)
         self.set_text(reader.read("text", func=reader.read_unicode))
 
-    def types(self):
-        """
+    def types(self) -> tuple[type[IItemType], ...]:
+        """Returns a group or category for this item.
+        This should be a tuple of class objects inheriting from IItemType
 
-        :return:
+        Returns:
+            tuple: Tuple of class objects inheriting from IItemType
         """
         return (IShapeItemType, ISerializableType)
 
@@ -468,10 +582,12 @@ class LegendBoxItem(AbstractLabelItem):
         self.sizes = 0.0, 0.0, 0.0, 0.0
         self.setIcon(get_icon("legend.png"))
 
-    def types(self):
-        """
+    def types(self) -> tuple[type[IItemType], ...]:
+        """Returns a group or category for this item.
+        This should be a tuple of class objects inheriting from IItemType
 
-        :return:
+        Returns:
+            tuple: Tuple of class objects inheriting from IItemType
         """
         return (IShapeItemType, ISerializableType)
 
@@ -597,22 +713,28 @@ class LegendBoxItem(AbstractLabelItem):
                 return 1000.0, None, False, items[line]
         return 2.0, 1, True, None
 
-    def update_item_parameters(self):
-        """ """
+    def update_item_parameters(self) -> None:
+        """Update item parameters (dataset) from object properties"""
         self.labelparam.update_param(self)
 
-    def get_item_parameters(self, itemparams):
+    def get_item_parameters(self, itemparams: ItemParameters) -> None:
         """
+        Appends datasets to the list of DataSets describing the parameters
+        used to customize apearance of this item
 
-        :param itemparams:
+        Args:
+            itemparams: Item parameters
         """
         self.update_item_parameters()
         itemparams.add("LegendParam", self, self.labelparam)
 
-    def set_item_parameters(self, itemparams):
+    def set_item_parameters(self, itemparams: ItemParameters) -> None:
         """
+        Change the appearance of this item according
+        to the parameter set provided
 
-        :param itemparams:
+        Args:
+            itemparams: Item parameters
         """
         update_dataset(
             self.labelparam, itemparams.get("LegendParam"), visible_only=True
@@ -684,7 +806,10 @@ class RangeInfo(ObjectInfo):
         self.label = str(label)
         self.range = xrangeselection
         if function is None:
-            function = lambda x, dx: (x, dx)
+
+            def function(x, dx):
+                return x, dx
+
         self.func = function
 
     def get_text(self):
@@ -713,7 +838,10 @@ class RangeComputation(ObjectInfo):
         self.curve = curve
         self.range = xrangeselection
         if function is None:
-            function = lambda x, dx: (x, dx)
+
+            def function(x, dx):
+                return x, dx
+
         self.func = function
 
     def set_curve(self, curve):
@@ -780,10 +908,12 @@ class DataInfoLabel(LabelItem):
     def __reduce__(self):
         return (self.__class__, (self.labelparam, self.infos))
 
-    def types(self):
-        """
+    def types(self) -> tuple[type[IItemType], ...]:
+        """Returns a group or category for this item.
+        This should be a tuple of class objects inheriting from IItemType
 
-        :return:
+        Returns:
+            tuple: Tuple of class objects inheriting from IItemType
         """
         return (IShapeItemType,)
 

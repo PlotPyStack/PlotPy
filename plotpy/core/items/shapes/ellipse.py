@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import annotations
+
 import math
 import sys
+from typing import TYPE_CHECKING
 
 import numpy as np
 from guidata.configtools import get_icon
@@ -11,6 +15,9 @@ from qwt import QwtSymbol
 
 from plotpy.core.items.shapes.polygon import PolygonShape
 from plotpy.utils.geometry import compute_angle, compute_center
+
+if TYPE_CHECKING:
+    from qtpy.QtCore import QPointF
 
 
 class EllipseShape(PolygonShape):
@@ -119,8 +126,25 @@ class EllipseShape(PolygonShape):
         rect.moveCenter(line0.pointAt(0.5))
         return points, line0, line1, rect
 
-    def hit_test(self, pos):
-        """return (dist, handle, inside)"""
+    def hit_test(self, pos: QPointF) -> tuple[float, float, bool, None]:
+        """Return a tuple (distance, attach point, inside, other_object)
+
+        Args:
+            pos: Position
+
+        Returns:
+            tuple: Tuple with four elements: (distance, attach point, inside,
+             other_object).
+
+        Description of the returned values:
+
+        * distance: distance in pixels (canvas coordinates) to the closest
+           attach point
+        * attach point: handle of the attach point
+        * inside: True if the mouse button has been clicked inside the object
+        * other_object: if not None, reference of the object which will be
+           considered as hit instead of self
+        """
         if not self.plot():
             return sys.maxsize, 0, False, None
         dist, handle, inside, other = self.poly_hit_test(

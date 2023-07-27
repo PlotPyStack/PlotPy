@@ -51,7 +51,14 @@ if TYPE_CHECKING:
     from plotpy.core.plot.manager import PlotManager
 
     TrackableItem = CurveItem | BaseImageItem
-    import guidata.dataset.io
+    from guidata.dataset.io import (
+        HDF5Reader,
+        HDF5Writer,
+        INIReader,
+        INIWriter,
+        JSONReader,
+        JSONWriter,
+    )
 
 
 class PlotType(Enum):
@@ -1428,40 +1435,22 @@ class BasePlot(qwt.QwtPlot):
         for item in items:
             self.add_item(item)
 
-    def serialize(
-        self,
-        writer: guidata.dataset.io.INIWriter
-        | guidata.dataset.io.JSONWriter
-        | guidata.dataset.io.HDF5Writer,
-        selected: bool = False,
-    ) -> None:
-        """
-        Save (serializable) items to file (INI, JSON or HDF5)
+    def serialize(self, writer: HDF5Writer | INIWriter | JSONWriter) -> None:
+        """Serialize object to HDF5 writer
 
         Args:
-            writer: the writer
-            selected: if True, will save only selected items
+            writer: HDF5, INI or JSON writer
 
         See also :py:meth:`.BasePlot.restore_items`
         """
-        if selected:
-            items = self.get_selected_items()
-        else:
-            items = self.items[:]
-        items = [item for item in items if itf.ISerializableType in item.types()]
+        items = [item for item in self.items if itf.ISerializableType in item.types()]
         io.save_items(writer, items)
 
-    def deserialize(
-        self,
-        reader: guidata.dataset.io.INIReader
-        | guidata.dataset.io.JSONReader
-        | guidata.dataset.io.HDF5Reader,
-    ) -> None:
-        """
-        Restore items from file (INI, JSON or HDF5)
+    def deserialize(self, reader: HDF5Reader | INIReader | JSONReader) -> None:
+        """Deserialize object from HDF5 reader
 
         Args:
-            reader: the reader
+            reader: HDF5, INI or JSON reader
 
         See also :py:meth:`.BasePlot.save_items`
         """

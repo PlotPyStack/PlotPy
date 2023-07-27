@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 import numpy as np
 from qtpy import QtCore as QC
 
@@ -6,6 +11,17 @@ from plotpy.core import io
 from plotpy.core.coords import axes_to_canvas, canvas_to_axes
 from plotpy.core.items.image.masked_area import MaskedArea
 from plotpy.utils.geometry import colvector, rotate, scale, translate
+
+if TYPE_CHECKING:
+    from guidata.dataset.io import (
+        HDF5Reader,
+        HDF5Writer,
+        INIReader,
+        INIWriter,
+        JSONReader,
+        JSONWriter,
+    )
+    from qtpy.QtCore import QPointF
 
 
 class TransformImageMixin:
@@ -124,9 +140,14 @@ class TransformImageMixin:
         print("tr1+rot+tr2:", p4.T)
 
     # ---- IBasePlotItem API ---------------------------------------------------
-    def move_local_point_to(self, handle, pos, ctrl=None):
-        """Move a handle as returned by hit_test to the new position pos
-        ctrl: True if <Ctrl> button is being pressed, False otherwise"""
+    def move_local_point_to(self, handle: int, pos: QPointF, ctrl: bool = None) -> None:
+        """Move a handle as returned by hit_test to the new position
+
+        Args:
+            handle: Handle
+            pos: Position
+            ctrl: True if <Ctrl> button is being pressed, False otherwise
+        """
         if self.is_locked():
             return
         x0, y0, angle, dx, dy, hflip, vflip = self.get_transform()
@@ -171,9 +192,13 @@ class TransformImageMixin:
                 self.plot().SIG_ITEM_RESIZED.emit(self, zoom, zoom)
         self.set_transform(x0, y0, angle, dx, dy, hflip, vflip)
 
-    def move_local_shape(self, old_pos, new_pos):
-        """Translate the shape such that old_pos becomes new_pos
-        in canvas coordinates"""
+    def move_local_shape(self, old_pos: QPointF, new_pos: QPointF) -> None:
+        """Translate the shape such that old_pos becomes new_pos in canvas coordinates
+
+        Args:
+            old_pos: Old position
+            new_pos: New position
+        """
         if self.is_locked():
             return
         if self.rotation_point is None:
@@ -258,10 +283,12 @@ class TransformImageMixin:
         if self.plot():
             self.plot().SIG_ITEM_ROTATED.emit(self, new_angle)
 
-    def move_with_selection(self, delta_x, delta_y):
-        """
-        Translate the shape together with other selected items
-        delta_x, delta_y: translation in plot coordinates
+    def move_with_selection(self, delta_x: float, delta_y: float) -> None:
+        """Translate the item together with other selected items
+
+        Args:
+            delta_x: Translation in plot coordinates along x-axis
+            delta_y: Translation in plot coordinates along y-axis
         """
         if self.is_locked():
             return
@@ -403,18 +430,20 @@ class MaskedImageMixin:
         self._masked_areas = []
 
     # ---- Pickle methods -------------------------------------------------------
-    def serialize(self, writer):
-        """
+    def serialize(self, writer: HDF5Writer | INIWriter | JSONWriter) -> None:
+        """Serialize object to HDF5 writer
 
-        :param writer:
+        Args:
+            writer: HDF5, INI or JSON writer
         """
         writer.write(self.get_mask_filename(), group_name="mask_fname")
         writer.write_object_list(self._masked_areas, "masked_areas")
 
-    def deserialize(self, reader):
-        """
+    def deserialize(self, reader: HDF5Reader | INIReader | JSONReader) -> None:
+        """Deserialize object from HDF5 reader
 
-        :param reader:
+        Args:
+            reader: HDF5, INI or JSON reader
         """
         mask_fname = reader.read(group_name="mask_fname", func=reader.read_unicode)
         masked_areas = reader.read_object_list("masked_areas", MaskedArea)
