@@ -100,4 +100,4 @@ def nottest_syncplot():
 
 
 if __name__ == "__main__":
-    test_syncplot()
+    nottest_syncplot()
