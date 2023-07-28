@@ -105,7 +105,7 @@ struct LinearInterpolation
         // The following couple of lines were commented out to avoid disabling
         // the linear interpolation on image edges. Demonstrating the effect of
         // this change is quite easy: just try to show a very small image
-        // (e.g. 10x10) with guiqwt.pyplot.imshow for example.
+        // (e.g. 10x10) with pyplot.imshow for example.
         //	if (nx==0||nx==src.nj-1) return (T)v;
         //	if (ny==0||ny==src.ni-1) return (T)v;
 

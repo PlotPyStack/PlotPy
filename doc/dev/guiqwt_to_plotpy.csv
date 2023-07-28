@@ -25,7 +25,7 @@ guiqwt v4,plotpy v2,API changes
 ``guiqwt.curve.CurvePlot.plotitem2canvas``,*removed*
 ``guiqwt.plot.SubplotWidget``,``plotpy.core.plot.SubplotWidget``
 ``guiqwt.histogram.lut_range_threshold``,``plotpy.core.plot.histogram.utils.lut_range_threshold``
-``guiqwt.pyplot``,``plotpy.core.plot.interactive``
+``guiqwt.pyplot``,``plotpy.pyplot``
 ``guiqwt.scaler``,``plotpy.core.scaler``
 ``guiqwt.styles``,``plotpy.core.styles``
 ``guiqwt.tools``,``plotpy.core.tools``

@@ -14,7 +14,7 @@ Interactive plotting interface with MATLAB-like syntax
 import numpy as np
 import pytest
 
-from plotpy.core.plot.interactive import (
+from plotpy.pyplot import (
     errorbar,
     figure,
     gray,

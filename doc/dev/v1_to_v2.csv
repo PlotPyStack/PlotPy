@@ -7,7 +7,7 @@ plotpy v1,plotpy v2 (and v1.99+)
 ``.gui.widgets.plot``,``.core.plot``
 ``.gui.widgets.styles``,``.core.styles``
 ``.gui.widgets.tools``,``.core.tools``
-``.gui.widgets.pyplot``,``.core.plot.interactive``
+``.gui.widgets.pyplot``,``.pyplot``
 ``.gui.widgets.builder``,``.core.builder``
 ``.gui.widgets.baseplot.canvas_to_axes``,``.core.coords.canvas_to_axes``
 ``.gui.widgets.baseplot.axes_to_canvas``,``.core.coords.axes_to_canvas``
