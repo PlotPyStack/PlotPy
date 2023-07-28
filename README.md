@@ -1,6 +1,5 @@
 # plotpy: Plotting library based on Qwt
 
-[![license](https://img.shields.io/pypi/l/plotpy.svg)](./LICENSE)
 [![pypi version](https://img.shields.io/pypi/v/plotpy.svg)](https://pypi.org/project/plotpy/)
 [![PyPI status](https://img.shields.io/pypi/status/plotpy.svg)](https://github.com/CODRA-Ingenierie-Informatique/plotpy/)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/plotpy.svg)](https://pypi.python.org/pypi/plotpy/)
@@ -82,7 +81,24 @@ The plotpy library also provides the following features:
 * [PythonQwt](https://pypi.org/project/PythonQwt/) (Python wrapper for the Qwt C++ class library)
 * [guidata](https://pypi.org/project/guidata/) (Python library generating graphical user interfaces for easy dataset editing and display)
 
+### Build requirements
+
+* [setuptools](https://pypi.org/project/setuptools/) (Python packages management)
+* [wheel](https://pypi.org/project/wheel/) (Python built-package format)
+* [build](https://pypi.org/project/build/) (Python package builder)
+* [numpy](https://pypi.org/project/numpy/) (Python package for scientific computing)
+* [Cython](https://pypi.org/project/Cython/) (Python package for writing C extensions for the Python language)
+* C++ compiler (e.g. [GCC](https://gcc.gnu.org/), [MSVC](https://visualstudio.microsoft.com/vs/features/cplusplus/))
+
 ## Installation
+
+### From PyPI
+
+Using ``pip``:
+
+```bash
+pip install plotpy
+```
 
 ### From the source package
 
