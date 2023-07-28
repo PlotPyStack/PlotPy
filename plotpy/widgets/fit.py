@@ -7,7 +7,10 @@
 
 """
 Curve fitting widgets
----------------------
+=====================
+
+Overview
+--------
 
 The :mod:`.widgets.fit` module provides interactive curve fitting widgets allowing:
 
@@ -18,7 +21,7 @@ The :func:`guifit` function is a factory function that returns a dialog box
 allowing to fit data with a given function.
 
 Example
-^^^^^^^
+-------
 
 Here is an example of use of the :func:`guifit` function:
 
@@ -29,7 +32,7 @@ Here is an example of use of the :func:`guifit` function:
 .. image:: /images/screenshots/fit.png
 
 Reference
-^^^^^^^^^
+---------
 
 .. autofunction:: guifit
 
