@@ -6,6 +6,10 @@ build:
   os: ubuntu-22.04
   tools:
     python: "3.11"
+  jobs:
+    post_create_environment:
+      - pip install PyQt5 setuptools numpy Cython
+      - python setup.py build_ext --inplace
 sphinx:
    configuration: doc/conf.py
 formats:
