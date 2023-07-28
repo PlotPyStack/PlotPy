@@ -37,7 +37,7 @@ jobs:
         python -m pip install flake8 pytest
         pip install PyQt5 setuptools numpy Cython
         python setup.py build_ext --inplace
-        pip install .
+        pip install .[test]
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
