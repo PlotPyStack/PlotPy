@@ -21,6 +21,8 @@ from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 
 DEFAULT_CHARS = "".join([chr(c) for c in range(32, 256)])
 
+# TODO: Rewrite the test so that it does not leave files behind
+
 
 def get_font_array(sz, chars=DEFAULT_CHARS):
     font = QG.QFont()

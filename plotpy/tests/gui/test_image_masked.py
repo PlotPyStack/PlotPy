@@ -23,6 +23,9 @@ from plotpy.core.tools.image import ImageMaskTool
 
 FNAME = "image_masked.pickle"
 
+# TODO: Rewrite the test so that it does not leave a file behind
+# (do something like in test_loadsaveitems_pickle.py)
+
 
 def test_image_masked():
     with qt_app_context(exec_loop=True):

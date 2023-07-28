@@ -83,7 +83,7 @@ def build_items():
     return items
 
 
-class TestDialog(PlotDialog):
+class LoadSaveDialog(PlotDialog):
     """Test dialog"""
 
     SIG_SAVE_RESTORE_ITEMS = QC.Signal()
@@ -129,7 +129,7 @@ class IOTest:
     def run(self):
         """Run test"""
         with qt_app_context(exec_loop=True):
-            self.dlg = TestDialog()
+            self.dlg = LoadSaveDialog()
             self.dlg.SIG_SAVE_RESTORE_ITEMS.connect(self.save_and_restore_items)
             print("Building items and add them to plotting canvas", end=" ")
             self.add_items()

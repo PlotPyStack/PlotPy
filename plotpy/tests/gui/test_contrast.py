@@ -7,8 +7,10 @@
 
 # guitest: show
 
+import os
 import os.path as osp
 
+from guidata.env import execenv
 from guidata.qthelpers import qt_app_context
 
 from plotpy.core.builder import make
@@ -32,12 +34,15 @@ def test_contrast():
         plot.add_item(image)
         win.resize(600, 600)
         win.show()
+        fname = "contrast.png"
         try:
-            plot.save_widget("contrast.png")
+            plot.save_widget(fname)
         except IOError:
             # Skipping this part of the test
             # because user has no write permission on current directory
             pass
+        if execenv.unattended and osp.isfile(fname):
+            os.unlink(fname)
 
 
 if __name__ == "__main__":
