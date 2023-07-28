@@ -41,7 +41,8 @@ dynamic = ["version"]
 Homepage = "https://github.com/CODRA-Ingenierie-Informatique/plotpy/"
 Documentation = "https://plotpy.readthedocs.io/en/latest/"
 
-[project.scripts]
+[project.gui-scripts]
+plotpy-tests = "plotpy.tests:run"
 
 [project.optional-dependencies]
 dev = ["black", "isort", "pylint", "Coverage"]
