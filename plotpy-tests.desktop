@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=plotpy-tests
+GenericName=plotpy Test launcher
+Comment=The plotpy Python library provides powerful curve and image plotting tools
+TryExec=plotpy-tests
+Exec=plotpy-tests
+Icon=plotpy.svg
+Categories=Education;Science;Physics;
