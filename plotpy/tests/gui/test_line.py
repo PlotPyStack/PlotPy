@@ -34,6 +34,8 @@ def test_line(x0, y0, x1, y1):
     print(x0, ",", y0, "->", x1, ",", y1)
     imin = np.full((N,), N, dtype=int)
     imax = np.full((N,), 0, dtype=int)
+    print("imin:", repr(imin), imin.dtype)
+    print("imax:", repr(imax), imax.dtype)
     line(x0, y0, x1, y1, N, imin, imax)
     print_tri(imin, imax)
 
