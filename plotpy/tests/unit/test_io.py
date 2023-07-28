@@ -6,12 +6,12 @@
 """
 Unit tests for io module
 """
-import os
+
 from pathlib import Path
 
 import numpy as np
 import pytest
-from guidata.configtools import add_image_path, get_image_file_path
+from guidata.configtools import get_image_file_path
 from qtpy.QtGui import QImage
 
 try:
@@ -23,6 +23,7 @@ from plotpy.core.io import imread, imwrite
 
 
 def compute_image(N=1000, M=1000):
+    """Compute a random image"""
     return (np.random.rand(N, M) * 65536).astype(np.uint8)
 
 
@@ -85,7 +86,6 @@ def test_imread_brain_png():
 
 def test_imread_python_icon():
     """Test reading of python icon which is a colored PNG with alpha."""
-    add_image_path(os.path.join(os.path.dirname(__file__), "..\\..\\images"))
     path = get_image_file_path("python.png")
     data = imread(path)
     assert data.shape == (16, 16, 4)
@@ -117,3 +117,8 @@ def test_imread_txt(tmpdir):
     data = imread(img)
     assert data.shape == (50, 255)
     assert data[0, 25] == 25
+
+
+if __name__ == "__main__":
+    test_imread_python_icon()
+    test_imread_python_icon_grayscale()
