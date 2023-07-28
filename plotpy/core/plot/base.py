@@ -51,14 +51,7 @@ if TYPE_CHECKING:
     from plotpy.core.plot.manager import PlotManager
 
     TrackableItem = CurveItem | BaseImageItem
-    from guidata.dataset.io import (
-        HDF5Reader,
-        HDF5Writer,
-        INIReader,
-        INIWriter,
-        JSONReader,
-        JSONWriter,
-    )
+    import guidata.dataset.io
 
 
 class PlotType(Enum):
@@ -1435,7 +1428,12 @@ class BasePlot(qwt.QwtPlot):
         for item in items:
             self.add_item(item)
 
-    def serialize(self, writer: HDF5Writer | INIWriter | JSONWriter) -> None:
+    def serialize(
+        self,
+        writer: guidata.dataset.io.HDF5Writer
+        | guidata.dataset.io.INIWriter
+        | guidata.dataset.io.JSONWriter,
+    ) -> None:
         """Serialize object to HDF5 writer
 
         Args:
@@ -1446,7 +1444,12 @@ class BasePlot(qwt.QwtPlot):
         items = [item for item in self.items if itf.ISerializableType in item.types()]
         io.save_items(writer, items)
 
-    def deserialize(self, reader: HDF5Reader | INIReader | JSONReader) -> None:
+    def deserialize(
+        self,
+        reader: guidata.dataset.io.HDF5Reader
+        | guidata.dataset.io.INIReader
+        | guidata.dataset.io.JSONReader,
+    ) -> None:
         """Deserialize object from HDF5 reader
 
         Args:

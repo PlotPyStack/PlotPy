@@ -13,14 +13,7 @@ from plotpy.core.items.image.masked_area import MaskedArea
 from plotpy.utils.geometry import colvector, rotate, scale, translate
 
 if TYPE_CHECKING:
-    from guidata.dataset.io import (
-        HDF5Reader,
-        HDF5Writer,
-        INIReader,
-        INIWriter,
-        JSONReader,
-        JSONWriter,
-    )
+    import guidata.dataset.io
     from qtpy.QtCore import QPointF
 
 
@@ -430,7 +423,12 @@ class MaskedImageMixin:
         self._masked_areas = []
 
     # ---- Pickle methods -------------------------------------------------------
-    def serialize(self, writer: HDF5Writer | INIWriter | JSONWriter) -> None:
+    def serialize(
+        self,
+        writer: guidata.dataset.io.HDF5Writer
+        | guidata.dataset.io.INIWriter
+        | guidata.dataset.io.JSONWriter,
+    ) -> None:
         """Serialize object to HDF5 writer
 
         Args:
@@ -439,7 +437,12 @@ class MaskedImageMixin:
         writer.write(self.get_mask_filename(), group_name="mask_fname")
         writer.write_object_list(self._masked_areas, "masked_areas")
 
-    def deserialize(self, reader: HDF5Reader | INIReader | JSONReader) -> None:
+    def deserialize(
+        self,
+        reader: guidata.dataset.io.HDF5Reader
+        | guidata.dataset.io.INIReader
+        | guidata.dataset.io.JSONReader,
+    ) -> None:
         """Deserialize object from HDF5 reader
 
         Args:

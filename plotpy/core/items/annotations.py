@@ -43,14 +43,7 @@ from plotpy.utils.geometry import (
 )
 
 if TYPE_CHECKING:
-    from guidata.dataset.io import (
-        HDF5Reader,
-        HDF5Writer,
-        INIReader,
-        INIWriter,
-        JSONReader,
-        JSONWriter,
-    )
+    import guidata.dataset.io
     from qtpy.QtCore import QPointF
 
     from plotpy.core.interfaces.common import IItemType
@@ -104,7 +97,12 @@ class AnnotatedShape(AbstractShape):
         self.annotationparam = param
         self.annotationparam.update_annotation(self)
 
-    def serialize(self, writer: HDF5Writer | INIWriter | JSONWriter) -> None:
+    def serialize(
+        self,
+        writer: guidata.dataset.io.HDF5Writer
+        | guidata.dataset.io.INIWriter
+        | guidata.dataset.io.JSONWriter,
+    ) -> None:
         """Serialize object to HDF5 writer
 
         Args:
@@ -114,7 +112,12 @@ class AnnotatedShape(AbstractShape):
         self.shape.serialize(writer)
         self.label.serialize(writer)
 
-    def deserialize(self, reader: HDF5Reader | INIReader | JSONReader) -> None:
+    def deserialize(
+        self,
+        reader: guidata.dataset.io.HDF5Reader
+        | guidata.dataset.io.INIReader
+        | guidata.dataset.io.JSONReader,
+    ) -> None:
         """Deserialize object from HDF5 reader
 
         Args:

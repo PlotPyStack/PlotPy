@@ -33,14 +33,7 @@ from plotpy.core.items.curve.base import CurveItem
 from plotpy.core.styles.label import LabelParam
 
 if TYPE_CHECKING:
-    from guidata.dataset.io import (
-        HDF5Reader,
-        HDF5Writer,
-        INIReader,
-        INIWriter,
-        JSONReader,
-        JSONWriter,
-    )
+    import guidata.dataset.io
     from qtpy.QtCore import QPointF
 
     from plotpy.core.interfaces.common import IItemType
@@ -100,7 +93,12 @@ class AbstractLabelItem(QwtPlotItem):
     def __reduce__(self):
         return (self.__class__, (self.labelparam,))
 
-    def serialize(self, writer: HDF5Writer | INIWriter | JSONWriter) -> None:
+    def serialize(
+        self,
+        writer: guidata.dataset.io.HDF5Writer
+        | guidata.dataset.io.INIWriter
+        | guidata.dataset.io.JSONWriter,
+    ) -> None:
         """Serialize object to HDF5 writer
 
         Args:
@@ -109,7 +107,12 @@ class AbstractLabelItem(QwtPlotItem):
         self.labelparam.update_param(self)
         writer.write(self.labelparam, group_name="labelparam")
 
-    def deserialize(self, reader: HDF5Reader | INIReader | JSONReader) -> None:
+    def deserialize(
+        self,
+        reader: guidata.dataset.io.HDF5Reader
+        | guidata.dataset.io.INIReader
+        | guidata.dataset.io.JSONReader,
+    ) -> None:
         """Deserialize object from HDF5 reader
 
         Args:
@@ -463,7 +466,12 @@ class LabelItem(AbstractLabelItem):
     def __reduce__(self):
         return (self.__class__, (self.text_string, self.labelparam))
 
-    def serialize(self, writer: HDF5Writer | INIWriter | JSONWriter) -> None:
+    def serialize(
+        self,
+        writer: guidata.dataset.io.HDF5Writer
+        | guidata.dataset.io.INIWriter
+        | guidata.dataset.io.JSONWriter,
+    ) -> None:
         """Serialize object to HDF5 writer
 
         Args:
@@ -472,7 +480,12 @@ class LabelItem(AbstractLabelItem):
         super(LabelItem, self).serialize(writer)
         writer.write(self.text_string, group_name="text")
 
-    def deserialize(self, reader: HDF5Reader | INIReader | JSONReader) -> None:
+    def deserialize(
+        self,
+        reader: guidata.dataset.io.HDF5Reader
+        | guidata.dataset.io.INIReader
+        | guidata.dataset.io.JSONReader,
+    ) -> None:
         """Deserialize object from HDF5 reader
 
         Args:

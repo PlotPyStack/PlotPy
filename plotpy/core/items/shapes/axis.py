@@ -17,14 +17,7 @@ from plotpy.core.items.shapes.polygon import PolygonShape
 from plotpy.core.styles.shape import AxesShapeParam
 
 if TYPE_CHECKING:
-    from guidata.dataset.io import (
-        HDF5Reader,
-        HDF5Writer,
-        INIReader,
-        INIWriter,
-        JSONReader,
-        JSONWriter,
-    )
+    import guidata.dataset.io
 
     from plotpy.core.styles.base import ItemParameters
 
@@ -66,7 +59,12 @@ class Axes(PolygonShape):
         self.axesparam = axesparam
         self.axesparam.update_axes(self)
 
-    def serialize(self, writer: HDF5Writer | INIWriter | JSONWriter) -> None:
+    def serialize(
+        self,
+        writer: guidata.dataset.io.HDF5Writer
+        | guidata.dataset.io.INIWriter
+        | guidata.dataset.io.JSONWriter,
+    ) -> None:
         """Serialize object to HDF5 writer
 
         Args:
@@ -76,7 +74,12 @@ class Axes(PolygonShape):
         self.axesparam.update_param(self)
         writer.write(self.axesparam, group_name="axesparam")
 
-    def deserialize(self, reader: HDF5Reader | INIReader | JSONReader) -> None:
+    def deserialize(
+        self,
+        reader: guidata.dataset.io.HDF5Reader
+        | guidata.dataset.io.INIReader
+        | guidata.dataset.io.JSONReader,
+    ) -> None:
         """Deserialize object from HDF5 reader
 
         Args:

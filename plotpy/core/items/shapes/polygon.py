@@ -25,14 +25,7 @@ from plotpy.core.items.shapes.base import AbstractShape
 from plotpy.core.styles.shape import ShapeParam
 
 if TYPE_CHECKING:
-    from guidata.dataset.io import (
-        HDF5Reader,
-        HDF5Writer,
-        INIReader,
-        INIWriter,
-        JSONReader,
-        JSONWriter,
-    )
+    import guidata.dataset.io
     from qtpy.QtCore import QPointF
 
     from plotpy.core.interfaces.common import IItemType
@@ -88,7 +81,12 @@ class PolygonShape(AbstractShape):
         self.setZ(z)
         self.shapeparam.update_shape(self)
 
-    def serialize(self, writer: HDF5Writer | INIWriter | JSONWriter) -> None:
+    def serialize(
+        self,
+        writer: guidata.dataset.io.HDF5Writer
+        | guidata.dataset.io.INIWriter
+        | guidata.dataset.io.JSONWriter,
+    ) -> None:
         """Serialize object to HDF5 writer
 
         Args:
@@ -100,7 +98,12 @@ class PolygonShape(AbstractShape):
         writer.write(self.closed, group_name="closed")
         writer.write(self.z(), group_name="z")
 
-    def deserialize(self, reader: HDF5Reader | INIReader | JSONReader) -> None:
+    def deserialize(
+        self,
+        reader: guidata.dataset.io.HDF5Reader
+        | guidata.dataset.io.INIReader
+        | guidata.dataset.io.JSONReader,
+    ) -> None:
         """Deserialize object from HDF5 reader
 
         Args:

@@ -32,14 +32,7 @@ from plotpy.core.styles.image import ImageParam, RGBImageParam, XYImageParam
 from plotpy.utils.geometry import colvector
 
 if TYPE_CHECKING:
-    from guidata.dataset.io import (
-        HDF5Reader,
-        HDF5Writer,
-        INIReader,
-        INIWriter,
-        JSONReader,
-        JSONWriter,
-    )
+    import guidata.dataset.io
     from qtpy.QtCore import QPointF
 
     from plotpy.core.interfaces.common import IItemType
@@ -128,7 +121,12 @@ class ImageItem(RawImageItem):
         self.setZ(z)
         self.param.update_item(self)
 
-    def serialize(self, writer: HDF5Writer | INIWriter | JSONWriter) -> None:
+    def serialize(
+        self,
+        writer: guidata.dataset.io.HDF5Writer
+        | guidata.dataset.io.INIWriter
+        | guidata.dataset.io.JSONWriter,
+    ) -> None:
         """Serialize object to HDF5 writer
 
         Args:
@@ -141,7 +139,12 @@ class ImageItem(RawImageItem):
         writer.write(ymin, group_name="ymin")
         writer.write(ymax, group_name="ymax")
 
-    def deserialize(self, reader: HDF5Reader | INIReader | JSONReader) -> None:
+    def deserialize(
+        self,
+        reader: guidata.dataset.io.HDF5Reader
+        | guidata.dataset.io.INIReader
+        | guidata.dataset.io.JSONReader,
+    ) -> None:
         """Deserialize object from HDF5 reader
 
         Args:
@@ -462,7 +465,12 @@ class XYImageItem(ImageMixin, RawImageItem):
         self.param.update_item(self)
         self.set_transform(*self.get_transform())
 
-    def serialize(self, writer: HDF5Writer | INIWriter | JSONWriter) -> None:
+    def serialize(
+        self,
+        writer: guidata.dataset.io.HDF5Writer
+        | guidata.dataset.io.INIWriter
+        | guidata.dataset.io.JSONWriter,
+    ) -> None:
         """Serialize object to HDF5 writer
 
         Args:
@@ -472,7 +480,12 @@ class XYImageItem(ImageMixin, RawImageItem):
         writer.write(self.x, group_name="Xdata")
         writer.write(self.y, group_name="Ydata")
 
-    def deserialize(self, reader: HDF5Reader | INIReader | JSONReader) -> None:
+    def deserialize(
+        self,
+        reader: guidata.dataset.io.HDF5Reader
+        | guidata.dataset.io.INIReader
+        | guidata.dataset.io.JSONReader,
+    ) -> None:
         """Deserialize object from HDF5 reader
 
         Args:

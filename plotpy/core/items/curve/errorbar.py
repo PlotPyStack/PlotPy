@@ -19,14 +19,7 @@ from plotpy.core.styles.curve import CurveParam
 from plotpy.core.styles.errorbar import ErrorBarParam
 
 if TYPE_CHECKING:
-    from guidata.dataset.io import (
-        HDF5Reader,
-        HDF5Writer,
-        INIReader,
-        INIWriter,
-        JSONReader,
-        JSONWriter,
-    )
+    import guidata.dataset.io
 
     from plotpy.core.plot.base import BasePlot
     from plotpy.core.styles.base import ItemParameters
@@ -64,7 +57,12 @@ class ErrorBarCurveItem(CurveItem):
         self._minmaxarrays = {}
         self.setIcon(get_icon("errorbar.png"))
 
-    def serialize(self, writer: HDF5Writer | INIWriter | JSONWriter) -> None:
+    def serialize(
+        self,
+        writer: guidata.dataset.io.HDF5Writer
+        | guidata.dataset.io.INIWriter
+        | guidata.dataset.io.JSONWriter,
+    ) -> None:
         """Serialize object to HDF5 writer
 
         Args:
@@ -76,7 +74,12 @@ class ErrorBarCurveItem(CurveItem):
         self.errorbarparam.update_param(self)
         writer.write(self.errorbarparam, group_name="errorbarparam")
 
-    def deserialize(self, reader: HDF5Reader | INIReader | JSONReader) -> None:
+    def deserialize(
+        self,
+        reader: guidata.dataset.io.HDF5Reader
+        | guidata.dataset.io.INIReader
+        | guidata.dataset.io.JSONReader,
+    ) -> None:
         """Deserialize object from HDF5 reader
 
         Args:

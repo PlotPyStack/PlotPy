@@ -44,14 +44,7 @@ from plotpy.core.styles.image import RawImageParam
 from plotpy.utils.colormap import FULLRANGE, get_cmap, get_cmap_name
 
 if TYPE_CHECKING:
-    from guidata.dataset.io import (
-        HDF5Reader,
-        HDF5Writer,
-        INIReader,
-        INIWriter,
-        JSONReader,
-        JSONWriter,
-    )
+    import guidata.dataset.io
     from qtpy.QtCore import QPointF
 
     from plotpy.core.interfaces.common import IItemType
@@ -953,7 +946,7 @@ class BaseImageItem(QwtPlotItem):
             apply_lut: Apply lut (Default value = False)
 
         Returns:
-            np.ndarray: Cross section along x-axis at y=y0
+            Cross section along x-axis at y=y0
         """
         _ix, iy = self.get_closest_indexes(0, y0)
         return (
@@ -969,7 +962,7 @@ class BaseImageItem(QwtPlotItem):
             apply_lut: Apply lut (Default value = False)
 
         Returns:
-            np.ndarray: Cross section along y-axis at x=x0
+            Cross section along y-axis at x=x0
         """
         ix, _iy = self.get_closest_indexes(x0, 0)
         return (
@@ -990,7 +983,7 @@ class BaseImageItem(QwtPlotItem):
             apply_lut: Apply lut (Default value = False)
 
         Returns:
-            np.ndarray: Average cross section along x-axis
+            Average cross section along x-axis
         """
         ix0, iy0, ix1, iy1 = self.get_closest_index_rect(x0, y0, x1, y1)
         ydata = self.data[iy0:iy1, ix0:ix1]
@@ -1015,7 +1008,7 @@ class BaseImageItem(QwtPlotItem):
             apply_lut: Apply lut (Default value = False)
 
         Returns:
-            np.ndarray: Average cross section along y-axis
+            Average cross section along y-axis
         """
         ix0, iy0, ix1, iy1 = self.get_closest_index_rect(x0, y0, x1, y1)
         ydata = self.data[iy0:iy1, ix0:ix1]
@@ -1083,7 +1076,12 @@ class RawImageItem(BaseImageItem):
         self.setZ(z)
         self.param.update_item(self)
 
-    def serialize(self, writer: HDF5Writer | INIWriter | JSONWriter) -> None:
+    def serialize(
+        self,
+        writer: guidata.dataset.io.HDF5Writer
+        | guidata.dataset.io.INIWriter
+        | guidata.dataset.io.JSONWriter,
+    ) -> None:
         """Serialize object to HDF5 writer
 
         Args:
@@ -1100,7 +1098,12 @@ class RawImageItem(BaseImageItem):
         self.param.update_param(self)
         writer.write(self.param, group_name="imageparam")
 
-    def deserialize(self, reader: HDF5Reader | INIReader | JSONReader) -> None:
+    def deserialize(
+        self,
+        reader: guidata.dataset.io.HDF5Reader
+        | guidata.dataset.io.INIReader
+        | guidata.dataset.io.JSONReader,
+    ) -> None:
         """Deserialize object from HDF5 reader
 
         Args:

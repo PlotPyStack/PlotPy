@@ -21,14 +21,7 @@ from plotpy.core.items.image.mixin import MaskedImageMixin
 from plotpy.core.styles.image import MaskedImageParam, MaskedXYImageParam
 
 if TYPE_CHECKING:
-    from guidata.dataset.io import (
-        HDF5Reader,
-        HDF5Writer,
-        INIReader,
-        INIWriter,
-        JSONReader,
-        JSONWriter,
-    )
+    import guidata.dataset.io
 
 
 class MaskedImageItem(ImageItem, MaskedImageMixin):
@@ -98,7 +91,12 @@ class MaskedImageItem(ImageItem, MaskedImageMixin):
             self.set_masked_areas(masked_areas)
             self.apply_masked_areas()
 
-    def serialize(self, writer: HDF5Writer | INIWriter | JSONWriter) -> None:
+    def serialize(
+        self,
+        writer: guidata.dataset.io.HDF5Writer
+        | guidata.dataset.io.INIWriter
+        | guidata.dataset.io.JSONWriter,
+    ) -> None:
         """Serialize object to HDF5 writer
 
         Args:
@@ -107,7 +105,12 @@ class MaskedImageItem(ImageItem, MaskedImageMixin):
         ImageItem.serialize(self, writer)
         MaskedImageMixin.serialize(self, writer)
 
-    def deserialize(self, reader: HDF5Reader | INIReader | JSONReader) -> None:
+    def deserialize(
+        self,
+        reader: guidata.dataset.io.HDF5Reader
+        | guidata.dataset.io.INIReader
+        | guidata.dataset.io.JSONReader,
+    ) -> None:
         """Deserialize object from HDF5 reader
 
         Args:
@@ -243,7 +246,12 @@ class MaskedXYImageItem(XYImageItem, MaskedImageMixin):
             self.set_masked_areas(masked_areas)
             self.apply_masked_areas()
 
-    def serialize(self, writer: HDF5Writer | INIWriter | JSONWriter) -> None:
+    def serialize(
+        self,
+        writer: guidata.dataset.io.HDF5Writer
+        | guidata.dataset.io.INIWriter
+        | guidata.dataset.io.JSONWriter,
+    ) -> None:
         """Serialize object to HDF5 writer
 
         Args:
@@ -252,7 +260,12 @@ class MaskedXYImageItem(XYImageItem, MaskedImageMixin):
         XYImageItem.serialize(self, writer)
         MaskedImageMixin.serialize(self, writer)
 
-    def deserialize(self, reader: HDF5Reader | INIReader | JSONReader) -> None:
+    def deserialize(
+        self,
+        reader: guidata.dataset.io.HDF5Reader
+        | guidata.dataset.io.INIReader
+        | guidata.dataset.io.JSONReader,
+    ) -> None:
         """Deserialize object from HDF5 reader
 
         Args:
