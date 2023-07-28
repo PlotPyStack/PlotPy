@@ -7,6 +7,16 @@
 
 ## Overview
 
+`plotpy` is is a Python library providing efficient 2D data-plotting features
+for interactive computing and signal/image processing application development.
+
+`plotpy` is based on:
+
+* [Python](http://www.python.org) language and [Qt](https://doc.qt.io/) GUI toolkit (via [PySide](https://doc.qt.io/qtforpython-6/) or [PyQt](http://www.riverbankcomputing.co.uk/software/pyqt/intro))
+* [guidata](https://pypi.python.org/pypi/guidata) automatic GUI generation library
+* [PythonQwt](https://pypi.python.org/pypi/PythonQwt) plotting widgets library
+* [NumPy](https://pypi.python.org/pypi/NumPy) and [SciPy](https://pypi.python.org/pypi/SciPy) scientific computing libraries
+
 Based on PythonQwt and on the scientific modules NumPy and SciPy, plotpy is a
 Python library providing efficient 2D data-plotting features (curve/image
 visualization and related tools) for interactive computing and signal/image
@@ -24,7 +34,7 @@ Copyrights and licensing:
 
 ### Features
 
-The plotpy library also provides the following features:
+The `plotpy` library also provides the following features:
 
 * Ready-to-use [plot widgets and dialog boxes](https://plotpy.readthedocs.io/en/latest/features/plot/index.html)
 
@@ -61,7 +71,7 @@ The plotpy library also provides the following features:
 
   * ready-to-use [plot widgets and dialog boxes](https://plotpy.readthedocs.io/en/latest/features/plot/index.html)
   * load/save graphical objects (curves, images, shapes)
-  * a lot of test scripts which demonstrate :mod:`plotpy` features (see [examples](https://plotpy.readthedocs.io/en/latest/intro/examples.html))
+  * a lot of test scripts which demonstrate `plotpy` features (see [examples](https://plotpy.readthedocs.io/en/latest/intro/examples.html))
 
 ## Dependencies
 
