@@ -18,9 +18,6 @@ eggs/
 .installed.cfg
 *.egg
 MANIFEST
-doc/install_requires.txt
-doc/extras_require-dev.txt
-doc/extras_require-doc.txt
 
 # Tests
 .tox/
@@ -40,6 +37,7 @@ pylint_report.txt
 
 # Sphinx documentation
 docs/build/
+plotpy.chm
 
 # Generated cython c file
 src/contour2d.c
@@ -47,7 +45,6 @@ src/histogram2d.c
 src/mandelbrot.c
 
 # qt.conf files
-sift/qt.conf
 doc/source/deployment_example/qt.conf
 
 # Virtual env
@@ -57,4 +54,3 @@ htmlcov
 # Other
 *.bak
 /plotpy/tests/gui/loadsavecanvas.h5
-/doc/requirements.rst
