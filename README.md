@@ -14,62 +14,54 @@ processing application development.
 
 <img src="https://raw.githubusercontent.com/CODRA-Ingenierie-Informatique/plotpy/master/doc/images/panorama.png">
 
+See [documentation](https://plotpy.readthedocs.io/en/latest/) for more details on
+the library and [changelog](CHANGELOG.md) for recent history of changes.
+
+Copyrights and licensing:
+
+* Copyright © 2023 [CEA](https://www.cea.fr), [Codra](https://codra.net/), [Pierre Raybaut](https://github.com/PierreRaybaut).
+* Licensed under the terms of the BSD 3-Clause (see [LICENSE](LICENSE)).
+
 ### Features
 
 The plotpy library also provides the following features:
 
-* pyplot: equivalent to matplotlib.pyplot, at
+* Ready-to-use [plot widgets and dialog boxes](https://plotpy.readthedocs.io/en/latest/features/plot/index.html)
+
+* [pyplot](https://plotpy.readthedocs.io/en/latest/features/pyplot.html): interactive plotting widgets, equivalent to `matplotlib.pyplot`, at
   least for the implemented functions
 
-* supported `plot items`:
+* supported [plot items](https://plotpy.readthedocs.io/en/latest/features/items/index.html): curve, image, histogram, label, shape, annotation, ...
 
-  * histogram: 1D histograms
-  * items.curve: curves and error bar curves
-  * items.image: images (RGB images are not supported),
-      images with non-linear x/y scales, images with specified pixel size
-      (e.g. loaded from DICOM files), 2D histograms, pseudo-color images
-      (`pcolor`)
-  * items.label: labels, curve plot legends
-  * items.shapes: polygon, polylines, rectangle, circle,
-      ellipse and segment
-  * items.annotations: annotated shapes (shapes with labels
-      showing position and dimensions): rectangle with center position and
-      size, circle with center position and diameter, ellipse with center
-      position and diameters (these items are very useful to measure things
-      directly on displayed images)
-
-* curves, images and shapes:
+* interactive features:
 
   * multiple object selection for moving objects or editing their
-      properties through automatically generated dialog boxes (``plotpy.core``)
+    properties through automatically generated dialog boxes
+
   * item list panel: move objects from foreground to background,
-      show/hide objects, remove objects, ...
-  * customizable aspect ratio
-  * a lot of ready-to-use tools: plot canvas export to image file, image
-      snapshot, image rectangular filter, etc.
+    show/hide objects, remove objects, ...
 
-* curves:
+  * customizable aspect ratio for images
 
-  * interval selection tools with labels showing results of computing on
-      selected area
+  * tons of ready-to-use tools: plot canvas export to image file, image
+    snapshot, interval selection, image rectangular filter, etc.
+
   * curve fitting tool with automatic fit, manual fit with sliders, ...
 
-* images:
+  * contrast adjustment panel for images: select the LUT by moving a range selection
+    object on the image levels histogram, eliminate outliers, ...
 
-  * contrast adjustment panel: select the LUT by moving a range selection
-      object on the image levels histogram, eliminate outliers, ...
-  * X-axis and Y-axis cross-sections: support for multiple images,
-      average cross-section tool on a rectangular area, ...
+  * X-axis and Y-axis cross-sections: support for multiple images, average
+    cross-section tool on a rectangular area, ...
+
   * apply any affine transform to displayed images in real-time (rotation,
-      magnification, translation, horizontal/vertical flip, ...)
+    magnification, translation, horizontal/vertical flip, ...)
 
 * application development helpers:
 
-  * ready-to-use curve and image plot widgets and dialog boxes
-      (see plot)
+  * ready-to-use [plot widgets and dialog boxes](https://plotpy.readthedocs.io/en/latest/features/plot/index.html)
   * load/save graphical objects (curves, images, shapes)
-  * a lot of test scripts which demonstrate :mod:`plotpy` features
-      (see `examples`)
+  * a lot of test scripts which demonstrate :mod:`plotpy` features (see [examples](https://plotpy.readthedocs.io/en/latest/intro/examples.html))
 
 ## Dependencies
 
