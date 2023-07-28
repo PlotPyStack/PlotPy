@@ -21,7 +21,7 @@ External resources:
 * Bug reports and feature requests: `GitHub`_
 
 .. _PyPI: https://pypi.python.org/pypi/plotpy
-.. _GitHub: https://codra-ingenierie-informatique.github.io/plotpy/
+.. _GitHub: https://github.com/Codra-Ingenierie-Informatique/plotpy
 
 .. module:: plotpy
 
