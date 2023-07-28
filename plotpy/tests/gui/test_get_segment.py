@@ -63,7 +63,7 @@ def test_get_segment():
     shape = segtool.get_last_final_shape()
     rect = shape.get_rect()
     if execenv.unattended:
-        assert [int(i) for i in list(rect)] == SEG_AXES_COORDS
+        assert [round(i) for i in list(rect)] == SEG_AXES_COORDS
     elif rect is not None:
         print(
             "Distance:",
