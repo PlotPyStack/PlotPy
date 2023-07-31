@@ -1,9 +1,11 @@
-# plotpy: Plotting library based on Qwt
+# plotpy: Curve and image plotting tools for Python/Qt applications
 
 [![pypi version](https://img.shields.io/pypi/v/plotpy.svg)](https://pypi.org/project/plotpy/)
 [![PyPI status](https://img.shields.io/pypi/status/plotpy.svg)](https://github.com/CODRA-Ingenierie-Informatique/plotpy/)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/plotpy.svg)](https://pypi.python.org/pypi/plotpy/)
 [![download count](https://img.shields.io/conda/dn/conda-forge/plotpy.svg)](https://www.anaconda.com/download/)
+
+ℹ️ `plotpy` is the new major release of [`guiqwt`](https://github.com/PierreRaybaut/guiqwt): same team 🏋️, same goal 🎯, same long-term support ⏳.
 
 ## Overview
 
