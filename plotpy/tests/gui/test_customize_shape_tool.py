@@ -11,7 +11,7 @@ import os
 
 from guidata.qthelpers import qt_app_context
 
-from plotpy.core.builder import make
+from plotpy.core.builder import LUTAlpha, make
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 from plotpy.core.styles.base import style_generator, update_style_attr
 from plotpy.core.tools.shapes import (
@@ -60,7 +60,9 @@ def test_customize_shape_tool():
     with qt_app_context(exec_loop=True):
         filename = os.path.join(os.path.dirname(__file__), "brain.png")
         win = create_window()
-        image = make.image(filename=filename, colormap="bone", alpha_mask=True)
+        image = make.image(
+            filename=filename, colormap="bone", alpha_function=LUTAlpha.LINEAR
+        )
         plot = win.manager.get_plot()
         plot.add_item(image)
 

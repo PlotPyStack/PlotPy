@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+
+import enum
+
 import numpy as np
 from guidata.dataset.dataitems import (
     BoolItem,
@@ -25,13 +28,45 @@ def _create_choices():
     return choices
 
 
+class LUTAlpha(enum.Enum):
+    """LUT Alpha functions"""
+
+    #: No alpha function
+    NONE = 0
+
+    #: Constant alpha function
+    CONSTANT = 1
+
+    #: Linear alpha function
+    LINEAR = 2
+
+    #: Sigmoid alpha function
+    SIGMOID = 3
+
+    #: Hyperbolic tangent alpha function
+    TANH = 4
+
+
+# TODO: Use an "enum" like LUTAlpha for the interpolation mode as well
+# (and eventually for other parameters)
+
+
 class BaseImageParam(DataSet):
     _multiselection = False
     label = StringItem(_("Image title"), default=_("Image")).set_prop(
         "display", hide=GetAttrProp("_multiselection")
     )
-    alpha_mask = BoolItem(
-        _("Use image level as alpha"), _("Alpha channel"), default=False
+    alpha_function = ChoiceItem(
+        _("Alpha function"),
+        [
+            (LUTAlpha.NONE, _("None")),
+            (LUTAlpha.CONSTANT, _("Constant")),
+            (LUTAlpha.LINEAR, _("Linear")),
+            (LUTAlpha.SIGMOID, _("Sigmoid")),
+            (LUTAlpha.TANH, _("Hyperbolic tangent")),
+        ],
+        default=LUTAlpha.NONE,
+        help=_("Alpha function applied to the Look-Up Table"),
     )
     alpha = FloatItem(
         _("Global alpha"), default=1.0, min=0, max=1, help=_("Global alpha value")
@@ -103,7 +138,6 @@ class BaseImageParam(DataSet):
 
 
 class TransformParamMixin(DataSet):
-
     lock_position = BoolItem(
         _("Lock position"),
         _("Position"),
@@ -254,8 +288,17 @@ class QuadGridParam(ImageParamMixin):
     label = StringItem(_("Image title"), default=_("Image")).set_prop(
         "display", hide=GetAttrProp("_multiselection")
     )
-    alpha_mask = BoolItem(
-        _("Use image level as alpha"), _("Alpha channel"), default=False
+    alpha_function = ChoiceItem(
+        _("Alpha function"),
+        [
+            (LUTAlpha.NONE, _("None")),
+            (LUTAlpha.CONSTANT, _("Constant")),
+            (LUTAlpha.LINEAR, _("Linear")),
+            (LUTAlpha.SIGMOID, _("Sigmoid")),
+            (LUTAlpha.TANH, _("Hyperbolic tangent")),
+        ],
+        default=LUTAlpha.NONE,
+        help=_("Alpha function applied to the Look-Up Table"),
     )
     alpha = FloatItem(
         _("Global alpha"), default=1.0, min=0, max=1, help=_("Global alpha value")
@@ -470,7 +513,6 @@ ItemParameters.register_multiselection(RGBImageParam, RGBImageParam_MS)
 
 
 class MaskedImageParamMixin(DataSet):
-
     g_mask = BeginGroup(_("Mask"))
     filling_value = FloatItem(_("Filling value"))
     show_mask = BoolItem(_("Show image mask"), default=False)

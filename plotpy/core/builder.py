@@ -68,6 +68,7 @@ from plotpy.core.styles.histogram import Histogram2DParam, HistogramParam
 from plotpy.core.styles.image import (
     ImageFilterParam,
     ImageParam,
+    LUTAlpha,
     MaskedImageParam,
     MaskedXYImageParam,
     QuadGridParam,
@@ -121,13 +122,11 @@ class PlotItemBuilder:
         """Make :py:class:`.GridParam` instance
 
         Args:
-            background (str or None): canvas background color
-            major_enabled (tuple[bool, bool] or None): major grid enabled (x, y)
-            minor_enabled (tuple[bool, bool] or None): minor grid enabled (x, y)
-            major_style (tuple[str, str, int] or None): major grid style
-            (linestyle, color, width)
-            minor_style (tuple[str, str, int] or None): minor grid style
-            (linestyle, color, width)
+            background: canvas background color
+            major_enabled: major grid enabled (x, y)
+            minor_enabled: minor grid enabled (x, y)
+            major_style: major grid style (linestyle, color, width)
+            minor_style: minor grid style (linestyle, color, width)
 
         Returns:
             :py:class:`.GridParam`: grid parameters
@@ -163,13 +162,11 @@ class PlotItemBuilder:
         """Make a grid `plot item` (:py:class:`.GridItem` object)
 
         Args:
-            background (str or None): canvas background color
-            major_enabled (tuple[bool, bool] or None): major grid enabled (x, y)
-            minor_enabled (tuple[bool, bool] or None): minor grid enabled (x, y)
-            major_style (tuple[str, str, int] or None): major grid style
-            (linestyle, color, width)
-            minor_style (tuple[str, str, int] or None): minor grid style
-            (linestyle, color, width)
+            background: canvas background color
+            major_enabled: major grid enabled (x, y)
+            minor_enabled: minor grid enabled (x, y)
+            major_style: major grid style (linestyle, color, width)
+            minor_style: minor grid style (linestyle, color, width)
 
         Returns:
             :py:class:`.GridItem`: grid item
@@ -393,11 +390,11 @@ class PlotItemBuilder:
         """Make a curve `plot item` based on a :py:class:`.CurveParam` instance
 
         Args:
-            x (numpy.ndarray): x data
-            y (numpy.ndarray): y data
-            param (:py:class:`.CurveParam`): curve parameters
-            xaxis (str): x axis name. Default is 'bottom'
-            yaxis (str): y axis name. Default is 'left'
+            x: x data
+            y: y data
+            param: curve parameters
+            xaxis: x axis name. Default is 'bottom'
+            yaxis: y axis name. Default is 'left'
 
         Returns:
             :py:class:`.CurveItem` object
@@ -438,34 +435,34 @@ class PlotItemBuilder:
         """Make a curve `plot item` from x, y, data
 
         Args:
-            x (numpy.ndarray): x data
-            y (numpy.ndarray): y data
-            title (str): curve title. Default is ''
-            color (str): curve color name. Default is None
-            linestyle (str): curve line style (MATLAB-like string or "SolidLine",
+            x: x data
+            y: y data
+            title: curve title. Default is ''
+            color: curve color name. Default is None
+            linestyle: curve line style (MATLAB-like string or "SolidLine",
              "DashLine", "DotLine", "DashDotLine", "DashDotDotLine", "NoPen").
              Default is None
-            linewidth (int): line width (pixels). Default is None
-            marker (str): marker shape (MATLAB-like string or "Cross",
+            linewidth: line width (pixels). Default is None
+            marker: marker shape (MATLAB-like string or "Cross",
              "Ellipse", "Star1", "XCross", "Rect", "Diamond", "UTriangle",
              "DTriangle", "RTriangle", "LTriangle", "Star2", "NoSymbol").
              Default is None
-            markersize (int): marker size (pixels). Default is None
-            markerfacecolor (str): marker face color name. Default is None
-            markeredgecolor (str): marker edge color name. Default is None
-            shade (float): 0 <= float <= 1 (curve shade). Default is None
-            curvestyle (str): "Lines", "Sticks", "Steps", "Dots", "NoCurve".
+            markersize: marker size (pixels). Default is None
+            markerfacecolor: marker face color name. Default is None
+            markeredgecolor: marker edge color name. Default is None
+            shade: 0 <= float <= 1 (curve shade). Default is None
+            curvestyle: "Lines", "Sticks", "Steps", "Dots", "NoCurve".
              Default is None
-            baseline (float): baseline value. Default is None
-            xaxis (str): x axis name. Default is 'bottom'
-            yaxis (str): y axis name. Default is 'left'
-            dx (numpy.ndarray): x error data. Default is None
-            dy (numpy.ndarray): y error data. Default is None
-            errorbarwidth (int): error bar width (pixels). Default is None
-            errorbarcap (int): error bar cap size (pixels). Default is None
-            errorbarmode (str): error bar mode ("Vertical", "Horizontal",
+            baseline: baseline value. Default is None
+            xaxis: x axis name. Default is 'bottom'
+            yaxis: y axis name. Default is 'left'
+            dx: x error data. Default is None
+            dy: y error data. Default is None
+            errorbarwidth: error bar width (pixels). Default is None
+            errorbarcap: error bar cap size (pixels). Default is None
+            errorbarmode: error bar mode ("Vertical", "Horizontal",
              "Both"). Default is None
-            errorbaralpha (float): 0 <= float <= 1 (error bar transparency).
+            errorbaralpha: 0 <= float <= 1 (error bar transparency).
              Default is None
 
         Returns:
@@ -571,14 +568,14 @@ class PlotItemBuilder:
         based on a :py:class:`.ErrorBarParam` instance
 
         Args:
-            x (numpy.ndarray): x data
-            y (numpy.ndarray): y data
-            dx (numpy.ndarray): x error data
-            dy (numpy.ndarray): y error data
-            curveparam (:py:class:`.CurveParam`): curve style
-            errorbarparam (:py:class:`.ErrorBarParam`): error bar style
-            xaxis (str): x axis name. Default is 'bottom'
-            yaxis (str): y axis name. Default is 'left'
+            x: x data
+            y: y data
+            dx: x error data
+            dy: y error data
+            curveparam: curve style
+            errorbarparam: error bar style
+            xaxis: x axis name. Default is 'bottom'
+            yaxis: y axis name. Default is 'left'
 
         Returns:
             :py:class:`.ErrorBarCurveItem` object
@@ -619,39 +616,39 @@ class PlotItemBuilder:
         """Make an errorbar curve `plot item`
 
         Args:
-            x (numpy.ndarray): x data
-            y (numpy.ndarray): y data
-            dx (numpy.ndarray): x error data
-            dy (numpy.ndarray): y error data
-            title (str): curve title. Default is ''
-            color (str): curve color name. Default is None
-            linestyle (str): curve line style (MATLAB-like string or attribute
+            x: x data
+            y: y data
+            dx: x error data
+            dy: y error data
+            title: curve title. Default is ''
+            color: curve color name. Default is None
+            linestyle: curve line style (MATLAB-like string or attribute
              name from the `PyQt5.QtCore.Qt.PenStyle` enum
              (i.e. "SolidLine" "DashLine", "DotLine", "DashDotLine",
              "DashDotDotLine" or "NoPen"). Default is None
-            linewidth (float): line width (pixels). Default is None
-            errorbarwidth (float): error bar width (pixels). Default is None
-            errorbarcap (float): error bar cap length (pixels). Default is None
-            errorbarmode (str): error bar mode (MATLAB-like string or attribute
+            linewidth: line width (pixels). Default is None
+            errorbarwidth: error bar width (pixels). Default is None
+            errorbarcap: error bar cap length (pixels). Default is None
+            errorbarmode: error bar mode (MATLAB-like string or attribute
              name from the `qwt.QwtPlotCurve.ErrorBar` enum
              (i.e. "NoError", "ErrorBar", "ErrorSymbol", "ErrorBarSymbol",
              "ErrorBarCurve"). Default is None
-            errorbaralpha (float): error bar alpha value (0.0 transparent
+            errorbaralpha: error bar alpha value (0.0 transparent
              through 1.0 opaque). Default is None
-            marker (str): marker shape (MATLAB-like string or attribute name
+            marker: marker shape (MATLAB-like string or attribute name
              from the `qwt.QwtSymbol.Style` enum (i.e. "Cross",
              "Ellipse", "Star1", "XCross", "Rect", "Diamond", "UTriangle",
              "DTriangle", "RTriangle", "LTriangle", "NoSymbol"). Default is None
-            markersize (float): marker size (pixels). Default is None
-            markerfacecolor (str): marker face color name. Default is None
-            markeredgecolor (str): marker edge color name. Default is None
-            shade (bool): shade under curve. Default is None
-            curvestyle (str): curve style (MATLAB-like string or attribute name
+            markersize: marker size (pixels). Default is None
+            markerfacecolor: marker face color name. Default is None
+            markeredgecolor: marker edge color name. Default is None
+            shade: shade under curve. Default is None
+            curvestyle: curve style (MATLAB-like string or attribute name
              from the `qwt.QwtPlotCurve.CurveStyle` enum (i.e. "NoCurve",
              "Lines", "Sticks", "Steps", "Dots"). Default is None
-            baseline (float): baseline value. Default is None
-            xaxis (str): x axis name. Default is 'bottom'
-            yaxis (str): y axis name. Default is 'left'
+            baseline: baseline value. Default is None
+            xaxis: x axis name. Default is 'bottom'
+            yaxis: y axis name. Default is 'left'
 
         Returns:
             :py:class:`.ErrorBarCurveItem` object
@@ -706,13 +703,13 @@ class PlotItemBuilder:
         """Make 1D Histogram `plot item`
 
         Args:
-            data (numpy.ndarray): data
-            bins (int): number of bins. Default is None
-            logscale (bool): Y-axis scale. Default is None
-            title (str): curve title. Default is ''
-            color (str): curve color name. Default is None
-            xaxis (str): x axis name. Default is 'bottom'
-            yaxis (str): y axis name. Default is 'left'
+            data: data
+            bins: number of bins. Default is None
+            logscale: Y-axis scale. Default is None
+            title: curve title. Default is ''
+            color: curve color name. Default is None
+            xaxis: x axis name. Default is 'bottom'
+            yaxis: y axis name. Default is 'left'
 
         Returns:
             :py:class:`.HistogramItem` object
@@ -746,11 +743,11 @@ class PlotItemBuilder:
         :py:class:`.HistogramParam` instances
 
         Args:
-            data (numpy.ndarray): data
-            curveparam (:py:class:`.CurveParam`): curve parameters
-            histparam (:py:class:`.HistogramParam`): histogram parameters
-            xaxis (str): x axis name. Default is 'bottom'
-            yaxis (str): y axis name. Default is 'left'
+            data: data
+            curveparam: curve parameters
+            histparam: histogram parameters
+            xaxis: x axis name. Default is 'bottom'
+            yaxis: y axis name. Default is 'left'
 
         Returns:
             :py:class:`.HistogramItem` object
@@ -768,7 +765,7 @@ class PlotItemBuilder:
         self,
         param: ImageParam,
         title: str | None,
-        alpha_mask: bool | None,
+        alpha_function: LUTAlpha | None,
         alpha: float | None,
         interpolation: str,
         **kwargs,
@@ -779,9 +776,9 @@ class PlotItemBuilder:
             global IMAGE_COUNT
             IMAGE_COUNT += 1
             param.label = make_title(_("Image"), IMAGE_COUNT)
-        if alpha_mask is not None:
-            assert isinstance(alpha_mask, bool)
-            param.alpha_mask = alpha_mask
+        if alpha_function is not None:
+            assert isinstance(alpha_function, LUTAlpha)
+            param.alpha_function = alpha_function
         if alpha is not None:
             assert 0.0 <= alpha <= 1.0
             param.alpha = alpha
@@ -814,9 +811,9 @@ class PlotItemBuilder:
         """Return image bounds from *pixel_size* (scalar or tuple)
 
         Args:
-            data (numpy.ndarray): image data
-            pixel_size (float or tuple): pixel size
-            center_on (tuple): center coordinates. Default is None
+            data: image data
+            pixel_size: pixel size
+            center_on: center coordinates. Default is None
 
         Returns:
             tuple: xmin, xmax, ymin, ymax
@@ -840,7 +837,7 @@ class PlotItemBuilder:
         data: numpy.ndarray | None = None,
         filename: str | None = None,
         title: str | None = None,
-        alpha_mask: bool | None = None,
+        alpha_function: LUTAlpha | None = None,
         alpha: float | None = None,
         background_color: str | None = None,
         colormap: str | None = None,
@@ -861,26 +858,27 @@ class PlotItemBuilder:
         """Make an image `plot item` from data
 
         Args:
-            data (numpy.ndarray): data. Default is None
-            filename (str): image filename. Default is None
-            title (str): image title. Default is None
-            alpha_mask (bool): use alpha mask. Default is None
-            alpha (float): alpha value. Default is None
-            background_color (str): background color name. Default is None
-            colormap (str): colormap name. Default is None
-            xdata (list): x data. Default is [None, None]
-            ydata (list): y data. Default is [None, None]
-            pixel_size (float or tuple): pixel size. Default is None
-            center_on (tuple): center on. Default is None
-            interpolation (str): interpolation method. Default is 'linear'
-            eliminate_outliers (float): eliminate outliers. Default is None
-            xformat (str): x format. Default is '%.1f'
-            yformat (str): y format. Default is '%.1f'
-            zformat (str): z format. Default is '%.1f'
-            x (numpy.ndarray): x data. Default is None
-            y (numpy.ndarray): y data. Default is None
-            lut_range (tuple): LUT range. Default is None
-            lock_position (bool): lock position. Default is True
+            data: data. Default is None
+            filename: image filename. Default is None
+            title: image title. Default is None
+            alpha_function: function for LUT alpha channel.
+             Default is :py:attr:`.LUTAlpha.NONE`
+            alpha: alpha value. Default is None
+            background_color: background color name. Default is None
+            colormap: colormap name. Default is None
+            xdata: x data. Default is [None, None]
+            ydata: y data. Default is [None, None]
+            pixel_size: pixel size. Default is None
+            center_on: center on. Default is None
+            interpolation: interpolation method. Default is 'linear'
+            eliminate_outliers: eliminate outliers. Default is None
+            xformat: x format. Default is '%.1f'
+            yformat: y format. Default is '%.1f'
+            zformat: z format. Default is '%.1f'
+            x: x data. Default is None
+            y: y data. Default is None
+            lut_range: LUT range. Default is None
+            lock_position: lock position. Default is True
 
         Returns:
             :py:class:`.ImageItem` object or
@@ -897,7 +895,7 @@ class PlotItemBuilder:
                 y,
                 data,
                 title=title,
-                alpha_mask=alpha_mask,
+                alpha_function=alpha_function,
                 alpha=alpha,
                 background_color=background_color,
                 colormap=colormap,
@@ -921,7 +919,7 @@ class PlotItemBuilder:
                 data=data,
                 filename=filename,
                 title=title,
-                alpha_mask=alpha_mask,
+                alpha_function=alpha_function,
                 alpha=alpha,
             )
         assert data.ndim == 2, "Data must have 2 dimensions"
@@ -937,7 +935,7 @@ class PlotItemBuilder:
         self.__set_image_param(
             param,
             title,
-            alpha_mask,
+            alpha_function,
             alpha,
             interpolation,
             background=background_color,
@@ -969,7 +967,7 @@ class PlotItemBuilder:
         mask: numpy.ndarray | None = None,
         filename: str | None = None,
         title: str | None = None,
-        alpha_mask: bool = False,
+        alpha_function: LUTAlpha | None = None,
         alpha: float = 1.0,
         xdata: list[float] = [None, None],
         ydata: list[float] = [None, None],
@@ -992,29 +990,30 @@ class PlotItemBuilder:
         """Make a masked image `plot item` from data
 
         Args:
-            data (numpy.ndarray): data. Default is None
-            mask (numpy.ndarray): mask. Default is None
-            filename (str): image filename. Default is None
-            title (str): image title. Default is None
-            alpha_mask (bool): use alpha mask. Default is False
-            alpha (float): alpha value. Default is 1.0
-            xdata (list): x data. Default is [None, None]
-            ydata (list): y data. Default is [None, None]
-            pixel_size (float or tuple): pixel size. Default is None
-            center_on (tuple): center on. Default is None
-            background_color (str): background color. Default is None
-            colormap (str): colormap. Default is None
-            show_mask (bool): show mask. Default is False
-            fill_value (float): fill value. Default is None
-            interpolation (str): interpolation method. Default is 'linear'
-            eliminate_outliers (float): eliminate outliers. Default is None
-            xformat (str): x format. Default is '%.1f'
-            yformat (str): y format. Default is '%.1f'
-            zformat (str): z format. Default is '%.1f'
-            x (numpy.ndarray): x data. Default is None
-            y (numpy.ndarray): y data. Default is None
-            lut_range (tuple): LUT range. Default is None
-            lock_position (bool): lock position. Default is True
+            data: data. Default is None
+            mask: mask. Default is None
+            filename: image filename. Default is None
+            title: image title. Default is None
+            alpha_function: function for LUT alpha channel.
+             Default is :py:attr:`.LUTAlpha.NONE`
+            alpha: alpha value. Default is 1.0
+            xdata: x data. Default is [None, None]
+            ydata: y data. Default is [None, None]
+            pixel_size: pixel size. Default is None
+            center_on: center on. Default is None
+            background_color: background color. Default is None
+            colormap: colormap. Default is None
+            show_mask: show mask. Default is False
+            fill_value: fill value. Default is None
+            interpolation: interpolation method. Default is 'linear'
+            eliminate_outliers: eliminate outliers. Default is None
+            xformat: x format. Default is '%.1f'
+            yformat: y format. Default is '%.1f'
+            zformat: z format. Default is '%.1f'
+            x: x data. Default is None
+            y: y data. Default is None
+            lut_range: LUT range. Default is None
+            lock_position: lock position. Default is True
 
         Returns:
             :py:class:`.MaskedImageItem` object
@@ -1031,7 +1030,7 @@ class PlotItemBuilder:
                 data,
                 mask=mask,
                 title=title,
-                alpha_mask=alpha_mask,
+                alpha_function=alpha_function,
                 alpha=alpha,
                 background_color=background_color,
                 colormap=colormap,
@@ -1065,7 +1064,7 @@ class PlotItemBuilder:
         self.__set_image_param(
             param,
             title,
-            alpha_mask,
+            alpha_function,
             alpha,
             interpolation,
             background=background_color,
@@ -1100,7 +1099,7 @@ class PlotItemBuilder:
         data: numpy.ndarray,
         mask: numpy.ndarray | None = None,
         title: str | None = None,
-        alpha_mask: bool = False,
+        alpha_function: LUTAlpha | None = None,
         alpha: float = 1.0,
         background_color: str | None = None,
         colormap: str | None = None,
@@ -1117,24 +1116,25 @@ class PlotItemBuilder:
         """Make a masked XY image `plot item` from data
 
         Args:
-            x (numpy.ndarray): x data
-            y (numpy.ndarray): y data
-            data (numpy.ndarray): data
-            mask (numpy.ndarray): mask. Default is None
-            title (str): image title. Default is None
-            alpha_mask (bool): use alpha mask. Default is False
-            alpha (float): alpha value. Default is 1.0
-            background_color (str): background color. Default is None
-            colormap (str): colormap. Default is None
-            show_mask (bool): show mask. Default is False
-            fill_value (float): fill value. Default is None
-            interpolation (str): interpolation method. Default is 'linear'
-            eliminate_outliers (float): eliminate outliers. Default is None
-            xformat (str): x format. Default is '%.1f'
-            yformat (str): y format. Default is '%.1f'
-            zformat (str): z format. Default is '%.1f'
-            lut_range (tuple): LUT range. Default is None
-            lock_position (bool): lock position. Default is True
+            x: x data
+            y: y data
+            data: data
+            mask: mask. Default is None
+            title: image title. Default is None
+            alpha_function: function for LUT alpha channel.
+             Default is :py:attr:`.LUTAlpha.NONE`
+            alpha: alpha value. Default is 1.0
+            background_color: background color. Default is None
+            colormap: colormap. Default is None
+            show_mask: show mask. Default is False
+            fill_value: fill value. Default is None
+            interpolation: interpolation method. Default is 'linear'
+            eliminate_outliers: eliminate outliers. Default is None
+            xformat: x format. Default is '%.1f'
+            yformat: y format. Default is '%.1f'
+            zformat: z format. Default is '%.1f'
+            lut_range: LUT range. Default is None
+            lock_position: lock position. Default is True
 
         Returns:
             :py:class:`.MaskedXYImageItem` object
@@ -1151,7 +1151,7 @@ class PlotItemBuilder:
         self.__set_image_param(
             param,
             title,
-            alpha_mask,
+            alpha_function,
             alpha,
             interpolation,
             background=background_color,
@@ -1179,7 +1179,7 @@ class PlotItemBuilder:
         data: numpy.ndarray | None = None,
         filename: str | None = None,
         title: str | None = None,
-        alpha_mask: bool = False,
+        alpha_function: LUTAlpha | None = None,
         alpha: float = 1.0,
         xdata: list | tuple = [None, None],
         ydata: list | tuple = [None, None],
@@ -1191,17 +1191,18 @@ class PlotItemBuilder:
         """Make a RGB image `plot item` from data
 
         Args:
-            data (numpy.ndarray): data
-            filename (str): filename. Default is None
-            title (str): image title. Default is None
-            alpha_mask (bool): use alpha mask. Default is False
-            alpha (float): alpha value. Default is 1.0
-            xdata (list): x data. Default is [None, None]
-            ydata (list): y data. Default is [None, None]
-            pixel_size (float): pixel size. Default is None
-            center_on (tuple): center on. Default is None
-            interpolation (str): interpolation method. Default is 'linear'
-            lock_position (bool): lock position. Default is True
+            data: data
+            filename: filename. Default is None
+            title: image title. Default is None
+            alpha_function: function for LUT alpha channel.
+             Default is :py:attr:`.LUTAlpha.NONE`
+            alpha: alpha value. Default is 1.0
+            xdata: x data. Default is [None, None]
+            ydata: y data. Default is [None, None]
+            pixel_size: pixel size. Default is None
+            center_on: center on. Default is None
+            interpolation: interpolation method. Default is 'linear'
+            lock_position: lock position. Default is True
 
         Returns:
             :py:class:`.RGBImageItem` object
@@ -1225,7 +1226,7 @@ class PlotItemBuilder:
         self.__set_image_param(
             param,
             title,
-            alpha_mask,
+            alpha_function,
             alpha,
             interpolation,
             xmin=xmin,
@@ -1244,7 +1245,7 @@ class PlotItemBuilder:
         Y: numpy.ndarray,
         Z: numpy.ndarray,
         title: str | None = None,
-        alpha_mask: bool = False,
+        alpha_function: LUTAlpha | None = None,
         alpha: float | None = None,
         colormap: str | None = None,
         interpolation: str = "linear",
@@ -1253,15 +1254,16 @@ class PlotItemBuilder:
         """Make a pseudocolor `plot item` of a 2D array
 
         Args:
-            X (numpy.ndarray): x data
-            Y (numpy.ndarray): y data
-            Z (numpy.ndarray): data
-            title (str): image title. Default is None
-            alpha_mask (bool): use alpha mask. Default is None
-            alpha (float): alpha value. Default is None
-            colormap (str): colormap. Default is None
-            interpolation (str): interpolation method. Default is 'linear'
-            lock_position (bool): lock position. Default is True
+            X: x data
+            Y: y data
+            Z: data
+            title: image title. Default is None
+            alpha_function: function for LUT alpha channel.
+             Default is :py:attr:`.LUTAlpha.NONE`
+            alpha: alpha value. Default is None
+            colormap: colormap. Default is None
+            interpolation: interpolation method. Default is 'linear'
+            lock_position: lock position. Default is True
 
         Returns:
             :py:class:`.QuadGridItem` object
@@ -1270,7 +1272,7 @@ class PlotItemBuilder:
         self.__set_image_param(
             param,
             title,
-            alpha_mask,
+            alpha_function,
             alpha,
             interpolation,
             colormap=colormap,
@@ -1309,7 +1311,7 @@ class PlotItemBuilder:
         data: numpy.ndarray | None = None,
         filename: str | None = None,
         title: str | None = None,
-        alpha_mask: bool | None = None,
+        alpha_function: bool | None = None,
         alpha: float | None = None,
         background_color: str | None = None,
         colormap: str | None = None,
@@ -1330,25 +1332,26 @@ class PlotItemBuilder:
         affine transform)
 
         Args:
-            data (numpy.ndarray): data
-            filename (str): filename. Default is None
-            title (str): image title. Default is None
-            alpha_mask (bool): use alpha mask. Default is None
-            alpha (float): alpha value. Default is None
-            background_color (str): background color. Default is None
-            colormap (str): colormap. Default is None
-            x0 (float): x position. Default is 0.0
-            y0 (float): y position. Default is 0.0
-            angle (float): angle (radians). Default is 0.0
-            dx (float): pixel size along X axis. Default is 1.0
-            dy (float): pixel size along Y axis. Default is 1.0
-            interpolation (str): interpolation method. Default is 'linear'
-            eliminate_outliers (float): eliminate outliers. Default is None
-            xformat (str): x format. Default is '%.1f'
-            yformat (str): y format. Default is '%.1f'
-            zformat (str): z format. Default is '%.1f'
-            lut_range (tuple): LUT range. Default is None
-            lock_position (bool): lock position. Default is False
+            data: data
+            filename: filename. Default is None
+            title: image title. Default is None
+            alpha_function: function for LUT alpha channel.
+             Default is :py:attr:`.LUTAlpha.NONE`
+            alpha: alpha value. Default is None
+            background_color: background color. Default is None
+            colormap: colormap. Default is None
+            x0: x position. Default is 0.0
+            y0: y position. Default is 0.0
+            angle: angle (radians). Default is 0.0
+            dx: pixel size along X axis. Default is 1.0
+            dy: pixel size along Y axis. Default is 1.0
+            interpolation: interpolation method. Default is 'linear'
+            eliminate_outliers: eliminate outliers. Default is None
+            xformat: x format. Default is '%.1f'
+            yformat: y format. Default is '%.1f'
+            zformat: z format. Default is '%.1f'
+            lut_range: LUT range. Default is None
+            lock_position: lock position. Default is False
 
         Returns:
             :py:class:`.TrImageItem` object
@@ -1360,7 +1363,7 @@ class PlotItemBuilder:
         self.__set_image_param(
             param,
             title,
-            alpha_mask,
+            alpha_function,
             alpha,
             interpolation,
             background=background_color,
@@ -1393,7 +1396,7 @@ class PlotItemBuilder:
         y: numpy.ndarray,
         data: numpy.ndarray,
         title: str | None = None,
-        alpha_mask: bool | None = None,
+        alpha_function: bool | None = None,
         alpha: float | None = None,
         background_color: str | None = None,
         colormap: str | None = None,
@@ -1408,21 +1411,22 @@ class PlotItemBuilder:
         """Make an xyimage `plot item` (image with non-linear X/Y axes) from data
 
         Args:
-            x (numpy.ndarray): X coordinates
-            y (numpy.ndarray): Y coordinates
-            data (numpy.ndarray): data
-            title (str): image title. Default is None
-            alpha_mask (bool): use alpha mask. Default is None
-            alpha (float): alpha value. Default is None
-            background_color (str): background color. Default is None
-            colormap (str): colormap. Default is None
-            interpolation (str): interpolation method. Default is 'linear'
-            eliminate_outliers (bool): eliminate outliers. Default is None
-            xformat (str): x format. Default is '%.1f'
-            yformat (str): y format. Default is '%.1f'
-            zformat (str): z format. Default is '%.1f'
-            lut_range (tuple): LUT range. Default is None
-            lock_position (bool): lock position. Default is True
+            x: X coordinates
+            y: Y coordinates
+            data: data
+            title: image title. Default is None
+            alpha_function: function for LUT alpha channel.
+             Default is :py:attr:`.LUTAlpha.NONE`
+            alpha: alpha value. Default is None
+            background_color: background color. Default is None
+            colormap: colormap. Default is None
+            interpolation: interpolation method. Default is 'linear'
+            eliminate_outliers: eliminate outliers. Default is None
+            xformat: x format. Default is '%.1f'
+            yformat: y format. Default is '%.1f'
+            zformat: z format. Default is '%.1f'
+            lut_range: LUT range. Default is None
+            lock_position: lock position. Default is True
 
         Returns:
             :py:class:`.XYImageItem` object
@@ -1431,7 +1435,7 @@ class PlotItemBuilder:
         self.__set_image_param(
             param,
             title,
-            alpha_mask,
+            alpha_function,
             alpha,
             interpolation,
             background=background_color,
@@ -1469,13 +1473,13 @@ class PlotItemBuilder:
         """Make a rectangular area image filter `plot item`
 
         Args:
-            xmin (float): xmin
-            xmax (float): xmax
-            ymin (float): ymin
-            ymax (float): ymax
-            imageitem (:py:class:`.ImageItem` object): image item
-            filter (Callable): filter function
-            title (str): filter title. Default is None
+            xmin: xmin
+            xmax: xmax
+            ymin: ymin
+            ymax: ymax
+            imageitem: image item
+            filter: filter function
+            title: filter title. Default is None
 
         Returns:
             :py:class:`.ImageFilterItem` object
@@ -1506,17 +1510,17 @@ class PlotItemBuilder:
         """Make a 2D Histogram `plot item`
 
         Args:
-            X (numpy.ndarray): X data
-            Y (numpy.ndarray): Y data
-            NX (int): number of bins along x-axis. Default is None
-            NY (int): number of bins along y-axis. Default is None
-            logscale (bool): Z-axis scale. Default is None
-            title (str): item title. Default is None
-            transparent (bool): enable transparency. Default is None
-            Z (numpy.ndarray): Z data. Default is None
-            computation (int): computation mode. Default is -1
-            interpolation (int): interpolation mode. Default is 0
-            lock_position (bool): lock position. Default is True
+            X: X data
+            Y: Y data
+            NX: number of bins along x-axis. Default is None
+            NY: number of bins along y-axis. Default is None
+            logscale: Z-axis scale. Default is None
+            title: item title. Default is None
+            transparent: enable transparency. Default is None
+            Z: Z data. Default is None
+            computation: computation mode. Default is -1
+            interpolation: interpolation mode. Default is 0
+            lock_position: lock position. Default is True
 
         Returns:
             :py:class:`.Histogram2DItem` object
@@ -1553,12 +1557,11 @@ class PlotItemBuilder:
         """Make a label `plot item`
 
         Args:
-            text (str): label text
-            g (tuple or str): position in plot coordinates (tuple)
-             or relative position (string)
-            c (tuple): position in canvas coordinates (tuple)
-            anchor (str): anchor position in relative position (string)
-            title (str): label title. Default is ''
+            text: label text
+            g: position in plot coordinates or relative position (string)
+            c: position in canvas coordinates
+            anchor: anchor position in relative position (string)
+            title: label title. Default is ''
 
         Returns:
             :py:class:`.LabelItem` object
@@ -1597,9 +1600,9 @@ class PlotItemBuilder:
         """Make a legend `plot item`
 
         Args:
-            anchor (str): legend position in relative position (string)
-            c (tuple): position in canvas coordinates (tuple)
-            restrict_items (list): list of items to be shown in legend box.
+            anchor: legend position in relative position (string)
+            c: position in canvas coordinates
+            restrict_items: list of items to be shown in legend box.
              Default is None. If None, all items are shown in legend box.
              If [], no item is shown in legend box. If [item1, item2],
              item1, item2 are shown in legend box.
@@ -1625,8 +1628,8 @@ class PlotItemBuilder:
         """Make a range `plot item`
 
         Args:
-            xmin (float): minimum value
-            xmax (float): maximum value
+            xmin: minimum value
+            xmax: maximum value
 
         Returns:
             :py:class:`.XRangeSelection` object
@@ -1644,11 +1647,11 @@ class PlotItemBuilder:
         """Make a vertical cursor `plot item`
 
         Args:
-            x (float): cursor position
-            label (str): cursor label. Default is None
-            constraint_cb (Callable): constraint callback. Default is None
-            movable (bool): enable/disable cursor move. Default is True
-            readonly (bool): enable/disable cursor edition. Default is False
+            x: cursor position
+            label: cursor label. Default is None
+            constraint_cb: constraint callback. Default is None
+            movable: enable/disable cursor move. Default is True
+            readonly: enable/disable cursor edition. Default is False
 
         Returns:
             :py:class:`.Marker` object
@@ -1685,11 +1688,11 @@ class PlotItemBuilder:
         """Make an horizontal cursor `plot item`
 
         Args:
-            y (float): cursor position
-            label (str): cursor label. Default is None
-            constraint_cb (Callable): constraint callback. Default is None
-            movable (bool): enable/disable cursor move. Default is True
-            readonly (bool): enable/disable cursor edition. Default is False
+            y: cursor position
+            label: cursor label. Default is None
+            constraint_cb: constraint callback. Default is None
+            movable: enable/disable cursor move. Default is True
+            readonly: enable/disable cursor edition. Default is False
 
         Returns:
             :py:class:`.Marker` object
@@ -1727,12 +1730,12 @@ class PlotItemBuilder:
         """Make a cross cursor `plot item`
 
         Args:
-            x (float): cursor position
-            y (float): cursor position
-            label (str): cursor label. Default is None
-            constraint_cb (Callable): constraint callback. Default is None
-            movable (bool): enable/disable cursor move. Default is True
-            readonly (bool): enable/disable cursor edition. Default is False
+            x: cursor position
+            y: cursor position
+            label: cursor label. Default is None
+            constraint_cb: constraint callback. Default is None
+            movable: enable/disable cursor move. Default is True
+            readonly: enable/disable cursor edition. Default is False
 
         Returns:
             :py:class:`.Marker` object
@@ -1778,21 +1781,21 @@ class PlotItemBuilder:
         """Make a marker `plot item`
 
         Args:
-            position (tuple[float, float]): marker position
-            label_cb (Callable): label callback. Default is None
-            constraint_cb (Callable): constraint callback. Default is None
-            movable (bool): enable/disable marker move. Default is True
-            readonly (bool): enable/disable marker edition. Default is False
-            markerstyle (str): marker style. Default is None
-            markerspacing (float): spacing between text and marker line.
+            position: marker position
+            label_cb: label callback. Default is None
+            constraint_cb: constraint callback. Default is None
+            movable: enable/disable marker move. Default is True
+            readonly: enable/disable marker edition. Default is False
+            markerstyle: marker style. Default is None
+            markerspacing: spacing between text and marker line.
              Default is None
-            color (str): marker color name. Default is None
-            linestyle (str): marker line style (MATLAB-like string or attribute
+            color: marker color name. Default is None
+            linestyle: marker line style (MATLAB-like string or attribute
              name from the `PyQt5.QtCore.Qt.PenStyle` enum
              (i.e. "SolidLine" "DashLine", "DotLine", "DashDotLine",
              "DashDotDotLine" or "NoPen"). Default is None
-            linewidth (float): line width (pixels). Default is None
-            marker (str): marker shape (MATLAB-like string or "Cross", "Plus",
+            linewidth: line width (pixels). Default is None
+            marker: marker shape (MATLAB-like string or "Cross", "Plus",
              "Circle", "Disc", "Square", "Diamond", "TriangleUp",
              "TriangleDown", "TriangleLeft", "TriangleRight", "TriRight",
              "TriLeft", "TriDown", "TriUp", "Octagon", "Star1", "Star2",
@@ -1804,9 +1807,9 @@ class PlotItemBuilder:
              (filled)", "Star1 (filled)", "Star2 (filled)", "Pentagon
              (filled)", "Hexagon1 (filled)", "Hexagon2 (filled)"). Default is
              None
-            markersize (float): marker size (pixels). Default is None
-            markerfacecolor (str): marker face color name. Default is None
-            markeredgecolor (str): marker edge color name. Default is None
+            markersize: marker size (pixels). Default is None
+            markerfacecolor: marker face color name. Default is None
+            markeredgecolor: marker edge color name. Default is None
 
         Returns:
             :py:class:`.Marker` object
@@ -1869,11 +1872,11 @@ class PlotItemBuilder:
         """Make a rectangle shape `plot item`
 
         Args:
-            x0 (float): rectangle x0 coordinate
-            y0 (float): rectangle y0 coordinate
-            x1 (float): rectangle x1 coordinate
-            y1 (float): rectangle y1 coordinate
-            title (str): label name. Default is None
+            x0: rectangle x0 coordinate
+            y0: rectangle y0 coordinate
+            x1: rectangle x1 coordinate
+            y1: rectangle y1 coordinate
+            title: label name. Default is None
 
         Returns:
             :py:class:`.RectangleShape` object
@@ -1895,15 +1898,15 @@ class PlotItemBuilder:
         """Make an ellipse shape `plot item`
 
         Args:
-            x0 (float): ellipse x0 coordinate
-            y0 (float): ellipse y0 coordinate
-            x1 (float): ellipse x1 coordinate
-            y1 (float): ellipse y1 coordinate
-            x2 (float): ellipse x2 coordinate. Default is None
-            y2 (float): ellipse y2 coordinate. Default is None
-            x3 (float): ellipse x3 coordinate. Default is None
-            y3 (float): ellipse y3 coordinate. Default is None
-            title (str): label name. Default is None
+            x0: ellipse x0 coordinate
+            y0: ellipse y0 coordinate
+            x1: ellipse x1 coordinate
+            y1: ellipse y1 coordinate
+            x2: ellipse x2 coordinate. Default is None
+            y2: ellipse y2 coordinate. Default is None
+            x3: ellipse x3 coordinate. Default is None
+            y3: ellipse y3 coordinate. Default is None
+            title: label name. Default is None
 
         Returns:
             :py:class:`.EllipseShape` object
@@ -1920,11 +1923,11 @@ class PlotItemBuilder:
         """Make a circle shape `plot item`
 
         Args:
-            x0 (float): circle x0 coordinate
-            y0 (float): circle y0 coordinate
-            x1 (float): circle x1 coordinate
-            y1 (float): circle y1 coordinate
-            title (str): label name. Default is None
+            x0: circle x0 coordinate
+            y0: circle y0 coordinate
+            x1: circle x1 coordinate
+            y1: circle y1 coordinate
+            title: label name. Default is None
 
         Returns:
             :py:class:`.EllipseShape` object
@@ -1939,11 +1942,11 @@ class PlotItemBuilder:
         """Make a segment shape `plot item`
 
         Args:
-            x0 (float): segment x0 coordinate
-            y0 (float): segment y0 coordinate
-            x1 (float): segment x1 coordinate
-            y1 (float): segment y1 coordinate
-            title (str): label name. Default is None
+            x0: segment x0 coordinate
+            y0: segment y0 coordinate
+            x1: segment x1 coordinate
+            y1: segment y1 coordinate
+            title: label name. Default is None
 
         Returns:
             :py:class:`.SegmentShape` object
@@ -1976,12 +1979,12 @@ class PlotItemBuilder:
         """Make an annotated rectangle `plot item`
 
         Args:
-            x0 (float): rectangle x0 coordinate
-            y0 (float): rectangle y0 coordinate
-            x1 (float): rectangle x1 coordinate
-            y1 (float): rectangle y1 coordinate
-            title (str): label name. Default is None
-            subtitle (str): label subtitle. Default is None
+            x0: rectangle x0 coordinate
+            y0: rectangle y0 coordinate
+            x1: rectangle x1 coordinate
+            y1: rectangle y1 coordinate
+            title: label name. Default is None
+            subtitle: label subtitle. Default is None
 
         Returns:
             :py:class:`.AnnotatedRectangle` object
@@ -2006,16 +2009,16 @@ class PlotItemBuilder:
         """Make an annotated ellipse `plot item`
 
         Args:
-            x0 (float): ellipse x0 coordinate
-            y0 (float): ellipse y0 coordinate
-            x1 (float): ellipse x1 coordinate
-            y1 (float): ellipse y1 coordinate
-            x2 (float): ellipse x2 coordinate. Default is None
-            y2 (float): ellipse y2 coordinate. Default is None
-            x3 (float): ellipse x3 coordinate. Default is None
-            y3 (float): ellipse y3 coordinate. Default is None
-            title (str): label name. Default is None
-            subtitle (str): label subtitle. Default is None
+            x0: ellipse x0 coordinate
+            y0: ellipse y0 coordinate
+            x1: ellipse x1 coordinate
+            y1: ellipse y1 coordinate
+            x2: ellipse x2 coordinate. Default is None
+            y2: ellipse y2 coordinate. Default is None
+            x3: ellipse x3 coordinate. Default is None
+            y3: ellipse y3 coordinate. Default is None
+            title: label name. Default is None
+            subtitle: label subtitle. Default is None
 
         Returns:
             :py:class:`.AnnotatedEllipse` object
@@ -2037,12 +2040,12 @@ class PlotItemBuilder:
         """Make an annotated circle `plot item`
 
         Args:
-            x0 (float): circle x0 coordinate
-            y0 (float): circle y0 coordinate
-            x1 (float): circle x1 coordinate
-            y1 (float): circle y1 coordinate
-            title (str): label name. Default is None
-            subtitle (str): label subtitle. Default is None
+            x0: circle x0 coordinate
+            y0: circle y0 coordinate
+            x1: circle x1 coordinate
+            y1: circle y1 coordinate
+            title: label name. Default is None
+            subtitle: label subtitle. Default is None
 
         Returns:
             :py:class:`.AnnotatedCircle` object
@@ -2061,12 +2064,12 @@ class PlotItemBuilder:
         """Make an annotated segment `plot item`
 
         Args:
-            x0 (float): segment x0 coordinate
-            y0 (float): segment y0 coordinate
-            x1 (float): segment x1 coordinate
-            y1 (float): segment y1 coordinate
-            title (str): label name. Default is None
-            subtitle (str): label subtitle. Default is None
+            x0: segment x0 coordinate
+            y0: segment y0 coordinate
+            x1: segment x1 coordinate
+            y1: segment y1 coordinate
+            title: label name. Default is None
+            subtitle: label subtitle. Default is None
 
         Returns:
             :py:class:`.AnnotatedSegment` object
@@ -2079,9 +2082,9 @@ class PlotItemBuilder:
         """Make an info label `plot item`
 
         Args:
-            anchor (str): anchor position. See :py:class:`.LabelParam` for details
-            comps (list): list of :py:class:`.label.RangeComputation` objects
-            title (str): label name. Default is None
+            anchor: anchor position. See :py:class:`.LabelParam` for details
+            comps: list of :py:class:`.label.RangeComputation` objects
+            title: label name. Default is None
 
         Returns:
             :py:class:`.DataInfoLabel` object
@@ -2113,12 +2116,12 @@ class PlotItemBuilder:
         """Make an info label `plot item` showing an XRangeSelection object infos
 
         Args:
-            range (XRangeSelection): range selection object
-            anchor (str): anchor position. See :py:class:`.LabelParam` for details
-            label (str): label name. See :py:class:`.DataInfoLabel` for details
-            function (Callable): function to apply to the range selection object
+            range: range selection object
+            anchor: anchor position. See :py:class:`.LabelParam` for details
+            label: label name. See :py:class:`.DataInfoLabel` for details
+            function: function to apply to the range selection object
              Default is None (default function is `lambda x, dx: (x, dx)`)
-            title (str): label name. Default is None
+            title: label name. Default is None
 
         Returns:
             :py:class:`.DataInfoLabel` object
@@ -2146,11 +2149,11 @@ class PlotItemBuilder:
         """Make a computation label `plot item`
 
         Args:
-            range (XRangeSelection): range selection object
-            anchor (str): anchor position. See :py:class:`.LabelParam` for details
-            label (str): label name. See :py:class:`.DataInfoLabel` for details
-            curve (CurveItem): curve item
-            function (Callable): function to apply to the range selection object
+            range: range selection object
+            anchor: anchor position. See :py:class:`.LabelParam` for details
+            label: label name. See :py:class:`.DataInfoLabel` for details
+            curve: curve item
+            function: function to apply to the range selection object
              Default is None (default function is `lambda x, dx: (x, dx)`)
 
         Returns:
@@ -2166,10 +2169,10 @@ class PlotItemBuilder:
         """Make computation labels  `plot item`
 
         Args:
-            range (XRangeSelection): range selection object
-            anchor (str): anchor position. See :py:class:`.LabelParam` for details
-            specs (list): list of (curve, label, function) tuples
-            title (str): label name. Default is None
+            range: range selection object
+            anchor: anchor position. See :py:class:`.LabelParam` for details
+            specs: list of (curve, label, function) tuples
+            title: label name. Default is None
 
         Returns:
             :py:class:`.DataInfoLabel` object
@@ -2199,13 +2202,13 @@ class PlotItemBuilder:
         """Make a 2D computation label `plot item`
 
         Args:
-            rect (RectangleShape): rectangle selection object
-            anchor (str): anchor position. See :py:class:`.LabelParam` for details
-            label (str): label name. See :py:class:`.DataInfoLabel` for details
-            image (ImageItem): image item
-            function (Callable): function to apply to the rectangle selection object
+            rect: rectangle selection object
+            anchor: anchor position. See :py:class:`.LabelParam` for details
+            label: label name. See :py:class:`.DataInfoLabel` for details
+            image: image item
+            function: function to apply to the rectangle selection object
              Default is None (default function is `lambda x, dx: (x, dx)`)
-            title (str): label name. Default is None
+            title: label name. Default is None
 
         Returns:
             :py:class:`.RangeComputation2d` object
@@ -2220,10 +2223,10 @@ class PlotItemBuilder:
         """Make 2D computation labels `plot item`
 
         Args:
-            rect (RectangleShape): rectangle selection object
-            anchor (str): anchor position. See :py:class:`.LabelParam` for details
-            specs (list): list of (image, label, function) tuples
-            title (str): label name. Default is None
+            rect: rectangle selection object
+            anchor: anchor position. See :py:class:`.LabelParam` for details
+            specs: list of (image, label, function) tuples
+            title: label name. Default is None
 
         Returns:
             :py:class:`.DataInfoLabel` object

@@ -28,7 +28,7 @@ from plotpy.core.interfaces.common import (
 from plotpy.core.items.image.base import RawImageItem, pixelround
 from plotpy.core.items.image.filter import XYImageFilterItem, to_bins
 from plotpy.core.items.image.mixin import ImageMixin
-from plotpy.core.styles.image import ImageParam, RGBImageParam, XYImageParam
+from plotpy.core.styles.image import ImageParam, LUTAlpha, RGBImageParam, XYImageParam
 from plotpy.utils.geometry import colvector
 
 if TYPE_CHECKING:
@@ -693,7 +693,7 @@ class RGBImageItem(ImageItem):
         R = data[..., 0].astype(np.uint32)
         G = data[..., 1].astype(np.uint32)
         B = data[..., 2].astype(np.uint32)
-        use_alpha = self.param.alpha_mask
+        use_alpha = self.param.alpha_function != LUTAlpha.NONE
         alpha = self.param.alpha
         if NC > 3 and use_alpha:
             A = data[..., 3].astype(np.uint32)

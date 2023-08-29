@@ -40,7 +40,7 @@ from plotpy.core.interfaces.common import (
     IVoiImageItemType,
 )
 from plotpy.core.items.shapes.rectangle import RectangleShape
-from plotpy.core.styles.image import RawImageParam
+from plotpy.core.styles.image import LUTAlpha, RawImageParam
 from plotpy.utils.colormap import FULLRANGE, get_cmap, get_cmap_name
 
 if TYPE_CHECKING:
@@ -115,7 +115,7 @@ class BaseImageItem(QwtPlotItem):
 
         # BaseImageItem needs:
         # param.background
-        # param.alpha_mask
+        # param.alpha_function
         # param.alpha
         # param.colormap
         if param is None:
@@ -366,12 +366,22 @@ class BaseImageItem(QwtPlotItem):
         self.cmap = table.colorTable(FULLRANGE)
         cmap_a = self.lut[3]
         alpha = self.param.alpha
-        alpha_mask = self.param.alpha_mask
+        alpha_function = self.param.alpha_function
         for i in range(LUT_SIZE):
-            if alpha_mask:
-                pix_alpha = alpha * (i / float(LUT_SIZE - 1))
-            else:
+            if alpha_function == LUTAlpha.NONE:
+                pix_alpha = 1.0
+            elif alpha_function == LUTAlpha.CONSTANT:
                 pix_alpha = alpha
+            else:
+                x = i / float(LUT_SIZE - 1)
+                if alpha_function == LUTAlpha.LINEAR:
+                    pix_alpha = alpha * x
+                elif alpha_function == LUTAlpha.SIGMOID:
+                    pix_alpha = alpha / (1 + np.exp(-10 * x))
+                elif alpha_function == LUTAlpha.TANH:
+                    pix_alpha = alpha * np.tanh(5 * x)
+                else:
+                    raise ValueError(f"Invalid alpha function {alpha_function}")
             alpha_channel = np.uint32(255 * pix_alpha + 0.5).clip(0, 255) << 24
             cmap_a[i] = (
                 np.uint32((table.rgb(FULLRANGE, i / LUT_MAX)) & 0xFFFFFF)

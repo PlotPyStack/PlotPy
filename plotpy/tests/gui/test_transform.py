@@ -15,7 +15,7 @@ from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 
 from plotpy.core import io
-from plotpy.core.builder import make
+from plotpy.core.builder import LUTAlpha, make
 from plotpy.core.items.image.misc import assemble_imageitems
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 
@@ -135,7 +135,7 @@ def test_transform(img_show=True):
     m = data.min()
     M = data.max()
     with qt_app_context(exec_loop=True):
-        items = [make.trimage(data, alpha_mask=True, colormap="jet")]
+        items = [make.trimage(data, alpha_function=LUTAlpha.LINEAR, colormap="jet")]
         for type in (np.uint8, np.uint16, np.int8, np.int16):
             info = np.iinfo(type().dtype)
             s = float((info.max - info.min))

@@ -16,7 +16,6 @@ required in your code.
 .. csv-table:: Compatibility table
     :file: guiqwt_to_plotpy.csv
 
-
 Generic PlotWidgets
 ^^^^^^^^^^^^^^^^^^^
 
@@ -25,14 +24,14 @@ into generic classes capable of handling both plot items types.
 
 As a consequence :
 
-* The `CurvePlot` and `ImagePlot` classes have been removed.
+* The ``CurvePlot`` and ``ImagePlot`` classes have been removed.
   If you are using them in your code, you can replace them by the
   :py:class:`.BasePlot` class, and pass to its constructor the new keyword
   `type` with the value :py:attr:`.PlotType.CURVE` or :py:attr:`.PlotType.IMAGE`
   respectively to get the equivalent specialized plot component.
   See also the `Minor changes to the BasePlot class`_ section.
 
-* The `CurveWidget` and `ImageWidget` classes have been merged into the new class
+* The ``CurveWidget`` and ``ImageWidget`` classes have been merged into the new class
   :py:class:`.PlotWidget`. If you are using them in your code,
   you can replace them by the :py:class:`.PlotWidget` class,
   and pass to its constructor an `options` dictionary with the value
@@ -41,11 +40,11 @@ As a consequence :
 
 * The `CurveDialog` and `ImageDialog` classes have been merged into the new class
   :py:class:`.PlotDialog`. If you are using them in your code, you may proceed
-  as for the `CurveWidget` and `ImageWidget` classes.
+  as for the ``CurveWidget`` and ``ImageWidget`` classes.
 
-* The `CurveWindow` and `ImageWindow` classes have been merged into the new class
+* The ``CurveWindow`` and ``ImageWindow`` classes have been merged into the new class
   :py:class:`.PlotWindow`. If you are using them in your code, you may proceed
-  as for the `CurveWidget` and `ImageWidget` classes.
+  as for the ``CurveWidget`` and ``ImageWidget`` classes.
 
 .. note::
 
@@ -63,40 +62,40 @@ Some small changes of the :py:class:`.BasePlot` class related
 to the `Generic PlotWidgets`_ may require some minor adaptation of your code:
 
 * The :py:meth:`.BasePlot.del_all_items` method now has an
-  `except_grid` keyword argument defaulting to `True`. This functionality was
-  previously only present in child classes starting from `CurvePlot`,
+  ``except_grid`` keyword argument defaulting to ``True``. This functionality was
+  previously only present in child classes starting from ``CurvePlot``,
   and has been merged into the parent class :py:class:`.BasePlot`.
   As a consequence, if you used the :py:class:`.BasePlot` class
-  directly (without using `CurvePlot` or other child classes), you may want to
-  pass `except_grid=False` to your
+  directly (without using ``CurvePlot`` or other child classes), you may want to
+  pass ``except_grid=False`` to your
   :py:meth:`.BasePlot.del_all_items` calls.
 
 * Some arguments were added to the constructor of the :py:class:`.BasePlot` class
-  (the arguments of the constructors of the old classes `CurvePlot` and
-  `ImagePlot` have been merged): the new `type` of the plot
-  (see `Generic PlotWidgets`_), and the arguments of the `ImagePlot`
-  constructor that the `CurvePlot` constructor missed : `zlabel`, `zunit`, `yreverse`,
-  `aspect_ratio`, `lock_aspect_ratio` and `force_colorbar_enabled`.
+  (the arguments of the constructors of the old classes ``CurvePlot`` and
+  ``ImagePlot`` have been merged): the new `type` of the plot
+  (see `Generic PlotWidgets`_), and the arguments of the ``ImagePlot``
+  constructor that the ``CurvePlot`` constructor missed : ``zlabel``, ``zunit``,
+  ``yreverse``, ``aspect_ratio``, ``lock_aspect_ratio`` and ``force_colorbar_enabled``.
   As a consequence, if you did not use keywords, but positional-only arguments when
-  instantiating a `CurvePlot` or `ImagePlot`, you should adapt the new calls to the
+  instantiating a ``CurvePlot`` or ``ImagePlot``, you should adapt the new calls to the
   :py:class:`.BasePlot` constructor to meet the new arguments list.
 
 Renamed update_curve and update_image methods
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The `update_image` method of the classes `BaseImageParam`, `QuadGridParam`
-and their subclasses has been renamed to `update_item`.
+The ``update_image`` method of the classes `BaseImageParam`, `QuadGridParam`
+and their subclasses has been renamed to ``update_item``.
 
-The `update_curve` method of the classes `CurveParam`, `ErrorBarParam` and
-their subclasses has also been renamed to `update_item`.
+The ``update_curve`` method of the classes `CurveParam`, `ErrorBarParam` and
+their subclasses has also been renamed to ``update_item``.
 
 This change allows to treat plot items parameters in a more generic way in client code.
 
 Renamed PlotItems fields
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-The `imageparam` and `curveparam` fields of all plot item classes have been
-renamed to `param`.
+The ``imageparam`` and ``curveparam`` fields of all plot item classes have been
+renamed to ``param``.
 
 This change allows to treat curve and image plot items in a more generic way
 in client code.
@@ -144,29 +143,47 @@ help you build such items.
 
 See demo script `tests/gui/image_masked_xy.py`.
 
-New options added to the PlotItemBuilder
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+New options added to item builder
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The new keyword parameter `lut_range` has been added to the following helper methods:
+The new keyword parameter ``alpha_function`` has been added to the methods
+:py:meth:`.PlotItemBuilder.image`, :py:meth:`.PlotItemBuilder.xyimage`,
+:py:meth:`.PlotItemBuilder.maskedimage`, :py:meth:`.PlotItemBuilder.maskedxyimage`,
+:py:meth:`.PlotItemBuilder.trimage`, :py:meth:`.PlotItemBuilder.rgbimage`, and
+:py:meth:`.PlotItemBuilder.quadgrid`. It allows to specify a function to
+compute the alpha channel of the image from the data values. The supported
+functions are:
 
-* :py:meth:`.PlotItemBuilder.image`,
-  :py:meth:`.PlotItemBuilder.xyimage`,
-* :py:meth:`.PlotItemBuilder.maskedimage`,
-  :py:meth:`.PlotItemBuilder.maskedxyimage`,
-* :py:meth:`.PlotItemBuilder.trimage`,
-  so you can now avoid to make calls to set_lut_range after the PlotItem is built.
+* :py:attr:`plotpy.core.builder.LUTAlpha.NONE` (default)
+* :py:attr:`plotpy.core.builder.LUTAlpha.CONSTANT`
+* :py:attr:`plotpy.core.builder.LUTAlpha.LINEAR`
+* :py:attr:`plotpy.core.builder.LUTAlpha.SIGMOID`
+* :py:attr:`plotpy.core.builder.LUTAlpha.TANH`
+
+.. warning:: The ``alpha_mask`` parameter has been removed from the methods
+             :py:meth:`.PlotItemBuilder.image`, :py:meth:`.PlotItemBuilder.xyimage`,
+             :py:meth:`.PlotItemBuilder.maskedimage`, :py:meth:`.PlotItemBuilder.maskedxyimage`,
+             :py:meth:`.PlotItemBuilder.trimage`, :py:meth:`.PlotItemBuilder.rgbimage`, and
+             :py:meth:`.PlotItemBuilder.quadgrid`. If you were using it, you should
+             replace it by the new ``alpha_function`` parameter.
+
+The new keyword parameter ``lut_range`` has been added to the methods
+:py:meth:`.PlotItemBuilder.image`, :py:meth:`.PlotItemBuilder.xyimage`,
+:py:meth:`.PlotItemBuilder.maskedimage`, :py:meth:`.PlotItemBuilder.maskedxyimage`,
+and :py:meth:`.PlotItemBuilder.trimage`, so you can now avoid to make calls
+to set_lut_range after the PlotItem is built.
 
 See demo script `tests/gui/builder.py`.
 
 The method :py:meth:`.PlotItemBuilder.image` now accepts
-optional `x` and `y` keyword arguments, to automatically create a
+optional ``x`` and ``y`` keyword arguments, to automatically create a
 :py:class:`plotpy.core.items.XYImageItem` instead of a simple
 :py:class:`plotpy.core.items.ImageItem` if needed.
 
 See demo script `tests/gui/builder.py`.
 
 The method :py:meth:`.PlotItemBuilder.curve` now accepts
-optional `dx`, `dy`, `errorbarwidth`, `errorbarcap`, `errorbarmode`,
+optional ``dx``, ``dy``, ``errorbarwidth``, ``errorbarcap``, ``errorbarmode``,
 `errorbaralpha` keyword arguments, to automatically create a
 :py:class:`plotpy.core.items.ErrorBarCurveItem` instead of a simple
 :py:class:`plotpy.core.items.CurveItem` if needed.

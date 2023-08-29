@@ -39,11 +39,9 @@ def test_imagesuperp():
     filename = os.path.join(os.path.dirname(__file__), "brain.png")
     with qt_app_context(exec_loop=True):
         win = create_window()
-        image1 = make.image(
-            filename=filename, title="Original", alpha_mask=False, colormap="gray"
-        )
+        image1 = make.image(filename=filename, title="Original", colormap="gray")
         data2 = np.array(image1.data.T[200:], copy=True)
-        image2 = make.image(data2, title="Modified")  # , alpha_mask=True)
+        image2 = make.image(data2, title="Modified")
         plot = win.manager.get_plot()
         plot.add_item(image1, z=0)
         plot.add_item(image2, z=1)

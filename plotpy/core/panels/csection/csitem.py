@@ -230,7 +230,9 @@ def compute_oblique_section(item, obj, debug=False):
         else:
             TEMP_ITEM.set_data(dst_image)
         if False:
-            TEMP_ITEM.param.alpha_mask = True
+            from guiqwt.styles import LUTAlpha
+
+            TEMP_ITEM.param.alpha_function = LUTAlpha.LINEAR
             xmin, ymin = ixa, iya
             xmax, ymax = xmin + destw, ymin + desth
             TEMP_ITEM.param.xmin = xmin

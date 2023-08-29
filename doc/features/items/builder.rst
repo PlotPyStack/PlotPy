@@ -8,5 +8,8 @@ used to simplify the creation of plot items.
 
 .. autodata:: plotpy.core.builder.make
 
+.. autoclass:: plotpy.core.builder.LUTAlpha
+   :members:
+
 .. autoclass:: plotpy.core.builder.PlotItemBuilder
    :members:
