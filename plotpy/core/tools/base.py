@@ -236,6 +236,10 @@ class CommandTool(GuiTool):
         if plot is not None:
             self.activate_command(plot, checked)
 
+    def activate_command(self, plot, checked):
+        """Activate tool"""
+        pass
+
     def set_status_active_item(self, plot):
         """
 
