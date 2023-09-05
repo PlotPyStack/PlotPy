@@ -693,7 +693,7 @@ class RGBImageItem(ImageItem):
         R = data[..., 0].astype(np.uint32)
         G = data[..., 1].astype(np.uint32)
         B = data[..., 2].astype(np.uint32)
-        use_alpha = self.param.alpha_function != LUTAlpha.NONE
+        use_alpha = self.param.alpha_function != LUTAlpha.NONE.value
         alpha = self.param.alpha
         if NC > 3 and use_alpha:
             A = data[..., 3].astype(np.uint32)

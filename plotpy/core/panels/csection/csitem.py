@@ -232,7 +232,7 @@ def compute_oblique_section(item, obj, debug=False):
         if False:
             from guiqwt.styles import LUTAlpha
 
-            TEMP_ITEM.param.alpha_function = LUTAlpha.LINEAR
+            TEMP_ITEM.param.alpha_function = LUTAlpha.LINEAR.value
             xmin, ymin = ixa, iya
             xmax, ymax = xmin + destw, ymin + desth
             TEMP_ITEM.param.xmin = xmin

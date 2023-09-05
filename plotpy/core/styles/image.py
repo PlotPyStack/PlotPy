@@ -46,6 +46,16 @@ class LUTAlpha(enum.Enum):
     #: Hyperbolic tangent alpha function
     TANH = 4
 
+    def get_choices(self):
+        """Return the list of choices"""
+        return [
+            (LUTAlpha.NONE.value, _("None")),
+            (LUTAlpha.CONSTANT.value, _("Constant")),
+            (LUTAlpha.LINEAR.value, _("Linear")),
+            (LUTAlpha.SIGMOID.value, _("Sigmoid")),
+            (LUTAlpha.TANH.value, _("Hyperbolic tangent")),
+        ]
+
 
 # TODO: Use an "enum" like LUTAlpha for the interpolation mode as well
 # (and eventually for other parameters)
@@ -58,14 +68,8 @@ class BaseImageParam(DataSet):
     )
     alpha_function = ChoiceItem(
         _("Alpha function"),
-        [
-            (LUTAlpha.NONE, _("None")),
-            (LUTAlpha.CONSTANT, _("Constant")),
-            (LUTAlpha.LINEAR, _("Linear")),
-            (LUTAlpha.SIGMOID, _("Sigmoid")),
-            (LUTAlpha.TANH, _("Hyperbolic tangent")),
-        ],
-        default=LUTAlpha.NONE,
+        LUTAlpha.NONE.get_choices(),
+        default=LUTAlpha.NONE.value,
         help=_("Alpha function applied to the Look-Up Table"),
     )
     alpha = FloatItem(
@@ -290,14 +294,8 @@ class QuadGridParam(ImageParamMixin):
     )
     alpha_function = ChoiceItem(
         _("Alpha function"),
-        [
-            (LUTAlpha.NONE, _("None")),
-            (LUTAlpha.CONSTANT, _("Constant")),
-            (LUTAlpha.LINEAR, _("Linear")),
-            (LUTAlpha.SIGMOID, _("Sigmoid")),
-            (LUTAlpha.TANH, _("Hyperbolic tangent")),
-        ],
-        default=LUTAlpha.NONE,
+        LUTAlpha.NONE.get_choices(),
+        default=LUTAlpha.NONE.value,
         help=_("Alpha function applied to the Look-Up Table"),
     )
     alpha = FloatItem(
