@@ -27,6 +27,7 @@ from plotpy.core import io
 from plotpy.core.items.annotations import (
     AnnotatedCircle,
     AnnotatedEllipse,
+    AnnotatedPoint,
     AnnotatedRectangle,
     AnnotatedSegment,
 )
@@ -1960,6 +1961,25 @@ class PlotItemBuilder:
         if subtitle is not None:
             param.subtitle = subtitle
         return param
+
+    def annotated_point(
+        self, x: float, y: float, title: str | None = None, subtitle: str | None = None
+    ) -> AnnotatedPoint:
+        """Make an annotated point `plot item`
+
+        Args:
+            x: point x coordinate
+            y: point y coordinate
+            title: label name. Default is None
+            subtitle: label subtitle. Default is None
+
+        Returns:
+            :py:class:`.AnnotatedPoint` object
+        """
+        param = self.__get_annotationparam(title, subtitle)
+        shape = AnnotatedPoint(x, y, param)
+        shape.set_style("plot", "shape/drag")
+        return shape
 
     def __annotated_shape(self, shapeclass, x0, y0, x1, y1, title, subtitle):
         param = self.__get_annotationparam(title, subtitle)
