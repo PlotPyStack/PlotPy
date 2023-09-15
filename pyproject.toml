@@ -45,7 +45,7 @@ Documentation = "https://plotpy.readthedocs.io/en/latest/"
 plotpy-tests = "plotpy.tests:run"
 
 [project.optional-dependencies]
-dev = ["black", "isort", "pylint", "Coverage"]
+dev = ["black", "isort", "pylint", "Coverage", "Cython"]
 doc = [
     "PyQt5",
     "sphinx",
