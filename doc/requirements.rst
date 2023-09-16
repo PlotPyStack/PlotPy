@@ -50,6 +50,9 @@ Optional modules for development:
     * - Coverage
       - 
       - Code coverage measurement for Python
+    * - Cython
+      - 
+      - The Cython compiler for writing C extensions in the Python language.
 
 Optional modules for building the documentation:
 
