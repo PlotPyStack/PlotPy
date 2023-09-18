@@ -38,7 +38,7 @@ dependencies = [
 dynamic = ["version"]
 
 [project.urls]
-Homepage = "https://github.com/CODRA-Ingenierie-Informatique/plotpy/"
+Homepage = "https://github.com/PlotPyStack/plotpy/"
 Documentation = "https://plotpy.readthedocs.io/en/latest/"
 
 [project.gui-scripts]

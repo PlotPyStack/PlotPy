@@ -29,7 +29,7 @@ External resources:
 .. _PySide: https://doc.qt.io/qtforpython-6/
 .. _PyQt: http://www.riverbankcomputing.co.uk/software/pyqt/intro
 .. _PyPI: https://pypi.python.org/pypi/plotpy
-.. _GitHub: https://github.com/Codra-Ingenierie-Informatique/plotpy
+.. _GitHub: https://github.com/PlotPyStack/plotpy
 .. _guidata: https://pypi.python.org/pypi/guidata
 .. _PythonQwt: https://pypi.python.org/pypi/PythonQwt
 .. _NumPy: https://pypi.python.org/pypi/NumPy

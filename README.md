@@ -1,7 +1,7 @@
 # plotpy: Curve and image plotting tools for Python/Qt applications
 
 [![pypi version](https://img.shields.io/pypi/v/plotpy.svg)](https://pypi.org/project/plotpy/)
-[![PyPI status](https://img.shields.io/pypi/status/plotpy.svg)](https://github.com/CODRA-Ingenierie-Informatique/plotpy/)
+[![PyPI status](https://img.shields.io/pypi/status/plotpy.svg)](https://github.com/PlotPyStack/plotpy/)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/plotpy.svg)](https://pypi.python.org/pypi/plotpy/)
 [![download count](https://img.shields.io/conda/dn/conda-forge/plotpy.svg)](https://www.anaconda.com/download/)
 
@@ -24,7 +24,7 @@ Python library providing efficient 2D data-plotting features (curve/image
 visualization and related tools) for interactive computing and signal/image
 processing application development.
 
-<img src="https://raw.githubusercontent.com/CODRA-Ingenierie-Informatique/plotpy/master/doc/images/panorama.png">
+<img src="https://raw.githubusercontent.com/PlotPyStack/plotpy/master/doc/images/panorama.png">
 
 See [documentation](https://plotpy.readthedocs.io/en/latest/) for more details on
 the library and [changelog](CHANGELOG.md) for recent history of changes.
