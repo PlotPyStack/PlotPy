@@ -40,16 +40,11 @@ def test_contour():
         plot = win.manager.get_plot()
         plot.add_item(item)
 
-        # compute the contour
+        # add the contours
         values = np.arange(-2, 2, 0.5)
-        lines = contour(None, None, Z, values)
-
-        for line in lines:
-            param = ShapeParam()
-            param.label = f"Line level {line.level}"
-            crv = PolygonShape(closed=False, shapeparam=param)
-            crv.set_points(line.vertices)
-            plot.add_item(crv)
+        contours = make.contours(Z, values)
+        for item in contours:
+            plot.add_item(item)
 
         win.show()
 

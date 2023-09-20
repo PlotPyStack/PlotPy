@@ -19,6 +19,11 @@ required in your code.
 New options added to item builder
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+The method :py:meth:`.PlotItemBuilder.contours` has been added, in order to create
+contour curves. It returns a list of :py:class:`plotpy.core.items.ContourShape` objects.
+
+See demo script `tests/gui/test_contour.py`.
+
 The new keyword parameter ``alpha_function`` has been added to the methods
 :py:meth:`.PlotItemBuilder.image`, :py:meth:`.PlotItemBuilder.xyimage`,
 :py:meth:`.PlotItemBuilder.maskedimage`, :py:meth:`.PlotItemBuilder.maskedxyimage`,

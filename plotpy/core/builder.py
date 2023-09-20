@@ -50,6 +50,7 @@ from plotpy.core.items.label import (
 )
 from plotpy.core.items.shapes.ellipse import EllipseShape
 from plotpy.core.items.shapes.marker import Marker
+from plotpy.core.items.shapes.polygon import ContourShape
 from plotpy.core.items.shapes.range import XRangeSelection
 from plotpy.core.items.shapes.rectangle import RectangleShape
 from plotpy.core.items.shapes.segment import SegmentShape
@@ -78,7 +79,8 @@ from plotpy.core.styles.image import (
     XYImageParam,
 )
 from plotpy.core.styles.label import LabelParam, LabelParamWithContents, LegendParam
-from plotpy.core.styles.shape import AnnotationParam, MarkerParam
+from plotpy.core.styles.shape import AnnotationParam, MarkerParam, ShapeParam
+from plotpy.utils.contour import contour
 
 if TYPE_CHECKING:
     from plotpy.core.items.image.filter import ImageFilterItem
@@ -1493,6 +1495,42 @@ class PlotItemBuilder:
         _m, _M = imageitem.get_lut_range()
         filt.set_lut_range([_m, _M])
         return filt
+
+    def contours(
+        self,
+        Z: np.ndarray,
+        levels: float | np.ndarray,
+        X: np.ndarray | None = None,
+        Y: np.ndarray | None = None,
+    ) -> list[ContourShape]:
+        """Make a contour curves
+
+        Args:
+            Z: The height values over which the contour is drawn.
+            levels : Determines the number and positions of the contour lines/regions.
+             If a float, draw contour lines at this specified levels
+             If array-like, draw contour lines at the specified levels.
+             The values must be in increasing order.
+            X: The coordinates of the values in *Z*.
+             *X* must be 2-D with the same shape as *Z* (e.g. created via
+             ``numpy.meshgrid``), or it must both be 1-D such that ``len(X) == M``
+             is the number of columns in *Z*.
+             If none, they are assumed to be integer indices, i.e. ``X = range(M)``.
+            Y: The coordinates of the values in *Z*.
+             *Y* must be 2-D with the same shape as *Z* (e.g. created via
+             ``numpy.meshgrid``), or it must both be 1-D such that ``len(Y) == N``
+             is the number of rows in *Z*.
+             If none, they are assumed to be integer indices, i.e. ``Y = range(N)``.
+        """
+        items = []
+        lines = contour(X, Y, Z, levels)
+        for line in lines:
+            param = ShapeParam("Contour", icon="contour.png")
+            item = ContourShape(points=line.vertices, shapeparam=param)
+            item.set_style("plot", "shape/contour")
+            item.setTitle(_("Contour") + f"[Z={line.level}]")
+            items.append(item)
+        return items
 
     def histogram2D(
         self,

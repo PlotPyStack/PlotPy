@@ -54,6 +54,7 @@ from plotpy.core.items.polygon import PolygonMapItem
 from plotpy.core.items.shapes import (
     AbstractShape,
     Axes,
+    ContourShape,
     EllipseShape,
     Marker,
     ObliqueRectangleShape,

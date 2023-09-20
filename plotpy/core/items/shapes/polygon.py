@@ -386,3 +386,17 @@ class PolygonShape(AbstractShape):
 
 
 assert_interfaces_valid(PolygonShape)
+
+
+class ContourShape(PolygonShape):
+    """Contour shape"""
+
+    _readonly = True
+    _can_select = True
+    _can_resize = False
+    _can_rotate = False
+    _can_move = False
+
+    def __init__(self, points=None, shapeparam=None):
+        super().__init__(points, closed=True, shapeparam=shapeparam)
+        self.setIcon(get_icon("contour.png"))

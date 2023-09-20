@@ -65,6 +65,8 @@ Shapes
 
 .. autoclass:: plotpy.core.items.PolygonShape
    :members:
+.. autoclass:: plotpy.core.items.ContourShape
+   :members:
 .. autoclass:: plotpy.core.items.RectangleShape
    :members:
 .. autoclass:: plotpy.core.items.ObliqueRectangleShape
