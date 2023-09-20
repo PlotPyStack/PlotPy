@@ -51,15 +51,15 @@ Shapes
 
 The following shape items are available:
 
-* :py:class:`.shapes.PolygonShape`
-* :py:class:`.shapes.RectangleShape`
-* :py:class:`.shapes.ObliqueRectangleShape`
-* :py:class:`.shapes.PointShape`
-* :py:class:`.shapes.SegmentShape`
-* :py:class:`.shapes.EllipseShape`
-* :py:class:`.shapes.Axes`
-* :py:class:`.shapes.XRangeSelection`
-* :py:class:`.shapes.Marker`
+* :py:class:`.PolygonShape`
+* :py:class:`.RectangleShape`
+* :py:class:`.ObliqueRectangleShape`
+* :py:class:`.PointShape`
+* :py:class:`.SegmentShape`
+* :py:class:`.EllipseShape`
+* :py:class:`.Axes`
+* :py:class:`.XRangeSelection`
+* :py:class:`.Marker`
 
 Annotations
 ^^^^^^^^^^^

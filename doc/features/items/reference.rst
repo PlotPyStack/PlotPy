@@ -63,39 +63,39 @@ Grid
 Shapes
 ^^^^^^
 
-.. autoclass:: plotpy.core.items.shapes.PolygonShape
+.. autoclass:: plotpy.core.items.PolygonShape
    :members:
-.. autoclass:: plotpy.core.items.shapes.RectangleShape
+.. autoclass:: plotpy.core.items.RectangleShape
    :members:
-.. autoclass:: plotpy.core.items.shapes.ObliqueRectangleShape
+.. autoclass:: plotpy.core.items.ObliqueRectangleShape
    :members:
-.. autoclass:: plotpy.core.items.shapes.PointShape
+.. autoclass:: plotpy.core.items.PointShape
    :members:
-.. autoclass:: plotpy.core.items.shapes.SegmentShape
+.. autoclass:: plotpy.core.items.SegmentShape
    :members:
-.. autoclass:: plotpy.core.items.shapes.EllipseShape
+.. autoclass:: plotpy.core.items.EllipseShape
    :members:
-.. autoclass:: plotpy.core.items.shapes.Axes
+.. autoclass:: plotpy.core.items.Axes
    :members:
-.. autoclass:: plotpy.core.items.shapes.XRangeSelection
+.. autoclass:: plotpy.core.items.XRangeSelection
    :members:
-.. autoclass:: plotpy.core.items.shapes.Marker
+.. autoclass:: plotpy.core.items.Marker
    :members:
 
 Annotations
 ^^^^^^^^^^^
 
-.. autoclass:: plotpy.core.items.annotations.AnnotatedPoint
+.. autoclass:: plotpy.core.items.AnnotatedPoint
    :members:
-.. autoclass:: plotpy.core.items.annotations.AnnotatedSegment
+.. autoclass:: plotpy.core.items.AnnotatedSegment
    :members:
-.. autoclass:: plotpy.core.items.annotations.AnnotatedRectangle
+.. autoclass:: plotpy.core.items.AnnotatedRectangle
    :members:
-.. autoclass:: plotpy.core.items.annotations.AnnotatedObliqueRectangle
+.. autoclass:: plotpy.core.items.AnnotatedObliqueRectangle
    :members:
-.. autoclass:: plotpy.core.items.annotations.AnnotatedEllipse
+.. autoclass:: plotpy.core.items.AnnotatedEllipse
    :members:
-.. autoclass:: plotpy.core.items.annotations.AnnotatedCircle
+.. autoclass:: plotpy.core.items.AnnotatedCircle
    :members:
 
 Labels
