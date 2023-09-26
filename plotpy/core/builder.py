@@ -24,63 +24,68 @@ import numpy as np
 
 from plotpy.config import CONF, _, make_title
 from plotpy.core import io
-from plotpy.core.items.annotations import (
+from plotpy.core.items import (
     AnnotatedCircle,
     AnnotatedEllipse,
     AnnotatedPoint,
     AnnotatedRectangle,
     AnnotatedSegment,
-)
-from plotpy.core.items.curve.base import CurveItem
-from plotpy.core.items.curve.errorbar import ErrorBarCurveItem
-from plotpy.core.items.grid import GridItem
-from plotpy.core.items.histogram import HistogramItem
-from plotpy.core.items.image.image_items import ImageItem, RGBImageItem, XYImageItem
-from plotpy.core.items.image.masked import MaskedImageItem, MaskedXYImageItem
-from plotpy.core.items.image.misc import Histogram2DItem, QuadGridItem
-from plotpy.core.items.image.transform import TrImageItem
-from plotpy.core.items.label import (
+    ContourItem,
+    CurveItem,
     DataInfoLabel,
+    EllipseShape,
+    ErrorBarCurveItem,
+    GridItem,
+    Histogram2DItem,
+    HistogramItem,
+    ImageItem,
     LabelItem,
     LegendBoxItem,
+    Marker,
+    MaskedImageItem,
+    MaskedXYImageItem,
+    QuadGridItem,
     RangeComputation,
     RangeComputation2d,
     RangeInfo,
+    RectangleShape,
+    RGBImageItem,
+    SegmentShape,
     SelectedLegendBoxItem,
+    TrImageItem,
+    XRangeSelection,
+    XYImageItem,
+    create_contour_items,
 )
-from plotpy.core.items.shapes.ellipse import EllipseShape
-from plotpy.core.items.shapes.marker import Marker
-from plotpy.core.items.shapes.polygon import ContourShape
-from plotpy.core.items.shapes.range import XRangeSelection
-from plotpy.core.items.shapes.rectangle import RectangleShape
-from plotpy.core.items.shapes.segment import SegmentShape
-from plotpy.core.plot.base import BasePlot
+from plotpy.core.plot import BasePlot
 from plotpy.core.plot.histogram.utils import lut_range_threshold
-from plotpy.core.styles.base import (
+from plotpy.core.styles import (
     COLORS,
     MARKERS,
+    AnnotationParam,
+    CurveParam,
+    ErrorBarParam,
     GridParam,
-    LineStyleParam,
-    style_generator,
-    update_style_attr,
-)
-from plotpy.core.styles.curve import CurveParam
-from plotpy.core.styles.errorbar import ErrorBarParam
-from plotpy.core.styles.histogram import Histogram2DParam, HistogramParam
-from plotpy.core.styles.image import (
+    Histogram2DParam,
+    HistogramParam,
     ImageFilterParam,
     ImageParam,
+    LabelParam,
+    LabelParamWithContents,
+    LegendParam,
+    LineStyleParam,
     LUTAlpha,
+    MarkerParam,
     MaskedImageParam,
     MaskedXYImageParam,
     QuadGridParam,
     RGBImageParam,
+    ShapeParam,
     TrImageParam,
     XYImageParam,
+    style_generator,
+    update_style_attr,
 )
-from plotpy.core.styles.label import LabelParam, LabelParamWithContents, LegendParam
-from plotpy.core.styles.shape import AnnotationParam, MarkerParam, ShapeParam
-from plotpy.utils.contour import contour
 
 if TYPE_CHECKING:
     from plotpy.core.items.image.filter import ImageFilterItem
@@ -1502,7 +1507,7 @@ class PlotItemBuilder:
         levels: float | np.ndarray,
         X: np.ndarray | None = None,
         Y: np.ndarray | None = None,
-    ) -> list[ContourShape]:
+    ) -> list[ContourItem]:
         """Make a contour curves
 
         Args:
@@ -1521,16 +1526,11 @@ class PlotItemBuilder:
              ``numpy.meshgrid``), or it must both be 1-D such that ``len(Y) == N``
              is the number of rows in *Z*.
              If none, they are assumed to be integer indices, i.e. ``Y = range(N)``.
+
+        Returns:
+            list of :py:class:`.ContourItem` objects
         """
-        items = []
-        lines = contour(X, Y, Z, levels)
-        for line in lines:
-            param = ShapeParam("Contour", icon="contour.png")
-            item = ContourShape(points=line.vertices, shapeparam=param)
-            item.set_style("plot", "shape/contour")
-            item.setTitle(_("Contour") + f"[Z={line.level}]")
-            items.append(item)
-        return items
+        return create_contour_items(Z, levels, X, Y)
 
     def histogram2D(
         self,

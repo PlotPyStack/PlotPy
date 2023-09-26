@@ -14,6 +14,7 @@ from plotpy.core.items.annotations import (
     AnnotatedSegment,
     AnnotatedShape,
 )
+from plotpy.core.items.contour import ContourItem, create_contour_items
 from plotpy.core.items.curve import CurveItem, ErrorBarCurveItem
 from plotpy.core.items.grid import GridItem
 from plotpy.core.items.histogram import HistogramItem
@@ -54,7 +55,6 @@ from plotpy.core.items.polygon import PolygonMapItem
 from plotpy.core.items.shapes import (
     AbstractShape,
     Axes,
-    ContourShape,
     EllipseShape,
     Marker,
     ObliqueRectangleShape,

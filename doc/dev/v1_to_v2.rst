@@ -20,7 +20,7 @@ New options added to item builder
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The method :py:meth:`.PlotItemBuilder.contours` has been added, in order to create
-contour curves. It returns a list of :py:class:`plotpy.core.items.ContourShape` objects.
+contour curves. It returns a list of :py:class:`plotpy.core.items.ContourItem` objects.
 
 See demo script `tests/gui/test_contour.py`.
 

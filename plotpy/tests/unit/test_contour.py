@@ -2,7 +2,7 @@ import unittest
 
 import numpy as np
 
-from plotpy.utils.contour import contour
+from plotpy.core.items.contour import compute_contours
 
 
 class ContourTest(unittest.TestCase):
@@ -25,27 +25,27 @@ class ContourTest(unittest.TestCase):
     def test_contour_level_1(self):
         """Test that contour() returns one closed line when level is 1.0"""
         # Ortho coord
-        lines = contour(self.x, self.y, self.Z, 1.0)
+        lines = compute_contours(self.Z, 1.0, self.x, self.y)
         assert len(lines) == 1
         assert np.all(np.equal(lines[0].vertices[0], lines[0].vertices[-1]))
         assert lines[0].level == 1.0
 
         # Grid coord
-        lines = contour(self.X, self.Y, self.Z, 1.0)
+        lines = compute_contours(self.Z, 1.0, self.X, self.Y)
         assert len(lines) == 1
         assert np.all(np.equal(lines[0].vertices[0], lines[0].vertices[-1]))
         assert lines[0].level == 1.0
 
     def test_contour_level_diag_0(self):
         """Test that contour() returns opened lines (diagonal) when level is 0.0"""
-        lines = contour(self.X, self.Y, self.Z, 0.0)
+        lines = compute_contours(self.Z, 0.0, self.X, self.Y)
         assert len(lines) == 1
         assert np.all(lines[0].vertices[0] != lines[0].vertices[-1])
         assert lines[0].level == 0.0
 
     def test_contour_level_opened_neg_0_5(self):
         """Test that contour() returns opened lines when level is -0.5"""
-        lines = contour(self.X, self.Y, self.Z, -0.5)
+        lines = compute_contours(self.Z, -0.5, self.X, self.Y)
         assert len(lines) == 1
         assert np.all(lines[0].vertices[0] != lines[0].vertices[-1])
         assert lines[0].level == -0.5
@@ -54,7 +54,7 @@ class ContourTest(unittest.TestCase):
         """Test that contour() returns two closed lines when level is 1.0
         and data are absolute.
         """
-        lines = contour(self.x, self.y, np.abs(self.Z), 1.0)
+        lines = compute_contours(np.abs(self.Z), 1.0, self.x, self.y)
         assert len(lines) == 2
         for line in lines:
             assert np.all(np.equal(line.vertices[0], line.vertices[-1]))

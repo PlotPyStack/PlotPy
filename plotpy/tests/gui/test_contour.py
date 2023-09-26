@@ -10,12 +10,8 @@
 import numpy as np
 from guidata.qthelpers import qt_app_context
 
-import plotpy.widgets
 from plotpy.core.builder import make
-from plotpy.core.items.shapes.polygon import PolygonShape
 from plotpy.core.plot.plotwidget import PlotDialog
-from plotpy.core.styles.shape import ShapeParam
-from plotpy.utils.contour import contour
 
 
 def test_contour():
@@ -42,8 +38,7 @@ def test_contour():
 
         # add the contours
         values = np.arange(-2, 2, 0.5)
-        contours = make.contours(Z, values)
-        for item in contours:
+        for item in make.contours(Z, values):
             plot.add_item(item)
 
         win.show()

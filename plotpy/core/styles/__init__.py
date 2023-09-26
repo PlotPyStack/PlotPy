@@ -17,6 +17,8 @@ from plotpy.core.styles.axes import (
     ImageAxesParam,
 )
 from plotpy.core.styles.base import (
+    COLORS,
+    MARKERS,
     BrushStyleItem,
     BrushStyleItemWidget,
     BrushStyleParam,
@@ -50,6 +52,7 @@ from plotpy.core.styles.image import (
     ImageParam,
     ImageParam_MS,
     ImageParamMixin,
+    LUTAlpha,
     MaskedImageParam,
     MaskedImageParam_MS,
     MaskedImageParamMixin,

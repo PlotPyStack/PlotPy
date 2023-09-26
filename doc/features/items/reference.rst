@@ -46,6 +46,16 @@ Images
 .. autofunction:: plotpy.core.items.get_plot_qrect
 .. autofunction:: plotpy.core.items.get_image_from_plot
 
+Contours
+^^^^^^^^
+
+.. autoclass:: plotpy.core.items.ContourItem
+   :members:
+
+.. autofunction:: plotpy.core.items.create_contour_items
+
+.. autofunction:: plotpy.core.items.contour.compute_contours
+
 Histograms
 ^^^^^^^^^^
 
@@ -64,8 +74,6 @@ Shapes
 ^^^^^^
 
 .. autoclass:: plotpy.core.items.PolygonShape
-   :members:
-.. autoclass:: plotpy.core.items.ContourShape
    :members:
 .. autoclass:: plotpy.core.items.RectangleShape
    :members:
