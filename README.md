@@ -13,6 +13,8 @@
 
 `plotpy` is is a Python library providing efficient 2D data-plotting features
 for interactive computing and signal/image processing application development.
+It is part of the [PlotPyStack](https://github.com/PlotPyStack) project, aiming at
+providing a unified framework for creating scientific GUIs with Python and Qt.
 
 `plotpy` is based on:
 
