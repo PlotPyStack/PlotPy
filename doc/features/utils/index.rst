@@ -6,5 +6,4 @@ Utilities
    :caption: Contents:
 
    qthelpers
-   contours
    geometry

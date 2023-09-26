@@ -12,7 +12,12 @@ plotpy v1,plotpy v2 (and v1.99+)
 ``.gui.widgets.baseplot.canvas_to_axes``,``.core.coords.canvas_to_axes``
 ``.gui.widgets.baseplot.axes_to_canvas``,``.core.coords.axes_to_canvas``
 ``.gui.widgets.events``,``.core.events``
+``.gui.widgets.histogram.hist_range_threshold``,``.core.lutrange.hist_range_threshold``
+``.gui.widgets.histogram.lut_range_threshold``,``.core.lutrange.lut_range_threshold``
+``.gui.widgets.histogram.HistogramItem``,``.core.items.histogram.HistogramItem``
+``.gui.widgets.histogram.ContrastAdjustment``,``.core.panels.contrastadjustment.ContrastAdjustment``
 ``.gui.widgets.io``,``.core.io``
+``.gui.widgets.io.eliminate_outliers``,*removed*
 ``.gui.widgets.scaler``,``.core.scaler``
 ``.gui.widgets.colormap``,``.utils.colormap``
 ``.gui.widgets.debug``,``.utils.debug``

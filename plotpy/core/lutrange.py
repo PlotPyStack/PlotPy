@@ -1,3 +1,20 @@
+# -*- coding: utf-8 -*-
+#
+# Licensed under the terms of the BSD 3-Clause
+# (see plotpy/LICENSE for details)
+
+"""
+LUT range
+=========
+
+This module provides functions to compute and manipulate the LUT range of
+plot items.
+
+.. autofunction:: hist_range_threshold
+
+.. autofunction:: lut_range_threshold
+"""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING

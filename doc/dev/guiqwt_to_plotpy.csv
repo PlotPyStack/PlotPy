@@ -2,6 +2,7 @@ guiqwt v4,plotpy v2,API changes
 ``guiqwt.events``,``plotpy.core.events``
 ``guiqwt.interfaces``,``plotpy.core.interfaces``
 ``guiqwt.io``,``plotpy.core.io``
+``guiqwt.io.eliminate_outliers``,*removed*
 ``guiqwt.annotations``,``plotpy.core.items``
 ``guiqwt.curve``,``plotpy.core.items``
 ``guiqwt.image``,``plotpy.core.items``
@@ -9,6 +10,9 @@ guiqwt v4,plotpy v2,API changes
 ``guiqwt.shapes``,``plotpy.core.items``
 ``guiqwt.histogram.HistogramItem``,``plotpy.core.items.HistogramItem``
 ``guiqwt.histogram.HistDataSource``,``plotpy.core.items.histogram.HistDataSource``
+``guiqwt.histogram.hist_range_threshold``,``plotpy.core.lutrange.hist_range_threshold``
+``guiqwt.histogram.lut_range_threshold``,``plotpy.core.lutrange.lut_range_threshold``
+``guiqwt.histogram.ContrastAdjustment``,``plotpy.core.panels.contrastadjustment.ContrastAdjustment``
 ``guiqwt.image.get_items_in_rectangle``,``plotpy.core.items.get_items_in_rectangle``
 ``guiqwt.curve.PlotItemList``,``plotpy.core.panels.itemlist.PlotItemList``
 ``guiqwt.cross_section.XCrossSection``,``plotpy.core.panels.csection.cswidget.XCrossSection``
@@ -24,7 +28,6 @@ guiqwt v4,plotpy v2,API changes
 ``guiqwt.curve.CurvePlot.canvas2plotitem``,*removed*
 ``guiqwt.curve.CurvePlot.plotitem2canvas``,*removed*
 ``guiqwt.plot.SubplotWidget``,``plotpy.core.plot.SubplotWidget``
-``guiqwt.histogram.lut_range_threshold``,``plotpy.core.plot.histogram.utils.lut_range_threshold``
 ``guiqwt.pyplot``,``plotpy.pyplot``
 ``guiqwt.scaler``,``plotpy.core.scaler``
 ``guiqwt.styles``,``plotpy.core.styles``

@@ -40,6 +40,7 @@ from plotpy.core.interfaces.common import (
     IVoiImageItemType,
 )
 from plotpy.core.items.shapes.rectangle import RectangleShape
+from plotpy.core.lutrange import lut_range_threshold
 from plotpy.core.styles.image import LUTAlpha, RawImageParam
 from plotpy.utils.colormap import FULLRANGE, get_cmap, get_cmap_name
 
@@ -452,6 +453,14 @@ class BaseImageItem(QwtPlotItem):
             tuple[float, float]: Lut range, tuple(min, max)
         """
         return self.min, self.max
+
+    def set_lut_threshold(self, threshold: float) -> None:
+        """Set lut threshold value, eliminating the given percent of the histogram
+
+        Args:
+            threshold: Lut threshold value
+        """
+        self.set_lut_range(lut_range_threshold(self, 256, threshold))
 
     def get_lut_range_full(self) -> tuple[float, float]:
         """Return full dynamic range

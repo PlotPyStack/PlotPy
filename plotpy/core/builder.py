@@ -58,7 +58,6 @@ from plotpy.core.items import (
     create_contour_items,
 )
 from plotpy.core.plot import BasePlot
-from plotpy.core.plot.histogram.utils import lut_range_threshold
 from plotpy.core.styles import (
     COLORS,
     MARKERS,
@@ -966,7 +965,7 @@ class PlotItemBuilder:
             )
             image.set_lut_range(lut_range)
         elif eliminate_outliers is not None:
-            image.set_lut_range(lut_range_threshold(image, 256, eliminate_outliers))
+            image.set_lut_threshold(eliminate_outliers)
         return image
 
     def maskedimage(
@@ -1097,7 +1096,7 @@ class PlotItemBuilder:
             )
             image.set_lut_range(lut_range)
         elif eliminate_outliers is not None:
-            image.set_lut_range(lut_range_threshold(image, 256, eliminate_outliers))
+            image.set_lut_threshold(eliminate_outliers)
         return image
 
     def maskedxyimage(
@@ -1179,7 +1178,7 @@ class PlotItemBuilder:
             )
             image.set_lut_range(lut_range)
         elif eliminate_outliers is not None:
-            image.set_lut_range(lut_range_threshold(image, 256, eliminate_outliers))
+            image.set_lut_threshold(eliminate_outliers)
         return image
 
     def rgbimage(
@@ -1395,7 +1394,7 @@ class PlotItemBuilder:
             )
             image.set_lut_range(lut_range)
         elif eliminate_outliers is not None:
-            image.set_lut_range(lut_range_threshold(image, 256, eliminate_outliers))
+            image.set_lut_threshold(eliminate_outliers)
         return image
 
     def xyimage(
@@ -1465,7 +1464,7 @@ class PlotItemBuilder:
             )
             image.set_lut_range(lut_range)
         elif eliminate_outliers is not None:
-            image.set_lut_range(lut_range_threshold(image, 256, eliminate_outliers))
+            image.set_lut_threshold(eliminate_outliers)
         return image
 
     def imagefilter(

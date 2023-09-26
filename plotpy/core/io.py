@@ -54,18 +54,6 @@ def scale_data_to_dtype(data, dtype):
     return np.array(data, dtype)
 
 
-def eliminate_outliers(data, percent=2.0, bins=256):
-    """Eliminate data histogram outliers"""
-
-    # The following import is here to avoid circular imports
-    # pylint: disable=import-outside-toplevel
-    from plotpy.core.plot.histogram.utils import hist_range_threshold
-
-    hist, bin_edges = np.histogram(data, bins)
-    vmin, vmax = hist_range_threshold(hist, bin_edges, percent)
-    return data.clip(vmin, vmax)
-
-
 # ===============================================================================
 # I/O File type definitions
 # ===============================================================================

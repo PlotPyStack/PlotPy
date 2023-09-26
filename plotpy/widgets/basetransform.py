@@ -24,7 +24,6 @@ from plotpy._scaler import INTERP_LINEAR
 from plotpy.config import _
 from plotpy.core.items.image.transform import TrImageItem
 from plotpy.core.plot.base import PlotType
-from plotpy.core.plot.histogram.utils import lut_range_threshold
 from plotpy.core.plot.plotwidget import PlotWidget
 
 if TYPE_CHECKING:
@@ -82,7 +81,7 @@ class BaseTransform:
         self.item.set_resizable(False)
         self.item.set_rotatable(True)
 
-        item.set_lut_range(lut_range_threshold(item, 256, 2.0))
+        item.set_lut_threshold(2.0)
         item.set_interpolation(INTERP_LINEAR)
         plot = self.manager.get_plot()
         plot.add_item(self.item)

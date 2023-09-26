@@ -106,6 +106,21 @@ New features
 The following subsections present new features that may help you to simplify
 you code using plotpy.
 
+New method for thresholding image item LUTs
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The method :py:meth:`plotpy.core.items.BaseImageItem.set_lut_threshold` has been
+added. It allows to set the percentage of outliers to be clipped from the image
+histogram values.
+
+This method is available for all image items:
+
+* :py:class:`.ImageItem`
+* :py:class:`.XYImageItem`
+* :py:class:`.MaskedImageItem`
+* :py:class:`.TrImageItem`
+
+
 New annotation tools registration methods
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -123,7 +138,7 @@ annotation tools one by one.
 
 See demo script `tests/gui/test_annotations.py`.
 
-New contour function
+New contour features
 ~~~~~~~~~~~~~~~~~~~~
 
 plotpy integrates now a contour detection algorithm, so that plotpy based

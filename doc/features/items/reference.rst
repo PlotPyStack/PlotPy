@@ -52,9 +52,12 @@ Contours
 .. autoclass:: plotpy.core.items.ContourItem
    :members:
 
-.. autofunction:: plotpy.core.items.create_contour_items
+.. autoclass:: plotpy.core.items.contour.ContourLine
+   :members:
 
 .. autofunction:: plotpy.core.items.contour.compute_contours
+
+.. autofunction:: plotpy.core.items.create_contour_items
 
 Histograms
 ^^^^^^^^^^

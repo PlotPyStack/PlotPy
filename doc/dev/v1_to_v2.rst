@@ -16,6 +16,20 @@ required in your code.
 .. csv-table:: Compatibility table
     :file: v1_to_v2.csv
 
+New method for thresholding image item LUTs
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The method :py:meth:`plotpy.core.items.BaseImageItem.set_lut_threshold` has been
+added. It allows to set the percentage of outliers to be clipped from the image
+histogram values.
+
+This method is available for all image items:
+
+* :py:class:`.ImageItem`
+* :py:class:`.XYImageItem`
+* :py:class:`.MaskedImageItem`
+* :py:class:`.TrImageItem`
+
 New options added to item builder
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

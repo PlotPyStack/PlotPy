@@ -7,10 +7,10 @@
 Contours
 ========
 
-This module provides the :py:func:`.contour` function that computes contour lines,
-and other related functions and classes.
+This module provides functions and classes to create contour curves.
 
 .. autoclass:: ContourLine
+   :members:
 
 .. autofunction:: compute_contours
 
@@ -19,6 +19,8 @@ and other related functions and classes.
 
 .. autofunction:: create_contour_items
 """
+
+from __future__ import annotations
 
 import numpy as np
 from guidata.configtools import get_icon
@@ -65,7 +67,7 @@ def compute_contours(
          If none, they are assumed to be integer indices, i.e. ``Y = range(N)``.
 
     Returns:
-        A list of :py:class:`.ContourLine` instances.
+        A list of :py:class:`ContourLine` instances.
     """
     z = np.asarray(Z, dtype=np.float64)
     if z.ndim != 2:
