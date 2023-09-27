@@ -21,6 +21,11 @@ plotpy v1,plotpy v2 (and v1.99+)
 ``.gui.widgets.scaler``,``.core.scaler``
 ``.gui.widgets.colormap``,``.utils.colormap``
 ``.gui.widgets.debug``,``.utils.debug``
+``.gui.widgets.debug.buttons_to_str``,``.core.events.buttons_to_str``
+``.gui.widgets.debug.evt_type_to_str``,``.core.events.evt_type_to_str``
+``.gui.widgets.debug.print_event``,*removed*
+``.gui.widgets.debug.qimage_format``,*removed*
+``.gui.widgets.debug.qimage_to_str``,*removed*
 ``.gui.widgets.geometry``,``.utils.geometry``
 ``.gui.widgets.qthelpers``,``.utils.qthelpers``
 ``.gui.widgets.fit``,``.widgets.fit``

@@ -21,9 +21,34 @@ from qtpy import QtGui as QG
 
 from plotpy.config import CONF
 from plotpy.core.coords import axes_to_canvas, canvas_to_axes
-from plotpy.utils.debug import buttons_to_str, evt_type_to_str
 
 CursorShape = type(QC.Qt.CursorShape.ArrowCursor)
+
+
+def buttons_to_str(buttons):
+    """Conversion des flags Qt en chaine"""
+    string = ""
+    if buttons & QC.Qt.LeftButton:
+        string += "L"
+    if buttons & QC.Qt.MidButton:
+        string += "M"
+    if buttons & QC.Qt.RightButton:
+        string += "R"
+    return string
+
+
+def evt_type_to_str(type):
+    """Représentation textuelle d'un type d'événement (debug)"""
+    if type == QC.QEvent.MouseButtonPress:
+        return "Mpress"
+    elif type == QC.QEvent.MouseButtonRelease:
+        return "Mrelease"
+    elif type == QC.QEvent.MouseMove:
+        return "Mmove"
+    elif type == QC.QEvent.ContextMenu:
+        return "Context"
+    else:
+        return f"{type:d}"
 
 
 # Sélection d'événements  ---------

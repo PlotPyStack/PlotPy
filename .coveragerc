@@ -2,7 +2,6 @@
 parallel = True
 omit =
     */plotpy/tests/*
-    */plotpy/utils/debug.py
     */plotpy/core/plot/interactive.py
     *.vscode/extensions*
     */guidata/*

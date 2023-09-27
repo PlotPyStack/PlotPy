@@ -36,6 +36,11 @@ guiqwt v4,plotpy v2,API changes
 ``guiqwt.qthelpers``,``plotpy.utils.qthelpers``
 ``guiqwt.colormap``,``plotpy.utils.colormap``
 ``guiqwt.debug``,``plotpy.utils.debug``
+``guiqwt.debug.buttons_to_str``,``plotpy.core.events.buttons_to_str``
+``guiqwt.debug.evt_type_to_str``,``plotpy.core.events.evt_type_to_str``
+``guiqwt.debug.print_event``,*removed*
+``guiqwt.debug.qimage_format``,*removed*
+``guiqwt.debug.qimage_to_str``,*removed*
 ``guiqwt.widgets.fit``,``plotpy.widgets.fit``
 ``guiqwt.widgets.rotatecrop``,``plotpy.widgets.rotatecrop``
 ``guiqwt.widgets.fliprotate``,``plotpy.widgets.fliprotate``
