@@ -13,91 +13,74 @@ Interactive plotting interface with MATLAB-like syntax
 
 import numpy as np
 import pytest
+from numpy.random import normal
 
-from plotpy.pyplot import (
-    errorbar,
-    figure,
-    gray,
-    hist,
-    hot,
-    imshow,
-    legend,
-    pcolor,
-    plot,
-    plotyy,
-    semilogx,
-    show,
-    subplot,
-    xlabel,
-    ylabel,
-    zlabel,
-)
+import plotpy.pyplot as plt
 
 
 @pytest.mark.skip(reason="Not relevant in automated test suite")
 def test_pyplot():
     x = np.linspace(-5, 5, 1000)
-    figure(1)
-    subplot(2, 1, 1)
-    plot(x, np.sin(x), "r+")
-    plot(x, np.cos(x), "g-")
-    errorbar(x, -1 + x**2 / 20 + 0.2 * np.random.rand(len(x)), x / 20)
-    xlabel("Axe x")
-    ylabel("Axe y")
-    subplot(2, 1, 2)
+    plt.figure(1)
+    plt.subplot(2, 1, 1)
+    plt.plot(x, np.sin(x), "r+")
+    plt.plot(x, np.cos(x), "g-")
+    plt.errorbar(x, -1 + x**2 / 20 + 0.2 * np.random.rand(len(x)), x / 20)
+    plt.xlabel("Axe x")
+    plt.ylabel("Axe y")
+    plt.subplot(2, 1, 2)
     img = np.fromfunction(
         lambda x, y: np.sin((x / 200.0) * (y / 200.0) ** 2), (1000, 1000)
     )
-    xlabel("pixels")
-    ylabel("pixels")
-    zlabel("intensity")
-    gray()
-    imshow(img)
+    plt.xlabel("pixels")
+    plt.ylabel("pixels")
+    plt.zlabel("intensity")
+    plt.gray()  # pylint: disable=no-member
+    plt.imshow(img)
     #    savefig("D:\\test1.pdf", draft=True)
 
-    figure("table plot")
+    plt.figure("table plot")
     data = np.array([x, np.sin(x), np.cos(x)]).T
-    plot(data)
+    plt.plot(data)
 
-    figure("simple plot")
-    subplot(1, 2, 1)
-    plot(x, np.tanh(x + np.sin(12 * x)), "g-", label="Tanh")
-    legend()
-    subplot(1, 2, 2)
-    plot(x, np.sinh(x), "r:", label="SinH")
+    plt.figure("simple plot")
+    plt.subplot(1, 2, 1)
+    plt.plot(x, np.tanh(x + np.sin(12 * x)), "g-", label="Tanh")
+    plt.legend()
+    plt.subplot(1, 2, 2)
+    plt.plot(x, np.sinh(x), "r:", label="SinH")
     #    savefig("D:\\test2.pdf")
     #    savefig("D:\\test2.png")
-    show()
+    plt.show()
 
-    figure("semilogx")
-    semilogx(x, np.sin(12 * x), "g-")
-    show()
+    plt.figure("semilogx")
+    plt.semilogx(x, np.sin(12 * x), "g-")
+    plt.show()
 
-    figure("plotyy")
-    plotyy(x, np.sin(x), x, np.cos(x))
-    ylabel("sinus", "cosinus")
-    show()
+    plt.figure("plotyy")
+    plt.plotyy(x, np.sin(x), x, np.cos(x))
+    plt.ylabel("sinus", "cosinus")
+    plt.show()
 
-    figure("hist")
-    from numpy.random import normal
+    plt.figure("hist")
 
     data = normal(0, 1, (2000,))
-    hist(data)
-    show()
+    plt.hist(data)
+    plt.show()
 
-    figure("pcolor 1")
+    plt.figure("pcolor 1")
     r = np.linspace(1.0, 16, 100)
     th = np.linspace(0.0, np.pi, 100)
     R, TH = np.meshgrid(r, th)
     X = R * np.cos(TH)
     Y = R * np.sin(TH)
     Z = 4 * TH + R
-    pcolor(X, Y, Z)
+    plt.pcolor(X, Y, Z)
 
-    figure("pcolor 2")
-    pcolor(Z)
-    hot()
-    show()
+    plt.figure("pcolor 2")
+    plt.pcolor(Z)
+    plt.hot()  # pylint: disable=no-member
+    plt.show()
 
 
 if __name__ == "__main__":

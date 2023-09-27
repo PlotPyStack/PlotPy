@@ -48,7 +48,7 @@ class FlipRotateTransform(basetransform.BaseTransform):
         manager (PlotManager): Plot manager
     """
 
-    def __init__(self, parent: QW.QWidget, manager: PlotManager) -> None:
+    def __init__(self, parent: FlipRotateWidget, manager: PlotManager) -> None:
         super().__init__(parent, manager)
         self.parent = parent
         self.manager = manager
@@ -215,8 +215,7 @@ class FlipRotateWidget(basetransform.BaseTransformWidget):
 
     def apply_transformation(self) -> None:
         """Apply transformation"""
-        angle, hflip, vflip = self.get_parameters()
-        self.transform.apply_transformation(angle, hflip, vflip)
+        self.transform.apply_transformation()
 
     def reset(self) -> None:
         """Reset transformation"""

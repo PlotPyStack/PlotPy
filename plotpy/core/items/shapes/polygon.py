@@ -140,9 +140,12 @@ class PolygonShape(AbstractShape):
         return self.points
 
     def boundingRect(self):
-        """Return bounding rectangle"""
+        """Return the bounding rectangle of the data"""
         poly = QG.QPolygonF()
-        shape_points = self.points
+        if self.ADDITIONNAL_POINTS:
+            shape_points = self.points[: -self.ADDITIONNAL_POINTS]
+        else:
+            shape_points = self.points
         for i in range(shape_points.shape[0]):
             poly.append(QC.QPointF(shape_points[i, 0], shape_points[i, 1]))
         return poly.boundingRect()
@@ -372,17 +375,6 @@ class PolygonShape(AbstractShape):
         """
         update_dataset(self.shapeparam, itemparams.get("ShapeParam"), visible_only=True)
         self.shapeparam.update_shape(self)
-
-    def boundingRect(self):
-        """Return the bounding rectangle of the data"""
-        poly = QG.QPolygonF()
-        if self.ADDITIONNAL_POINTS:
-            shape_points = self.points[: -self.ADDITIONNAL_POINTS]
-        else:
-            shape_points = self.points
-        for i in range(shape_points.shape[0]):
-            poly.append(QC.QPointF(shape_points[i, 0], shape_points[i, 1]))
-        return poly.boundingRect()
 
 
 assert_interfaces_valid(PolygonShape)

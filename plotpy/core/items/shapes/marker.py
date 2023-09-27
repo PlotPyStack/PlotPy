@@ -284,9 +284,7 @@ class Marker(QwtPlotMarker):
             old_pos: Old position
             new_pos: New position
         """
-        old_pt = canvas_to_axes(self, old_pos)
-        new_pt = canvas_to_axes(self, new_pos)
-        self.move_shape(old_pt, new_pt)
+        # This methods is never called because marker is not a shape (but a point)
 
     def move_with_selection(self, delta_x: float, delta_y: float) -> None:
         """Translate the item together with other selected items
@@ -295,7 +293,7 @@ class Marker(QwtPlotMarker):
             delta_x: Translation in plot coordinates along x-axis
             delta_y: Translation in plot coordinates along y-axis
         """
-        self.move_shape([0, 0], [delta_x, delta_y])
+        # This methods is never called because marker is not a shape (but a point)
 
     # ------Public API-----------------------------------------------------------
     def set_style(self, section, option):
@@ -363,14 +361,6 @@ class Marker(QwtPlotMarker):
                 x_left, x_right = xmap.s1(), xmap.s2()
                 x = 0.5 * (x_left + x_right)
         return x, y
-
-    def move_shape(self, old_pos, new_pos):
-        """Translate the shape such that old_pos becomes new_pos
-        in canvas coordinates"""
-        dx = new_pos[0] - old_pos[0]
-        dy = new_pos[1] - old_pos[1]
-        x, y = self.xValue(), self.yValue()
-        return self.move_point_to(0, (x + dx, y + dy))
 
     def invalidate_plot(self):
         """ """

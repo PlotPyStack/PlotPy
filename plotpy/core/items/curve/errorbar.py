@@ -51,6 +51,10 @@ class ErrorBarCurveItem(CurveItem):
             self.errorbarparam = ErrorBarParam(_("Error bars"), icon="errorbar.png")
         else:
             self.errorbarparam = errorbarparam
+        self.errorPen: QG.QPen | None = None
+        self.errorBrush: QG.QBrush | None = None
+        self.errorCap: int | None = None
+        self.errorOnTop: bool | None = None
         super(ErrorBarCurveItem, self).__init__(curveparam)
         self._dx = None
         self._dy = None

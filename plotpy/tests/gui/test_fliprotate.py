@@ -16,7 +16,7 @@ from guidata.qthelpers import (
 )
 from qtpy import QtWidgets as QW
 
-from plotpy.core.tools.image import RotationCenterTool
+from plotpy.core.tools import RotationCenterTool
 from plotpy.tests.gui.test_rotatecrop import create_test_data, imshow
 from plotpy.widgets.fliprotate import FlipRotateDialog, FlipRotateWidget
 
@@ -56,9 +56,9 @@ def dialog_test(fname):
     dlg.transform.set_item(item)
     if exec_dialog(dlg) == dlg.Accepted:
         array1 = dlg.transform.output_array
-        img1 = imshow(array0, title="array0")
-        img2 = imshow(array1, title="array1")
-        return dlg, img1, img2
+        dlg1 = imshow(array0, title="array0")
+        dlg2 = imshow(array1, title="array1")
+        return dlg, dlg1, dlg2
 
 
 def test_flip_rotate():

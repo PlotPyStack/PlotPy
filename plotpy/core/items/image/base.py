@@ -125,7 +125,7 @@ class BaseImageItem(QwtPlotItem):
 
         self.selected = False
 
-        self.data = None
+        self.data: np.ndarray | None = None
 
         self.min = 0.0
         self.max = 1.0
@@ -286,6 +286,24 @@ class BaseImageItem(QwtPlotItem):
     def get_r_values(self, i0, i1, j0, j1, flag_circle=False):
         return self.get_x_values(i0, i1)
 
+    def set_data(self, data, lut_range=None):
+        """
+        Set Image item data
+
+            * data: 2D NumPy array
+            * lut_range: LUT range -- tuple (levelmin, levelmax)
+        """
+        if lut_range is not None:
+            _min, _max = lut_range
+        else:
+            _min, _max = _nanmin(data), _nanmax(data)
+
+        self.data = data
+        self.histogram_cache = None
+        self.update_bounds()
+        self.update_border()
+        self.set_lut_range([_min, _max])
+
     def get_data(self, x0, y0, x1=None, y1=None):
         """
         Return image data
@@ -383,6 +401,7 @@ class BaseImageItem(QwtPlotItem):
                     pix_alpha = alpha * np.tanh(5 * x)
                 else:
                     raise ValueError(f"Invalid alpha function {alpha_function}")
+            # pylint: disable=too-many-function-args
             alpha_channel = np.uint32(255 * pix_alpha + 0.5).clip(0, 255) << 24
             cmap_a[i] = (
                 np.uint32((table.rgb(FULLRANGE, i / LUT_MAX)) & 0xFFFFFF)
@@ -482,6 +501,15 @@ class BaseImageItem(QwtPlotItem):
         else:
             info = np.iinfo(self.data.dtype)
         return info.min, info.max
+
+    def update_bounds(self):
+        """
+
+        :return:
+        """
+        if self.data is None:
+            return
+        self.bounds = QC.QRectF(0, 0, self.data.shape[1], self.data.shape[0])
 
     def update_border(self):
         """Update image border rectangle to fit image shape"""
@@ -1151,33 +1179,6 @@ class RawImageItem(BaseImageItem):
         """
         data = io.imread(self.get_filename(), to_grayscale=True)
         self.set_data(data, lut_range=lut_range)
-
-    def set_data(self, data, lut_range=None):
-        """
-        Set Image item data
-
-            * data: 2D NumPy array
-            * lut_range: LUT range -- tuple (levelmin, levelmax)
-        """
-        if lut_range is not None:
-            _min, _max = lut_range
-        else:
-            _min, _max = _nanmin(data), _nanmax(data)
-
-        self.data = data
-        self.histogram_cache = None
-        self.update_bounds()
-        self.update_border()
-        self.set_lut_range([_min, _max])
-
-    def update_bounds(self):
-        """
-
-        :return:
-        """
-        if self.data is None:
-            return
-        self.bounds = QC.QRectF(0, 0, self.data.shape[1], self.data.shape[0])
 
     # ---- IBasePlotItem API ---------------------------------------------------
     def types(self) -> tuple[type[IItemType], ...]:

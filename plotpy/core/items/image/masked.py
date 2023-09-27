@@ -136,6 +136,7 @@ class MaskedImageItem(ImageItem, MaskedImageMixin):
             return
         if self.is_mask_visible():
             _a, _b, bg, _cmap = self.lut
+            # pylint: disable=too-many-function-args
             alpha_masked = (
                 np.uint32(255 * self.param.alpha_masked + 0.5).clip(0, 255) << 24
             )
@@ -293,6 +294,7 @@ class MaskedXYImageItem(XYImageItem, MaskedImageMixin):
             return
         if self.is_mask_visible():
             _a, _b, bg, _cmap = self.lut
+            # pylint: disable=too-many-function-args
             alpha_masked = (
                 np.uint32(255 * self.param.alpha_masked + 0.5).clip(0, 255) << 24
             )

@@ -23,7 +23,7 @@ from plotpy.core.plot.plotwidget import PlotType, PlotWindow
 class BaseBM:
     """Benchmark object"""
 
-    MAKE_FUNC = None
+    MAKE_FUNC = make.curve  # to be overriden in subclasses
     WIN_TYPE = PlotType.AUTO
 
     def __init__(self, name, nsamples, **options):

@@ -1,4 +1,5 @@
-# -*- coding: utf -8 -*-
+# -*- coding: utf-8 -*-
+
 import os.path as osp
 import sys
 
@@ -175,7 +176,10 @@ def save_snapshot(plot, p0, p1, new_size=None):
         # This import statement must stay here because if pydicom is not installed,
         # the extension .dcm is not registered in the io module, so we will not
         # get here.
-        from pydicom import dicomio  # pylint: disable=import-outside-toplevel
+        try:
+            from pydicom import dicomio  # pylint: disable=import-outside-toplevel
+        except ImportError:
+            raise ImportError("This should not happen (pydicom is not installed)")
 
         model_dcm = dicomio.read_file(model_fname)
         try:

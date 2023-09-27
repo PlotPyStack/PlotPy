@@ -45,6 +45,10 @@ if TYPE_CHECKING:
 class DotArrayParam(gdt.DataSet):
     """Dot array"""
 
+    def _update_cb(self, *args):
+        """Update callback, to be overriden"""
+        pass
+
     g1 = gdt.BeginGroup("Size of the area")
     dim_h = gdi.FloatItem("Width", default=20, min=0, unit="mm")
     dim_v = gdi.FloatItem("Height", default=20, min=0, unit="mm")

@@ -52,7 +52,7 @@ class RotateCropTransform(basetransform.BaseTransform):
         manager (PlotManager): Plot manager
     """
 
-    def __init__(self, parent: QW.QWidget, manager: PlotManager) -> None:
+    def __init__(self, parent: RotateCropWidget, manager: PlotManager) -> None:
         super().__init__(parent, manager)
         self.crop_rect: AnnotatedRectangle = None
         self.manager = manager

@@ -35,6 +35,7 @@ from plotpy.core.styles.label import LabelParam
 if TYPE_CHECKING:
     import guidata.dataset.io
     from qtpy.QtCore import QPointF
+    from qwt import QwtSymbol
 
     from plotpy.core.interfaces.common import IItemType
     from plotpy.core.styles.base import ItemParameters
@@ -460,6 +461,7 @@ class LabelItem(AbstractLabelItem):
     def __init__(self, text=None, labelparam=None):
         self.text_string = "" if text is None else text
         self.text = QG.QTextDocument()
+        self.marker: QwtSymbol | None = None
         super(LabelItem, self).__init__(labelparam)
         self.setIcon(get_icon("label.png"))
 

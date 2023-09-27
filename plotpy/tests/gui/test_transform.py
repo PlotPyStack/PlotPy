@@ -136,12 +136,12 @@ def test_transform(img_show=True):
     M = data.max()
     with qt_app_context(exec_loop=True):
         items = [make.trimage(data, alpha_function=LUTAlpha.LINEAR, colormap="jet")]
-        for type in (np.uint8, np.uint16, np.int8, np.int16):
-            info = np.iinfo(type().dtype)
+        for dtype in (np.uint8, np.uint16, np.int8, np.int16):
+            info = np.iinfo(dtype().dtype)  # pylint: disable=no-value-for-parameter
             s = float((info.max - info.min))
             a1 = s * (data - m) / (M - m)
-            img = np.array(a1 + info.min, type)
-            txtwrite(img, 0, 0, int(N / 15.0), str(type))
+            img = np.array(a1 + info.min, dtype)
+            txtwrite(img, 0, 0, int(N / 15.0), str(dtype))
             items.append(make.trimage(img, colormap="jet"))
         if img_show:
             gridparam = make.gridparam(

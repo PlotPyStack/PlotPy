@@ -62,6 +62,7 @@ def imshow(data, title=None, hold=False):
         dlg.show()
     else:
         exec_dialog(dlg)
+    return dlg
 
 
 def dialog_test(fname="brain.png"):
@@ -76,9 +77,9 @@ def dialog_test(fname="brain.png"):
             imshow(array1 - array0, title="array1-array0")
         else:
             print(array0.shape, "-->", array1.shape)
-        img1 = imshow(array0, title="array0")
-        img2 = imshow(array1, title="array1")
-        return dlg, img1, img2
+        dlg1 = imshow(array0, title="array0")
+        dlg2 = imshow(array1, title="array1")
+        return dlg, dlg1, dlg2
 
 
 def test_rotate_crop():

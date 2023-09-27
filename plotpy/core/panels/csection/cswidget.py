@@ -9,6 +9,7 @@ from plotpy.config import _
 from plotpy.core.interfaces.panel import IPanel
 from plotpy.core.panels.base import ID_OCS, ID_XCS, ID_YCS, PanelWidget
 from plotpy.core.panels.csection.csplot import (
+    CrossSectionPlot,
     ObliqueCrossSectionPlot,
     XCrossSectionPlot,
     YCrossSectionPlot,
@@ -23,7 +24,7 @@ class CrossSectionWidget(PanelWidget):
     PANEL_ID = None
     PANEL_TITLE = _("Cross section tool")
     PANEL_ICON = "csection.png"
-    CrossSectionPlotKlass = None
+    CrossSectionPlotKlass = CrossSectionPlot  # to be overridden in subclasses
 
     __implements__ = (IPanel,)
 

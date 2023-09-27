@@ -24,8 +24,11 @@ class GuiTool(QC.QObject):
         self.manager = manager
         self.parent_tool = None
         self.plots = set()
+
+        # pylint: disable=assignment-from-none
         self.action = self.create_action(manager)
         self.menu = self.create_action_menu(manager)
+
         if self.menu is not None:
             self.action.setMenu(self.menu)
         if toolbar_id is DefaultToolbarID:

@@ -12,6 +12,7 @@ import os
 from guidata.qthelpers import qt_app_context
 
 from plotpy.core.builder import make
+from plotpy.core.items import Marker
 from plotpy.core.plot.plotwidget import PlotDialog, PlotType
 from plotpy.core.tools.annotations import (
     AnnotatedCircleTool,
@@ -73,6 +74,11 @@ def test_image_plot_tools():
         image = make.image(filename=filename, colormap="bone")
         plot = win.manager.get_plot()
         plot.add_item(image)
+        title = "toto"
+        marker1 = Marker(label_cb=lambda x, y: f"{title}x = {x:g}<br>y = {y:g}")
+        plot.add_item(marker1)
+        marker2 = Marker(label_cb=lambda x, y: f"{title}x = {x:g}<br>y = {y:g}")
+        plot.add_item(marker2)
 
 
 if __name__ == "__main__":

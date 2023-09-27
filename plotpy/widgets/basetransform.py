@@ -246,7 +246,7 @@ class BaseMultipleTransformWidget(QW.QTabWidget):
         options (dict | None): Plot options. Defaults to None.
     """
 
-    TRANSFORM_WIDGET_CLASS: TransfWidget = None
+    TRANSFORM_WIDGET_CLASS: TransfWidget  # to be defined in subclass
 
     def __init__(self, parent: QW.QWidget, options: dict | None = None):
         QW.QTabWidget.__init__(self, parent)
