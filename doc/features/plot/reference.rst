@@ -4,7 +4,7 @@ Reference
 High-level features
 ^^^^^^^^^^^^^^^^^^^
 
-.. autoclass:: plotpy.core.plot.PlotManager
+.. autoclass:: plotpy.core.plot.manager.PlotManager
    :members:
 .. autoclass:: plotpy.core.plot.PlotWidget
    :members:

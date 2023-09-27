@@ -564,15 +564,15 @@ class PlotManager:
 
         .. seealso::
 
-            :py:meth:`.plot.PlotManager.add_tool`
+            :py:meth:`.plot.manager.PlotManager.add_tool`
 
-            :py:meth:`.plot.PlotManager.register_standard_tools`
+            :py:meth:`.plot.manager.PlotManager.register_standard_tools`
 
-            :py:meth:`.plot.PlotManager.register_other_tools`
+            :py:meth:`.plot.manager.PlotManager.register_other_tools`
 
-            :py:meth:`.plot.PlotManager.register_image_tools`
+            :py:meth:`.plot.manager.PlotManager.register_image_tools`
 
-            :py:meth:`.plot.PlotManager.register_all_tools`
+            :py:meth:`.plot.manager.PlotManager.register_all_tools`
         """
         self.add_tool(CurveStatsTool)
         self.add_tool(AntiAliasingTool)
@@ -584,15 +584,15 @@ class PlotManager:
 
         .. seealso::
 
-            :py:meth:`.plot.PlotManager.add_tool`
+            :py:meth:`.plot.manager.PlotManager.add_tool`
 
-            :py:meth:`.plot.PlotManager.register_standard_tools`
+            :py:meth:`.plot.manager.PlotManager.register_standard_tools`
 
-            :py:meth:`.plot.PlotManager.register_other_tools`
+            :py:meth:`.plot.manager.PlotManager.register_other_tools`
 
-            :py:meth:`.plot.PlotManager.register_curve_tools`
+            :py:meth:`.plot.manager.PlotManager.register_curve_tools`
 
-            :py:meth:`.plot.PlotManager.register_all_tools`
+            :py:meth:`.plot.manager.PlotManager.register_all_tools`
         """
         self.add_tool(ColormapTool)
         self.add_tool(ReverseYAxisTool)
@@ -613,15 +613,15 @@ class PlotManager:
 
         .. seealso::
 
-            :py:meth:`.plot.PlotManager.add_tool`
+            :py:meth:`.plot.manager.PlotManager.add_tool`
 
-            :py:meth:`.plot.PlotManager.register_standard_tools`
+            :py:meth:`.plot.manager.PlotManager.register_standard_tools`
 
-            :py:meth:`.plot.PlotManager.register_curve_tools`
+            :py:meth:`.plot.manager.PlotManager.register_curve_tools`
 
-            :py:meth:`.plot.PlotManager.register_image_tools`
+            :py:meth:`.plot.manager.PlotManager.register_image_tools`
 
-            :py:meth:`.plot.PlotManager.register_all_tools`
+            :py:meth:`.plot.manager.PlotManager.register_all_tools`
         """
         self.add_tool(SaveAsTool)
         self.add_tool(CopyToClipboardTool)
@@ -635,19 +635,19 @@ class PlotManager:
 
         .. seealso::
 
-            :py:meth:`.plot.PlotManager.add_tool`
+            :py:meth:`.plot.manager.PlotManager.add_tool`
 
-            :py:meth:`.plot.PlotManager.register_standard_tools`
+            :py:meth:`.plot.manager.PlotManager.register_standard_tools`
 
-            :py:meth:`.plot.PlotManager.register_other_tools`
+            :py:meth:`.plot.manager.PlotManager.register_other_tools`
 
-            :py:meth:`.plot.PlotManager.register_curve_tools`
+            :py:meth:`.plot.manager.PlotManager.register_curve_tools`
 
-            :py:meth:`.plot.PlotManager.register_image_tools`
+            :py:meth:`.plot.manager.PlotManager.register_image_tools`
 
-            :py:meth:`.plot.PlotManager.register_all_image_tools`
+            :py:meth:`.plot.manager.PlotManager.register_all_image_tools`
 
-            :py:meth:`.plot.PlotManager.register_all_tools`
+            :py:meth:`.plot.manager.PlotManager.register_all_tools`
         """
         self.register_standard_tools()
         self.add_separator_tool()
@@ -664,19 +664,19 @@ class PlotManager:
 
         .. seealso::
 
-            :py:meth:`.plot.PlotManager.add_tool`
+            :py:meth:`.plot.manager.PlotManager.add_tool`
 
-            :py:meth:`.plot.PlotManager.register_standard_tools`
+            :py:meth:`.plot.manager.PlotManager.register_standard_tools`
 
-            :py:meth:`.plot.PlotManager.register_other_tools`
+            :py:meth:`.plot.manager.PlotManager.register_other_tools`
 
-            :py:meth:`.plot.PlotManager.register_curve_tools`
+            :py:meth:`.plot.manager.PlotManager.register_curve_tools`
 
-            :py:meth:`.plot.PlotManager.register_image_tools`
+            :py:meth:`.plot.manager.PlotManager.register_image_tools`
 
-            :py:meth:`.plot.PlotManager.register_all_curve_tools`
+            :py:meth:`.plot.manager.PlotManager.register_all_curve_tools`
 
-            :py:meth:`.plot.PlotManager.register_all_tools`
+            :py:meth:`.plot.manager.PlotManager.register_all_tools`
         """
         self.register_standard_tools()
         self.add_separator_tool()
@@ -693,19 +693,19 @@ class PlotManager:
 
         .. seealso::
 
-            :py:meth:`.plot.PlotManager.add_tool`
+            :py:meth:`.plot.manager.PlotManager.add_tool`
 
-            :py:meth:`.plot.PlotManager.register_standard_tools`
+            :py:meth:`.plot.manager.PlotManager.register_standard_tools`
 
-            :py:meth:`.plot.PlotManager.register_other_tools`
+            :py:meth:`.plot.manager.PlotManager.register_other_tools`
 
-            :py:meth:`.plot.PlotManager.register_curve_tools`
+            :py:meth:`.plot.manager.PlotManager.register_curve_tools`
 
-            :py:meth:`.plot.PlotManager.register_image_tools`
+            :py:meth:`.plot.manager.PlotManager.register_image_tools`
 
-            :py:meth:`.plot.PlotManager.register_all_image_tools`
+            :py:meth:`.plot.manager.PlotManager.register_all_image_tools`
 
-            :py:meth:`.plot.PlotManager.register_all_curve_tools`
+            :py:meth:`.plot.manager.PlotManager.register_all_curve_tools`
         """
         self.register_standard_tools()
         self.add_separator_tool()

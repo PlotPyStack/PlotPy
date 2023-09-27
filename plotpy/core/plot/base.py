@@ -722,7 +722,7 @@ class BasePlot(qwt.QwtPlot):
                 selitem.rotate_with_selection(angle)
 
     def set_manager(self, manager: PlotManager, plot_id: int) -> None:
-        """Set the associated :py:class:`.plot.PlotManager` instance
+        """Set the associated :py:class:`.plot.manager.PlotManager` instance
 
         Args:
             manager (PlotManager): the manager
