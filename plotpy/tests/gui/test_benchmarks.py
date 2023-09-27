@@ -17,7 +17,8 @@ from qtpy import QtWidgets as QW
 
 import plotpy
 from plotpy.core.builder import make
-from plotpy.core.plot.plotwidget import PlotType, PlotWindow
+from plotpy.core.constants import PlotType
+from plotpy.core.plot import PlotWindow
 
 
 class BaseBM:

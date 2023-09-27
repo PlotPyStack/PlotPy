@@ -14,7 +14,8 @@ from guidata.qthelpers import qt_app_context
 
 from plotpy._scaler import _scale_quads
 from plotpy.core.builder import make
-from plotpy.core.plot.plotwidget import PlotDialog, PlotType
+from plotpy.core.constants import PlotType
+from plotpy.core.plot import PlotDialog
 
 
 def imshow(items):

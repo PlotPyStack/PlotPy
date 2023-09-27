@@ -13,7 +13,8 @@ from guidata.qthelpers import qt_app_context
 
 import plotpy
 from plotpy.core.builder import make
-from plotpy.core.plot.plotwidget import PlotDialog, PlotType
+from plotpy.core.constants import PlotType
+from plotpy.core.plot import PlotDialog
 
 PLOTPYDIR = os.path.abspath(os.path.dirname(plotpy.__file__))
 IMGFILE = os.path.join(PLOTPYDIR, "images", "items", "image.png")

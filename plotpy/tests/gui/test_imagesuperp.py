@@ -13,9 +13,9 @@ import numpy as np
 from guidata.qthelpers import qt_app_context
 
 from plotpy.core.builder import make
-from plotpy.core.plot.plotwidget import PlotDialog, PlotType
-from plotpy.core.tools.axes import PlaceAxesTool
-from plotpy.core.tools.shapes import EllipseTool, FreeFormTool, RectangleTool
+from plotpy.core.constants import PlotType
+from plotpy.core.plot import PlotDialog
+from plotpy.core.tools import EllipseTool, FreeFormTool, PlaceAxesTool, RectangleTool
 
 
 def create_window():

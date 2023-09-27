@@ -27,7 +27,8 @@ from qtpy import QtWidgets as QW
 from plotpy.config import _
 from plotpy.core import io
 from plotpy.core.builder import make
-from plotpy.core.plot.plotwidget import PlotType, PlotWidget
+from plotpy.core.constants import PlotType
+from plotpy.core.plot import PlotWidget
 from plotpy.widgets.about import about
 
 APP_NAME = _("Application example")

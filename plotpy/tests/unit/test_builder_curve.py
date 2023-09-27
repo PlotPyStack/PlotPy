@@ -11,7 +11,8 @@ from qtpy.QtCore import Qt
 from qwt import QwtPlotCurve
 
 from plotpy.core.builder import make
-from plotpy.core.plot.plotwidget import PlotDialog, PlotType
+from plotpy.core.constants import PlotType
+from plotpy.core.plot import PlotDialog
 
 
 def plot_qtbot_curve(qtbot, curve):

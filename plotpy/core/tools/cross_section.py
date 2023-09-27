@@ -2,7 +2,7 @@
 from guidata.configtools import get_icon
 
 from plotpy.config import _
-from plotpy.core.items.annotations import (
+from plotpy.core.items import (
     AnnotatedObliqueRectangle,
     AnnotatedPoint,
     AnnotatedRectangle,

@@ -32,14 +32,13 @@ from qtpy import QtWidgets as QW
 
 from plotpy.config import _
 from plotpy.core.builder import make
-from plotpy.core.items.image.misc import get_image_in_shape
+from plotpy.core.items import get_image_in_shape
 from plotpy.widgets import basetransform
 
 if TYPE_CHECKING:
     import numpy as np
 
-    from plotpy.core.items.annotations import AnnotatedRectangle
-    from plotpy.core.items.image import TrImageItem
+    from plotpy.core.items import AnnotatedRectangle, TrImageItem
     from plotpy.core.plot.manager import PlotManager
 
 

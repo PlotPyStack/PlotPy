@@ -16,8 +16,9 @@ from numpy import linspace, sin
 
 from plotpy.config import _
 from plotpy.core.builder import make
-from plotpy.core.plot.plotwidget import PlotDialog, PlotType
-from plotpy.core.tools.curve import SelectPointTool
+from plotpy.core.constants import PlotType
+from plotpy.core.plot import PlotDialog
+from plotpy.core.tools import SelectPointTool
 
 
 def callback_function(tool):

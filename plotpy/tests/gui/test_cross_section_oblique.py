@@ -12,11 +12,11 @@ import os.path as osp
 from guidata.qthelpers import qt_app_context
 
 from plotpy.core.builder import make
+from plotpy.core.constants import PlotType
 from plotpy.core.panels.csection.csitem import ObliqueCrossSectionItem
 from plotpy.core.panels.csection.cswidget import ObliqueCrossSection
-from plotpy.core.plot.plotwidget import PlotDialog, PlotType
-from plotpy.core.tools.cross_section import ObliqueCrossSectionTool, OCSPanelTool
-from plotpy.core.tools.image import ImageMaskTool
+from plotpy.core.plot import PlotDialog
+from plotpy.core.tools import ImageMaskTool, ObliqueCrossSectionTool, OCSPanelTool
 
 # debug mode shows the ROI in the top-left corner of the image plot:
 ObliqueCrossSectionItem.DEBUG = True

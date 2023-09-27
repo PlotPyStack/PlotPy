@@ -3,11 +3,13 @@ from qtpy import QtCore as QC
 
 from plotpy.config import _
 from plotpy.core.events import KeyEventMatch, QtDragHandler, setup_standard_tool_filter
-from plotpy.core.items.shapes.ellipse import EllipseShape
-from plotpy.core.items.shapes.point import PointShape
-from plotpy.core.items.shapes.polygon import PolygonShape
-from plotpy.core.items.shapes.rectangle import ObliqueRectangleShape
-from plotpy.core.items.shapes.segment import SegmentShape
+from plotpy.core.items import (
+    EllipseShape,
+    ObliqueRectangleShape,
+    PointShape,
+    PolygonShape,
+    SegmentShape,
+)
 from plotpy.core.tools.base import (
     SHAPE_Z_OFFSET,
     DefaultToolbarID,

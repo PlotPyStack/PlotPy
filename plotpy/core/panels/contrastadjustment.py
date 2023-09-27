@@ -24,19 +24,21 @@ from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
 from plotpy.config import CONF, _
+from plotpy.core.constants import PlotType
 from plotpy.core.interfaces.common import IVoiImageItemType
 from plotpy.core.interfaces.panel import IPanel
-from plotpy.core.items.histogram import HistogramItem
-from plotpy.core.items.shapes.range import XRangeSelection
+from plotpy.core.items import HistogramItem, XRangeSelection
 from plotpy.core.lutrange import lut_range_threshold
 from plotpy.core.panels.base import ID_CONTRAST, PanelWidget
 from plotpy.core.plot.base import BasePlot, PlotType
 from plotpy.core.plot.manager import PlotManager
-from plotpy.core.styles.curve import CurveParam
-from plotpy.core.styles.histogram import HistogramParam
-from plotpy.core.tools.curve import AntiAliasingTool, SelectPointTool
-from plotpy.core.tools.plot import BasePlotMenuTool
-from plotpy.core.tools.selection import SelectTool
+from plotpy.core.styles import CurveParam, HistogramParam
+from plotpy.core.tools import (
+    AntiAliasingTool,
+    BasePlotMenuTool,
+    SelectPointTool,
+    SelectTool,
+)
 
 
 class LevelsHistogram(BasePlot):

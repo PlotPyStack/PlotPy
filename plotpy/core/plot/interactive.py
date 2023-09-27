@@ -29,10 +29,11 @@ from plotpy._scaler import INTERP_AA, INTERP_LINEAR, INTERP_NEAREST
 from plotpy.config import _
 from plotpy.core import io
 from plotpy.core.builder import make
+from plotpy.core.constants import PlotType
 from plotpy.core.panels.contrastadjustment import ContrastAdjustment
 from plotpy.core.panels.csection.cswidget import XCrossSection, YCrossSection
 from plotpy.core.panels.itemlist import PlotItemList
-from plotpy.core.plot.base import BasePlot, PlotType
+from plotpy.core.plot.base import BasePlot
 from plotpy.core.plot.manager import PlotManager
 from plotpy.utils.colormap import get_colormap_list
 

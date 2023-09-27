@@ -57,7 +57,7 @@ from plotpy.core.items import (
     XYImageItem,
     create_contour_items,
 )
-from plotpy.core.plot import BasePlot
+from plotpy.core.plot.base import BasePlot
 from plotpy.core.styles import (
     COLORS,
     MARKERS,

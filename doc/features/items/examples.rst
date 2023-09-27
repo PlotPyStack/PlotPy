@@ -22,7 +22,7 @@ Create a basic curve plotting widget:
 * now that a `QApplication` object exists, we may create the plotting
   widget::
 
-    >>> from plotpy.core.plot.base import BasePlot, PlotType
+    >>> from plotpy.core.plot import BasePlot, PlotType
     >>> plot = BasePlot(title="Example", xlabel="X", ylabel="Y", type=PlotType.CURVE)
 
 Create a curve item:
@@ -31,7 +31,7 @@ Create a curve item:
   a curve with error bars): the item properties are then assigned by creating
   the appropriate style parameters object (e.g. :py:class:`.styles.ErrorBarParam`)::
 
-    >>> from plotpy.core.items.curve import CurveItem
+    >>> from plotpy.core.items import CurveItem
     >>> from plotpy.core.styles import CurveParam
     >>> param = CurveParam()
     >>> param.label = 'My curve'
@@ -74,7 +74,7 @@ Create a simple image item:
   assigned by creating the appropriate style parameters object
   (e.g. :py:class:`.styles.ImageParam`)::
 
-    >>> from plotpy.core.items.image import ImageItem
+    >>> from plotpy.core.items import ImageItem
     >>> from plotpy.core.styles import ImageParam
     >>> param = ImageParam()
     >>> param.label = 'My image'
@@ -101,7 +101,7 @@ A shape may be created:
   rectangle): the item properties are then assigned by creating the
   appropriate style parameters object (:py:class:`.styles.ShapeParam`)::
 
-    >>> from plotpy.core.items.shapes import RectangleShape
+    >>> from plotpy.core.items import RectangleShape
     >>> from plotpy.core.styles import ShapeParam
     >>> param = ShapeParam()
     >>> param.title = 'My rectangle'
@@ -122,7 +122,7 @@ An annotated shape may be created:
   by creating the appropriate style parameters object
   (:py:class:`.styles.AnnotationParam`)::
 
-    >>> from plotpy.core.items.annotations import AnnotatedCircle
+    >>> from plotpy.core.items import AnnotatedCircle
     >>> from plotpy.core.styles import AnnotationParam
     >>> param = AnnotationParam()
     >>> param.title = 'My circle'

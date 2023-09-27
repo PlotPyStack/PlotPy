@@ -15,7 +15,8 @@ from scipy.ndimage import gaussian_filter
 
 from plotpy.core import io
 from plotpy.core.builder import make
-from plotpy.core.plot.plotwidget import PlotDialog, PlotType
+from plotpy.core.constants import PlotType
+from plotpy.core.plot import PlotDialog
 from plotpy.tests.gui.test_imagexy import compute_image
 
 

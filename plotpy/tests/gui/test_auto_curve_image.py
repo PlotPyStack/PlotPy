@@ -12,7 +12,8 @@ from guidata.qthelpers import qt_app_context
 from numpy import linspace, sin
 
 from plotpy.core.builder import make
-from plotpy.core.plot.plotwidget import PlotDialog, PlotType
+from plotpy.core.constants import PlotType
+from plotpy.core.plot import PlotDialog
 
 
 def compute_image(N=2000, grid=True):

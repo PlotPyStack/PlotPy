@@ -16,8 +16,9 @@ from qtpy import QtGui as QG
 
 from plotpy.core import io
 from plotpy.core.builder import LUTAlpha, make
-from plotpy.core.items.image.misc import assemble_imageitems
-from plotpy.core.plot.plotwidget import PlotDialog, PlotType
+from plotpy.core.constants import PlotType
+from plotpy.core.items import assemble_imageitems
+from plotpy.core.plot import PlotDialog
 
 DEFAULT_CHARS = "".join([chr(c) for c in range(32, 256)])
 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from plotpy.core.items.annotations import (
+from plotpy.core.items import (
     AnnotatedCircle,
     AnnotatedEllipse,
     AnnotatedObliqueRectangle,

@@ -21,9 +21,8 @@ from guidata.qthelpers import qt_app_context
 from plotpy.config import _
 from plotpy.core.builder import make
 from plotpy.core.coords import axes_to_canvas
-from plotpy.core.plot.plotwidget import PlotDialog
-from plotpy.core.tools.annotations import AnnotatedSegmentTool
-from plotpy.core.tools.selection import SelectTool
+from plotpy.core.plot import PlotDialog
+from plotpy.core.tools import AnnotatedSegmentTool, SelectTool
 
 SEG_AXES_COORDS = [20, 20, 70, 70]
 

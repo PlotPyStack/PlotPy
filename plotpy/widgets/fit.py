@@ -70,12 +70,12 @@ from scipy.optimize import fmin, fmin_bfgs, fmin_cg, fmin_l_bfgs_b, fmin_powell,
 
 from plotpy.config import _
 from plotpy.core.builder import make
-from plotpy.core.plot.base import PlotType
-from plotpy.core.plot.plotwidget import PlotDialog, PlotWidget
+from plotpy.core.constants import PlotType
+from plotpy.core.plot import PlotDialog, PlotWidget
 
 if TYPE_CHECKING:
-    from plotpy.core.items.shapes.range import XRangeSelection
-    from plotpy.core.panels.base import PanelWidget
+    from plotpy.core.items import XRangeSelection
+    from plotpy.core.panels import PanelWidget
 
 
 class AutoFitParam(DataSet):

@@ -11,20 +11,22 @@ from qtpy import QtWidgets as QW
 
 from plotpy.config import _
 from plotpy.core import io
+from plotpy.core.constants import PlotType
 from plotpy.core.events import QtDragHandler, setup_standard_tool_filter
 from plotpy.core.interfaces.common import (
     IColormapImageItemType,
     IStatsImageItemType,
     IVoiImageItemType,
 )
-from plotpy.core.items.annotations import AnnotatedRectangle
+from plotpy.core.items import (
+    AnnotatedRectangle,
+    EllipseShape,
+    RectangleShape,
+    TrImageItem,
+    get_items_in_rectangle,
+)
 from plotpy.core.items.image.masked import MaskedImageMixin
-from plotpy.core.items.image.misc import get_items_in_rectangle
-from plotpy.core.items.image.transform import TrImageItem
-from plotpy.core.items.shapes.ellipse import EllipseShape
-from plotpy.core.items.shapes.rectangle import RectangleShape
 from plotpy.core.panels.base import ID_CONTRAST
-from plotpy.core.plot.base import PlotType
 from plotpy.core.tools.base import (
     CommandTool,
     DefaultToolbarID,

@@ -4,15 +4,16 @@ from qtpy import QtWidgets as QW
 
 from plotpy.config import _
 from plotpy.core.interfaces.common import ICurveItemType
-from plotpy.core.items.annotations import (
+from plotpy.core.items import (
     AnnotatedCircle,
     AnnotatedEllipse,
     AnnotatedObliqueRectangle,
     AnnotatedRectangle,
+    EllipseShape,
+    ObliqueRectangleShape,
+    RawImageItem,
+    RectangleShape,
 )
-from plotpy.core.items.image.base import RawImageItem
-from plotpy.core.items.shapes.ellipse import EllipseShape
-from plotpy.core.items.shapes.rectangle import ObliqueRectangleShape, RectangleShape
 from plotpy.core.panels.base import ID_ITEMLIST
 from plotpy.core.tools.base import CommandTool, DefaultToolbarID, PanelTool
 from plotpy.core.tools.curve import edit_curve_data, export_curve_data

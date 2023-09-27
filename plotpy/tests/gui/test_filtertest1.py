@@ -16,7 +16,8 @@ from qtpy import QtWidgets as QW
 
 import plotpy.config  # Loading icons
 from plotpy.core.builder import make
-from plotpy.core.plot.plotwidget import PlotType, PlotWidget
+from plotpy.core.constants import PlotType
+from plotpy.core.plot import PlotWidget
 
 
 class FilterTestWidget(QW.QWidget):

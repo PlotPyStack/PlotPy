@@ -21,6 +21,7 @@ from .cross_section import (
     AverageCrossSectionTool,
     CrossSectionTool,
     ObliqueCrossSectionTool,
+    OCSPanelTool,
     XCSPanelTool,
     YCSPanelTool,
 )
@@ -57,7 +58,14 @@ from .misc import (
     SaveAsTool,
     SnapshotTool,
 )
-from .plot import DisplayCoordsTool, DummySeparatorTool, RectZoomTool
+from .plot import (
+    BasePlotMenuTool,
+    DisplayCoordsTool,
+    DoAutoscaleTool,
+    DummySeparatorTool,
+    RectangularSelectionTool,
+    RectZoomTool,
+)
 from .selection import SelectTool
 from .shapes import (
     CircleTool,

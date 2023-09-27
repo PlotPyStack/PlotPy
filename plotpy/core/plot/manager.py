@@ -15,54 +15,45 @@ from qtpy import QtWidgets as QW
 from plotpy.core.interfaces.plotmanager import IPlotManager
 from plotpy.core.panels.base import ID_CONTRAST, ID_ITEMLIST, ID_XCS, ID_YCS
 from plotpy.core.plot.base import BasePlot
-from plotpy.core.tools.annotations import (
+from plotpy.core.tools import (
+    AboutTool,
     AnnotatedCircleTool,
     AnnotatedEllipseTool,
     AnnotatedObliqueRectangleTool,
     AnnotatedPointTool,
     AnnotatedRectangleTool,
     AnnotatedSegmentTool,
-)
-from plotpy.core.tools.axes import AxisScaleTool
-from plotpy.core.tools.cross_section import (
-    AverageCrossSectionTool,
-    CrossSectionTool,
-    XCSPanelTool,
-    YCSPanelTool,
-)
-from plotpy.core.tools.curve import AntiAliasingTool, CurveStatsTool
-from plotpy.core.tools.image import (
+    AntiAliasingTool,
     AspectRatioTool,
+    AverageCrossSectionTool,
+    AxisScaleTool,
+    BasePlotMenuTool,
     ColormapTool,
     ContrastPanelTool,
-    ImageStatsTool,
-    ReverseYAxisTool,
-)
-from plotpy.core.tools.item import (
-    DeleteItemTool,
-    EditItemDataTool,
-    ExportItemDataTool,
-    ItemCenterTool,
-    ItemListPanelTool,
-)
-from plotpy.core.tools.label import LabelTool
-from plotpy.core.tools.misc import (
-    AboutTool,
     CopyToClipboardTool,
-    HelpTool,
-    PrintTool,
-    SaveAsTool,
-    SnapshotTool,
-)
-from plotpy.core.tools.plot import (
-    BasePlotMenuTool,
+    CrossSectionTool,
+    CurveStatsTool,
+    DeleteItemTool,
     DisplayCoordsTool,
     DoAutoscaleTool,
     DummySeparatorTool,
+    EditItemDataTool,
+    ExportItemDataTool,
+    HelpTool,
+    ImageStatsTool,
+    ItemCenterTool,
+    ItemListPanelTool,
+    LabelTool,
+    PrintTool,
     RectangularSelectionTool,
     RectZoomTool,
+    ReverseYAxisTool,
+    SaveAsTool,
+    SelectTool,
+    SnapshotTool,
+    XCSPanelTool,
+    YCSPanelTool,
 )
-from plotpy.core.tools.selection import SelectTool
 
 if TYPE_CHECKING:
     from qwt import QwtPlotCanvas, QwtScaleDiv

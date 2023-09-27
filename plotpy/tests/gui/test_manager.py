@@ -13,9 +13,10 @@ from guidata.qthelpers import qt_app_context, win32_fix_title_bar_background
 from qtpy import QtWidgets as QW
 
 from plotpy.core.builder import make
-from plotpy.core.panels.contrastadjustment import ContrastAdjustment
+from plotpy.core.constants import PlotType
+from plotpy.core.panels import ContrastAdjustment, PlotItemList
+from plotpy.core.plot import BasePlot
 from plotpy.core.plot.manager import PlotManager
-from plotpy.core.plot.plotwidget import BasePlot, PlotItemList, PlotType
 from plotpy.tests.gui.test_image import compute_image
 
 

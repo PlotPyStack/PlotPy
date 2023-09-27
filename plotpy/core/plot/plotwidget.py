@@ -13,10 +13,11 @@ from qtpy import QtWidgets as QW
 from qtpy.QtWidgets import QWidget  # only to help intersphinx find QWidget
 
 from plotpy.config import _
+from plotpy.core.constants import PlotType
 from plotpy.core.panels.contrastadjustment import ContrastAdjustment
 from plotpy.core.panels.csection.cswidget import XCrossSection, YCrossSection
 from plotpy.core.panels.itemlist import PlotItemList
-from plotpy.core.plot.base import BasePlot, PlotType
+from plotpy.core.plot.base import BasePlot
 from plotpy.core.plot.manager import PlotManager
 
 if TYPE_CHECKING:

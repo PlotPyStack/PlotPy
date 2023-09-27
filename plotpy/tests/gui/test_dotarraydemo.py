@@ -30,13 +30,14 @@ from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
 
-import plotpy.config  # Loading icons
+import plotpy.config
 import plotpy.widgets
+from plotpy.core.constants import PlotType  # Loading icons
 from plotpy.core.interfaces.common import IImageItemType
+from plotpy.core.items import RawImageItem
 from plotpy.core.items.curve.errorbar import vmap
-from plotpy.core.items.image.base import RawImageItem
-from plotpy.core.plot.plotwidget import PlotDialog, PlotType
-from plotpy.core.tools.misc import CopyToClipboardTool, HelpTool, PrintTool, SaveAsTool
+from plotpy.core.plot import PlotDialog
+from plotpy.core.tools import CopyToClipboardTool, HelpTool, PrintTool, SaveAsTool
 
 if TYPE_CHECKING:
     from plotpy.core.interfaces.common import IItemType

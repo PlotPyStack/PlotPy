@@ -5,7 +5,7 @@ from guidata.qthelpers import add_actions
 from qtpy import QtWidgets as QW
 
 from plotpy.config import _
-from plotpy.core.items.shapes.axis import Axes
+from plotpy.core.items import Axes
 from plotpy.core.tools.base import CommandTool
 from plotpy.core.tools.shapes import RectangularShapeTool
 

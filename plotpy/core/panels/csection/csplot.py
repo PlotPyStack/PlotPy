@@ -5,6 +5,7 @@ from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
 from plotpy.config import CONF, _
+from plotpy.core.constants import PlotType
 from plotpy.core.interfaces.common import ICSImageItemType
 from plotpy.core.items.image.base import LUT_MAX
 from plotpy.core.panels.csection.csitem import (
@@ -12,7 +13,7 @@ from plotpy.core.panels.csection.csitem import (
     XCrossSectionItem,
     YCrossSectionItem,
 )
-from plotpy.core.plot.base import BasePlot, PlotType
+from plotpy.core.plot.base import BasePlot
 from plotpy.core.styles.curve import CurveParam
 
 LUT_AXIS_TITLE = _("LUT scale") + (" (0-%d)" % LUT_MAX)

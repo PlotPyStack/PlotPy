@@ -19,11 +19,10 @@ from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
 from plotpy.core.builder import make
-from plotpy.core.plot.plotwidget import PlotDialog, PlotType
-from plotpy.core.tools.axes import Axes
-from plotpy.core.tools.image import ImageMaskTool
-from plotpy.core.tools.item import LoadItemsTool, SaveItemsTool
-from plotpy.core.tools.shapes import PolygonShape
+from plotpy.core.constants import PlotType
+from plotpy.core.items import Axes, PolygonShape
+from plotpy.core.plot import PlotDialog
+from plotpy.core.tools import ImageMaskTool, LoadItemsTool, SaveItemsTool
 
 
 def build_items():

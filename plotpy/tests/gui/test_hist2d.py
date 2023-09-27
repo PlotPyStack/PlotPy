@@ -12,7 +12,8 @@ from numpy import array, concatenate, dot, random
 
 from plotpy.config import _
 from plotpy.core.builder import make
-from plotpy.core.plot.plotwidget import PlotDialog, PlotType
+from plotpy.core.constants import PlotType
+from plotpy.core.plot import PlotDialog
 
 
 def hist2d_func(X, Y, Z):

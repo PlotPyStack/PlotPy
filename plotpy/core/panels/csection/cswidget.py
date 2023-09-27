@@ -15,7 +15,7 @@ from plotpy.core.panels.csection.csplot import (
     YCrossSectionPlot,
 )
 from plotpy.core.plot.manager import PlotManager
-from plotpy.core.tools.item import ExportItemDataTool
+from plotpy.core.tools import ExportItemDataTool
 
 
 class CrossSectionWidget(PanelWidget):

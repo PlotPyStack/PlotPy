@@ -17,7 +17,7 @@ from plotpy.core.events import (
     StandardKeyMatch,
     setup_standard_tool_filter,
 )
-from plotpy.core.items.image.transform import TrImageItem
+from plotpy.core.items import TrImageItem
 from plotpy.core.tools.base import InteractiveTool
 
 

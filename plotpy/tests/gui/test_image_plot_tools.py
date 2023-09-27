@@ -12,9 +12,10 @@ import os
 from guidata.qthelpers import qt_app_context
 
 from plotpy.core.builder import make
+from plotpy.core.constants import PlotType
 from plotpy.core.items import Marker
-from plotpy.core.plot.plotwidget import PlotDialog, PlotType
-from plotpy.core.tools.annotations import (
+from plotpy.core.plot import PlotDialog
+from plotpy.core.tools import (
     AnnotatedCircleTool,
     AnnotatedEllipseTool,
     AnnotatedObliqueRectangleTool,
@@ -23,14 +24,18 @@ from plotpy.core.tools.annotations import (
     AnnotatedSegmentTool,
     CircleTool,
     EllipseTool,
+    FreeFormTool,
+    HCursorTool,
+    HRangeTool,
+    LabelTool,
+    MultiLineTool,
     ObliqueRectangleTool,
+    PlaceAxesTool,
     RectangleTool,
     SegmentTool,
+    VCursorTool,
+    XCursorTool,
 )
-from plotpy.core.tools.axes import PlaceAxesTool
-from plotpy.core.tools.cursor import HCursorTool, HRangeTool, VCursorTool, XCursorTool
-from plotpy.core.tools.label import LabelTool
-from plotpy.core.tools.shapes import FreeFormTool, MultiLineTool
 
 
 def create_window():

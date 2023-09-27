@@ -18,8 +18,9 @@ import pickle
 from guidata.qthelpers import qt_app_context
 
 from plotpy.core.builder import make
-from plotpy.core.plot.plotwidget import PlotDialog, PlotType
-from plotpy.core.tools.image import ImageMaskTool
+from plotpy.core.constants import PlotType
+from plotpy.core.plot import PlotDialog
+from plotpy.core.tools import ImageMaskTool
 
 FNAME = "image_masked.pickle"
 

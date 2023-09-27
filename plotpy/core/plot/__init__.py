@@ -6,6 +6,6 @@ plotpy.core.plot
 """
 
 # pylint: disable=unused-import
-from .base import BasePlot, PlotType
-from .manager import PlotManager
+from ..constants import PlotType
+from .base import BasePlot
 from .plotwidget import PlotDialog, PlotWidget, PlotWindow, SubplotWidget

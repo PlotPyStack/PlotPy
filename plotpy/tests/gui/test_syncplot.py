@@ -15,13 +15,9 @@ import guidata
 import numpy as np
 
 from plotpy.core.builder import make
-from plotpy.core.plot.plotwidget import (
-    BasePlot,
-    PlotDialog,
-    PlotManager,
-    PlotType,
-    PlotWidget,
-)
+from plotpy.core.constants import PlotType
+from plotpy.core.plot import BasePlot, PlotDialog, PlotWidget
+from plotpy.core.plot.manager import PlotManager
 
 
 class MyPlotDialog(PlotDialog):

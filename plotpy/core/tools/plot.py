@@ -5,11 +5,10 @@ from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
 from plotpy.config import _
+from plotpy.core.constants import PARAMETERS_TITLE_ICON
 from plotpy.core.events import ZoomRectHandler, setup_standard_tool_filter
 from plotpy.core.interfaces.common import IImageItemType, IShapeItemType
-from plotpy.core.items.image.misc import get_items_in_rectangle
-from plotpy.core.items.shapes.rectangle import RectangleShape
-from plotpy.core.plot.base import PARAMETERS_TITLE_ICON
+from plotpy.core.items import RectangleShape, get_items_in_rectangle
 from plotpy.core.tools.base import (
     CommandTool,
     DefaultToolbarID,
@@ -32,7 +31,6 @@ class DoAutoscaleTool(CommandTool):
         tip=None,
         toolbar_id=DefaultToolbarID,
     ):
-
         super(DoAutoscaleTool, self).__init__(
             manager, title=title, icon=icon, tip=tip, toolbar_id=toolbar_id
         )
@@ -56,7 +54,6 @@ class BasePlotMenuTool(CommandTool):
     def __init__(
         self, manager, key, title=None, icon=None, tip=None, toolbar_id=DefaultToolbarID
     ):
-
         default_title, default_icon = PARAMETERS_TITLE_ICON[key]
         if title is None:
             title = default_title

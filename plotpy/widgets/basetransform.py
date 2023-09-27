@@ -22,9 +22,9 @@ from qtpy import QtWidgets as QW
 
 from plotpy._scaler import INTERP_LINEAR
 from plotpy.config import _
-from plotpy.core.items.image.transform import TrImageItem
-from plotpy.core.plot.base import PlotType
-from plotpy.core.plot.plotwidget import PlotWidget
+from plotpy.core.constants import PlotType
+from plotpy.core.items import TrImageItem
+from plotpy.core.plot import PlotWidget
 
 if TYPE_CHECKING:
     import numpy as np
