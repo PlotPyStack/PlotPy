@@ -563,11 +563,6 @@ class AnnotatedRectangle(AnnotatedShape):
         x_label, y_label = self.shape.points.min(axis=0)
         self.label.set_pos(x_label, y_label)
 
-    def get_computations_text(self):
-        """Return formatted string with informations on current shape"""
-        tdict = self.get_string_dict()
-        return "{center_n} ( {center} )<br>{size_n} {size}".format_map(tdict)
-
     def get_tr_center(self):
         """Return shape center coordinates after applying transform matrix"""
         return compute_center(*self.get_transformed_coords(0, 2))
