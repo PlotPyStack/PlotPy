@@ -4,7 +4,7 @@ from guidata.configtools import get_icon
 from guidata.utils.misc import assert_interfaces_valid
 
 from plotpy.core.items.shapes.polygon import PolygonShape
-from plotpy.utils.geometry import (
+from plotpy.mathutils.geometry import (
     compute_center,
     vector_norm,
     vector_projection,

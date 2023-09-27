@@ -6,18 +6,41 @@
 # pylint: disable=C0103
 
 """
-plotpy.utils.colormap
----------------------------
+Colormap functions
+------------------
 
-The `colormap` module contains definition of common colormaps and tools
-to manipulate and create them
+Overview
+^^^^^^^^
+
+The :py:mod:`.colormap` module contains definition of common colormaps and tools
+to manipulate and create them.
+
+The following functions are available:
+
+* :py:func:`.get_cmap`: get a colormap from its name
+* :py:func:`.get_cmap_name`: get a colormap's name
+* :py:func:`.get_colormap_list`: get the list of available colormaps
+* :py:func:`.build_icon_from_cmap`: build an icon representing the colormap
+* :py:func:`.build_icon_from_cmap_name`: build an icon representing the colormap
+  from its name
+* :py:func:`.register_extra_colormap`: register a custom colormap
+
+Reference
+^^^^^^^^^
+
+.. autofunction:: get_cmap
+.. autofunction:: get_cmap_name
+.. autofunction:: get_colormap_list
+.. autofunction:: build_icon_from_cmap
+.. autofunction:: build_icon_from_cmap_name
+.. autofunction:: register_extra_colormap
 """
 
 from numpy import array, linspace, newaxis, uint8, zeros
 from qtpy import QtGui as QG
 from qwt import QwtInterval, QwtLinearColorMap, toQImage
 
-from plotpy.utils import _cm  # Reuse matplotlib data
+from plotpy.mathutils import _cm  # Reuse matplotlib data
 
 # usefull to obtain a full color map
 FULLRANGE = QwtInterval(0.0, 1.0)

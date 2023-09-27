@@ -35,7 +35,7 @@ from plotpy.core.panels.csection.cswidget import XCrossSection, YCrossSection
 from plotpy.core.panels.itemlist import PlotItemList
 from plotpy.core.plot.base import BasePlot
 from plotpy.core.plot.manager import PlotManager
-from plotpy.utils.colormap import get_colormap_list
+from plotpy.mathutils.colormap import get_colormap_list
 
 _qapp = None
 _interactive = False

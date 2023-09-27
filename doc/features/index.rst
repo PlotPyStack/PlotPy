@@ -51,4 +51,4 @@ Plot widgets with integrated plot manager:
    pyplot
    io
    signals
-   utils/index
+   mathutils/index

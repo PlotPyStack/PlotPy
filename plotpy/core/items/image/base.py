@@ -42,7 +42,7 @@ from plotpy.core.interfaces.common import (
 from plotpy.core.items.shapes.rectangle import RectangleShape
 from plotpy.core.lutrange import lut_range_threshold
 from plotpy.core.styles.image import LUTAlpha, RawImageParam
-from plotpy.utils.colormap import FULLRANGE, get_cmap, get_cmap_name
+from plotpy.mathutils.colormap import FULLRANGE, get_cmap, get_cmap_name
 
 if TYPE_CHECKING:
     import guidata.dataset.io

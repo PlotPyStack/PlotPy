@@ -29,7 +29,7 @@ from plotpy.core.items.image.base import RawImageItem, pixelround
 from plotpy.core.items.image.filter import XYImageFilterItem, to_bins
 from plotpy.core.items.image.mixin import ImageMixin
 from plotpy.core.styles.image import ImageParam, LUTAlpha, RGBImageParam, XYImageParam
-from plotpy.utils.geometry import colvector
+from plotpy.mathutils.geometry import colvector
 
 if TYPE_CHECKING:
     import guidata.dataset.io

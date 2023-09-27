@@ -6,15 +6,21 @@
 # pylint: disable=C0103
 
 """
-plotpy.core.scaler
--------------
+Scaling functions
+-----------------
 
-The `scaler` module wraps features provided by the C++ scaler engine
-(`_scaler` extension):
-    * :py:func:`.scaler.resize`: resize an image using the scaler engine
+Overview
+^^^^^^^^
+
+The :py:mod:`.scaler` module provides scaling functions for images, thanks to
+the C++ scaler engine (`_scaler` extension).
+
+The following functions are available:
+
+* :py:func:`.resize`: resize an image using the scaler engine
 
 Reference
-~~~~~~~~~
+^^^^^^^^^
 
 .. autofunction:: resize
 """

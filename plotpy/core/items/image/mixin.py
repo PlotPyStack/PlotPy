@@ -10,7 +10,7 @@ from qtpy import QtCore as QC
 from plotpy.core import io
 from plotpy.core.coords import axes_to_canvas, canvas_to_axes
 from plotpy.core.items.image.masked_area import MaskedArea
-from plotpy.utils.geometry import colvector, rotate, scale, translate
+from plotpy.mathutils.geometry import colvector, rotate, scale, translate
 
 if TYPE_CHECKING:
     import guidata.dataset.io

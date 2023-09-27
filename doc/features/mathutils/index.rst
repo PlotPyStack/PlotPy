@@ -5,5 +5,6 @@ Utilities
    :maxdepth: 2
    :caption: Contents:
 
-   qthelpers
    geometry
+   scaler
+   colormap

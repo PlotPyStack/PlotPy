@@ -18,7 +18,7 @@ from qtpy import QtGui as QG
 from plotpy._scaler import INTERP_AA, INTERP_LINEAR, INTERP_NEAREST
 from plotpy.config import _
 from plotpy.core.styles.base import ItemParameters
-from plotpy.utils.colormap import build_icon_from_cmap_name, get_colormap_list
+from plotpy.mathutils.colormap import build_icon_from_cmap_name, get_colormap_list
 
 
 def _create_choices():

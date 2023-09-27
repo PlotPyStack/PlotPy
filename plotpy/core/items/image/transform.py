@@ -19,7 +19,7 @@ from plotpy.core.interfaces.common import (
 from plotpy.core.items.image.base import RawImageItem
 from plotpy.core.items.image.mixin import TransformImageMixin
 from plotpy.core.styles.image import TrImageParam
-from plotpy.utils.geometry import colvector, scale, translate
+from plotpy.mathutils.geometry import colvector, scale, translate
 
 try:
     from plotpy._scaler import INTERP_LINEAR, INTERP_NEAREST, _scale_tr

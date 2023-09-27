@@ -14,7 +14,7 @@ from qtpy import QtGui as QG
 from qwt import QwtSymbol
 
 from plotpy.core.items.shapes.polygon import PolygonShape
-from plotpy.utils.geometry import compute_angle, compute_center
+from plotpy.mathutils.geometry import compute_angle, compute_center
 
 if TYPE_CHECKING:
     from qtpy.QtCore import QPointF

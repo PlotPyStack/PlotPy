@@ -9,7 +9,7 @@ from plotpy.core.coords import axes_to_canvas, canvas_to_axes
 from plotpy.core.interfaces.common import IBasePlotItem
 from plotpy.core.items.curve.errorbar import ErrorBarCurveItem
 from plotpy.core.items.image.misc import get_image_from_qrect
-from plotpy.utils.geometry import rotate, translate, vector_angle, vector_norm
+from plotpy.mathutils.geometry import rotate, translate, vector_angle, vector_norm
 
 try:
     from plotpy._scaler import INTERP_LINEAR, _scale_tr

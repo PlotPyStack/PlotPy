@@ -35,7 +35,7 @@ from plotpy.core.items.shapes.rectangle import ObliqueRectangleShape, RectangleS
 from plotpy.core.items.shapes.segment import SegmentShape
 from plotpy.core.styles.label import LabelParam
 from plotpy.core.styles.shape import AnnotationParam
-from plotpy.utils.geometry import (
+from plotpy.mathutils.geometry import (
     compute_angle,
     compute_center,
     compute_distance,
