@@ -30,7 +30,7 @@ class Axes(PolygonShape):
     def __init__(
         self, p0=(0, 0), p1=(0, 0), p2=(0, 0), axesparam=None, shapeparam=None
     ):
-        super(Axes, self).__init__(shapeparam=shapeparam)
+        super().__init__(shapeparam=shapeparam)
         self.set_rect(p0, p1, p2)
         self.arrow_angle = 15  # degrees
         self.arrow_size = 0.05  # % of axe length
@@ -70,7 +70,7 @@ class Axes(PolygonShape):
         Args:
             writer: HDF5, INI or JSON writer
         """
-        super(Axes, self).serialize(writer)
+        super().serialize(writer)
         self.axesparam.update_param(self)
         writer.write(self.axesparam, group_name="axesparam")
 
@@ -85,7 +85,7 @@ class Axes(PolygonShape):
         Args:
             reader: HDF5, INI or JSON reader
         """
-        super(Axes, self).deserialize(reader)
+        super().deserialize(reader)
         self.axesparam = AxesShapeParam(_("Axes"), icon="gtaxes.png")
         reader.read("axesparam", instance=self.axesparam)
         self.axesparam.update_axes(self)

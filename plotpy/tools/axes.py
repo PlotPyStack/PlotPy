@@ -14,7 +14,7 @@ class AxisScaleTool(CommandTool):
     """ """
 
     def __init__(self, manager):
-        super(AxisScaleTool, self).__init__(
+        super().__init__(
             manager, _("Scale"), icon=get_icon("log_log.png"), tip=None, toolbar_id=None
         )
         self.action.setEnabled(True)

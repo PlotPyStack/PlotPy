@@ -29,7 +29,7 @@ class ItemManipulationBaseTool(CommandTool):
     TIP = None
 
     def __init__(self, manager, toolbar_id, curve_func, image_func):
-        super(ItemManipulationBaseTool, self).__init__(
+        super().__init__(
             manager, self.TITLE, icon=self.ICON, tip=self.TIP, toolbar_id=toolbar_id
         )
         self.curve_func = curve_func
@@ -81,7 +81,7 @@ class EditItemDataTool(ItemManipulationBaseTool):
     ICON = "arredit.png"
 
     def __init__(self, manager, toolbar_id=None):
-        super(EditItemDataTool, self).__init__(
+        super().__init__(
             manager, toolbar_id, curve_func=edit_curve_data, image_func=edit_image_data
         )
 
@@ -93,7 +93,7 @@ class ExportItemDataTool(ItemManipulationBaseTool):
     ICON = "export.png"
 
     def __init__(self, manager, toolbar_id=None):
-        super(ExportItemDataTool, self).__init__(
+        super().__init__(
             manager,
             toolbar_id,
             curve_func=export_curve_data,
@@ -105,7 +105,7 @@ class ItemCenterTool(CommandTool):
     """ """
 
     def __init__(self, manager, toolbar_id=None):
-        super(ItemCenterTool, self).__init__(
+        super().__init__(
             manager, _("Center items"), "center.png", toolbar_id=toolbar_id
         )
 
@@ -151,9 +151,7 @@ class DeleteItemTool(CommandTool):
     """ """
 
     def __init__(self, manager, toolbar_id=None):
-        super(DeleteItemTool, self).__init__(
-            manager, _("Remove"), "trash.png", toolbar_id=toolbar_id
-        )
+        super().__init__(manager, _("Remove"), "trash.png", toolbar_id=toolbar_id)
 
     def get_removable_items(self, plot):
         """
@@ -189,7 +187,7 @@ class SaveItemsTool(CommandTool):
     """ """
 
     def __init__(self, manager, toolbar_id=DefaultToolbarID):
-        super(SaveItemsTool, self).__init__(
+        super().__init__(
             manager,
             _("Save items"),
             get_std_icon("DialogSaveButton", 16),
@@ -214,7 +212,7 @@ class LoadItemsTool(OpenFileTool):
     """ """
 
     def __init__(self, manager, toolbar_id=DefaultToolbarID):
-        super(LoadItemsTool, self).__init__(
+        super().__init__(
             manager, title=_("Load items"), formats="*.gui", toolbar_id=toolbar_id
         )
 

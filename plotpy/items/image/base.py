@@ -108,7 +108,7 @@ class BaseImageItem(QwtPlotItem):
     _private = False
 
     def __init__(self, data=None, param=None):
-        super(BaseImageItem, self).__init__()
+        super().__init__()
 
         self.bg_qcolor = QG.QColor()
 

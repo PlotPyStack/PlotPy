@@ -634,7 +634,7 @@ class SubplotWidget(QW.QSplitter):
     def __init__(
         self, manager: PlotManager, parent: QWidget | None = None, **kwargs
     ) -> None:
-        super(SubplotWidget, self).__init__(parent, **kwargs)
+        super().__init__(parent, **kwargs)
         self.setOrientation(QC.Qt.Orientation.Horizontal)
         self.setSizePolicy(QW.QSizePolicy.Expanding, QW.QSizePolicy.Expanding)
         self.manager = manager

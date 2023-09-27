@@ -13,7 +13,7 @@ class SegmentShape(PolygonShape):
     ADDITIONNAL_POINTS = 1  # Number of points which are not part of the shape
 
     def __init__(self, x1=0, y1=0, x2=0, y2=0, shapeparam=None):
-        super(SegmentShape, self).__init__(shapeparam=shapeparam)
+        super().__init__(shapeparam=shapeparam)
         self.set_rect(x1, y1, x2, y2)
         self.setIcon(get_icon("segment.png"))
 

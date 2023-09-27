@@ -30,7 +30,7 @@ class SaveAsTool(CommandTool):
     """ """
 
     def __init__(self, manager, toolbar_id=DefaultToolbarID):
-        super(SaveAsTool, self).__init__(
+        super().__init__(
             manager,
             _("Save as..."),
             get_std_icon("DialogSaveButton", 16),
@@ -60,7 +60,7 @@ class CopyToClipboardTool(CommandTool):
     """ """
 
     def __init__(self, manager, toolbar_id=DefaultToolbarID):
-        super(CopyToClipboardTool, self).__init__(
+        super().__init__(
             manager,
             _("Copy to clipboard"),
             get_icon("copytoclipboard.png"),
@@ -215,7 +215,7 @@ class SnapshotTool(RectangularActionTool):
     ICON = "snapshot.png"
 
     def __init__(self, manager, toolbar_id=DefaultToolbarID):
-        super(SnapshotTool, self).__init__(
+        super().__init__(
             manager, save_snapshot, toolbar_id=toolbar_id, fix_orientation=True
         )
 
@@ -224,7 +224,7 @@ class HelpTool(CommandTool):
     """ """
 
     def __init__(self, manager, toolbar_id=DefaultToolbarID):
-        super(HelpTool, self).__init__(
+        super().__init__(
             manager,
             _("Help"),
             get_std_icon("DialogHelpButton", 16),
@@ -253,7 +253,7 @@ class AboutTool(CommandTool):
     """ """
 
     def __init__(self, manager, toolbar_id=DefaultToolbarID):
-        super(AboutTool, self).__init__(
+        super().__init__(
             manager, _("About") + " plotpy", get_icon("plotpy.svg"), toolbar_id=None
         )
 
@@ -267,7 +267,7 @@ class PrintTool(CommandTool):
     """ """
 
     def __init__(self, manager, toolbar_id=DefaultToolbarID):
-        super(PrintTool, self).__init__(
+        super().__init__(
             manager, _("Print..."), get_icon("print.png"), toolbar_id=toolbar_id
         )
 
@@ -295,7 +295,7 @@ class OpenFileTool(CommandTool):
     def __init__(
         self, manager, title=_("Open..."), formats="*.*", toolbar_id=DefaultToolbarID
     ):
-        super(OpenFileTool, self).__init__(
+        super().__init__(
             manager, title, get_std_icon("DialogOpenButton", 16), toolbar_id=toolbar_id
         )
         self.formats = formats
@@ -329,9 +329,7 @@ class FilterTool(CommandTool):
     """ """
 
     def __init__(self, manager, filter, toolbar_id=None):
-        super(FilterTool, self).__init__(
-            manager, str(filter.name), toolbar_id=toolbar_id
-        )
+        super().__init__(manager, str(filter.name), toolbar_id=toolbar_id)
         self.filter = filter
 
     def update_status(self, plot):

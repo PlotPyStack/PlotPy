@@ -53,7 +53,7 @@ class ImageStatsRectangle(AnnotatedRectangle):
         show_surface=False,
         show_integral=False,
     ):
-        super(ImageStatsRectangle, self).__init__(x1, y1, x2, y2, annotationparam)
+        super().__init__(x1, y1, x2, y2, annotationparam)
         self.image_item = None
         self.setIcon(get_icon("imagestats.png"))
         self.show_surface = show_surface
@@ -121,7 +121,7 @@ class ImageStatsTool(RectangularShapeTool):
         show_surface=False,
         show_integral=False,
     ):
-        super(ImageStatsTool, self).__init__(
+        super().__init__(
             manager,
             setup_shape_cb,
             handle_final_shape_cb,
@@ -166,7 +166,7 @@ class ImageStatsTool(RectangularShapeTool):
 
         :param shape:
         """
-        super(ImageStatsTool, self).setup_shape(shape)
+        super().setup_shape(shape)
         shape.setTitle(_("Image statistics"))
         self.set_shape_style(shape)
         self.register_shape(shape, final=False)
@@ -188,7 +188,7 @@ class ImageStatsTool(RectangularShapeTool):
 
         :param shape:
         """
-        super(ImageStatsTool, self).handle_final_shape(shape)
+        super().handle_final_shape(shape)
         self.register_shape(shape, final=True)
 
     def get_associated_item(self, plot):
@@ -216,7 +216,7 @@ class ReverseYAxisTool(ToggleTool):
     """ """
 
     def __init__(self, manager):
-        super(ReverseYAxisTool, self).__init__(manager, _("Reverse Y axis"))
+        super().__init__(manager, _("Reverse Y axis"))
 
     def activate_command(self, plot, checked):
         """Activate tool"""
@@ -242,9 +242,7 @@ class AspectRatioTool(CommandTool):
     """ """
 
     def __init__(self, manager):
-        super(AspectRatioTool, self).__init__(
-            manager, _("Aspect ratio"), tip=None, toolbar_id=None
-        )
+        super().__init__(manager, _("Aspect ratio"), tip=None, toolbar_id=None)
         self.action.setEnabled(True)
 
     def create_action_menu(self, manager):
@@ -326,7 +324,7 @@ class ContrastPanelTool(PanelTool):
 
         :param plot:
         """
-        super(ContrastPanelTool, self).update_status(plot)
+        super().update_status(plot)
         update_image_tool_status(self, plot)
         item = plot.get_last_active_item(IVoiImageItemType)
         panel = self.manager.get_panel(self.panel_id)
@@ -339,7 +337,7 @@ class ColormapTool(CommandTool):
     """ """
 
     def __init__(self, manager, toolbar_id=DefaultToolbarID):
-        super(ColormapTool, self).__init__(
+        super().__init__(
             manager,
             _("Colormap"),
             tip=_("Select colormap for active " "image"),
@@ -422,7 +420,7 @@ class ImageMaskTool(CommandTool):
     def __init__(self, manager, toolbar_id=DefaultToolbarID):
         self._mask_shapes = {}
         self._mask_already_restored = {}
-        super(ImageMaskTool, self).__init__(
+        super().__init__(
             manager,
             _("Mask"),
             icon="mask_tool.png",
@@ -512,7 +510,7 @@ class ImageMaskTool(CommandTool):
 
         :param baseplot:
         """
-        super(ImageMaskTool, self).register_plot(baseplot)
+        super().register_plot(baseplot)
         self._mask_shapes.setdefault(baseplot, [])
         baseplot.SIG_ITEMS_CHANGED.connect(self.items_changed)
         baseplot.SIG_ITEM_SELECTION_CHANGED.connect(self.item_selection_changed)
@@ -677,7 +675,7 @@ class LockTrImageTool(ToggleTool):
     """Lock (rotation, translation, resize)"""
 
     def __init__(self, manager, toolbar_id=None):
-        super(LockTrImageTool, self).__init__(
+        super().__init__(
             manager, title=_("Lock"), icon=get_icon("lock.png"), toolbar_id=None
         )
 
@@ -728,7 +726,7 @@ class OpenImageTool(OpenFileTool):
     """ """
 
     def __init__(self, manager, toolbar_id=DefaultToolbarID):
-        super(OpenImageTool, self).__init__(
+        super().__init__(
             manager,
             title=_("Open image"),
             formats=io.iohandler.get_filters("load"),
@@ -755,7 +753,7 @@ class RotationCenterTool(InteractiveTool):
         rotation_center=True,
         on_all_items=True,
     ):
-        super(RotationCenterTool, self).__init__(
+        super().__init__(
             manager,
             toolbar_id,
             title=title,
@@ -847,7 +845,7 @@ class RotateCropTool(CommandTool):
     See :py:class:`.rotatecrop.RotateCropDialog` dialog."""
 
     def __init__(self, manager, toolbar_id=DefaultToolbarID, options=None):
-        super(RotateCropTool, self).__init__(
+        super().__init__(
             manager,
             title=_("Rotate and crop"),
             icon=get_icon("rotate.png"),

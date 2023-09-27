@@ -170,7 +170,7 @@ class MaskedImageItem(ImageItem, MaskedImageMixin):
             * data: 2D NumPy array
             * lut_range: LUT range -- tuple (levelmin, levelmax)
         """
-        super(MaskedImageItem, self).set_data(data, lut_range)
+        super().set_data(data, lut_range)
         MaskedImageMixin._set_data(self, data)
 
 
@@ -344,5 +344,5 @@ class MaskedXYImageItem(XYImageItem, MaskedImageMixin):
             * data: 2D NumPy array
             * lut_range: LUT range -- tuple (levelmin, levelmax)
         """
-        super(MaskedXYImageItem, self).set_data(data, lut_range)
+        super().set_data(data, lut_range)
         MaskedImageMixin._set_data(self, data)

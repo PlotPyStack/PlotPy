@@ -37,7 +37,7 @@ class GridItem(QwtPlotGrid):
     _private = False
 
     def __init__(self, gridparam=None):
-        super(GridItem, self).__init__()
+        super().__init__()
         if gridparam is None:
             self.gridparam = GridParam(title=_("Grid"), icon="grid.png")
         else:

@@ -28,7 +28,7 @@ class ItemListWidget(QW.QListWidget):
     """
 
     def __init__(self, parent):
-        super(ItemListWidget, self).__init__(parent)
+        super().__init__(parent)
 
         self.manager = None
         self.plot = None  # the default plot...
@@ -249,7 +249,7 @@ class PlotItemList(PanelWidget):
     PANEL_ICON = "item_list.png"
 
     def __init__(self, parent):
-        super(PlotItemList, self).__init__(parent)
+        super().__init__(parent)
         self.manager = None
 
         vlayout = QW.QVBoxLayout()

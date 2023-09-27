@@ -74,7 +74,7 @@ class ImageFilterItem(BaseImageItem):
         self.use_source_cmap = None
         self.image = None  # BaseImageItem constructor will try to set this
         # item's color map using the method 'set_color_map'
-        super(ImageFilterItem, self).__init__(param=param)
+        super().__init__(param=param)
         self.border_rect.set_style("plot", "shape/imagefilter")
         self.image = image
         self.filter = filter

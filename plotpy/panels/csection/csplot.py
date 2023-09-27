@@ -32,7 +32,7 @@ class CrossSectionPlot(BasePlot):
     SHADE = 0.2
 
     def __init__(self, parent=None):
-        super(CrossSectionPlot, self).__init__(
+        super().__init__(
             parent=parent, title="", section="cross_section", type=PlotType.CURVE
         )
         self.perimage_mode = True
@@ -419,7 +419,7 @@ class ObliqueCrossSectionPlot(HorizontalCrossSectionPlot):
     LABEL_TEXT = _("Activate the oblique cross section tool")
 
     def __init__(self, parent=None):
-        super(ObliqueCrossSectionPlot, self).__init__(parent)
+        super().__init__(parent)
         self.set_title(self.PLOT_TITLE)
         self.single_source = True
 

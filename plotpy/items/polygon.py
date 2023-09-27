@@ -71,7 +71,7 @@ class PolygonMapItem(QwtPlotItem):
     _can_rotate = False
 
     def __init__(self, curveparam=None):
-        super(PolygonMapItem, self).__init__()
+        super().__init__()
         if curveparam is None:
             self.param = CurveParam(_("PolygonMap"), icon="curve.png")
         else:

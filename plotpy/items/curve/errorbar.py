@@ -55,7 +55,7 @@ class ErrorBarCurveItem(CurveItem):
         self.errorBrush: QG.QBrush | None = None
         self.errorCap: int | None = None
         self.errorOnTop: bool | None = None
-        super(ErrorBarCurveItem, self).__init__(curveparam)
+        super().__init__(curveparam)
         self._dx = None
         self._dy = None
         self._minmaxarrays = {}
@@ -72,7 +72,7 @@ class ErrorBarCurveItem(CurveItem):
         Args:
             writer: HDF5, INI or JSON writer
         """
-        super(ErrorBarCurveItem, self).serialize(writer)
+        super().serialize(writer)
         writer.write(self._dx, group_name="dXdata")
         writer.write(self._dy, group_name="dYdata")
         self.errorbarparam.update_param(self)

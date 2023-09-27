@@ -82,7 +82,7 @@ class Histogram2DParam(BaseImageParam, ImageParamMixin):
 
         :param obj:
         """
-        super(Histogram2DParam, self).update_param(obj)
+        super().update_param(obj)
         self.logscale = obj.logscale
         self.nx_bins, self.ny_bins = obj.nx_bins, obj.ny_bins
 

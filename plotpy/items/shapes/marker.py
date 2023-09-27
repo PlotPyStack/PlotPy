@@ -43,7 +43,7 @@ class Marker(QwtPlotMarker):
     _can_move = True
 
     def __init__(self, label_cb=None, constraint_cb=None, markerparam=None):
-        super(Marker, self).__init__()
+        super().__init__()
         self._pending_center_handle = None
         self.selected = False
         self.label_cb = label_cb

@@ -64,7 +64,7 @@ class TrImageItem(TransformImageMixin, RawImageItem):
         self.locked = False
         self.rotation_point = None
         self.rotation_point_move_with_shape = None
-        super(TrImageItem, self).__init__(data, param)
+        super().__init__(data, param)
 
     # ---- BaseImageItem API ---------------------------------------------------
     def get_default_param(self):

@@ -208,7 +208,7 @@ class LegendParam(LabelParam):
 
         :param obj:
         """
-        super(LegendParam, self).update_label(obj)
+        super().update_label(obj)
         if not self._multiselection:
             obj.setTitle(self.get_title())
 
@@ -227,14 +227,14 @@ class LabelParamWithContents(LabelParam):
 
     def __init__(self, title=None, comment=None, icon=""):
         self.plain_text = None
-        super(LabelParamWithContents, self).__init__(title, comment, icon)
+        super().__init__(title, comment, icon)
 
     def update_param(self, obj):
         """
 
         :param obj:
         """
-        super(LabelParamWithContents, self).update_param(obj)
+        super().update_param(obj)
         self.contents = self.plain_text = obj.get_plain_text()
 
     def update_label(self, obj):
@@ -242,7 +242,7 @@ class LabelParamWithContents(LabelParam):
 
         :param obj:
         """
-        super(LabelParamWithContents, self).update_label(obj)
+        super().update_label(obj)
         if self.plain_text is not None and self.contents != self.plain_text:
             text = self.contents.replace("\n", "<br>")
             obj.set_text(text)

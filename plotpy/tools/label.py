@@ -29,7 +29,7 @@ class LabelTool(InteractiveTool):
         switch_to_default_tool=None,
     ):
         self.handle_label_cb = handle_label_cb
-        super(LabelTool, self).__init__(
+        super().__init__(
             manager,
             toolbar_id,
             title=title,

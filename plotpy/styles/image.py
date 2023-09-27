@@ -376,7 +376,7 @@ class RawImageParam(BaseImageParam):
 
         :param image:
         """
-        super(RawImageParam, self).update_param(image)
+        super().update_param(image)
         self.background = str(QG.QColor(image.bg_qcolor).name())
 
     def update_item(self, image):
@@ -384,7 +384,7 @@ class RawImageParam(BaseImageParam):
 
         :param image:
         """
-        super(RawImageParam, self).update_item(image)
+        super().update_item(image)
         plot = image.plot()
         if plot is not None:
             plot.blockSignals(True)  # Avoid unwanted calls of update_param
@@ -439,7 +439,7 @@ class ImageParam(RawImageParam):
 
         :param image:
         """
-        super(ImageParam, self).update_param(image)
+        super().update_param(image)
         self.xmin = image.xmin
         if self.xmin is None:
             self.xmin = 0.0
@@ -462,7 +462,7 @@ class ImageParam(RawImageParam):
 
         :param image:
         """
-        super(ImageParam, self).update_item(image)
+        super().update_item(image)
         plot = image.plot()
         if plot is not None:
             plot.blockSignals(True)  # Avoid unwanted calls of update_param
@@ -493,7 +493,7 @@ class RGBImageParam(ImageParam):
 
         :param image:
         """
-        super(RGBImageParam, self).update_item(image)
+        super().update_item(image)
         plot = image.plot()
         if plot is not None:
             plot.blockSignals(True)  # Avoid unwanted calls of update_param
@@ -534,7 +534,7 @@ class MaskedImageParam(ImageParam, MaskedImageParamMixin):
 
         :param image:
         """
-        super(MaskedImageParam, self).update_item(image)
+        super().update_item(image)
         self._update_item(image)
 
 
@@ -544,7 +544,7 @@ class MaskedXYImageParam(XYImageParam, MaskedImageParamMixin):
 
         :param image:
         """
-        super(MaskedXYImageParam, self).update_item(image)
+        super().update_item(image)
         self._update_item(image)
 
 
@@ -579,7 +579,7 @@ class ImageFilterParam(BaseImageParam):
         """
         self.xmin, self.ymin, self.xmax, self.ymax = obj.border_rect.get_rect()
         self.use_source_cmap = obj.use_source_cmap
-        super(ImageFilterParam, self).update_param(obj)
+        super().update_param(obj)
 
     def update_imagefilter(self, imagefilter):
         """
@@ -640,7 +640,7 @@ class TrImageParam(RawImageParam):
 
         :param image:
         """
-        super(TrImageParam, self).update_param(image)
+        super().update_param(image)
         # we don't get crop info from the image because
         # its not easy to extract from the transform
         # and TrImageItem keeps it's crop information

@@ -43,7 +43,7 @@ def loadui(fname, replace_class="QwtPlot"):
         """ """
 
         def __init__(self, parent=None):
-            super(Form, self).__init__(parent)
+            super().__init__(parent)
             self.setupUi(self)
 
     return Form

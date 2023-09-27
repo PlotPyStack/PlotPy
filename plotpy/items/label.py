@@ -61,7 +61,7 @@ class AbstractLabelItem(QwtPlotItem):
     _private = False
 
     def __init__(self, labelparam=None):
-        super(AbstractLabelItem, self).__init__()
+        super().__init__()
         self.selected = False
         self.anchor = None
         self.G = None
@@ -458,7 +458,7 @@ class LabelItem(AbstractLabelItem):
         self.text_string = "" if text is None else text
         self.text = QG.QTextDocument()
         self.marker: QwtSymbol | None = None
-        super(LabelItem, self).__init__(labelparam)
+        super().__init__(labelparam)
         self.setIcon(get_icon("label.png"))
 
     def __reduce__(self):
@@ -475,7 +475,7 @@ class LabelItem(AbstractLabelItem):
         Args:
             writer: HDF5, INI or JSON writer
         """
-        super(LabelItem, self).serialize(writer)
+        super().serialize(writer)
         writer.write(self.text_string, group_name="text")
 
     def deserialize(
@@ -489,7 +489,7 @@ class LabelItem(AbstractLabelItem):
         Args:
             reader: HDF5, INI or JSON reader
         """
-        super(LabelItem, self).deserialize(reader)
+        super().deserialize(reader)
         self.set_text(reader.read("text", func=reader.read_unicode))
 
     def types(self) -> tuple[type[IItemType], ...]:
@@ -588,7 +588,7 @@ class LegendBoxItem(AbstractLabelItem):
     def __init__(self, labelparam=None):
         self.font = None
         self.color = None
-        super(LegendBoxItem, self).__init__(labelparam)
+        super().__init__(labelparam)
         # saves the last computed sizes
         self.sizes = 0.0, 0.0, 0.0, 0.0
         self.setIcon(get_icon("legend.png"))
@@ -762,7 +762,7 @@ class SelectedLegendBoxItem(LegendBoxItem):
     """ """
 
     def __init__(self, dataset=None, itemlist=None):
-        super(SelectedLegendBoxItem, self).__init__(dataset)
+        super().__init__(dataset)
         self.itemlist = [] if itemlist is None else itemlist
 
     def __reduce__(self):
@@ -911,7 +911,7 @@ class DataInfoLabel(LabelItem):
     __implements__ = (IBasePlotItem,)
 
     def __init__(self, labelparam=None, infos=None):
-        super(DataInfoLabel, self).__init__(None, labelparam)
+        super().__init__(None, labelparam)
         if isinstance(infos, ObjectInfo):
             infos = [infos]
         self.infos = infos

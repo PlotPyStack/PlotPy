@@ -36,7 +36,7 @@ class MultiLineTool(InteractiveTool):
         tip=None,
         switch_to_default_tool=None,
     ):
-        super(MultiLineTool, self).__init__(
+        super().__init__(
             manager,
             toolbar_id,
             title=title,
@@ -109,7 +109,7 @@ class MultiLineTool(InteractiveTool):
         :param filter:
         :param event:
         """
-        super(MultiLineTool, self).validate(filter, event)
+        super().validate(filter, event)
         if self.handle_final_shape_cb is not None:
             self.handle_final_shape_cb(self.shape)
         self.reset()
@@ -177,12 +177,12 @@ class FreeFormTool(MultiLineTool):
 
     def cancel_point(self, filter, event):
         """Reimplement base class method"""
-        super(FreeFormTool, self).cancel_point(filter, event)
+        super().cancel_point(filter, event)
         self.shape.closed = len(self.shape.points) > 2
 
     def mouse_press(self, filter, event):
         """Reimplement base class method"""
-        super(FreeFormTool, self).mouse_press(filter, event)
+        super().mouse_press(filter, event)
         self.shape.closed = len(self.shape.points) > 2
 
 
@@ -204,7 +204,7 @@ class RectangularShapeTool(RectangularActionTool):
         tip=None,
         switch_to_default_tool=None,
     ):
-        super(RectangularShapeTool, self).__init__(
+        super().__init__(
             manager,
             self.add_shape_to_plot,
             shape_style,
@@ -322,4 +322,4 @@ class EllipseTool(RectangularShapeTool):
         :param shape:
         """
         shape.switch_to_ellipse()
-        super(EllipseTool, self).handle_final_shape(shape)
+        super().handle_final_shape(shape)

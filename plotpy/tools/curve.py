@@ -29,9 +29,7 @@ class CurveStatsTool(BaseCursorTool):
     def __init__(
         self, manager, toolbar_id=DefaultToolbarID, title=None, icon=None, tip=None
     ):
-        super(CurveStatsTool, self).__init__(
-            manager, toolbar_id, title=title, icon=icon, tip=tip
-        )
+        super().__init__(manager, toolbar_id, title=title, icon=icon, tip=tip)
         self._last_item = None
         self.label = None
 
@@ -97,7 +95,7 @@ class CurveStatsTool(BaseCursorTool):
         :param filter:
         :param event:
         """
-        super(CurveStatsTool, self).end_move(filter, event)
+        super().end_move(filter, event)
         if self.label is not None:
             filter.plot.add_item_with_z_offset(self.label, SHAPE_Z_OFFSET)
             self.label = None
@@ -126,7 +124,7 @@ class AntiAliasingTool(ToggleTool):
     """ """
 
     def __init__(self, manager):
-        super(AntiAliasingTool, self).__init__(manager, _("Antialiasing (curves)"))
+        super().__init__(manager, _("Antialiasing (curves)"))
 
     def activate_command(self, plot, checked):
         """Activate tool"""
@@ -163,7 +161,7 @@ class SelectPointTool(InteractiveTool):
         marker_style=None,
         switch_to_default_tool=None,
     ):
-        super(SelectPointTool, self).__init__(
+        super().__init__(
             manager,
             toolbar_id,
             title=title,

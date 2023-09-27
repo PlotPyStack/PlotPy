@@ -31,7 +31,7 @@ class DoAutoscaleTool(CommandTool):
         tip=None,
         toolbar_id=DefaultToolbarID,
     ):
-        super(DoAutoscaleTool, self).__init__(
+        super().__init__(
             manager, title=title, icon=icon, tip=tip, toolbar_id=toolbar_id
         )
 
@@ -59,7 +59,7 @@ class BasePlotMenuTool(CommandTool):
             title = default_title
         if icon is None:
             icon = default_icon
-        super(BasePlotMenuTool, self).__init__(manager, title, icon, tip, toolbar_id)
+        super().__init__(manager, title, icon, tip, toolbar_id)
         # Warning: icon (str) --(Base class constructor)--> self.icon (QIcon)
         self.key = key
 
@@ -80,7 +80,7 @@ class DisplayCoordsTool(CommandTool):
     """ """
 
     def __init__(self, manager):
-        super(DisplayCoordsTool, self).__init__(
+        super().__init__(
             manager,
             _("Markers"),
             icon=get_icon("on_curve.png"),
@@ -161,7 +161,7 @@ class DummySeparatorTool(GuiTool):
     """ """
 
     def __init__(self, manager, toolbar_id=DefaultToolbarID):
-        super(DummySeparatorTool, self).__init__(manager, toolbar_id)
+        super().__init__(manager, toolbar_id)
 
     def setup_toolbar(self, toolbar):
         """Setup tool's toolbar"""
@@ -182,7 +182,7 @@ class RectangularSelectionTool(RectangularActionTool):
     ICON = "rectangular_select.png"
 
     def __init__(self, manager, intersect=True, toolbar_id=DefaultToolbarID):
-        super(RectangularSelectionTool, self).__init__(
+        super().__init__(
             manager, self.select_items, toolbar_id=toolbar_id, fix_orientation=True
         )
         self.intersect = intersect

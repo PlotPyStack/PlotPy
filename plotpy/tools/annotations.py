@@ -69,7 +69,7 @@ class AnnotatedEllipseTool(EllipseTool):
         :param shape:
         """
         shape.shape.switch_to_ellipse()
-        super(EllipseTool, self).handle_final_shape(shape)
+        super().handle_final_shape(shape)
 
 
 class AnnotatedPointTool(PointTool):

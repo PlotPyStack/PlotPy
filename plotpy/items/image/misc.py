@@ -72,7 +72,7 @@ class QuadGridItem(ImageMixin, RawImageItem):
         self.tr = np.eye(3, dtype=float)
         self.itr = np.eye(3, dtype=float)
         self.points = np.array([[0, 0, 2, 2], [0, 2, 2, 0], [1, 1, 1, 1]], float)
-        super(QuadGridItem, self).__init__(Z, param)
+        super().__init__(Z, param)
         self.set_data(Z)
         self.grid = 1
         self.interpolate = (0, 0.5, 0.5)
@@ -185,7 +185,7 @@ class Histogram2DItem(ImageMixin, BaseImageItem):
         self.tr = np.eye(3, dtype=float)
         self.itr = np.eye(3, dtype=float)
         self.points = np.array([[0, 0, 2, 2], [0, 2, 2, 0], [1, 1, 1, 1]], float)
-        super(Histogram2DItem, self).__init__(param=param)
+        super().__init__(param=param)
 
         # Set by parameters
         self.nx_bins = 0

@@ -38,7 +38,7 @@ class AbstractShape(QwtPlotItem):
     _can_move = True
 
     def __init__(self):
-        super(AbstractShape, self).__init__()
+        super().__init__()
         self.selected = False
 
     # ------IBasePlotItem API----------------------------------------------------

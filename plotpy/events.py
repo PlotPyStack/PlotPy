@@ -75,7 +75,7 @@ class KeyEventMatch(EventMatch):
     """
 
     def __init__(self, keys):
-        super(KeyEventMatch, self).__init__()
+        super().__init__()
         key_list, mod_list = [], []
         for item in keys:
             if isinstance(item, (tuple, list)):
@@ -120,7 +120,7 @@ class StandardKeyMatch(EventMatch):
     """
 
     def __init__(self, keysequence):
-        super(StandardKeyMatch, self).__init__()
+        super().__init__()
         assert isinstance(keysequence, int)
         self.keyseq = keysequence
 
@@ -139,7 +139,7 @@ class MouseEventMatch(EventMatch):
     """Base class for matching mouse events"""
 
     def __init__(self, evt_type, btn, modifiers=QC.Qt.NoModifier):
-        super(MouseEventMatch, self).__init__()
+        super().__init__()
         assert isinstance(modifiers, (int, QC.Qt.KeyboardModifiers))
         self.evt_type = evt_type
         self.button = btn
@@ -190,7 +190,7 @@ class StatefulEventFilter(QC.QObject):
     """
 
     def __init__(self, parent):
-        super(StatefulEventFilter, self).__init__()
+        super().__init__()
         self.states = {0: {}}  # 0 : cursor 1: panning, 2: zooming
         self.cursors = {}
         self.state = 0
@@ -309,7 +309,7 @@ class DragHandler(QC.QObject):
     cursor = None
 
     def __init__(self, filter, btn, mods=QC.Qt.NoModifier, start_state=0):
-        super(DragHandler, self).__init__()
+        super().__init__()
         self.state0 = filter.add_event(
             start_state, filter.mouse_press(btn, mods), self.start_tracking
         )
@@ -407,7 +407,7 @@ class ClickHandler(QC.QObject):
     SIG_CLICK_EVENT = QC.Signal(object, "QEvent")
 
     def __init__(self, filter, btn, mods=QC.Qt.NoModifier, start_state=0):
-        super(ClickHandler, self).__init__()
+        super().__init__()
         self.state0 = filter.add_event(
             start_state, filter.mouse_press(btn, mods), filter.nothing
         )
@@ -579,7 +579,7 @@ class UndoMovePoint(UndoMoveObject):
     """ """
 
     def __init__(self, obj, pos1, pos2, handle, ctrl):
-        super(UndoMovePoint, self).__init__(obj, pos1, pos2)
+        super().__init__(obj, pos1, pos2)
         self.handle = handle
         self.ctrl = ctrl
 
@@ -596,7 +596,7 @@ class UndoMovePoint(UndoMoveObject):
 
 class UndoRotatePoint(UndoMoveObject):
     def __init__(self, obj, pos1, pos2):
-        super(UndoRotatePoint, self).__init__(obj, pos1, pos2)
+        super().__init__(obj, pos1, pos2)
 
     def undo(self):
         pos1, pos2 = self.compute_positions()
@@ -860,9 +860,7 @@ class RectangularSelectionHandler(DragHandler):
     SIG_END_RECT = QC.Signal(object, "QPointF", "QPointF")
 
     def __init__(self, filter, btn, mods=QC.Qt.NoModifier, start_state=0):
-        super(RectangularSelectionHandler, self).__init__(
-            filter, btn, mods, start_state
-        )
+        super().__init__(filter, btn, mods, start_state)
         self.avoid_null_shape = False
 
     def set_shape(self, shape, h0, h1, setup_shape_cb=None, avoid_null_shape=False):

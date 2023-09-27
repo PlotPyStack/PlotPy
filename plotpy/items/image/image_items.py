@@ -79,7 +79,7 @@ class ImageItem(RawImageItem):
         self.xmax = None
         self.ymin = None
         self.ymax = None
-        super(ImageItem, self).__init__(data=data, param=param)
+        super().__init__(data=data, param=param)
 
     # ---- BaseImageItem API ---------------------------------------------------
     def get_default_param(self):
@@ -132,7 +132,7 @@ class ImageItem(RawImageItem):
         Args:
             writer: HDF5, INI or JSON writer
         """
-        super(ImageItem, self).serialize(writer)
+        super().serialize(writer)
         (xmin, xmax), (ymin, ymax) = self.get_xdata(), self.get_ydata()
         writer.write(xmin, group_name="xmin")
         writer.write(xmax, group_name="xmax")
@@ -150,7 +150,7 @@ class ImageItem(RawImageItem):
         Args:
             reader: HDF5, INI or JSON reader
         """
-        super(ImageItem, self).deserialize(reader)
+        super().deserialize(reader)
         for attr in ("xmin", "xmax", "ymin", "ymax"):
             # Note: do not be tempted to write the symetric code in `serialize`
             # because calling `get_xdata` and `get_ydata` is necessary
@@ -428,7 +428,7 @@ class XYImageItem(ImageMixin, RawImageItem):
         self.tr = np.eye(3, dtype=float)
         self.itr = np.eye(3, dtype=float)
         self.points = np.array([[0, 0, 2, 2], [0, 2, 2, 0], [1, 1, 1, 1]], float)
-        super(XYImageItem, self).__init__(data, param)
+        super().__init__(data, param)
 
         if x is not None and y is not None:
             self.set_xy(x, y)
@@ -476,7 +476,7 @@ class XYImageItem(ImageMixin, RawImageItem):
         Args:
             writer: HDF5, INI or JSON writer
         """
-        super(XYImageItem, self).serialize(writer)
+        super().serialize(writer)
         writer.write(self.x, group_name="Xdata")
         writer.write(self.y, group_name="Ydata")
 
@@ -491,7 +491,7 @@ class XYImageItem(ImageMixin, RawImageItem):
         Args:
             reader: HDF5, INI or JSON reader
         """
-        super(XYImageItem, self).deserialize(reader)
+        super().deserialize(reader)
         x = reader.read(group_name="Xdata", func=reader.read_array)
         y = reader.read(group_name="Ydata", func=reader.read_array)
         self.set_xy(x, y)
@@ -672,7 +672,7 @@ class RGBImageItem(ImageItem):
 
     def __init__(self, data=None, param=None):
         self.orig_data = None
-        super(RGBImageItem, self).__init__(data, param)
+        super().__init__(data, param)
         self.lut = None
 
     # ---- BaseImageItem API ---------------------------------------------------

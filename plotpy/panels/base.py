@@ -62,7 +62,7 @@ class PanelWidget(DockableWidget):
     SIG_VISIBILITY_CHANGED = QC.Signal(bool)
 
     def __init__(self, parent=None):
-        super(PanelWidget, self).__init__(parent)
+        super().__init__(parent)
         assert self.PANEL_ID is not None
         if self.PANEL_TITLE is not None:
             self.setWindowTitle(self.PANEL_TITLE)

@@ -27,7 +27,7 @@ class XRangeSelection(AbstractShape):
     """ """
 
     def __init__(self, _min, _max, shapeparam=None):
-        super(XRangeSelection, self).__init__()
+        super().__init__()
         self._min = _min
         self._max = _max
         if shapeparam is None:

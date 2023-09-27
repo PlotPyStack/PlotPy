@@ -88,11 +88,11 @@ class ErrorBarBM(CurveBM):
     MAKE_FUNC = make.merror
 
     def __init__(self, name, nsamples, dx=False, **options):
-        super(ErrorBarBM, self).__init__(name, nsamples, **options)
+        super().__init__(name, nsamples, **options)
         self.dx = dx
 
     def compute_data(self):
-        x, y = super(ErrorBarBM, self).compute_data()
+        x, y = super().compute_data()
         if not self.dx:
             return x, y, x / 100.0
         else:

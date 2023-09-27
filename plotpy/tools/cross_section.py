@@ -29,7 +29,7 @@ class CrossSectionTool(RectangularShapeTool):
         :param shape:
         """
         self.setup_shape_appearance(shape)
-        super(CrossSectionTool, self).setup_shape(shape)
+        super().setup_shape(shape)
         self.register_shape(shape, final=False)
 
     def setup_shape_appearance(self, shape):
@@ -60,7 +60,7 @@ class CrossSectionTool(RectangularShapeTool):
 
     def activate(self):
         """Activate tool"""
-        super(CrossSectionTool, self).activate()
+        super().activate()
         for panel_id in self.PANEL_IDS:
             panel = self.manager.get_panel(panel_id)
             panel.setVisible(True)
@@ -73,7 +73,7 @@ class CrossSectionTool(RectangularShapeTool):
 
         :param shape:
         """
-        super(CrossSectionTool, self).handle_final_shape(shape)
+        super().handle_final_shape(shape)
         self.register_shape(shape, final=True)
 
 

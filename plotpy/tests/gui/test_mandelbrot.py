@@ -21,7 +21,7 @@ from plotpy.tools.base import ToggleTool
 
 class FullScale(ToggleTool):
     def __init__(self, parent, image):
-        super(FullScale, self).__init__(parent, _("MAX resolution"), None)
+        super().__init__(parent, _("MAX resolution"), None)
         self.image = image
         self.minprec = image.IMAX
         self.maxprec = 5 * image.IMAX
@@ -40,7 +40,7 @@ class FullScale(ToggleTool):
 
 class MandelItem(RawImageItem):
     def __init__(self, xmin, xmax, ymin, ymax):
-        super(MandelItem, self).__init__(np.zeros((1, 1), np.uint8))
+        super().__init__(np.zeros((1, 1), np.uint8))
         self.bounds = QC.QRectF(QC.QPointF(xmin, ymin), QC.QPointF(xmax, ymax))
         self.update_border()
         self.IMAX = 80

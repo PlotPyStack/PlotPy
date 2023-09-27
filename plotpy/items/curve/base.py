@@ -95,7 +95,7 @@ class CurveItem(QwtPlotCurve):
     _private = False
 
     def __init__(self, curveparam=None):
-        super(CurveItem, self).__init__()
+        super().__init__()
         if curveparam is None:
             self.param = CurveParam(_("Curve"), icon="curve.png")
         else:

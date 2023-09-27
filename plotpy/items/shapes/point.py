@@ -14,7 +14,7 @@ class PointShape(PolygonShape):
     CLOSED = False
 
     def __init__(self, x=0, y=0, shapeparam=None):
-        super(PointShape, self).__init__(shapeparam=shapeparam)
+        super().__init__(shapeparam=shapeparam)
         self.set_pos(x, y)
         self.setIcon(get_icon("point_shape.png"))
 

@@ -29,7 +29,7 @@ class CrossSectionWidget(PanelWidget):
     __implements__ = (IPanel,)
 
     def __init__(self, parent=None):
-        super(CrossSectionWidget, self).__init__(parent)
+        super().__init__(parent)
 
         self.export_ac = None
         self.autoscale_ac = None
@@ -197,7 +197,7 @@ class XCrossSection(CrossSectionWidget):
     CrossSectionPlotKlass = XCrossSectionPlot
 
     def __init__(self, parent=None):
-        super(XCrossSection, self).__init__(parent)
+        super().__init__(parent)
         self.peritem_ac = None
         self.applylut_ac = None
 
@@ -329,7 +329,7 @@ class YCrossSection(XCrossSection):
     def __init__(self, parent=None, position="right", xsection_pos="top"):
         self.xsection_pos = xsection_pos
         self.spacer = QW.QSpacerItem(0, 0)
-        super(YCrossSection, self).__init__(parent)
+        super().__init__(parent)
         self.cs_plot.set_axis_direction("bottom", reverse=position == "left")
 
     def setup_widget(self):
@@ -365,6 +365,6 @@ class ObliqueCrossSection(CrossSectionWidget):
 
     def setup_actions(self):
         """ """
-        super(ObliqueCrossSection, self).setup_actions()
+        super().setup_actions()
         self.lockscales_ac.setChecked(False)
         self.autoscale_ac.setChecked(True)

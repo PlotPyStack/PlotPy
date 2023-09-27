@@ -22,7 +22,7 @@ from plotpy.plot.manager import PlotManager
 
 class MyPlotDialog(PlotDialog):
     def __init__(self, edit, toolbar, wintitle, options):
-        super(MyPlotDialog, self).__init__(edit, toolbar, wintitle, options=options)
+        super().__init__(edit, toolbar, wintitle, options=options)
         self.create_plot(options)
 
     def create_plot(self, options):

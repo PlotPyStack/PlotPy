@@ -37,7 +37,7 @@ class PolygonShape(AbstractShape):
     CLOSED = True
 
     def __init__(self, points=None, closed=None, shapeparam=None):
-        super(PolygonShape, self).__init__()
+        super().__init__()
         self.closed = self.CLOSED if closed is None else closed
         self.selected = False
 

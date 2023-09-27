@@ -26,7 +26,7 @@ class EllipseShape(PolygonShape):
     CLOSED = True
 
     def __init__(self, x1=0, y1=0, x2=0, y2=0, shapeparam=None):
-        super(EllipseShape, self).__init__(shapeparam=shapeparam)
+        super().__init__(shapeparam=shapeparam)
         self.is_ellipse = False
         self.set_xdiameter(x1, y1, x2, y2)
         self.setIcon(get_icon("circle.png"))

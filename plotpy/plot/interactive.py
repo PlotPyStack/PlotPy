@@ -57,7 +57,7 @@ class Window(QW.QMainWindow):
     """Figure window"""
 
     def __init__(self, wintitle):
-        super(Window, self).__init__()
+        super().__init__()
         win32_fix_title_bar_background(self)
 
         self.default_tool = None

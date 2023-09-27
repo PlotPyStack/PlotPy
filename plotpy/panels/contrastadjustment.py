@@ -45,7 +45,7 @@ class LevelsHistogram(BasePlot):
     SIG_VOI_CHANGED = QC.Signal()
 
     def __init__(self, parent=None):
-        super(LevelsHistogram, self).__init__(
+        super().__init__(
             parent=parent, title="", section="histogram", type=PlotType.CURVE
         )
         self.antialiased = False
@@ -341,7 +341,7 @@ class ContrastAdjustment(PanelWidget):
     PANEL_ICON = "contrast.png"
 
     def __init__(self, parent=None):
-        super(ContrastAdjustment, self).__init__(parent)
+        super().__init__(parent)
 
         self.local_manager = None  # local manager for the histogram plot
         self.manager = None  # manager for the associated image plot

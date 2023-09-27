@@ -98,7 +98,7 @@ class FlipRotateDialog(QW.QDialog):
         edit: bool = True,
         toolbar: bool = False,
     ) -> None:
-        super(FlipRotateDialog, self).__init__(parent)
+        super().__init__(parent)
         win32_fix_title_bar_background(self)
 
         if resize_to is not None:

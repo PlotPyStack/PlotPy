@@ -75,7 +75,7 @@ class DotArrayItem(RawImageItem):
     """Dot array item"""
 
     def __init__(self, imageparam=None):
-        super(DotArrayItem, self).__init__(np.zeros((1, 1)), imageparam)
+        super().__init__(np.zeros((1, 1)), imageparam)
         self.update_border()
 
     def boundingRect(self):
@@ -140,7 +140,7 @@ class DotArrayDialog(PlotDialog):
     def __init__(self):
         self.item = None
         self.stamp_gbox = None
-        super(DotArrayDialog, self).__init__(
+        super().__init__(
             wintitle="Dot array example",
             options=dict(title="Main plot", type=PlotType.IMAGE),
             toolbar=True,

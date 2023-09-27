@@ -23,7 +23,7 @@ class BaseCursorTool(InteractiveTool):
         tip=None,
         switch_to_default_tool=None,
     ):
-        super(BaseCursorTool, self).__init__(
+        super().__init__(
             manager,
             toolbar_id,
             title=title,

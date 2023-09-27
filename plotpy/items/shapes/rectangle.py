@@ -29,7 +29,7 @@ class RectangleShape(PolygonShape):
     CLOSED = True
 
     def __init__(self, x1=0, y1=0, x2=0, y2=0, shapeparam=None):
-        super(RectangleShape, self).__init__(shapeparam=shapeparam)
+        super().__init__(shapeparam=shapeparam)
         self.set_rect(x1, y1, x2, y2)
         self.setIcon(get_icon("rectangle.png"))
 
@@ -93,7 +93,7 @@ class ObliqueRectangleShape(PolygonShape):
     LINK_ADDITIONNAL_POINTS = True  # Link additionnal points with dotted lines
 
     def __init__(self, x0=0, y0=0, x1=0, y1=0, x2=0, y2=0, x3=0, y3=0, shapeparam=None):
-        super(ObliqueRectangleShape, self).__init__(shapeparam=shapeparam)
+        super().__init__(shapeparam=shapeparam)
         self.set_rect(x0, y0, x1, y1, x2, y2, x3, y3)
         self.setIcon(get_icon("oblique_rectangle.png"))
 

@@ -26,7 +26,7 @@ FormClass = loadui(os.path.splitext(__file__)[0] + ".ui")
 
 class WindowTest(FormClass):
     def __init__(self, image_data):
-        super(WindowTest, self).__init__()
+        super().__init__()
         plot = self.imagewidget.plot
         plot.add_item(make.image(image_data))
         self.setWindowTitle("QtDesigner plugins example")
