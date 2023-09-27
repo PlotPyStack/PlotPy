@@ -11,11 +11,11 @@ import os
 
 from guidata.qthelpers import qt_app_context
 
-from plotpy.core.builder import make
-from plotpy.core.constants import PlotType
-from plotpy.core.items import Marker
-from plotpy.core.plot import PlotDialog
-from plotpy.core.tools import (
+from plotpy.builder import make
+from plotpy.constants import PlotType
+from plotpy.items import Marker
+from plotpy.plot import PlotDialog
+from plotpy.tools import (
     AnnotatedCircleTool,
     AnnotatedEllipseTool,
     AnnotatedObliqueRectangleTool,

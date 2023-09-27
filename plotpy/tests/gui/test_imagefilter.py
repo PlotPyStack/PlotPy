@@ -13,10 +13,10 @@ import numpy as np
 from guidata.qthelpers import qt_app_context
 from scipy.ndimage import gaussian_filter
 
-from plotpy.core import io
-from plotpy.core.builder import make
-from plotpy.core.constants import PlotType
-from plotpy.core.plot import PlotDialog
+from plotpy import io
+from plotpy.builder import make
+from plotpy.constants import PlotType
+from plotpy.plot import PlotDialog
 from plotpy.tests.gui.test_imagexy import compute_image
 
 

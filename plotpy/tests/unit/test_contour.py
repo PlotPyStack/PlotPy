@@ -2,7 +2,7 @@ import unittest
 
 import numpy as np
 
-from plotpy.core.items.contour import compute_contours
+from plotpy.items.contour import compute_contours
 
 
 class ContourTest(unittest.TestCase):

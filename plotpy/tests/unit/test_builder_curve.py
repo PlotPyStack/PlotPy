@@ -10,9 +10,9 @@ import pytest
 from qtpy.QtCore import Qt
 from qwt import QwtPlotCurve
 
-from plotpy.core.builder import make
-from plotpy.core.constants import PlotType
-from plotpy.core.plot import PlotDialog
+from plotpy.builder import make
+from plotpy.constants import PlotType
+from plotpy.plot import PlotDialog
 
 
 def plot_qtbot_curve(qtbot, curve):

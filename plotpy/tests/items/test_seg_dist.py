@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 import qtpy.QtCore as QC
 
-from plotpy.core.items.curve.base import seg_dist, seg_dist_v
+from plotpy.items.curve.base import seg_dist, seg_dist_v
 
 param_list = [
     ((200, 100), (150, 196), (250, 180), 86),

@@ -22,7 +22,7 @@ Create a basic curve plotting widget:
 * now that a `QApplication` object exists, we may create the plotting
   widget::
 
-    >>> from plotpy.core.plot import BasePlot, PlotType
+    >>> from plotpy.plot import BasePlot, PlotType
     >>> plot = BasePlot(title="Example", xlabel="X", ylabel="Y", type=PlotType.CURVE)
 
 Create a curve item:
@@ -31,16 +31,16 @@ Create a curve item:
   a curve with error bars): the item properties are then assigned by creating
   the appropriate style parameters object (e.g. :py:class:`.styles.ErrorBarParam`)::
 
-    >>> from plotpy.core.items import CurveItem
-    >>> from plotpy.core.styles import CurveParam
+    >>> from plotpy.items import CurveItem
+    >>> from plotpy.styles import CurveParam
     >>> param = CurveParam()
     >>> param.label = 'My curve'
     >>> curve = CurveItem(param)
     >>> curve.set_data(x, y)
 
-* or using the `plot item builder` (see :py:attr:`plotpy.core.builder.make`)::
+* or using the `plot item builder` (see :py:attr:`plotpy.builder.make`)::
 
-    >>> from plotpy.core.builder import make
+    >>> from plotpy.builder import make
     >>> curve = make.curve(x, y, title='My curve')
 
 Attach the curve to the plotting widget::
@@ -74,16 +74,16 @@ Create a simple image item:
   assigned by creating the appropriate style parameters object
   (e.g. :py:class:`.styles.ImageParam`)::
 
-    >>> from plotpy.core.items import ImageItem
-    >>> from plotpy.core.styles import ImageParam
+    >>> from plotpy.items import ImageItem
+    >>> from plotpy.styles import ImageParam
     >>> param = ImageParam()
     >>> param.label = 'My image'
     >>> image = ImageItem(param)
     >>> image.set_data(data)
 
-* or using the `plot item builder` (see :py:attr:`plotpy.core.builder.make`)::
+* or using the `plot item builder` (see :py:attr:`plotpy.builder.make`)::
 
-    >>> from plotpy.core.builder import make
+    >>> from plotpy.builder import make
     >>> image = make.image(data, title='My image')
 
 Final steps (see also `Curve example`_)::
@@ -101,15 +101,15 @@ A shape may be created:
   rectangle): the item properties are then assigned by creating the
   appropriate style parameters object (:py:class:`.styles.ShapeParam`)::
 
-    >>> from plotpy.core.items import RectangleShape
-    >>> from plotpy.core.styles import ShapeParam
+    >>> from plotpy.items import RectangleShape
+    >>> from plotpy.styles import ShapeParam
     >>> param = ShapeParam()
     >>> param.title = 'My rectangle'
     >>> rect_item = RectangleShape(0., 2., 4., 0., param)
 
-* or using the `plot item builder` (see :py:attr:`plotpy.core.builder.make`)::
+* or using the `plot item builder` (see :py:attr:`plotpy.builder.make`)::
 
-    >>> from plotpy.core.builder import make
+    >>> from plotpy.builder import make
     >>> rect_item = make.rectangle(0., 2., 4., 0., title='My rectangle')
 
 Annotation example
@@ -122,13 +122,13 @@ An annotated shape may be created:
   by creating the appropriate style parameters object
   (:py:class:`.styles.AnnotationParam`)::
 
-    >>> from plotpy.core.items import AnnotatedCircle
-    >>> from plotpy.core.styles import AnnotationParam
+    >>> from plotpy.items import AnnotatedCircle
+    >>> from plotpy.styles import AnnotationParam
     >>> param = AnnotationParam()
     >>> param.title = 'My circle'
     >>> circle_item = AnnotatedCircle(0., 2., 4., 0., param)
 
-* or using the `plot item builder` (see :py:attr:`plotpy.core.builder.make`)::
+* or using the `plot item builder` (see :py:attr:`plotpy.builder.make`)::
 
-    >>> from plotpy.core.builder import make
+    >>> from plotpy.builder import make
     >>> circle_item = make.annotated_circle(0., 2., 4., 0., title='My circle')

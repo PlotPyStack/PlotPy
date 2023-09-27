@@ -10,9 +10,9 @@
 from guidata.qthelpers import qt_app_context
 from numpy.random import normal
 
-from plotpy.core.builder import make
-from plotpy.core.constants import PlotType
-from plotpy.core.plot import PlotDialog
+from plotpy.builder import make
+from plotpy.constants import PlotType
+from plotpy.plot import PlotDialog
 
 
 def test_histogram():

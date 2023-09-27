@@ -25,7 +25,7 @@
   <customwidget>
    <class>PlotWidget</class>
    <extends>QwtPlot</extends>
-   <header>plotpy.core.plot.plotwidget</header>
+   <header>plotpy.plot.plotwidget</header>
   </customwidget>
  </customwidgets>
  <resources/>

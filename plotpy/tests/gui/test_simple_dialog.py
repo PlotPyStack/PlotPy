@@ -14,12 +14,12 @@ from guidata.dataset.qtwidgets import DataSetEditGroupBox, DataSetShowGroupBox
 from guidata.qthelpers import qt_app_context
 from guidata.utils import update_dataset
 
+from plotpy import io
+from plotpy.builder import make
 from plotpy.config import _
-from plotpy.core import io
-from plotpy.core.builder import make
-from plotpy.core.constants import PlotType
-from plotpy.core.plot import PlotDialog
-from plotpy.core.tools import OpenImageTool
+from plotpy.constants import PlotType
+from plotpy.plot import PlotDialog
+from plotpy.tools import OpenImageTool
 
 # guitest: show
 

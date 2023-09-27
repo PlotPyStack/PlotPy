@@ -1,36 +1,36 @@
 guiqwt v4,plotpy v2,API changes
-``guiqwt.events``,``plotpy.core.events``
-``guiqwt.interfaces``,``plotpy.core.interfaces``
-``guiqwt.io``,``plotpy.core.io``
+``guiqwt.events``,``plotpy.events``
+``guiqwt.interfaces``,``plotpy.interfaces``
+``guiqwt.io``,``plotpy.io``
 ``guiqwt.io.eliminate_outliers``,*removed*
-``guiqwt.annotations``,``plotpy.core.items``
-``guiqwt.curve``,``plotpy.core.items``
-``guiqwt.image``,``plotpy.core.items``
-``guiqwt.label``,``plotpy.core.items``
-``guiqwt.shapes``,``plotpy.core.items``
-``guiqwt.histogram.HistogramItem``,``plotpy.core.items.HistogramItem``
-``guiqwt.histogram.HistDataSource``,``plotpy.core.items.histogram.HistDataSource``
-``guiqwt.histogram.hist_range_threshold``,``plotpy.core.lutrange.hist_range_threshold``
-``guiqwt.histogram.lut_range_threshold``,``plotpy.core.lutrange.lut_range_threshold``
-``guiqwt.histogram.ContrastAdjustment``,``plotpy.core.panels.contrastadjustment.ContrastAdjustment``
-``guiqwt.image.get_items_in_rectangle``,``plotpy.core.items.get_items_in_rectangle``
-``guiqwt.curve.PlotItemList``,``plotpy.core.panels.itemlist.PlotItemList``
-``guiqwt.cross_section.XCrossSection``,``plotpy.core.panels.csection.cswidget.XCrossSection``
-``guiqwt.cross_section.YCrossSection``,``plotpy.core.panels.csection.cswidget.YCrossSection``
-``guiqwt.cross_section.ObliqueCrossSection``,``plotpy.core.panels.csection.cswidget.ObliqueCrossSection``
-``guiqwt.plot.PlotManager``,``plotpy.core.plot.PlotManager``
-``guiqwt.plot.CurveWindow``,``plotpy.core.plot.PlotWindow``,See `Generic PlotWidgets`_
-``guiqwt.plot.BaseImageWidget``,``plotpy.core.plot.BasePlotWidget``,See `Generic PlotWidgets`_
-``guiqwt.plot.CurveWidget``,``plotpy.core.plot.PlotWidget``,See `Generic PlotWidgets`_
+``guiqwt.annotations``,``plotpy.items``
+``guiqwt.curve``,``plotpy.items``
+``guiqwt.image``,``plotpy.items``
+``guiqwt.label``,``plotpy.items``
+``guiqwt.shapes``,``plotpy.items``
+``guiqwt.histogram.HistogramItem``,``plotpy.items.HistogramItem``
+``guiqwt.histogram.HistDataSource``,``plotpy.items.histogram.HistDataSource``
+``guiqwt.histogram.hist_range_threshold``,``plotpy.lutrange.hist_range_threshold``
+``guiqwt.histogram.lut_range_threshold``,``plotpy.lutrange.lut_range_threshold``
+``guiqwt.histogram.ContrastAdjustment``,``plotpy.panels.contrastadjustment.ContrastAdjustment``
+``guiqwt.image.get_items_in_rectangle``,``plotpy.items.get_items_in_rectangle``
+``guiqwt.curve.PlotItemList``,``plotpy.panels.itemlist.PlotItemList``
+``guiqwt.cross_section.XCrossSection``,``plotpy.panels.csection.cswidget.XCrossSection``
+``guiqwt.cross_section.YCrossSection``,``plotpy.panels.csection.cswidget.YCrossSection``
+``guiqwt.cross_section.ObliqueCrossSection``,``plotpy.panels.csection.cswidget.ObliqueCrossSection``
+``guiqwt.plot.PlotManager``,``plotpy.plot.PlotManager``
+``guiqwt.plot.CurveWindow``,``plotpy.plot.PlotWindow``,See `Generic PlotWidgets`_
+``guiqwt.plot.BaseImageWidget``,``plotpy.plot.BasePlotWidget``,See `Generic PlotWidgets`_
+``guiqwt.plot.CurveWidget``,``plotpy.plot.PlotWidget``,See `Generic PlotWidgets`_
 ``guiqwt.plot.CurveWidgetMixin``,``*removed*``,See `Generic PlotWidgets`_
-``guiqwt.plot.CurveDialog``,``plotpy.core.plot.PlotDialog``,See `Generic PlotWidgets`_
-``guiqwt.curve.CurvePlot``,``plotpy.core.plot.baseplot.BasePlot``,See `Generic PlotWidgets`_
+``guiqwt.plot.CurveDialog``,``plotpy.plot.PlotDialog``,See `Generic PlotWidgets`_
+``guiqwt.curve.CurvePlot``,``plotpy.plot.baseplot.BasePlot``,See `Generic PlotWidgets`_
 ``guiqwt.curve.CurvePlot.canvas2plotitem``,*removed*
 ``guiqwt.curve.CurvePlot.plotitem2canvas``,*removed*
-``guiqwt.plot.SubplotWidget``,``plotpy.core.plot.SubplotWidget``
+``guiqwt.plot.SubplotWidget``,``plotpy.plot.SubplotWidget``
 ``guiqwt.pyplot``,``plotpy.pyplot``
-``guiqwt.styles``,``plotpy.core.styles``
-``guiqwt.tools``,``plotpy.core.tools``
+``guiqwt.styles``,``plotpy.styles``
+``guiqwt.tools``,``plotpy.tools``
 ``guiqwt.colormap``,``plotpy.mathutils.colormap``
 ``guiqwt.geometry``,``plotpy.mathutils.geometry``
 ``guiqwt.qthelpers.exec_image_save_dialog``,``plotpy.widgets.imagefile.exec_image_save_dialog``
@@ -39,8 +39,8 @@ guiqwt v4,plotpy v2,API changes
 ``guiqwt.qthelpers.mimedata2url``,*removed*
 ``guiqwt.scaler``,``plotpy.mathutils.scaler``
 ``guiqwt.debug``,*removed*
-``guiqwt.debug.buttons_to_str``,``plotpy.core.events.buttons_to_str``
-``guiqwt.debug.evt_type_to_str``,``plotpy.core.events.evt_type_to_str``
+``guiqwt.debug.buttons_to_str``,``plotpy.events.buttons_to_str``
+``guiqwt.debug.evt_type_to_str``,``plotpy.events.evt_type_to_str``
 ``guiqwt.debug.print_event``,*removed*
 ``guiqwt.debug.qimage_format``,*removed*
 ``guiqwt.debug.qimage_to_str``,*removed*

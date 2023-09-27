@@ -14,10 +14,10 @@
 import guidata
 import numpy as np
 
-from plotpy.core.builder import make
-from plotpy.core.constants import PlotType
-from plotpy.core.plot import BasePlot, PlotDialog, PlotWidget
-from plotpy.core.plot.manager import PlotManager
+from plotpy.builder import make
+from plotpy.constants import PlotType
+from plotpy.plot import BasePlot, PlotDialog, PlotWidget
+from plotpy.plot.manager import PlotManager
 
 
 class MyPlotDialog(PlotDialog):

@@ -7,7 +7,7 @@
 
 from guidata.qthelpers import qt_app_context
 
-from plotpy.core.styles.base import FontParam
+from plotpy.styles.base import FontParam
 
 
 def test_fontparam():

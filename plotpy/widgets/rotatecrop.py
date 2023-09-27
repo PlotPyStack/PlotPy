@@ -30,16 +30,16 @@ from guidata.qthelpers import win32_fix_title_bar_background
 from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
+from plotpy.builder import make
 from plotpy.config import _
-from plotpy.core.builder import make
-from plotpy.core.items import get_image_in_shape
+from plotpy.items import get_image_in_shape
 from plotpy.widgets import basetransform
 
 if TYPE_CHECKING:
     import numpy as np
 
-    from plotpy.core.items import AnnotatedRectangle, TrImageItem
-    from plotpy.core.plot.manager import PlotManager
+    from plotpy.items import AnnotatedRectangle, TrImageItem
+    from plotpy.plot.manager import PlotManager
 
 
 class RotateCropTransform(basetransform.BaseTransform):

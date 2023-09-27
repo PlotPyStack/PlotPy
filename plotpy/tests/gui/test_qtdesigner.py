@@ -17,7 +17,7 @@ import os
 
 from guidata.qthelpers import qt_app_context
 
-from plotpy.core.builder import make
+from plotpy.builder import make
 from plotpy.tests.gui.test_image import compute_image
 from plotpy.widgets.qtdesigner import loadui
 

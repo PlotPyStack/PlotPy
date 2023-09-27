@@ -15,9 +15,9 @@ from guidata.qthelpers import qt_app_context
 from qtpy import QtWidgets as QW
 
 import plotpy.config  # Loading icons
-from plotpy.core.builder import make
-from plotpy.core.constants import PlotType
-from plotpy.core.plot import PlotWidget
+from plotpy.builder import make
+from plotpy.constants import PlotType
+from plotpy.plot import PlotWidget
 
 
 class FilterTestWidget(QW.QWidget):

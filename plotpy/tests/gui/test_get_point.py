@@ -14,11 +14,11 @@ This plotpy tool provide a MATLAB-like "ginput" feature.
 from guidata.qthelpers import qt_app_context
 from numpy import linspace, sin
 
+from plotpy.builder import make
 from plotpy.config import _
-from plotpy.core.builder import make
-from plotpy.core.constants import PlotType
-from plotpy.core.plot import PlotDialog
-from plotpy.core.tools import SelectPointTool
+from plotpy.constants import PlotType
+from plotpy.plot import PlotDialog
+from plotpy.tools import SelectPointTool
 
 
 def callback_function(tool):

@@ -14,7 +14,7 @@ from qtpy import QtGui as QG
 from qwt import QwtSymbol
 
 from plotpy.config import UserConfig, _
-from plotpy.core.styles.base import LineStyleParam, SymbolParam
+from plotpy.styles.base import LineStyleParam, SymbolParam
 
 gettext.install("test")
 CONF = UserConfig({})

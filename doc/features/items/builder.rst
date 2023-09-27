@@ -6,10 +6,10 @@ Item builder
 The `builder` module provides a builder singleton class that can be
 used to simplify the creation of plot items.
 
-.. autodata:: plotpy.core.builder.make
+.. autodata:: plotpy.builder.make
 
-.. autoclass:: plotpy.core.builder.LUTAlpha
+.. autoclass:: plotpy.builder.LUTAlpha
    :members:
 
-.. autoclass:: plotpy.core.builder.PlotItemBuilder
+.. autoclass:: plotpy.builder.PlotItemBuilder
    :members:

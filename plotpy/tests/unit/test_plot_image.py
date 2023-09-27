@@ -11,10 +11,10 @@ import pytest
 from pytest import approx
 from qtpy.QtCore import Qt
 
-from plotpy.core.builder import make
-from plotpy.core.constants import PlotType
-from plotpy.core.plot import BasePlot, PlotDialog
-from plotpy.core.tools import ColormapTool
+from plotpy.builder import make
+from plotpy.constants import PlotType
+from plotpy.plot import BasePlot, PlotDialog
+from plotpy.tools import ColormapTool
 
 
 def compute_image():

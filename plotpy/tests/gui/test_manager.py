@@ -12,11 +12,11 @@ import os
 from guidata.qthelpers import qt_app_context, win32_fix_title_bar_background
 from qtpy import QtWidgets as QW
 
-from plotpy.core.builder import make
-from plotpy.core.constants import PlotType
-from plotpy.core.panels import ContrastAdjustment, PlotItemList
-from plotpy.core.plot import BasePlot
-from plotpy.core.plot.manager import PlotManager
+from plotpy.builder import make
+from plotpy.constants import PlotType
+from plotpy.panels import ContrastAdjustment, PlotItemList
+from plotpy.plot import BasePlot
+from plotpy.plot.manager import PlotManager
 from plotpy.tests.gui.test_image import compute_image
 
 

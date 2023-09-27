@@ -13,10 +13,10 @@ import numpy as np
 from guidata.env import execenv
 from guidata.qthelpers import exec_dialog, qt_app_context
 
-from plotpy.core import io
-from plotpy.core.builder import make
-from plotpy.core.constants import PlotType
-from plotpy.core.plot import PlotDialog
+from plotpy import io
+from plotpy.builder import make
+from plotpy.constants import PlotType
+from plotpy.plot import PlotDialog
 from plotpy.widgets.rotatecrop import (
     MultipleRotateCropWidget,
     RotateCropDialog,

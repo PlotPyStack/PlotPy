@@ -4,127 +4,127 @@ Reference
 Base classes
 ^^^^^^^^^^^^
 
-.. autoclass:: plotpy.core.interfaces.common.IItemType
-.. autoclass:: plotpy.core.interfaces.common.IBasePlotItem
-.. autoclass:: plotpy.core.interfaces.common.IColormapImageItemType
+.. autoclass:: plotpy.interfaces.common.IItemType
+.. autoclass:: plotpy.interfaces.common.IBasePlotItem
+.. autoclass:: plotpy.interfaces.common.IColormapImageItemType
 
 Curves
 ^^^^^^
 
-.. autoclass:: plotpy.core.items.CurveItem
+.. autoclass:: plotpy.items.CurveItem
    :members:
-.. autoclass:: plotpy.core.items.ErrorBarCurveItem
+.. autoclass:: plotpy.items.ErrorBarCurveItem
    :members:
 
 Images
 ^^^^^^
 
-.. autoclass:: plotpy.core.items.BaseImageItem
+.. autoclass:: plotpy.items.BaseImageItem
    :members:
-.. autoclass:: plotpy.core.items.RawImageItem
+.. autoclass:: plotpy.items.RawImageItem
    :members:
-.. autoclass:: plotpy.core.items.ImageItem
+.. autoclass:: plotpy.items.ImageItem
    :members:
-.. autoclass:: plotpy.core.items.TrImageItem
+.. autoclass:: plotpy.items.TrImageItem
    :members:
-.. autoclass:: plotpy.core.items.XYImageItem
+.. autoclass:: plotpy.items.XYImageItem
    :members:
-.. autoclass:: plotpy.core.items.RGBImageItem
+.. autoclass:: plotpy.items.RGBImageItem
    :members:
-.. autoclass:: plotpy.core.items.MaskedImageItem
+.. autoclass:: plotpy.items.MaskedImageItem
    :members:
-.. autoclass:: plotpy.core.items.MaskedXYImageItem
+.. autoclass:: plotpy.items.MaskedXYImageItem
    :members:
-.. autoclass:: plotpy.core.items.ImageFilterItem
+.. autoclass:: plotpy.items.ImageFilterItem
    :members:
-.. autoclass:: plotpy.core.items.XYImageFilterItem
+.. autoclass:: plotpy.items.XYImageFilterItem
    :members:
-.. autoclass:: plotpy.core.items.QuadGridItem
+.. autoclass:: plotpy.items.QuadGridItem
    :members:
 
-.. autofunction:: plotpy.core.items.assemble_imageitems
-.. autofunction:: plotpy.core.items.get_plot_qrect
-.. autofunction:: plotpy.core.items.get_image_from_plot
+.. autofunction:: plotpy.items.assemble_imageitems
+.. autofunction:: plotpy.items.get_plot_qrect
+.. autofunction:: plotpy.items.get_image_from_plot
 
 Contours
 ^^^^^^^^
 
-.. autoclass:: plotpy.core.items.ContourItem
+.. autoclass:: plotpy.items.ContourItem
    :members:
 
-.. autoclass:: plotpy.core.items.contour.ContourLine
+.. autoclass:: plotpy.items.contour.ContourLine
    :members:
 
-.. autofunction:: plotpy.core.items.contour.compute_contours
+.. autofunction:: plotpy.items.contour.compute_contours
 
-.. autofunction:: plotpy.core.items.create_contour_items
+.. autofunction:: plotpy.items.create_contour_items
 
 Histograms
 ^^^^^^^^^^
 
-.. autoclass:: plotpy.core.items.HistogramItem
+.. autoclass:: plotpy.items.HistogramItem
    :members:
-.. autoclass:: plotpy.core.items.Histogram2DItem
+.. autoclass:: plotpy.items.Histogram2DItem
     :members:
 
 Grid
 ^^^^
 
-.. autoclass:: plotpy.core.items.GridItem
+.. autoclass:: plotpy.items.GridItem
    :members:
 
 Shapes
 ^^^^^^
 
-.. autoclass:: plotpy.core.items.PolygonShape
+.. autoclass:: plotpy.items.PolygonShape
    :members:
-.. autoclass:: plotpy.core.items.RectangleShape
+.. autoclass:: plotpy.items.RectangleShape
    :members:
-.. autoclass:: plotpy.core.items.ObliqueRectangleShape
+.. autoclass:: plotpy.items.ObliqueRectangleShape
    :members:
-.. autoclass:: plotpy.core.items.PointShape
+.. autoclass:: plotpy.items.PointShape
    :members:
-.. autoclass:: plotpy.core.items.SegmentShape
+.. autoclass:: plotpy.items.SegmentShape
    :members:
-.. autoclass:: plotpy.core.items.EllipseShape
+.. autoclass:: plotpy.items.EllipseShape
    :members:
-.. autoclass:: plotpy.core.items.Axes
+.. autoclass:: plotpy.items.Axes
    :members:
-.. autoclass:: plotpy.core.items.XRangeSelection
+.. autoclass:: plotpy.items.XRangeSelection
    :members:
-.. autoclass:: plotpy.core.items.Marker
+.. autoclass:: plotpy.items.Marker
    :members:
 
 Annotations
 ^^^^^^^^^^^
 
-.. autoclass:: plotpy.core.items.AnnotatedPoint
+.. autoclass:: plotpy.items.AnnotatedPoint
    :members:
-.. autoclass:: plotpy.core.items.AnnotatedSegment
+.. autoclass:: plotpy.items.AnnotatedSegment
    :members:
-.. autoclass:: plotpy.core.items.AnnotatedRectangle
+.. autoclass:: plotpy.items.AnnotatedRectangle
    :members:
-.. autoclass:: plotpy.core.items.AnnotatedObliqueRectangle
+.. autoclass:: plotpy.items.AnnotatedObliqueRectangle
    :members:
-.. autoclass:: plotpy.core.items.AnnotatedEllipse
+.. autoclass:: plotpy.items.AnnotatedEllipse
    :members:
-.. autoclass:: plotpy.core.items.AnnotatedCircle
+.. autoclass:: plotpy.items.AnnotatedCircle
    :members:
 
 Labels
 ^^^^^^
 
-.. autoclass:: plotpy.core.items.LabelItem
+.. autoclass:: plotpy.items.LabelItem
    :members:
-.. autoclass:: plotpy.core.items.LegendBoxItem
+.. autoclass:: plotpy.items.LegendBoxItem
    :members:
-.. autoclass:: plotpy.core.items.SelectedLegendBoxItem
+.. autoclass:: plotpy.items.SelectedLegendBoxItem
    :members:
-.. autoclass:: plotpy.core.items.RangeComputation
+.. autoclass:: plotpy.items.RangeComputation
    :members:
-.. autoclass:: plotpy.core.items.RangeComputation2d
+.. autoclass:: plotpy.items.RangeComputation2d
    :members:
-.. autoclass:: plotpy.core.items.DataInfoLabel
+.. autoclass:: plotpy.items.DataInfoLabel
    :members:
-.. autoclass:: plotpy.core.items.ObjectInfo
+.. autoclass:: plotpy.items.ObjectInfo
    :members:

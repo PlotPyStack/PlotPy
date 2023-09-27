@@ -16,8 +16,8 @@ from guidata.qthelpers import (
 )
 from qtpy import QtWidgets as QW
 
-from plotpy.core.tools import RotationCenterTool
 from plotpy.tests.gui.test_rotatecrop import create_test_data, imshow
+from plotpy.tools import RotationCenterTool
 from plotpy.widgets.fliprotate import FlipRotateDialog, FlipRotateWidget
 
 

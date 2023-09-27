@@ -68,14 +68,14 @@ from qtpy import QtWidgets as QW
 from qtpy.QtWidgets import QWidget  # only to help intersphinx find QWidget
 from scipy.optimize import fmin, fmin_bfgs, fmin_cg, fmin_l_bfgs_b, fmin_powell, leastsq
 
+from plotpy.builder import make
 from plotpy.config import _
-from plotpy.core.builder import make
-from plotpy.core.constants import PlotType
-from plotpy.core.plot import PlotDialog, PlotWidget
+from plotpy.constants import PlotType
+from plotpy.plot import PlotDialog, PlotWidget
 
 if TYPE_CHECKING:
-    from plotpy.core.items import XRangeSelection
-    from plotpy.core.panels import PanelWidget
+    from plotpy.items import XRangeSelection
+    from plotpy.panels import PanelWidget
 
 
 class AutoFitParam(DataSet):

@@ -101,4 +101,4 @@ Reference
 
 # pylint: disable=unused-import
 # pylint: disable=wildcard-import
-from plotpy.core.plot.interactive import *
+from plotpy.plot.interactive import *

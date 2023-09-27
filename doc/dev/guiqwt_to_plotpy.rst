@@ -109,7 +109,7 @@ you code using plotpy.
 New method for thresholding image item LUTs
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The method :py:meth:`plotpy.core.items.BaseImageItem.set_lut_threshold` has been
+The method :py:meth:`plotpy.items.BaseImageItem.set_lut_threshold` has been
 added. It allows to set the percentage of outliers to be clipped from the image
 histogram values.
 
@@ -162,7 +162,7 @@ New options added to item builder
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The method :py:meth:`.PlotItemBuilder.contours` has been added, in order to create
-contour curves. It returns a list of :py:class:`plotpy.core.items.ContourItem` objects.
+contour curves. It returns a list of :py:class:`plotpy.items.ContourItem` objects.
 
 See demo script `tests/gui/test_contour.py`.
 
@@ -174,11 +174,11 @@ The new keyword parameter ``alpha_function`` has been added to the methods
 compute the alpha channel of the image from the data values. The supported
 functions are:
 
-* :py:attr:`plotpy.core.builder.LUTAlpha.NONE` (default)
-* :py:attr:`plotpy.core.builder.LUTAlpha.CONSTANT`
-* :py:attr:`plotpy.core.builder.LUTAlpha.LINEAR`
-* :py:attr:`plotpy.core.builder.LUTAlpha.SIGMOID`
-* :py:attr:`plotpy.core.builder.LUTAlpha.TANH`
+* :py:attr:`plotpy.builder.LUTAlpha.NONE` (default)
+* :py:attr:`plotpy.builder.LUTAlpha.CONSTANT`
+* :py:attr:`plotpy.builder.LUTAlpha.LINEAR`
+* :py:attr:`plotpy.builder.LUTAlpha.SIGMOID`
+* :py:attr:`plotpy.builder.LUTAlpha.TANH`
 
 .. warning:: The ``alpha_mask`` parameter has been removed from the methods
              :py:meth:`.PlotItemBuilder.image`, :py:meth:`.PlotItemBuilder.xyimage`,
@@ -197,16 +197,16 @@ See demo script `tests/gui/test_builder.py`.
 
 The method :py:meth:`.PlotItemBuilder.image` now accepts
 optional ``x`` and ``y`` keyword arguments, to automatically create a
-:py:class:`plotpy.core.items.XYImageItem` instead of a simple
-:py:class:`plotpy.core.items.ImageItem` if needed.
+:py:class:`plotpy.items.XYImageItem` instead of a simple
+:py:class:`plotpy.items.ImageItem` if needed.
 
 See demo script `tests/gui/test_builder.py`.
 
 The method :py:meth:`.PlotItemBuilder.curve` now accepts
 optional ``dx``, ``dy``, ``errorbarwidth``, ``errorbarcap``, ``errorbarmode``,
 `errorbaralpha` keyword arguments, to automatically create a
-:py:class:`plotpy.core.items.ErrorBarCurveItem` instead of a simple
-:py:class:`plotpy.core.items.CurveItem` if needed.
+:py:class:`plotpy.items.ErrorBarCurveItem` instead of a simple
+:py:class:`plotpy.items.CurveItem` if needed.
 
 See demo script `tests/gui/test_builder.py`.
 

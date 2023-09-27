@@ -19,7 +19,7 @@ try:
 except ImportError:
     pydicom = None
 
-from plotpy.core.io import imread, imwrite
+from plotpy.io import imread, imwrite
 
 
 def compute_image(N=1000, M=1000):

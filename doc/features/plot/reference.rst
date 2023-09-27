@@ -4,19 +4,19 @@ Reference
 High-level features
 ^^^^^^^^^^^^^^^^^^^
 
-.. autoclass:: plotpy.core.plot.manager.PlotManager
+.. autoclass:: plotpy.plot.manager.PlotManager
    :members:
-.. autoclass:: plotpy.core.plot.PlotWidget
+.. autoclass:: plotpy.plot.PlotWidget
    :members:
-.. autoclass:: plotpy.core.plot.PlotDialog
+.. autoclass:: plotpy.plot.PlotDialog
    :members:
-.. autoclass:: plotpy.core.plot.PlotWindow
+.. autoclass:: plotpy.plot.PlotWindow
    :members:
 
 Low-level features
 ^^^^^^^^^^^^^^^^^^
 
-.. autoclass:: plotpy.core.plot.PlotType
+.. autoclass:: plotpy.plot.PlotType
    :members:
-.. autoclass:: plotpy.core.plot.BasePlot
+.. autoclass:: plotpy.plot.BasePlot
    :members:

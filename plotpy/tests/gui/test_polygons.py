@@ -14,8 +14,8 @@ several hundreds of independent polygons.
 import numpy as np
 from guidata.qthelpers import qt_app_context
 
-from plotpy.core.items import PolygonMapItem
-from plotpy.core.plot import PlotDialog
+from plotpy.items import PolygonMapItem
+from plotpy.plot import PlotDialog
 
 # Create a sample dataset consisting of tesselated circles randomly placed
 # in a box

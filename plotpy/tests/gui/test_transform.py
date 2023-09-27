@@ -10,19 +10,18 @@
 import os
 
 import numpy as np
+from guidata.env import execenv
 from guidata.qthelpers import qt_app_context
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 
-from plotpy.core import io
-from plotpy.core.builder import LUTAlpha, make
-from plotpy.core.constants import PlotType
-from plotpy.core.items import assemble_imageitems
-from plotpy.core.plot import PlotDialog
+from plotpy import io
+from plotpy.builder import LUTAlpha, make
+from plotpy.constants import PlotType
+from plotpy.items import assemble_imageitems
+from plotpy.plot import PlotDialog
 
 DEFAULT_CHARS = "".join([chr(c) for c in range(32, 256)])
-
-# TODO: Rewrite the test so that it does not leave files behind
 
 
 def get_font_array(sz, chars=DEFAULT_CHARS):
@@ -121,15 +120,17 @@ def build_image(items):
     print("-" * 80)
     print("Assemble test1:", w, "x", h)
     dest = assemble_imageitems(items, r, w, h)
-    save_image("test1", dest)
+    if not execenv.unattended:
+        save_image("test1", dest)
     print("-" * 80)
     print("Assemble test2:", w / 4, "x", h / 4)
     dest = assemble_imageitems(items, r, w / 4, h / 4)
-    save_image("test2", dest)
+    if not execenv.unattended:
+        save_image("test2", dest)
     print("-" * 80)
 
 
-def test_transform(img_show=True):
+def test_transform():
     """Test"""
     N = 500
     data = compute_image(N, N)
@@ -144,44 +145,41 @@ def test_transform(img_show=True):
             img = np.array(a1 + info.min, dtype)
             txtwrite(img, 0, 0, int(N / 15.0), str(dtype))
             items.append(make.trimage(img, colormap="jet"))
-        if img_show:
-            gridparam = make.gridparam(
-                background="black",
-                minor_enabled=(False, False),
-                major_style=(".", "gray", 1),
-            )
-            win = PlotDialog(
-                edit=False,
-                toolbar=True,
-                wintitle="Transform test ({}x{} images)".format(N, N),
-                options=dict(gridparam=gridparam, type=PlotType.IMAGE),
-            )
-            nc = int(np.sqrt(len(items)) + 1.0)
-            maxy = 0
-            y = 0
-            x = 0
-            w = None
-            plot = win.manager.get_plot()
-            for i, item in enumerate(items):
-                h = item.boundingRect().height()
-                if i % nc == 0:
-                    x = 0
-                    y += maxy
-                    maxy = h
-                else:
-                    x += w
-                    maxy = max(maxy, h)
-                w = item.boundingRect().width()
-                item.set_transform(x, y, 0.0)
-                plot.add_item(item)
-            win.show()
+        gridparam = make.gridparam(
+            background="black",
+            minor_enabled=(False, False),
+            major_style=(".", "gray", 1),
+        )
+        win = PlotDialog(
+            edit=False,
+            toolbar=True,
+            wintitle="Transform test ({}x{} images)".format(N, N),
+            options=dict(gridparam=gridparam, type=PlotType.IMAGE),
+        )
+        nc = int(np.sqrt(len(items)) + 1.0)
+        maxy, x, y = 0, 0, 0
+        w = None
+        plot = win.manager.get_plot()
+        for i, item in enumerate(items):
+            h = item.boundingRect().height()
+            if i % nc == 0:
+                x = 0
+                y += maxy
+                maxy = h
+            else:
+                x += w
+                maxy = max(maxy, h)
+            w = item.boundingRect().width()
+            item.set_transform(x, y, 0.0)
+            plot.add_item(item)
+        win.show()
     return items
 
 
 def test_build_image():
-    items = test_transform(img_show=False)
+    items = test_transform()
     build_image(items)
 
 
 if __name__ == "__main__":
-    test_transform()
+    test_build_image()

@@ -11,11 +11,11 @@ import os
 
 from guidata.qthelpers import qt_app_context
 
-from plotpy.core.builder import LUTAlpha, make
-from plotpy.core.constants import PlotType
-from plotpy.core.plot import PlotDialog
-from plotpy.core.styles.base import style_generator, update_style_attr
-from plotpy.core.tools import (
+from plotpy.builder import LUTAlpha, make
+from plotpy.constants import PlotType
+from plotpy.plot import PlotDialog
+from plotpy.styles.base import style_generator, update_style_attr
+from plotpy.tools import (
     EllipseTool,
     FreeFormTool,
     MultiLineTool,

@@ -22,15 +22,15 @@ from qtpy import QtWidgets as QW
 
 from plotpy._scaler import INTERP_LINEAR
 from plotpy.config import _
-from plotpy.core.constants import PlotType
-from plotpy.core.items import TrImageItem
-from plotpy.core.plot import PlotWidget
+from plotpy.constants import PlotType
+from plotpy.items import TrImageItem
+from plotpy.plot import PlotWidget
 
 if TYPE_CHECKING:
     import numpy as np
 
-    from plotpy.core.plot.base import BasePlot
-    from plotpy.core.plot.manager import PlotManager
+    from plotpy.plot.base import BasePlot
+    from plotpy.plot.manager import PlotManager
     from plotpy.widgets.fliprotate import FlipRotateWidget
     from plotpy.widgets.rotatecrop import RotateCropWidget
 

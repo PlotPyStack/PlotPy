@@ -11,7 +11,7 @@ import os
 
 from guidata.qthelpers import qt_app_context
 
-from plotpy.core import io
+from plotpy import io
 from plotpy.mathutils import scaler
 from plotpy.tests.gui.test_rotatecrop import imshow
 

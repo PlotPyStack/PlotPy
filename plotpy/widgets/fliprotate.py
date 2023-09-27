@@ -36,7 +36,7 @@ from plotpy.config import _
 from plotpy.widgets import basetransform
 
 if TYPE_CHECKING:
-    from plotpy.core.plot.manager import PlotManager
+    from plotpy.plot.manager import PlotManager
 
 
 class FlipRotateTransform(basetransform.BaseTransform):

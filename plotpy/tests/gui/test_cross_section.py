@@ -12,9 +12,9 @@ import os
 import numpy as np
 from guidata.qthelpers import qt_app_context
 
-from plotpy.core.builder import LUTAlpha, make
-from plotpy.core.constants import PlotType
-from plotpy.core.plot import PlotDialog
+from plotpy.builder import LUTAlpha, make
+from plotpy.constants import PlotType
+from plotpy.plot import PlotDialog
 
 
 def create_window():

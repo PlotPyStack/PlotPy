@@ -10,10 +10,10 @@
 import numpy as np
 from guidata.qthelpers import qt_app_context
 
-from plotpy.core.items import AnnotatedRectangle, EllipseShape, PolygonShape
-from plotpy.core.plot import PlotDialog
-from plotpy.core.styles import AnnotationParam, ShapeParam
-from plotpy.core.tools import (
+from plotpy.items import AnnotatedRectangle, EllipseShape, PolygonShape
+from plotpy.plot import PlotDialog
+from plotpy.styles import AnnotationParam, ShapeParam
+from plotpy.tools import (
     AnnotatedCircleTool,
     AnnotatedEllipseTool,
     AnnotatedObliqueRectangleTool,

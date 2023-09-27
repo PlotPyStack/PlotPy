@@ -1,103 +1,103 @@
 Reference
 ---------
 
-.. autoclass:: plotpy.core.tools.base.GuiTool
+.. autoclass:: plotpy.tools.base.GuiTool
    :members:
-.. autoclass:: plotpy.core.tools.base.InteractiveTool
+.. autoclass:: plotpy.tools.base.InteractiveTool
    :members:
-.. autoclass:: plotpy.core.tools.base.CommandTool
+.. autoclass:: plotpy.tools.base.CommandTool
    :members:
-.. autoclass:: plotpy.core.tools.RectZoomTool
+.. autoclass:: plotpy.tools.RectZoomTool
    :members:
-.. autoclass:: plotpy.core.tools.SelectTool
+.. autoclass:: plotpy.tools.SelectTool
    :members:
-.. autoclass:: plotpy.core.tools.SelectPointTool
+.. autoclass:: plotpy.tools.SelectPointTool
    :members:
-.. autoclass:: plotpy.core.tools.RotationCenterTool
+.. autoclass:: plotpy.tools.RotationCenterTool
    :members:
-.. autoclass:: plotpy.core.tools.MultiLineTool
+.. autoclass:: plotpy.tools.MultiLineTool
    :members:
-.. autoclass:: plotpy.core.tools.FreeFormTool
+.. autoclass:: plotpy.tools.FreeFormTool
    :members:
-.. autoclass:: plotpy.core.tools.LabelTool
+.. autoclass:: plotpy.tools.LabelTool
    :members:
-.. autoclass:: plotpy.core.tools.RectangleTool
+.. autoclass:: plotpy.tools.RectangleTool
    :members:
-.. autoclass:: plotpy.core.tools.PointTool
+.. autoclass:: plotpy.tools.PointTool
    :members:
-.. autoclass:: plotpy.core.tools.SegmentTool
+.. autoclass:: plotpy.tools.SegmentTool
    :members:
-.. autoclass:: plotpy.core.tools.CircleTool
+.. autoclass:: plotpy.tools.CircleTool
    :members:
-.. autoclass:: plotpy.core.tools.EllipseTool
+.. autoclass:: plotpy.tools.EllipseTool
    :members:
-.. autoclass:: plotpy.core.tools.PlaceAxesTool
+.. autoclass:: plotpy.tools.PlaceAxesTool
    :members:
-.. autoclass:: plotpy.core.tools.AnnotatedRectangleTool
+.. autoclass:: plotpy.tools.AnnotatedRectangleTool
    :members:
-.. autoclass:: plotpy.core.tools.AnnotatedCircleTool
+.. autoclass:: plotpy.tools.AnnotatedCircleTool
    :members:
-.. autoclass:: plotpy.core.tools.AnnotatedEllipseTool
+.. autoclass:: plotpy.tools.AnnotatedEllipseTool
    :members:
-.. autoclass:: plotpy.core.tools.AnnotatedPointTool
+.. autoclass:: plotpy.tools.AnnotatedPointTool
    :members:
-.. autoclass:: plotpy.core.tools.AnnotatedSegmentTool
+.. autoclass:: plotpy.tools.AnnotatedSegmentTool
    :members:
-.. autoclass:: plotpy.core.tools.HRangeTool
+.. autoclass:: plotpy.tools.HRangeTool
    :members:
-.. autoclass:: plotpy.core.tools.DummySeparatorTool
+.. autoclass:: plotpy.tools.DummySeparatorTool
    :members:
-.. autoclass:: plotpy.core.tools.AntiAliasingTool
+.. autoclass:: plotpy.tools.AntiAliasingTool
    :members:
-.. autoclass:: plotpy.core.tools.DisplayCoordsTool
+.. autoclass:: plotpy.tools.DisplayCoordsTool
    :members:
-.. autoclass:: plotpy.core.tools.ReverseYAxisTool
+.. autoclass:: plotpy.tools.ReverseYAxisTool
    :members:
-.. autoclass:: plotpy.core.tools.AspectRatioTool
+.. autoclass:: plotpy.tools.AspectRatioTool
    :members:
-.. autoclass:: plotpy.core.tools.PanelTool
+.. autoclass:: plotpy.tools.PanelTool
    :members:
-.. autoclass:: plotpy.core.tools.ItemListPanelTool
+.. autoclass:: plotpy.tools.ItemListPanelTool
    :members:
-.. autoclass:: plotpy.core.tools.ContrastPanelTool
+.. autoclass:: plotpy.tools.ContrastPanelTool
    :members:
-.. autoclass:: plotpy.core.tools.ColormapTool
+.. autoclass:: plotpy.tools.ColormapTool
    :members:
-.. autoclass:: plotpy.core.tools.XCSPanelTool
+.. autoclass:: plotpy.tools.XCSPanelTool
    :members:
-.. autoclass:: plotpy.core.tools.YCSPanelTool
+.. autoclass:: plotpy.tools.YCSPanelTool
    :members:
-.. autoclass:: plotpy.core.tools.CrossSectionTool
+.. autoclass:: plotpy.tools.CrossSectionTool
    :members:
-.. autoclass:: plotpy.core.tools.AverageCrossSectionTool
+.. autoclass:: plotpy.tools.AverageCrossSectionTool
    :members:
-.. autoclass:: plotpy.core.tools.SaveAsTool
+.. autoclass:: plotpy.tools.SaveAsTool
    :members:
-.. autoclass:: plotpy.core.tools.CopyToClipboardTool
+.. autoclass:: plotpy.tools.CopyToClipboardTool
    :members:
-.. autoclass:: plotpy.core.tools.OpenFileTool
+.. autoclass:: plotpy.tools.OpenFileTool
    :members:
-.. autoclass:: plotpy.core.tools.OpenImageTool
+.. autoclass:: plotpy.tools.OpenImageTool
    :members:
-.. autoclass:: plotpy.core.tools.SnapshotTool
+.. autoclass:: plotpy.tools.SnapshotTool
    :members:
-.. autoclass:: plotpy.core.tools.PrintTool
+.. autoclass:: plotpy.tools.PrintTool
    :members:
-.. autoclass:: plotpy.core.tools.SaveItemsTool
+.. autoclass:: plotpy.tools.SaveItemsTool
    :members:
-.. autoclass:: plotpy.core.tools.LoadItemsTool
+.. autoclass:: plotpy.tools.LoadItemsTool
    :members:
-.. autoclass:: plotpy.core.tools.AxisScaleTool
+.. autoclass:: plotpy.tools.AxisScaleTool
    :members:
-.. autoclass:: plotpy.core.tools.HelpTool
+.. autoclass:: plotpy.tools.HelpTool
    :members:
-.. autoclass:: plotpy.core.tools.ExportItemDataTool
+.. autoclass:: plotpy.tools.ExportItemDataTool
    :members:
-.. autoclass:: plotpy.core.tools.EditItemDataTool
+.. autoclass:: plotpy.tools.EditItemDataTool
    :members:
-.. autoclass:: plotpy.core.tools.ItemCenterTool
+.. autoclass:: plotpy.tools.ItemCenterTool
    :members:
-.. autoclass:: plotpy.core.tools.DeleteItemTool
+.. autoclass:: plotpy.tools.DeleteItemTool
    :members:
-.. autoclass:: plotpy.core.tools.ImageMaskTool
+.. autoclass:: plotpy.tools.ImageMaskTool
    :members:

@@ -10,8 +10,8 @@
 import numpy as np
 from guidata.qthelpers import qt_app_context
 
-from plotpy.core.builder import make
-from plotpy.core.plot import PlotDialog
+from plotpy.builder import make
+from plotpy.plot import PlotDialog
 
 
 def test_contour():

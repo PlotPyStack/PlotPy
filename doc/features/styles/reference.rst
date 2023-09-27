@@ -4,79 +4,79 @@ Reference
 Base classes
 ^^^^^^^^^^^^
 
-.. autoclass:: plotpy.core.styles.base.ItemParameters
+.. autoclass:: plotpy.styles.base.ItemParameters
    :members:
 
 Plot (grid, axes)
 ^^^^^^^^^^^^^^^^^
 
-.. autoclass:: plotpy.core.styles.GridParam
+.. autoclass:: plotpy.styles.GridParam
    :members:
-.. autoclass:: plotpy.core.styles.AxesParam
+.. autoclass:: plotpy.styles.AxesParam
    :members:
-.. autoclass:: plotpy.core.styles.ImageAxesParam
+.. autoclass:: plotpy.styles.ImageAxesParam
    :members:
 
 Curve items
 ^^^^^^^^^^^
 
-.. autoclass:: plotpy.core.styles.CurveParam
+.. autoclass:: plotpy.styles.CurveParam
    :members:
-.. autoclass:: plotpy.core.styles.ErrorBarParam
+.. autoclass:: plotpy.styles.ErrorBarParam
    :members:
 
 Image items
 ^^^^^^^^^^^
 
-.. autoclass:: plotpy.core.styles.RawImageParam
+.. autoclass:: plotpy.styles.RawImageParam
    :members:
-.. autoclass:: plotpy.core.styles.ImageParam
+.. autoclass:: plotpy.styles.ImageParam
    :members:
-.. autoclass:: plotpy.core.styles.TrImageParam
+.. autoclass:: plotpy.styles.TrImageParam
    :members:
-.. autoclass:: plotpy.core.styles.XYImageParam
+.. autoclass:: plotpy.styles.XYImageParam
    :members:
-.. autoclass:: plotpy.core.styles.RGBImageParam
+.. autoclass:: plotpy.styles.RGBImageParam
    :members:
-.. autoclass:: plotpy.core.styles.MaskedImageParam
+.. autoclass:: plotpy.styles.MaskedImageParam
    :members:
-.. autoclass:: plotpy.core.styles.MaskedXYImageParam
+.. autoclass:: plotpy.styles.MaskedXYImageParam
    :members:
-.. autoclass:: plotpy.core.styles.ImageFilterParam
+.. autoclass:: plotpy.styles.ImageFilterParam
    :members:
 
 Histogram items
 ^^^^^^^^^^^^^^^
 
-.. autoclass:: plotpy.core.styles.HistogramParam
+.. autoclass:: plotpy.styles.HistogramParam
    :members:
-.. autoclass:: plotpy.core.styles.Histogram2DParam
+.. autoclass:: plotpy.styles.Histogram2DParam
    :members:
 
 Shape items
 ^^^^^^^^^^^
 
-.. autoclass:: plotpy.core.styles.LabelParam
+.. autoclass:: plotpy.styles.LabelParam
    :members:
-.. autoclass:: plotpy.core.styles.LegendParam
+.. autoclass:: plotpy.styles.LegendParam
    :members:
-.. autoclass:: plotpy.core.styles.ShapeParam
+.. autoclass:: plotpy.styles.ShapeParam
    :members:
-.. autoclass:: plotpy.core.styles.AnnotationParam
+.. autoclass:: plotpy.styles.AnnotationParam
    :members:
-.. autoclass:: plotpy.core.styles.AxesShapeParam
+.. autoclass:: plotpy.styles.AxesShapeParam
    :members:
-.. autoclass:: plotpy.core.styles.RangeShapeParam
+.. autoclass:: plotpy.styles.RangeShapeParam
    :members:
-.. autoclass:: plotpy.core.styles.MarkerParam
+.. autoclass:: plotpy.styles.MarkerParam
    :members:
-.. autoclass:: plotpy.core.styles.FontParam
+.. autoclass:: plotpy.styles.FontParam
    :members:
-.. autoclass:: plotpy.core.styles.SymbolParam
+.. autoclass:: plotpy.styles.SymbolParam
    :members:
-.. autoclass:: plotpy.core.styles.LineStyleParam
+.. autoclass:: plotpy.styles.LineStyleParam
    :members:
-.. autoclass:: plotpy.core.styles.BrushStyleParam
+.. autoclass:: plotpy.styles.BrushStyleParam
    :members:
-.. autoclass:: plotpy.core.styles.TextStyleParam
+.. autoclass:: plotpy.styles.TextStyleParam
    :members:

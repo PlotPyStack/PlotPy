@@ -16,10 +16,10 @@ from guidata.qthelpers import qt_app_context, win32_fix_title_bar_background
 from qtpy import QtWidgets as QW
 
 import plotpy.config  # Loading icons
-from plotpy.core.builder import make
-from plotpy.core.constants import PlotType
-from plotpy.core.plot import BasePlot
-from plotpy.core.plot.manager import PlotManager
+from plotpy.builder import make
+from plotpy.constants import PlotType
+from plotpy.plot import BasePlot
+from plotpy.plot.manager import PlotManager
 
 
 class FilterTestWidget(QW.QWidget):

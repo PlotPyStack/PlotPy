@@ -12,11 +12,11 @@ from guidata.qthelpers import qt_app_context
 from qtpy import QtCore as QC
 
 from plotpy.config import _
-from plotpy.core.constants import PlotType
-from plotpy.core.items import RawImageItem
-from plotpy.core.plot import PlotDialog
-from plotpy.core.tools.base import ToggleTool
+from plotpy.constants import PlotType
+from plotpy.items import RawImageItem
 from plotpy.mandelbrot import mandelbrot
+from plotpy.plot import PlotDialog
+from plotpy.tools.base import ToggleTool
 
 
 class FullScale(ToggleTool):

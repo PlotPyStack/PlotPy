@@ -4,8 +4,8 @@
 # (see plotpy/LICENSE for details)
 
 """
-Module plotpy.config
-====================
+Configuration
+-------------
 
 Handle *plotpy* module configuration
 (options, images and icons)

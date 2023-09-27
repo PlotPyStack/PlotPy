@@ -1,1 +1,1 @@
-.. automodule:: plotpy.core.io
+.. automodule:: plotpy.io

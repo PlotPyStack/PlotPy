@@ -39,8 +39,8 @@ import numpy as np
 from qtpy import QtWidgets as QW
 from qtpy.QtWidgets import QWidget  # only to help intersphinx find QWidget
 
+from plotpy import io
 from plotpy.config import _
-from plotpy.core import io
 
 
 # ===============================================================================
