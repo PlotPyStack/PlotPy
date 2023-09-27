@@ -11,8 +11,9 @@ import os
 
 from guidata.qthelpers import qt_app_context
 
-from plotpy.core import io, scaler
+from plotpy.core import io
 from plotpy.tests.gui.test_rotatecrop import imshow
+from plotpy.utils import scaler
 
 
 def test_resize():

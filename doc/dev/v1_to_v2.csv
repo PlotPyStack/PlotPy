@@ -18,7 +18,6 @@ plotpy v1,plotpy v2 (and v1.99+)
 ``.gui.widgets.histogram.ContrastAdjustment``,``.core.panels.contrastadjustment.ContrastAdjustment``
 ``.gui.widgets.io``,``.core.io``
 ``.gui.widgets.io.eliminate_outliers``,*removed*
-``.gui.widgets.scaler``,``.core.scaler``
 ``.gui.widgets.colormap``,``.utils.colormap``
 ``.gui.widgets.debug``,``.utils.debug``
 ``.gui.widgets.debug.buttons_to_str``,``.core.events.buttons_to_str``
@@ -27,6 +26,7 @@ plotpy v1,plotpy v2 (and v1.99+)
 ``.gui.widgets.debug.qimage_format``,*removed*
 ``.gui.widgets.debug.qimage_to_str``,*removed*
 ``.gui.widgets.geometry``,``.utils.geometry``
+``.gui.widgets.scaler``,``.utils.scaler``
 ``.gui.widgets.qthelpers.exec_image_save_dialog``,``.widgets.imagefile.exec_image_save_dialog``
 ``.gui.widgets.qthelpers.exec_image_open_dialog``,``.widgets.imagefile.exec_image_open_dialog``
 ``.gui.widgets.qthelpers.exec_images_open_dialog``,``.widgets.imagefile.exec_images_open_dialog``
