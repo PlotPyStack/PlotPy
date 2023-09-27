@@ -3,29 +3,23 @@
 # Licensed under the terms of the BSD 3-Clause
 # (see plotpy/LICENSE for details)
 
-# _process_mime_path and mimedata2url
-# Origin: Spyder IDE 3.3.2, file spyder/utils/qthelper.py
-# Copyright © Spyder Project Contributors
-# Licensed under the terms of the MIT License
-# (see spyder/__init__.py for details)
-
 """
-Qt helpers
-----------
+Image file dialog helpers
+-------------------------
 
 Overview
 ^^^^^^^^
 
-The :py:mod:``.qthelpers`` module provides helper functions for developing
-easily Qt-based graphical user interfaces with plotpy.
+The :py:mod:``.imagefile`` module provides helper functions for opening and
+saving image files using Qt dialogs and plotpy's I/O features.
 
 Ready-to-use open/save dialogs:
 
-    :py:func:`.qthelpers.exec_image_save_dialog`
+    :py:func:`.imagefile.exec_image_save_dialog`
         Executes an image save dialog box (QFileDialog.getSaveFileName)
-    :py:func:`.qthelpers.exec_image_open_dialog`
+    :py:func:`.imagefile.exec_image_open_dialog`
         Executes an image open dialog box (QFileDialog.getOpenFileName)
-    :py:func:`.qthelpers.exec_images_open_dialog`
+    :py:func:`.imagefile.exec_images_open_dialog`
         Executes an image*s* open dialog box (QFileDialog.getOpenFileNames)
 
 Reference
@@ -38,10 +32,8 @@ Reference
 
 from __future__ import annotations
 
-import os
 import os.path as osp
 import sys
-from typing import TYPE_CHECKING
 
 import numpy as np
 from qtpy import QtWidgets as QW
@@ -49,9 +41,6 @@ from qtpy.QtWidgets import QWidget  # only to help intersphinx find QWidget
 
 from plotpy.config import _
 from plotpy.core import io
-
-if TYPE_CHECKING:
-    from qtpy import QtCore as QC
 
 
 # ===============================================================================
@@ -192,55 +181,3 @@ def exec_images_open_dialog(
             )
             return
         yield filename, data
-
-
-def _process_mime_path(path: str, extlist: list[str]) -> str | None:
-    """Process a path from a MIME data object
-
-    Args:
-        path: Path to process
-        extlist: List of extensions to filter
-
-    Returns:
-        Processed path
-    """
-    if path.startswith(r"file://"):
-        if os.name == "nt":
-            # On Windows platforms, a local path reads: file:///c:/...
-            # and a UNC based path reads like: file://server/share
-            if path.startswith(r"file:///"):  # this is a local path
-                path = path[8:]
-            else:  # this is a unc path
-                path = path[5:]
-        else:
-            path = path[7:]
-    path = path.replace("%5C", os.sep)  # Transforming backslashes
-    if osp.exists(path):
-        if extlist is None or osp.splitext(path)[1] in extlist:
-            return path
-
-
-def mimedata2url(source: QC.QMimeData, extlist: list[str] | None = None) -> list[str]:
-    """Extract url list from MIME data
-
-    Args:
-        source: MIME data
-        extlist: List of file extensions to filter. Defaults to None.
-         Example: ('.py', '.pyw')
-
-    Returns:
-        List of file paths
-    """
-    pathlist = []
-    if source.hasUrls():
-        for url in source.urls():
-            path = _process_mime_path(str(url.toString()), extlist)
-            if path is not None:
-                pathlist.append(path)
-    elif source.hasText():
-        for rawpath in str(source.text()).splitlines():
-            path = _process_mime_path(rawpath, extlist)
-            if path is not None:
-                pathlist.append(path)
-    if pathlist:
-        return pathlist

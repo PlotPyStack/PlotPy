@@ -27,7 +27,10 @@ plotpy v1,plotpy v2 (and v1.99+)
 ``.gui.widgets.debug.qimage_format``,*removed*
 ``.gui.widgets.debug.qimage_to_str``,*removed*
 ``.gui.widgets.geometry``,``.utils.geometry``
-``.gui.widgets.qthelpers``,``.utils.qthelpers``
+``.gui.widgets.qthelpers.exec_image_save_dialog``,``.widgets.imagefile.exec_image_save_dialog``
+``.gui.widgets.qthelpers.exec_image_open_dialog``,``.widgets.imagefile.exec_image_open_dialog``
+``.gui.widgets.qthelpers.exec_images_open_dialog``,``.widgets.imagefile.exec_images_open_dialog``
+``.gui.widgets.qthelpers.mimedata2url``,*removed*
 ``.gui.widgets.fit``,``.widgets.fit``
 ``.gui.widgets.fliprotate``,``.widgets.fliprotate``
 ``.gui.widgets.qtdesigner``,``.widgets.qtdesigner``

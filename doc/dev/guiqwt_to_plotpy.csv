@@ -33,7 +33,10 @@ guiqwt v4,plotpy v2,API changes
 ``guiqwt.styles``,``plotpy.core.styles``
 ``guiqwt.tools``,``plotpy.core.tools``
 ``guiqwt.geometry``,``plotpy.utils.geometry``
-``guiqwt.qthelpers``,``plotpy.utils.qthelpers``
+``guiqwt.qthelpers.exec_image_save_dialog``,``plotpy.widgets.imagefile.exec_image_save_dialog``
+``guiqwt.qthelpers.exec_image_open_dialog``,``plotpy.widgets.imagefile.exec_image_open_dialog``
+``guiqwt.qthelpers.exec_images_open_dialog``,``plotpy.widgets.imagefile.exec_images_open_dialog``
+``guiqwt.qthelpers.mimedata2url``,*removed*
 ``guiqwt.colormap``,``plotpy.utils.colormap``
 ``guiqwt.debug``,``plotpy.utils.debug``
 ``guiqwt.debug.buttons_to_str``,``plotpy.core.events.buttons_to_str``

@@ -37,7 +37,7 @@ from plotpy.core.tools.base import (
 from plotpy.core.tools.misc import OpenFileTool
 from plotpy.core.tools.shapes import CircleTool, RectangleTool, RectangularShapeTool
 from plotpy.utils.colormap import build_icon_from_cmap, get_cmap, get_colormap_list
-from plotpy.utils.qthelpers import exec_image_save_dialog
+from plotpy.widgets.imagefile import exec_image_save_dialog
 
 
 class ImageStatsRectangle(AnnotatedRectangle):
