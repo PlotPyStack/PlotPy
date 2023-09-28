@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from guidata.configtools import get_icon
 from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
@@ -7,46 +12,75 @@ from qtpy import QtGui as QG
 from plotpy.config import _
 from plotpy.items.shapes.polygon import PolygonShape
 
+if TYPE_CHECKING:
+    from plotpy.styles.shape import ShapeParam
+
 
 class PointShape(PolygonShape):
-    """ """
+    """Point shape
+
+    Args:
+        x: X coordinate
+        y: Y coordinate
+        shapeparam: Shape parameters
+    """
 
     CLOSED = False
 
-    def __init__(self, x=0, y=0, shapeparam=None):
+    def __init__(
+        self, x: float = 0.0, y: float = 0.0, shapeparam: ShapeParam = None
+    ) -> None:
         super().__init__(shapeparam=shapeparam)
         self.set_pos(x, y)
         self.setIcon(get_icon("point_shape.png"))
 
-    def set_pos(self, x, y):
-        """Set the point coordinates to (x, y)"""
+    def set_pos(self, x: float, y: float) -> None:
+        """Set the point coordinates to (x, y)
+
+        Args:
+            x: X coordinate
+            y: Y coordinate
+        """
         self.set_points([(x, y)])
 
-    def get_pos(self):
-        """Return the point coordinates"""
+    def get_pos(self) -> tuple[float, float]:
+        """Return the point coordinates
+
+        Returns:
+            Point coordinates
+        """
         return tuple(self.points[0])
 
-    def move_point_to(self, handle, pos, ctrl=None):
-        """
+    def move_point_to(
+        self, handle: int, pos: tuple[float, float], ctrl: bool = False
+    ) -> None:
+        """Move a handle as returned by hit_test to the new position
 
-        :param handle:
-        :param pos:
-        :param ctrl:
+        Args:
+            handle: Handle
+            pos: Position
+            ctrl: True if <Ctrl> button is being pressed, False otherwise
         """
         nx, ny = pos
         self.points[0] = (nx, ny)
 
-    def __reduce__(self):
+    def __reduce__(self) -> tuple:
+        """Reduce object to picklable state"""
         state = (self.shapeparam, self.points, self.z())
         return (self.__class__, (), state)
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: tuple) -> None:
+        """Set object state from pickled state"""
         self.shapeparam, self.points, z = state
         self.setZ(z)
         self.shapeparam.update_shape(self)
 
-    def boundingRect(self):
-        """Return the bounding rectangle of the data"""
+    def boundingRect(self) -> QC.QRectF:
+        """Return the bounding rectangle of the shape
+
+        Returns:
+            Bounding rectangle of the shape
+        """
         poly = QG.QPolygonF()
         if self.ADDITIONNAL_POINTS:
             shape_points = self.points[: -self.ADDITIONNAL_POINTS]

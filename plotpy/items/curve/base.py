@@ -25,7 +25,7 @@ from plotpy.styles.curve import CurveParam
 
 if TYPE_CHECKING:
     import guidata.dataset.io
-    from qtpy.QtCore import QPointF
+    from qtpy import QtCore as QC
 
     from plotpy.interfaces.common import IItemType
     from plotpy.styles.base import ItemParameters
@@ -36,12 +36,21 @@ SELECTED_SYMBOL_PARAM.read_config(CONF, "plot", "selected_curve_symbol")
 SELECTED_SYMBOL = SELECTED_SYMBOL_PARAM.build_symbol()
 
 
-def seg_dist(P, P0, P1):
-    """
-    Return distance between point P and segment (P0, P1)
-    If P orthogonal projection on (P0, P1) is outside segment bounds, return
-    either distance to P0 or to P1 (the closest one)
-    P, P0, P1: QPointF instances
+def seg_dist(P: QC.QPointF, P0: QC.QPointF, P1: QC.QPointF) -> float:
+    """Compute distance between point P and segment (P0, P1)
+
+    Args:
+        P: QPointF instance
+        P0: QPointF instance
+        P1: QPointF instance
+
+    Returns:
+        Distance between point P and segment (P0, P1)
+
+    .. note::
+
+        If P orthogonal projection on (P0, P1) is outside segment bounds, return
+        either distance to P0 or to P1 (the closest one)
     """
     u = QC.QLineF(P0, P).length()
     if P0 == P1:
@@ -57,17 +66,25 @@ def seg_dist(P, P0, P1):
             return abs(u * np.sin(angle))
 
 
-def norm2(v):
+def seg_dist_v(
+    P: tuple[float, float], X0: float, Y0: float, X1: float, Y1: float
+) -> tuple[int, float]:
+    """Compute distance between point P and segment (X0, Y0), (X1, Y1)
+
+    Args:
+        P: Point
+        X0: X coordinate of first point
+        Y0: Y coordinate of first point
+        X1: X coordinate of second point
+        Y1: Y coordinate of second point
+
+    Returns:
+        tuple: Tuple with two elements: (index, distance)
+
+    .. note::
+
+        This is the vectorized version of ``seg_dist`` function
     """
-
-    :param v:
-    :return:
-    """
-    return (v**2).sum(axis=1)
-
-
-def seg_dist_v(P, X0, Y0, X1, Y1):
-    """Version vectorielle de seg_dist"""
     V = np.zeros((X0.shape[0], 2), float)
     PP = np.zeros((X0.shape[0], 2), float)
     PP[:, 0] = X0
@@ -75,7 +92,8 @@ def seg_dist_v(P, X0, Y0, X1, Y1):
     V[:, 0] = X1 - X0
     V[:, 1] = Y1 - Y0
     dP = np.array(P).reshape(1, 2) - PP
-    nV = np.sqrt(norm2(V)).clip(1e-12)  # clip: avoid division by zero
+    norm2V = (V**2).sum(axis=1)
+    nV = np.sqrt(norm2V).clip(1e-12)  # clip: avoid division by zero
     w2 = V / nV[:, np.newaxis]
     w = np.array([-w2[:, 1], w2[:, 0]]).T
     distances = np.fabs((dP * w).sum(axis=1))
@@ -84,9 +102,10 @@ def seg_dist_v(P, X0, Y0, X1, Y1):
 
 
 class CurveItem(QwtPlotCurve):
-    """
-    Construct a curve `plot item` with the parameters *curveparam*
-    (see :py:class:`.styles.CurveParam`)
+    """Curve item
+
+    Args:
+        curveparam: Curve parameters
     """
 
     __implements__ = (IBasePlotItem, ISerializableType)
@@ -94,7 +113,7 @@ class CurveItem(QwtPlotCurve):
     _readonly = False
     _private = False
 
-    def __init__(self, curveparam=None):
+    def __init__(self, curveparam: CurveParam | None = None) -> None:
         super().__init__()
         if curveparam is None:
             self.param = CurveParam(_("Curve"), icon="curve.png")
@@ -107,9 +126,17 @@ class CurveItem(QwtPlotCurve):
         self.update_params()
         self.setIcon(get_icon("curve.png"))
 
-    def _get_visible_axis_min(self, axis_id, axis_data):
+    def _get_visible_axis_min(self, axis_id: int, axis_data: np.ndarray) -> float:
         """Return axis minimum excluding zero and negative values when
-        corresponding plot axis scale is logarithmic"""
+        corresponding plot axis scale is logarithmic
+
+        Args:
+            axis_id: Axis ID
+            axis_data: Axis data
+
+        Returns:
+            Axis minimum
+        """
         if self.plot().get_axis_scale(axis_id) == "log":
             if len(axis_data[axis_data > 0]) == 0:
                 return 0
@@ -118,8 +145,12 @@ class CurveItem(QwtPlotCurve):
         else:
             return axis_data.min()
 
-    def boundingRect(self):
-        """Return the bounding rectangle of the data"""
+    def boundingRect(self) -> QC.QRectF:
+        """Return the bounding rectangle of the data
+
+        Returns:
+            Bounding rectangle of the data
+        """
         plot = self.plot()
         if plot is not None and "log" in (
             plot.get_axis_scale(self.xAxis()),
@@ -211,12 +242,14 @@ class CurveItem(QwtPlotCurve):
         """
         return False
 
-    def __reduce__(self):
+    def __reduce__(self) -> tuple[type, tuple, tuple]:
+        """Return state information for pickling"""
         state = (self.param, self._x, self._y, self.z())
         res = (CurveItem, (), state)
         return res
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: tuple) -> None:
+        """Restore state information for unpickling"""
         param, x, y, z = state
         self.param = param
         self.set_data(x, y)
@@ -291,15 +324,14 @@ class CurveItem(QwtPlotCurve):
         """
         return self._private
 
-    def invalidate_plot(self):
-        """ """
+    def invalidate_plot(self) -> None:
+        """Invalidate the plot to force a redraw"""
         plot = self.plot()
         if plot is not None:
             plot.invalidate()
 
     def select(self) -> None:
-        """
-        Select the object and eventually change its appearance to highlight the
+        """Select the object and eventually change its appearance to highlight the
         fact that it's selected
         """
         self.selected = True
@@ -312,8 +344,7 @@ class CurveItem(QwtPlotCurve):
         self.invalidate_plot()
 
     def unselect(self) -> None:
-        """
-        Unselect the object and eventually restore its original appearance to
+        """Unselect the object and eventually restore its original appearance to
         highlight the fact that it's not selected anymore
         """
         self.selected = False
@@ -321,25 +352,34 @@ class CurveItem(QwtPlotCurve):
         self.param.update_item(self)
         self.invalidate_plot()
 
-    def get_data(self):
-        """Return curve data x, y (NumPy arrays)"""
+    def get_data(self) -> tuple[np.ndarray, np.ndarray]:
+        """Return curve data x, y (NumPy arrays)
+
+        Returns:
+            tuple: Tuple with two elements: x and y NumPy arrays
+        """
         return self._x, self._y
 
-    def set_data(self, x, y):
-        """
-        Set curve data:
-            * x: NumPy array
-            * y: NumPy array
+    def set_data(self, x: np.ndarray, y: np.ndarray) -> None:
+        """Set curve data
+
+        Args:
+            x: X data
+            y: Y data
         """
         self._x = np.array(x, copy=False)
         self._y = np.array(y, copy=False)
         self.setData(self._x, self._y)
 
-    def is_empty(self):
-        """Return True if item data is empty"""
+    def is_empty(self) -> bool:
+        """Return True if the item is empty
+
+        Returns:
+            True if the item is empty, False otherwise
+        """
         return self._x is None or self._y is None or self._y.size == 0
 
-    def hit_test(self, pos: QPointF) -> tuple[float, float, bool, None]:
+    def hit_test(self, pos: QC.QPointF) -> tuple[float, float, bool, None]:
         """Return a tuple (distance, attach point, inside, other_object)
 
         Args:
@@ -428,11 +468,15 @@ class CurveItem(QwtPlotCurve):
         title = self.title().text()
         return f"{title}:<br>x = {x:g}<br>y = {y:g}"
 
-    def get_closest_x(self, xc):
+    def get_closest_x(self, xc: float) -> tuple[float, float]:
         """
+        Get the closest point to the given x coordinate
 
-        :param xc:
-        :return:
+        Args:
+            xc: X coordinate
+
+        Returns:
+            tuple[float, float]: Closest point coordinates
         """
         # We assume X is sorted, otherwise we'd need :
         # argmin(abs(x-xc))
@@ -442,7 +486,9 @@ class CurveItem(QwtPlotCurve):
                 return self._x[i - 1], self._y[i - 1]
         return self._x[i], self._y[i]
 
-    def move_local_point_to(self, handle: int, pos: QPointF, ctrl: bool = None) -> None:
+    def move_local_point_to(
+        self, handle: int, pos: QC.QPointF, ctrl: bool = None
+    ) -> None:
         """Move a handle as returned by hit_test to the new position
 
         Args:
@@ -460,7 +506,7 @@ class CurveItem(QwtPlotCurve):
         self.setData(self._x, self._y)
         self.plot().replot()
 
-    def move_local_shape(self, old_pos: QPointF, new_pos: QPointF) -> None:
+    def move_local_shape(self, old_pos: QC.QPointF, new_pos: QC.QPointF) -> None:
         """Translate the shape such that old_pos becomes new_pos in canvas coordinates
 
         Args:
@@ -485,7 +531,7 @@ class CurveItem(QwtPlotCurve):
         self.setData(self._x, self._y)
 
     def update_params(self):
-        """ """
+        """Update item parameters (object properties) from datasets"""
         self.param.update_item(self)
         if self.selected:
             self.select()

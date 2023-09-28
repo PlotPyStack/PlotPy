@@ -6,9 +6,10 @@
 # pylint: disable=C0103
 
 """
-plotpy.items.annotations
------------------------------
+Annotations
+-----------
 
+The :mod:`annotations` module provides annotated shape plot items.
 """
 
 from __future__ import annotations
@@ -40,7 +41,9 @@ from plotpy.styles.shape import AnnotationParam
 
 if TYPE_CHECKING:
     import guidata.dataset.io
-    from qtpy.QtCore import QPointF
+    from qtpy import QtCore as QC
+    from qtpy import QtGui as QG
+    from qwt import QwtScaleMap
 
     from plotpy.interfaces.common import IItemType
     from plotpy.styles.base import ItemParameters
@@ -50,16 +53,19 @@ class AnnotatedShape(AbstractShape):
     """
     Construct an annotated shape with properties set with
     *annotationparam* (see :py:class:`.styles.AnnotationParam`)
+
+    Args:
+        annotationparam: Annotation parameters
     """
 
     __implements__ = (IBasePlotItem, ISerializableType)
-    SHAPE_CLASS = None
-    LABEL_ANCHOR = None
+    SHAPE_CLASS: AbstractShape = RectangleShape  # to be overridden
+    LABEL_ANCHOR: str = ""
 
-    def __init__(self, annotationparam=None):
-        AbstractShape.__init__(self)
-        assert self.LABEL_ANCHOR is not None
-        self.shape = self.create_shape()
+    def __init__(self, annotationparam: AnnotationParam | None = None) -> None:
+        super().__init__()
+        assert self.LABEL_ANCHOR is not None and len(self.LABEL_ANCHOR) != 0
+        self.shape: AbstractShape = self.create_shape()
         self.label = self.create_label()
         self.area_computations_visible = True
         self.subtitle_visible = True
@@ -81,12 +87,14 @@ class AnnotatedShape(AbstractShape):
         """
         return (IShapeItemType, ISerializableType)
 
-    def __reduce__(self):
+    def __reduce__(self) -> tuple[type, tuple, tuple]:
+        """Return a tuple for pickling"""
         self.annotationparam.update_param(self)
         state = (self.shape, self.label, self.annotationparam)
         return (self.__class__, (), state)
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: tuple) -> None:
+        """Set state after unpickling"""
         shape, label, param = state
         self.shape = shape
         self.label = label
@@ -125,22 +133,30 @@ class AnnotatedShape(AbstractShape):
         self.shape.deserialize(reader)
         self.label.deserialize(reader)
 
-    def set_style(self, section, option):
-        """
+    def set_style(self, section: str, option: str) -> None:
+        """Set style for this item
 
-        :param section:
-        :param option:
+        Args:
+            section: Section
+            option: Option
         """
         self.shape.set_style(section, option)
 
     # ----QwtPlotItem API--------------------------------------------------------
-    def draw(self, painter, xMap, yMap, canvasRect):
-        """
+    def draw(
+        self,
+        painter: QG.QPainter,
+        xMap: QwtScaleMap,
+        yMap: QwtScaleMap,
+        canvasRect: QC.QRectF,
+    ) -> None:
+        """Draw the item
 
-        :param painter:
-        :param xMap:
-        :param yMap:
-        :param canvasRect:
+        Args:
+            painter: Painter
+            xMap: X axis scale map
+            yMap: Y axis scale map
+            canvasRect: Canvas rectangle
         """
         self.shape.draw(painter, xMap, yMap, canvasRect)
         if self.label.isVisible():
@@ -152,29 +168,43 @@ class AnnotatedShape(AbstractShape):
         shape = self.SHAPE_CLASS(0, 0, 1, 1)  # pylint: disable=not-callable
         return shape
 
-    def create_label(self):
-        """Return the label object associated to this annotated shape object"""
+    def create_label(self) -> DataInfoLabel:
+        """Return the label object associated to this annotated shape object
+
+        Returns:
+            Label object
+        """
         label_param = LabelParam(_("Label"), icon="label.png")
         label_param.read_config(CONF, "plot", "shape/label")
         label_param.anchor = self.LABEL_ANCHOR
         return DataInfoLabel(label_param, [self])
 
-    def is_label_visible(self):
-        """Return True if associated label is visible"""
+    def is_label_visible(self) -> bool:
+        """Return True if associated label is visible
+
+        Returns:
+            True if associated label is visible
+        """
         return self.label.isVisible()
 
-    def set_label_visible(self, state):
-        """Set the annotated shape's label visibility"""
+    def set_label_visible(self, state: bool) -> None:
+        """Set the annotated shape's label visibility
+
+        Args:
+            state: True if label should be visible
+        """
         self.label.setVisible(state)
 
-    def update_label(self):
+    def update_label(self) -> None:
         """Update the annotated shape's label contents"""
         self.label.update_text()
 
-    def get_text(self):
-        """
-        Return text associated to current shape
+    def get_text(self) -> str:
+        """Return text associated to current shape
         (see :py:class:`.label.ObjectInfo`)
+
+        Returns:
+            Text associated to current shape
         """
         text = ""
         title = self.title().text()
@@ -193,9 +223,15 @@ class AnnotatedShape(AbstractShape):
                 text += infos
         return text
 
-    def x_to_str(self, x):
-        """Convert x (float) to a string
-        (with associated unit and uncertainty)"""
+    def x_to_str(self, x: float) -> str:
+        """Convert x to a string (with associated unit and uncertainty)
+
+        Args:
+            x: X value
+
+        Returns:
+            str: Formatted string with x value
+        """
         param = self.annotationparam
         if self.plot() is None:
             return ""
@@ -210,8 +246,14 @@ class AnnotatedShape(AbstractShape):
                 return (fmt) % x
 
     def y_to_str(self, y):
-        """Convert y (float) to a string
-        (with associated unit and uncertainty)"""
+        """Convert y to a string (with associated unit and uncertainty)
+
+        Args:
+            y: Y value
+
+        Returns:
+            str: Formatted string with x value
+        """
         param = self.annotationparam
         if self.plot() is None:
             return ""
@@ -282,7 +324,7 @@ class AnnotatedShape(AbstractShape):
         return x1, y1, x2, y2
 
     # ----IBasePlotItem API------------------------------------------------------
-    def hit_test(self, pos: QPointF) -> tuple[float, float, bool, None]:
+    def hit_test(self, pos: QC.QPointF) -> tuple[float, float, bool, None]:
         """Return a tuple (distance, attach point, inside, other_object)
 
         Args:
@@ -303,28 +345,32 @@ class AnnotatedShape(AbstractShape):
         """
         return self.shape.poly_hit_test(self.plot(), self.xAxis(), self.yAxis(), pos)
 
-    def move_point_to(self, handle, pos, ctrl=None):
-        """
+    def move_point_to(
+        self, handle: int, pos: tuple[float, float], ctrl: bool = False
+    ) -> None:
+        """Move a handle as returned by hit_test to the new position
 
-        :param handle:
-        :param pos:
-        :param ctrl:
+        Args:
+            handle: Handle
+            pos: Position
+            ctrl: True if <Ctrl> button is being pressed, False otherwise
         """
         self.shape.move_point_to(handle, pos, ctrl)
         self.set_label_position()
         if self.plot():
             self.plot().SIG_ANNOTATION_CHANGED.emit(self)
 
-    def move_shape(self, old_pos, new_pos):
-        """
+    def move_shape(self, old_pos: QC.QPointF, new_pos: QC.QPointF) -> None:
+        """Translate the shape such that old_pos becomes new_pos in axis coordinates
 
-        :param old_pos:
-        :param new_pos:
+        Args:
+            old_pos: Old position
+            new_pos: New position
         """
         self.shape.move_shape(old_pos, new_pos)
         self.label.move_local_shape(old_pos, new_pos)
 
-    def move_local_shape(self, old_pos: QPointF, new_pos: QPointF) -> None:
+    def move_local_shape(self, old_pos: QC.QPointF, new_pos: QC.QPointF) -> None:
         """Translate the shape such that old_pos becomes new_pos in canvas coordinates
 
         Args:
@@ -397,12 +443,20 @@ class AnnotatedShape(AbstractShape):
 
     # Autoscalable types API
 
-    def is_empty(self):
-        """Returns True if the shape is empty"""
+    def is_empty(self) -> bool:
+        """Return True if the item is empty
+
+        Returns:
+            True if the item is empty, False otherwise
+        """
         return self.shape.is_empty()
 
-    def boundingRect(self):
-        """Returns boundingRect of the shape"""
+    def boundingRect(self) -> QC.QRectF:
+        """Return the bounding rectangle of the shape
+
+        Returns:
+            Bounding rectangle of the shape
+        """
         return self.shape.boundingRect()
 
 
@@ -607,8 +661,12 @@ class AnnotatedObliqueRectangle(AnnotatedRectangle):
         _x, yr2 = self.apply_transform_matrix(1.0, 2.0)
         return (compute_angle(reverse=yr1 > yr2, *xcoords) + 90) % 180 - 90
 
-    def get_bounding_rect_coords(self):
-        """Return bounding rectangle coordinates (in plot coordinates)"""
+    def get_bounding_rect_coords(self) -> tuple[float, float, float, float]:
+        """Return bounding rectangle coordinates (in plot coordinates)
+
+        Returns:
+            Bounding rectangle coordinates (in plot coordinates)
+        """
         return self.shape.get_bounding_rect_coords()
 
     # ----AnnotatedShape API-----------------------------------------------------

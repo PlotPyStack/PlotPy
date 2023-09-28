@@ -14,19 +14,14 @@ from plotpy.coords import canvas_to_axes
 from plotpy.interfaces.common import IBasePlotItem, IShapeItemType
 
 if TYPE_CHECKING:
-    from qtpy.QtCore import QPointF
+    from qtpy import QtCore as QC
 
     from plotpy.interfaces.common import IItemType
     from plotpy.styles.base import ItemParameters
 
 
 class AbstractShape(QwtPlotItem):
-    """Interface pour les objets manipulables
-    il n'est pas nécessaire de dériver de QwtShape si on
-    réutilise une autre classe dérivée de QwtPlotItem
-
-    La classe de base
-    """
+    """Abstract shape class"""
 
     __implements__ = (IBasePlotItem,)
 
@@ -37,7 +32,7 @@ class AbstractShape(QwtPlotItem):
     _can_rotate = False  # TODO: Implement shape rotation?
     _can_move = True
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.selected = False
 
@@ -168,7 +163,7 @@ class AbstractShape(QwtPlotItem):
         self.selected = False
         self.invalidate_plot()
 
-    def hit_test(self, pos: QPointF) -> tuple[float, float, bool, None]:
+    def hit_test(self, pos: QC.QPointF) -> tuple[float, float, bool, None]:
         """Return a tuple (distance, attach point, inside, other_object)
 
         Args:
@@ -212,7 +207,9 @@ class AbstractShape(QwtPlotItem):
         """
         pass
 
-    def move_local_point_to(self, handle: int, pos: QPointF, ctrl: bool = None) -> None:
+    def move_local_point_to(
+        self, handle: int, pos: QC.QPointF, ctrl: bool = False
+    ) -> None:
         """Move a handle as returned by hit_test to the new position
 
         Args:
@@ -225,7 +222,7 @@ class AbstractShape(QwtPlotItem):
         if self.plot():
             self.plot().SIG_ITEM_RESIZED.emit(self, 0, 0)
 
-    def move_local_shape(self, old_pos: QPointF, new_pos: QPointF) -> None:
+    def move_local_shape(self, old_pos: QC.QPointF, new_pos: QC.QPointF) -> None:
         """Translate the shape such that old_pos becomes new_pos in canvas coordinates
 
         Args:
@@ -248,27 +245,39 @@ class AbstractShape(QwtPlotItem):
         self.move_shape([0, 0], [delta_x, delta_y])
 
     # ------Public API-----------------------------------------------------------
-    def move_point_to(self, handle, pos, ctrl=None):
-        """
+    def move_point_to(
+        self, handle: int, pos: tuple[float, float], ctrl: bool = False
+    ) -> None:
+        """Move a handle as returned by hit_test to the new position
 
-        :param handle:
-        :param pos:
-        :param ctrl:
+        Args:
+            handle: Handle
+            pos: Position
+            ctrl: True if <Ctrl> button is being pressed, False otherwise
         """
         pass
 
-    def move_shape(self, old_pos, new_pos):
-        """Translate the shape such that old_pos becomes new_pos
-        in axis coordinates"""
+    def move_shape(self, old_pos: QC.QPointF, new_pos: QC.QPointF) -> None:
+        """Translate the shape such that old_pos becomes new_pos in axis coordinates
+
+        Args:
+            old_pos: Old position
+            new_pos: New position
+        """
         pass
 
-    def invalidate_plot(self):
-        """ """
+    def invalidate_plot(self) -> None:
+        """Invalidate the plot to force a redraw"""
         plot = self.plot()
         if plot is not None:
             plot.invalidate()
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
+        """Return True if the item is empty
+
+        Returns:
+            True if the item is empty, False otherwise
+        """
         return False
 
 

@@ -36,7 +36,9 @@ except ImportError:
     raise
 
 if TYPE_CHECKING:
+    from qtpy import QtGui as QG
     from qtpy.QtCore import QPointF
+    from qwt import QwtLinearColorMap, QwtScaleMap
 
     from plotpy.interfaces.common import IItemType
     from plotpy.styles.base import ItemParameters
@@ -101,10 +103,11 @@ class ImageFilterItem(BaseImageItem):
         self.filter = filter
 
     # ---- QwtPlotItem API ------------------------------------------------------
-    def boundingRect(self):
-        """
+    def boundingRect(self) -> QC.QRectF:
+        """Return the bounding rectangle of the shape
 
-        :return:
+        Returns:
+            Bounding rectangle of the shape
         """
         x0, y0, x1, y1 = self.border_rect.get_rect()
         return QC.QRectF(x0, y0, x1 - x0, y1 - y0)
@@ -150,7 +153,7 @@ class ImageFilterItem(BaseImageItem):
             ctrl: True if <Ctrl> button is being pressed, False otherwise
         """
         npos = canvas_to_axes(self, pos)
-        self.border_rect.move_point_to(handle, npos)
+        self.border_rect.move_point_to(handle, npos, ctrl)
 
     def move_local_shape(self, old_pos: QPointF, new_pos: QPointF) -> None:
         """Translate the shape such that old_pos becomes new_pos in canvas coordinates
@@ -174,10 +177,11 @@ class ImageFilterItem(BaseImageItem):
         """
         self.border_rect.move_with_selection(delta_x, delta_y)
 
-    def set_color_map(self, name_or_table):
-        """
+    def set_color_map(self, name_or_table: str | QwtLinearColorMap) -> None:
+        """Set colormap
 
-        :param name_or_table:
+        Args:
+            name_or_table: Colormap name or colormap
         """
         if self.use_source_cmap:
             if self.image is not None:
@@ -268,16 +272,24 @@ class XYImageFilterItem(ImageFilterItem):
         """
         ImageFilterItem.set_image(self, image)
 
-    def draw_image(self, painter, canvasRect, src_rect, dst_rect, xMap, yMap):
-        """
+    def draw_image(
+        self,
+        painter: QG.QPainter,
+        canvasRect: QC.QRectF,
+        src_rect: tuple[float, float, float, float],
+        dst_rect: tuple[float, float, float, float],
+        xMap: QwtScaleMap,
+        yMap: QwtScaleMap,
+    ) -> None:
+        """Draw image
 
-        :param painter:
-        :param canvasRect:
-        :param src_rect:
-        :param dst_rect:
-        :param xMap:
-        :param yMap:
-        :return:
+        Args:
+            painter: Painter
+            canvasRect: Canvas rectangle
+            src_rect: Source rectangle
+            dst_rect: Destination rectangle
+            xMap: X axis scale map
+            yMap: Y axis scale map
         """
         bounds = self.boundingRect()
 

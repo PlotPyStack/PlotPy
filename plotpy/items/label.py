@@ -13,7 +13,7 @@ plotpy.widgets.label
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from guidata.configtools import get_icon
@@ -29,11 +29,14 @@ from plotpy.items.curve.base import CurveItem
 from plotpy.styles.label import LabelParam
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     import guidata.dataset.io
     from qtpy.QtCore import QPointF
-    from qwt import QwtSymbol
+    from qwt import QwtScaleMap, QwtSymbol
 
     from plotpy.interfaces.common import IItemType
+    from plotpy.items import ImageItem, RectangleShape, XRangeSelection
     from plotpy.styles.base import ItemParameters
 
 ANCHORS = {
@@ -50,17 +53,22 @@ ANCHORS = {
 
 
 class AbstractLabelItem(QwtPlotItem):
-    """Draws a label on the canvas at position :
+    """Abstract label plot item
+
+    Draws a label on the canvas at position :
     G+C where G is a point in plot coordinates and C a point
     in canvas coordinates.
     G can also be an anchor string as in ANCHORS in which case
     the label will keep a fixed position wrt the canvas rect
+
+    Args:
+        labelparam: Label parameters
     """
 
     _readonly = False
     _private = False
 
-    def __init__(self, labelparam=None):
+    def __init__(self, labelparam: LabelParam = None) -> None:
         super().__init__()
         self.selected = False
         self.anchor = None
@@ -78,16 +86,18 @@ class AbstractLabelItem(QwtPlotItem):
         self._can_move = True
         self._can_rotate = False
 
-    def set_style(self, section, option):
-        """
+    def set_style(self, section: str, option: str) -> None:
+        """Set style for this item
 
-        :param section:
-        :param option:
+        Args:
+            section: Section
+            option: Option
         """
         self.labelparam.read_config(CONF, section, option)
         self.labelparam.update_label(self)
 
-    def __reduce__(self):
+    def __reduce__(self) -> tuple[type, tuple]:
+        """Return a tuple containing the constructor and its arguments"""
         return (self.__class__, (self.labelparam,))
 
     def serialize(
@@ -121,10 +131,11 @@ class AbstractLabelItem(QwtPlotItem):
         if isinstance(self.G, np.ndarray):
             self.G = tuple(self.G)
 
-    def get_text_rect(self):
-        """
+    def get_text_rect(self) -> QC.QRectF:
+        """Return the text rectangle
 
-        :return:
+        Returns:
+            Text rectangle
         """
         return QC.QRectF(0.0, 0.0, 10.0, 10.0)
 
@@ -137,21 +148,29 @@ class AbstractLabelItem(QwtPlotItem):
         """
         return (IShapeItemType,)
 
-    def set_text_style(self, font=None, color=None):
-        """
+    def set_text_style(
+        self, font: QG.QFont | None = None, color: str | None = None
+    ) -> None:
+        """Set label text style
 
-        :param font:
-        :param color:
+        Args:
+            font: Font
+            color: Color
         """
         raise NotImplementedError
 
-    def get_top_left(self, xMap, yMap, canvasRect):
-        """
+    def get_top_left(
+        self, xMap: QwtScaleMap, yMap: QwtScaleMap, canvasRect: QC.QRectF
+    ) -> tuple[float, float]:
+        """Return the top left corner of the text rectangle
 
-        :param xMap:
-        :param yMap:
-        :param canvasRect:
-        :return:
+        Args:
+            xMap: X axis scale map
+            yMap: Y axis scale map
+            canvasRect: Canvas rectangle
+
+        Returns:
+            tuple: Tuple with two elements: (x, y)
         """
         x0, y0 = self.get_origin(xMap, yMap, canvasRect)
         x0 += self.C[0]
@@ -163,13 +182,18 @@ class AbstractLabelItem(QwtPlotItem):
         y0 -= pos[1]
         return x0, y0
 
-    def get_origin(self, xMap, yMap, canvasRect):
-        """
+    def get_origin(
+        self, xMap: QwtScaleMap, yMap: QwtScaleMap, canvasRect: QC.QRectF
+    ) -> tuple[float, float]:
+        """Return the origin of the text rectangle
 
-        :param xMap:
-        :param yMap:
-        :param canvasRect:
-        :return:
+        Args:
+            xMap: X axis scale map
+            yMap: Y axis scale map
+            canvasRect: Canvas rectangle
+
+        Returns:
+            tuple: Tuple with two elements: (x, y)
         """
         if self.G in ANCHORS:
             return ANCHORS[self.G](canvasRect)
@@ -279,8 +303,8 @@ class AbstractLabelItem(QwtPlotItem):
         """
         return self._private
 
-    def invalidate_plot(self):
-        """ """
+    def invalidate_plot(self) -> None:
+        """Invalidate the plot to force a redraw"""
         plot = self.plot()
         if plot:
             plot.invalidate()
@@ -341,12 +365,16 @@ class AbstractLabelItem(QwtPlotItem):
         else:
             return 1000.0, None, False, None
 
-    def click_inside(self, locx, locy):
-        """
+    def click_inside(self, locx: float, locy: float) -> tuple[float, float, bool, type]:
+        """Called when the mouse button is clicked inside the object
 
-        :param locx:
-        :param locy:
-        :return:
+        Args:
+            locx: Local x coordinate
+            locy: Local y coordinate
+
+        Returns:
+            tuple: Tuple with four elements: (distance, attach point, inside,
+             other_object).
         """
         return 2.0, 1, True, None
 
@@ -433,14 +461,17 @@ class AbstractLabelItem(QwtPlotItem):
         self.G = lx1, ly1
         self.labelparam.xg, self.labelparam.yg = lx1, ly1
 
-    def draw_frame(self, painter, x, y, w, h):
-        """
+    def draw_frame(
+        self, painter: QG.QPainter, x: float, y: float, w: float, h: float
+    ) -> None:
+        """Draw the frame
 
-        :param painter:
-        :param x:
-        :param y:
-        :param w:
-        :param h:
+        Args:
+            painter: Painter
+            x: X coordinate
+            y: Y coordinate
+            w: Width
+            h: Height
         """
         if self.labelparam.bgalpha > 0.0:
             painter.fillRect(x, y, w, h, self.bg_brush)
@@ -450,18 +481,26 @@ class AbstractLabelItem(QwtPlotItem):
 
 
 class LabelItem(AbstractLabelItem):
-    """ """
+    """Label plot item
+
+    Args:
+        text: Text
+        labelparam: Label parameters
+    """
 
     __implements__ = (IBasePlotItem, ISerializableType)
 
-    def __init__(self, text=None, labelparam=None):
+    def __init__(
+        self, text: str | None = None, labelparam: LabelParam | None = None
+    ) -> None:
         self.text_string = "" if text is None else text
         self.text = QG.QTextDocument()
         self.marker: QwtSymbol | None = None
         super().__init__(labelparam)
         self.setIcon(get_icon("label.png"))
 
-    def __reduce__(self):
+    def __reduce__(self) -> tuple[type, tuple]:
+        """Return a tuple containing the constructor and its arguments"""
         return (self.__class__, (self.text_string, self.labelparam))
 
     def serialize(
@@ -501,37 +540,43 @@ class LabelItem(AbstractLabelItem):
         """
         return (IShapeItemType, ISerializableType)
 
-    def set_pos(self, x, y):
-        """
+    def set_pos(self, x: float, y: float) -> None:
+        """Set position
 
-        :param x:
-        :param y:
+        Args:
+            x: X coordinate
+            y: Y coordinate
         """
         self.G = x, y
         self.labelparam.abspos = False
         self.labelparam.xg, self.labelparam.yg = x, y
 
-    def get_plain_text(self):
-        """
+    def get_plain_text(self) -> str:
+        """Get plain text
 
-        :return:
+        Returns:
+            str: Plain text
         """
         return str(self.text.toPlainText())
 
-    def set_text(self, text=None):
-        """
+    def set_text(self, text: str | None = None) -> None:
+        """Set text
 
-        :param text:
+        Args:
+            text: Text
         """
         if text is not None:
             self.text_string = text
         self.text.setHtml(f"<div>{self.text_string}</div>")
 
-    def set_text_style(self, font=None, color=None):
-        """
+    def set_text_style(
+        self, font: QG.QFont | None = None, color: str | None = None
+    ) -> None:
+        """Set label text style
 
-        :param font:
-        :param color:
+        Args:
+            font: Font
+            color: Color
         """
         if font is not None:
             self.text.setDefaultFont(font)
@@ -539,25 +584,33 @@ class LabelItem(AbstractLabelItem):
             self.text.setDefaultStyleSheet("div { color: %s; }" % color)
         self.set_text()
 
-    def get_text_rect(self):
-        """
+    def get_text_rect(self) -> QC.QRectF:
+        """Return the text rectangle
 
-        :return:
+        Returns:
+            Text rectangle
         """
         sz = self.text.size()
         return QC.QRectF(0, 0, sz.width(), sz.height())
 
-    def update_text(self):
-        """ """
+    def update_text(self) -> None:
+        """Update text"""
         pass
 
-    def draw(self, painter, xMap, yMap, canvasRect):
-        """
+    def draw(
+        self,
+        painter: QG.QPainter,
+        xMap: QwtScaleMap,
+        yMap: QwtScaleMap,
+        canvasRect: QC.QRectF,
+    ) -> None:
+        """Draw the item
 
-        :param painter:
-        :param xMap:
-        :param yMap:
-        :param canvasRect:
+        Args:
+            painter: Painter
+            xMap: X axis scale map
+            yMap: Y axis scale map
+            canvasRect: Canvas rectangle
         """
         self.update_text()
         x, y = self.get_top_left(xMap, yMap, canvasRect)
@@ -581,11 +634,15 @@ LEGEND_SPACEV = 3  # Vertical space between items
 
 
 class LegendBoxItem(AbstractLabelItem):
-    """ """
+    """Legend box plot item
+
+    Args:
+        labelparam: Label parameters
+    """
 
     __implements__ = (IBasePlotItem, ISerializableType)
 
-    def __init__(self, labelparam=None):
+    def __init__(self, labelparam: LabelParam = None) -> None:
         self.font = None
         self.color = None
         super().__init__(labelparam)
@@ -602,10 +659,13 @@ class LegendBoxItem(AbstractLabelItem):
         """
         return (IShapeItemType, ISerializableType)
 
-    def get_legend_items(self):
-        """
+    def get_legend_items(
+        self,
+    ) -> list[tuple[QG.QTextDocument, QG.QPen, QG.QBrush, QwtSymbol]]:
+        """Return the legend items
 
-        :return:
+        Returns:
+            list: List of legend items (text, pen, brush, symbol)
         """
         plot = self.plot()
         if plot is None:
@@ -621,23 +681,31 @@ class LegendBoxItem(AbstractLabelItem):
             text_items.append((text, item.pen(), item.brush(), item.symbol()))
         return text_items
 
-    def include_item(self, item):
-        """
+    def include_item(self, item: Any) -> bool:
+        """Include item in legend box?
 
-        :param item:
-        :return:
+        Args:
+            item: Item
+
+        Returns:
+            True if item is included, False otherwise
         """
         return item.isVisible()
 
-    def get_legend_size(self, items):
-        """
+    def get_legend_size(
+        self, legenditems: list[tuple]
+    ) -> tuple[float, float, float, float]:
+        """Return the legend size
 
-        :param items:
-        :return:
+        Args:
+            legenditems: Legend items
+
+        Returns:
+            tuple: Tuple with four elements: (TW, TH, width, height)
         """
         width = 0
         height = 0
-        for text, _, _, _ in items:
+        for text, _, _, _ in legenditems:
             sz = text.size()
             if sz.width() > width:
                 width = sz.width()
@@ -645,37 +713,48 @@ class LegendBoxItem(AbstractLabelItem):
                 height = sz.height()
 
         TW = LEGEND_SPACEH * 3 + LEGEND_WIDTH + width
-        TH = len(items) * (height + LEGEND_SPACEV) + LEGEND_SPACEV
+        TH = len(legenditems) * (height + LEGEND_SPACEV) + LEGEND_SPACEV
         self.sizes = TW, TH, width, height
         return self.sizes
 
-    def set_text_style(self, font=None, color=None):
-        """
+    def set_text_style(
+        self, font: QG.QFont | None = None, color: str | None = None
+    ) -> None:
+        """Set label text style
 
-        :param font:
-        :param color:
+        Args:
+            font: Font
+            color: Color
         """
         if font is not None:
             self.font = font
         if color is not None:
             self.color = color
 
-    def get_text_rect(self):
-        """
+    def get_text_rect(self) -> QC.QRectF:
+        """Return the text rectangle
 
-        :return:
+        Returns:
+            Text rectangle
         """
         items = self.get_legend_items()
         TW, TH, _width, _height = self.get_legend_size(items)
         return QC.QRectF(0.0, 0.0, TW, TH)
 
-    def draw(self, painter, xMap, yMap, canvasRect):
-        """
+    def draw(
+        self,
+        painter: QG.QPainter,
+        xMap: QwtScaleMap,
+        yMap: QwtScaleMap,
+        canvasRect: QC.QRectF,
+    ) -> None:
+        """Draw the item
 
-        :param painter:
-        :param xMap:
-        :param yMap:
-        :param canvasRect:
+        Args:
+            painter: Painter
+            xMap: X axis scale map
+            yMap: Y axis scale map
+            canvasRect: Canvas rectangle
         """
         items = self.get_legend_items()
         TW, TH, _width, height = self.get_legend_size(items)
@@ -701,18 +780,22 @@ class LegendBoxItem(AbstractLabelItem):
             painter.restore()
             y0 += height + LEGEND_SPACEV
 
-    def click_inside(self, lx, ly):
-        """
+    def click_inside(self, locx: float, locy: float) -> tuple[float, float, bool, type]:
+        """Called when the mouse button is clicked inside the object
 
-        :param lx:
-        :param ly:
-        :return:
+        Args:
+            locx: Local x coordinate
+            locy: Local y coordinate
+
+        Returns:
+            tuple: Tuple with four elements: (distance, attach point, inside,
+             other_object).
         """
         # hit_test already called get_text_rect for us...
         _TW, _TH, _width, height = self.sizes
-        line = (ly - LEGEND_SPACEV) / (height + LEGEND_SPACEV)
+        line = (locy - LEGEND_SPACEV) / (height + LEGEND_SPACEV)
         line = int(line)
-        if LEGEND_SPACEH <= lx <= (LEGEND_WIDTH + LEGEND_SPACEH):
+        if LEGEND_SPACEH <= locx <= (LEGEND_WIDTH + LEGEND_SPACEH):
             # We hit a legend line, select the corresponding curve
             # and do as if we weren't hit...
             items = [
@@ -759,61 +842,75 @@ assert_interfaces_valid(LegendBoxItem)
 
 
 class SelectedLegendBoxItem(LegendBoxItem):
-    """ """
+    """Selected legend box plot item
 
-    def __init__(self, dataset=None, itemlist=None):
+    Args:
+        labelparam: Label parameters
+        itemlist: List of items
+    """
+
+    def __init__(
+        self, dataset: LabelParam = None, itemlist: list[Any] | None = None
+    ) -> None:
         super().__init__(dataset)
         self.itemlist = [] if itemlist is None else itemlist
 
-    def __reduce__(self):
+    def __reduce__(self) -> tuple[type, tuple]:
+        """Return a tuple containing the constructor and its arguments"""
         # XXX Filter itemlist for picklabel items
         return (self.__class__, (self.labelparam, []))
 
-    def include_item(self, item):
-        """
+    def include_item(self, item: Any) -> bool:
+        """Include item in legend box?
 
-        :param item:
-        :return:
+        Args:
+            item: Item
+
+        Returns:
+            True if item is included, False otherwise
         """
         return LegendBoxItem.include_item(self, item) and item in self.itemlist
 
-    def add_item(self, item):
-        """
+    def add_item(self, item: Any) -> None:
+        """Add item
 
-        :param item:
+        Args:
+            item: Item
         """
         self.itemlist.append(item)
 
 
 class ObjectInfo:
-    def get_text(self):
-        """
+    """Base class for objects used to format text labels"""
 
-        :return:
-        """
+    def get_text(self) -> str:
+        """Return the text to be displayed"""
         return ""
 
 
 class RangeInfo(ObjectInfo):
     """ObjectInfo handling XRangeSelection shape informations: x, dx
 
-    label: formatted string
-    xrangeselection: XRangeSelection object
-    function: input arguments are x, dx ; returns objects used to format the
-    label. Default function is `lambda x, dx: (x, dx)`.
+    Args:
+        label: Formatted string
+        xrangeselection: XRangeSelection object
+        function: Input arguments are x, dx ; returns objects used to format the
+         label. Default function is `lambda x, dx: (x, dx)`.
 
-    Example:
-    -------
-
-    x = linspace(-10, 10, 10)
-    y = sin(sin(sin(x)))
-    xrangeselection = make.range(-2, 2)
-    RangeInfo(u"x = %.1f ± %.1f cm", xrangeselection,
-              lambda x, dx: (x, dx))
-    disp = make.info_label('BL', comp, title="titre")
+    Examples::
+        x = linspace(-10, 10, 10)
+        y = sin(sin(sin(x)))
+        xrangeselection = make.range(-2, 2)
+        RangeInfo(u"x = %.1f ± %.1f cm", xrangeselection, lambda x, dx: (x, dx))
+        disp = make.info_label('BL', comp, title="titre")
     """
 
-    def __init__(self, label, xrangeselection, function=None):
+    def __init__(
+        self,
+        label: str,
+        xrangeselection: XRangeSelection,
+        function: Callable | None = None,
+    ) -> None:
         self.label = str(label)
         self.range = xrangeselection
         if function is None:
@@ -823,11 +920,8 @@ class RangeInfo(ObjectInfo):
 
         self.func = function
 
-    def get_text(self):
-        """
-
-        :return:
-        """
+    def get_text(self) -> str:
+        """Return the text to be displayed"""
         x0, x1 = self.range.get_range()
         x = 0.5 * (x0 + x1)
         dx = 0.5 * (x1 - x0)
@@ -836,15 +930,23 @@ class RangeInfo(ObjectInfo):
 
 class RangeComputation(ObjectInfo):
     """ObjectInfo showing curve computations relative to a XRangeSelection
-    shape.
+    shape
 
-    label: formatted string
-    curve: CurveItem object
-    xrangeselection: XRangeSelection object
-    function: input arguments are x, y arrays (extraction of arrays
-    corresponding to the xrangeselection X-axis range)"""
+    Args:
+        label: formatted string
+        curve: CurveItem object
+        xrangeselection: XRangeSelection object
+        function: input arguments are x, y arrays (extraction of arrays
+         corresponding to the xrangeselection X-axis range)
+    """
 
-    def __init__(self, label, curve, xrangeselection, function=None):
+    def __init__(
+        self,
+        label: str,
+        curve: CurveItem,
+        xrangeselection: XRangeSelection,
+        function: Callable | None = None,
+    ) -> None:
         self.label = str(label)
         self.curve = curve
         self.range = xrangeselection
@@ -855,18 +957,16 @@ class RangeComputation(ObjectInfo):
 
         self.func = function
 
-    def set_curve(self, curve):
-        """
+    def set_curve(self, curve: CurveItem) -> None:
+        """Set curve item
 
-        :param curve:
+        Args:
+            curve: Curve item
         """
         self.curve = curve
 
-    def get_text(self):
-        """
-
-        :return:
-        """
+    def get_text(self) -> str:
+        """Return the text to be displayed"""
         x0, x1 = self.range.get_range()
         data = self.curve.get_data()
         X = data[0]
@@ -886,19 +986,26 @@ class RangeComputation(ObjectInfo):
 
 
 class RangeComputation2d(ObjectInfo):
-    """ """
+    """ObjectInfo showing image computations relative to a rectangular area
 
-    def __init__(self, label, image, rect, function):
+    Args:
+        label: formatted string
+        image: ImageItem object
+        rect: Rectangular area
+        function: input arguments are x, y, z arrays (extraction of arrays
+         corresponding to the rectangular area)
+    """
+
+    def __init__(
+        self, label: str, image: ImageItem, rect: RectangleShape, function: Callable
+    ) -> None:
         self.label = str(label)
         self.image = image
         self.rect = rect
         self.func = function
 
-    def get_text(self):
-        """
-
-        :return:
-        """
+    def get_text(self) -> str:
+        """Return the text to be displayed"""
         x0, y0, x1, y1 = self.rect.get_rect()
         x, y, z = self.image.get_data(x0, y0, x1, y1)
         res = self.func(x, y, z)
@@ -906,17 +1013,25 @@ class RangeComputation2d(ObjectInfo):
 
 
 class DataInfoLabel(LabelItem):
-    """ """
+    """Label item displaying informations relative to an annotation
+
+    Args:
+        labelparam: Label parameters
+        infos: List of objects implementing the ``get_text`` method
+    """
 
     __implements__ = (IBasePlotItem,)
 
-    def __init__(self, labelparam=None, infos=None):
+    def __init__(
+        self, labelparam: LabelParam | None = None, infos: list[Any] | None = None
+    ) -> None:
         super().__init__(None, labelparam)
         if isinstance(infos, ObjectInfo):
             infos = [infos]
         self.infos = infos
 
-    def __reduce__(self):
+    def __reduce__(self) -> tuple[type, tuple]:
+        """Return a tuple containing the constructor and its arguments"""
         return (self.__class__, (self.labelparam, self.infos))
 
     def types(self) -> tuple[type[IItemType], ...]:
@@ -929,7 +1044,7 @@ class DataInfoLabel(LabelItem):
         return (IShapeItemType,)
 
     def update_text(self):
-        """ """
+        """Update text"""
         title = self.labelparam.label
         if title:
             text = ["<b>%s</b>" % title]

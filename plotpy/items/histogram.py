@@ -3,7 +3,7 @@
 # pylint: disable=C0103
 
 """
-
+Histogram item
 """
 
 from __future__ import annotations
@@ -24,6 +24,7 @@ from plotpy.styles.curve import CurveParam
 from plotpy.styles.histogram import HistogramParam
 
 if TYPE_CHECKING:
+    from plotpy.items.image.base import BaseImageItem
     from plotpy.styles.base import ItemParameters
 
 
@@ -34,7 +35,7 @@ class HistDataSource:
 
     __implements__ = (IHistDataSource,)
 
-    def __init__(self, data):
+    def __init__(self, data: np.ndarray) -> None:
         self.data = data
 
     def get_histogram(self, nbins: int) -> tuple[np.ndarray, np.ndarray]:
@@ -54,17 +55,26 @@ assert_interfaces_valid(HistDataSource)
 
 
 class HistogramItem(CurveItem):
-    """A Qwt item representing histogram data"""
+    """Histogram plot item
+
+    Args:
+        curveparam: Curve parameters
+        histparam: Histogram parameters
+    """
 
     __implements__ = (IBasePlotItem,)
 
-    def __init__(self, curveparam=None, histparam=None):
+    def __init__(
+        self,
+        curveparam: CurveParam | None = None,
+        histparam: HistogramParam | None = None,
+    ) -> None:
         self.hist_count = None
         self.hist_bins = None
         self.bins = None
         self.old_bins = None
-        self.source = None
-        self.logscale = None
+        self.source: BaseImageItem | None = None
+        self.logscale: bool | None = None
         self.old_logscale = None
         if curveparam is None:
             curveparam = CurveParam(_("Curve"), icon="curve.png")
@@ -77,17 +87,17 @@ class HistogramItem(CurveItem):
         self.setCurveAttribute(QwtPlotCurve.Inverted)
         self.setIcon(get_icon("histogram.png"))
 
-    def set_hist_source(self, src):
+    def set_hist_source(self, src: BaseImageItem) -> None:
         """Set histogram source
 
         Args:
-            src (object): Object with method `get_histogram`, e.g. objects derived from
+            src: Object with method `get_histogram`, e.g. objects derived from
              :py:class:`.ImageItem`
         """
         self.source = weakref.ref(src)
         self.update_histogram()
 
-    def get_hist_source(self):
+    def get_hist_source(self) -> BaseImageItem | None:
         """Return histogram source
 
         Returns:
@@ -97,43 +107,59 @@ class HistogramItem(CurveItem):
         if self.source is not None:
             return self.source()
 
-    def set_hist_data(self, data):
-        """Set histogram data"""
+    def set_hist_data(self, data: np.ndarray) -> None:
+        """Set histogram data
+
+        Args:
+            data: numpy array
+        """
         self.set_hist_source(HistDataSource(data))
 
-    def set_logscale(self, state):
+    def set_logscale(self, state: bool) -> None:
         """Sets whether we use a logarithm or linear scale
-        for the histogram counts"""
+        for the histogram counts
+
+        Args:
+            state: True for logarithmic scale
+        """
         self.logscale = state
         self.update_histogram()
 
-    def get_logscale(self):
-        """Returns the status of the scale"""
+    def get_logscale(self) -> bool | None:
+        """Returns the status of the scale
+
+        Returns:
+            bool: True for logarithmic scale
+        """
         return self.logscale
 
-    def set_bins(self, n_bins):
-        """
-        :param n_bins:
+    def set_bins(self, n_bins: int) -> None:
+        """Sets the number of bins
+
+        Args:
+            n_bins: number of bins
         """
         self.bins = n_bins
         self.update_histogram()
 
-    def get_bins(self):
-        """
-        :return:
+    def get_bins(self) -> int | None:
+        """Returns the number of bins
+
+        Returns:
+            int: number of bins
         """
         return self.bins
 
-    def compute_histogram(self):
-        """
-        :return:
+    def compute_histogram(self) -> tuple[np.ndarray, np.ndarray]:
+        """Compute histogram data
+
+        Returns:
+            tuple: (hist, bins)
         """
         return self.get_hist_source().get_histogram(self.bins)
 
-    def update_histogram(self):
-        """
-        :return:
-        """
+    def update_histogram(self) -> None:
+        """Update histogram data"""
         if self.get_hist_source() is None:
             return
         hist, bin_edges = self.compute_histogram()
@@ -154,7 +180,7 @@ class HistogramItem(CurveItem):
             plot.do_autoscale(replot=True)
 
     def update_params(self):
-        """ """
+        """Update histogram parameters"""
         self.histparam.update_hist(self)
         CurveItem.update_params(self)
 

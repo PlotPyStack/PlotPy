@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 import numpy as np
 from guidata.dataset.dataitems import (
     BoolItem,
@@ -32,6 +37,9 @@ from plotpy.styles.base import (
     TextStyleItem,
 )
 
+if TYPE_CHECKING:
+    from plotpy.items import AnnotatedShape, Axes, Marker, PolygonShape, XRangeSelection
+
 
 class MarkerParam(DataSet):
     _styles = BeginTabGroup("Styles")
@@ -57,10 +65,11 @@ class MarkerParam(DataSet):
     )
     spacing = IntItem(_("Spacing"), default=10, min=0)
 
-    def update_param(self, obj):
-        """
+    def update_param(self, obj: Marker) -> None:
+        """Update parameters from object
 
-        :param obj:
+        Args:
+            obj: Marker object
         """
         self.symbol.update_param(obj.symbol())
         self.text.update_param(obj.label())
@@ -68,10 +77,11 @@ class MarkerParam(DataSet):
         self.markerstyle = MARKERSTYLE_NAME[obj.lineStyle()]
         self.spacing = obj.spacing()
 
-    def update_marker(self, obj):
-        """
+    def update_marker(self, obj: Marker) -> None:
+        """Update object from parameters
 
-        :param obj:
+        Args:
+            obj: Marker object
         """
         if obj.selected:
             line = self.sel_line
@@ -90,14 +100,13 @@ class MarkerParam(DataSet):
         obj.setSpacing(self.spacing)
         obj.update_label()
 
-    def set_markerstyle(self, style):
-        """
-        Set marker line style
+    def set_markerstyle(self, style: None | str | int) -> None:
+        """Set marker line style
 
-        style:
-
-            * convenient values: '+', '-', '|' or None
-            * `QwtPlotMarker.NoLine`, `QwtPlotMarker.Vertical`, ...
+        Args:
+            style: line style. It can be one of the following:
+             * convenient values: '+', '-', '|' or None
+             * `QwtPlotMarker.NoLine`, `QwtPlotMarker.Vertical`, ...
         """
         self.markerstyle = MARKERSTYLES.get(style, style)
 
@@ -135,10 +144,11 @@ class ShapeParam(DataSet):
         help=_("Private shapes are not shown in " "the item list panel"),
     ).set_pos(col=1)
 
-    def update_param(self, obj):
-        """
+    def update_param(self, obj: PolygonShape) -> None:
+        """Update parameters from object
 
-        :param obj:
+        Args:
+            obj: Shape object
         """
         self.label = str(obj.title().text())
         self.line.update_param(obj.pen)
@@ -150,10 +160,11 @@ class ShapeParam(DataSet):
         self.readonly = obj.is_readonly()
         self.private = obj.is_private()
 
-    def update_shape(self, obj):
-        """
+    def update_shape(self, obj: PolygonShape) -> None:
+        """Update object from parameters
 
-        :param obj:
+        Args:
+            obj: Shape object
         """
         plot = obj.plot()
         if plot is not None:
@@ -191,10 +202,11 @@ class AxesShapeParam(DataSet):
     # ----------------------------------------------------------------------- End
     _endstyles = EndTabGroup("Styles")
 
-    def update_param(self, obj):
-        """
+    def update_param(self, obj: Axes) -> None:
+        """Update parameters from object
 
-        :param obj:
+        Args:
+            obj: Axes object
         """
         self.arrow_angle = obj.arrow_angle
         self.arrow_size = obj.arrow_size
@@ -203,10 +215,11 @@ class AxesShapeParam(DataSet):
         self.xarrow_brush.update_param(obj.x_brush)
         self.yarrow_brush.update_param(obj.y_brush)
 
-    def update_axes(self, obj):
-        """
+    def update_axes(self, obj: Axes) -> None:
+        """Update object from parameters
 
-        :param obj:
+        Args:
+            obj: Axes object
         """
         obj.arrow_angle = self.arrow_angle
         obj.arrow_size = self.arrow_size
@@ -251,10 +264,11 @@ class AnnotationParam(DataSet):
         help=_("Private shapes are not shown in " "the item list panel"),
     ).set_pos(col=1)
 
-    def update_param(self, obj):
-        """
+    def update_param(self, obj: AnnotatedShape) -> None:
+        """Update parameters from object
 
-        :param obj:
+        Args:
+            obj: AnnotatedShape object
         """
         self.show_label = obj.is_label_visible()
         self.show_computations = obj.area_computations_visible
@@ -263,10 +277,11 @@ class AnnotationParam(DataSet):
         self.readonly = obj.is_readonly()
         self.private = obj.is_private()
 
-    def update_annotation(self, obj):
-        """
+    def update_annotation(self, obj: AnnotatedShape) -> None:
+        """Update object from parameters
 
-        :param obj:
+        Args:
+            obj: AnnotatedShape object
         """
         plot = obj.plot()
         if plot is not None:
@@ -310,10 +325,11 @@ class RangeShapeParam(DataSet):
     # ----------------------------------------------------------------------- End
     _endstyles = EndTabGroup("Styles")
 
-    def update_param(self, range):
-        """
+    def update_param(self, range: XRangeSelection) -> None:
+        """Update parameters from object
 
-        :param range:
+        Args:
+            range: XRangeSelection object
         """
         self.line.update_param(range.pen)
         self.sel_line.update_param(range.sel_pen)
@@ -322,10 +338,11 @@ class RangeShapeParam(DataSet):
         self.symbol.update_param(range.symbol)
         self.sel_symbol.update_param(range.sel_symbol)
 
-    def update_range(self, range):
-        """
+    def update_range(self, range: XRangeSelection) -> None:
+        """Update object from parameters
 
-        :param range:
+        Args:
+            range: XRangeSelection object
         """
         range.pen = self.line.build_pen()
         range.sel_pen = self.sel_line.build_pen()

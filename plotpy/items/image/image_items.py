@@ -33,7 +33,9 @@ from plotpy.styles.image import ImageParam, LUTAlpha, RGBImageParam, XYImagePara
 
 if TYPE_CHECKING:
     import guidata.dataset.io
+    from qtpy import QtGui as QG
     from qtpy.QtCore import QPointF
+    from qwt import QwtLinearColorMap, QwtScaleMap
 
     from plotpy.interfaces.common import IItemType
 
@@ -55,12 +57,11 @@ except ImportError:
 # Image item
 # ==============================================================================
 class ImageItem(RawImageItem):
-    """
-    Construct a simple image item
+    """Image item
 
-        * data: 2D NumPy array
-        * param (optional): image parameters
-          (:py:class:`.styles.ImageParam` instance)
+    Args:
+        data: 2D NumPy array
+        param: Image parameters
     """
 
     _can_move = True
@@ -74,7 +75,9 @@ class ImageItem(RawImageItem):
         IExportROIImageItemType,
     )
 
-    def __init__(self, data=None, param=None):
+    def __init__(
+        self, data: np.ndarray | None = None, param: ImageParam | None = None
+    ) -> None:
         self.xmin = None
         self.xmax = None
         self.ymin = None
@@ -82,12 +85,13 @@ class ImageItem(RawImageItem):
         super().__init__(data=data, param=param)
 
     # ---- BaseImageItem API ---------------------------------------------------
-    def get_default_param(self):
+    def get_default_param(self) -> ImageParam:
         """Return instance of the default imageparam DataSet"""
         return ImageParam(_("Image"))
 
     # ---- Serialization methods -----------------------------------------------
-    def __reduce__(self):
+    def __reduce__(self) -> tuple:
+        """Reduce object to be pickled"""
         fname = self.get_filename()
         if fname is None:
             fn_or_data = self.data
@@ -107,7 +111,8 @@ class ImageItem(RawImageItem):
         res = (self.__class__, (), state)
         return res
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: tuple) -> None:
+        """Set object state from pickled state"""
         param, lut_range, fn_or_data, z, xmin, xmax, ymin, ymax = state
         self.set_xdata(xmin, xmax)
         self.set_ydata(ymin, ymax)
@@ -157,8 +162,12 @@ class ImageItem(RawImageItem):
             setattr(self, attr, reader.read(attr, func=reader.read_float))
 
     # ---- Public API ----------------------------------------------------------
-    def get_xdata(self):
-        """Return (xmin, xmax)"""
+    def get_xdata(self) -> tuple[float, float]:
+        """Get X data range
+
+        Returns:
+            (xmin, xmax) tuple
+        """
         xmin, xmax = self.xmin, self.xmax
         if xmin is None:
             xmin = 0.0
@@ -166,8 +175,12 @@ class ImageItem(RawImageItem):
             xmax = self.data.shape[1]
         return xmin, xmax
 
-    def get_ydata(self):
-        """Return (ymin, ymax)"""
+    def get_ydata(self) -> tuple[float, float]:
+        """Get Y data range
+
+        Returns:
+            (ymin, ymax) tuple
+        """
         ymin, ymax = self.ymin, self.ymax
         if ymin is None:
             ymin = 0.0
@@ -175,53 +188,71 @@ class ImageItem(RawImageItem):
             ymax = self.data.shape[0]
         return ymin, ymax
 
-    def set_xdata(self, xmin=None, xmax=None):
-        """
+    def set_xdata(self, xmin: float | None = None, xmax: float | None = None) -> None:
+        """Set X data range
 
-        :param xmin:
-        :param xmax:
+        Args:
+            xmin: Minimum X value
+            xmax: Maximum X value
         """
         self.xmin, self.xmax = xmin, xmax
 
-    def set_ydata(self, ymin=None, ymax=None):
-        """
+    def set_ydata(self, ymin: float | None = None, ymax: float | None = None) -> None:
+        """Set Y data range
 
-        :param ymin:
-        :param ymax:
+        Args:
+            ymin: Minimum Y value
+            ymax: Maximum Y value
         """
         self.ymin, self.ymax = ymin, ymax
 
-    def update_bounds(self):
-        """
-
-        :return:
-        """
+    def update_bounds(self) -> None:
+        """Update image bounds to fit image shape"""
         if self.data is None:
             return
         (xmin, xmax), (ymin, ymax) = self.get_xdata(), self.get_ydata()
         self.bounds = QC.QRectF(QC.QPointF(xmin, ymin), QC.QPointF(xmax, ymax))
 
     # ---- BaseImageItem API ---------------------------------------------------
-    def get_pixel_coordinates(self, xplot, yplot):
-        """Return (image) pixel coordinates (from plot coordinates)"""
+    def get_pixel_coordinates(self, xplot: float, yplot: float) -> tuple[float, float]:
+        """Get pixel coordinates from plot coordinates
+
+        Args:
+            xplot: X plot coordinate
+            yplot: Y plot coordinate
+
+        Returns:
+            Pixel coordinates
+        """
         (xmin, xmax), (ymin, ymax) = self.get_xdata(), self.get_ydata()
         xpix = self.data.shape[1] * (xplot - xmin) / float(xmax - xmin)
         ypix = self.data.shape[0] * (yplot - ymin) / float(ymax - ymin)
         return xpix, ypix
 
-    def get_plot_coordinates(self, xpixel, ypixel):
-        """Return plot coordinates (from image pixel coordinates)"""
+    def get_plot_coordinates(self, xpixel: float, ypixel: float) -> tuple[float, float]:
+        """Get plot coordinates from pixel coordinates
+
+        Args:
+            xpixel: X pixel coordinate
+            ypixel: Y pixel coordinate
+
+        Returns:
+            Plot coordinates
+        """
         (xmin, xmax), (ymin, ymax) = self.get_xdata(), self.get_ydata()
         xplot = xmin + (xmax - xmin) * xpixel / float(self.data.shape[1])
         yplot = ymin + (ymax - ymin) * ypixel / float(self.data.shape[0])
         return xplot, yplot
 
-    def get_x_values(self, i0, i1):
-        """
+    def get_x_values(self, i0: int, i1: int) -> np.ndarray:
+        """Get X values from pixel indexes
 
-        :param i0:
-        :param i1:
-        :return:
+        Args:
+            i0: First index
+            i1: Second index
+
+        Returns:
+            X values corresponding to the given pixel indexes
         """
         xmin, xmax = self.get_xdata()
 
@@ -230,12 +261,15 @@ class ImageItem(RawImageItem):
 
         return np.linspace(xfunc(i0), xfunc(i1), i1 - i0, endpoint=False)
 
-    def get_y_values(self, j0, j1):
-        """
+    def get_y_values(self, j0: int, j1: int) -> np.ndarray:
+        """Get Y values from pixel indexes
 
-        :param j0:
-        :param j1:
-        :return:
+        Args:
+            j0: First index
+            j1: Second index
+
+        Returns:
+            Y values corresponding to the given pixel indexes
         """
         ymin, ymax = self.get_ydata()
 
@@ -261,7 +295,17 @@ class ImageItem(RawImageItem):
         ypix = np.linspace(ymin, ymax, self.data.shape[0] + 1)
         return xpix[i], ypix[j]
 
-    def _rescale_src_rect(self, src_rect):
+    def _rescale_src_rect(
+        self, src_rect: tuple[float, float, float, float]
+    ) -> tuple[float, float, float, float]:
+        """Rescale source rectangle
+
+        Args:
+            src_rect: Source rectangle
+
+        Returns:
+            Rescaled source rectangle
+        """
         sxl, syt, sxr, syb = src_rect
         xl, yt, xr, yb = self.boundingRect().getCoords()
         H, W = self.data.shape[:2]
@@ -277,16 +321,24 @@ class ImageItem(RawImageItem):
             y0 = y1 = 0
         return x0, y0, x1, y1
 
-    def draw_image(self, painter, canvasRect, src_rect, dst_rect, xMap, yMap):
-        """
+    def draw_image(
+        self,
+        painter: QG.QPainter,
+        canvasRect: QC.QRectF,
+        src_rect: tuple[float, float, float, float],
+        dst_rect: tuple[float, float, float, float],
+        xMap: QwtScaleMap,
+        yMap: QwtScaleMap,
+    ) -> None:
+        """Draw image
 
-        :param painter:
-        :param canvasRect:
-        :param src_rect:
-        :param dst_rect:
-        :param xMap:
-        :param yMap:
-        :return:
+        Args:
+            painter: Painter
+            canvasRect: Canvas rectangle
+            src_rect: Source rectangle
+            dst_rect: Destination rectangle
+            xMap: X axis scale map
+            yMap: Y axis scale map
         """
         if self.data is None:
             return
@@ -306,8 +358,8 @@ class ImageItem(RawImageItem):
         apply_lut: bool = False,
         apply_interpolation: bool = False,
         original_resolution: bool = False,
-        force_interp_mode: str = None,
-        force_interp_size: int = None,
+        force_interp_mode: str | None = None,
+        force_interp_size: int | None = None,
     ) -> None:
         """
         Export a rectangular area of the image to another image
@@ -344,7 +396,6 @@ class ImageItem(RawImageItem):
             pos: Position
             ctrl: True if <Ctrl> button is being pressed, False otherwise
         """
-
         nx, ny = canvas_to_axes(self, pos)
         xmin, xmax = self.get_xdata()
         ymin, ymax = self.get_ydata()
@@ -401,19 +452,24 @@ assert_interfaces_valid(ImageItem)
 
 
 class XYImageItem(ImageMixin, RawImageItem):
-    """
-    Construct an image item with non-linear X/Y axes
+    """XY image item (non-linear axes)
 
-        * x: 1D NumPy array, must be increasing
-        * y: 1D NumPy array, must be increasing
-        * data: 2D NumPy array
-        * param (optional): image parameters
-          (:py:class:`.styles.XYImageParam` instance)
+    Args:
+        x: 1D NumPy array, must be increasing
+        y: 1D NumPy array, must be increasing
+        data: 2D NumPy array
+        param: image parameters
     """
 
     __implements__ = (IBasePlotItem, IBaseImageItem, ISerializableType)
 
-    def __init__(self, x=None, y=None, data=None, param=None):
+    def __init__(
+        self,
+        x: np.ndarray | None = None,
+        y: np.ndarray | None = None,
+        data: np.ndarray | None = None,
+        param: XYImageParam | None = None,
+    ) -> None:
         # if x and y are not increasing arrays, sort them and data accordingly
         if x is not None and not np.all(np.diff(x) >= 0):
             x_idx = np.argsort(x)
@@ -437,12 +493,13 @@ class XYImageItem(ImageMixin, RawImageItem):
     # ---- Public API ----------------------------------------------------------
 
     # ---- BaseImageItem API ---------------------------------------------------
-    def get_default_param(self):
+    def get_default_param(self) -> XYImageParam:
         """Return instance of the default imageparam DataSet"""
         return XYImageParam(_("Image"))
 
     # ---- Pickle methods ------------------------------------------------------
-    def __reduce__(self):
+    def __reduce__(self) -> tuple:
+        """Reduce object to be pickled"""
         fname = self.get_filename()
         if fname is None:
             fn_or_data = self.data
@@ -452,7 +509,8 @@ class XYImageItem(ImageMixin, RawImageItem):
         res = (self.__class__, (), state)
         return res
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: tuple) -> None:
+        """Set object state from pickled state"""
         param, lut_range, x, y, fn_or_data, z = state
         self.param = param
         if isinstance(fn_or_data, str):
@@ -498,11 +556,18 @@ class XYImageItem(ImageMixin, RawImageItem):
         self.set_transform(*self.get_transform())
 
     # ---- Public API ----------------------------------------------------------
-    def set_xy(self, x, y):
-        """
+    def set_xy(
+        self, x: np.ndarray | list[float, ...], y: np.ndarray | list[float, ...]
+    ) -> None:
+        """Set X and Y data
 
-        :param x:
-        :param y:
+        Args:
+            x: 1D NumPy array, must be increasing
+            y: 1D NumPy array, must be increasing
+
+        Raises:
+            ValueError: If X or Y are not increasing
+            IndexError: If X or Y are not of the right length
         """
         ni, nj = self.data.shape
         x = np.array(x, float)
@@ -537,17 +602,25 @@ class XYImageItem(ImageMixin, RawImageItem):
         """Provides a filter object over this image's content"""
         return XYImageFilterItem(self, filterobj, filterparam)
 
-    def draw_image(self, painter, canvasRect, src_rect, dst_rect, xMap, yMap):
-        """
+    def draw_image(
+        self,
+        painter: QG.QPainter,
+        canvasRect: QC.QRectF,
+        src_rect: tuple[float, float, float, float],
+        dst_rect: tuple[float, float, float, float],
+        xMap: QwtScaleMap,
+        yMap: QwtScaleMap,
+    ) -> None:
+        """Draw image
 
-        :param painter:
-        :param canvasRect:
-        :param src_rect:
-        :param dst_rect:
-        :param xMap:
-        :param yMap:
+        Args:
+            painter: Painter
+            canvasRect: Canvas rectangle
+            src_rect: Source rectangle
+            dst_rect: Destination rectangle
+            xMap: X axis scale map
+            yMap: Y axis scale map
         """
-
         W = canvasRect.width()
         H = canvasRect.height()
         if W <= 1 or H <= 1:
@@ -570,22 +643,41 @@ class XYImageItem(ImageMixin, RawImageItem):
         qrect = QC.QRectF(QC.QPointF(dest[0], dest[1]), QC.QPointF(dest[2], dest[3]))
         painter.drawImage(qrect, self._image, qrect)
 
-    def get_pixel_coordinates(self, xplot, yplot):
-        """Return (image) pixel coordinates (from plot coordinates)"""
+    def get_pixel_coordinates(self, xplot: float, yplot: float) -> tuple[float, float]:
+        """Get pixel coordinates from plot coordinates
+
+        Args:
+            xplot: X plot coordinate
+            yplot: Y plot coordinate
+
+        Returns:
+            Pixel coordinates
+        """
         v = self.tr * colvector(xplot, yplot)
         xpixel, ypixel, _ = v[:, 0]
         return self.x.searchsorted(xpixel), self.y.searchsorted(ypixel)
 
-    def get_plot_coordinates(self, xpixel, ypixel):
-        """Return plot coordinates (from image pixel coordinates)"""
+    def get_plot_coordinates(self, xpixel: float, ypixel: float) -> tuple[float, float]:
+        """Get plot coordinates from pixel coordinates
+
+        Args:
+            xpixel: X pixel coordinate
+            ypixel: Y pixel coordinate
+
+        Returns:
+            Plot coordinates
+        """
         return self.x[int(pixelround(xpixel))], self.y[int(pixelround(ypixel))]
 
-    def get_x_values(self, i0, i1):
-        """
+    def get_x_values(self, i0: int, i1: int) -> np.ndarray:
+        """Get X values from pixel indexes
 
-        :param i0:
-        :param i1:
-        :return:
+        Args:
+            i0: First index
+            i1: Second index
+
+        Returns:
+            X values corresponding to the given pixel indexes
         """
         zeros = np.zeros(self.x.shape)
         ones = np.ones(self.x.shape)
@@ -593,12 +685,15 @@ class XYImageItem(ImageMixin, RawImageItem):
         x = (self.itr * xv.T).A[0]
         return x[i0:i1]
 
-    def get_y_values(self, j0, j1):
-        """
+    def get_y_values(self, j0: int, j1: int) -> np.ndarray:
+        """Get Y values from pixel indexes
 
-        :param j0:
-        :param j1:
-        :return:
+        Args:
+            j0: First index
+            j1: Second index
+
+        Returns:
+            Y values corresponding to the given pixel indexes
         """
         zeros = np.zeros(self.y.shape)
         ones = np.ones(self.y.shape)
@@ -659,33 +754,30 @@ assert_interfaces_valid(XYImageItem)
 # RGB Image with alpha channel
 # ==============================================================================
 class RGBImageItem(ImageItem):
-    """
-    Construct a RGB/RGBA image item
+    """RGB image item
 
-        * data: NumPy array of uint8 (shape: NxMx[34] -- 3: RGB, 4: RGBA)
-          (last dimension: 0: Red, 1: Green, 2: Blue {, 3:Alpha})
-        * param (optional): image parameters
-          (:py:class:`.styles.RGBImageParam` instance)
+    Args:
+        data: 3D NumPy array (shape: NxMx[34] -- 3: RGB, 4: RGBA)
+        param: image parameters
     """
 
     __implements__ = (IBasePlotItem, IBaseImageItem, ISerializableType)
 
-    def __init__(self, data=None, param=None):
+    def __init__(
+        self, data: np.ndarray | None = None, param: RGBImageParam | None = None
+    ) -> None:
         self.orig_data = None
         super().__init__(data, param)
         self.lut = None
 
     # ---- BaseImageItem API ---------------------------------------------------
-    def get_default_param(self):
+    def get_default_param(self) -> RGBImageParam:
         """Return instance of the default imageparam DataSet"""
         return RGBImageParam(_("Image"))
 
     # ---- Public API ----------------------------------------------------------
-    def recompute_alpha_channel(self):
-        """
-
-        :return:
-        """
+    def recompute_alpha_channel(self) -> None:
+        """Recompute alpha channel"""
         data = self.orig_data
         if self.orig_data is None:
             return
@@ -704,40 +796,51 @@ class RGBImageItem(ImageItem):
 
     # --- BaseImageItem API ----------------------------------------------------
     # Override lut/bg handling
-    def set_lut_range(self, range):
+    def set_lut_range(self, lut_range: tuple[float, float]) -> None:
         """
+        Set the current active lut range
 
-        :param range:
+        .. warning::
+
+            This method is not implemented for this item type.
         """
         pass
 
-    def set_background_color(self, qcolor):
-        """
+    def set_background_color(self, qcolor: QG.QColor | str) -> None:
+        """Set background color
 
-        :param qcolor:
+        Args:
+            qcolor: Background color
+
+        .. warning::
+
+            This method is not implemented for this item type.
         """
         self.lut = None
 
-    def set_color_map(self, name_or_table):
-        """
+    def set_color_map(self, name_or_table: str | QwtLinearColorMap) -> None:
+        """Set colormap
 
-        :param name_or_table:
+        Args:
+            name_or_table: Colormap name or colormap
+
+        .. warning::
+
+            This method is not implemented for this item type.
         """
         self.lut = None
 
     # ---- RawImageItem API ----------------------------------------------------
-    def load_data(self):
-        """
-        Load data from *filename*
-        *filename* has been set using method 'set_filename'
-        """
+    def load_data(self) -> None:
+        """Load data from item filename attribute"""
         data = io.imread(self.get_filename(), to_grayscale=False)
         self.set_data(data)
 
-    def set_data(self, data):
-        """
+    def set_data(self, data: np.ndarray) -> None:
+        """Set image data
 
-        :param data:
+        Args:
+            data: 2D NumPy array
         """
         H, W, NC = data.shape
         self.orig_data = data

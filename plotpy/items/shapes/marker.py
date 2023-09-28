@@ -18,20 +18,29 @@ from plotpy.styles.base import MARKERSTYLES
 from plotpy.styles.shape import MarkerParam
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from qtpy import QtGui as QG
     from qtpy.QtCore import QPointF
+    from qwt import QwtScaleMap
 
     from plotpy.interfaces.common import IItemType
     from plotpy.styles.base import ItemParameters
 
 
 class Marker(QwtPlotMarker):
-    """
-    A marker that has two callbacks
-    for restraining it's coordinates and
-    displaying it's label
-    we want to derive from QwtPlotMarker so
-    we have to reimplement some of AbstractShape's methods
-    (and PyQt doesn't really like multiple inheritance...)
+    """Marker shape
+
+    Args:
+        label_cb: Label callback (must return a string, takes x and y as arguments)
+        constraint_cb: Constraint callback (must return a tuple (x, y),
+         takes x and y as arguments)
+        markerparam: Marker parameters
+
+    .. note::
+
+        Marker class derives from QwtPlotMarker, which is a QwtPlotItem. That is
+        why AbstractShape methods are re-implemented here.
     """
 
     __implements__ = (IBasePlotItem,)
@@ -42,7 +51,12 @@ class Marker(QwtPlotMarker):
     _can_rotate = False
     _can_move = True
 
-    def __init__(self, label_cb=None, constraint_cb=None, markerparam=None):
+    def __init__(
+        self,
+        label_cb: Callable | None = None,
+        constraint_cb: Callable | None = None,
+        markerparam: MarkerParam = None,
+    ) -> None:
         super().__init__()
         self._pending_center_handle = None
         self.selected = False
@@ -59,13 +73,26 @@ class Marker(QwtPlotMarker):
         self.setIcon(get_icon("marker.png"))
 
     # ------QwtPlotItem API------------------------------------------------------
-    def draw(self, painter, xmap, ymap, canvasrect):
-        """Reimplemented to update label and (eventually) center handle"""
+    def draw(
+        self,
+        painter: QG.QPainter,
+        xMap: QwtScaleMap,
+        yMap: QwtScaleMap,
+        canvasRect: QC.QRectF,
+    ) -> None:
+        """Draw the item
+
+        Args:
+            painter: Painter
+            xMap: X axis scale map
+            yMap: Y axis scale map
+            canvasRect: Canvas rectangle
+        """
         if self._pending_center_handle:
             x, y = self.center_handle(self.xValue(), self.yValue())
             self.setValue(x, y)
         self.update_label()
-        QwtPlotMarker.draw(self, painter, xmap, ymap, canvasrect)
+        QwtPlotMarker.draw(self, painter, xMap, yMap, canvasRect)
 
     # ------IBasePlotItem API----------------------------------------------------
     def set_selectable(self, state: bool) -> None:
@@ -296,20 +323,22 @@ class Marker(QwtPlotMarker):
         # This methods is never called because marker is not a shape (but a point)
 
     # ------Public API-----------------------------------------------------------
-    def set_style(self, section, option):
-        """
+    def set_style(self, section: str, option: str) -> None:
+        """Set style for this item
 
-        :param section:
-        :param option:
+        Args:
+            section: Section
+            option: Option
         """
         self.markerparam.read_config(CONF, section, option)
         self.markerparam.update_marker(self)
 
-    def set_pos(self, x=None, y=None):
-        """
+    def set_pos(self, x: float | None = None, y: float | None = None) -> None:
+        """Set marker position
 
-        :param x:
-        :param y:
+        Args:
+            x: X value (if None, use current value)
+            y: Y value (if None, use current value)
         """
         if x is None:
             x = self.xValue()
@@ -321,32 +350,50 @@ class Marker(QwtPlotMarker):
         if self.plot():
             self.plot().SIG_MARKER_CHANGED.emit(self)
 
-    def get_pos(self):
-        """
+    def get_pos(self) -> tuple[float, float]:
+        """Get marker position
 
-        :return:
+        Returns:
+            Tuple with two elements: (x, y)
         """
         return self.xValue(), self.yValue()
 
-    def set_markerstyle(self, style):
-        """
+    def set_markerstyle(self, style: str | int | None) -> None:
+        """Set marker style
 
-        :param style:
+        Args:
+            style: Marker style
         """
         param = self.markerparam
         param.set_markerstyle(style)
         param.update_marker(self)
 
-    def is_vertical(self):
-        """Return True if this is a vertical cursor"""
+    def is_vertical(self) -> bool:
+        """Is it a vertical cursor?
+
+        Returns:
+            True if this is a vertical cursor
+        """
         return self.lineStyle() == QwtPlotMarker.VLine
 
-    def is_horizontal(self):
-        """Return True if this is an horizontal cursor"""
+    def is_horizontal(self) -> bool:
+        """Is it a horizontal cursor?
+
+        Returns:
+            True if this is a horizontal cursor
+        """
         return self.lineStyle() == QwtPlotMarker.HLine
 
-    def center_handle(self, x, y):
-        r"""Center cursor handle depending on marker style (\|, -)"""
+    def center_handle(self, x: float, y: float) -> tuple[float, float]:
+        r"""Center cursor handle depending on marker style (\|, -)
+
+        Args:
+            x: X value
+            y: Y value
+
+        Returns:
+            Tuple with two elements: (x, y)
+        """
         plot = self.plot()
         if plot is None:
             self._pending_center_handle = True
@@ -362,17 +409,14 @@ class Marker(QwtPlotMarker):
                 x = 0.5 * (x_left + x_right)
         return x, y
 
-    def invalidate_plot(self):
-        """ """
+    def invalidate_plot(self) -> None:
+        """Invalidate the plot to force a redraw"""
         plot = self.plot()
         if plot is not None:
             plot.invalidate()
 
-    def update_label(self):
-        """
-
-        :return:
-        """
+    def update_label(self) -> None:
+        """Update label"""
         x, y = self.xValue(), self.yValue()
         if self.label_cb:
             label = self.label_cb(x, y)

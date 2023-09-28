@@ -1,5 +1,1 @@
-"""
-Module plotpy.mathutils
-=======================
-
-"""
+# -*- coding: utf-8 -*-

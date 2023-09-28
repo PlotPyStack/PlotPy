@@ -73,7 +73,7 @@ intersphinx_mapping = {
     "guiqwt": ("https://guiqwt.readthedocs.io/en/latest/", None),
     "h5py": ("https://docs.h5py.org/en/stable/", None),
 }
-nitpicky = True
+nitpicky = False
 
 nitpick_ignore = [
     ("py:attr", "BasePlot.SIG_ITEM_MOVED"),

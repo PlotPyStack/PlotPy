@@ -1,11 +1,5 @@
 # -*- coding: utf-8 -*-
 
-"""
-plotpy.items.image
---------------------------
-
-"""
-
 # pylint: disable=unused-import
 from plotpy.items.image.base import BaseImageItem, RawImageItem
 from plotpy.items.image.filter import ImageFilterItem, XYImageFilterItem

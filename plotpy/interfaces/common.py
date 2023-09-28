@@ -129,8 +129,8 @@ class IExportROIImageItemType(IItemType):
         apply_lut: bool = False,
         apply_interpolation: bool = False,
         original_resolution: bool = False,
-        force_interp_mode: str = None,
-        force_interp_size: int = None,
+        force_interp_mode: str | None = None,
+        force_interp_size: int | None = None,
     ) -> None:
         """
         Export a rectangular area of the image to another image

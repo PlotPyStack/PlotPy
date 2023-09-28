@@ -1,8 +1,4 @@
-"""
-plotpy.items
-============
-
-"""
+# -*- coding: utf-8 -*-
 
 # pylint: disable=unused-import
 from .annotations import (

@@ -1,5 +1,1 @@
-"""
-Module plotpy.widgets
-=====================
-
-"""
+# -*- coding: utf-8 -*-

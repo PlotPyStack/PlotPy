@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import os
 import os.path as osp
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from guidata.configtools import get_icon
@@ -47,15 +47,25 @@ from plotpy.styles.image import LUTAlpha, RawImageParam
 if TYPE_CHECKING:
     import guidata.dataset.io
     from qtpy.QtCore import QPointF
+    from qwt import QwtLinearColorMap, QwtScaleMap
 
     from plotpy.interfaces.common import IItemType
+    from plotpy.items import RectangleShape
     from plotpy.styles.base import ItemParameters
 
 LUT_SIZE = 1024
 LUT_MAX = float(LUT_SIZE - 1)
 
 
-def _nanmin(data):
+def _nanmin(data: np.ndarray) -> float:
+    """Return minimum value of data, ignoring NaNs
+
+    Args:
+        data: Data array
+
+    Returns:
+        float: Minimum value of data, ignoring NaNs
+    """
     if isinstance(data, np.ma.MaskedArray):
         data = data.data
     if data.dtype.name in ("float32", "float64", "float128"):
@@ -64,7 +74,15 @@ def _nanmin(data):
         return data.min()
 
 
-def _nanmax(data):
+def _nanmax(data: np.ndarray) -> float:
+    """Return maximum value of data, ignoring NaNs
+
+    Args:
+        data: Data array
+
+    Returns:
+        float: Maximum value of data, ignoring NaNs
+    """
     if isinstance(data, np.ma.MaskedArray):
         data = data.data
     if data.dtype.name in ("float32", "float64", "float128"):
@@ -73,11 +91,16 @@ def _nanmax(data):
         return data.max()
 
 
-def pixelround(x, corner=None):
-    """
-    Return pixel index (int) from pixel coordinate (float)
-    corner: None (not a corner), 'TL' (top-left corner),
-    'BR' (bottom-right corner)
+def pixelround(x: float, corner: str | None = None) -> int:
+    """Get pixel index from pixel coordinate
+
+    Args:
+        x: Pixel coordinate
+        corner: None (not a corner), 'TL' (top-left corner),
+         'BR' (bottom-right corner)
+
+    Returns:
+        int: Pixel index
     """
     assert corner is None or corner in ("TL", "BR")
     if corner is None:
@@ -89,7 +112,12 @@ def pixelround(x, corner=None):
 
 
 class BaseImageItem(QwtPlotItem):
-    """ """
+    """Base class for image items
+
+    Args:
+        data: Image data
+        param: Image parameters
+    """
 
     __implements__ = (
         IBasePlotItem,
@@ -107,7 +135,9 @@ class BaseImageItem(QwtPlotItem):
     _readonly = False
     _private = False
 
-    def __init__(self, data=None, param=None):
+    def __init__(
+        self, data: np.ndarray | None = None, param: Any | None = None
+    ) -> None:
         super().__init__()
 
         self.bg_qcolor = QG.QColor()
@@ -159,21 +189,23 @@ class BaseImageItem(QwtPlotItem):
         self.setIcon(get_icon("image.png"))
 
     # ---- Public API ----------------------------------------------------------
-    def get_default_param(self):
+    def get_default_param(self) -> Any:
         """Return instance of the default imageparam DataSet"""
         raise NotImplementedError
 
-    def set_filename(self, fname):
-        """
+    def set_filename(self, fname: str) -> None:
+        """Set the filename of the image
 
-        :param fname:
+        Args:
+            fname: Filename
         """
         self._filename = fname
 
-    def get_filename(self):
-        """
+    def get_filename(self) -> str | None:
+        """Get the filename of the image
 
-        :return:
+        Returns:
+            Filename
         """
         fname = self._filename
         if fname is not None and not osp.isfile(fname):
@@ -187,29 +219,43 @@ class BaseImageItem(QwtPlotItem):
         """Provides a filter object over this image's content"""
         raise NotImplementedError
 
-    def get_pixel_coordinates(self, xplot, yplot):
-        """
-        Return (image) pixel coordinates
-        Transform the plot coordinates (arbitrary plot Z-axis unit)
-        into the image coordinates (pixel unit)
+    def get_pixel_coordinates(self, xplot: float, yplot: float) -> tuple[float, float]:
+        """Get pixel coordinates from plot coordinates
 
-        Rounding is necessary to obtain array indexes from these coordinates
+        Args:
+            xplot: X plot coordinate
+            yplot: Y plot coordinate
+
+        Returns:
+            Pixel coordinates
         """
         return xplot, yplot
 
-    def get_plot_coordinates(self, xpixel, ypixel):
-        """
-        Return plot coordinates
-        Transform the image coordinates (pixel unit)
-        into the plot coordinates (arbitrary plot Z-axis unit)
+    def get_plot_coordinates(self, xpixel: float, ypixel: float) -> tuple[float, float]:
+        """Get plot coordinates from pixel coordinates
+
+        Args:
+            xpixel: X pixel coordinate
+            ypixel: Y pixel coordinate
+
+        Returns:
+            Plot coordinates
         """
         return xpixel, ypixel
 
-    def get_closest_indexes(self, x, y, corner=None):
-        """
-        Return closest image pixel indexes
-        corner: None (not a corner), 'TL' (top-left corner),
-        'BR' (bottom-right corner)
+    def get_closest_indexes(
+        self, x: float, y: float, corner: str | None = None
+    ) -> tuple[int, int]:
+        """Get closest image pixel indexes to the given coordinates
+
+        Args:
+            x: X coordinate
+            y: Y coordinate
+            corner: None (not a corner), 'TL' (top-left corner),
+             'BR' (bottom-right corner)
+
+        Returns:
+            Closest image pixel indexes
         """
         x, y = self.get_pixel_coordinates(x, y)
         i_max = self.data.shape[1] - 1
@@ -221,11 +267,24 @@ class BaseImageItem(QwtPlotItem):
         j = max([0, min([j_max, int(pixelround(y, corner))])])
         return i, j
 
-    def get_closest_index_rect(self, x0, y0, x1, y1):
-        """
-        Return closest image rectangular pixel area index bounds
-        Avoid returning empty rectangular area (return 1x1 pixel area instead)
-        Handle reversed/not-reversed Y-axis orientation
+    def get_closest_index_rect(
+        self, x0: float, y0: float, x1: float, y1: float
+    ) -> tuple[int, int, int, int]:
+        """Get closest image rectangular pixel area index bounds
+
+        Args:
+            x0: X coordinate of first point
+            y0: Y coordinate of first point
+            x1: X coordinate of second point
+            y1: Y coordinate of second point
+
+        Returns:
+            Closest image rectangular pixel area index bounds
+
+        .. note::
+
+            Avoid returning empty rectangular area (return 1x1 pixel area instead).
+            Handle reversed/not-reversed Y-axis orientation.
         """
         ix0, iy0 = self.get_closest_indexes(x0, y0, corner="TL")
         ix1, iy1 = self.get_closest_indexes(x1, y1, corner="BR")
@@ -239,21 +298,34 @@ class BaseImageItem(QwtPlotItem):
             iy1 += 1
         return ix0, iy0, ix1, iy1
 
-    def align_rectangular_shape(self, shape):
-        """Align rectangular shape to image pixels"""
+    def align_rectangular_shape(self, shape: RectangleShape) -> None:
+        """Align rectangular shape to image pixels
+
+        Args:
+            shape: Shape to align
+        """
         ix0, iy0, ix1, iy1 = self.get_closest_index_rect(*shape.get_rect())
         x0, y0 = self.get_plot_coordinates(ix0, iy0)
         x1, y1 = self.get_plot_coordinates(ix1, iy1)
         shape.set_rect(x0, y0, x1, y1)
 
-    def get_closest_pixel_indexes(self, x, y):
-        """
-        Return closest pixel indexes
-        Instead of returning indexes of an image pixel like the method
-        'get_closest_indexes', this method returns the indexes of the
-        closest pixel which is not necessarily on the image itself
-        (i.e. indexes may be outside image index bounds: negative or
-        superior than the image dimension)
+    def get_closest_pixel_indexes(self, x: float, y: float) -> tuple[int, int]:
+        """Get closest pixel indexes
+
+        Args:
+            x: X coordinate
+            y: Y coordinate
+
+        Returns:
+            Closest pixel indexes
+
+        .. note::
+
+            Instead of returning indexes of an image pixel like the method
+            'get_closest_indexes', this method returns the indexes of the
+            closest pixel which is not necessarily on the image itself
+            (i.e. indexes may be outside image index bounds: negative or
+            superior than the image dimension)
 
         .. note::
 
@@ -265,33 +337,53 @@ class BaseImageItem(QwtPlotItem):
         j = int(pixelround(y))
         return i, j
 
-    def get_x_values(self, i0, i1):
-        """
+    def get_x_values(self, i0: int, i1: int) -> np.ndarray:
+        """Get X values from pixel indexes
 
-        :param i0:
-        :param i1:
-        :return:
+        Args:
+            i0: First index
+            i1: Second index
+
+        Returns:
+            X values corresponding to the given pixel indexes
         """
         return np.arange(i0, i1)
 
-    def get_y_values(self, j0, j1):
-        """
+    def get_y_values(self, j0: int, j1: int) -> np.ndarray:
+        """Get Y values from pixel indexes
 
-        :param j0:
-        :param j1:
-        :return:
+        Args:
+            j0: First index
+            j1: Second index
+
+        Returns:
+            Y values corresponding to the given pixel indexes
         """
         return np.arange(j0, j1)
 
     def get_r_values(self, i0, i1, j0, j1, flag_circle=False):
+        """Get radial values from pixel indexes
+
+        Args:
+            i0: First index
+            i1: Second index
+            j0: Third index
+            j1: Fourth index
+            flag_circle: Flag circle (Default value = False)
+
+        Returns:
+            Radial values corresponding to the given pixel indexes
+        """
         return self.get_x_values(i0, i1)
 
-    def set_data(self, data, lut_range=None):
-        """
-        Set Image item data
+    def set_data(
+        self, data: np.ndarray, lut_range: list[float, float] | None = None
+    ) -> None:
+        """Set image data
 
-            * data: 2D NumPy array
-            * lut_range: LUT range -- tuple (levelmin, levelmax)
+        Args:
+            data: 2D NumPy array
+            lut_range: LUT range -- tuple (levelmin, levelmax) (Default value = None)
         """
         if lut_range is not None:
             _min, _max = lut_range
@@ -304,15 +396,20 @@ class BaseImageItem(QwtPlotItem):
         self.update_border()
         self.set_lut_range([_min, _max])
 
-    def get_data(self, x0, y0, x1=None, y1=None):
-        """
-        Return image data
-        Arguments: x0, y0 [, x1, y1]
-        Return image level at coordinates (x0,y0)
+    def get_data(
+        self, x0: float, y0: float, x1: float | None = None, y1: float | None = None
+    ) -> float | tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """Get image data
 
-        If x1,y1 are specified:
+        Args:
+            x0: X coordinate of first point
+            y0: Y coordinate of first point
+            x1: X coordinate of second point (Default value = None)
+            y1: Y coordinate of second point (Default value = None)
 
-          Return image levels (numpy.ndarray) in rectangular area (x0,y0,x1,y1)
+        Returns:
+            Image level, or image levels in rectangular area (x0,y0,x1,y1)
+             as a tuple (x, y, data) of arrays
         """
         i0, j0 = self.get_closest_indexes(x0, y0)
         if x1 is None or y1 is None:
@@ -355,10 +452,11 @@ class BaseImageItem(QwtPlotItem):
         z = self.get_data(x, y)
         return f"{title}:<br>x = {int(x):d}<br>y = {int(y):d}<br>z = {z:g}"
 
-    def set_background_color(self, qcolor):
-        """
+    def set_background_color(self, qcolor: QG.QColor | str) -> None:
+        """Set background color
 
-        :param qcolor:
+        Args:
+            qcolor: Background color
         """
         # mask = np.uint32(255*self.param.alpha+0.5).clip(0,255) << 24
         self.bg_qcolor = qcolor
@@ -368,11 +466,11 @@ class BaseImageItem(QwtPlotItem):
         else:
             self.lut = (a, b, np.uint32(QG.QColor(qcolor).rgb() & 0xFFFFFF), cmap)
 
-    def set_color_map(self, name_or_table):
-        """
+    def set_color_map(self, name_or_table: str | QwtLinearColorMap) -> None:
+        """Set colormap
 
-        :param name_or_table:
-        :return:
+        Args:
+            name_or_table: Colormap name or colormap
         """
         if name_or_table is self.cmap_table:
             # This avoids rebuilding the LUT all the time
@@ -411,26 +509,28 @@ class BaseImageItem(QwtPlotItem):
         if plot:
             plot.update_colormap_axis(self)
 
-    def get_color_map(self):
-        """
+    def get_color_map(self) -> QwtLinearColorMap:
+        """Get colormap
 
-        :return:
+        Returns:
+            Colormap
         """
         return self.cmap_table
 
-    def get_color_map_name(self):
-        """
+    def get_color_map_name(self) -> str:
+        """Get colormap name
 
-        :return:
+        Returns:
+            Colormap name
         """
         return get_cmap_name(self.get_color_map())
 
-    def set_interpolation(self, interp_mode, size=None):
-        """
-        Set image interpolation mode
+    def set_interpolation(self, interp_mode: int, size: int | None = None) -> None:
+        """Set interpolation mode
 
-        interp_mode: INTERP_NEAREST, INTERP_LINEAR, INTERP_AA
-        size (integer): (for anti-aliasing only) AA matrix size
+        Args:
+            interp_mode: INTERP_NEAREST, INTERP_LINEAR, INTERP_AA
+            size: (for anti-aliasing only) AA matrix size (Default value = None)
         """
         if interp_mode in (INTERP_NEAREST, INTERP_LINEAR):
             self.interpolate = (interp_mode,)
@@ -438,7 +538,7 @@ class BaseImageItem(QwtPlotItem):
             aa = np.ones((size, size), self.data.dtype)
             self.interpolate = (interp_mode, aa)
 
-    def get_interpolation(self):
+    def get_interpolation(self) -> tuple[int] | tuple[int, np.ndarray]:
         """Get interpolation mode"""
         return self.interpolate
 
@@ -502,32 +602,52 @@ class BaseImageItem(QwtPlotItem):
             info = np.iinfo(self.data.dtype)
         return info.min, info.max
 
-    def update_bounds(self):
-        """
-
-        :return:
-        """
+    def update_bounds(self) -> None:
+        """Update image bounds to fit image shape"""
         if self.data is None:
             return
         self.bounds = QC.QRectF(0, 0, self.data.shape[1], self.data.shape[0])
 
-    def update_border(self):
+    def update_border(self) -> None:
         """Update image border rectangle to fit image shape"""
         bounds = self.boundingRect().getCoords()
         self.border_rect.set_rect(*bounds)
 
-    def draw_border(self, painter, xMap, yMap, canvasRect):
-        """Draw image border rectangle"""
+    def draw_border(
+        self,
+        painter: QG.QPainter,
+        xMap: QwtScaleMap,
+        yMap: QwtScaleMap,
+        canvasRect: QC.QRectF,
+    ) -> None:
+        """Draw image border rectangle
+
+        Args:
+            painter: Painter
+            xMap: X axis scale map
+            yMap: Y axis scale map
+            canvasRect: Canvas rectangle
+        """
         self.border_rect.draw(painter, xMap, yMap, canvasRect)
 
-    def draw_image(self, painter, canvasRect, src_rect, dst_rect, xMap, yMap):
-        """
-        Draw image with painter on canvasRect
+    def draw_image(
+        self,
+        painter: QG.QPainter,
+        canvasRect: QC.QRectF,
+        src_rect: tuple[float, float, float, float],
+        dst_rect: tuple[float, float, float, float],
+        xMap: QwtScaleMap,
+        yMap: QwtScaleMap,
+    ) -> None:
+        """Draw image
 
-        .. warning::
-
-            `src_rect` and `dst_rect` are coordinates tuples
-            (xleft, ytop, xright, ybottom)
+        Args:
+            painter: Painter
+            canvasRect: Canvas rectangle
+            src_rect: Source rectangle
+            dst_rect: Destination rectangle
+            xMap: X axis scale map
+            yMap: Y axis scale map
         """
         dest = _scale_rect(
             self.data, src_rect, self._offscreen, dst_rect, self.lut, self.interpolate
@@ -543,8 +663,8 @@ class BaseImageItem(QwtPlotItem):
         apply_lut: bool = False,
         apply_interpolation: bool = False,
         original_resolution: bool = False,
-        force_interp_mode: str = None,
-        force_interp_size: int = None,
+        force_interp_mode: str | None = None,
+        force_interp_size: int | None = None,
     ) -> None:
         """
         Export a rectangular area of the image to another image
@@ -567,13 +687,20 @@ class BaseImageItem(QwtPlotItem):
         _scale_rect(self.data, src_rect, dst_image, dst_rect, (a, b, None), interp)
 
     # ---- QwtPlotItem API -----------------------------------------------------
-    def draw(self, painter, xMap, yMap, canvasRect):
-        """
+    def draw(
+        self,
+        painter: QG.QPainter,
+        xMap: QwtScaleMap,
+        yMap: QwtScaleMap,
+        canvasRect: QC.QRectF,
+    ) -> None:
+        """Draw the item
 
-        :param painter:
-        :param xMap:
-        :param yMap:
-        :param canvasRect:
+        Args:
+            painter: Painter
+            xMap: X axis scale map
+            yMap: Y axis scale map
+            canvasRect: Canvas rectangle
         """
         x1, y1, x2, y2 = canvasRect.getCoords()
         i1, i2 = xMap.invTransform(x1), xMap.invTransform(x2)
@@ -597,22 +724,24 @@ class BaseImageItem(QwtPlotItem):
         self.draw_image(painter, canvasRect, (i1, j1, i2, j2), dest, xMap, yMap)
         self.draw_border(painter, xMap, yMap, canvasRect)
 
-    def boundingRect(self):
-        """
+    def boundingRect(self) -> QC.QRectF:
+        """Return the bounding rectangle of the data
 
-        :return:
+        Returns:
+            Bounding rectangle of the data
         """
         return self.bounds
 
-    def notify_new_offscreen(self):
-        """ """
+    def notify_new_offscreen(self) -> None:
+        """Notify that the offscreen image has changed"""
         # callback for those derived classes who need it
         pass
 
-    def setVisible(self, enable):
-        """
+    def setVisible(self, enable: bool) -> None:
+        """Set item visibility
 
-        :param enable:
+        Args:
+            enable: True if item is visible, False otherwise
         """
         if not enable:
             self.unselect()  # when hiding item, unselect it
@@ -689,8 +818,12 @@ class BaseImageItem(QwtPlotItem):
         self.selected = False
         self.border_rect.unselect()
 
-    def is_empty(self):
-        """Return True if item data is empty"""
+    def is_empty(self) -> bool:
+        """Return True if the item is empty
+
+        Returns:
+            True if the item is empty, False otherwise
+        """
         return self.data is None or self.data.size == 0
 
     def set_selectable(self, state: bool) -> None:
@@ -1079,7 +1212,7 @@ class RawImageItem(BaseImageItem):
     Construct a simple image item
 
         * data: 2D NumPy array
-        * param (optional): image parameters
+        * param: image parameters
           (:py:class:`.styles.RawImageParam` instance)
     """
 
@@ -1101,7 +1234,8 @@ class RawImageItem(BaseImageItem):
         return RawImageParam(_("Image"))
 
     # ---- Serialization methods -----------------------------------------------
-    def __reduce__(self):
+    def __reduce__(self) -> tuple:
+        """Return state information for pickling"""
         fname = self.get_filename()
         if fname is None:
             fn_or_data = self.data
@@ -1111,7 +1245,8 @@ class RawImageItem(BaseImageItem):
         res = (self.__class__, (), state)
         return res
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: tuple) -> None:
+        """Restore state information for pickling"""
         param, lut_range, fn_or_data, z = state
         self.param = param
         if isinstance(fn_or_data, str):
@@ -1172,10 +1307,12 @@ class RawImageItem(BaseImageItem):
         self.param.update_item(self)
 
     # ---- Public API ----------------------------------------------------------
-    def load_data(self, lut_range=None):
-        """
-        Load data from *filename* and eventually apply specified lut_range
-        *filename* has been set using method 'set_filename'
+    def load_data(self, lut_range: list[float, float] | None = None) -> None:
+        """Load data from item filename attribute
+        and eventually apply specified lut_range
+
+        Args:
+            lut_range: Lut range (Default value = None)
         """
         data = io.imread(self.get_filename(), to_grayscale=True)
         self.set_data(data, lut_range=lut_range)

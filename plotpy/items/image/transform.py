@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+from typing import TYPE_CHECKING
 
 import numpy as np
 from guidata.utils.misc import assert_interfaces_valid
@@ -34,6 +35,9 @@ except ImportError:
     )
     raise
 
+if TYPE_CHECKING:
+    from qwt import QwtScaleMap
+
 
 # ==============================================================================
 # Image with a custom linear transform
@@ -43,7 +47,7 @@ class TrImageItem(TransformImageMixin, RawImageItem):
     Construct a transformable image item
 
         * data: 2D NumPy array
-        * param (optional): image parameters
+        * param: image parameters
           (:py:class:`.styles.TrImageParam` instance)
     """
 
@@ -122,11 +126,14 @@ class TrImageItem(TransformImageMixin, RawImageItem):
         return self.locked
 
     # --- RawImageItem API -----------------------------------------------------
-    def set_data(self, data, lut_range=None):
-        """
+    def set_data(
+        self, data: np.ndarray, lut_range: list[float, float] | None = None
+    ) -> None:
+        """Set image data
 
-        :param data:
-        :param lut_range:
+        Args:
+            data: 2D NumPy array
+            lut_range: LUT range -- tuple (levelmin, levelmax) (Default value = None)
         """
         RawImageItem.set_data(self, data, lut_range)
         ni, nj = self.data.shape
@@ -139,24 +146,43 @@ class TrImageItem(TransformImageMixin, RawImageItem):
         raise NotImplementedError
         # TODO: Implement TrImageFilterItem
 
-    def get_pixel_coordinates(self, xplot, yplot):
-        """Return (image) pixel coordinates (from plot coordinates)"""
+    def get_pixel_coordinates(self, xplot: float, yplot: float) -> tuple[float, float]:
+        """Get pixel coordinates from plot coordinates
+
+        Args:
+            xplot: X plot coordinate
+            yplot: Y plot coordinate
+
+        Returns:
+            Pixel coordinates
+        """
         v = self.tr * colvector(xplot, yplot)
         xpixel, ypixel, _ = v[:, 0]
         return xpixel, ypixel
 
-    def get_plot_coordinates(self, xpixel, ypixel):
-        """Return plot coordinates (from image pixel coordinates)"""
+    def get_plot_coordinates(self, xpixel: float, ypixel: float) -> tuple[float, float]:
+        """Get plot coordinates from pixel coordinates
+
+        Args:
+            xpixel: X pixel coordinate
+            ypixel: Y pixel coordinate
+
+        Returns:
+            Plot coordinates
+        """
         v0 = self.itr * colvector(xpixel, ypixel)
         xplot, yplot, _ = v0[:, 0].A.ravel()
         return xplot, yplot
 
-    def get_x_values(self, i0, i1):
-        """
+    def get_x_values(self, i0: int, i1: int) -> np.ndarray:
+        """Get X values from pixel indexes
 
-        :param i0:
-        :param i1:
-        :return:
+        Args:
+            i0: First index
+            i1: Second index
+
+        Returns:
+            X values corresponding to the given pixel indexes
         """
         v0 = self.itr * colvector(i0, 0)
         x0, _y0, _ = v0[:, 0].A.ravel()
@@ -164,12 +190,15 @@ class TrImageItem(TransformImageMixin, RawImageItem):
         x1, _y1, _ = v1[:, 0].A.ravel()
         return np.linspace(x0, x1, i1 - i0)
 
-    def get_y_values(self, j0, j1):
-        """
+    def get_y_values(self, j0: int, j1: int) -> np.ndarray:
+        """Get Y values from pixel indexes
 
-        :param j0:
-        :param j1:
-        :return:
+        Args:
+            j0: First index
+            j1: Second index
+
+        Returns:
+            Y values corresponding to the given pixel indexes
         """
         v0 = self.itr * colvector(0, j0)
         _x0, y0, _ = v0[:, 0].A.ravel()
@@ -178,6 +207,18 @@ class TrImageItem(TransformImageMixin, RawImageItem):
         return np.linspace(y0, y1, j1 - j0)
 
     def get_r_values(self, i0, i1, j0, j1, flag_circle=False):
+        """Get radial values from pixel indexes
+
+        Args:
+            i0: First index
+            i1: Second index
+            j0: Third index
+            j1: Fourth index
+            flag_circle: Flag circle (Default value = False)
+
+        Returns:
+            Radial values corresponding to the given pixel indexes
+        """
         v0 = self.itr * colvector(i0, j0)
         x0, y0, _ = v0[:, 0].A.ravel()
         v1 = self.itr * colvector(i1, j1)
@@ -204,16 +245,24 @@ class TrImageItem(TransformImageMixin, RawImageItem):
         x, y, _ = v[:, 0].A.ravel()
         return x, y
 
-    def draw_image(self, painter, canvasRect, src_rect, dst_rect, xMap, yMap):
-        """
+    def draw_image(
+        self,
+        painter: QG.QPainter,
+        canvasRect: QC.QRectF,
+        src_rect: tuple[float, float, float, float],
+        dst_rect: tuple[float, float, float, float],
+        xMap: QwtScaleMap,
+        yMap: QwtScaleMap,
+    ) -> None:
+        """Draw image
 
-        :param painter:
-        :param canvasRect:
-        :param src_rect:
-        :param dst_rect:
-        :param xMap:
-        :param yMap:
-        :return:
+        Args:
+            painter: Painter
+            canvasRect: Canvas rectangle
+            src_rect: Source rectangle
+            dst_rect: Destination rectangle
+            xMap: X axis scale map
+            yMap: Y axis scale map
         """
         W = canvasRect.width()
         H = canvasRect.height()
@@ -260,8 +309,8 @@ class TrImageItem(TransformImageMixin, RawImageItem):
         apply_lut: bool = False,
         apply_interpolation: bool = False,
         original_resolution: bool = False,
-        force_interp_mode: str = None,
-        force_interp_size: int = None,
+        force_interp_mode: str | None = None,
+        force_interp_size: int | None = None,
     ) -> None:
         """
         Export a rectangular area of the image to another image

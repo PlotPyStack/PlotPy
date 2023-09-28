@@ -22,32 +22,39 @@ from plotpy.styles.image import MaskedImageParam, MaskedXYImageParam
 
 if TYPE_CHECKING:
     import guidata.dataset.io
+    from qtpy import QtGui as QG
+    from qwt import QwtScaleMap
 
 
 class MaskedImageItem(ImageItem, MaskedImageMixin):
-    """
-    Construct a masked image item
+    """Masked image item
 
-        * data: 2D NumPy array
-        * mask (optional): 2D NumPy array
-        * param (optional): image parameters
-          (:py:class:`.styles.MaskedImageParam` instance)
+    Args:
+        data: 2D NumPy array
+        mask: 2D NumPy array
+        param: image parameters
     """
 
     __implements__ = (IBasePlotItem, IBaseImageItem, IHistDataSource, IVoiImageItemType)
 
-    def __init__(self, data=None, mask=None, param=None):
+    def __init__(
+        self,
+        data: np.ndarray | None = None,
+        mask: np.ndarray | None = None,
+        param: MaskedImageParam | None = None,
+    ) -> None:
         self.orig_data = None
         MaskedImageMixin.__init__(self, mask=mask)
         ImageItem.__init__(self, data=data, param=param)
 
     # ---- BaseImageItem API ---------------------------------------------------
-    def get_default_param(self):
+    def get_default_param(self) -> MaskedImageParam:
         """Return instance of the default MaskedImageParam DataSet"""
         return MaskedImageParam(_("Image"))
 
     # ---- Pickle methods -------------------------------------------------------
-    def __reduce__(self):
+    def __reduce__(self) -> tuple:
+        """Reduce object to pickled state"""
         fname = self.get_filename()
         if fname is None:
             fn_or_data = self.data
@@ -64,7 +71,8 @@ class MaskedImageItem(ImageItem, MaskedImageMixin):
         res = (self.__class__, (), state)
         return res
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: tuple) -> None:
+        """Set object state from pickled state"""
         param, lut_range, fn_or_data, z, mask_fname, old_masked_areas = state
         if old_masked_areas and isinstance(old_masked_areas[0], MaskedArea):
             masked_areas = old_masked_areas
@@ -120,16 +128,24 @@ class MaskedImageItem(ImageItem, MaskedImageMixin):
         MaskedImageMixin.deserialize(self, reader)
 
     # ---- BaseImageItem API ----------------------------------------------------
-    def draw_image(self, painter, canvasRect, src_rect, dst_rect, xMap, yMap):
-        """
+    def draw_image(
+        self,
+        painter: QG.QPainter,
+        canvasRect: QC.QRectF,
+        src_rect: tuple[float, float, float, float],
+        dst_rect: tuple[float, float, float, float],
+        xMap: QwtScaleMap,
+        yMap: QwtScaleMap,
+    ) -> None:
+        """Draw image
 
-        :param painter:
-        :param canvasRect:
-        :param src_rect:
-        :param dst_rect:
-        :param xMap:
-        :param yMap:
-        :return:
+        Args:
+            painter: Painter
+            canvasRect: Canvas rectangle
+            src_rect: Source rectangle
+            dst_rect: Destination rectangle
+            xMap: X axis scale map
+            yMap: Y axis scale map
         """
         ImageItem.draw_image(self, painter, canvasRect, src_rect, dst_rect, xMap, yMap)
         if self.data is None:
@@ -163,43 +179,52 @@ class MaskedImageItem(ImageItem, MaskedImageMixin):
             painter.drawImage(qrect, self._image, qrect)
 
     # ---- RawImageItem API -----------------------------------------------------
-    def set_data(self, data, lut_range=None):
-        """
-        Set Image item data
+    def set_data(
+        self, data: np.ndarray, lut_range: list[float, float] | None = None
+    ) -> None:
+        """Set image data
 
-            * data: 2D NumPy array
-            * lut_range: LUT range -- tuple (levelmin, levelmax)
+        Args:
+            data: 2D NumPy array
+            lut_range: LUT range -- tuple (levelmin, levelmax) (Default value = None)
         """
         super().set_data(data, lut_range)
         MaskedImageMixin._set_data(self, data)
 
 
 class MaskedXYImageItem(XYImageItem, MaskedImageMixin):
-    """
-    Construct an XY masked image item
+    """XY masked image item
 
-        * x: 1D NumPy array, must be increasing
-        * y: 1D NumPy array, must be increasing
-        * data: 2D NumPy array
-        * mask (optional): 2D NumPy array
-        * param (optional): image parameters
-          (:py:class:`.styles.MaskedXYImageParam` instance)
+    Args:
+        x: 1D NumPy array, must be increasing
+        y: 1D NumPy array, must be increasing
+        data: 2D NumPy array
+        mask: 2D NumPy array
+        param: image parameters
     """
 
     __implements__ = (IBasePlotItem, IBaseImageItem, IHistDataSource, IVoiImageItemType)
 
-    def __init__(self, x=None, y=None, data=None, mask=None, param=None):
+    def __init__(
+        self,
+        x: np.ndarray | None = None,
+        y: np.ndarray | None = None,
+        data: np.ndarray | None = None,
+        mask: np.ndarray | None = None,
+        param: MaskedXYImageParam | None = None,
+    ) -> None:
         self.orig_data = None
         MaskedImageMixin.__init__(self, mask=mask)
         XYImageItem.__init__(self, x=x, y=y, data=data, param=param)
 
     # ---- BaseImageItem API ---------------------------------------------------
-    def get_default_param(self):
+    def get_default_param(self) -> MaskedXYImageParam:
         """Return instance of the default MaskedXYImageParam DataSet"""
         return MaskedXYImageParam(_("Image"))
 
     # ---- Pickle methods -------------------------------------------------------
-    def __reduce__(self):
+    def __reduce__(self) -> tuple:
+        """Reduce object to pickled state"""
         fname = self.get_filename()
         if fname is None:
             fn_or_data = self.data
@@ -218,7 +243,8 @@ class MaskedXYImageItem(XYImageItem, MaskedImageMixin):
         res = (self.__class__, (), state)
         return res
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: tuple) -> None:
+        """Set object state from pickled state"""
         param, lut_range, fn_or_data, x, y, z, mask_fname, old_masked_areas = state
         if old_masked_areas and isinstance(old_masked_areas[0], MaskedArea):
             masked_areas = old_masked_areas
@@ -276,16 +302,24 @@ class MaskedXYImageItem(XYImageItem, MaskedImageMixin):
         MaskedImageMixin.deserialize(self, reader)
 
     # ---- BaseImageItem API ----------------------------------------------------
-    def draw_image(self, painter, canvasRect, src_rect, dst_rect, xMap, yMap):
-        """
+    def draw_image(
+        self,
+        painter: QG.QPainter,
+        canvasRect: QC.QRectF,
+        src_rect: tuple[float, float, float, float],
+        dst_rect: tuple[float, float, float, float],
+        xMap: QwtScaleMap,
+        yMap: QwtScaleMap,
+    ) -> None:
+        """Draw image
 
-        :param painter:
-        :param canvasRect:
-        :param src_rect:
-        :param dst_rect:
-        :param xMap:
-        :param yMap:
-        :return:
+        Args:
+            painter: Painter
+            canvasRect: Canvas rectangle
+            src_rect: Source rectangle
+            dst_rect: Destination rectangle
+            xMap: X axis scale map
+            yMap: Y axis scale map
         """
         XYImageItem.draw_image(
             self, painter, canvasRect, src_rect, dst_rect, xMap, yMap
@@ -337,12 +371,14 @@ class MaskedXYImageItem(XYImageItem, MaskedImageMixin):
             )
             painter.drawImage(qrect, self._image, qrect)
 
-    def set_data(self, data, lut_range=None):
-        """
-        Set Image item data
+    def set_data(
+        self, data: np.ndarray, lut_range: list[float, float] | None = None
+    ) -> None:
+        """Set image data
 
-            * data: 2D NumPy array
-            * lut_range: LUT range -- tuple (levelmin, levelmax)
+        Args:
+            data: 2D NumPy array
+            lut_range: LUT range -- tuple (levelmin, levelmax) (Default value = None)
         """
         super().set_data(data, lut_range)
         MaskedImageMixin._set_data(self, data)

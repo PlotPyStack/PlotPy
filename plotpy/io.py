@@ -29,10 +29,13 @@ Reference
 .. autofunction:: save_items
 """
 
+from __future__ import annotations
+
 import logging
 import os.path as osp
 import re
 import sys
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 import PIL.Image
@@ -40,11 +43,24 @@ import PIL.TiffImagePlugin  # py2exe
 
 from plotpy.config import _
 
+if TYPE_CHECKING:
+    import guidata.dataset.io
 
-def scale_data_to_dtype(data, dtype):
-    """Scale array `data` to fit datatype `dtype` dynamic range
 
-    WARNING: modifies data in place"""
+def scale_data_to_dtype(data: np.ndarray, dtype: np.dtype) -> np.ndarray:
+    """Scale data to fit datatype dynamic range
+
+    Args:
+        data: data to scale
+        dtype: target datatype
+
+    Returns:
+        scaled data
+
+    .. warning::
+
+        This function modifies data in place
+    """
     info = np.iinfo(dtype)
     dmin = data.min()
     dmax = data.max()
@@ -510,13 +526,16 @@ iohandler.add(
 # ==============================================================================
 # Generic image read/write functions
 # ==============================================================================
-def imread(fname, ext=None, to_grayscale=False):
-    """Return a NumPy array from an image filename `fname`.
+def imread(
+    fname: str, ext: str | None = None, to_grayscale: bool = False
+) -> np.ndarray:
+    """Read an image from a file as a NumPy array
 
-    If `to_grayscale` is True, convert RGB images to grayscale
-    The `ext` (optional) argument is a string that specifies the file extension
-    which defines the input format: when not specified, the input format is
-    guessed from filename."""
+    Args:
+        fname: image filename
+        ext: image file extension (if None, extension is guessed from filename)
+        to_grayscale: convert RGB images to grayscale
+    """
     if not isinstance(fname, str):
         fname = str(fname)  # in case filename is a QString instance
     if ext is None:
@@ -532,15 +551,28 @@ def imread(fname, ext=None, to_grayscale=False):
         return arr
 
 
-def imwrite(fname, arr, ext=None, dtype=None, max_range=None, **kwargs):
-    """Save a NumPy array to an image filename `fname`.
+def imwrite(
+    fname: str,
+    arr: np.ndarray,
+    ext: str | None = None,
+    dtype: np.dtype | None = None,
+    max_range: bool | None = None,
+    **kwargs,
+) -> None:
+    """Write a NumPy array to an image file
 
-    The `ext` (optional) argument is a string that specifies the file extension
-    which defines the input format: when not specified, the input format is
-    guessed from filename.
-    If `max_range` is True, array data is scaled to fit the `dtype` (or data
-    type itself if `dtype` is None) dynamic range
-    Warning: option `max_range` changes data in place"""
+    Args:
+        fname: image filename
+        arr: NumPy array
+        ext: image file extension (if None, extension is guessed from filename)
+        dtype: data type (if None, data type is guessed from array)
+        max_range: scale data to fit dtype dynamic range
+        kwargs: additional keyword arguments passed to the image writer
+
+    .. warning::
+
+        If `max_range` is True, array data is modified in place
+    """
     if not isinstance(fname, str):
         fname = str(fname)  # in case filename is a QString instance
     if ext is None:
@@ -548,29 +580,6 @@ def imwrite(fname, arr, ext=None, dtype=None, max_range=None, **kwargs):
     if max_range:
         arr = scale_data_to_dtype(arr, arr.dtype if dtype is None else dtype)
     iohandler.get_writefunc(ext)(fname, arr, **kwargs)
-
-
-# ==============================================================================
-# Deprecated functions
-# ==============================================================================
-def imagefile_to_array(filename, to_grayscale=False):
-    """
-    Return a NumPy array from an image file `filename`
-    If `to_grayscale` is True, convert RGB images to grayscale
-    """
-    print("io.imagefile_to_array is deprecated: use io.imread instead", file=sys.stderr)
-    return imread(filename, to_grayscale=to_grayscale)
-
-
-def array_to_imagefile(arr, filename, mode=None, max_range=False):
-    """
-    Save a numpy array `arr` into an image file `filename`
-    Warning: option 'max_range' changes data in place
-    """
-    print(
-        "io.array_to_imagefile is deprecated: use io.imwrite instead", file=sys.stderr
-    )
-    return imwrite(filename, arr, mode=mode, max_range=max_range)
 
 
 # ==============================================================================
@@ -650,8 +659,15 @@ register_serializable_items(
 )
 
 
-def item_class_from_name(name):
-    """Return plot item class from class name"""
+def item_class_from_name(name: str) -> type[Any] | None:
+    """Return plot item class from class name
+
+    Args:
+        name: plot item class name
+
+    Returns:
+        plot item class
+    """
     global SERIALIZABLE_ITEMS, ITEM_MODULES
     assert name in SERIALIZABLE_ITEMS, "Unknown class %r" % name
     for modname, names in list(ITEM_MODULES.items()):
@@ -659,13 +675,32 @@ def item_class_from_name(name):
             return getattr(__import__(modname, fromlist=[name]), name)
 
 
-def item_name_from_object(obj):
-    """Return plot item class name from instance"""
+def item_name_from_object(obj: Any) -> str | None:
+    """Return plot item class name from instance
+
+    Args:
+        obj: plot item instance
+
+    Returns:
+        plot item class name
+    """
     return obj.__class__.__name__
 
 
-def save_item(writer, group_name, item):
-    """Save plot item to HDF5 group"""
+def save_item(
+    writer: guidata.dataset.io.HDF5Writer
+    | guidata.dataset.io.INIWriter
+    | guidata.dataset.io.JSONWriter,
+    group_name,
+    item: Any,
+) -> None:
+    """Save plot item to HDF5, INI or JSON file
+
+    Args:
+        writer: HDF5, INI or JSON writer
+        group_name: group name
+        item: serializable plot item
+    """
     with writer.group(group_name):
         if item is None:
             writer.write_none()
@@ -675,8 +710,21 @@ def save_item(writer, group_name, item):
                 writer.write_str(item_name_from_object(item))
 
 
-def load_item(reader, group_name):
-    """Load plot item from HDF5 group"""
+def load_item(
+    reader: guidata.dataset.io.HDF5Reader
+    | guidata.dataset.io.INIReader
+    | guidata.dataset.io.JSONReader,
+    group_name,
+) -> Any | None:
+    """Load plot item from HDF5, INI or JSON file
+
+    Args:
+        reader: HDF5, INI or JSON reader
+        group_name: group name
+
+    Returns:
+        Plot item instance
+    """
     with reader.group(group_name):
         with reader.group("item_class_name"):
             try:
@@ -690,10 +738,18 @@ def load_item(reader, group_name):
     return item
 
 
-def save_items(writer, items):
-    """Save items to HDF5 file:
-    * writer: :py:class:`guidata.dataset.io.HDF5Writer` object
-    * items: serializable plot items"""
+def save_items(
+    writer: guidata.dataset.io.HDF5Writer
+    | guidata.dataset.io.INIWriter
+    | guidata.dataset.io.JSONWriter,
+    items: list[Any],
+) -> None:
+    """Save items to HDF5, INI or JSON file
+
+    Args:
+        writer: HDF5, INI or JSON writer
+        items: list of serializable plot items
+    """
     counts = {}
     names = []
 
@@ -711,9 +767,19 @@ def save_items(writer, items):
         writer.write_sequence(names)
 
 
-def load_items(reader):
-    """Load items from HDF5 file:
-    * reader: :py:class:`guidata.dataset.io.HDF5Reader` object"""
+def load_items(
+    reader: guidata.dataset.io.HDF5Reader
+    | guidata.dataset.io.INIReader
+    | guidata.dataset.io.JSONReader,
+) -> list[Any]:
+    """Load items from HDF5, INI or JSON file
+
+    Args:
+        reader: HDF5, INI or JSON reader
+
+    Returns:
+        list of plot item instances
+    """
     with reader.group("plot_items"):
         names = reader.read_sequence()
     items = []

@@ -1,12 +1,7 @@
 # -*- coding: utf-8 -*-
 
-"""
-plotpy.tools
------------------
+# pylint: disable=unused-import
 
-"""
-
-# Import all tools classes (name ending with "Tool") from children modules:
 from .annotations import (
     AnnotatedCircleTool,
     AnnotatedEllipseTool,

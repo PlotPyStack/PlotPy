@@ -12,9 +12,26 @@ if TYPE_CHECKING:
 
 
 class MaskedArea:
-    """Defines masked areas for a masked image item"""
+    """Defines masked areas for a masked image item
 
-    def __init__(self, geometry=None, x0=None, y0=None, x1=None, y1=None, inside=None):
+    Args:
+        geometry: Geometry of the area ('rectangular' or anything else for circular)
+        x0: X coordinate of first point
+        y0: Y coordinate of first point
+        x1: X coordinate of second point
+        y1: Y coordinate of second point
+        inside: True if the area is inside the geometry, False if it is outside
+    """
+
+    def __init__(
+        self,
+        geometry: str | None = None,
+        x0: float | None = None,
+        y0: float | None = None,
+        x1: float | None = None,
+        y1: float | None = None,
+        inside: bool | None = None,
+    ) -> None:
         self.geometry = geometry
         self.x0 = x0
         self.y0 = y0

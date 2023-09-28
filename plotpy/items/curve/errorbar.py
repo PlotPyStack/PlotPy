@@ -25,14 +25,23 @@ if TYPE_CHECKING:
     from plotpy.styles.base import ItemParameters
 
 
-def _transform(map, v):
+def _transform(map: QwtScaleMap, v: float) -> float:
+    """Transform coordinates"""
     return QwtScaleMap.transform(map, v)
 
 
-def vmap(map, v):
+def vmap(map: QwtScaleMap, v: np.ndarray) -> np.ndarray:
     """Transform coordinates while handling RuntimeWarning
     that could be raised by NumPy when trying to transform
-    a zero in logarithmic scale for example"""
+    a zero in logarithmic scale for example
+
+    Args:
+        map: Scale map
+        v: Array of coordinates
+
+    Returns:
+        Array of transformed coordinates
+    """
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=RuntimeWarning)
         output = np.vectorize(_transform)(map, v)
@@ -40,13 +49,18 @@ def vmap(map, v):
 
 
 class ErrorBarCurveItem(CurveItem):
-    """
-    Construct an error-bar curve `plot item`
-    with the parameters *errorbarparam*
-    (see :py:class:`.styles.ErrorBarParam`)
+    """Error-bar curve item
+
+    Args:
+        curveparam: Curve parameters
+        errorbarparam: Error-bar parameters
     """
 
-    def __init__(self, curveparam=None, errorbarparam=None):
+    def __init__(
+        self,
+        curveparam: CurveParam | None = None,
+        errorbarparam: ErrorBarParam | None = None,
+    ) -> None:
         if errorbarparam is None:
             self.errorbarparam = ErrorBarParam(_("Error bars"), icon="errorbar.png")
         else:
@@ -58,7 +72,7 @@ class ErrorBarCurveItem(CurveItem):
         super().__init__(curveparam)
         self._dx = None
         self._dy = None
-        self._minmaxarrays = {}
+        self._minmaxarrays: dict[bool, tuple[float, float, float, float]] = {}
         self.setIcon(get_icon("errorbar.png"))
 
     def serialize(
@@ -109,25 +123,28 @@ class ErrorBarCurveItem(CurveItem):
         CurveItem.unselect(self)
         self.errorbarparam.update_item(self)
 
-    def get_data(self):
-        """
-        Return error-bar curve data: x, y, dx, dy
+    def get_data(self) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+        """Get data
 
-            * x: NumPy array
-            * y: NumPy array
-            * dx: float or NumPy array (non-constant error bars)
-            * dy: float or NumPy array (non-constant error bars)
+        Returns:
+            Data as a tuple (x, y, dx, dy)
         """
         return self._x, self._y, self._dx, self._dy
 
-    def set_data(self, x, y, dx=None, dy=None):
-        """
-        Set error-bar curve data:
+    def set_data(
+        self,
+        x: np.ndarray,
+        y: np.ndarray,
+        dx: np.ndarray | float | None = None,
+        dy: np.ndarray | float | None = None,
+    ) -> None:
+        """Set data
 
-            * x: NumPy array
-            * y: NumPy array
-            * dx: float or NumPy array (non-constant error bars)
-            * dy: float or NumPy array (non-constant error bars)
+        Args:
+            x: X data
+            y: Y data
+            dx: X error data
+            dy: Y error data
         """
         CurveItem.set_data(self, x, y)
         if dx is not None:
@@ -142,11 +159,14 @@ class ErrorBarCurveItem(CurveItem):
         self._dy = dy
         self._minmaxarrays = {}
 
-    def get_minmax_arrays(self, all_values=True):
-        """
+    def get_minmax_arrays(self, all_values: bool = True) -> tuple[float, ...]:
+        """Get min/max arrays
 
-        :param all_values:
-        :return:
+        Args:
+            all_values: If True, return all values, else return only finite values
+
+        Returns:
+            tuple[float, ...]: Min/max arrays
         """
         if self._minmaxarrays.get(all_values) is None:
             x = self._x
@@ -211,8 +231,12 @@ class ErrorBarCurveItem(CurveItem):
             xi = xmax[i]
         return xi, yi
 
-    def boundingRect(self):
-        """Return the bounding rectangle of the data, error bars included"""
+    def boundingRect(self) -> QC.QRectF:
+        """Return the bounding rectangle of the data
+
+        Returns:
+            Bounding rectangle of the data
+        """
         xmin, xmax, ymin, ymax = self.get_minmax_arrays()
         if xmin is None or xmin.size == 0:
             return CurveItem.boundingRect(self)
@@ -236,14 +260,20 @@ class ErrorBarCurveItem(CurveItem):
 
         return QC.QRectF(xmin, ymin, xmaxf.max() - xmin, ymaxf.max() - ymin)
 
-    def draw(self, painter, xMap, yMap, canvasRect):
-        """
+    def draw(
+        self,
+        painter: QG.QPainter,
+        xMap: QwtScaleMap,
+        yMap: QwtScaleMap,
+        canvasRect: QC.QRectF,
+    ) -> None:
+        """Draw the item
 
-        :param painter:
-        :param xMap:
-        :param yMap:
-        :param canvasRect:
-        :return:
+        Args:
+            painter: Painter
+            xMap: X axis scale map
+            yMap: Y axis scale map
+            canvasRect: Canvas rectangle
         """
         if self._x is None or self._x.size == 0:
             return
@@ -311,7 +341,7 @@ class ErrorBarCurveItem(CurveItem):
             QwtPlotCurve.draw(self, painter, xMap, yMap, canvasRect)
 
     def update_params(self):
-        """ """
+        """Update object properties from item parameters"""
         self.errorbarparam.update_item(self)
         CurveItem.update_params(self)
 

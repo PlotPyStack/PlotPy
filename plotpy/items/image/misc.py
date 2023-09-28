@@ -28,7 +28,7 @@ from plotpy.interfaces.common import (
 from plotpy.items.image.base import BaseImageItem, RawImageItem, _nanmax, _nanmin
 from plotpy.items.image.mixin import ImageMixin
 from plotpy.items.image.transform import TrImageItem
-from plotpy.styles.image import ImageParam, QuadGridParam
+from plotpy.styles import Histogram2DParam, ImageParam, QuadGridParam
 
 try:
     from plotpy._scaler import _histogram, _scale_quads
@@ -45,23 +45,37 @@ except ImportError:
     raise
 
 if TYPE_CHECKING:
+    from qtpy import QtGui as QG
+    from qwt import QwtPlot, QwtScaleMap
+
     from plotpy.interfaces.common import IItemType
+    from plotpy.items import BaseImageItem, RectangleShape, TrImageItem
+    from plotpy.plot import BasePlot
     from plotpy.styles.base import ItemParameters
 
 
 class QuadGridItem(ImageMixin, RawImageItem):
-    """
-    Construct a QuadGrid image
+    """Quad grid item
 
-        * X, Y, Z: A structured grid of quadrilaterals
-          each quad is defined by (X[i], Y[i]), (X[i], Y[i+1]),
-          (X[i+1], Y[i+1]), (X[i+1], Y[i])
-        * param (optional): image parameters (ImageParam instance)
+    Args:
+        X: X coordinates
+        Y: Y coordinates
+        Z: Z coordinates
+        param: Image parameters
+
+    X, Y, Z: A structured grid of quadrilaterals, each quad is defined by
+    (X[i], Y[i]), (X[i], Y[i+1]), (X[i+1], Y[i+1]), (X[i+1], Y[i])
     """
 
     __implements__ = (IBasePlotItem, IBaseImageItem, IHistDataSource, IVoiImageItemType)
 
-    def __init__(self, X, Y, Z, param=None):
+    def __init__(
+        self,
+        X: np.ndarray,
+        Y: np.ndarray,
+        Z: np.ndarray,
+        param: QuadGridParam | None = None,
+    ) -> None:
         assert X is not None
         assert Y is not None
         assert Z is not None
@@ -81,7 +95,7 @@ class QuadGridItem(ImageMixin, RawImageItem):
         self.set_transform(0, 0, 0)
 
     # ---- BaseImageItem API ---------------------------------------------------
-    def get_default_param(self):
+    def get_default_param(self) -> QuadGridParam:
         """Return instance of the default imageparam DataSet"""
         return QuadGridParam(_("Quadrilaterals"))
 
@@ -99,12 +113,20 @@ class QuadGridItem(ImageMixin, RawImageItem):
             ITrackableItemType,
         )
 
-    def set_data(self, data, X=None, Y=None, lut_range=None):
-        """
-        Set Image item data
+    def set_data(
+        self,
+        data: np.ndarray,
+        X: np.ndarray | None = None,
+        Y: np.ndarray | None = None,
+        lut_range: list[float, float] | None = None,
+    ) -> None:
+        """Set image data
 
-            * data: 2D NumPy array
-            * lut_range: LUT range -- tuple (levelmin, levelmax)
+        Args:
+            data: 2D NumPy array
+            X: X coordinates (Default value = None)
+            Y: Y coordinates (Default value = None)
+            lut_range: LUT range -- tuple (levelmin, levelmax) (Default value = None)
         """
         if lut_range is not None:
             _min, _max = lut_range
@@ -129,15 +151,24 @@ class QuadGridItem(ImageMixin, RawImageItem):
         self.update_border()
         self.set_lut_range([_min, _max])
 
-    def draw_image(self, painter, canvasRect, src_rect, dst_rect, xMap, yMap):
-        """
+    def draw_image(
+        self,
+        painter: QG.QPainter,
+        canvasRect: QC.QRectF,
+        src_rect: tuple[float, float, float, float],
+        dst_rect: tuple[float, float, float, float],
+        xMap: QwtScaleMap,
+        yMap: QwtScaleMap,
+    ) -> None:
+        """Draw image
 
-        :param painter:
-        :param canvasRect:
-        :param src_rect:
-        :param dst_rect:
-        :param xMap:
-        :param yMap:
+        Args:
+            painter: Painter
+            canvasRect: Canvas rectangle
+            src_rect: Source rectangle
+            dst_rect: Destination rectangle
+            xMap: X axis scale map
+            yMap: Y axis scale map
         """
         self._offscreen[...] = np.uint32(0)
         dest = _scale_quads(
@@ -157,8 +188,8 @@ class QuadGridItem(ImageMixin, RawImageItem):
         xl, yt, xr, yb = dest
         self._offscreen[yt:yb, xl:xr] = 0
 
-    def notify_new_offscreen(self):
-        """ """
+    def notify_new_offscreen(self) -> None:
+        """Notify that the offscreen image has changed"""
         # we always ensure the offscreen is clean before drawing
         self._offscreen[...] = 0
 
@@ -167,18 +198,23 @@ assert_interfaces_valid(QuadGridItem)
 
 
 class Histogram2DItem(ImageMixin, BaseImageItem):
-    """
-    Construct a 2D histogram item
+    """2D histogram item
 
-        * X: data (1-D array)
-        * Y: data (1-D array)
-        * param (optional): style parameters
-          (:py:class:`.styles.Histogram2DParam` instance)
+    Args:
+        X: X coordinates (1-D array)
+        Y: Y coordinates (1-D array)
+        param: Histogram parameters
     """
 
     __implements__ = (IBasePlotItem, IBaseImageItem, IHistDataSource, IVoiImageItemType)
 
-    def __init__(self, X, Y, param=None, Z=None):
+    def __init__(
+        self,
+        X: np.ndarray,
+        Y: np.ndarray,
+        param: Histogram2DParam | None = None,
+        Z=None,
+    ) -> None:
         if param is None:
             param = ImageParam(_("Image"))
         self._z = Z  # allows set_bins to
@@ -205,17 +241,35 @@ class Histogram2DItem(ImageMixin, BaseImageItem):
         self.setIcon(get_icon("histogram2d.png"))
         self.set_transform(0, 0, 0)
 
+    # ---- BaseImageItem API ---------------------------------------------------
+    def get_default_param(self) -> Histogram2DParam:
+        """Return instance of the default imageparam DataSet"""
+        return Histogram2DParam(_("2D Histogram"))
+
     # ---- Public API -----------------------------------------------------------
-    def set_bins(self, NX, NY):
-        """Set histogram bins"""
+    def set_bins(self, NX: int, NY: int) -> None:
+        """Set histogram bins
+
+        Args:
+            NX: Number of bins along X
+            NY: Number of bins along Y
+        """
         self.nx_bins = NX
         self.ny_bins = NY
         self.data = np.zeros((self.ny_bins, self.nx_bins), float)
         if self._z is not None:
             self.data_tmp = np.zeros((self.ny_bins, self.nx_bins), float)
 
-    def set_data(self, X, Y, Z=None):
-        """Set histogram data"""
+    def set_data(
+        self, X: np.ndarray, Y: np.ndarray, Z: np.ndarray | None = None
+    ) -> None:
+        """Set histogram data
+
+        Args:
+            X: X coordinates
+            Y: Y coordinates
+            Z: Z coordinates (Default value = None)
+        """
         self._x = X
         self._y = Y
         self._z = Z
@@ -231,15 +285,24 @@ class Histogram2DItem(ImageMixin, BaseImageItem):
     # ---- QwtPlotItem API ------------------------------------------------------
     fill_canvas = True
 
-    def draw_image(self, painter, canvasRect, src_rect, dst_rect, xMap, yMap):
-        """
+    def draw_image(
+        self,
+        painter: QG.QPainter,
+        canvasRect: QC.QRectF,
+        src_rect: tuple[float, float, float, float],
+        dst_rect: tuple[float, float, float, float],
+        xMap: QwtScaleMap,
+        yMap: QwtScaleMap,
+    ) -> None:
+        """Draw image
 
-        :param painter:
-        :param canvasRect:
-        :param src_rect:
-        :param dst_rect:
-        :param xMap:
-        :param yMap:
+        Args:
+            painter: Painter
+            canvasRect: Canvas rectangle
+            src_rect: Source rectangle
+            dst_rect: Destination rectangle
+            xMap: X axis scale map
+            yMap: Y axis scale map
         """
         computation = self.histparam.computation
         i1, j1, i2, j2 = src_rect
@@ -385,21 +448,35 @@ assert_interfaces_valid(Histogram2DItem)
 
 
 def assemble_imageitems(
-    items,
-    src_qrect,
-    destw,
-    desth,
-    align=None,
-    add_images=False,
-    apply_lut=False,
-    apply_interpolation=False,
-    original_resolution=False,
-    force_interp_mode=None,
-    force_interp_size=None,
-):
-    """
-    Assemble together image items in qrect (`QRectF` object)
-    and return resulting pixel data
+    items: list[BaseImageItem],
+    src_qrect: QC.QRectF,
+    destw: int,
+    desth: int,
+    align: int | None = None,
+    add_images: bool = False,
+    apply_lut: bool = False,
+    apply_interpolation: bool = False,
+    original_resolution: bool = False,
+    force_interp_mode: str | None = None,
+    force_interp_size: int | None = None,
+) -> np.ndarray:
+    """Assemble together image items and return resulting pixel data
+
+    Args:
+        items: List of image items
+        src_qrect: Source rectangle
+        destw: Destination width
+        desth: Destination height
+        align: Alignment (Default value = None)
+        add_images: Add images (Default value = False)
+        apply_lut: Apply LUT (Default value = False)
+        apply_interpolation: Apply interpolation (Default value = False)
+        original_resolution: Original resolution (Default value = False)
+        force_interp_mode: Force interpolation mode (Default value = None)
+        force_interp_size: Force interpolation size (Default value = None)
+
+    Returns:
+        np.ndarray: Pixel data
 
     .. warning::
 
@@ -457,10 +534,16 @@ def assemble_imageitems(
     return output
 
 
-def get_plot_qrect(plot, p0, p1):
-    """
-    Return `QRectF` rectangle object in plot coordinates
-    from top-left and bottom-right `QPointF` objects in canvas coordinates
+def get_plot_qrect(plot: QwtPlot, p0: QC.QPointF, p1: QC.QPointF) -> QC.QRectF:
+    """Get plot rectangle, in plot coordinates, from two canvas points
+
+    Args:
+        plot: Plot
+        p0: First point
+        p1: Second point
+
+    Returns:
+        QC.QRectF: Plot rectangle
     """
     ax, ay = plot.X_BOTTOM, plot.Y_LEFT
     p0x, p0y = plot.invTransform(ax, p0.x()), plot.invTransform(ay, p0.y())
@@ -468,9 +551,25 @@ def get_plot_qrect(plot, p0, p1):
     return QC.QRectF(p0x, p0y, p1x - p0x, p1y - p0y)
 
 
-def get_items_in_rectangle(plot, p0, p1, item_type=None, intersect=True):
+def get_items_in_rectangle(
+    plot: BasePlot,
+    p0: QC.QPointF,
+    p1: QC.QPointF,
+    item_type: type | None = None,
+    intersect: bool = True,
+) -> list[BaseImageItem]:
     """Return items which bounding rectangle intersects (p0, p1)
-    item_type: default is `IExportROIImageItemType`"""
+
+    Args:
+        plot: Plot
+        p0: First point
+        p1: Second point
+        item_type: Item type (if None, use `IExportROIImageItemType`)
+        intersect: Intersect (Default value = True)
+
+    Returns:
+        list: List of items
+    """
     if item_type is None:
         item_type = IExportROIImageItemType
     items = plot.get_items(item_type=item_type)
@@ -481,37 +580,62 @@ def get_items_in_rectangle(plot, p0, p1, item_type=None, intersect=True):
         return [it for it in items if src_qrect.contains(it.boundingRect())]
 
 
-def compute_trimageitems_original_size(items, src_w, src_h):
-    """Compute `TrImageItem` original size from max dx and dy"""
+def compute_trimageitems_original_size(
+    items: list[TrImageItem],
+    src_w: list[float, float, float, float],
+    src_h: list[float, float, float, float],
+) -> tuple[float, float]:
+    """Compute `TrImageItem` original size from max dx and dy
+
+    Args:
+        items: List of image items
+        src_w: Source width
+        src_h: Source height
+
+    Returns:
+        tuple: Tuple of original size
+    """
     trparams = [item.get_transform() for item in items if isinstance(item, TrImageItem)]
     if trparams:
         dx_max = max([dx for _x, _y, _angle, dx, _dy, _hf, _vf in trparams])
         dy_max = max([dy for _x, _y, _angle, _dx, dy, _hf, _vf in trparams])
         return src_w / dx_max, src_h / dy_max
-    else:
-        return src_w, src_h
+    return src_w, src_h
 
 
 def get_image_from_qrect(
-    plot,
-    p0,
-    p1,
-    src_size=None,
-    adjust_range=None,
-    item_type=None,
-    apply_lut=False,
-    apply_interpolation=False,
-    original_resolution=False,
-    add_images=False,
-    force_interp_mode=None,
-    force_interp_size=None,
-):
-    """Return image array from `QRect` area (p0 and p1 are respectively the
-    top-left and bottom-right `QPointF` objects)
+    plot: BasePlot,
+    p0: QC.QPointF,
+    p1: QC.QPointF,
+    src_size: tuple[float, float] | None = None,
+    adjust_range: str | None = None,
+    item_type: type | None = None,
+    apply_lut: bool = False,
+    apply_interpolation: bool = False,
+    original_resolution: bool = False,
+    add_images: bool = False,
+    force_interp_mode: str | None = None,
+    force_interp_size: int | None = None,
+) -> np.ndarray:
+    """Get image pixel data from rectangle area
 
-    adjust_range: None (return raw data, dtype=np.float32), 'original'
-    (return data with original data type), 'normalize' (normalize range with
-    original data type)"""
+    Args:
+        plot: Plot
+        p0: First point (top-left)
+        p1: Second point (bottom-right)
+        src_size: Source size (Default value = None)
+        adjust_range: Adjust range (Default value = None)
+        item_type: Item type (Default value = None)
+        apply_lut: Apply LUT (Default value = False)
+        apply_interpolation: Apply interpolation (Default value = False)
+        original_resolution: Original resolution (Default value = False)
+        add_images: Add images (Default value = False)
+        force_interp_mode: Force interpolation mode (Default value = None)
+        force_interp_size: Force interpolation size (Default value = None)
+
+    Returns:
+        np.ndarray: Image pixel data
+    """
     assert adjust_range in (None, "normalize", "original")
     items = get_items_in_rectangle(plot, p0, p1, item_type=item_type)
     if not items:
@@ -550,9 +674,21 @@ def get_image_from_qrect(
 
 
 def get_image_in_shape(
-    obj, norm_range=False, item_type=None, apply_lut=False, apply_interpolation=False
-):
-    """Return image array from rectangle shape"""
+    obj: RectangleShape,
+    norm_range: bool = False,
+    item_type: type | None = None,
+    apply_lut: bool = False,
+    apply_interpolation: bool = False,
+) -> np.ndarray:
+    """Get image pixel data from rectangle shape
+
+    Args:
+        obj: Rectangle shape
+        norm_range: Normalize range (Default value = False)
+        item_type: Item type (Default value = None)
+        apply_lut: Apply LUT (Default value = False)
+        apply_interpolation: Apply interpolation (Default value = False)
+    """
     x0, y0, x1, y1 = obj.get_rect()
     (x0, x1), (y0, y1) = sorted([x0, x1]), sorted([y0, y1])
     xc0, yc0 = axes_to_canvas(obj, x0, y0)
@@ -572,23 +708,32 @@ def get_image_in_shape(
 
 
 def get_image_from_plot(
-    plot,
-    p0,
-    p1,
-    destw=None,
-    desth=None,
-    add_images=False,
-    apply_lut=False,
-    apply_interpolation=False,
-    original_resolution=False,
-    force_interp_mode=None,
-    force_interp_size=None,
-):
-    """
-    Return pixel data of a rectangular plot area (image items only)
-    p0, p1: resp. top-left and bottom-right points (`QPointF` objects)
-    apply_lut: apply contrast settings
-    add_images: add superimposed images (instead of replace by the foreground)
+    plot: BasePlot,
+    p0: QC.QPointF,
+    p1: QC.QPointF,
+    destw: int | None = None,
+    desth: int | None = None,
+    add_images: bool = False,
+    apply_lut: bool = False,
+    apply_interpolation: bool = False,
+    original_resolution: bool = False,
+    force_interp_mode: str | None = None,
+    force_interp_size: int | None = None,
+) -> np.ndarray:
+    """Get image pixel data from plot area
+
+    Args:
+        plot: Plot
+        p0: First point (top-left)
+        p1: Second point (bottom-right)
+        destw: Destination width (Default value = None)
+        desth: Destination height (Default value = None)
+        add_images: Add superimposed images (instead of replace by the foreground)
+        apply_lut: Apply LUT (Default value = False)
+        apply_interpolation: Apply interpolation (Default value = False)
+        original_resolution: Original resolution (Default value = False)
+        force_interp_mode: Force interpolation mode (Default value = None)
+        force_interp_size: Force interpolation size (Default value = None)
 
     .. warning::
 

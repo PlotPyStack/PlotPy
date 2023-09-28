@@ -1,11 +1,5 @@
 # -*- coding: utf-8 -*-
 
-"""
-plotpy.items.shapes
----------------------------
-
-"""
-
 # pylint: disable=W0611
 from plotpy.items.shapes.axis import Axes
 from plotpy.items.shapes.base import AbstractShape

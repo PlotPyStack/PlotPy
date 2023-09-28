@@ -19,14 +19,23 @@ from plotpy.styles.shape import RangeShapeParam
 
 if TYPE_CHECKING:
     from qtpy.QtCore import QPointF
+    from qwt import QwtScaleMap
 
     from plotpy.styles.base import ItemParameters
 
 
 class XRangeSelection(AbstractShape):
-    """ """
+    """X range selection shape
 
-    def __init__(self, _min, _max, shapeparam=None):
+    Args:
+        _min: Minimum value
+        _max: Maximum value
+        shapeparam: Shape parameters
+    """
+
+    def __init__(
+        self, _min: float, _max: float, shapeparam: RangeShapeParam | None = None
+    ) -> None:
         super().__init__()
         self._min = _min
         self._max = _max
@@ -44,10 +53,11 @@ class XRangeSelection(AbstractShape):
         self.shapeparam.update_range(self)  # creates all the above QObjects
         self.setIcon(get_icon("xrange.png"))
 
-    def get_handles_pos(self):
-        """
+    def get_handles_pos(self) -> tuple[float, float, float]:
+        """Return the handles position
 
-        :return:
+        Returns:
+            tuple: Tuple with three elements: (x0, x1, y).
         """
         plot = self.plot()
         rct = plot.canvas().contentsRect()
@@ -56,14 +66,20 @@ class XRangeSelection(AbstractShape):
         x1 = plot.transform(self.xAxis(), self._max)
         return x0, x1, y
 
-    def draw(self, painter, xMap, yMap, canvasRect):
-        """
+    def draw(
+        self,
+        painter: QG.QPainter,
+        xMap: QwtScaleMap,
+        yMap: QwtScaleMap,
+        canvasRect: QC.QRectF,
+    ) -> None:
+        """Draw the item
 
-        :param painter:
-        :param xMap:
-        :param yMap:
-        :param canvasRect:
-        :return:
+        Args:
+            painter: Painter
+            xMap: X axis scale map
+            yMap: Y axis scale map
+            canvasRect: Canvas rectangle
         """
         plot = self.plot()
         if not plot:
@@ -138,21 +154,24 @@ class XRangeSelection(AbstractShape):
             ctrl: True if <Ctrl> button is being pressed, False otherwise
         """
         x, _y = canvas_to_axes(self, pos)
-        self.move_point_to(handle, (x, 0))
+        self.move_point_to(handle, (x, 0), ctrl)
 
-    def move_point_to(self, hnd, pos, ctrl=None):
-        """
+    def move_point_to(
+        self, handle: int, pos: tuple[float, float], ctrl: bool = False
+    ) -> None:
+        """Move a handle as returned by hit_test to the new position
 
-        :param hnd:
-        :param pos:
-        :param ctrl:
+        Args:
+            handle: Handle
+            pos: Position
+            ctrl: True if <Ctrl> button is being pressed, False otherwise
         """
         val, _ = pos
-        if hnd == 0:
+        if handle == 0:
             self._min = val
-        elif hnd == 1:
+        elif handle == 1:
             self._max = val
-        elif hnd == 2:
+        elif handle == 2:
             move = val - (self._max + self._min) / 2
             self._min += move
             self._max += move
@@ -160,30 +179,33 @@ class XRangeSelection(AbstractShape):
         self.plot().SIG_RANGE_CHANGED.emit(self, self._min, self._max)
         # self.plot().replot()
 
-    def get_range(self):
-        """
+    def get_range(self) -> tuple[float, float]:
+        """Return the range
 
-        :return:
+        Returns:
+            Tuple with two elements: (min, max).
         """
         return self._min, self._max
 
-    def set_range(self, _min, _max, dosignal=True):
-        """
+    def set_range(self, _min: float, _max: float, dosignal: bool = True) -> None:
+        """Set the range
 
-        :param _min:
-        :param _max:
-        :param dosignal:
+        Args:
+            _min: Minimum value
+            _max: Maximum value
+            dosignal: True to emit the SIG_RANGE_CHANGED signal
         """
         self._min = _min
         self._max = _max
         if dosignal:
             self.plot().SIG_RANGE_CHANGED.emit(self, self._min, self._max)
 
-    def move_shape(self, old_pos, new_pos):
-        """
+    def move_shape(self, old_pos: QC.QPointF, new_pos: QC.QPointF) -> None:
+        """Translate the shape such that old_pos becomes new_pos in axis coordinates
 
-        :param old_pos:
-        :param new_pos:
+        Args:
+            old_pos: Old position
+            new_pos: New position
         """
         dx = new_pos[0] - old_pos[0]
         self._min += dx
@@ -218,10 +240,11 @@ class XRangeSelection(AbstractShape):
         self.shapeparam.update_range(self)
         self.sel_brush = QG.QBrush(self.brush)
 
-    def boundingRect(self):
-        """
+    def boundingRect(self) -> QC.QRectF:
+        """Return the bounding rectangle of the shape
 
-        :return:
+        Returns:
+            Bounding rectangle of the shape
         """
         return QC.QRectF(self._min, 0, self._max - self._min, 0)
 

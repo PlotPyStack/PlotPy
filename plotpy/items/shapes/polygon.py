@@ -23,20 +23,33 @@ from plotpy.styles.shape import ShapeParam
 if TYPE_CHECKING:
     import guidata.dataset.io
     from qtpy.QtCore import QPointF
+    from qwt import QwtScaleMap
 
     from plotpy.interfaces.common import IItemType
+    from plotpy.plot.base import BasePlot
     from plotpy.styles.base import ItemParameters
 
 
 class PolygonShape(AbstractShape):
-    """ """
+    """Polygon shape class
+
+    Args:
+        points: List of point coordinates
+        closed: True if the polygon is closed, False otherwise
+        shapeparam: Shape parameters
+    """
 
     __implements__ = (IBasePlotItem, ISerializableType)
     ADDITIONNAL_POINTS = 0  # Number of points which are not part of the shape
     LINK_ADDITIONNAL_POINTS = False  # Link additionnal points with dotted lines
     CLOSED = True
 
-    def __init__(self, points=None, closed=None, shapeparam=None):
+    def __init__(
+        self,
+        points: list[tuple[float, float]] | None = None,
+        closed: bool | None = None,
+        shapeparam: ShapeParam | None = None,
+    ) -> None:
         super().__init__()
         self.closed = self.CLOSED if closed is None else closed
         self.selected = False
@@ -67,12 +80,14 @@ class PolygonShape(AbstractShape):
         """
         return (IShapeItemType, ISerializableType)
 
-    def __reduce__(self):
+    def __reduce__(self) -> tuple[type, tuple, tuple]:
+        """Return state information for pickling"""
         self.shapeparam.update_param(self)
         state = (self.shapeparam, self.points, self.closed, self.z())
         return (PolygonShape, (), state)
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: tuple) -> None:
+        """Set state information for unpickling"""
         self.shapeparam, self.points, self.closed, z = state
         self.setZ(z)
         self.shapeparam.update_shape(self)
@@ -114,29 +129,39 @@ class PolygonShape(AbstractShape):
 
     # ----Public API-------------------------------------------------------------
 
-    def set_style(self, section, option):
-        """
+    def set_style(self, section: str, option: str) -> None:
+        """Set style for this item
 
-        :param section:
-        :param option:
+        Args:
+            section: Section
+            option: Option
         """
         self.shapeparam.read_config(CONF, section, option)
         self.shapeparam.update_shape(self)
 
-    def set_points(self, points):
-        """
+    def set_points(self, points: list[tuple[float, float]]) -> None:
+        """Set polygon points
 
-        :param points:
+        Args:
+            points: List of point coordinates
         """
         self.points = np.array(points, float)
         assert self.points.shape[1] == 2
 
-    def get_points(self):
-        """Return polygon points"""
+    def get_points(self) -> np.ndarray:
+        """Return polygon points
+
+        Returns:
+            Polygon points (numpy array of shape (N, 2))
+        """
         return self.points
 
-    def boundingRect(self):
-        """Return the bounding rectangle of the data"""
+    def boundingRect(self) -> QC.QRectF:
+        """Return the bounding rectangle of the data
+
+        Returns:
+            Bounding rectangle of the data
+        """
         poly = QG.QPolygonF()
         if self.ADDITIONNAL_POINTS:
             shape_points = self.points[: -self.ADDITIONNAL_POINTS]
@@ -146,24 +171,35 @@ class PolygonShape(AbstractShape):
             poly.append(QC.QPointF(shape_points[i, 0], shape_points[i, 1]))
         return poly.boundingRect()
 
-    def is_empty(self):
-        """Return True if the polygon is empty"""
+    def is_empty(self) -> bool:
+        """Return True if the item is empty
+
+        Returns:
+            True if the item is empty, False otherwise
+        """
         return len(self.points) == 0
 
-    def get_bounding_rect_coords(self):
-        """Return bounding rectangle coordinates (in plot coordinates)"""
+    def get_bounding_rect_coords(self) -> tuple[float, float, float, float]:
+        """Return bounding rectangle coordinates (in plot coordinates)
+
+        Returns:
+            Bounding rectangle coordinates (in plot coordinates)
+        """
         poly = QG.QPolygonF()
         shape_points = self.points[: -self.ADDITIONNAL_POINTS]
         for i in range(shape_points.shape[0]):
             poly.append(QC.QPointF(shape_points[i, 0], shape_points[i, 1]))
         return poly.boundingRect().getCoords()
 
-    def transform_points(self, xMap, yMap):
-        """
+    def transform_points(self, xMap: QwtScaleMap, yMap: QwtScaleMap) -> QG.QPolygonF:
+        """Transform points to canvas coordinates
 
-        :param xMap:
-        :param yMap:
-        :return:
+        Args:
+            xMap: X axis scale map
+            yMap: Y axis scale map
+
+        Returns:
+            Transformed points
         """
         points = QG.QPolygonF()
         for i in range(self.points.shape[0]):
@@ -174,20 +210,26 @@ class PolygonShape(AbstractShape):
             )
         return points
 
-    def get_reference_point(self):
-        """
+    def get_reference_point(self) -> tuple[float, float] | None:
+        """Return a reference point for the item
 
-        :return:
+        Returns:
+            Reference point for the item
         """
         if self.points.size:
             return self.points.mean(axis=0)
 
-    def get_pen_brush(self, xMap, yMap):
-        """
+    def get_pen_brush(
+        self, xMap: QwtScaleMap, yMap: QwtScaleMap
+    ) -> tuple[QG.QPen, QG.QBrush, QwtSymbol]:
+        """Get pen, brush and symbol for the item
 
-        :param xMap:
-        :param yMap:
-        :return:
+        Args:
+            xMap: X axis scale map
+            yMap: Y axis scale map
+
+        Returns:
+            Tuple with pen, brush and symbol for the item
         """
         if self.selected:
             pen = self.sel_pen
@@ -213,13 +255,20 @@ class PolygonShape(AbstractShape):
             brush.setTransform(tr)
         return pen, brush, sym
 
-    def draw(self, painter, xMap, yMap, canvasRect):
-        """
+    def draw(
+        self,
+        painter: QG.QPainter,
+        xMap: QwtScaleMap,
+        yMap: QwtScaleMap,
+        canvasRect: QC.QRectF,
+    ) -> None:
+        """Draw the item
 
-        :param painter:
-        :param xMap:
-        :param yMap:
-        :param canvasRect:
+        Args:
+            painter: Painter
+            xMap: X axis scale map
+            yMap: Y axis scale map
+            canvasRect: Canvas rectangle
         """
         pen, brush, symbol = self.get_pen_brush(xMap, yMap)
         painter.setRenderHint(QG.QPainter.Antialiasing)
@@ -244,14 +293,17 @@ class PolygonShape(AbstractShape):
             painter.setPen(pen2)
             painter.drawPolyline(other_points)
 
-    def poly_hit_test(self, plot, ax, ay, pos):
-        """
+    def poly_hit_test(self, plot: BasePlot, ax: int, ay: int, pos: QPointF) -> tuple:
+        """Return a tuple (distance, attach point, inside, other_object)
 
-        :param plot:
-        :param ax:
-        :param ay:
-        :param pos:
-        :return:
+        Args:
+            plot: Plot
+            ax: X axis index
+            ay: Y axis index
+            pos: Position
+
+        Returns:
+            Tuple with four elements: (distance, attach point, inside, other_object).
         """
         pos = QC.QPointF(pos)
         dist = sys.maxsize
@@ -260,7 +312,7 @@ class PolygonShape(AbstractShape):
         poly = QG.QPolygonF()
         pts = self.points
         for i in range(pts.shape[0]):
-            # On calcule la distance dans le repère du canvas
+            # Compute distance to the line segment in canvas coordinates
             px = plot.transform(ax, pts[i, 0])
             py = plot.transform(ay, pts[i, 1])
             if i < pts.shape[0] - self.ADDITIONNAL_POINTS:
@@ -295,31 +347,40 @@ class PolygonShape(AbstractShape):
             return sys.maxsize, 0, False, None
         return self.poly_hit_test(self.plot(), self.xAxis(), self.yAxis(), pos)
 
-    def add_local_point(self, pos):
-        """
+    def add_local_point(self, pos: tuple[float, float]) -> int:
+        """Add a point in canvas coordinates (local coordinates)
 
-        :param pos:
-        :return:
+        Args:
+            pos: Position
+
+        Returns:
+            Handle of the added point
         """
         pt = canvas_to_axes(self, pos)
         return self.add_point(pt)
 
-    def add_point(self, pt):
-        """
+    def add_point(self, pt: tuple[float, float]) -> int:
+        """Add a point in axis coordinates
 
-        :param pt:
-        :return:
+        Args:
+            pt: Position
+
+        Returns:
+            Handle of the added point
         """
         N, _ = self.points.shape
         self.points = np.resize(self.points, (N + 1, 2))
         self.points[N, :] = pt
         return N
 
-    def del_point(self, handle):
-        """
+    def del_point(self, handle: int) -> int:
+        """Delete a point
 
-        :param handle:
-        :return:
+        Args:
+            handle: Handle
+
+        Returns:
+            Handle of the deleted point
         """
         self.points = np.delete(self.points, handle, 0)
         if handle < len(self.points):
@@ -327,20 +388,24 @@ class PolygonShape(AbstractShape):
         else:
             return self.points.shape[0] - 1
 
-    def move_point_to(self, handle, pos, ctrl=None):
-        """
+    def move_point_to(
+        self, handle: int, pos: tuple[float, float], ctrl: bool = False
+    ) -> None:
+        """Move a handle as returned by hit_test to the new position
 
-        :param handle:
-        :param pos:
-        :param ctrl:
+        Args:
+            handle: Handle
+            pos: Position
+            ctrl: True if <Ctrl> button is being pressed, False otherwise
         """
         self.points[handle, :] = pos
 
-    def move_shape(self, old_pos, new_pos):
-        """
+    def move_shape(self, old_pos: QC.QPointF, new_pos: QC.QPointF) -> None:
+        """Translate the shape such that old_pos becomes new_pos in axis coordinates
 
-        :param old_pos:
-        :param new_pos:
+        Args:
+            old_pos: Old position
+            new_pos: New position
         """
         dx = new_pos[0] - old_pos[0]
         dy = new_pos[1] - old_pos[1]

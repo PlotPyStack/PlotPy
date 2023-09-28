@@ -20,15 +20,17 @@ from plotpy.styles.base import GridParam
 
 if TYPE_CHECKING:
     from qtpy.QtCore import QPointF
+    from qwt import QwtPlot
 
     from plotpy.interfaces.common import IItemType
     from plotpy.styles.base import ItemParameters
 
 
 class GridItem(QwtPlotGrid):
-    """
-    Construct a grid `plot item` with the parameters *gridparam*
-    (see :py:class:`.styles.GridParam`)
+    """Grid plot item
+
+    Args:
+        gridparam: Grid parameters
     """
 
     __implements__ = (IBasePlotItem,)
@@ -36,7 +38,7 @@ class GridItem(QwtPlotGrid):
     _readonly = True
     _private = False
 
-    def __init__(self, gridparam=None):
+    def __init__(self, gridparam: GridParam | None = None) -> None:
         super().__init__()
         if gridparam is None:
             self.gridparam = GridParam(title=_("Grid"), icon="grid.png")
@@ -57,7 +59,7 @@ class GridItem(QwtPlotGrid):
         """
         return (IDecoratorItemType,)
 
-    def attach(self, plot):
+    def attach(self, plot: QwtPlot) -> None:
         """Reimplemented to update plot canvas background"""
         QwtPlotGrid.attach(self, plot)
         self.update_params()
@@ -213,15 +215,16 @@ class GridItem(QwtPlotGrid):
             new_pos: New position
         """
 
-    def move_with_selection(self, delta_x, delta_y):
-        """
+    def move_with_selection(self, delta_x: float, delta_y: float) -> None:
+        """Translate the item together with other selected items
 
-        :param delta_x:
-        :param delta_y:
+        Args:
+            delta_x: Translation in plot coordinates along x-axis
+            delta_y: Translation in plot coordinates along y-axis
         """
 
     def update_params(self):
-        """ """
+        """Update object parameters (dataset) from object properties"""
         self.gridparam.update_grid(self)
 
     def update_item_parameters(self) -> None:

@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 import numpy as np
 from guidata.configtools import get_icon
 from guidata.utils.misc import assert_interfaces_valid
@@ -10,6 +15,9 @@ from plotpy.mathutils.geometry import (
     vector_projection,
     vector_rotation,
 )
+
+if TYPE_CHECKING:
+    from plotpy.styles.shape import ShapeParam
 
 
 def _no_null_vector(x0, y0, x1, y1, x2, y2, x3, y3):
@@ -24,39 +32,66 @@ def _no_null_vector(x0, y0, x1, y1, x2, y2, x3, y3):
 
 
 class RectangleShape(PolygonShape):
-    """ """
+    """Rectangle shape
+
+    Args:
+        x1: X coordinate of the top-left corner
+        y1: Y coordinate of the top-left corner
+        x2: X coordinate of the bottom-right corner
+        y2: Y coordinate of the bottom-right corner
+        shapeparam: Shape parameters
+    """
 
     CLOSED = True
 
-    def __init__(self, x1=0, y1=0, x2=0, y2=0, shapeparam=None):
+    def __init__(
+        self,
+        x1: float = 0.0,
+        y1: float = 0.0,
+        x2: float = 0.0,
+        y2: float = 0.0,
+        shapeparam: ShapeParam = None,
+    ) -> None:
         super().__init__(shapeparam=shapeparam)
         self.set_rect(x1, y1, x2, y2)
         self.setIcon(get_icon("rectangle.png"))
 
-    def set_rect(self, x1, y1, x2, y2):
-        """
-        Set the coordinates of the rectangle's top-left corner to (x1, y1),
-        and of its bottom-right corner to (x2, y2).
+    def set_rect(self, x1: float, y1: float, x2: float, y2: float) -> None:
+        """Set the coordinates of the rectangle
+
+        Args:
+            x1: X coordinate of the top-left corner
+            y1: Y coordinate of the top-left corner
+            x2: X coordinate of the bottom-right corner
+            y2: Y coordinate of the bottom-right corner
         """
         self.set_points([(x1, y1), (x2, y1), (x2, y2), (x1, y2)])
 
-    def get_rect(self):
-        """
+    def get_rect(self) -> tuple[float, float, float, float]:
+        """Return the coordinates of the rectangle
 
-        :return:
+        Returns:
+            Coordinates of the rectangle
         """
         return tuple(self.points[0]) + tuple(self.points[2])
 
-    def get_center(self):
-        """Return center coordinates: (xc, yc)"""
+    def get_center(self) -> tuple[float, float]:
+        """Return center coordinates
+
+        Returns:
+            Center coordinates
+        """
         return compute_center(*self.get_rect())
 
-    def move_point_to(self, handle, pos, ctrl=None):
-        """
+    def move_point_to(
+        self, handle: int, pos: tuple[float, float], ctrl: bool = False
+    ) -> None:
+        """Move a handle as returned by hit_test to the new position
 
-        :param handle:
-        :param pos:
-        :param ctrl:
+        Args:
+            handle: Handle
+            pos: Position
+            ctrl: True if <Ctrl> button is being pressed, False otherwise
         """
         nx, ny = pos
         x1, y1, x2, y2 = self.get_rect()
@@ -72,11 +107,13 @@ class RectangleShape(PolygonShape):
             delta = (nx, ny) - self.points.mean(axis=0)
             self.points += delta
 
-    def __reduce__(self):
+    def __reduce__(self) -> tuple:
+        """Return the state of the object for pickling"""
         state = (self.shapeparam, self.points, self.z())
         return (self.__class__, (), state)
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: tuple) -> None:
+        """Set the state of the object from pickling"""
         self.shapeparam, self.points, z = state
         self.setZ(z)
         self.shapeparam.update_shape(self)
@@ -86,25 +123,62 @@ assert_interfaces_valid(RectangleShape)
 
 
 class ObliqueRectangleShape(PolygonShape):
-    """ """
+    """Oblique rectangle shape
+
+    Args:
+        x0: X coordinate of the top-left corner
+        y0: Y coordinate of the top-left corner
+        x1: X coordinate of the top-right corner
+        y1: Y coordinate of the top-right corner
+        x2: X coordinate of the bottom-right corner
+        y2: Y coordinate of the bottom-right corner
+        x3: X coordinate of the bottom-left corner
+        y3: Y coordinate of the bottom-left corner
+        shapeparam: Shape parameters
+    """
 
     CLOSED = True
     ADDITIONNAL_POINTS = 2  # Number of points which are not part of the shape
     LINK_ADDITIONNAL_POINTS = True  # Link additionnal points with dotted lines
 
-    def __init__(self, x0=0, y0=0, x1=0, y1=0, x2=0, y2=0, x3=0, y3=0, shapeparam=None):
+    def __init__(
+        self,
+        x0: float = 0.0,
+        y0: float = 0.0,
+        x1: float = 0.0,
+        y1: float = 0.0,
+        x2: float = 0.0,
+        y2: float = 0.0,
+        x3: float = 0.0,
+        y3: float = 0.0,
+        shapeparam: ShapeParam = None,
+    ) -> None:
         super().__init__(shapeparam=shapeparam)
         self.set_rect(x0, y0, x1, y1, x2, y2, x3, y3)
         self.setIcon(get_icon("oblique_rectangle.png"))
 
-    def set_rect(self, x0, y0, x1, y1, x2, y2, x3, y3):
-        """
-        Set the rectangle corners coordinates:
+    def set_rect(
+        self,
+        x0: float,
+        y0: float,
+        x1: float,
+        y1: float,
+        x2: float,
+        y2: float,
+        x3: float,
+        y3: float,
+    ) -> None:
+        """Set the coordinates of the rectangle
 
-            (x0, y0): top-left corner
-            (x1, y1): top-right corner
-            (x2, y2): bottom-right corner
-            (x3, y3): bottom-left corner
+        Args:
+            x0: X coordinate of the top-left corner
+            y0: Y coordinate of the top-left corner
+            x1: X coordinate of the top-right corner
+            y1: Y coordinate of the top-right corner
+            x2: X coordinate of the bottom-right corner
+            y2: Y coordinate of the bottom-right corner
+            x3: X coordinate of the bottom-left corner
+            y3: Y coordinate of the bottom-left corner
 
         ::
 
@@ -130,24 +204,32 @@ class ObliqueRectangleShape(PolygonShape):
             ]
         )
 
-    def get_rect(self):
-        """
+    def get_rect(self) -> tuple[float, float, float, float, float, float, float, float]:
+        """Return the coordinates of the rectangle
 
-        :return:
+        Returns:
+            Coordinates of the rectangle
         """
         return self.points.ravel()[: -self.ADDITIONNAL_POINTS * 2]
 
-    def get_center(self):
-        """Return center coordinates: (xc, yc)"""
+    def get_center(self) -> tuple[float, float]:
+        """Return center coordinates
+
+        Returns:
+            Center coordinates
+        """
         rect = tuple(self.points[0]) + tuple(self.points[2])
         return compute_center(*rect)
 
-    def move_point_to(self, handle, pos, ctrl=None):
-        """
+    def move_point_to(
+        self, handle: int, pos: tuple[float, float], ctrl: bool = False
+    ) -> None:
+        """Move a handle as returned by hit_test to the new position
 
-        :param handle:
-        :param pos:
-        :param ctrl:
+        Args:
+            handle: Handle
+            pos: Position
+            ctrl: True if <Ctrl> button is being pressed, False otherwise
         """
         nx, ny = pos
         x0, y0, x1, y1, x2, y2, x3, y3 = self.get_rect()
@@ -229,11 +311,13 @@ class ObliqueRectangleShape(PolygonShape):
             delta = (nx, ny) - self.points.mean(axis=0)
             self.points += delta
 
-    def __reduce__(self):
+    def __reduce__(self) -> tuple:
+        """Return the state of the object for pickling"""
         state = (self.shapeparam, self.points, self.z())
         return (self.__class__, (), state)
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: tuple) -> None:
+        """Set the state of the object from pickling"""
         self.shapeparam, self.points, z = state
         self.setZ(z)
         self.shapeparam.update_shape(self)

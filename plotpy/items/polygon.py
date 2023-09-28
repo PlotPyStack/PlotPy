@@ -31,6 +31,7 @@ from plotpy.styles.curve import CurveParam
 if TYPE_CHECKING:
     import guidata.dataset.io
     from qtpy.QtCore import QPointF
+    from qwt import QwtScaleMap
 
     from plotpy.interfaces.common import IItemType
     from plotpy.styles.base import ItemParameters
@@ -295,8 +296,8 @@ class PolygonMapItem(QwtPlotItem):
         """
         return self._private
 
-    def invalidate_plot(self):
-        """ """
+    def invalidate_plot(self) -> None:
+        """Invalidate the plot to force a redraw"""
         plot = self.plot()
         if plot is not None:
             plot.invalidate()
@@ -337,8 +338,12 @@ class PolygonMapItem(QwtPlotItem):
         xmax, ymax = self._pts.max(axis=0)
         self.bounds = QC.QRectF(xmin, ymin, xmax - xmin, ymax - ymin)
 
-    def is_empty(self):
-        """Return True if item data is empty"""
+    def is_empty(self) -> bool:
+        """Return True if the item is empty
+
+        Returns:
+            True if the item is empty, False otherwise
+        """
         return self._pts is None or self._pts.size == 0
 
     def hit_test(self, pos: QPointF) -> tuple[float, float, bool, None]:
@@ -410,15 +415,16 @@ class PolygonMapItem(QwtPlotItem):
             new_pos: New position
         """
 
-    def move_with_selection(self, delta_x, delta_y):
+    def move_with_selection(self, delta_x: float, delta_y: float) -> None:
+        """Translate the item together with other selected items
+
+        Args:
+            delta_x: Translation in plot coordinates along x-axis
+            delta_y: Translation in plot coordinates along y-axis
         """
 
-        :param delta_x:
-        :param delta_y:
-        """
-
-    def update_params(self):
-        """ """
+    def update_params(self) -> None:
+        """Update object properties from item parameters (dataset)"""
         self.param.update_item(self)
         if self.selected:
             self.select()
@@ -448,13 +454,20 @@ class PolygonMapItem(QwtPlotItem):
         update_dataset(self.param, itemparams.get("CurveParam"), visible_only=True)
         self.update_params()
 
-    def draw(self, painter, xMap, yMap, canvasRect):
-        """
+    def draw(
+        self,
+        painter: QG.QPainter,
+        xMap: QwtScaleMap,
+        yMap: QwtScaleMap,
+        canvasRect: QC.QRectF,
+    ) -> None:
+        """Draw the item
 
-        :param painter:
-        :param xMap:
-        :param yMap:
-        :param canvasRect:
+        Args:
+            painter: Painter
+            xMap: X axis scale map
+            yMap: Y axis scale map
+            canvasRect: Canvas rectangle
         """
         # from time import time
         p1x = xMap.p1()
@@ -487,10 +500,11 @@ class PolygonMapItem(QwtPlotItem):
             painter.drawPolygon(pg)
         # print "poly:", time()-t2
 
-    def boundingRect(self):
-        """
+    def boundingRect(self) -> QC.QRectF:
+        """Return the bounding rectangle of the shape
 
-        :return:
+        Returns:
+            Bounding rectangle of the shape
         """
         return self.bounds
 

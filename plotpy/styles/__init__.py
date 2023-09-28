@@ -1,11 +1,5 @@
 # -*- coding: utf-8 -*-
 
-"""
-plotpy.styles
-------------------
-
-"""
-
 # pylint: disable=W0611
 
 from plotpy.styles.axes import (

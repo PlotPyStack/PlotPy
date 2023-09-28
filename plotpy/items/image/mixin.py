@@ -87,11 +87,8 @@ class TransformImageMixin:
         self.update_bounds()
         self.update_border()
 
-    def update_bounds(self):
-        """
-        Update the bounding box after applying the transformation matrix
-        """
-
+    def update_bounds(self) -> None:
+        """Update image bounds to fit image shape"""
         points = np.dot(self.itr, self.points)
         xmin = points[0].min()
         xmax = points[0].max()
@@ -99,10 +96,8 @@ class TransformImageMixin:
         ymax = points[1].max()
         self.bounds = QC.QRectF(xmin, ymin, xmax - xmin, ymax - ymin)
 
-    def update_border(self):
-        """
-        Update the points of the border after applying the transformation matrix
-        """
+    def update_border(self) -> None:
+        """Update image border rectangle to fit image shape"""
         tpos = np.dot(self.itr, self.points)
         self.border_rect.set_points(tpos.T[:, :2])
 
@@ -388,11 +383,8 @@ class ImageMixin:
         self.update_bounds()
         self.update_border()
 
-    def update_bounds(self):
-        """
-        Update the bounding box after applying the transformation matrix
-        """
-
+    def update_bounds(self) -> None:
+        """Update image bounds to fit image shape"""
         points = np.dot(self.itr, self.points)
         xmin = points[0].min()
         xmax = points[0].max()
@@ -400,10 +392,8 @@ class ImageMixin:
         ymax = points[1].max()
         self.bounds = QC.QRectF(xmin, ymin, xmax - xmin, ymax - ymin)
 
-    def update_border(self):
-        """
-        Update the points of the border after applying the transformation matrix
-        """
+    def update_border(self) -> None:
+        """Update image border rectangle to fit image shape"""
         tpos = np.dot(self.itr, self.points)
         self.border_rect.set_points(tpos.T[:, :2])
 
@@ -413,7 +403,7 @@ class MaskedImageMixin:
     Mixin used to factorize mask mechanism to the different ImageItems classes. See
     :py:class:`.MaskedImageItem` and :py:class:`.MaskedXYImageItem`
 
-        * mask (optional): 2D NumPy array
+        * mask: 2D NumPy array
     """
 
     def __init__(self, mask=None):
