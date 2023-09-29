@@ -37,38 +37,41 @@
 */
 
 /* MSVC does not have lrint/lrintf */
-/*#ifdef _MSC_VER
-    #include <intrin.h>
-    __inline long int lrint (double f)
-    {
-    #ifdef _M_X64
-        return (long int)_mm_cvtsd_si64x(_mm_loadu_pd((const double*)&f));
-    #else
-        int i;
-        _asm
-        {
-            fld f
-            fistp i
-        }
-        return i;
-    #endif
-    }
+#ifdef _MSC_VER
+#if _MSC_VER < 1900 // (Visual Studio 2015 version 14.0)
 
-    __inline long int lrintf (float f)
+#include <intrin.h>
+__inline long int lrint(double f)
+{
+#ifdef _M_X64
+    return (long int)_mm_cvtsd_si64x(_mm_loadu_pd((const double *)&f));
+#else
+    int i;
+    _asm
     {
-    #ifdef _M_X64
-        return _mm_cvt_ss2si(_mm_load_ss((const float*)&f));
-    #else
-        int i;
-        _asm
-        {
-            fld f
-            fistp i
-        }
-        return i;
-    #endif
+                fld f
+                fistp i
     }
-#endif*/
+    return i;
+#endif
+}
+
+__inline long int lrintf(float f)
+{
+#ifdef _M_X64
+    return _mm_cvt_ss2si(_mm_load_ss((const float *)&f));
+#else
+    int i;
+    _asm
+    {
+                fld f
+                fistp i
+    }
+    return i;
+#endif
+}
+#endif
+#endif
 
 typedef int fixed;
 
