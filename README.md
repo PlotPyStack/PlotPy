@@ -1,4 +1,4 @@
-# plotpy: Curve and image plotting tools for Python/Qt applications
+# PlotPy: Curve and image plotting tools for Python/Qt applications
 
 [![pypi version](https://img.shields.io/pypi/v/plotpy.svg)](https://pypi.org/project/plotpy/)
 [![PyPI status](https://img.shields.io/pypi/status/plotpy.svg)](https://github.com/PlotPyStack/plotpy/)

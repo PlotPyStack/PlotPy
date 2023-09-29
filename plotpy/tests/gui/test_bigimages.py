@@ -8,7 +8,6 @@
 # guitest: show
 
 import numpy as np
-from guidata.env import execenv
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make

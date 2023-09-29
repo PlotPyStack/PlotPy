@@ -1,4 +1,4 @@
-# plotpy Releases #
+# PlotPy Releases #
 
 ## Version 1.99.0 (work in progress) ##
 

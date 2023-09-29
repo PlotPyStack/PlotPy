@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.abspath(".."))
 import plotpy  # noqa: E402
 
 # -- Project information -----------------------------------------------------
-project = "Plotpy"
+project = "PlotPy"
 copyright = "2018, CEA"
 author = "CEA"
 version = ""
