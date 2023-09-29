@@ -135,7 +135,7 @@ def get_colormap_list() -> list[str]:
 
 
 def build_icon_from_cmap(
-    cmap: QwtLinearColorMap, width: int = 32, height: int = 32
+    cmap: QwtLinearColorMap, width: int = 24, height: int = 24
 ) -> QG.QIcon:
     """Builds an icon representing the colormap
 

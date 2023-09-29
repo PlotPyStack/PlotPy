@@ -26,7 +26,7 @@ from plotpy.items import (
     get_items_in_rectangle,
 )
 from plotpy.items.image.masked import MaskedImageMixin
-from plotpy.mathutils.colormap import build_icon_from_cmap, get_cmap, get_colormap_list
+from plotpy.mathutils.colormap import build_icon_from_cmap_name, get_colormap_list
 from plotpy.panels.base import ID_CONTRAST
 from plotpy.tools.base import (
     CommandTool,
@@ -345,15 +345,14 @@ class ColormapTool(CommandTool):
         )
         self.action.setEnabled(False)
         self.action.setIconText("")
-        self.default_icon = build_icon_from_cmap(get_cmap("jet"), width=16, height=16)
+        self.default_icon = build_icon_from_cmap_name("jet")
         self.action.setIcon(self.default_icon)
 
     def create_action_menu(self, manager):
         """Create and return menu for the tool's action"""
         menu = QW.QMenu()
         for cmap_name in get_colormap_list():
-            cmap = get_cmap(cmap_name)
-            icon = build_icon_from_cmap(cmap)
+            icon = build_icon_from_cmap_name(cmap_name)
             action = menu.addAction(icon, cmap_name)
             action.setEnabled(True)
         menu.triggered.connect(self.activate_cmap)
@@ -402,10 +401,9 @@ class ColormapTool(CommandTool):
             icon = self.default_icon
             if item:
                 self.action.setEnabled(True)
-                if item.get_color_map_name():
-                    icon = build_icon_from_cmap(
-                        item.get_color_map(), width=16, height=16
-                    )
+                cmap_name = item.get_color_map_name()
+                if cmap_name:
+                    icon = build_icon_from_cmap_name(cmap_name)
             else:
                 self.action.setEnabled(False)
             self.action.setIcon(icon)
