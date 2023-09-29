@@ -437,17 +437,16 @@ def _imread_dcm(filename, **kwargs):
         dcm_is_little_endian = dcm.is_little_endian
     if dcm_is_little_endian != (sys.byteorder == "little"):
         arr.byteswap(True)
+    spp = getattr(dcm, "SamplesperPixel", 1)
     if hasattr(dcm, "NumberOfFrames") and dcm.NumberOfFrames > 1:
-        if dcm.SamplesPerPixel > 1:
-            arr = arr.reshape(
-                dcm.SamplesPerPixel, dcm.NumberOfFrames, dcm.Rows, dcm.Columns
-            )
+        if spp > 1:
+            arr = arr.reshape(spp, dcm.NumberofFrames, dcm.Rows, dcm.Columns)
         else:
             arr = arr.reshape(dcm.NumberOfFrames, dcm.Rows, dcm.Columns)
     else:
-        if dcm.SamplesPerPixel > 1:
+        if spp > 1:
             if dcm.BitsAllocated == 8:
-                arr = arr.reshape(dcm.SamplesPerPixel, dcm.Rows, dcm.Columns)
+                arr = arr.reshape(spp, dcm.Rows, dcm.Columns)
             else:
                 raise NotImplementedError(
                     "This code only handles "
