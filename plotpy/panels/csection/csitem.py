@@ -374,7 +374,7 @@ class XCrossSectionItem(CrossSectionItem):
         if rect is None:
             # Object is a marker or an annotated point
             _x0, y0 = get_object_coordinates(obj)
-            self.curveparam.label = _("Cross section") + " @ y=" + (fmt % y0)
+            self.param.label = _("Cross section") + " @ y=" + (fmt % y0)
             if self.perimage_mode:
                 data = source.get_xsection(y0, apply_lut=self.apply_lut)
             else:
@@ -389,7 +389,7 @@ class XCrossSectionItem(CrossSectionItem):
                 data = get_plot_average_x_section(obj, apply_lut=self.apply_lut)
                 x0, y0, x1, y1 = obj.get_rect()
             text = _("Average cross section")
-            self.curveparam.label = f"{text} @ y=[{fmt % y0} ; {fmt % y1}]"
+            self.param.label = f"{text} @ y=[{fmt % y0} ; {fmt % y1}]"
         return data
 
 
@@ -406,7 +406,7 @@ class YCrossSectionItem(CrossSectionItem):
         if rect is None:
             # Object is a marker or an annotated point
             x0, _y0 = get_object_coordinates(obj)
-            self.curveparam.label = _("Cross section") + " @ x=" + (fmt % x0)
+            self.param.label = _("Cross section") + " @ x=" + (fmt % x0)
             if self.perimage_mode:
                 data = source.get_ysection(x0, apply_lut=self.apply_lut)
             else:
@@ -421,7 +421,7 @@ class YCrossSectionItem(CrossSectionItem):
                 data = get_plot_average_y_section(obj, apply_lut=self.apply_lut)
                 x0, y0, x1, y1 = obj.get_rect()
             text = _("Average cross section")
-            self.curveparam.label = f"{text} @ x=[{fmt % x0} ; {fmt % x1}]"
+            self.param.label = f"{text} @ x=[{fmt % x0} ; {fmt % x1}]"
         return data
 
 
