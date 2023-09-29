@@ -179,6 +179,14 @@ class BasePlotWidget(QW.QSplitter):
 
         configure_plot_splitter(self)
 
+    def get_plot(self) -> BasePlot:
+        """Return the plot object
+
+        Returns:
+            BasePlot: The plot object
+        """
+        return self.plot
+
     def adjust_ycsw_height(self, height: int | None = None) -> None:
         """
 
@@ -423,6 +431,16 @@ class PlotDialog(QW.QDialog, AbstractPlotDialogWindow, metaclass=PlotDialogMeta)
         self.setup_widget(toolbar, options, panels, auto_tools)
         self.setWindowFlags(QC.Qt.Window)
 
+    def get_plot(self) -> BasePlot | None:
+        """Return the plot object
+
+        Returns:
+            BasePlot: The plot object
+        """
+        if self.plot_widget is not None:
+            return self.plot_widget.get_plot()
+        return None
+
     def setup_widget(
         self,
         toolbar: bool = False,
@@ -538,6 +556,16 @@ class PlotWindow(QW.QMainWindow, AbstractPlotDialogWindow, metaclass=PlotWindowM
         self.plot_widget: PlotWidget = None
         self.manager: PlotManager = None
         self.setup_widget(toolbar, options, panels, auto_tools)
+
+    def get_plot(self) -> BasePlot | None:
+        """Return the plot object
+
+        Returns:
+            BasePlot: The plot object
+        """
+        if self.plot_widget is not None:
+            return self.plot_widget.get_plot()
+        return None
 
     def setup_widget(
         self,
