@@ -645,6 +645,11 @@ class FitWidget(QWidget):
         self.plot_widget.plot.replot()
         if state:
             self.plot_widget.plot.set_active_item(self.xrange)
+        else:
+            #  If the button is unckeked then set to the complete range
+            self.autofit_prm.xmin = self.x.min()
+            self.autofit_prm.xmax = self.x.max()
+            self.xrange.set_range(self.autofit_prm.xmin, self.autofit_prm.xmax)
         self.show_xrange = state
 
     def edit_parameters(self) -> None:
