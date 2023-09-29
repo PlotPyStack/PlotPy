@@ -25,6 +25,9 @@ The :mod:`plotpy` package requires the following Python modules:
     * - Pillow
       - 
       - Python Imaging Library (Fork)
+    * - tifffile
+      - 
+      - Read and write TIFF files
     * - PyQt5
       - >=5.11
       - Python bindings for the Qt cross platform application toolkit
