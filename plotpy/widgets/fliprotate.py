@@ -174,7 +174,7 @@ class FlipRotateWidget(basetransform.BaseTransformWidget):
             layout (QBoxLayout): Layout
         """
         # Image orientation
-        angle_label = QW.QLabel(_("Angle (°):"))
+        angle_label = QW.QLabel(_("Angle %s:") % "(°)")
         layout.addWidget(angle_label)
         self.angle_combo = QW.QComboBox(self)
         self.angle_combo.addItems(self.ROTATION_ANGLES)

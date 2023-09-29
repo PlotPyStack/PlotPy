@@ -334,6 +334,7 @@ class BasePlot(qwt.QwtPlot):
         self.curve_marker = Marker(
             label_cb=self.get_coordinates_str, constraint_cb=self.on_active_curve
         )
+        self.__marker_stay_visible = False
         self.cross_marker.set_style(section, "marker/cross")
         self.curve_marker.set_style(section, "marker/curve")
         self.cross_marker.setVisible(False)
@@ -449,6 +450,7 @@ class BasePlot(qwt.QwtPlot):
             self.curve_marker.setVisible(True)
             self.curve_marker.move_local_point_to(0, pos)
             self.replot()
+            self.__marker_stay_visible = event.modifiers() & QC.Qt.ControlModifier
         elif (
             event.modifiers() & QC.Qt.KeyboardModifier.AltModifier
             or self.canvas_pointer
@@ -458,11 +460,12 @@ class BasePlot(qwt.QwtPlot):
             self.curve_marker.setVisible(False)
             self.cross_marker.move_local_point_to(0, pos)
             self.replot()
+            self.__marker_stay_visible = event.modifiers() & QC.Qt.ControlModifier
         else:
             vis_cross = self.cross_marker.isVisible()
             vis_curve = self.curve_marker.isVisible()
             self.cross_marker.setVisible(False)
-            self.curve_marker.setVisible(False)
+            self.curve_marker.setVisible(self.__marker_stay_visible)
             if vis_cross or vis_curve:
                 self.replot()
 
