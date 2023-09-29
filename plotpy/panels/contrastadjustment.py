@@ -173,11 +173,13 @@ class LevelsHistogram(BasePlot):
 
         :param item:
         """
-        for plot, items in list(self._tracked_items.items()):
+        for _plot, items in list(self._tracked_items.items()):
             if item in items:
-                curve = items.pop(item)
-                self.del_items([curve])
-                self.replot()
+                try:
+                    self.del_item(item)
+                except ValueError:
+                    pass  # Histogram has not yet been created
+                items.pop(item)
                 break
 
     def active_item_changed(self, plot):
