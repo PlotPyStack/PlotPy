@@ -473,11 +473,12 @@ class AbstractLabelItem(QwtPlotItem):
             w: Width
             h: Height
         """
+        rectf = QC.QRectF(x, y, w, h)
         if self.labelparam.bgalpha > 0.0:
-            painter.fillRect(x, y, w, h, self.bg_brush)
+            painter.fillRect(rectf, self.bg_brush)
         if self.border_pen.width() > 0:
             painter.setPen(self.border_pen)
-            painter.drawRect(x, y, w, h)
+            painter.drawRect(rectf)
 
 
 class LabelItem(AbstractLabelItem):
