@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
+
 from guidata.configtools import get_icon
 
 from plotpy.config import _
+from plotpy.interfaces.common import IImageItemType
 from plotpy.items import AnnotatedObliqueRectangle, AnnotatedPoint, AnnotatedRectangle
 from plotpy.panels.base import ID_OCS, ID_XCS, ID_YCS
 from plotpy.tools.base import PanelTool
+from plotpy.tools.image import update_image_tool_status
 from plotpy.tools.shapes import RectangularShapeTool
 
 
@@ -15,6 +18,11 @@ class CrossSectionTool(RectangularShapeTool):
     SHAPE_STYLE_KEY = "shape/cross_section"
     SHAPE_TITLE = TITLE
     PANEL_IDS = (ID_XCS, ID_YCS)
+
+    def update_status(self, plot):
+        if update_image_tool_status(self, plot):
+            item = plot.get_selected_items(item_type=IImageItemType)
+            self.action.setEnabled(len(item) > 0)
 
     def create_shape(self):
         """
