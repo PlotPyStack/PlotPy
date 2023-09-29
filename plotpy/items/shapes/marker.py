@@ -20,6 +20,7 @@ from plotpy.styles.shape import MarkerParam
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    import guidata.dataset.io
     from qtpy import QtGui as QG
     from qtpy.QtCore import QPointF
     from qwt import QwtScaleMap
@@ -44,7 +45,7 @@ class Marker(QwtPlotMarker):
     """
 
     __implements__ = (IBasePlotItem,)
-    _readonly = True
+    _readonly = False
     _private = False
     _can_select = True
     _can_resize = True
@@ -71,6 +72,55 @@ class Marker(QwtPlotMarker):
             self.markerparam = markerparam
         self.markerparam.update_marker(self)
         self.setIcon(get_icon("marker.png"))
+
+    def __reduce__(self) -> tuple[type, tuple, tuple]:
+        """Return state information for pickling"""
+        self.markerparam.update_param(self)
+        state = (self.markerparam, self.xValue(), self.yValue(), self.z())
+        return (Marker, (), state)
+
+    def __setstate__(self, state: tuple) -> None:
+        """Restore state information from pickled state"""
+        self.markerparam, xvalue, yvalue, z = state
+        self.setXValue(xvalue)
+        self.setYValue(yvalue)
+        self.setZ(z)
+        self.markerparam.update_marker(self)
+
+    def serialize(
+        self,
+        writer: guidata.dataset.io.HDF5Writer
+        | guidata.dataset.io.INIWriter
+        | guidata.dataset.io.JSONWriter,
+    ) -> None:
+        """Serialize object to HDF5 writer
+
+        Args:
+            writer: HDF5, INI or JSON writer
+        """
+        self.markerparam.update_param(self)
+        writer.write(self.markerparam, group_name="markerparam")
+        writer.write(self.xValue(), group_name="x")
+        writer.write(self.yValue(), group_name="y")
+        writer.write(self.z(), group_name="z")
+
+    def deserialize(
+        self,
+        reader: guidata.dataset.io.HDF5Reader
+        | guidata.dataset.io.INIReader
+        | guidata.dataset.io.JSONReader,
+    ) -> None:
+        """Deserialize object from HDF5 reader
+
+        Args:
+            reader: HDF5, INI or JSON reader
+        """
+        self.markerparam = MarkerParam(_("Marker"), icon="marker.png")
+        reader.read("markerparam", instance=self.markerparam)
+        self.markerparam.update_marker(self)
+        self.setXValue(reader.read("x"))
+        self.setYValue(reader.read("y"))
+        self.setZ(reader.read("z"))
 
     # ------QwtPlotItem API------------------------------------------------------
     def draw(

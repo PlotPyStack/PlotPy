@@ -655,6 +655,7 @@ register_serializable_items(
 register_serializable_items(
     "plotpy.items.shapes",
     [
+        "Marker",
         "PolygonShape",
         "PointShape",
         "SegmentShape",
