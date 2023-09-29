@@ -344,9 +344,13 @@ class ImageItem(RawImageItem):
             return
         src2 = self._rescale_src_rect(src_rect)
         dst_rect = tuple([int(i) for i in dst_rect])
-        dest = _scale_rect(
-            self.data, src2, self._offscreen, dst_rect, self.lut, self.interpolate
-        )
+        try:
+            dest = _scale_rect(
+                self.data, src2, self._offscreen, dst_rect, self.lut, self.interpolate
+            )
+        except ValueError:
+            # This exception is raised when zooming unreasonably inside a pixel
+            return
         qrect = QC.QRectF(QC.QPointF(dest[0], dest[1]), QC.QPointF(dest[2], dest[3]))
         painter.drawImage(qrect, self._image, qrect)
 
