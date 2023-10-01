@@ -9,12 +9,14 @@
 
 import numpy as np
 from guidata.qthelpers import qt_app_context
-from guiqwt.builder import make
-from guiqwt.plot import ImageWidget
 
 # import cProfile
 # from pstats import Stats
 from qtpy import QtWidgets as QW
+
+from plotpy.builder import make
+from plotpy.constants import PlotType
+from plotpy.plot import PlotWidget
 
 
 class PlotTab(QW.QWidget):
@@ -27,7 +29,8 @@ class PlotTab(QW.QWidget):
 
     def add_plot(self, iplt, irow, icol):
         """Add a plot to the grid"""
-        widget = ImageWidget(self, "Plot #%d" % (iplt + 1))
+        options = dict(title="Plot #%d" % (iplt + 1), type=PlotType.IMAGE)
+        widget = PlotWidget(self, options=options)
         widget.setMinimumSize(200, 150)
         xdata = np.linspace(-10, 10)
         ydata = np.sin(xdata + np.random.randint(0, 100) * 0.01 * np.pi)
