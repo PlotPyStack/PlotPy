@@ -41,9 +41,9 @@ from plotpy.styles.shape import AnnotationParam
 
 if TYPE_CHECKING:
     import guidata.dataset.io
-    from qtpy import QtCore as QC
-    from qtpy import QtGui as QG
-    from qwt import QwtScaleMap
+    import qwt.scale_map
+    from qtpy.QtCore import QPointF, QRectF
+    from qtpy.QtGui import QPainter
 
     from plotpy.interfaces.common import IItemType
     from plotpy.styles.base import ItemParameters
@@ -145,10 +145,10 @@ class AnnotatedShape(AbstractShape):
     # ----QwtPlotItem API--------------------------------------------------------
     def draw(
         self,
-        painter: QG.QPainter,
-        xMap: QwtScaleMap,
-        yMap: QwtScaleMap,
-        canvasRect: QC.QRectF,
+        painter: QPainter,
+        xMap: qwt.scale_map.QwtScaleMap,
+        yMap: qwt.scale_map.QwtScaleMap,
+        canvasRect: QRectF,
     ) -> None:
         """Draw the item
 
@@ -324,7 +324,7 @@ class AnnotatedShape(AbstractShape):
         return x1, y1, x2, y2
 
     # ----IBasePlotItem API------------------------------------------------------
-    def hit_test(self, pos: QC.QPointF) -> tuple[float, float, bool, None]:
+    def hit_test(self, pos: QPointF) -> tuple[float, float, bool, None]:
         """Return a tuple (distance, attach point, inside, other_object)
 
         Args:
@@ -360,7 +360,7 @@ class AnnotatedShape(AbstractShape):
         if self.plot():
             self.plot().SIG_ANNOTATION_CHANGED.emit(self)
 
-    def move_shape(self, old_pos: QC.QPointF, new_pos: QC.QPointF) -> None:
+    def move_shape(self, old_pos: QPointF, new_pos: QPointF) -> None:
         """Translate the shape such that old_pos becomes new_pos in axis coordinates
 
         Args:
@@ -370,7 +370,7 @@ class AnnotatedShape(AbstractShape):
         self.shape.move_shape(old_pos, new_pos)
         self.label.move_local_shape(old_pos, new_pos)
 
-    def move_local_shape(self, old_pos: QC.QPointF, new_pos: QC.QPointF) -> None:
+    def move_local_shape(self, old_pos: QPointF, new_pos: QPointF) -> None:
         """Translate the shape such that old_pos becomes new_pos in canvas coordinates
 
         Args:
@@ -451,7 +451,7 @@ class AnnotatedShape(AbstractShape):
         """
         return self.shape.is_empty()
 
-    def boundingRect(self) -> QC.QRectF:
+    def boundingRect(self) -> QRectF:
         """Return the bounding rectangle of the shape
 
         Returns:

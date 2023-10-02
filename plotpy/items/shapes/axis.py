@@ -18,7 +18,9 @@ from plotpy.styles.shape import AxesShapeParam
 
 if TYPE_CHECKING:
     import guidata.dataset.io
-    from qwt import QwtScaleMap
+    import qwt.scale_map
+    from qtpy.QtCore import QRectF
+    from qtpy.QtGui import QPainter
 
     from plotpy.styles.base import ItemParameters
     from plotpy.styles.shape import ShapeParam
@@ -208,10 +210,10 @@ class Axes(PolygonShape):
 
     def draw(
         self,
-        painter: QG.QPainter,
-        xMap: QwtScaleMap,
-        yMap: QwtScaleMap,
-        canvasRect: QC.QRectF,
+        painter: QPainter,
+        xMap: qwt.scale_map.QwtScaleMap,
+        yMap: qwt.scale_map.QwtScaleMap,
+        canvasRect: QRectF,
     ) -> None:
         """Draw the item
 
@@ -237,9 +239,9 @@ class Axes(PolygonShape):
 
     def draw_arrow(
         self,
-        painter: QG.QPainter,
-        xMap: QwtScaleMap,
-        yMap: QwtScaleMap,
+        painter: QPainter,
+        xMap: qwt.scale_map.QwtScaleMap,
+        yMap: qwt.scale_map.QwtScaleMap,
         p0: tuple[float, float],
         p1: tuple[float, float],
     ) -> None:

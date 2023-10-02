@@ -17,8 +17,9 @@ from plotpy.items.shapes.polygon import PolygonShape
 from plotpy.mathutils.geometry import compute_angle, compute_center
 
 if TYPE_CHECKING:
-    from qtpy.QtCore import QPointF
-    from qwt import QwtScaleMap
+    import qwt.scale_map
+    from qtpy.QtCore import QLineF, QPointF, QRectF
+    from qtpy.QtGui import QPainter, QPolygonF
 
     from plotpy.styles.shape import ShapeParam
 
@@ -166,7 +167,7 @@ class EllipseShape(PolygonShape):
         """Return center coordinates
 
         Returns:
-            Tuple with two floats: (x, y)
+            Tuple with two floats (x, y)
         """
         return compute_center(*self.get_xdiameter())
 
@@ -187,8 +188,8 @@ class EllipseShape(PolygonShape):
         self.set_xdiameter(x0, 0.5 * (y0 + y1), x1, 0.5 * (y0 + y1))
 
     def compute_elements(
-        self, xMap: QwtScaleMap, yMap: QwtScaleMap
-    ) -> tuple[QG.QPolygonF, QC.QLineF, QC.QLineF, QC.QRectF]:
+        self, xMap: qwt.scale_map.QwtScaleMap, yMap: qwt.scale_map.QwtScaleMap
+    ) -> tuple[QPolygonF, QLineF, QLineF, QRectF]:
         """Return points, lines and ellipse rect
 
         Args:
@@ -240,10 +241,10 @@ class EllipseShape(PolygonShape):
 
     def draw(
         self,
-        painter: QG.QPainter,
-        xMap: QwtScaleMap,
-        yMap: QwtScaleMap,
-        canvasRect: QC.QRectF,
+        painter: QPainter,
+        xMap: qwt.scale_map.QwtScaleMap,
+        yMap: qwt.scale_map.QwtScaleMap,
+        canvasRect: QRectF,
     ) -> None:
         """Draw the item
 

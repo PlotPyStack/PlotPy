@@ -46,8 +46,10 @@ from plotpy.styles.image import LUTAlpha, RawImageParam
 
 if TYPE_CHECKING:
     import guidata.dataset.io
-    from qtpy.QtCore import QPointF
-    from qwt import QwtLinearColorMap, QwtScaleMap
+    import qwt.color_map
+    import qwt.scale_map
+    from qtpy.QtCore import QPointF, QRectF
+    from qtpy.QtGui import QColor, QPainter
 
     from plotpy.interfaces.common import IItemType
     from plotpy.items import RectangleShape
@@ -452,7 +454,7 @@ class BaseImageItem(QwtPlotItem):
         z = self.get_data(x, y)
         return f"{title}:<br>x = {int(x):d}<br>y = {int(y):d}<br>z = {z:g}"
 
-    def set_background_color(self, qcolor: QG.QColor | str) -> None:
+    def set_background_color(self, qcolor: QColor | str) -> None:
         """Set background color
 
         Args:
@@ -466,7 +468,9 @@ class BaseImageItem(QwtPlotItem):
         else:
             self.lut = (a, b, np.uint32(QG.QColor(qcolor).rgb() & 0xFFFFFF), cmap)
 
-    def set_color_map(self, name_or_table: str | QwtLinearColorMap) -> None:
+    def set_color_map(
+        self, name_or_table: str | qwt.color_map.QwtLinearColorMap
+    ) -> None:
         """Set colormap
 
         Args:
@@ -509,7 +513,7 @@ class BaseImageItem(QwtPlotItem):
         if plot:
             plot.update_colormap_axis(self)
 
-    def get_color_map(self) -> QwtLinearColorMap:
+    def get_color_map(self) -> qwt.color_map.QwtLinearColorMap:
         """Get colormap
 
         Returns:
@@ -615,10 +619,10 @@ class BaseImageItem(QwtPlotItem):
 
     def draw_border(
         self,
-        painter: QG.QPainter,
-        xMap: QwtScaleMap,
-        yMap: QwtScaleMap,
-        canvasRect: QC.QRectF,
+        painter: QPainter,
+        xMap: qwt.scale_map.QwtScaleMap,
+        yMap: qwt.scale_map.QwtScaleMap,
+        canvasRect: QRectF,
     ) -> None:
         """Draw image border rectangle
 
@@ -632,12 +636,12 @@ class BaseImageItem(QwtPlotItem):
 
     def draw_image(
         self,
-        painter: QG.QPainter,
-        canvasRect: QC.QRectF,
+        painter: QPainter,
+        canvasRect: QRectF,
         src_rect: tuple[float, float, float, float],
         dst_rect: tuple[float, float, float, float],
-        xMap: QwtScaleMap,
-        yMap: QwtScaleMap,
+        xMap: qwt.scale_map.QwtScaleMap,
+        yMap: qwt.scale_map.QwtScaleMap,
     ) -> None:
         """Draw image
 
@@ -689,10 +693,10 @@ class BaseImageItem(QwtPlotItem):
     # ---- QwtPlotItem API -----------------------------------------------------
     def draw(
         self,
-        painter: QG.QPainter,
-        xMap: QwtScaleMap,
-        yMap: QwtScaleMap,
-        canvasRect: QC.QRectF,
+        painter: QPainter,
+        xMap: qwt.scale_map.QwtScaleMap,
+        yMap: qwt.scale_map.QwtScaleMap,
+        canvasRect: QRectF,
     ) -> None:
         """Draw the item
 
@@ -724,7 +728,7 @@ class BaseImageItem(QwtPlotItem):
         self.draw_image(painter, canvasRect, (i1, j1, i2, j2), dest, xMap, yMap)
         self.draw_border(painter, xMap, yMap, canvasRect)
 
-    def boundingRect(self) -> QC.QRectF:
+    def boundingRect(self) -> QRectF:
         """Return the bounding rectangle of the data
 
         Returns:

@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING
 
 from guidata.configtools import get_icon
 from guidata.utils.misc import assert_interfaces_valid
-from qwt import QwtPlotGrid
+from qwt import QwtPlot, QwtPlotGrid
 
 from plotpy.config import _
 from plotpy.interfaces.common import IBasePlotItem, IDecoratorItemType
@@ -20,7 +20,6 @@ from plotpy.styles.base import GridParam
 
 if TYPE_CHECKING:
     from qtpy.QtCore import QPointF
-    from qwt import QwtPlot
 
     from plotpy.interfaces.common import IItemType
     from plotpy.styles.base import ItemParameters

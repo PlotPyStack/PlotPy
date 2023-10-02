@@ -36,7 +36,9 @@ except ImportError:
     raise
 
 if TYPE_CHECKING:
-    from qwt import QwtScaleMap
+    import qwt.scale_map
+    from qtpy.QtCore import QRectF
+    from qtpy.QtGui import QPainter
 
 
 # ==============================================================================
@@ -247,12 +249,12 @@ class TrImageItem(TransformImageMixin, RawImageItem):
 
     def draw_image(
         self,
-        painter: QG.QPainter,
-        canvasRect: QC.QRectF,
+        painter: QPainter,
+        canvasRect: QRectF,
         src_rect: tuple[float, float, float, float],
         dst_rect: tuple[float, float, float, float],
-        xMap: QwtScaleMap,
-        yMap: QwtScaleMap,
+        xMap: qwt.scale_map.QwtScaleMap,
+        yMap: qwt.scale_map.QwtScaleMap,
     ) -> None:
         """Draw image
 

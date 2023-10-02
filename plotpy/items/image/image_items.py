@@ -33,9 +33,10 @@ from plotpy.styles.image import ImageParam, LUTAlpha, RGBImageParam, XYImagePara
 
 if TYPE_CHECKING:
     import guidata.dataset.io
-    from qtpy import QtGui as QG
-    from qtpy.QtCore import QPointF
-    from qwt import QwtLinearColorMap, QwtScaleMap
+    import qwt.color_map
+    import qwt.scale_map
+    from qtpy.QtCore import QPointF, QRectF
+    from qtpy.QtGui import QColor, QPainter
 
     from plotpy.interfaces.common import IItemType
 
@@ -323,12 +324,12 @@ class ImageItem(RawImageItem):
 
     def draw_image(
         self,
-        painter: QG.QPainter,
-        canvasRect: QC.QRectF,
+        painter: QPainter,
+        canvasRect: QRectF,
         src_rect: tuple[float, float, float, float],
         dst_rect: tuple[float, float, float, float],
-        xMap: QwtScaleMap,
-        yMap: QwtScaleMap,
+        xMap: qwt.scale_map.QwtScaleMap,
+        yMap: qwt.scale_map.QwtScaleMap,
     ) -> None:
         """Draw image
 
@@ -608,12 +609,12 @@ class XYImageItem(ImageMixin, RawImageItem):
 
     def draw_image(
         self,
-        painter: QG.QPainter,
-        canvasRect: QC.QRectF,
+        painter: QPainter,
+        canvasRect: QRectF,
         src_rect: tuple[float, float, float, float],
         dst_rect: tuple[float, float, float, float],
-        xMap: QwtScaleMap,
-        yMap: QwtScaleMap,
+        xMap: qwt.scale_map.QwtScaleMap,
+        yMap: qwt.scale_map.QwtScaleMap,
     ) -> None:
         """Draw image
 
@@ -810,7 +811,7 @@ class RGBImageItem(ImageItem):
         """
         pass
 
-    def set_background_color(self, qcolor: QG.QColor | str) -> None:
+    def set_background_color(self, qcolor: QColor | str) -> None:
         """Set background color
 
         Args:
@@ -822,7 +823,9 @@ class RGBImageItem(ImageItem):
         """
         self.lut = None
 
-    def set_color_map(self, name_or_table: str | QwtLinearColorMap) -> None:
+    def set_color_map(
+        self, name_or_table: str | qwt.color_map.QwtLinearColorMap
+    ) -> None:
         """Set colormap
 
         Args:

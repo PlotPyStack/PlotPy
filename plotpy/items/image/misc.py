@@ -45,8 +45,11 @@ except ImportError:
     raise
 
 if TYPE_CHECKING:
-    from qtpy import QtGui as QG
-    from qwt import QwtPlot, QwtScaleMap
+    import numpy
+    import qwt.plot
+    import qwt.scale_map
+    from qtpy.QtCore import QPointF, QRectF
+    from qtpy.QtGui import QPainter
 
     from plotpy.interfaces.common import IItemType
     from plotpy.items import BaseImageItem, RectangleShape, TrImageItem
@@ -153,12 +156,12 @@ class QuadGridItem(ImageMixin, RawImageItem):
 
     def draw_image(
         self,
-        painter: QG.QPainter,
-        canvasRect: QC.QRectF,
+        painter: QPainter,
+        canvasRect: QRectF,
         src_rect: tuple[float, float, float, float],
         dst_rect: tuple[float, float, float, float],
-        xMap: QwtScaleMap,
-        yMap: QwtScaleMap,
+        xMap: qwt.scale_map.QwtScaleMap,
+        yMap: qwt.scale_map.QwtScaleMap,
     ) -> None:
         """Draw image
 
@@ -287,12 +290,12 @@ class Histogram2DItem(ImageMixin, BaseImageItem):
 
     def draw_image(
         self,
-        painter: QG.QPainter,
-        canvasRect: QC.QRectF,
+        painter: QPainter,
+        canvasRect: QRectF,
         src_rect: tuple[float, float, float, float],
         dst_rect: tuple[float, float, float, float],
-        xMap: QwtScaleMap,
-        yMap: QwtScaleMap,
+        xMap: qwt.scale_map.QwtScaleMap,
+        yMap: qwt.scale_map.QwtScaleMap,
     ) -> None:
         """Draw image
 
@@ -476,7 +479,7 @@ def assemble_imageitems(
         force_interp_size: Force interpolation size (Default value = None)
 
     Returns:
-        np.ndarray: Pixel data
+        Pixel data
 
     .. warning::
 
@@ -534,7 +537,7 @@ def assemble_imageitems(
     return output
 
 
-def get_plot_qrect(plot: QwtPlot, p0: QC.QPointF, p1: QC.QPointF) -> QC.QRectF:
+def get_plot_qrect(plot: qwt.plot.QwtPlot, p0: QPointF, p1: QPointF) -> QRectF:
     """Get plot rectangle, in plot coordinates, from two canvas points
 
     Args:
@@ -543,7 +546,7 @@ def get_plot_qrect(plot: QwtPlot, p0: QC.QPointF, p1: QC.QPointF) -> QC.QRectF:
         p1: Second point
 
     Returns:
-        QC.QRectF: Plot rectangle
+        Plot rectangle
     """
     ax, ay = plot.X_BOTTOM, plot.Y_LEFT
     p0x, p0y = plot.invTransform(ax, p0.x()), plot.invTransform(ay, p0.y())
@@ -553,8 +556,8 @@ def get_plot_qrect(plot: QwtPlot, p0: QC.QPointF, p1: QC.QPointF) -> QC.QRectF:
 
 def get_items_in_rectangle(
     plot: BasePlot,
-    p0: QC.QPointF,
-    p1: QC.QPointF,
+    p0: QPointF,
+    p1: QPointF,
     item_type: type | None = None,
     intersect: bool = True,
 ) -> list[BaseImageItem]:
@@ -568,7 +571,7 @@ def get_items_in_rectangle(
         intersect: Intersect (Default value = True)
 
     Returns:
-        list: List of items
+        List of items
     """
     if item_type is None:
         item_type = IExportROIImageItemType
@@ -593,7 +596,7 @@ def compute_trimageitems_original_size(
         src_h: Source height
 
     Returns:
-        tuple: Tuple of original size
+        Tuple of original size
     """
     trparams = [item.get_transform() for item in items if isinstance(item, TrImageItem)]
     if trparams:
@@ -605,8 +608,8 @@ def compute_trimageitems_original_size(
 
 def get_image_from_qrect(
     plot: BasePlot,
-    p0: QC.QPointF,
-    p1: QC.QPointF,
+    p0: QPointF,
+    p1: QPointF,
     src_size: tuple[float, float] | None = None,
     adjust_range: str | None = None,
     item_type: type | None = None,
@@ -634,7 +637,7 @@ def get_image_from_qrect(
         force_interp_size: Force interpolation size (Default value = None)
 
     Returns:
-        np.ndarray: Image pixel data
+        Image pixel data
     """
     assert adjust_range in (None, "normalize", "original")
     items = get_items_in_rectangle(plot, p0, p1, item_type=item_type)
@@ -688,6 +691,9 @@ def get_image_in_shape(
         item_type: Item type (Default value = None)
         apply_lut: Apply LUT (Default value = False)
         apply_interpolation: Apply interpolation (Default value = False)
+
+    Returns:
+        Image pixel data
     """
     x0, y0, x1, y1 = obj.get_rect()
     (x0, x1), (y0, y1) = sorted([x0, x1]), sorted([y0, y1])
@@ -709,8 +715,8 @@ def get_image_in_shape(
 
 def get_image_from_plot(
     plot: BasePlot,
-    p0: QC.QPointF,
-    p1: QC.QPointF,
+    p0: QPointF,
+    p1: QPointF,
     destw: int | None = None,
     desth: int | None = None,
     add_images: bool = False,
@@ -719,7 +725,7 @@ def get_image_from_plot(
     original_resolution: bool = False,
     force_interp_mode: str | None = None,
     force_interp_size: int | None = None,
-) -> np.ndarray:
+) -> numpy.ndarray:
     """Get image pixel data from plot area
 
     Args:
@@ -734,6 +740,9 @@ def get_image_from_plot(
         original_resolution: Original resolution (Default value = False)
         force_interp_mode: Force interpolation mode (Default value = None)
         force_interp_size: Force interpolation size (Default value = None)
+
+    Returns:
+        Image pixel data
 
     .. warning::
 

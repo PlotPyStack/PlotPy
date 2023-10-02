@@ -44,6 +44,8 @@ Image items
    :members:
 .. autoclass:: plotpy.styles.ImageFilterParam
    :members:
+.. autoclass:: plotpy.styles.QuadGridParam
+   :members:
 
 Histogram items
 ^^^^^^^^^^^^^^^

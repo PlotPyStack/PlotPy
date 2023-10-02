@@ -22,8 +22,10 @@ from plotpy.styles.shape import ShapeParam
 
 if TYPE_CHECKING:
     import guidata.dataset.io
-    from qtpy.QtCore import QPointF
-    from qwt import QwtScaleMap
+    import qwt.scale_map
+    import qwt.symbol
+    from qtpy.QtCore import QPointF, QRectF
+    from qtpy.QtGui import QBrush, QPainter, QPen, QPolygonF
 
     from plotpy.interfaces.common import IItemType
     from plotpy.plot.base import BasePlot
@@ -191,7 +193,9 @@ class PolygonShape(AbstractShape):
             poly.append(QC.QPointF(shape_points[i, 0], shape_points[i, 1]))
         return poly.boundingRect().getCoords()
 
-    def transform_points(self, xMap: QwtScaleMap, yMap: QwtScaleMap) -> QG.QPolygonF:
+    def transform_points(
+        self, xMap: qwt.scale_map.QwtScaleMap, yMap: qwt.scale_map.QwtScaleMap
+    ) -> QPolygonF:
         """Transform points to canvas coordinates
 
         Args:
@@ -220,8 +224,8 @@ class PolygonShape(AbstractShape):
             return self.points.mean(axis=0)
 
     def get_pen_brush(
-        self, xMap: QwtScaleMap, yMap: QwtScaleMap
-    ) -> tuple[QG.QPen, QG.QBrush, QwtSymbol]:
+        self, xMap: qwt.scale_map.QwtScaleMap, yMap: qwt.scale_map.QwtScaleMap
+    ) -> tuple[QPen, QBrush, qwt.symbol.QwtSymbol]:
         """Get pen, brush and symbol for the item
 
         Args:
@@ -257,10 +261,10 @@ class PolygonShape(AbstractShape):
 
     def draw(
         self,
-        painter: QG.QPainter,
-        xMap: QwtScaleMap,
-        yMap: QwtScaleMap,
-        canvasRect: QC.QRectF,
+        painter: QPainter,
+        xMap: qwt.scale_map.QwtScaleMap,
+        yMap: qwt.scale_map.QwtScaleMap,
+        canvasRect: QRectF,
     ) -> None:
         """Draw the item
 
@@ -303,7 +307,7 @@ class PolygonShape(AbstractShape):
             pos: Position
 
         Returns:
-            Tuple with four elements: (distance, attach point, inside, other_object).
+            Tuple with four elements (distance, attach point, inside, other_object).
         """
         pos = QC.QPointF(pos)
         dist = sys.maxsize

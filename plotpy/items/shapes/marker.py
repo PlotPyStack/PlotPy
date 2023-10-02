@@ -21,9 +21,9 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     import guidata.dataset.io
-    from qtpy import QtGui as QG
-    from qtpy.QtCore import QPointF
-    from qwt import QwtScaleMap
+    import qwt.scale_map
+    from qtpy.QtCore import QPointF, QRectF
+    from qtpy.QtGui import QPainter
 
     from plotpy.interfaces.common import IItemType
     from plotpy.styles.base import ItemParameters
@@ -125,10 +125,10 @@ class Marker(QwtPlotMarker):
     # ------QwtPlotItem API------------------------------------------------------
     def draw(
         self,
-        painter: QG.QPainter,
-        xMap: QwtScaleMap,
-        yMap: QwtScaleMap,
-        canvasRect: QC.QRectF,
+        painter: QPainter,
+        xMap: qwt.scale_map.QwtScaleMap,
+        yMap: qwt.scale_map.QwtScaleMap,
+        canvasRect: QRectF,
     ) -> None:
         """Draw the item
 
@@ -404,7 +404,7 @@ class Marker(QwtPlotMarker):
         """Get marker position
 
         Returns:
-            Tuple with two elements: (x, y)
+            Tuple with two elements (x, y)
         """
         return self.xValue(), self.yValue()
 
@@ -442,7 +442,7 @@ class Marker(QwtPlotMarker):
             y: Y value
 
         Returns:
-            Tuple with two elements: (x, y)
+            Tuple with two elements (x, y)
         """
         plot = self.plot()
         if plot is None:

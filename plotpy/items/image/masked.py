@@ -22,8 +22,9 @@ from plotpy.styles.image import MaskedImageParam, MaskedXYImageParam
 
 if TYPE_CHECKING:
     import guidata.dataset.io
-    from qtpy import QtGui as QG
-    from qwt import QwtScaleMap
+    import qwt.scale_map
+    from qtpy.QtCore import QRectF
+    from qtpy.QtGui import QPainter
 
 
 class MaskedImageItem(ImageItem, MaskedImageMixin):
@@ -130,12 +131,12 @@ class MaskedImageItem(ImageItem, MaskedImageMixin):
     # ---- BaseImageItem API ----------------------------------------------------
     def draw_image(
         self,
-        painter: QG.QPainter,
-        canvasRect: QC.QRectF,
+        painter: QPainter,
+        canvasRect: QRectF,
         src_rect: tuple[float, float, float, float],
         dst_rect: tuple[float, float, float, float],
-        xMap: QwtScaleMap,
-        yMap: QwtScaleMap,
+        xMap: qwt.scale_map.QwtScaleMap,
+        yMap: qwt.scale_map.QwtScaleMap,
     ) -> None:
         """Draw image
 
@@ -304,12 +305,12 @@ class MaskedXYImageItem(XYImageItem, MaskedImageMixin):
     # ---- BaseImageItem API ----------------------------------------------------
     def draw_image(
         self,
-        painter: QG.QPainter,
-        canvasRect: QC.QRectF,
+        painter: QPainter,
+        canvasRect: QRectF,
         src_rect: tuple[float, float, float, float],
         dst_rect: tuple[float, float, float, float],
-        xMap: QwtScaleMap,
-        yMap: QwtScaleMap,
+        xMap: qwt.scale_map.QwtScaleMap,
+        yMap: qwt.scale_map.QwtScaleMap,
     ) -> None:
         """Draw image
 

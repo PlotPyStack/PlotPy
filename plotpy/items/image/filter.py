@@ -36,9 +36,11 @@ except ImportError:
     raise
 
 if TYPE_CHECKING:
+    import qwt.color_map
+    import qwt.scale_map
     from qtpy import QtGui as QG
-    from qtpy.QtCore import QPointF
-    from qwt import QwtLinearColorMap, QwtScaleMap
+    from qtpy.QtCore import QPointF, QRectF
+    from qtpy.QtGui import QPainter
 
     from plotpy.interfaces.common import IItemType
     from plotpy.styles.base import ItemParameters
@@ -177,7 +179,9 @@ class ImageFilterItem(BaseImageItem):
         """
         self.border_rect.move_with_selection(delta_x, delta_y)
 
-    def set_color_map(self, name_or_table: str | QwtLinearColorMap) -> None:
+    def set_color_map(
+        self, name_or_table: str | qwt.color_map.QwtLinearColorMap
+    ) -> None:
         """Set colormap
 
         Args:
@@ -274,12 +278,12 @@ class XYImageFilterItem(ImageFilterItem):
 
     def draw_image(
         self,
-        painter: QG.QPainter,
-        canvasRect: QC.QRectF,
+        painter: QPainter,
+        canvasRect: QRectF,
         src_rect: tuple[float, float, float, float],
         dst_rect: tuple[float, float, float, float],
-        xMap: QwtScaleMap,
-        yMap: QwtScaleMap,
+        xMap: qwt.scale_map.QwtScaleMap,
+        yMap: qwt.scale_map.QwtScaleMap,
     ) -> None:
         """Draw image
 

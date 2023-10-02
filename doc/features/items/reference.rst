@@ -98,6 +98,8 @@ Shapes
 Annotations
 ^^^^^^^^^^^
 
+.. autoclass:: plotpy.items.AnnotatedShape
+   :members:
 .. autoclass:: plotpy.items.AnnotatedPoint
    :members:
 .. autoclass:: plotpy.items.AnnotatedSegment

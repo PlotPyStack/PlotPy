@@ -73,11 +73,7 @@ intersphinx_mapping = {
     "guiqwt": ("https://guiqwt.readthedocs.io/en/latest/", None),
     "h5py": ("https://docs.h5py.org/en/stable/", None),
 }
-nitpicky = False
+nitpicky = True
 
-nitpick_ignore = [
-    ("py:attr", "BasePlot.SIG_ITEM_MOVED"),
-    ("py:attr", "BasePlot.SIG_ITEM_RESIZED"),
-    ("py:attr", "BasePlot.SIG_RANGE_CHANGED"),
-    ("py:attr", "BasePlot.SIG_AXIS_DIRECTION_CHANGED"),
-]
+suppress_warnings = [""]
+nitpick_ignore_regex = [("py:attr", r"BasePlot.SIG_.*")]

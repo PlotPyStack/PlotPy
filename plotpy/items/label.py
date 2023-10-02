@@ -32,8 +32,10 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     import guidata.dataset.io
-    from qtpy.QtCore import QPointF
-    from qwt import QwtScaleMap, QwtSymbol
+    import qwt.scale_map
+    import qwt.symbol
+    from qtpy.QtCore import QPointF, QRectF
+    from qtpy.QtGui import QBrush, QPainter, QPen, QTextDocument
 
     from plotpy.interfaces.common import IItemType
     from plotpy.items import ImageItem, RectangleShape, XRangeSelection
@@ -160,7 +162,10 @@ class AbstractLabelItem(QwtPlotItem):
         raise NotImplementedError
 
     def get_top_left(
-        self, xMap: QwtScaleMap, yMap: QwtScaleMap, canvasRect: QC.QRectF
+        self,
+        xMap: qwt.scale_map.QwtScaleMap,
+        yMap: qwt.scale_map.QwtScaleMap,
+        canvasRect: QC.QRectF,
     ) -> tuple[float, float]:
         """Return the top left corner of the text rectangle
 
@@ -183,7 +188,10 @@ class AbstractLabelItem(QwtPlotItem):
         return x0, y0
 
     def get_origin(
-        self, xMap: QwtScaleMap, yMap: QwtScaleMap, canvasRect: QC.QRectF
+        self,
+        xMap: qwt.scale_map.QwtScaleMap,
+        yMap: qwt.scale_map.QwtScaleMap,
+        canvasRect: QC.QRectF,
     ) -> tuple[float, float]:
         """Return the origin of the text rectangle
 
@@ -462,7 +470,7 @@ class AbstractLabelItem(QwtPlotItem):
         self.labelparam.xg, self.labelparam.yg = lx1, ly1
 
     def draw_frame(
-        self, painter: QG.QPainter, x: float, y: float, w: float, h: float
+        self, painter: QPainter, x: float, y: float, w: float, h: float
     ) -> None:
         """Draw the frame
 
@@ -496,7 +504,7 @@ class LabelItem(AbstractLabelItem):
     ) -> None:
         self.text_string = "" if text is None else text
         self.text = QG.QTextDocument()
-        self.marker: QwtSymbol | None = None
+        self.marker: qwt.symbol.QwtSymbol | None = None
         super().__init__(labelparam)
         self.setIcon(get_icon("label.png"))
 
@@ -585,7 +593,7 @@ class LabelItem(AbstractLabelItem):
             self.text.setDefaultStyleSheet("div { color: %s; }" % color)
         self.set_text()
 
-    def get_text_rect(self) -> QC.QRectF:
+    def get_text_rect(self) -> QRectF:
         """Return the text rectangle
 
         Returns:
@@ -600,10 +608,10 @@ class LabelItem(AbstractLabelItem):
 
     def draw(
         self,
-        painter: QG.QPainter,
-        xMap: QwtScaleMap,
-        yMap: QwtScaleMap,
-        canvasRect: QC.QRectF,
+        painter: QPainter,
+        xMap: qwt.scale_map.QwtScaleMap,
+        yMap: qwt.scale_map.QwtScaleMap,
+        canvasRect: QRectF,
     ) -> None:
         """Draw the item
 
@@ -662,7 +670,7 @@ class LegendBoxItem(AbstractLabelItem):
 
     def get_legend_items(
         self,
-    ) -> list[tuple[QG.QTextDocument, QG.QPen, QG.QBrush, QwtSymbol]]:
+    ) -> list[tuple[QTextDocument, QPen, QBrush, qwt.symbol.QwtSymbol]]:
         """Return the legend items
 
         Returns:
@@ -744,10 +752,10 @@ class LegendBoxItem(AbstractLabelItem):
 
     def draw(
         self,
-        painter: QG.QPainter,
-        xMap: QwtScaleMap,
-        yMap: QwtScaleMap,
-        canvasRect: QC.QRectF,
+        painter: QPainter,
+        xMap: qwt.scale_map.QwtScaleMap,
+        yMap: qwt.scale_map.QwtScaleMap,
+        canvasRect: QRectF,
     ) -> None:
         """Draw the item
 

@@ -18,8 +18,9 @@ from plotpy.items.shapes.base import AbstractShape
 from plotpy.styles.shape import RangeShapeParam
 
 if TYPE_CHECKING:
-    from qtpy.QtCore import QPointF
-    from qwt import QwtScaleMap
+    import qwt.scale_map
+    from qtpy.QtCore import QPointF, QRectF
+    from qtpy.QtGui import QPainter
 
     from plotpy.styles.base import ItemParameters
 
@@ -57,7 +58,7 @@ class XRangeSelection(AbstractShape):
         """Return the handles position
 
         Returns:
-            tuple: Tuple with three elements: (x0, x1, y).
+            Tuple with three elements (x0, x1, y).
         """
         plot = self.plot()
         rct = plot.canvas().contentsRect()
@@ -68,10 +69,10 @@ class XRangeSelection(AbstractShape):
 
     def draw(
         self,
-        painter: QG.QPainter,
-        xMap: QwtScaleMap,
-        yMap: QwtScaleMap,
-        canvasRect: QC.QRectF,
+        painter: QPainter,
+        xMap: qwt.scale_map.QwtScaleMap,
+        yMap: qwt.scale_map.QwtScaleMap,
+        canvasRect: QRectF,
     ) -> None:
         """Draw the item
 
@@ -183,7 +184,7 @@ class XRangeSelection(AbstractShape):
         """Return the range
 
         Returns:
-            Tuple with two elements: (min, max).
+            Tuple with two elements (min, max).
         """
         return self._min, self._max
 
