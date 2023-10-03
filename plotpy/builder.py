@@ -1166,7 +1166,7 @@ class PlotBuilder:
         x: numpy.ndarray | None = None,
         y: numpy.ndarray | None = None,
         lut_range: tuple[float, float] | None = None,
-        lock_position: bool = False,
+        lock_position: bool = True,
     ) -> ImageItem:
         """Make an image `plot item` from data
 
