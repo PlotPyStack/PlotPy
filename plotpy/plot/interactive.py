@@ -221,7 +221,7 @@ class Figure:
             assert hasattr(fd, "write"), "object is not file-like as expected"
             if self.win is None:
                 self.show()
-            pixmap = QG.QPixmap.grabWidget(self.win.centralWidget())
+            pixmap = self.win.centralWidget().grab()
             buff = QC.QBuffer()
             buff.open(QC.QIODevice.ReadWrite)
             pixmap.save(buff, format.upper())
