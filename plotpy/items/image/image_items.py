@@ -87,7 +87,7 @@ class ImageItem(RawImageItem):
 
     # ---- BaseImageItem API ---------------------------------------------------
     def get_default_param(self) -> ImageParam:
-        """Return instance of the default imageparam DataSet"""
+        """Return instance of the default image param DataSet"""
         return ImageParam(_("Image"))
 
     # ---- Serialization methods -----------------------------------------------
@@ -499,7 +499,7 @@ class XYImageItem(ImageMixin, RawImageItem):
 
     # ---- BaseImageItem API ---------------------------------------------------
     def get_default_param(self) -> XYImageParam:
-        """Return instance of the default imageparam DataSet"""
+        """Return instance of the default image param DataSet"""
         return XYImageParam(_("Image"))
 
     # ---- Pickle methods ------------------------------------------------------
@@ -777,7 +777,7 @@ class RGBImageItem(ImageItem):
 
     # ---- BaseImageItem API ---------------------------------------------------
     def get_default_param(self) -> RGBImageParam:
-        """Return instance of the default imageparam DataSet"""
+        """Return instance of the default image param DataSet"""
         return RGBImageParam(_("Image"))
 
     # ---- Public API ----------------------------------------------------------

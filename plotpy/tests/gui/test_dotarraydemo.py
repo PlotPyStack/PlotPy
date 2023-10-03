@@ -73,8 +73,8 @@ class DotArrayParam(gdt.DataSet):
 class DotArrayItem(RawImageItem):
     """Dot array item"""
 
-    def __init__(self, imageparam=None):
-        super().__init__(np.zeros((1, 1)), imageparam)
+    def __init__(self, param=None):
+        super().__init__(np.zeros((1, 1)), param)
         self.update_border()
 
     def boundingRect(self):

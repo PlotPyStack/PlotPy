@@ -99,7 +99,7 @@ class QuadGridItem(ImageMixin, RawImageItem):
 
     # ---- BaseImageItem API ---------------------------------------------------
     def get_default_param(self) -> QuadGridParam:
-        """Return instance of the default imageparam DataSet"""
+        """Return instance of the default image param DataSet"""
         return QuadGridParam(_("Quadrilaterals"))
 
     def types(self) -> tuple[type[IItemType], ...]:
@@ -246,7 +246,7 @@ class Histogram2DItem(ImageMixin, BaseImageItem):
 
     # ---- BaseImageItem API ---------------------------------------------------
     def get_default_param(self) -> Histogram2DParam:
-        """Return instance of the default imageparam DataSet"""
+        """Return instance of the default image param DataSet"""
         return Histogram2DParam(_("2D Histogram"))
 
     # ---- Public API -----------------------------------------------------------

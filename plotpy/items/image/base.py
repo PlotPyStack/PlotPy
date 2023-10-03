@@ -192,7 +192,7 @@ class BaseImageItem(QwtPlotItem):
 
     # ---- Public API ----------------------------------------------------------
     def get_default_param(self) -> Any:
-        """Return instance of the default imageparam DataSet"""
+        """Return instance of the default image param DataSet"""
         raise NotImplementedError
 
     def set_filename(self, fname: str) -> None:
@@ -1230,10 +1230,10 @@ class RawImageItem(BaseImageItem):
 
     # ---- BaseImageItem API ---------------------------------------------------
     def get_default_param(self) -> RawImageParam:
-        """Return instance of the default imageparam DataSet
+        """Return instance of the default image param DataSet
 
         Returns:
-            RawImageParam: Default imageparam DataSet
+            RawImageParam: Default image param DataSet
         """
         return RawImageParam(_("Image"))
 

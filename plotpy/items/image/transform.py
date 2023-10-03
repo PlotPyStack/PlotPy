@@ -74,7 +74,7 @@ class TrImageItem(TransformImageMixin, RawImageItem):
 
     # ---- BaseImageItem API ---------------------------------------------------
     def get_default_param(self):
-        """Return instance of the default imageparam DataSet"""
+        """Return instance of the default image param DataSet"""
         return TrImageParam(_("Image"))
 
     # ---- Public API ----------------------------------------------------------

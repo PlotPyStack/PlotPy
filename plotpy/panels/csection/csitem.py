@@ -370,7 +370,7 @@ class XCrossSectionItem(CrossSectionItem):
         """Get x-cross section data from source image"""
         source = self.get_source_image()
         rect = get_rectangular_area(obj)
-        fmt = source.imageparam.yformat
+        fmt = source.param.yformat
         if rect is None:
             # Object is a marker or an annotated point
             _x0, y0 = get_object_coordinates(obj)
@@ -402,7 +402,7 @@ class YCrossSectionItem(CrossSectionItem):
         """Get y-cross section data from source image"""
         source = self.get_source_image()
         rect = get_rectangular_area(obj)
-        fmt = source.imageparam.xformat
+        fmt = source.param.xformat
         if rect is None:
             # Object is a marker or an annotated point
             x0, _y0 = get_object_coordinates(obj)
