@@ -122,6 +122,7 @@ class BasePlotWidget(QW.QSplitter):
         options: PlotOptions | None = None,
     ) -> None:
         super().__init__(parent)
+        self.manager: PlotManager | None = None
         self.options = options = options if options is not None else PlotOptions()
         self.setSizePolicy(QW.QSizePolicy.Expanding, QW.QSizePolicy.Expanding)
         self.plot = self.create_plot()
@@ -235,15 +236,36 @@ class BasePlotWidget(QW.QSplitter):
         as for example multiple plots in a grid layout."""
         return BasePlot(parent=self, options=self.options)
 
-    def add_panels_to_manager(self, manager: PlotManager) -> None:
-        """Add the panels to the plot manager"""
-        manager.add_panel(self.itemlist)
+    def add_panels_to_manager(self) -> None:
+        """Add the panels to the plot manager
+
+        Raises:
+            RuntimeError: If the plot manager is not defined
+        """
+        if self.manager is None:
+            raise RuntimeError("Plot manager is not defined")
+        self.manager.add_panel(self.itemlist)
         if self.xcsw is not None:
-            manager.add_panel(self.xcsw)
+            self.manager.add_panel(self.xcsw)
         if self.ycsw is not None:
-            manager.add_panel(self.ycsw)
+            self.manager.add_panel(self.ycsw)
         if self.contrast is not None:
-            manager.add_panel(self.contrast)
+            self.manager.add_panel(self.contrast)
+
+    def register_tools(self) -> None:
+        """Register the plotting tools according to the plot type
+
+        Raises:
+            RuntimeError: If the plot manager is not defined
+        """
+        if self.manager is None:
+            raise RuntimeError("Plot manager is not defined")
+        if self.options.type == PlotType.CURVE:
+            self.manager.register_all_curve_tools()
+        elif self.options.type == PlotType.IMAGE:
+            self.manager.register_all_image_tools()
+        elif self.options.type == PlotType.AUTO:
+            self.manager.register_all_tools()
 
 
 class PlotWidget(BasePlotWidget):
@@ -294,7 +316,7 @@ class PlotWidget(BasePlotWidget):
             toolbar: [description]. Defaults to True.
         """
         self.manager.add_plot(self.get_plot())
-        self.add_panels_to_manager(self.manager)
+        self.add_panels_to_manager()
         if panels is not None:
             for panel in panels:
                 self.manager.add_panel(panel)
@@ -303,15 +325,6 @@ class PlotWidget(BasePlotWidget):
             self.manager.add_toolbar(self.toolbar, "default")
         else:
             self.toolbar.hide()
-
-    def register_tools(self) -> None:
-        """Register the plotting tools according to the plot type"""
-        if self.options.type == PlotType.CURVE:
-            self.manager.register_all_curve_tools()
-        elif self.options.type == PlotType.IMAGE:
-            self.manager.register_all_image_tools()
-        elif self.options.type == PlotType.AUTO:
-            self.manager.register_all_tools()
 
 
 def set_widget_title_icon(
@@ -748,9 +761,6 @@ class SubplotWidget(BasePlotWidget):
             plot_id = id(plot)
         self.manager.add_plot(plot, plot_id)
 
-    def configure_manager(self) -> None:
-        """Configure the plot manager"""
-        self.add_panels_to_manager(self.manager)
 
 
 # TODO: Migrate DataLab's SyncPlotWindow right here
