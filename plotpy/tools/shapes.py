@@ -2,7 +2,12 @@
 from qtpy import QtCore as QC
 
 from plotpy.config import _
-from plotpy.events import KeyEventMatch, QtDragHandler, setup_standard_tool_filter
+from plotpy.events import (
+    KeyEventMatch,
+    PointSelectionHandler,
+    QtDragHandler,
+    setup_standard_tool_filter,
+)
 from plotpy.items import (
     EllipseShape,
     ObliqueRectangleShape,
@@ -272,6 +277,9 @@ class PointTool(RectangularShapeTool):
         shape = PointShape(0, 0)
         self.set_shape_style(shape)
         return shape, 0, 0
+
+    def get_selection_handler(self, filter, start_state):
+        return PointSelectionHandler(filter, QC.Qt.LeftButton, start_state=start_state)
 
 
 class SegmentTool(RectangularShapeTool):

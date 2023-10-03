@@ -381,17 +381,15 @@ class RectangularActionTool(InteractiveTool):
         self.last_final_shape = weakref.ref(shape)
         return shape
 
-    def setup_filter(self, baseplot):
-        """
+    def get_selection_handler(self, filter, start_state):
+        return RectangularSelectionHandler(
+            filter, QC.Qt.LeftButton, start_state=start_state
+        )
 
-        :param baseplot:
-        :return:
-        """
+    def setup_filter(self, baseplot):
         filter = baseplot.filter
         start_state = filter.new_state()
-        handler = RectangularSelectionHandler(
-            filter, QC.Qt.MouseButton.LeftButton, start_state=start_state
-        )
+        handler = self.get_selection_handler(filter, start_state)
         shape, h0, h1 = self.get_shape()
         handler.set_shape(
             shape, h0, h1, self.setup_shape, avoid_null_shape=self.AVOID_NULL_SHAPE
