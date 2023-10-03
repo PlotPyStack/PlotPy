@@ -163,8 +163,11 @@ class ImageItem(RawImageItem):
             setattr(self, attr, reader.read(attr, func=reader.read_float))
 
     # ---- Public API ----------------------------------------------------------
-    def get_xdata(self) -> tuple[float, float]:
+    def get_xdata(self, aligned=True) -> tuple[float, float]:
         """Get X data range
+
+        Args:
+            aligned: True if aligned (Default value = True)
 
         Returns:
             (xmin, xmax) tuple
@@ -174,10 +177,17 @@ class ImageItem(RawImageItem):
             xmin = 0.0
         if xmax is None:
             xmax = self.data.shape[1]
+        if aligned:
+            dx = 0.5 * (xmax - xmin) / self.data.shape[1]
+            xmin -= dx
+            xmax -= dx
         return xmin, xmax
 
-    def get_ydata(self) -> tuple[float, float]:
+    def get_ydata(self, aligned=True) -> tuple[float, float]:
         """Get Y data range
+
+        Args:
+            aligned: True if aligned (Default value = True)
 
         Returns:
             (ymin, ymax) tuple
@@ -187,6 +197,10 @@ class ImageItem(RawImageItem):
             ymin = 0.0
         if ymax is None:
             ymax = self.data.shape[0]
+        if aligned:
+            dy = 0.5 * (ymax - ymin) / self.data.shape[0]
+            ymin -= dy
+            ymax -= dy
         return ymin, ymax
 
     def set_xdata(self, xmin: float | None = None, xmax: float | None = None) -> None:
@@ -290,7 +304,8 @@ class ImageItem(RawImageItem):
         Returns:
             tuple[float, float]: Closest coordinates
         """
-        (xmin, xmax), (ymin, ymax) = self.get_xdata(), self.get_ydata()
+        xmin, xmax = self.get_xdata(aligned=False)
+        ymin, ymax = self.get_ydata(aligned=False)
         i, j = self.get_closest_indexes(x, y)
         xpix = np.linspace(xmin, xmax, self.data.shape[1] + 1)
         ypix = np.linspace(ymin, ymax, self.data.shape[0] + 1)
