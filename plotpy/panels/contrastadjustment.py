@@ -161,7 +161,7 @@ class LevelsHistogram(BasePlot):
                     self.histparam.n_bins = delta
                 else:
                     self.histparam.n_bins = 256
-                curve = HistogramItem(self.param, self.histparam)
+                curve = HistogramItem(self.param, self.histparam, keep_weakref=True)
                 curve.set_hist_source(item)
                 self.add_item(curve, z=0)
                 known_items[item] = curve

@@ -68,6 +68,7 @@ class HistogramItem(CurveItem):
         self,
         curveparam: CurveParam | None = None,
         histparam: HistogramParam | None = None,
+        keep_weakref: bool = False,
     ) -> None:
         self.hist_count = None
         self.hist_bins = None
@@ -76,6 +77,7 @@ class HistogramItem(CurveItem):
         self.source: BaseImageItem | None = None
         self.logscale: bool | None = None
         self.old_logscale = None
+        self.keep_weakref = keep_weakref
         if curveparam is None:
             curveparam = CurveParam(_("Curve"), icon="curve.png")
             curveparam.curvestyle = "Steps"
@@ -94,7 +96,10 @@ class HistogramItem(CurveItem):
             src: Object with method `get_histogram`, e.g. objects derived from
              :py:class:`.ImageItem`
         """
-        self.source = weakref.ref(src)
+        if self.keep_weakref:
+            self.source = weakref.ref(src)
+        else:
+            self.source = src
         self.update_histogram()
 
     def get_hist_source(self) -> BaseImageItem | None:
@@ -105,7 +110,9 @@ class HistogramItem(CurveItem):
              :py:class:`.ImageItem`
         """
         if self.source is not None:
-            return self.source()
+            if self.keep_weakref:
+                return self.source()
+            return self.source
 
     def set_hist_data(self, data: np.ndarray) -> None:
         """Set histogram data
