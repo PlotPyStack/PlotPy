@@ -302,12 +302,15 @@ class PlotWidget(BasePlotWidget):
             self.manager.register_all_tools()
 
 
-def set_widget_title_icon(widget: QWidget, title: str, icon: QG.QIcon) -> None:
+def set_widget_title_icon(
+    widget: QWidget, title: str, icon: QG.QIcon, resize: tuple[int, int] | None = None
+) -> None:
     """Setups the widget title and icon
 
     Args:
         title: The window title
         icon: The window icon
+        resize: The window size (width, height). Defaults to None (no resize)
     """
     win32_fix_title_bar_background(widget)
     widget.setWindowTitle(title)
@@ -316,7 +319,8 @@ def set_widget_title_icon(widget: QWidget, title: str, icon: QG.QIcon) -> None:
     if icon is not None:
         widget.setWindowIcon(icon)
     widget.setMinimumSize(320, 240)
-    widget.resize(640, 480)
+    if resize is not None:
+        widget.resize(*resize)
 
 
 def add_widget_to_grid_layout(
@@ -451,7 +455,7 @@ class PlotDialog(QW.QDialog, AbstractPlotDialogWindow, metaclass=PlotDialogMeta)
         edit: bool = False,
     ) -> None:
         super().__init__(parent)
-        set_widget_title_icon(self, title, icon)
+        set_widget_title_icon(self, title, icon, resize=(640, 480))
         self.edit = edit
         self.button_box = None
         self.button_layout = None
@@ -581,7 +585,7 @@ class PlotWindow(QW.QMainWindow, AbstractPlotDialogWindow, metaclass=PlotWindowM
         icon: str = "plotpy.svg",
     ) -> None:
         super().__init__(parent)
-        set_widget_title_icon(self, title, icon)
+        set_widget_title_icon(self, title, icon, resize=(640, 480))
         self.plot_layout = QW.QGridLayout()
         self.plot_widget: PlotWidget = None
         self.manager: PlotManager = None
@@ -696,7 +700,7 @@ class SubplotWidget(QW.QSplitter):
         self.setOrientation(QC.Qt.Orientation.Horizontal)
         self.setSizePolicy(QW.QSizePolicy.Expanding, QW.QSizePolicy.Expanding)
         self.manager = manager
-        self.plots = []
+        self.plots: list[BasePlot] = []
         self.itemlist = None
         main = QWidget()
         self.plotlayout = QW.QGridLayout()
@@ -715,7 +719,15 @@ class SubplotWidget(QW.QSplitter):
         configure_plot_splitter(self)
         self.manager.add_panel(self.itemlist)
 
-    def add_subplot(
+    def get_plots(self) -> list[BasePlot]:
+        """Return the plots
+
+        Returns:
+            list[BasePlot]: The plots
+        """
+        return self.plots
+
+    def add_plot(
         self, plot: BasePlot, i: int = 0, j: int = 0, plot_id: str | None = None
     ) -> None:
         """Add a plot to the grid of plots

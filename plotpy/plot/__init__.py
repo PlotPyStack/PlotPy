@@ -2,4 +2,11 @@
 
 # pylint: disable=unused-import
 from .base import BasePlot, BasePlotOptions
-from .plotwidget import PlotDialog, PlotOptions, PlotWidget, PlotWindow, SubplotWidget
+from .plotwidget import (
+    PlotDialog,
+    PlotOptions,
+    PlotWidget,
+    PlotWindow,
+    SubplotWidget,
+    set_widget_title_icon,
+)
