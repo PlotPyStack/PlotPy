@@ -11,8 +11,7 @@ import numpy as np
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog
+from plotpy.plot import PlotDialog, PlotOptions
 
 
 def compute_image(N=2000, grid=True):
@@ -55,8 +54,8 @@ def test_builder():
         win0 = PlotDialog(
             edit=False,
             toolbar=True,
-            wintitle="Pink colormap test",
-            options=dict(xlabel="Concentration", xunit="ppm", type=PlotType.IMAGE),
+            title="Pink colormap test",
+            options=PlotOptions(xlabel="Concentration", xunit="ppm", type="image"),
         )
         data = compute_image()
         plot0 = win0.manager.get_plot()
@@ -66,8 +65,8 @@ def test_builder():
         win = PlotDialog(
             edit=False,
             toolbar=True,
-            wintitle="Default LUT range",
-            options=dict(xlabel="Concentration", xunit="ppm", type=PlotType.IMAGE),
+            title="Default LUT range",
+            options=PlotOptions(xlabel="Concentration", xunit="ppm", type="image"),
         )
         item = make.image(data)
         plot = win.manager.get_plot()
@@ -77,8 +76,8 @@ def test_builder():
         win2 = PlotDialog(
             edit=False,
             toolbar=True,
-            wintitle="0->1 LUT range",
-            options=dict(xlabel="Concentration", xunit="ppm", type=PlotType.IMAGE),
+            title="0->1 LUT range",
+            options=PlotOptions(xlabel="Concentration", xunit="ppm", type="image"),
         )
         item2 = make.image(data)
         item2.set_lut_range([0, 1])
@@ -89,8 +88,8 @@ def test_builder():
         win3 = PlotDialog(
             edit=False,
             toolbar=True,
-            wintitle="0->1 LUT range through builder",
-            options=dict(xlabel="Concentration", xunit="ppm", type=PlotType.IMAGE),
+            title="0->1 LUT range through builder",
+            options=PlotOptions(xlabel="Concentration", xunit="ppm", type="image"),
         )
         item3 = make.image(data, lut_range=[0, 1])
         plot3 = win3.manager.get_plot()
@@ -102,8 +101,8 @@ def test_builder():
 
         win4 = PlotDialog(
             toolbar=True,
-            wintitle="Error bars with make.curve()",
-            options={"type": PlotType.CURVE},
+            title="Error bars with make.curve()",
+            options=PlotOptions(type="curve"),
         )
         plot4 = win4.manager.get_plot()
 
@@ -113,7 +112,7 @@ def test_builder():
         win4.show()
 
         win5 = PlotDialog(
-            toolbar=True, wintitle="2x2 image", options={"type": PlotType.IMAGE}
+            toolbar=True, title="2x2 image", options=PlotOptions(type="image")
         )
         plot5 = win5.manager.get_plot()
 
@@ -130,8 +129,8 @@ def test_builder():
 
         win6 = PlotDialog(
             toolbar=True,
-            wintitle="Equivalent 2x2 XY image",
-            options={"type": PlotType.IMAGE},
+            title="Equivalent 2x2 XY image",
+            options=PlotOptions(type="image"),
         )
         plot6 = win6.manager.get_plot()
 

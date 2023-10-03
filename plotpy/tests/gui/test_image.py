@@ -3,7 +3,7 @@
 # Licensed under the terms of the BSD 3-Clause
 # (see plotpy/LICENSE for details)
 
-"""PlotDialog test"""
+"""Test showing an image"""
 
 # FIXME: unexpected behavior when changing the xmin/xmax/ymin/ymax values in
 #       the image parameters (2nd tab: "Axes")
@@ -14,8 +14,6 @@ import numpy as np
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog
 
 
 def compute_image(N=2000, grid=True):
@@ -102,12 +100,7 @@ def test_image():
     for func in (compute_image, compute_image_2, compute_image_3):
         data = func()
         with qt_app_context(exec_loop=True):
-            win = PlotDialog(
-                edit=False,
-                toolbar=True,
-                wintitle="PlotDialog test",
-                options=dict(xlabel="Concentration", xunit="ppm", type=PlotType.IMAGE),
-            )
+            win = make.dialog(toolbar=True, wintitle="Image plotting")
             item = make.image(data)
             plot = win.manager.get_plot()
             plot.add_item(item)

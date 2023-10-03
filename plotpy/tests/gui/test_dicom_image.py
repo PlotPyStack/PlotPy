@@ -15,8 +15,6 @@ import pytest
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog
 
 try:
     import pydicom  # type:ignore
@@ -27,11 +25,12 @@ except ImportError:
 @pytest.mark.skipif(pydicom is None, reason="pydicom not installed")
 def test_dicom_image():
     with qt_app_context(exec_loop=True):
-        win = PlotDialog(
+        win = make.dialog(
             edit=False,
             toolbar=True,
             wintitle="DICOM I/O test",
-            options=dict(show_contrast=True, type=PlotType.IMAGE),
+            show_contrast=True,
+            type="image",
         )
         filename = os.path.join(os.path.dirname(__file__), "mr-brain.dcm")
         image = make.image(filename=filename, title="DICOM img", colormap="gray")

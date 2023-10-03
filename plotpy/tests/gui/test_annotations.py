@@ -13,7 +13,7 @@ from numpy import linspace, sin
 
 from plotpy.builder import make
 from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog
+from plotpy.plot import PlotDialog, PlotOptions
 
 
 def compute_image(N=2000, grid=True):
@@ -56,8 +56,8 @@ def plot(*items, type=PlotType.AUTO):
     win = PlotDialog(
         edit=False,
         toolbar=True,
-        wintitle=title,
-        options=dict(title="Title", xlabel="xlabel", ylabel="ylabel", type=type),
+        title=title,
+        options=PlotOptions(title="Title", xlabel="xlabel", ylabel="ylabel", type=type),
     )
     if type == PlotType.CURVE:
         win.manager.register_curve_annotation_tools()

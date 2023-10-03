@@ -70,8 +70,7 @@ from scipy.optimize import fmin, fmin_bfgs, fmin_cg, fmin_l_bfgs_b, fmin_powell,
 
 from plotpy.builder import make
 from plotpy.config import _
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog, PlotWidget
+from plotpy.plot import PlotDialog, PlotOptions, PlotWidget
 
 if TYPE_CHECKING:
     from plotpy.items import XRangeSelection
@@ -834,7 +833,7 @@ class FitDialog(PlotDialog):
     """Fit dialog box
 
     Args:
-        wintitle (str | None): window title. Defaults to None.
+        title (str | None): window title. Defaults to None.
         icon (str | None): window icon. Defaults to "plotpy.svg".
         edit (bool | None): enable/disable edit menu. Defaults to True.
         toolbar (bool | None): enable/disable toolbar. Defaults to False.
@@ -850,7 +849,7 @@ class FitDialog(PlotDialog):
 
     def __init__(
         self,
-        wintitle: str | None = None,
+        title: str | None = None,
         icon: str = "plotpy.svg",
         edit: bool = True,
         toolbar: bool = False,
@@ -863,7 +862,7 @@ class FitDialog(PlotDialog):
         auto_fit: bool = False,
     ):
         super().__init__(
-            wintitle=wintitle if wintitle is not None else _("Curve fitting"),
+            title=title if title is not None else _("Curve fitting"),
             icon=icon,
             edit=edit,
             toolbar=toolbar,
@@ -954,11 +953,11 @@ def guifit(
     _app = guidata.qapplication()
     win = FitDialog(
         edit=True,
-        wintitle=wintitle,
+        title=wintitle,
         toolbar=True,
         param_cols=param_cols,
         auto_fit=auto_fit,
-        options=dict(title=title, xlabel=xlabel, ylabel=ylabel, type=PlotType.CURVE),
+        options=PlotOptions(title=title, xlabel=xlabel, ylabel=ylabel, type="curve"),
     )
     win.set_data(x, y, fitfunc, fitparams, fitargs, fitkwargs)
     if winsize is not None:

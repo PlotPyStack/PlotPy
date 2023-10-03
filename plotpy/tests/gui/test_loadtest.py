@@ -15,8 +15,6 @@ from guidata.qthelpers import qt_app_context
 from qtpy import QtWidgets as QW
 
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotWidget
 
 
 class PlotTab(QW.QWidget):
@@ -29,8 +27,7 @@ class PlotTab(QW.QWidget):
 
     def add_plot(self, iplt, irow, icol):
         """Add a plot to the grid"""
-        options = dict(title="Plot #%d" % (iplt + 1), type=PlotType.IMAGE)
-        widget = PlotWidget(self, options=options)
+        widget = make.widget(self, title="Plot #%d" % (iplt + 1), type="image")
         widget.setMinimumSize(200, 150)
         xdata = np.linspace(-10, 10)
         ydata = np.sin(xdata + np.random.randint(0, 100) * 0.01 * np.pi)

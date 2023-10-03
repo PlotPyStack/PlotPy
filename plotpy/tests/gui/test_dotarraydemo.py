@@ -30,13 +30,12 @@ from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
 
-import plotpy.config
+import plotpy.config  # Loading icons
 import plotpy.widgets
-from plotpy.constants import PlotType  # Loading icons
 from plotpy.interfaces.common import IImageItemType
 from plotpy.items import RawImageItem
 from plotpy.items.curve.errorbar import vmap
-from plotpy.plot import PlotDialog
+from plotpy.plot import PlotDialog, PlotOptions
 from plotpy.tools import CopyToClipboardTool, HelpTool, PrintTool, SaveAsTool
 
 if TYPE_CHECKING:
@@ -141,8 +140,8 @@ class DotArrayDialog(PlotDialog):
         self.item = None
         self.stamp_gbox = None
         super().__init__(
-            wintitle="Dot array example",
-            options=dict(title="Main plot", type=PlotType.IMAGE),
+            title="Dot array example",
+            options=PlotOptions(title="Main plot", type="image"),
             toolbar=True,
             edit=True,
         )

@@ -36,6 +36,7 @@ from plotpy.config import _
 from plotpy.widgets import basetransform
 
 if TYPE_CHECKING:
+    from plotpy.plot import PlotOptions
     from plotpy.plot.manager import PlotManager
 
 
@@ -82,7 +83,7 @@ class FlipRotateDialog(QW.QDialog):
 
     Args:
         parent (QWidget): Parent widget
-        wintitle (str | None): Window title
+        title (str | None): Window title
         options (dict | None): Options
         resize_to (tuple | None): Resize to (width, height)
         edit (bool | None): Edit mode
@@ -92,7 +93,7 @@ class FlipRotateDialog(QW.QDialog):
     def __init__(
         self,
         parent: QW.QWidget,
-        wintitle: str | None = None,
+        title: str | None = None,
         options: dict | None = None,
         resize_to: tuple[int, int] | None = None,
         edit: bool = True,
@@ -107,8 +108,8 @@ class FlipRotateDialog(QW.QDialog):
 
         self.button_box = None
 
-        if wintitle is None:
-            wintitle = _("Flip & Rotate")
+        if title is None:
+            title = _("Flip & Rotate")
         self.widget = FlipRotateWidget(parent=parent, options=options, toolbar=toolbar)
         self.setWindowFlags(QC.Qt.WindowType.Window)
 
@@ -150,15 +151,18 @@ class FlipRotateWidget(basetransform.BaseTransformWidget):
     Flip and rotate a :py:class:`.image.TrImageItem` plot item
 
     Args:
-        parent (QWidget): Parent widget
-        toolbar (bool | None): Show toolbar
-        options (dict | None): Options
+        parent: Parent widget
+        toolbar: Show toolbar
+        options: Plot options
     """
 
     ROTATION_ANGLES = [str((i - 1) * 90) for i in range(4)]
 
     def __init__(
-        self, parent: QW.QWidget, toolbar: bool = False, options: dict | None = None
+        self,
+        parent: QW.QWidget,
+        toolbar: bool = False,
+        options: PlotOptions | None = None,
     ):
         self.angle_combo = None
         self.hflip_btn = None

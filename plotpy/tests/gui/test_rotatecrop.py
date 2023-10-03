@@ -15,8 +15,6 @@ from guidata.qthelpers import exec_dialog, qt_app_context
 
 from plotpy import io
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog
 from plotpy.widgets.rotatecrop import (
     MultipleRotateCropWidget,
     RotateCropDialog,
@@ -57,7 +55,7 @@ def multiple_widget_test(fname="brain.png"):
 
 def imshow(data, title=None, hold=False):
     """Show image"""
-    dlg = PlotDialog(wintitle=title, options={"type": PlotType.IMAGE})
+    dlg = make.dialog(wintitle=title, type="image")
     dlg.manager.get_plot().add_item(make.image(data))
     if hold:
         dlg.show()

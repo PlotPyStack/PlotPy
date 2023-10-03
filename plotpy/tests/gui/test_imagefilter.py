@@ -15,20 +15,19 @@ from scipy.ndimage import gaussian_filter
 
 from plotpy import io
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog
 from plotpy.tests.gui.test_imagexy import compute_image
 
 
 def imshow(x, y, data, filter_area, yreverse=True):
     with qt_app_context(exec_loop=True):
-        win = PlotDialog(
+        win = make.dialog(
             edit=False,
             toolbar=True,
             wintitle="Image filter demo",
-            options=dict(
-                xlabel="x (cm)", ylabel="y (cm)", yreverse=yreverse, type=PlotType.IMAGE
-            ),
+            xlabel="x (cm)",
+            ylabel="y (cm)",
+            yreverse=yreverse,
+            type="image",
         )
         image = make.xyimage(x, y, data)
         plot = win.manager.get_plot()

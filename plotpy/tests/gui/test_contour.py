@@ -11,12 +11,11 @@ import numpy as np
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
-from plotpy.plot import PlotDialog
 
 
 def test_contour():
     with qt_app_context(exec_loop=True):
-        win = PlotDialog(edit=True, toolbar=True, wintitle="Sample contour plotting")
+        win = make.dialog(edit=True, toolbar=True, wintitle="Sample contour plotting")
         plot = win.manager.get_plot()
         plot.set_aspect_ratio(lock=True)
         plot.set_antialiasing(False)

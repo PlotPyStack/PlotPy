@@ -11,5 +11,5 @@ used to simplify the creation of plot items.
 .. autoclass:: plotpy.builder.LUTAlpha
    :members:
 
-.. autoclass:: plotpy.builder.PlotItemBuilder
+.. autoclass:: plotpy.builder.PlotBuilder
    :members:

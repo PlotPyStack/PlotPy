@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import annotations
+
 import weakref
+from typing import TYPE_CHECKING
 
 from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
@@ -13,14 +17,22 @@ from plotpy.panels.csection.csitem import (
     XCrossSectionItem,
     YCrossSectionItem,
 )
-from plotpy.plot.base import BasePlot
+from plotpy.plot.base import BasePlot, BasePlotOptions
 from plotpy.styles.curve import CurveParam
 
 LUT_AXIS_TITLE = _("LUT scale") + (" (0-%d)" % LUT_MAX)
 
 
+if TYPE_CHECKING:
+    from qtpy.QtWidgets import QWidget
+
+
 class CrossSectionPlot(BasePlot):
-    """Cross section plot"""
+    """Cross section plot
+
+    Args:
+        parent: Parent widget. Defaults to None.
+    """
 
     CURVE_LABEL = _("Cross section")
     LABEL_TEXT = _("Enable a marker")
@@ -31,9 +43,10 @@ class CrossSectionPlot(BasePlot):
     Z_MAX_MAJOR = 5
     SHADE = 0.2
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(
-            parent=parent, title="", section="cross_section", type=PlotType.CURVE
+            parent=parent,
+            options=BasePlotOptions(title="", section="cross_section", type="curve"),
         )
         self.perimage_mode = True
         self.autoscale_mode = True
@@ -65,22 +78,23 @@ class CrossSectionPlot(BasePlot):
         self.setAxisMaxMajor(self.Z_AXIS, self.Z_MAX_MAJOR)
         self.setAxisMaxMinor(self.Z_AXIS, 0)
 
-    def set_curve_style(self, section, option):
-        """
+    def set_curve_style(self, section: str, option: str) -> None:
+        """Set curve style
 
-        :param section:
-        :param option:
+        Args:
+            section: Configuration section name
+            option: Configuration option name
         """
         self.param.read_config(CONF, section, option)
         self.param.label = self.CURVE_LABEL
 
-    def connect_plot(self, plot):
-        """
+    def connect_plot(self, plot: BasePlot) -> None:
+        """Connect plot
 
-        :param plot:
-        :return:
+        Args:
+            plot: Plot to connect
         """
-        if plot.type == PlotType.CURVE:
+        if plot.options.type == PlotType.CURVE:
             # Connecting only to image plot widgets (allow mixing image and
             # curve widgets for the same plot manager -- e.g. in pyplot)
             return

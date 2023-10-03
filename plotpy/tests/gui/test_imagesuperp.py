@@ -13,8 +13,6 @@ import numpy as np
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog
 from plotpy.tools import EllipseTool, FreeFormTool, PlaceAxesTool, RectangleTool
 
 
@@ -22,11 +20,12 @@ def create_window():
     gridparam = make.gridparam(
         background="black", minor_enabled=(False, False), major_style=(".", "gray", 1)
     )
-    win = PlotDialog(
+    win = make.dialog(
         edit=False,
         toolbar=True,
         wintitle="Image superposition test",
-        options=dict(gridparam=gridparam, type=PlotType.IMAGE),
+        gridparam=gridparam,
+        type="image",
     )
     for toolklass in (RectangleTool, EllipseTool, FreeFormTool, PlaceAxesTool):
         win.manager.add_tool(toolklass)

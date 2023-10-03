@@ -33,7 +33,7 @@ from plotpy.tools import (
 
 
 def create_window():
-    win = PlotDialog(edit=False, toolbar=True, wintitle="Autoscaling of shapes")
+    win = PlotDialog(edit=False, toolbar=True, title="Autoscaling of shapes")
     for toolklass in (
         LabelTool,
         SegmentTool,

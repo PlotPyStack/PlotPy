@@ -13,7 +13,6 @@ from numpy import linspace, sin
 
 from plotpy.builder import make
 from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog
 
 
 def compute_image(N=2000, grid=True):
@@ -47,11 +46,14 @@ def compute_image(N=2000, grid=True):
 
 
 def plot(*items, type=PlotType.AUTO, title=""):
-    win = PlotDialog(
+    win = make.dialog(
         edit=False,
         toolbar=True,
         wintitle=title,
-        options=dict(title=title, xlabel="xlabel", ylabel="ylabel", type=type),
+        title=title,
+        xlabel="xlabel",
+        ylabel="ylabel",
+        type=type,
     )
 
     plot = win.manager.get_plot()

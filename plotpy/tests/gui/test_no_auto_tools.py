@@ -3,7 +3,7 @@
 # Licensed under the terms of the BSD 3-Clause
 # (see plotpy/LICENSE for details)
 
-"""PlotDialog test"""
+"""Testing `auto_tools` plot option"""
 
 # guitest: show
 
@@ -11,19 +11,13 @@ from guidata.qthelpers import qt_app_context
 from numpy import linspace, sin
 
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog
 
 
 def plot(*items):
-    win = PlotDialog(
-        edit=False,
+    win = make.dialog(
         toolbar=True,
         auto_tools=False,
-        wintitle="PlotDialog test (no auto tools)",
-        options=dict(
-            title="Title", xlabel="xlabel", ylabel="ylabel", type=PlotType.CURVE
-        ),
+        wintitle="Plot test (no auto tools)",
     )
     plot = win.manager.get_plot()
     for item in items:

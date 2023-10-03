@@ -13,16 +13,16 @@ import numpy as np
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import LUTAlpha, make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog
 
 
 def create_window():
-    win = PlotDialog(
+    win = make.dialog(
         edit=False,
         toolbar=True,
         wintitle="Cross sections test",
-        options=dict(show_xsection=True, show_ysection=True, type=PlotType.IMAGE),
+        show_xsection=True,
+        show_ysection=True,
+        type="image",
     )
     win.resize(640, 600)
     return win

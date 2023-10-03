@@ -17,8 +17,7 @@ from guidata.utils import update_dataset
 from plotpy import io
 from plotpy.builder import make
 from plotpy.config import _
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog
+from plotpy.plot import PlotDialog, PlotOptions
 from plotpy.tools import OpenImageTool
 
 # guitest: show
@@ -47,16 +46,17 @@ class FilterParam(DataSet):
 class ExampleDialog(PlotDialog):
     def __init__(
         self,
-        wintitle=_("Example dialog box"),
-        options=dict(show_contrast=True, type=PlotType.IMAGE),
+        title=_("Example dialog box"),
+        options=PlotOptions(show_contrast=True, type="image"),
         edit=False,
     ):
         self.filter_gbox = None
         self.data = None
         self.item = None
-        options.update(dict(title=_("Image title"), zlabel=_("z-axis scale label")))
+        options.title = _("Image title")
+        options.zlabel = _("z-axis scale label")
         super().__init__(
-            wintitle=wintitle,
+            title=title,
             toolbar=True,
             edit=edit,
             options=options,

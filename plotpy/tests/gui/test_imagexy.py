@@ -11,22 +11,18 @@ import numpy as np
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog
 
 
 def imshow(x, y, data):
     with qt_app_context(exec_loop=True):
-        win = PlotDialog(
+        win = make.dialog(
             edit=False,
             toolbar=True,
             wintitle="Image with custom X/Y axes scales",
-            options=dict(
-                xlabel="x (a.u.)",
-                ylabel="y (a.u.)",
-                yreverse=False,
-                type=PlotType.IMAGE,
-            ),
+            xlabel="x (a.u.)",
+            ylabel="y (a.u.)",
+            yreverse=False,
+            type="image",
         )
         item = make.xyimage(x, y, data)
         plot = win.manager.get_plot()

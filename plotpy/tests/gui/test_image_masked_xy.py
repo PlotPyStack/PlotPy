@@ -18,8 +18,6 @@ import pickle
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog
 from plotpy.tools import ImageMaskTool
 
 FNAME = "image_masked_xy.pickle"
@@ -30,10 +28,10 @@ FNAME = "image_masked_xy.pickle"
 
 def test_image_masked_xy():
     with qt_app_context(exec_loop=True):
-        win = PlotDialog(
+        win = make.dialog(
             toolbar=True,
             wintitle="Masked XY image item test",
-            options={"type": PlotType.IMAGE},
+            type="image",
         )
         win.manager.add_tool(ImageMaskTool)
         if os.access(FNAME, os.R_OK):

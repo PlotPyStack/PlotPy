@@ -22,9 +22,8 @@ from qtpy import QtWidgets as QW
 
 from plotpy._scaler import INTERP_LINEAR
 from plotpy.config import _
-from plotpy.constants import PlotType
 from plotpy.items import TrImageItem
-from plotpy.plot import PlotWidget
+from plotpy.plot import PlotOptions, PlotWidget
 
 if TYPE_CHECKING:
     import numpy as np
@@ -157,12 +156,14 @@ class BaseTransformWidget(QW.QWidget):
     """
 
     def __init__(
-        self, parent: QW.QWidget, toolbar: bool = False, options: dict = None
+        self,
+        parent: QW.QWidget,
+        toolbar: bool = False,
+        options: PlotOptions | None = None,
     ) -> None:
         super().__init__(parent)
-        if options is None:
-            options = {}
-        options.update(dict(type=PlotType.IMAGE))
+        options = options if options is not None else PlotOptions()
+        options.type = "image"
         self.plot_widget = PlotWidget(self, options=options, toolbar=toolbar)
         hlayout = QW.QHBoxLayout()
         self.add_buttons_to_layout(hlayout)
@@ -242,13 +243,13 @@ class BaseMultipleTransformWidget(QW.QTabWidget):
     Transform several :py:class:`.image.TrImageItem` plot items
 
     Args:
-        parent (QWidget): Parent widget
-        options (dict | None): Plot options. Defaults to None.
+        parent: Parent widget
+        options: Plot options. Defaults to None.
     """
 
     TRANSFORM_WIDGET_CLASS: TransfWidget  # to be defined in subclass
 
-    def __init__(self, parent: QW.QWidget, options: dict | None = None):
+    def __init__(self, parent: QW.QWidget, options: PlotOptions | None = None):
         QW.QTabWidget.__init__(self, parent)
         self.options = options
         self.output_arrays = None

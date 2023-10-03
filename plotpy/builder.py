@@ -57,7 +57,7 @@ from plotpy.items import (
     XYImageItem,
     create_contour_items,
 )
-from plotpy.plot.base import BasePlot
+from plotpy.plot import BasePlot, PlotDialog, PlotOptions, PlotWidget, PlotWindow
 from plotpy.styles import (
     COLORS,
     MARKERS,
@@ -79,7 +79,6 @@ from plotpy.styles import (
     MaskedXYImageParam,
     QuadGridParam,
     RGBImageParam,
-    ShapeParam,
     TrImageParam,
     XYImageParam,
     style_generator,
@@ -87,7 +86,11 @@ from plotpy.styles import (
 )
 
 if TYPE_CHECKING:
+    from qtpy.QtWidgets import QWidget
+
+    from plotpy.constants import PlotType
     from plotpy.items.image.filter import ImageFilterItem
+    from plotpy.panels import PanelWidget
 
 
 # default offset positions for anchors
@@ -109,15 +112,319 @@ LABEL_COUNT = 0
 HISTOGRAM2D_COUNT = 0
 
 
-class PlotItemBuilder:
-    """
-    This is just a bare class used to regroup
-    a set of factory functions in a single object
+class PlotBuilder:
+    """Class regrouping a set of factory functions to simplify the creation
+    of plot widgets and plot items.
+
+    It is a singleton class, so you should not create instances of this class
+    but use the :py:data:`plotpy.builder.make` instance instead.
     """
 
     def __init__(self):
         self.style = style_generator()
 
+    # ---- Plot widgets ---------------------------------------------------------------
+    def widget(
+        self,
+        parent: QWidget | None = None,
+        toolbar: bool = False,
+        panels: tuple[PanelWidget] | None = None,
+        auto_tools: bool = True,
+        title: str | None = None,
+        xlabel: str | tuple[str, str] | None = None,
+        ylabel: str | tuple[str, str] | None = None,
+        zlabel: str | None = None,
+        xunit: str | tuple[str, str] | None = None,
+        yunit: str | tuple[str, str] | None = None,
+        zunit: str | None = None,
+        yreverse: bool | None = None,
+        aspect_ratio: float = 1.0,
+        lock_aspect_ratio: bool | None = None,
+        curve_antialiasing: bool | None = None,
+        gridparam: GridParam | None = None,
+        section: str = "plot",
+        type: str | PlotType = "auto",
+        axes_synchronised: bool = False,
+        force_colorbar_enabled: bool = False,
+        no_image_analysis_widgets: bool = False,
+        show_contrast: bool = False,
+        show_itemlist: bool = False,
+        show_xsection: bool = False,
+        show_ysection: bool = False,
+        xsection_pos: str = "top",
+        ysection_pos: str = "right",
+    ) -> PlotWidget:
+        """Make a plot widget (:py:class:`.PlotWidget` object)
+
+        Args:
+            parent: Parent widget
+            toolbar: Show/hide toolbar
+            panels: Additionnal panels
+            auto_tools: If True, the plot tools are automatically registered.
+             If False, the user must register the tools manually.
+            title: The plot title
+            xlabel: (bottom axis title, top axis title) or bottom axis title only
+            ylabel: (left axis title, right axis title) or left axis title only
+            zlabel: The Z-axis label
+            xunit: (bottom axis unit, top axis unit) or bottom axis unit only
+            yunit: (left axis unit, right axis unit) or left axis unit only
+            zunit: The Z-axis unit
+            yreverse: If True, the Y-axis is reversed
+            aspect_ratio: The plot aspect ratio
+            lock_aspect_ratio: If True, the aspect ratio is locked
+            curve_antialiasing: If True, the curve antialiasing is enabled
+            gridparam: The grid parameters
+            section: The plot configuration section name ("plot", by default)
+            type: The plot type ("auto", "manual", "curve" or "image")
+            axes_synchronised: If True, the axes are synchronised
+            force_colorbar_enabled: If True, the colorbar is always enabled
+            no_image_analysis_widgets: If True, the image analysis widgets are not added
+            show_contrast: If True, the contrast adjustment panel is visible
+            show_itemlist: If True, the itemlist panel is visible
+            show_xsection: If True, the X-axis cross section panel is visible
+            show_ysection: If True, the Y-axis cross section panel is visible
+            xsection_pos: The X-axis cross section panel position ("top" or "bottom")
+            ysection_pos: The Y-axis cross section panel position ("left" or "right")
+        """
+        options = PlotOptions(
+            title=title,
+            xlabel=xlabel,
+            ylabel=ylabel,
+            zlabel=zlabel,
+            xunit=xunit,
+            yunit=yunit,
+            zunit=zunit,
+            yreverse=yreverse,
+            aspect_ratio=aspect_ratio,
+            lock_aspect_ratio=lock_aspect_ratio,
+            curve_antialiasing=curve_antialiasing,
+            gridparam=gridparam,
+            section=section,
+            type=type,
+            axes_synchronised=axes_synchronised,
+            force_colorbar_enabled=force_colorbar_enabled,
+            no_image_analysis_widgets=no_image_analysis_widgets,
+            show_contrast=show_contrast,
+            show_itemlist=show_itemlist,
+            show_xsection=show_xsection,
+            show_ysection=show_ysection,
+            xsection_pos=xsection_pos,
+            ysection_pos=ysection_pos,
+        )
+        return PlotWidget(
+            parent,
+            toolbar=toolbar,
+            options=options,
+            panels=panels,
+            auto_tools=auto_tools,
+        )
+
+    def dialog(
+        self,
+        parent: QWidget | None = None,
+        toolbar: bool = False,
+        panels: tuple[PanelWidget] | None = None,
+        auto_tools: bool = True,
+        wintitle: str = "PlotPy",
+        icon: str = "plotpy.svg",
+        edit: bool = False,
+        title: str | None = None,
+        xlabel: str | tuple[str, str] | None = None,
+        ylabel: str | tuple[str, str] | None = None,
+        zlabel: str | None = None,
+        xunit: str | tuple[str, str] | None = None,
+        yunit: str | tuple[str, str] | None = None,
+        zunit: str | None = None,
+        yreverse: bool | None = None,
+        aspect_ratio: float = 1.0,
+        lock_aspect_ratio: bool | None = None,
+        curve_antialiasing: bool | None = None,
+        gridparam: GridParam | None = None,
+        section: str = "plot",
+        type: str | PlotType = "auto",
+        axes_synchronised: bool = False,
+        force_colorbar_enabled: bool = False,
+        no_image_analysis_widgets: bool = False,
+        show_contrast: bool = False,
+        show_itemlist: bool = False,
+        show_xsection: bool = False,
+        show_ysection: bool = False,
+        xsection_pos: str = "top",
+        ysection_pos: str = "right",
+    ) -> PlotDialog:
+        """Make a plot dialog (:py:class:`.PlotDialog` object)
+
+        Args:
+            parent: Parent widget
+            toolbar: Show/hide toolbar
+            panels: Additionnal panels
+            auto_tools: If True, the plot tools are automatically registered.
+             If False, the user must register the tools manually.
+            wintitle: The window title
+            icon: The window icon
+            edit: If True, the plot is editable
+            title: The plot title
+            xlabel: (bottom axis title, top axis title) or bottom axis title only
+            ylabel: (left axis title, right axis title) or left axis title only
+            zlabel: The Z-axis label
+            xunit: (bottom axis unit, top axis unit) or bottom axis unit only
+            yunit: (left axis unit, right axis unit) or left axis unit only
+            zunit: The Z-axis unit
+            yreverse: If True, the Y-axis is reversed
+            aspect_ratio: The plot aspect ratio
+            lock_aspect_ratio: If True, the aspect ratio is locked
+            curve_antialiasing: If True, the curve antialiasing is enabled
+            gridparam: The grid parameters
+            section: The plot configuration section name ("plot", by default)
+            type: The plot type ("auto", "manual", "curve" or "image")
+            axes_synchronised: If True, the axes are synchronised
+            force_colorbar_enabled: If True, the colorbar is always enabled
+            no_image_analysis_widgets: If True, the image analysis widgets are not added
+            show_contrast: If True, the contrast adjustment panel is visible
+            show_itemlist: If True, the itemlist panel is visible
+            show_xsection: If True, the X-axis cross section panel is visible
+            show_ysection: If True, the Y-axis cross section panel is visible
+            xsection_pos: The X-axis cross section panel position ("top" or "bottom")
+            ysection_pos: The Y-axis cross section panel position ("left" or "right")
+        """
+        options = PlotOptions(
+            title=title,
+            xlabel=xlabel,
+            ylabel=ylabel,
+            zlabel=zlabel,
+            xunit=xunit,
+            yunit=yunit,
+            zunit=zunit,
+            yreverse=yreverse,
+            aspect_ratio=aspect_ratio,
+            lock_aspect_ratio=lock_aspect_ratio,
+            curve_antialiasing=curve_antialiasing,
+            gridparam=gridparam,
+            section=section,
+            type=type,
+            axes_synchronised=axes_synchronised,
+            force_colorbar_enabled=force_colorbar_enabled,
+            no_image_analysis_widgets=no_image_analysis_widgets,
+            show_contrast=show_contrast,
+            show_itemlist=show_itemlist,
+            show_xsection=show_xsection,
+            show_ysection=show_ysection,
+            xsection_pos=xsection_pos,
+            ysection_pos=ysection_pos,
+        )
+        return PlotDialog(
+            parent,
+            toolbar=toolbar,
+            options=options,
+            panels=panels,
+            auto_tools=auto_tools,
+            title=wintitle,
+            icon=icon,
+            edit=edit,
+        )
+
+    def window(
+        self,
+        parent: QWidget | None = None,
+        toolbar: bool = False,
+        panels: tuple[PanelWidget] | None = None,
+        auto_tools: bool = True,
+        wintitle: str = "PlotPy",
+        icon: str = "plotpy.svg",
+        title: str | None = None,
+        xlabel: str | tuple[str, str] | None = None,
+        ylabel: str | tuple[str, str] | None = None,
+        zlabel: str | None = None,
+        xunit: str | tuple[str, str] | None = None,
+        yunit: str | tuple[str, str] | None = None,
+        zunit: str | None = None,
+        yreverse: bool | None = None,
+        aspect_ratio: float = 1.0,
+        lock_aspect_ratio: bool | None = None,
+        curve_antialiasing: bool | None = None,
+        gridparam: GridParam | None = None,
+        section: str = "plot",
+        type: str | PlotType = "auto",
+        axes_synchronised: bool = False,
+        force_colorbar_enabled: bool = False,
+        no_image_analysis_widgets: bool = False,
+        show_contrast: bool = False,
+        show_itemlist: bool = False,
+        show_xsection: bool = False,
+        show_ysection: bool = False,
+        xsection_pos: str = "top",
+        ysection_pos: str = "right",
+    ) -> PlotWindow:
+        """Make a plot window (:py:class:`.PlotWindow` object)
+
+        Args:
+            parent: Parent widget
+            toolbar: Show/hide toolbar
+            panels: Additionnal panels
+            auto_tools: If True, the plot tools are automatically registered.
+             If False, the user must register the tools manually.
+            wintitle: The window title
+            icon: The window icon
+            title: The plot title
+            xlabel: (bottom axis title, top axis title) or bottom axis title only
+            ylabel: (left axis title, right axis title) or left axis title only
+            zlabel: The Z-axis label
+            xunit: (bottom axis unit, top axis unit) or bottom axis unit only
+            yunit: (left axis unit, right axis unit) or left axis unit only
+            zunit: The Z-axis unit
+            yreverse: If True, the Y-axis is reversed
+            aspect_ratio: The plot aspect ratio
+            lock_aspect_ratio: If True, the aspect ratio is locked
+            curve_antialiasing: If True, the curve antialiasing is enabled
+            gridparam: The grid parameters
+            section: The plot configuration section name ("plot", by default)
+            type: The plot type ("auto", "manual", "curve" or "image")
+            axes_synchronised: If True, the axes are synchronised
+            force_colorbar_enabled: If True, the colorbar is always enabled
+            no_image_analysis_widgets: If True, the image analysis widgets are not added
+            show_contrast: If True, the contrast adjustment panel is visible
+            show_itemlist: If True, the itemlist panel is visible
+            show_xsection: If True, the X-axis cross section panel is visible
+            show_ysection: If True, the Y-axis cross section panel is visible
+            xsection_pos: The X-axis cross section panel position ("top" or "bottom")
+            ysection_pos: The Y-axis cross section panel position ("left" or "right")
+        """
+        options = PlotOptions(
+            title=title,
+            xlabel=xlabel,
+            ylabel=ylabel,
+            zlabel=zlabel,
+            xunit=xunit,
+            yunit=yunit,
+            zunit=zunit,
+            yreverse=yreverse,
+            aspect_ratio=aspect_ratio,
+            lock_aspect_ratio=lock_aspect_ratio,
+            curve_antialiasing=curve_antialiasing,
+            gridparam=gridparam,
+            section=section,
+            type=type,
+            axes_synchronised=axes_synchronised,
+            force_colorbar_enabled=force_colorbar_enabled,
+            no_image_analysis_widgets=no_image_analysis_widgets,
+            show_contrast=show_contrast,
+            show_itemlist=show_itemlist,
+            show_xsection=show_xsection,
+            show_ysection=show_ysection,
+            xsection_pos=xsection_pos,
+            ysection_pos=ysection_pos,
+        )
+        return PlotWindow(
+            parent,
+            toolbar=toolbar,
+            options=options,
+            panels=panels,
+            auto_tools=auto_tools,
+            title=wintitle,
+            icon=icon,
+        )
+
+    # ---- Plot items -----------------------------------------------------------------
     def gridparam(
         self,
         background: str | None = None,
@@ -2316,5 +2623,5 @@ class PlotItemBuilder:
         return self.info_label(anchor, comps, title=title)
 
 
-#: Instance of :py:class:`.PlotItemBuilder`
-make = PlotItemBuilder()
+#: Instance of :py:class:`.PlotBuilder`
+make = PlotBuilder()

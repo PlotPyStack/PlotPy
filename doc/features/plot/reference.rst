@@ -6,6 +6,8 @@ High-level features
 
 .. autoclass:: plotpy.plot.manager.PlotManager
    :members:
+.. autoclass:: plotpy.plot.PlotOptions
+   :members:
 .. autoclass:: plotpy.plot.PlotWidget
    :members:
 .. autoclass:: plotpy.plot.PlotDialog
@@ -16,7 +18,9 @@ High-level features
 Low-level features
 ^^^^^^^^^^^^^^^^^^
 
-.. autoclass:: plotpy.plot.PlotType
+.. autoclass:: plotpy.constants.PlotType
    :members:
 .. autoclass:: plotpy.plot.BasePlot
+   :members:
+.. autoclass:: plotpy.plot.BasePlotOptions
    :members:

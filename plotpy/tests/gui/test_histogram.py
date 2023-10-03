@@ -11,19 +11,17 @@ from guidata.qthelpers import qt_app_context
 from numpy.random import normal
 
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog
 
 
 def test_histogram():
     """Test"""
     with qt_app_context(exec_loop=True):
         data = normal(0, 1, (2000,))
-        win = PlotDialog(
+        win = make.dialog(
             edit=False,
             toolbar=True,
             wintitle="Histogram test",
-            options={"type": PlotType.CURVE},
+            type="curve",
         )
         plot = win.manager.get_plot()
         plot.add_item(make.histogram(data))

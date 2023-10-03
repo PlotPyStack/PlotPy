@@ -20,10 +20,16 @@ Create a basic curve plotting widget:
     >>> app = QApplication([])
 
 * now that a `QApplication` object exists, we may create the plotting
-  widget::
+  widget using :py:class:`.PlotWidget` and :py:class:`.PlotOptions`::
 
-    >>> from plotpy.plot import BasePlot, PlotType
-    >>> plot = BasePlot(title="Example", xlabel="X", ylabel="Y", type=PlotType.CURVE)
+    >>> from plotpy.plot import PlotWidget, PlotOptions
+    >>> options = PlotOptions(title="Example", xlabel="X", ylabel="Y", type="curve")
+    >>> plot = PlotWidget(options=options)
+
+* ...or using the :py:class:`.PlotBuilder` (see :py:attr:`plotpy.builder.make`)::
+
+    >>> from plotpy.builder import make
+    >>> plot = make.widget(title="Example", xlabel="X", ylabel="Y", type="curve")
 
 Create a curve item:
 
@@ -38,7 +44,7 @@ Create a curve item:
     >>> curve = CurveItem(param)
     >>> curve.set_data(x, y)
 
-* or using the `plot item builder` (see :py:attr:`plotpy.builder.make`)::
+* or using the :py:class:`.PlotBuilder` (see :py:attr:`plotpy.builder.make`)::
 
     >>> from plotpy.builder import make
     >>> curve = make.curve(x, y, title='My curve')
@@ -55,12 +61,18 @@ Display the plotting widget::
 Image example
 ^^^^^^^^^^^^^
 
-Create a basic image plotting widget (see also `Curve example`_)::
+Create a basic image plotting widget (see also `Curve example`_),
+using :py:class:`.PlotWidget` and :py:class:`.PlotOptions`::
 
     >>> import guidata
     >>> app = guidata.qapplication()
-    >>> from plotpy.widgets.baseplot import BasePlot, PlotType
-    >>> plot = BasePlot(title="Example", type=PlotType.IMAGE)
+    >>> from plotpy.widgets.baseplot import PlotWidget, PlotOptions
+    >>> plot = PlotWidget(options=PlotOptions(title="Example", type="image"))
+
+...or using the :py:class:`.PlotBuilder` (see :py:attr:`plotpy.builder.make`)::
+
+    >>> from plotpy.builder import make
+    >>> plot = make.widget(title="Example", type="image")
 
 Generate random data for testing purpose::
 
@@ -81,7 +93,7 @@ Create a simple image item:
     >>> image = ImageItem(param)
     >>> image.set_data(data)
 
-* or using the `plot item builder` (see :py:attr:`plotpy.builder.make`)::
+* or using the :py:class:`.PlotBuilder` (see :py:attr:`plotpy.builder.make`)::
 
     >>> from plotpy.builder import make
     >>> image = make.image(data, title='My image')
@@ -107,7 +119,7 @@ A shape may be created:
     >>> param.title = 'My rectangle'
     >>> rect_item = RectangleShape(0., 2., 4., 0., param)
 
-* or using the `plot item builder` (see :py:attr:`plotpy.builder.make`)::
+* or using the :py:class:`.PlotBuilder` (see :py:attr:`plotpy.builder.make`)::
 
     >>> from plotpy.builder import make
     >>> rect_item = make.rectangle(0., 2., 4., 0., title='My rectangle')
@@ -128,7 +140,7 @@ An annotated shape may be created:
     >>> param.title = 'My circle'
     >>> circle_item = AnnotatedCircle(0., 2., 4., 0., param)
 
-* or using the `plot item builder` (see :py:attr:`plotpy.builder.make`)::
+* or using the :py:class:`.PlotBuilder` (see :py:attr:`plotpy.builder.make`)::
 
     >>> from plotpy.builder import make
     >>> circle_item = make.annotated_circle(0., 2., 4., 0., title='My circle')

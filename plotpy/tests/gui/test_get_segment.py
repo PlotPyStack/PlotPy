@@ -21,7 +21,6 @@ from guidata.qthelpers import qt_app_context
 from plotpy.builder import make
 from plotpy.config import _
 from plotpy.coords import axes_to_canvas
-from plotpy.plot import PlotDialog
 from plotpy.tools import AnnotatedSegmentTool, SelectTool
 
 SEG_AXES_COORDS = [20, 20, 70, 70]
@@ -29,8 +28,8 @@ SEG_AXES_COORDS = [20, 20, 70, 70]
 
 def get_segment(*items):
     """Show image and return selected segment coordinates"""
-    win = PlotDialog(
-        _("Select a segment then press OK to accept"), edit=True, toolbar=True
+    win = make.dialog(
+        wintitle=_("Select a segment then press OK to accept"), edit=True, toolbar=True
     )
     default = win.manager.add_tool(SelectTool)
     win.manager.set_default_tool(default)

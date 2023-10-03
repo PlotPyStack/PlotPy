@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import annotations
+
 import weakref
+from typing import TYPE_CHECKING
 
 from guidata.configtools import get_icon
 from guidata.dataset.dataitems import BoolItem, FloatItem
@@ -38,6 +42,9 @@ from plotpy.tools.base import (
 from plotpy.tools.misc import OpenFileTool
 from plotpy.tools.shapes import CircleTool, RectangleTool, RectangularShapeTool
 from plotpy.widgets.imagefile import exec_image_save_dialog
+
+if TYPE_CHECKING:
+    from plotpy.plot import BasePlot
 
 
 class ImageStatsRectangle(AnnotatedRectangle):
@@ -882,14 +889,14 @@ class RotateCropTool(CommandTool):
         self.action.setEnabled(status)
 
 
-def update_image_tool_status(tool, plot):
+def update_image_tool_status(tool, plot: BasePlot) -> bool:
     """
 
     :param tool:
     :param plot:
     :return:
     """
-    enabled = plot.type != PlotType.CURVE
+    enabled = plot.options.type != PlotType.CURVE
     tool.action.setEnabled(enabled)
     return enabled
 

@@ -3,7 +3,7 @@
 # Licensed under the terms of the BSD 3-Clause
 # (see plotpy/LICENSE for details)
 
-"""Test PlotItemBuilder.curve parameters"""
+"""Test PlotBuilder.curve parameters"""
 
 import numpy as np
 import pytest
@@ -11,13 +11,11 @@ from qtpy.QtCore import Qt
 from qwt import QwtPlotCurve
 
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog
 
 
 def plot_qtbot_curve(qtbot, curve):
     """Plot *curve* in a dialog managed by *qtbot*"""
-    win = PlotDialog(options={"type": PlotType.CURVE})
+    win = make.dialog(type="curve")
     plot = win.manager.get_plot()
     plot.add_item(curve)
     qtbot.addWidget(win)

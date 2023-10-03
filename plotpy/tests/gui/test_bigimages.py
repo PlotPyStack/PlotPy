@@ -3,7 +3,7 @@
 # Licensed under the terms of the BSD 3-Clause
 # (see plotpy/LICENSE for details)
 
-"""PlotDialog test"""
+"""Test showing 10 big images"""
 
 # guitest: show
 
@@ -11,25 +11,13 @@ import numpy as np
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog
 
 
 def imshow():
-    win = PlotDialog(
-        edit=False,
-        toolbar=True,
-        wintitle="Displaying 10 big images test",
-        options=dict(
-            xlabel="Concentration", xunit="ppm", yunit="pixels", type=PlotType.IMAGE
-        ),
-    )
-
+    win = make.dialog(toolbar=True, title="Displaying 10 big images test")
     plot = win.manager.get_plot()
-
     for i in range(10):
         plot.add_item(make.image(compute_image(i)))
-
     win.show()
     return win
 

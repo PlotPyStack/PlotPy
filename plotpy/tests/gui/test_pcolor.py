@@ -3,7 +3,7 @@
 # Licensed under the terms of the BSD 3-Clause
 # (see plotpy/LICENSE for details)
 
-"""PlotDialog / Pcolor test"""
+"""Test showing a pcolor plot"""
 
 # guitest: show
 
@@ -14,17 +14,10 @@ from guidata.qthelpers import qt_app_context
 
 from plotpy._scaler import _scale_quads
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog
 
 
 def imshow(items):
-    win = PlotDialog(
-        edit=False,
-        toolbar=True,
-        options={"yreverse": False, "type": PlotType.IMAGE},
-        wintitle="Pcolor test",
-    )
+    win = make.dialog(toolbar=True, yreverse=False, wintitle="Pcolor test")
     plot = win.manager.get_plot()
     for item in items:
         plot.add_item(item)

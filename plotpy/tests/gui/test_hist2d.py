@@ -12,17 +12,15 @@ from numpy import array, concatenate, dot, random
 
 from plotpy.builder import make
 from plotpy.config import _
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog
 
 
 def hist2d_func(X, Y, Z):
     with qt_app_context(exec_loop=True):
-        win = PlotDialog(
+        win = make.dialog(
             edit=True,
             toolbar=True,
             wintitle="2-D Histogram X0=(0,1), X1=(-1,-1)",
-            options={"type": PlotType.IMAGE},
+            type="image",
         )
         hist2d = make.histogram2D(X, Y, 200, 200, Z=Z, computation=2)
         curve = make.curve(
@@ -39,11 +37,11 @@ def hist2d_func(X, Y, Z):
 
 def hist2d(X, Y):
     with qt_app_context(exec_loop=True):
-        win = PlotDialog(
+        win = make.dialog(
             edit=True,
             toolbar=True,
             wintitle="2-D Histogram X0=(0,1), X1=(-1,-1)",
-            options={"type": PlotType.IMAGE},
+            type="image",
         )
         hist2d = make.histogram2D(X, Y, 200, 200)
         curve = make.curve(

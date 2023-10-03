@@ -11,8 +11,6 @@ import numpy as np
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog
 
 
 def test_plot_log():
@@ -23,8 +21,7 @@ def test_plot_log():
         y[0] = 0
         item = make.curve(x, y, color="b")
         item = make.error(x, y, None, y * 0.23)
-
-        win = PlotDialog(options={"type": PlotType.CURVE})
+        win = make.dialog(type="curve")
         plot = win.manager.get_plot()
         plot.set_axis_scale("left", "log")
         plot.set_axis_scale("bottom", "log")

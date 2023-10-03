@@ -17,9 +17,7 @@ from qtpy import QtGui as QG
 
 from plotpy import io
 from plotpy.builder import LUTAlpha, make
-from plotpy.constants import PlotType
 from plotpy.items import assemble_imageitems
-from plotpy.plot import PlotDialog
 
 DEFAULT_CHARS = "".join([chr(c) for c in range(32, 256)])
 
@@ -150,11 +148,12 @@ def test_transform():
             minor_enabled=(False, False),
             major_style=(".", "gray", 1),
         )
-        win = PlotDialog(
+        win = make.dialog(
             edit=False,
             toolbar=True,
             wintitle="Transform test ({}x{} images)".format(N, N),
-            options=dict(gridparam=gridparam, type=PlotType.IMAGE),
+            gridparam=gridparam,
+            type="image",
         )
         nc = int(np.sqrt(len(items)) + 1.0)
         maxy, x, y = 0, 0, 0

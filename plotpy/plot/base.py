@@ -17,6 +17,8 @@ from __future__ import annotations
 
 import pickle
 import sys
+import warnings
+from dataclasses import dataclass
 from math import fabs
 from typing import TYPE_CHECKING
 
@@ -54,10 +56,69 @@ if TYPE_CHECKING:
     import guidata.dataset.io
 
 
-class BasePlot(qwt.QwtPlot):
+@dataclass
+class BasePlotOptions:
+    """Base plot options
+
+    Args:
+        title: The plot title
+        xlabel: (bottom axis title, top axis title) or bottom axis title only
+        ylabel: (left axis title, right axis title) or left axis title only
+        zlabel: The Z-axis label
+        xunit: (bottom axis unit, top axis unit) or bottom axis unit only
+        yunit: (left axis unit, right axis unit) or left axis unit only
+        zunit: The Z-axis unit
+        yreverse: If True, the Y-axis is reversed
+        aspect_ratio: The plot aspect ratio
+        lock_aspect_ratio: If True, the aspect ratio is locked
+        curve_antialiasing: If True, the curve antialiasing is enabled
+        gridparam: The grid parameters
+        section: The plot configuration section name ("plot", by default)
+        type: The plot type ("auto", "manual", "curve" or "image")
+        axes_synchronised: If True, the axes are synchronised
+        force_colorbar_enabled: If True, the colorbar is always enabled
     """
-    An enhanced QwtPlot class that provides
-    methods for handling plotitems and axes better
+
+    title: str | None = None
+    xlabel: str | tuple[str, str] | None = None
+    ylabel: str | tuple[str, str] | None = None
+    zlabel: str | None = None
+    xunit: str | tuple[str, str] | None = None
+    yunit: str | tuple[str, str] | None = None
+    zunit: str | None = None
+    yreverse: bool | None = None
+    aspect_ratio: float = 1.0
+    lock_aspect_ratio: bool | None = None
+    curve_antialiasing: bool | None = None
+    gridparam: GridParam | None = None
+    section: str = "plot"
+    type: str | PlotType = "auto"
+    axes_synchronised: bool = False
+    force_colorbar_enabled: bool = False
+
+    def __post_init__(self) -> None:
+        """Check arguments"""
+        # Check type
+        if isinstance(self.type, str):
+            if self.type not in ["auto", "manual", "curve", "image"]:
+                raise ValueError("type must be 'auto', 'manual', 'curve' or 'image'")
+            self.type = PlotType[self.type.upper()]
+        elif not isinstance(self.type, PlotType):
+            raise TypeError("type must be a string or a PlotType")
+        # Check aspect ratio
+        if self.aspect_ratio <= 0:
+            raise ValueError("aspect_ratio must be strictly positive")
+        # Show a warning if force_colorbar_enabled is True and type is "curve"
+        if self.force_colorbar_enabled and self.type == "curve":
+            warnings.warn(
+                "force_colorbar_enabled is True but type is 'curve', "
+                "so the colorbar will not be displayed",
+                RuntimeWarning,
+            )
+
+
+class BasePlot(qwt.QwtPlot):
+    """Enhanced QwtPlot class providing methods for handling items and axes better
 
     It distinguishes activatable items from basic QwtPlotItems.
 
@@ -65,22 +126,8 @@ class BasePlot(qwt.QwtPlot):
     be added to the plot using add_item methods.
 
     Args:
-        parent (QWidget): parent widget
-        type (PlotType): the type of the plot
-        title (str): the plot title
-        xlabel (str): the x axis label
-        ylabel (str): the y axis label
-        zlabel (str): the z axis label
-        xunit (str): the x axis unit
-        yunit (str): the y axis unit
-        zunit (str): the z axis unit
-        yreverse (bool): whether the y axis is reversed
-        aspect_ratio (float): the aspect ratio
-        lock_aspect_ratio (bool): whether the aspect ratio is locked
-        gridparam (GridParam): the grid parameters
-        section (str): the section in the configuration file
-        axes_synchronised (bool): whether the axes are synchronised
-        force_colorbar_enabled (bool): whether the colorbar is forced to be enabled
+        parent: parent widget
+        options: plot options
     """
 
     Y_LEFT, Y_RIGHT, X_BOTTOM, X_TOP = (
@@ -219,70 +266,49 @@ class BasePlot(qwt.QwtPlot):
     def __init__(
         self,
         parent: QW.QWidget | None = None,
-        type: PlotType = PlotType.AUTO,
-        title: str | None = None,
-        xlabel: str | None = None,
-        ylabel: str | None = None,
-        zlabel: str | None = None,
-        xunit: str | None = None,
-        yunit: str | None = None,
-        zunit: str | None = None,
-        yreverse: bool | None = None,
-        aspect_ratio: float = 1.0,
-        lock_aspect_ratio: bool | None = None,
-        gridparam: GridParam | None = None,
-        section: str = "plot",
-        axes_synchronised: bool = False,
-        force_colorbar_enabled: bool = False,
+        options: BasePlotOptions | None = None,
     ) -> None:
         super().__init__(parent)
+        self.options = options = options if options is not None else BasePlotOptions()
 
-        self.type = type
-
+        self.lock_aspect_ratio = options.lock_aspect_ratio
         self.__autoLockAspectRatio = False
-        if lock_aspect_ratio is None:
-            if type == PlotType.IMAGE:
-                lock_aspect_ratio = True
-            elif type == PlotType.CURVE or type == PlotType.MANUAL:
-                lock_aspect_ratio = False
-            elif type == PlotType.AUTO:
-                lock_aspect_ratio = False
+        if self.lock_aspect_ratio is None:
+            if self.options.type == PlotType.IMAGE:
+                self.lock_aspect_ratio = True
+            elif self.options.type in (PlotType.CURVE, PlotType.MANUAL):
+                self.lock_aspect_ratio = False
+            else:  # PlotType.AUTO
+                self.lock_aspect_ratio = False
                 self.__autoLockAspectRatio = True
-            else:
-                assert False
 
         self.__autoYReverse = False
-        if yreverse is None:
-            if type == PlotType.IMAGE:
-                yreverse = True
-            elif type == PlotType.CURVE or type == PlotType.MANUAL:
-                yreverse = False
-            elif type == PlotType.AUTO:
-                yreverse = False
+        if options.yreverse is None:
+            if self.options.type == PlotType.IMAGE:
+                options.yreverse = True
+            elif self.options.type in (PlotType.CURVE, PlotType.MANUAL):
+                options.yreverse = False
+            else:  # PlotType.AUTO
+                options.yreverse = False
                 self.__autoYReverse = True
-            else:
-                assert False
 
         self.colormap_axis = self.Y_RIGHT
 
         self.__autoColorBarEnabled = False
-        self.force_colorbar_enabled = force_colorbar_enabled
-        if force_colorbar_enabled or type == PlotType.IMAGE:
+        if options.force_colorbar_enabled or self.options.type == PlotType.IMAGE:
             self.enableAxis(self.colormap_axis)
             self.axisWidget(self.colormap_axis).setColorBarEnabled(True)
-        elif type == PlotType.AUTO:
+        elif self.options.type == PlotType.AUTO:
             self.__autoColorBarEnabled = True
 
-        self.lock_aspect_ratio = lock_aspect_ratio
-
-        if zlabel is not None:
-            if ylabel is not None and not isinstance(ylabel, str):
-                ylabel = ylabel[0]
-            ylabel = (ylabel, zlabel)
-        if zunit is not None:
-            if yunit is not None and not isinstance(yunit, str):
-                yunit = yunit[0]
-            yunit = (yunit, zunit)
+        if options.zlabel is not None:
+            if options.ylabel is not None and not isinstance(options.ylabel, str):
+                options.ylabel = options.ylabel[0]
+            options.ylabel = (options.ylabel, options.zlabel)
+        if options.zunit is not None:
+            if options.yunit is not None and not isinstance(options.yunit, str):
+                options.yunit = options.yunit[0]
+            options.yunit = (options.yunit, options.zunit)
 
         self._start_autoscaled = True
         self.setSizePolicy(QW.QSizePolicy.Expanding, QW.QSizePolicy.Expanding)
@@ -300,8 +326,8 @@ class BasePlot(qwt.QwtPlot):
         ]
         self._active_xaxis = self.DEFAULT_ACTIVE_XAXIS
         self._active_yaxis = self.DEFAULT_ACTIVE_YAXIS
-        self.read_axes_styles(section, self.AXIS_CONF_OPTIONS)
-        self.font_title = get_font(CONF, section, "title")
+        self.read_axes_styles(options.section, self.AXIS_CONF_OPTIONS)
+        self.font_title = get_font(CONF, options.section, "title")
         canvas: qwt.QwtPlotCanvas = self.canvas()
         canvas.setFocusPolicy(QC.Qt.FocusPolicy.StrongFocus)
         canvas.setFocusIndicator(qwt.QwtPlotCanvas.ItemFocusIndicator)
@@ -316,14 +342,18 @@ class BasePlot(qwt.QwtPlot):
         self.axes_reverse = [False] * 4
 
         self.set_titles(
-            title=title, xlabel=xlabel, ylabel=ylabel, xunit=xunit, yunit=yunit
+            title=options.title,
+            xlabel=options.xlabel,
+            ylabel=options.ylabel,
+            xunit=options.xunit,
+            yunit=options.yunit,
         )
 
         self.antialiased = False
+        antial = options.curve_antialiasing or CONF.get(options.section, "antialiasing")
+        self.set_antialiasing(antial)
 
-        self.set_antialiasing(CONF.get(section, "antialiasing"))
-
-        self.axes_synchronised = axes_synchronised
+        self.axes_synchronised = options.axes_synchronised
 
         # Installing our own event filter:
         # (qwt's event filter does not fit our needs)
@@ -335,8 +365,8 @@ class BasePlot(qwt.QwtPlot):
             label_cb=self.get_coordinates_str, constraint_cb=self.on_active_curve
         )
         self.__marker_stay_visible = False
-        self.cross_marker.set_style(section, "marker/cross")
-        self.curve_marker.set_style(section, "marker/curve")
+        self.cross_marker.set_style(options.section, "marker/cross")
+        self.curve_marker.set_style(options.section, "marker/curve")
         self.cross_marker.setVisible(False)
         self.curve_marker.setVisible(False)
         self.cross_marker.attach(self)
@@ -349,15 +379,15 @@ class BasePlot(qwt.QwtPlot):
         self.canvas_pointer = False
 
         # Setting up grid
-        if gridparam is None:
-            gridparam = GridParam(title=_("Grid"), icon="grid.png")
-            gridparam.read_config(CONF, section, "grid")
-        self.grid = GridItem(gridparam)
+        if options.gridparam is None:
+            options.gridparam = GridParam(title=_("Grid"), icon="grid.png")
+            options.gridparam.read_config(CONF, options.section, "grid")
+        self.grid = GridItem(options.gridparam)
         self.add_item(self.grid, z=-1)
 
         self.__aspect_ratio = None
-        self.set_axis_direction("left", yreverse)
-        self.set_aspect_ratio(aspect_ratio, lock_aspect_ratio)
+        self.set_axis_direction("left", options.yreverse)
+        self.set_aspect_ratio(options.aspect_ratio, options.lock_aspect_ratio)
         self.replot()  # Workaround for the empty image widget bug
 
     def replot(self) -> None:
@@ -392,6 +422,9 @@ class BasePlot(qwt.QwtPlot):
                 # the plot is deleted.
                 if "wrapped C/C++ object of type" not in str(exc):
                     raise
+            except ValueError as exc:
+                # This happens when object has already been deleted
+                pass
 
     def on_active_curve(self, x: float, y: float) -> None:
         """
@@ -630,9 +663,9 @@ class BasePlot(qwt.QwtPlot):
         Returns:
             IBasePlotItem: the default item
         """
-        if self.type == PlotType.IMAGE:
+        if self.options.type == PlotType.IMAGE:
             items = self.get_items(item_type=itf.IImageItemType)
-        elif self.type == PlotType.CURVE:
+        elif self.options.type == PlotType.CURVE:
             items = self.get_items(item_type=itf.ICurveItemType)
         else:
             items = [
@@ -1026,7 +1059,7 @@ class BasePlot(qwt.QwtPlot):
         used_axes = set()
 
         has_image = False
-        if self.type == PlotType.IMAGE or self.force_colorbar_enabled:
+        if self.options.type == PlotType.IMAGE or self.options.force_colorbar_enabled:
             has_image = True
 
         for item in self.get_items():

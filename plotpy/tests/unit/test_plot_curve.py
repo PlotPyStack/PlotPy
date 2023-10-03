@@ -3,15 +3,14 @@
 # Licensed under the terms of the BSD 3-Clause
 # (see plotpy/LICENSE for details)
 
-"""PlotDialog test"""
+"""Test plotting of a curve with PlotDialog"""
 
 import numpy as np
 from qtpy.QtCore import Qt
 from qwt import QwtPlotItem
 
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog, PlotWidget
+from plotpy.plot import PlotWidget
 from plotpy.tools import AntiAliasingTool, AxisScaleTool, CurveStatsTool
 
 
@@ -23,7 +22,7 @@ def test_plot_curve(qtbot):
     curve = make.curve(x, y, color="g", curvestyle="Sticks")
     curve.setTitle("Curve")
 
-    win = PlotDialog(toolbar=True, options={"type": PlotType.CURVE})
+    win = make.dialog(toolbar=True, type="curve")
     plot = win.manager.get_plot()
     plot.add_item(curve)
 
@@ -48,7 +47,7 @@ def test_plot_curve_anti_aliasing(qtbot):
     y = np.sin(x)
     curve = make.curve(x, y, color="g")
 
-    win = PlotDialog(toolbar=True, options={"type": PlotType.CURVE})
+    win = make.dialog(toolbar=True, type="curve")
     plot = win.manager.get_plot()
     plot.add_item(curve)
 

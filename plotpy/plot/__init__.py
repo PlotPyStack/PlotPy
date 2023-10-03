@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
 # pylint: disable=unused-import
-from ..constants import PlotType
-from .base import BasePlot
-from .plotwidget import PlotDialog, PlotWidget, PlotWindow, SubplotWidget
+from .base import BasePlot, BasePlotOptions
+from .plotwidget import PlotDialog, PlotOptions, PlotWidget, PlotWindow, SubplotWidget

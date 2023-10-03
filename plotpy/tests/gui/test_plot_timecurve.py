@@ -39,8 +39,6 @@ from qtpy import QtWidgets as QW
 from qwt import QwtScaleDraw, QwtText
 
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotWidget
 
 
 class DummyDevice(QC.QObject):
@@ -190,10 +188,11 @@ class DynCurveWidget(QW.QWidget):
         self.setWindowTitle("Dynamic curve test")
         win32_fix_title_bar_background(self)
 
-        self.plotwidget = PlotWidget(
+        self.plotwidget = make.widget(
             parent=self,
             toolbar=True,
-            options=dict(title=title, type=PlotType.CURVE),
+            title=title,
+            type="curve",
             panels=panels,
         )
         self.plotwidget.plot.set_antialiasing(True)

@@ -12,8 +12,7 @@ from pytest import approx
 from qtpy.QtCore import Qt
 
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import BasePlot, PlotDialog
+from plotpy.plot import BasePlot
 from plotpy.tools import ColormapTool
 
 
@@ -29,11 +28,7 @@ def compute_image():
 
 @contextlib.contextmanager
 def plot_image(qtbot, item):
-    win = PlotDialog(
-        toolbar=True,
-        wintitle="PlotDialog image test",
-        options=dict(type=PlotType.IMAGE),
-    )
+    win = make.dialog(wintitle="Image plot test", type="image", toolbar=True)
     plot = win.manager.get_plot()
     assert isinstance(plot, BasePlot)
     plot.add_item(item)
@@ -111,7 +106,7 @@ def test_set_aspect_ratio(qtbot, ratio):
     """Test BasePlot.set_aspect_ratio method()
 
     It ensures that the new height is correctly set."""
-    win = PlotDialog(options=dict(type=PlotType.IMAGE))
+    win = make.dialog(type="image")
     item = make.image(compute_image())
     plot = win.manager.get_plot()
     plot.add_item(item, autoscale=False)
@@ -138,7 +133,7 @@ def test_set_aspect_ratio(qtbot, ratio):
 
 def test_colormap_tool(qtbot):
     """Test ColorMapTool on an image"""
-    win = PlotDialog(toolbar=True, options={"type": PlotType.IMAGE})
+    win = make.dialog(type="image", toolbar=True)
     item = make.image(compute_image())
     plot = win.manager.get_plot()
     plot.add_item(item)

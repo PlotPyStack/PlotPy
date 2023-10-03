@@ -3,7 +3,7 @@
 # Licensed under the terms of the BSD 3-Clause
 # (see plotpy/LICENSE for details)
 
-"""PlotDialog test"""
+"""Testing plot with synchronized axes"""
 
 
 # ===============================================================================
@@ -15,28 +15,29 @@ import guidata
 import numpy as np
 
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import BasePlot, PlotDialog, PlotWidget
+from plotpy.plot import BasePlot, BasePlotOptions, PlotDialog, PlotOptions, PlotWidget
 from plotpy.plot.manager import PlotManager
 
 
 class MyPlotDialog(PlotDialog):
-    def __init__(self, edit, toolbar, wintitle, options):
-        super().__init__(edit, toolbar, wintitle, options=options)
+    def __init__(self, parent=None, toolbar=False, title="", options=None, edit=False):
+        super().__init__(
+            parent, toolbar=toolbar, options=options, edit=edit, title=title
+        )
         self.create_plot(options)
 
     def create_plot(self, options):
         manager = PlotManager(None)
-        self.plotwidget = PlotWidget(self, **options)
+        self.plotwidget = PlotWidget(self, options=options)
         manager.set_main(self.plotwidget)
-        plot1 = BasePlot(title="TL", type=PlotType.CURVE)
-        plot2 = BasePlot(title="TR", type=PlotType.CURVE)
-        plot3 = BasePlot(title="BL", type=PlotType.CURVE)
-        plot4 = BasePlot(title="BR", type=PlotType.CURVE)
-        self.plotwidget.add_plot(plot1, 0, 0, "1")
-        self.plotwidget.add_plot(plot2, 0, 1, "2")
-        self.plotwidget.add_plot(plot3, 1, 0, "3")
-        self.plotwidget.add_plot(plot4, 1, 1, "4")
+        plot_tl = BasePlot(options=BasePlotOptions(title="TL", type="curve"))
+        plot_tr = BasePlot(options=BasePlotOptions(title="TR", type="curve"))
+        plot_bl = BasePlot(options=BasePlotOptions(title="BL", type="curve"))
+        plot_br = BasePlot(options=BasePlotOptions(title="BR", type="curve"))
+        self.plotwidget.add_plot(plot_tl, 0, 0, "1")
+        self.plotwidget.add_plot(plot_tr, 0, 1, "2")
+        self.plotwidget.add_plot(plot_bl, 1, 0, "3")
+        self.plotwidget.add_plot(plot_br, 1, 1, "4")
         self.plotwidget.finalize()
         manager.synchronize_axis(BasePlot.X_BOTTOM, ["1", "3"])
         manager.synchronize_axis(BasePlot.X_BOTTOM, ["2", "4"])
@@ -50,8 +51,8 @@ def plot(items1, items2, items3, items4):
     win = MyPlotDialog(
         edit=False,
         toolbar=True,
-        wintitle="PlotDialog test",
-        options=dict(title="Title", xlabel="xlabel", ylabel="ylabel"),
+        title="Synchronized axes plot",
+        options=PlotOptions(title="Title", xlabel="xlabel", ylabel="ylabel"),
     )
     items = [items1, items2, items3, items4]
     for i, plot in enumerate(win.plotwidget.plots):

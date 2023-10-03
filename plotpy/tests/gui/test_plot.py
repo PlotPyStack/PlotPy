@@ -3,7 +3,7 @@
 # Licensed under the terms of the BSD 3-Clause
 # (see plotpy/LICENSE for details)
 
-"""PlotDialog test"""
+"""Curve plotting test"""
 
 # guitest: show
 
@@ -11,26 +11,16 @@ import numpy as np
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog
 
 
 def plot(*items):
-    win = PlotDialog(
-        edit=False,
-        toolbar=True,
-        wintitle="PlotDialog test",
-        options=dict(
-            title="Title", xlabel="xlabel", ylabel="ylabel", type=PlotType.CURVE
-        ),
-    )
+    win = make.dialog(toolbar=True, wintitle="Curve plotting test", title="Curves")
     plot = win.manager.get_plot()
     for item in items:
         plot.add_item(item)
     win.manager.get_itemlist_panel().show()
     plot.set_items_readonly(False)
     win.show()
-
     return win, plot.get_items()
 
 

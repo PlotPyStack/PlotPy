@@ -12,8 +12,7 @@ from guidata.qthelpers import qt_app_context
 from numpy import linspace, sin
 
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog
+from plotpy.plot import PlotDialog, PlotOptions
 
 
 def compute_image(N=2000, grid=True):
@@ -50,10 +49,8 @@ def plot(*items):
     win = PlotDialog(
         edit=False,
         toolbar=True,
-        wintitle="PlotDialog test (curve and image)",
-        options=dict(
-            title="Title", xlabel="xlabel", ylabel="ylabel", type=PlotType.AUTO
-        ),
+        title="PlotDialog test (curve and image)",
+        options=PlotOptions(title="Title", xlabel="X", ylabel="Y", type="auto"),
     )
     plot = win.manager.get_plot()
     for item in items:

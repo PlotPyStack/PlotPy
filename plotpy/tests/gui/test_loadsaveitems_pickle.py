@@ -19,9 +19,8 @@ from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
 from plotpy.builder import make
-from plotpy.constants import PlotType
 from plotpy.items import Axes, PolygonShape
-from plotpy.plot import PlotDialog
+from plotpy.plot import PlotDialog, PlotOptions
 from plotpy.tools import ImageMaskTool, LoadItemsTool, SaveItemsTool
 
 
@@ -91,9 +90,9 @@ class LoadSaveDialog(PlotDialog):
         super().__init__(
             edit=False,
             toolbar=True,
-            wintitle="Load/save test",
-            options=dict(
-                title="Title", xlabel="xlabel", ylabel="ylabel", type=PlotType.IMAGE
+            title="Load/save test",
+            options=PlotOptions(
+                title="Title", xlabel="xlabel", ylabel="ylabel", type="image"
             ),
         )
         self.manager.add_separator_tool()

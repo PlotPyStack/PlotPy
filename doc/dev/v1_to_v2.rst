@@ -30,19 +30,29 @@ This method is available for all image items:
 * :py:class:`.MaskedImageItem`
 * :py:class:`.TrImageItem`
 
-New options added to item builder
+New options added to plot builder
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The method :py:meth:`.PlotItemBuilder.contours` has been added, in order to create
+The ``PlotItemBuilder`` factory class has been renamed to :py:class:`.PlotBuilder`,
+because it provides not only methods for creating plot items, but also methods
+for creating ready-to-use plots.
+
+New methods for creating ready-to-use plots have been added to the class:
+
+* :py:meth:`.PlotBuilder.widget`
+* :py:meth:`.PlotBuilder.dialog`
+* :py:meth:`.PlotBuilder.window`
+
+The method :py:meth:`.PlotBuilder.contours` has been added, in order to create
 contour curves. It returns a list of :py:class:`plotpy.items.ContourItem` objects.
 
 See demo script `tests/gui/test_contour.py`.
 
 The new keyword parameter ``alpha_function`` has been added to the methods
-:py:meth:`.PlotItemBuilder.image`, :py:meth:`.PlotItemBuilder.xyimage`,
-:py:meth:`.PlotItemBuilder.maskedimage`, :py:meth:`.PlotItemBuilder.maskedxyimage`,
-:py:meth:`.PlotItemBuilder.trimage`, :py:meth:`.PlotItemBuilder.rgbimage`, and
-:py:meth:`.PlotItemBuilder.quadgrid`. It allows to specify a function to
+:py:meth:`.PlotBuilder.image`, :py:meth:`.PlotBuilder.xyimage`,
+:py:meth:`.PlotBuilder.maskedimage`, :py:meth:`.PlotBuilder.maskedxyimage`,
+:py:meth:`.PlotBuilder.trimage`, :py:meth:`.PlotBuilder.rgbimage`, and
+:py:meth:`.PlotBuilder.quadgrid`. It allows to specify a function to
 compute the alpha channel of the image from the data values. The supported
 functions are:
 
@@ -53,8 +63,8 @@ functions are:
 * :py:attr:`plotpy.builder.LUTAlpha.TANH`
 
 .. warning:: The ``alpha_mask`` parameter has been removed from the methods
-             :py:meth:`.PlotItemBuilder.image`, :py:meth:`.PlotItemBuilder.xyimage`,
-             :py:meth:`.PlotItemBuilder.maskedimage`, :py:meth:`.PlotItemBuilder.maskedxyimage`,
-             :py:meth:`.PlotItemBuilder.trimage`, :py:meth:`.PlotItemBuilder.rgbimage`, and
-             :py:meth:`.PlotItemBuilder.quadgrid`. If you were using it, you should
+             :py:meth:`.PlotBuilder.image`, :py:meth:`.PlotBuilder.xyimage`,
+             :py:meth:`.PlotBuilder.maskedimage`, :py:meth:`.PlotBuilder.maskedxyimage`,
+             :py:meth:`.PlotBuilder.trimage`, :py:meth:`.PlotBuilder.rgbimage`, and
+             :py:meth:`.PlotBuilder.quadgrid`. If you were using it, you should
              replace it by the new ``alpha_function`` parameter.

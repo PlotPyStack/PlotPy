@@ -17,15 +17,14 @@ from qtpy import QtWidgets as QW
 
 import plotpy
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotWindow
+from plotpy.plot import PlotOptions, PlotWindow
 
 
 class BaseBM:
     """Benchmark object"""
 
     MAKE_FUNC = make.curve  # to be overriden in subclasses
-    WIN_TYPE = PlotType.AUTO
+    WIN_TYPE = "auto"
 
     def __init__(self, name, nsamples, **options):
         self.name = name
@@ -47,7 +46,7 @@ class BaseBM:
     def start(self):
         # Create plot window
         win = PlotWindow(
-            toolbar=True, wintitle=self.name, options={"type": self.WIN_TYPE}
+            toolbar=True, title=self.name, options=PlotOptions(type=self.WIN_TYPE)
         )
         win.show()
         QW.QApplication.processEvents()
@@ -68,7 +67,7 @@ class BaseBM:
 
 class CurveBM(BaseBM):
     MAKE_FUNC = make.curve
-    WIN_TYPE = PlotType.CURVE
+    WIN_TYPE = "curve"
 
     def compute_data(self):
         x = np.linspace(-10, 10, self.nsamples)
@@ -101,7 +100,7 @@ class ErrorBarBM(CurveBM):
 
 class ImageBM(BaseBM):
     MAKE_FUNC = make.image
-    WIN_TYPE = PlotType.IMAGE
+    WIN_TYPE = "image"
 
     def compute_data(self):
         data = np.zeros((int(self.nsamples), int(self.nsamples)), dtype=np.float32)
@@ -115,7 +114,7 @@ class ImageBM(BaseBM):
 
 class PColorBM(BaseBM):
     MAKE_FUNC = make.pcolor
-    WIN_TYPE = PlotType.IMAGE
+    WIN_TYPE = "image"
 
     def compute_data(self):
         N = self.nsamples

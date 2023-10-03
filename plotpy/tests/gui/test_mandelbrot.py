@@ -11,11 +11,10 @@ import numpy as np
 from guidata.qthelpers import qt_app_context
 from qtpy import QtCore as QC
 
+from plotpy.builder import make
 from plotpy.config import _
-from plotpy.constants import PlotType
 from plotpy.items import RawImageItem
 from plotpy.mandelbrot import mandelbrot
-from plotpy.plot import PlotDialog
 from plotpy.tools.base import ToggleTool
 
 
@@ -67,11 +66,12 @@ class MandelItem(RawImageItem):
 
 def test_mandel():
     with qt_app_context(exec_loop=True):
-        win = PlotDialog(
+        win = make.dialog(
             edit=True,
             toolbar=True,
             wintitle="Mandelbrot",
-            options=dict(yreverse=False, type=PlotType.IMAGE),
+            yreverse=False,
+            type="image",
         )
         mandel = MandelItem(-1.5, 0.5, -1.0, 1.0)
         win.manager.add_tool(FullScale, mandel)

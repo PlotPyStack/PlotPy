@@ -10,8 +10,6 @@ import pytest
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog
 
 list_offsets = [1e3, 1e6, 1e9, 1e12]
 
@@ -23,7 +21,7 @@ def test_xyimagebug(offset):
     y = numpy.arange(100)
     with qt_app_context(exec_loop=True):
         image = make.xyimage(x, y, data=data)
-        win = PlotDialog(options={"type": PlotType.IMAGE})
+        win = make.dialog(type="image")
         plot = win.manager.get_plot()
         plot.add_item(image)
         plot.select_item(image)  # this helps in seeing where the image should be

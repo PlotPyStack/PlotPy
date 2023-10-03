@@ -29,12 +29,11 @@ from plotpy import io
 from plotpy._scaler import INTERP_AA, INTERP_LINEAR, INTERP_NEAREST
 from plotpy.builder import make
 from plotpy.config import _
-from plotpy.constants import PlotType
 from plotpy.mathutils.colormap import get_colormap_list
 from plotpy.panels.contrastadjustment import ContrastAdjustment
 from plotpy.panels.csection.cswidget import XCrossSection, YCrossSection
 from plotpy.panels.itemlist import PlotItemList
-from plotpy.plot.base import BasePlot
+from plotpy.plot.base import BasePlot, BasePlotOptions
 from plotpy.plot.manager import PlotManager
 
 _qapp = None
@@ -56,7 +55,7 @@ def create_qapplication(exec_loop=False):
 class Window(QW.QMainWindow):
     """Figure window"""
 
-    def __init__(self, wintitle):
+    def __init__(self, title):
         super().__init__()
         win32_fix_title_bar_background(self)
 
@@ -82,7 +81,7 @@ class Window(QW.QMainWindow):
         layout.addLayout(self.layout)
         self.frame = frame
 
-        self.setWindowTitle(wintitle)
+        self.setWindowTitle(title)
         self.setWindowIcon(get_icon("plotpy.svg"))
 
     def closeEvent(self, event):
@@ -177,7 +176,7 @@ class Figure:
     def build_window(self):
         """Build window"""
         create_qapplication()
-        self.win = Window(wintitle=self.title)
+        self.win = Window(title=self.title)
         images = False
         for (i, j), ax in list(self.axes.items()):
             ax.setup_window(i, j, self.win)
@@ -358,7 +357,7 @@ class Axes:
         if self.ylimits is not None:
             p.set_axis_limits("left", *self.ylimits)
 
-    def setup_image(self, i, j, win):
+    def setup_image(self, i, j, win: Window):
         """Setup image
 
         :param i:
@@ -366,14 +365,13 @@ class Axes:
         :param win:
         :return:
         """
-        p = BasePlot(
-            win,
+        options = BasePlotOptions(
             xlabel=self.xlabel,
             ylabel=self.ylabel,
-            zlabel=self.zlabel,
             yreverse=self.yreverse,
-            type=PlotType.IMAGE,
+            type="image",
         )
+        p = BasePlot(win, options=options)
         self.main_widget = p
         win.add_plot(i, j, p)
         for item in self.images + self.plots:
@@ -392,7 +390,8 @@ class Axes:
         :param win:
         :return:
         """
-        p = BasePlot(win, xlabel=self.xlabel, ylabel=self.ylabel, type=PlotType.CURVE)
+        options = BasePlotOptions(xlabel=self.xlabel, ylabel=self.ylabel, type="curve")
+        p = BasePlot(win, options=options)
         self.main_widget = p
         win.add_plot(i, j, p)
         for item in self.plots:

@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import abc
+import warnings
+from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from guidata.configtools import get_icon
@@ -17,7 +19,7 @@ from plotpy.constants import PlotType
 from plotpy.panels.contrastadjustment import ContrastAdjustment
 from plotpy.panels.csection.cswidget import XCrossSection, YCrossSection
 from plotpy.panels.itemlist import PlotItemList
-from plotpy.plot.base import BasePlot
+from plotpy.plot.base import BasePlot, BasePlotOptions
 from plotpy.plot.manager import PlotManager
 
 if TYPE_CHECKING:
@@ -26,12 +28,12 @@ if TYPE_CHECKING:
 
 
 def configure_plot_splitter(qsplit: QW.QSplitter, decreasing_size: bool = True) -> None:
-    """_summary_
+    """Configure a QSplitter for plot widgets
 
     Args:
-        qsplit (QSplitter): QSplitter instance
-        decreasing_size (bool | None): Specify if child widgets can be resized down
-            to size 0 by the user. Defaults to True.
+        qsplit: QSplitter instance
+        decreasing_size: Specify if child widgets can be resized down
+         to size 0 by the user. Defaults to True.
     """
     qsplit.setChildrenCollapsible(False)
     qsplit.setHandleWidth(4)
@@ -45,140 +47,215 @@ def configure_plot_splitter(qsplit: QW.QSplitter, decreasing_size: bool = True) 
         qsplit.setSizes([1, 2])
 
 
-class BasePlotWidget(QW.QSplitter):
-    """
-    Construct a BasePlotWidget object, which includes:
-        * A plot (:py:class:`.BasePlot`)
-        * An `item list` panel (:py:class:`.PlotItemList`)
-        * A `contrast adjustment` panel (:py:class:`.ContrastAdjustment`)
-        * An `X-axis cross section` panel (:py:class:`.XCrossSection`)
-        * An `Y-axis cross section` panel (:py:class:`.YCrossSection`)
+@dataclass
+class PlotOptions(BasePlotOptions):
+    """Plot options
 
-    This object does nothing in itself because plot and panels are not
-    connected to each other.
-    See class :py:class:`.PlotWidget`
+    Args:
+        title: The plot title
+        xlabel: (bottom axis title, top axis title) or bottom axis title only
+        ylabel: (left axis title, right axis title) or left axis title only
+        zlabel: The Z-axis label
+        xunit: (bottom axis unit, top axis unit) or bottom axis unit only
+        yunit: (left axis unit, right axis unit) or left axis unit only
+        zunit: The Z-axis unit
+        yreverse: If True, the Y-axis is reversed
+        aspect_ratio: The plot aspect ratio
+        lock_aspect_ratio: If True, the aspect ratio is locked
+        curve_antialiasing: If True, the curve antialiasing is enabled
+        gridparam: The grid parameters
+        section: The plot configuration section name ("plot", by default)
+        type: The plot type ("auto", "manual", "curve" or "image")
+        axes_synchronised: If True, the axes are synchronised
+        force_colorbar_enabled: If True, the colorbar is always enabled
+        no_image_analysis_widgets: If True, the image analysis widgets are not added
+        show_contrast: If True, the contrast adjustment panel is visible
+        show_itemlist: If True, the itemlist panel is visible
+        show_xsection: If True, the X-axis cross section panel is visible
+        show_ysection: If True, the Y-axis cross section panel is visible
+        xsection_pos: The X-axis cross section panel position ("top" or "bottom")
+        ysection_pos: The Y-axis cross section panel position ("left" or "right")
+    """
+
+    no_image_analysis_widgets: bool = False
+    show_contrast: bool = False
+    show_itemlist: bool = False
+    show_xsection: bool = False
+    show_ysection: bool = False
+    xsection_pos: str = "top"
+    ysection_pos: str = "right"
+
+    def __post_init__(self) -> None:
+        """Check arguments"""
+        super().__post_init__()
+        # Check xsection_pos and ysection_pos
+        if self.xsection_pos not in ["top", "bottom"]:
+            raise ValueError("xsection_pos must be 'top' or 'bottom'")
+        if self.ysection_pos not in ["left", "right"]:
+            raise ValueError("ysection_pos must be 'left' or 'right'")
+        # Show warning if no image analysis widgets is True and type is not manual
+        if self.no_image_analysis_widgets and self.type != "manual":
+            warnings.warn(
+                "no_image_analysis_widgets is True but type is not 'manual' "
+                "(option ignored)",
+                RuntimeWarning,
+            )
+
+
+class BasePlotWidget(QW.QSplitter):
+    """Base class for plot widgets
+
+    This widget is a ``QSplitter`` that contains a plot, several panels and a toolbar.
+    It also includes tools (as in the :py:mod:`.tools` module) for manipulating the
+    plot, its items and its panels. All these elements are managed by a
+    :py:class:`.PlotManager` object. The plot manager is accessible through the
+    :py:attr:`.PlotWidget.manager` attribute.
+
+    Args:
+        parent: The parent widget
+        options: Plot options
     """
 
     def __init__(
         self,
         parent: QWidget = None,
-        title: str = "",
-        xlabel: tuple[str, str] = ("", ""),
-        ylabel: tuple[str, str] = ("", ""),
-        zlabel: tuple[str, str] | None = None,
-        xunit: tuple[str, str] = ("", ""),
-        yunit: tuple[str, str] = ("", ""),
-        zunit: tuple[str, str] | None = None,
-        yreverse: bool | None = None,
-        aspect_ratio: float = 1.0,
-        lock_aspect_ratio: bool | None = None,
-        show_contrast: bool = False,
-        show_itemlist: bool = False,
-        show_xsection: bool = False,
-        show_ysection: bool = False,
-        xsection_pos: str = "top",
-        ysection_pos: str = "right",
-        gridparam: GridParam = None,
-        curve_antialiasing: bool | None = None,
-        section: str = "plot",
-        type: int = PlotType.AUTO,
-        no_image_analysis_widgets: bool = False,
-        force_colorbar_enabled: bool = False,
-        **kwargs,
+        options: PlotOptions | None = None,
     ) -> None:
-        super().__init__(parent, **kwargs)
-
+        super().__init__(parent)
+        self.options = options = options if options is not None else PlotOptions()
         self.setSizePolicy(QW.QSizePolicy.Expanding, QW.QSizePolicy.Expanding)
-
-        self.plot = BasePlot(
-            parent=self,
-            title=title,
-            xlabel=xlabel,
-            ylabel=ylabel,
-            zlabel=zlabel,
-            xunit=xunit,
-            yunit=yunit,
-            zunit=zunit,
-            yreverse=yreverse,
-            aspect_ratio=aspect_ratio,
-            lock_aspect_ratio=lock_aspect_ratio,
-            gridparam=gridparam,
-            section=section,
-            type=type,
-            force_colorbar_enabled=force_colorbar_enabled,
-        )
-        if curve_antialiasing is not None:
-            self.plot.set_antialiasing(curve_antialiasing)
+        self.plot = BasePlot(parent=self, options=options)
 
         self.itemlist = PlotItemList(self)
-        self.itemlist.setVisible(show_itemlist)
+        self.itemlist.setVisible(options.show_itemlist)
 
-        # for curves only plots, or MANUAL plots with the no_image_analysis_widgets
+        # For CURVE plots, or MANUAL plots with the ``no_image_analysis_widgets``
         # option, don't add splitters and widgets dedicated to images since
         # they make the widget more "laggy" when resized.
-        if type == PlotType.CURVE or (
-            type == PlotType.MANUAL and no_image_analysis_widgets is True
+        if options.type == PlotType.CURVE or (
+            options.type == PlotType.MANUAL and options.no_image_analysis_widgets
         ):
-            self.setOrientation(QC.Qt.Orientation.Horizontal)
-            self.addWidget(self.plot)
-            self.addWidget(self.itemlist)
-
-            self.xcsw = None
-            self.ycsw = None
-            self.contrast = None
+            self.__set_curve_layout()
         else:
-            self.setOrientation(QC.Qt.Orientation.Vertical)
-            self.sub_splitter = QW.QSplitter(QC.Qt.Orientation.Horizontal, self)
-
-            self.ycsw = YCrossSection(
-                self, position=ysection_pos, xsection_pos=xsection_pos
-            )
-            self.ycsw.setVisible(show_ysection)
-
-            self.xcsw = XCrossSection(self)
-            self.xcsw.setVisible(show_xsection)
-
-            self.xcsw.SIG_VISIBILITY_CHANGED.connect(self.xcsw_is_visible)
-
-            self.xcsw_splitter = QW.QSplitter(QC.Qt.Orientation.Vertical, self)
-            if xsection_pos == "top":
-                self.xcsw_splitter.addWidget(self.xcsw)
-                self.xcsw_splitter.addWidget(self.plot)
-            else:
-                self.xcsw_splitter.addWidget(self.plot)
-                self.xcsw_splitter.addWidget(self.xcsw)
-            self.xcsw_splitter.splitterMoved.connect(
-                lambda pos, index: self.adjust_ycsw_height()
-            )
-
-            self.ycsw_splitter = QW.QSplitter(QC.Qt.Orientation.Horizontal, self)
-            if ysection_pos == "left":
-                self.ycsw_splitter.addWidget(self.ycsw)
-                self.ycsw_splitter.addWidget(self.xcsw_splitter)
-            else:
-                self.ycsw_splitter.addWidget(self.xcsw_splitter)
-                self.ycsw_splitter.addWidget(self.ycsw)
-
-            configure_plot_splitter(
-                self.xcsw_splitter, decreasing_size=xsection_pos == "bottom"
-            )
-            configure_plot_splitter(
-                self.ycsw_splitter, decreasing_size=ysection_pos == "right"
-            )
-
-            self.sub_splitter.addWidget(self.ycsw_splitter)
-            self.sub_splitter.addWidget(self.itemlist)
-
-            # Contrast adjustment (Levels histogram)
-
-            self.contrast = ContrastAdjustment(self)
-            self.contrast.setVisible(show_contrast)
-            self.addWidget(self.contrast)
-
-            configure_plot_splitter(self.sub_splitter)
+            self.__set_image_layout()
 
         configure_plot_splitter(self)
 
+    # ---- Private API -----------------------------------------------------------------
+    def __set_curve_layout(self) -> None:
+        """Set the layout for curve only plots"""
+        self.setOrientation(QC.Qt.Orientation.Horizontal)
+        self.addWidget(self.plot)
+        self.addWidget(self.itemlist)
+
+        self.xcsw = None
+        self.ycsw = None
+        self.contrast = None
+
+    def __set_image_layout(self) -> None:
+        """Set the layout for image only plots"""
+        self.setOrientation(QC.Qt.Orientation.Vertical)
+        self.sub_splitter = QW.QSplitter(QC.Qt.Orientation.Horizontal, self)
+
+        self.ycsw = YCrossSection(
+            self,
+            position=self.options.ysection_pos,
+            xsection_pos=self.options.xsection_pos,
+        )
+        self.ycsw.setVisible(self.options.show_ysection)
+
+        self.xcsw = XCrossSection(self)
+        self.xcsw.setVisible(self.options.show_xsection)
+
+        self.xcsw.SIG_VISIBILITY_CHANGED.connect(self.__xcsw_is_visible)
+
+        self.xcsw_splitter = QW.QSplitter(QC.Qt.Orientation.Vertical, self)
+        if self.options.xsection_pos == "top":
+            self.xcsw_splitter.addWidget(self.xcsw)
+            self.xcsw_splitter.addWidget(self.plot)
+        else:
+            self.xcsw_splitter.addWidget(self.plot)
+            self.xcsw_splitter.addWidget(self.xcsw)
+        self.xcsw_splitter.splitterMoved.connect(
+            lambda pos, index: self.__adjust_ycsw_height()
+        )
+
+        self.ycsw_splitter = QW.QSplitter(QC.Qt.Orientation.Horizontal, self)
+        if self.options.ysection_pos == "left":
+            self.ycsw_splitter.addWidget(self.ycsw)
+            self.ycsw_splitter.addWidget(self.xcsw_splitter)
+        else:
+            self.ycsw_splitter.addWidget(self.xcsw_splitter)
+            self.ycsw_splitter.addWidget(self.ycsw)
+
+        configure_plot_splitter(
+            self.xcsw_splitter, decreasing_size=self.options.xsection_pos == "bottom"
+        )
+        configure_plot_splitter(
+            self.ycsw_splitter, decreasing_size=self.options.ysection_pos == "right"
+        )
+
+        self.sub_splitter.addWidget(self.ycsw_splitter)
+        self.sub_splitter.addWidget(self.itemlist)
+
+        # Contrast adjustment (Levels histogram)
+
+        self.contrast = ContrastAdjustment(self)
+        self.contrast.setVisible(self.options.show_contrast)
+        self.addWidget(self.contrast)
+
+        configure_plot_splitter(self.sub_splitter)
+
+    def __adjust_ycsw_height(self, height: int | None = None) -> None:
+        """Adjust the Y-axis cross section panel height
+
+        Args:
+            height: The height (in pixels) to set. If None, the height is adjusted
+             to the current height of the widget.
+        """
+        if height is None:
+            height = self.xcsw.height() - self.ycsw.toolbar.height()
+        self.ycsw.adjust_height(height)
+
+    def __xcsw_is_visible(self, state: bool) -> None:
+        """Callback when the X-axis cross section panel visibility changes
+
+        Args:
+            state: The new visibility state of the X-axis cross section panel
+        """
+        if state:
+            self.__adjust_ycsw_height()
+        else:
+            self.__adjust_ycsw_height(0)
+
+
+class PlotWidget(BasePlotWidget):
+    """Plot widget with integrated plot manager, toolbar, tools and panels
+
+    Args:
+        parent: Parent widget
+        toolbar: Show/hide toolbar
+        options: Plot options
+        panels: Additionnal panels
+        auto_tools: If True, the plot tools are automatically registered.
+         If False, the user must register the tools manually.
+    """
+
+    def __init__(
+        self,
+        parent: QWidget | None = None,
+        toolbar: bool = False,
+        options: PlotOptions | None = None,
+        panels: tuple[PanelWidget] | None = None,
+        auto_tools: bool = True,
+    ) -> None:
+        super().__init__(parent, options)
+        self.manager = PlotManager(self)
+        self.configure_manager(panels, toolbar)
+        if auto_tools:
+            self.register_tools()
+
+    # ---- Public API ------------------------------------------------------------------
     def get_plot(self) -> BasePlot:
         """Return the plot object
 
@@ -186,53 +263,6 @@ class BasePlotWidget(QW.QSplitter):
             BasePlot: The plot object
         """
         return self.plot
-
-    def adjust_ycsw_height(self, height: int | None = None) -> None:
-        """
-
-        :param height:
-        """
-        if height is None:
-            height = self.xcsw.height() - self.ycsw.toolbar.height()
-        self.ycsw.adjust_height(height)
-
-    def xcsw_is_visible(self, state: bool) -> None:
-        """
-
-        :param state:
-        """
-        if state:
-            self.adjust_ycsw_height()
-        else:
-            self.adjust_ycsw_height(0)
-
-
-class PlotWidget(BasePlotWidget):
-    """
-    Construct a PlotWidget object: plotting widget with integrated
-    plot manager
-
-    Args:
-        parent (QWidget): parent widget
-        toolbar (bool): show/hide toolbar
-        options (dict): options sent to the :py:class:`.BasePlot` object (dictionary)
-        panels (list, tuple): additionnal panels
-        auto_tools (bool): automatically register tools
-    """
-
-    def __init__(
-        self,
-        parent: QWidget,
-        toolbar: bool = False,
-        options: dict = {},
-        panels: tuple[PanelWidget] | None = None,
-        auto_tools: bool = True,
-    ) -> None:
-        super().__init__(parent, **options)
-        self.manager = PlotManager(self)
-        self.configure_manager(panels, toolbar)
-        if auto_tools:
-            self.register_tools()
 
     def configure_manager(
         self,
@@ -242,8 +272,8 @@ class PlotWidget(BasePlotWidget):
         """Configure the plot manager
 
         Args:
-            panels (tuple[PanelWidget] | None): additionnal panels (list, tuple). Defaults to None.
-            toolbar (bool | None): [description]. Defaults to True.
+            panels: additionnal panels (list, tuple). Defaults to None.
+            toolbar: [description]. Defaults to True.
         """
         self.manager.add_plot(self.plot)
         self.manager.add_panel(self.itemlist)
@@ -264,23 +294,23 @@ class PlotWidget(BasePlotWidget):
 
     def register_tools(self) -> None:
         """Register the plotting tools according to the plot type"""
-        if self.plot.type == PlotType.CURVE:
+        if self.options.type == PlotType.CURVE:
             self.manager.register_all_curve_tools()
-        elif self.plot.type == PlotType.IMAGE:
+        elif self.options.type == PlotType.IMAGE:
             self.manager.register_all_image_tools()
-        elif self.plot.type == PlotType.AUTO:
+        elif self.options.type == PlotType.AUTO:
             self.manager.register_all_tools()
 
 
-def set_widget_title_icon(widget: QWidget, wintitle: str, icon: QG.QIcon) -> None:
+def set_widget_title_icon(widget: QWidget, title: str, icon: QG.QIcon) -> None:
     """Setups the widget title and icon
 
     Args:
-        wintitle (str): The window title
-        icon (QIcon): The window icon
+        title: The window title
+        icon: The window icon
     """
     win32_fix_title_bar_background(widget)
-    widget.setWindowTitle(wintitle)
+    widget.setWindowTitle(title)
     if isinstance(icon, str):
         icon = get_icon(icon)
     if icon is not None:
@@ -300,12 +330,12 @@ def add_widget_to_grid_layout(
     """Add widget to the grid layout
 
     Args:
-        layout (QGridLayout): The layout
-        widget (QWidget): The widget to add
-        row (int): The row index
-        column (int): The column index
-        rowspan (int | None): The row span
-        columnspan (int | None): The column span
+        layout: The layout
+        widget: The widget to add
+        row: The row index
+        column: The column index
+        rowspan: The row span
+        columnspan: The column span
 
     If row, column, rowspan and columnspan are None, the widget is added to the grid
     layout after the previous one (i.e. same as the method addWidget without options).
@@ -344,11 +374,11 @@ class AbstractPlotDialogWindow(abc.ABC):
         """Setup the widget
 
         Args:
-            toolbar (bool): If True, the plot toolbar is displayed
-            options (dict): Plot options
-            panels (tuple[PanelWidget]): The panels to add to the plot
-            auto_tools (bool): If True, the plot tools are automatically registered.
-                If False, the user must register the tools manually.
+            toolbar: If True, the plot toolbar is displayed
+            options: Plot options
+            panels: The panels to add to the plot
+            auto_tools: If True, the plot tools are automatically registered.
+             If False, the user must register the tools manually.
         """
 
     @abc.abstractmethod
@@ -363,11 +393,11 @@ class AbstractPlotDialogWindow(abc.ABC):
         """Add widget to the widget main layout
 
         Args:
-            widget (QWidget): The widget to add
-            row (int | None): The row index
-            column (int | None): The column index
-            rowspan (int | None): The row span
-            columnspan (int | None): The column span
+            widget: The widget to add
+            row: The row index
+            column: The column index
+            rowspan: The row span
+            columnspan: The column span
         """
 
     @abc.abstractmethod
@@ -398,30 +428,30 @@ class PlotDialog(QW.QDialog, AbstractPlotDialogWindow, metaclass=PlotDialogMeta)
     plot manager
 
     Args:
-        wintitle (str): The window title
-        icon (QIcon): The window icon
-        edit (bool): If True, the plot is editable
-        toolbar (bool): If True, the plot toolbar is displayed
-        options (dict): Plot options
-        parent (QWidget): The parent widget
-        panels (tuple[PanelWidget]): The panels to add to the plot
-        auto_tools (bool): If True, the plot tools are automatically registered.
-            If False, the user must register the tools manually.
+        parent: parent widget
+        toolbar: show/hide toolbar
+        options: plot options
+        panels: additionnal panels
+        auto_tools: If True, the plot tools are automatically registered.
+         If False, the user must register the tools manually.
+        title: The window title
+        icon: The window icon
+        edit: If True, the plot is editable
     """
 
     def __init__(
         self,
-        wintitle: str = "plotpy plot",
-        icon: str = "plotpy.svg",
-        edit: bool = False,
-        toolbar: bool = False,
-        options: dict = {},
         parent: QWidget | None = None,
+        toolbar: bool = False,
+        options: PlotOptions | None = None,
         panels: list[PanelWidget] | None = None,
         auto_tools: bool = True,
+        title: str = "PlotPy",
+        icon: str = "plotpy.svg",
+        edit: bool = False,
     ) -> None:
         super().__init__(parent)
-        set_widget_title_icon(self, wintitle, icon)
+        set_widget_title_icon(self, title, icon)
         self.edit = edit
         self.button_box = None
         self.button_layout = None
@@ -444,18 +474,18 @@ class PlotDialog(QW.QDialog, AbstractPlotDialogWindow, metaclass=PlotDialogMeta)
     def setup_widget(
         self,
         toolbar: bool = False,
-        options: dict | None = None,
+        options: PlotOptions | None = None,
         panels: list[PanelWidget] | None = None,
         auto_tools: bool = False,
     ) -> None:
         """Setup the widget
 
         Args:
-            toolbar (bool): If True, the plot toolbar is displayed
-            options (dict): Plot options
-            panels (tuple[PanelWidget]): The panels to add to the plot
-            auto_tools (bool): If True, the plot tools are automatically registered.
-                If False, the user must register the tools manually.
+            toolbar: If True, the plot toolbar is displayed
+            options: Plot options
+            panels: The panels to add to the plot
+            auto_tools: If True, the plot tools are automatically registered.
+             If False, the user must register the tools manually.
         """
         self.plot_widget = PlotWidget(self, toolbar, options, panels, auto_tools=False)
         self.manager = self.plot_widget.manager
@@ -475,11 +505,11 @@ class PlotDialog(QW.QDialog, AbstractPlotDialogWindow, metaclass=PlotDialogMeta)
         """Add widget to the widget main layout
 
         Args:
-            widget (QWidget): The widget to add
-            row (int | None): The row index
-            column (int | None): The column index
-            rowspan (int | None): The row span
-            columnspan (int | None): The column span
+            widget: The widget to add
+            row: The row index
+            column: The column index
+            rowspan: The row span
+            columnspan: The column span
         """
         add_widget_to_grid_layout(
             self.plot_layout, widget, row, column, rowspan, columnspan
@@ -530,28 +560,28 @@ class PlotWindow(QW.QMainWindow, AbstractPlotDialogWindow, metaclass=PlotWindowM
     manager
 
     Args:
-        wintitle (str): The window title
-        icon (QIcon): The window icon
-        toolbar (bool): If True, the plot toolbar is displayed
-        options (dict): Plot options
-        parent (QWidget): The parent widget
-        panels (tuple[PanelWidget]): The panels to add to the plot
-        auto_tools (bool): If True, the plot tools are automatically registered.
-            If False, the user must register the tools manually.
+        parent: parent widget
+        toolbar: show/hide toolbar
+        options: plot options
+        panels: additionnal panels
+        auto_tools: If True, the plot tools are automatically registered.
+         If False, the user must register the tools manually.
+        title: The window title
+        icon: The window icon
     """
 
     def __init__(
         self,
-        wintitle: str = "plotpy plot",
-        icon: str = "plotpy.svg",
-        toolbar: bool = False,
-        options: dict = {},
         parent: QWidget | None = None,
+        toolbar: bool = False,
+        options: PlotOptions | None = None,
         panels: list[PanelWidget] | None = None,
         auto_tools: bool = True,
+        title: str = "PlotPy",
+        icon: str = "plotpy.svg",
     ) -> None:
         super().__init__(parent)
-        set_widget_title_icon(self, wintitle, icon)
+        set_widget_title_icon(self, title, icon)
         self.plot_layout = QW.QGridLayout()
         self.plot_widget: PlotWidget = None
         self.manager: PlotManager = None
@@ -570,18 +600,18 @@ class PlotWindow(QW.QMainWindow, AbstractPlotDialogWindow, metaclass=PlotWindowM
     def setup_widget(
         self,
         toolbar: bool = False,
-        options: dict | None = None,
+        options: PlotOptions | None = None,
         panels: list[PanelWidget] | None = None,
         auto_tools: bool = False,
     ) -> None:
         """Setup the widget
 
         Args:
-            toolbar (bool): If True, the plot toolbar is displayed
-            options (dict): Plot options
-            panels (tuple[PanelWidget]): The panels to add to the plot
-            auto_tools (bool): If True, the plot tools are automatically registered.
-                If False, the user must register the tools manually.
+            toolbar: If True, the plot toolbar is displayed
+            options: Plot options
+            panels: The panels to add to the plot
+            auto_tools: If True, the plot tools are automatically registered.
+             If False, the user must register the tools manually.
         """
         self.plot_widget = PlotWidget(self, toolbar, options, panels, auto_tools=False)
         self.manager = self.plot_widget.manager
@@ -601,11 +631,11 @@ class PlotWindow(QW.QMainWindow, AbstractPlotDialogWindow, metaclass=PlotWindowM
         """Add widget to the widget main layout
 
         Args:
-            widget (QWidget): The widget to add
-            row (int | None): The row index
-            column (int | None): The column index
-            rowspan (int | None): The row span
-            columnspan (int | None): The column span
+            widget: The widget to add
+            row: The row index
+            column: The column index
+            rowspan: The row span
+            columnspan: The column span
         """
         add_widget_to_grid_layout(
             self.plot_layout, widget, row, column, rowspan, columnspan
@@ -635,7 +665,7 @@ class PlotWindow(QW.QMainWindow, AbstractPlotDialogWindow, metaclass=PlotWindowM
         """Reimplement the close event to close all panels
 
         Args:
-            event (QCloseEvent): The close event
+            event: The close event
         """
         # Closing panels (necessary if at least one of these panels has no
         # parent widget: otherwise, this panel will stay open after the main
@@ -654,8 +684,8 @@ class SubplotWidget(QW.QSplitter):
     all the subplots
 
     Args:
-        manager (PlotManager): The plot manager
-        parent (QWidget): The parent widget
+        manager: The plot manager
+        parent: The parent widget
         kwargs: Extra arguments passed to the QSplitter constructor
     """
 
@@ -677,7 +707,7 @@ class SubplotWidget(QW.QSplitter):
         """Add the itemlist to the widget
 
         Args:
-            show_itemlist (bool): If True, the itemlist is visible
+            show_itemlist: If True, the itemlist is visible
         """
         self.itemlist = PlotItemList(self)
         self.itemlist.setVisible(show_itemlist)
@@ -691,10 +721,10 @@ class SubplotWidget(QW.QSplitter):
         """Add a plot to the grid of plots
 
         Args:
-            plot (BasePlot): The plot to add
-            i (int): The row index
-            j (int): The column index
-            plot_id (str): The plot id
+            plot: The plot to add
+            i: The row index
+            j: The column index
+            plot_id: The plot id
         """
         self.plotlayout.addWidget(plot, i, j)
         self.plots.append(plot)

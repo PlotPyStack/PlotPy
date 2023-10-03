@@ -13,9 +13,8 @@ from guidata.qthelpers import qt_app_context, win32_fix_title_bar_background
 from qtpy import QtWidgets as QW
 
 from plotpy.builder import make
-from plotpy.constants import PlotType
 from plotpy.panels import ContrastAdjustment, PlotItemList
-from plotpy.plot import BasePlot
+from plotpy.plot import BasePlot, BasePlotOptions
 from plotpy.plot.manager import PlotManager
 from plotpy.tests.gui.test_image import compute_image
 
@@ -27,9 +26,10 @@ class CentralWidget(QW.QWidget):
         layout = QW.QGridLayout()
         self.setLayout(layout)
 
-        self.plot1 = BasePlot(self, type=PlotType.IMAGE)
+        options = BasePlotOptions(type="image")
+        self.plot1 = BasePlot(self, options=options)
         layout.addWidget(self.plot1, 0, 0, 1, 1)
-        self.plot2 = BasePlot(self, type=PlotType.IMAGE)
+        self.plot2 = BasePlot(self, options=options)
         layout.addWidget(self.plot2, 1, 0, 1, 1)
 
         self.contrast = ContrastAdjustment(self)

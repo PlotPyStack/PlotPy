@@ -13,19 +13,17 @@ from guidata.qthelpers import qt_app_context
 
 import plotpy
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog
 
 PLOTPYDIR = os.path.abspath(os.path.dirname(plotpy.__file__))
 IMGFILE = os.path.join(PLOTPYDIR, "images", "items", "image.png")
 
 
 def imshow(filename):
-    win = PlotDialog(
+    win = make.dialog(
         edit=False,
         toolbar=True,
         wintitle="RGB image item test",
-        options={"type": PlotType.IMAGE},
+        type="image",
     )
     item = make.rgbimage(filename=filename, xdata=[-1, 1], ydata=[-1, 1])
     plot = win.manager.get_plot()

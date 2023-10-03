@@ -12,10 +12,9 @@ import os.path as osp
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
-from plotpy.constants import PlotType
 from plotpy.panels.csection.csitem import ObliqueCrossSectionItem
 from plotpy.panels.csection.cswidget import ObliqueCrossSection
-from plotpy.plot import PlotDialog
+from plotpy.plot import PlotDialog, PlotOptions
 from plotpy.tools import ImageMaskTool, ObliqueCrossSectionTool, OCSPanelTool
 
 # debug mode shows the ROI in the top-left corner of the image plot:
@@ -25,11 +24,11 @@ ObliqueCrossSectionItem.DEBUG = True
 class OCSImageDialog(PlotDialog):
     """Oblique averaged cross section test"""
 
-    def __init__(self, parent=None, toolbar=True, wintitle=None, options=None):
+    def __init__(self, parent=None, toolbar=True, title=None, options=None):
         super().__init__(
             parent=parent,
             toolbar=toolbar,
-            wintitle=wintitle,
+            title=title,
             options=options,
             auto_tools=True,
         )
@@ -52,8 +51,8 @@ def test_cross_section_oblique():
     with qt_app_context(exec_loop=True):
         win = OCSImageDialog(
             toolbar=True,
-            wintitle="Oblique averaged cross section test",
-            options={"type": PlotType.IMAGE},
+            title="Oblique averaged cross section test",
+            options=PlotOptions(type="image"),
         )
         win.resize(600, 600)
 

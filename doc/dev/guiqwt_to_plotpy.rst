@@ -26,17 +26,18 @@ As a consequence :
 
 * The ``CurvePlot`` and ``ImagePlot`` classes have been removed.
   If you are using them in your code, you can replace them by the
-  :py:class:`.BasePlot` class, and pass to its constructor the new keyword
-  `type` with the value :py:attr:`.PlotType.CURVE` or :py:attr:`.PlotType.IMAGE`
-  respectively to get the equivalent specialized plot component.
+  :py:class:`.BasePlot` class which takes only one argument for configuration,
+  named `options` (a :py:class:`.BasePlotOptions` instance). Choosing between
+  curve and image plot is now done by setting the `type` attribute of the
+  plot options (that may be set to ``'curve'`` or ``'image'`` for example).
   See also the `Minor changes to the BasePlot class`_ section.
 
-* The ``CurveWidget`` and ``ImageWidget`` classes have been merged into the new class
-  :py:class:`.PlotWidget`. If you are using them in your code,
-  you can replace them by the :py:class:`.PlotWidget` class,
-  and pass to its constructor an `options` dictionary with the value
-  :py:attr:`.PlotType.CURVE` or
-  :py:attr:`.PlotType.IMAGE` for key `type`.*
+* The ``CurveWidget`` and ``ImageWidget`` classes have been merged into the new
+  class :py:class:`.PlotWidget`. If you are using them in your code,
+  you can replace them by the :py:class:`.PlotWidget` class, which takes only one
+  argument for configuration, named `options` (a :py:class:`.PlotOptions` instance).
+  Choosing between curve and image plot is now done by setting the `type` attribute
+  of the plot options  (that may be set to ``'curve'`` or ``'image'`` for example).
 
 * The `CurveDialog` and `ImageDialog` classes have been merged into the new class
   :py:class:`.PlotDialog`. If you are using them in your code, you may proceed
@@ -48,10 +49,9 @@ As a consequence :
 
 .. note::
 
-    Instead of using the `type` keyword with :py:attr:`.PlotType.CURVE` or
-    :py:attr:`.PlotType.IMAGE` as stated above,
-    you may consider using the :py:attr:`.PlotType.AUTO`
-    or :py:attr:`.PlotType.MANUAL` values if they fit your needs.
+    Instead of setting the `type` plot option attribute to ``'curve'`` or ``'image'``,
+    as stated above, you may consider using the ``'auto'`` value or the
+    ``'manual'`` value.
 
 See demo script `tests/gui/test_plot_types.py`.
 
@@ -153,24 +153,34 @@ MaskedXYImages
 You can now use the :py:class:`.MaskedXYImageItem` to apply masks to XYImageItems
 (only ImageItems where previously maskable with the class :py:class:`.MaskedImageItem`.
 
-You can use the convenience methods :py:meth:`.PlotItemBuilder.maskedxyimage` to
+You can use the convenience methods :py:meth:`.PlotBuilder.maskedxyimage` to
 help you build such items.
 
 See demo script `tests/gui/test_image_masked_xy.py`.
 
-New options added to item builder
+New options added to plot builder
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The method :py:meth:`.PlotItemBuilder.contours` has been added, in order to create
+The ``PlotItemBuilder`` factory class has been renamed to :py:class:`.PlotBuilder`,
+because it provides not only methods for creating plot items, but also methods
+for creating ready-to-use plots.
+
+New methods for creating ready-to-use plots have been added to the class:
+
+* :py:meth:`.PlotBuilder.widget`
+* :py:meth:`.PlotBuilder.dialog`
+* :py:meth:`.PlotBuilder.window`
+
+The method :py:meth:`.PlotBuilder.contours` has been added, in order to create
 contour curves. It returns a list of :py:class:`plotpy.items.ContourItem` objects.
 
 See demo script `tests/gui/test_contour.py`.
 
 The new keyword parameter ``alpha_function`` has been added to the methods
-:py:meth:`.PlotItemBuilder.image`, :py:meth:`.PlotItemBuilder.xyimage`,
-:py:meth:`.PlotItemBuilder.maskedimage`, :py:meth:`.PlotItemBuilder.maskedxyimage`,
-:py:meth:`.PlotItemBuilder.trimage`, :py:meth:`.PlotItemBuilder.rgbimage`, and
-:py:meth:`.PlotItemBuilder.quadgrid`. It allows to specify a function to
+:py:meth:`.PlotBuilder.image`, :py:meth:`.PlotBuilder.xyimage`,
+:py:meth:`.PlotBuilder.maskedimage`, :py:meth:`.PlotBuilder.maskedxyimage`,
+:py:meth:`.PlotBuilder.trimage`, :py:meth:`.PlotBuilder.rgbimage`, and
+:py:meth:`.PlotBuilder.quadgrid`. It allows to specify a function to
 compute the alpha channel of the image from the data values. The supported
 functions are:
 
@@ -181,28 +191,28 @@ functions are:
 * :py:attr:`plotpy.builder.LUTAlpha.TANH`
 
 .. warning:: The ``alpha_mask`` parameter has been removed from the methods
-             :py:meth:`.PlotItemBuilder.image`, :py:meth:`.PlotItemBuilder.xyimage`,
-             :py:meth:`.PlotItemBuilder.maskedimage`, :py:meth:`.PlotItemBuilder.maskedxyimage`,
-             :py:meth:`.PlotItemBuilder.trimage`, :py:meth:`.PlotItemBuilder.rgbimage`, and
-             :py:meth:`.PlotItemBuilder.quadgrid`. If you were using it, you should
+             :py:meth:`.PlotBuilder.image`, :py:meth:`.PlotBuilder.xyimage`,
+             :py:meth:`.PlotBuilder.maskedimage`, :py:meth:`.PlotBuilder.maskedxyimage`,
+             :py:meth:`.PlotBuilder.trimage`, :py:meth:`.PlotBuilder.rgbimage`, and
+             :py:meth:`.PlotBuilder.quadgrid`. If you were using it, you should
              replace it by the new ``alpha_function`` parameter.
 
 The new keyword parameter ``lut_range`` has been added to the methods
-:py:meth:`.PlotItemBuilder.image`, :py:meth:`.PlotItemBuilder.xyimage`,
-:py:meth:`.PlotItemBuilder.maskedimage`, :py:meth:`.PlotItemBuilder.maskedxyimage`,
-and :py:meth:`.PlotItemBuilder.trimage`, so you can now avoid to make calls
+:py:meth:`.PlotBuilder.image`, :py:meth:`.PlotBuilder.xyimage`,
+:py:meth:`.PlotBuilder.maskedimage`, :py:meth:`.PlotBuilder.maskedxyimage`,
+and :py:meth:`.PlotBuilder.trimage`, so you can now avoid to make calls
 to set_lut_range after the PlotItem is built.
 
 See demo script `tests/gui/test_builder.py`.
 
-The method :py:meth:`.PlotItemBuilder.image` now accepts
+The method :py:meth:`.PlotBuilder.image` now accepts
 optional ``x`` and ``y`` keyword arguments, to automatically create a
 :py:class:`plotpy.items.XYImageItem` instead of a simple
 :py:class:`plotpy.items.ImageItem` if needed.
 
 See demo script `tests/gui/test_builder.py`.
 
-The method :py:meth:`.PlotItemBuilder.curve` now accepts
+The method :py:meth:`.PlotBuilder.curve` now accepts
 optional ``dx``, ``dy``, ``errorbarwidth``, ``errorbarcap``, ``errorbarmode``,
 `errorbaralpha` keyword arguments, to automatically create a
 :py:class:`plotpy.items.ErrorBarCurveItem` instead of a simple

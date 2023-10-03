@@ -16,8 +16,6 @@ from qtpy import QtWidgets as QW
 
 import plotpy.config  # Loading icons
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotWidget
 
 
 class FilterTestWidget(QW.QWidget):
@@ -40,7 +38,7 @@ class FilterTestWidget(QW.QWidget):
 
     def setup_widget(self, title):
         # ---Create the plot widget:
-        plotwidget = PlotWidget(self, options={"type": PlotType.CURVE})
+        plotwidget = make.widget(self, type="curve")
         self.curve_item = make.curve([], [], color="b")
         plotwidget.plot.add_item(self.curve_item)
         plotwidget.plot.set_antialiasing(True)

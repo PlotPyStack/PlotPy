@@ -11,8 +11,6 @@ import numpy as np
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog
 
 
 def test_plot_yreverse():
@@ -21,8 +19,7 @@ def test_plot_yreverse():
         x = np.linspace(-10, 10, 200)
         y = x * np.exp(-x)
         item = make.curve(x, y, color="b")
-
-        win = PlotDialog(options={"type": PlotType.CURVE})
+        win = make.dialog(type="curve")
         plot = win.manager.get_plot()
         plot.add_item(item)
         plot.set_axis_direction("left", True)

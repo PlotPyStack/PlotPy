@@ -39,6 +39,7 @@ if TYPE_CHECKING:
     import numpy as np
 
     from plotpy.items import AnnotatedRectangle, TrImageItem
+    from plotpy.plot import PlotOptions
     from plotpy.plot.manager import PlotManager
 
 
@@ -125,7 +126,7 @@ class RotateCropDialog(QW.QDialog):
 
     Args:
         parent (QWidget): Parent widget
-        wintitle (str | None): Dialog title
+        title (str | None): Dialog title
         options (dict | None): Options dict
         resize_to (tuple | None): Resize dialog to (width, height)
         edit (bool | None): Show "Edit" button
@@ -135,7 +136,7 @@ class RotateCropDialog(QW.QDialog):
     def __init__(
         self,
         parent: QW.QWidget,
-        wintitle: str | None = None,
+        title: str | None = None,
         options: dict | None = None,
         resize_to: tuple[int, int] | None = None,
         edit: bool = True,
@@ -150,8 +151,8 @@ class RotateCropDialog(QW.QDialog):
 
         self.button_box = None
 
-        if wintitle is None:
-            wintitle = _("Rotate & Crop")
+        if title is None:
+            title = _("Rotate & Crop")
         self.widget = RotateCropWidget(parent=parent, options=options, toolbar=toolbar)
         self.setWindowFlags(QC.Qt.WindowType.Window)
 
@@ -191,13 +192,16 @@ class RotateCropWidget(basetransform.BaseTransformWidget):
     Rotate and crop a :py:class:`.image.TrImageItem` plot item
 
     Args:
-        parent (QWidget): Parent widget
-        toolbar (bool | None): Show toolbar
-        options (dict | None): Options dict
+        parent: Parent widget
+        toolbar: Show toolbar
+        options: Plot options
     """
 
     def __init__(
-        self, parent: QW.QWidget, toolbar: bool = False, options: dict | None = None
+        self,
+        parent: QW.QWidget,
+        toolbar: bool = False,
+        options: PlotOptions | None = None,
     ) -> None:
         super().__init__(parent, toolbar=toolbar, options=options)
         self.transform = RotateCropTransform(self, self.plot_widget.manager)

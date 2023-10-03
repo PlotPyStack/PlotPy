@@ -27,8 +27,7 @@ from qtpy import QtWidgets as QW
 from plotpy import io
 from plotpy.builder import make
 from plotpy.config import _
-from plotpy.constants import PlotType
-from plotpy.plot import PlotWidget
+from plotpy.plot import PlotOptions, PlotWidget
 from plotpy.widgets.about import about
 
 APP_NAME = _("Application example")
@@ -79,7 +78,7 @@ class CentralWidget(QW.QSplitter):
         self.properties.SIG_APPLY_BUTTON_CLICKED.connect(self.properties_changed)
 
         self.plot_widget = PlotWidget(
-            self, options={"type": PlotType.IMAGE}, auto_tools=False
+            self, options=PlotOptions(type="image"), auto_tools=False
         )
         self.plot_widget.plot.SIG_LUT_CHANGED.connect(self.lut_range_changed)
         self.item = None  # image item

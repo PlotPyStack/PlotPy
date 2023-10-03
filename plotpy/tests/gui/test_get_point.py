@@ -16,8 +16,6 @@ from numpy import linspace, sin
 
 from plotpy.builder import make
 from plotpy.config import _
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog
 from plotpy.tools import SelectPointTool
 
 
@@ -29,10 +27,10 @@ def get_point(*args):
     """
     Plot curves and return selected point(s) coordinates
     """
-    win = PlotDialog(
-        _("Select one point then press OK to accept"),
+    win = make.dialog(
+        wintitle=_("Select one point then press OK to accept"),
         edit=True,
-        options={"type": PlotType.CURVE},
+        type="curve",
     )
     default = win.manager.add_tool(
         SelectPointTool,

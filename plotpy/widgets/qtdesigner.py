@@ -67,7 +67,7 @@ def create_qtdesigner_plugin(
     group,
     module_name,
     class_name,
-    widget_options={},
+    plot_options={},
     icon=None,
     tooltip="",
     whatsthis="",
@@ -77,7 +77,7 @@ def create_qtdesigner_plugin(
     Example:
     create_qtdesigner_plugin(group = "plotpy", module_name = "plotpy.baseplot",
                              class_name = "PlotWidget",
-                             widget_options={"type": PlotType.IMAGE},
+                             plot_options=PlotOptions(type="image")),
                              icon = "image.png", tooltip = "", whatsthis = ""):
     """
     Widget = getattr(__import__(module_name, fromlist=[class_name]), class_name)
@@ -112,7 +112,7 @@ def create_qtdesigner_plugin(
             :param parent:
             :return:
             """
-            return Widget(parent, **widget_options)
+            return Widget(parent, options=plot_options)
 
         def name(self):
             """

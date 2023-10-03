@@ -11,12 +11,10 @@ from guidata.qthelpers import qt_app_context
 from numpy import linspace, sin, trapz
 
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog
 
 
 def plot(*items):
-    win = PlotDialog(edit=False, toolbar=True, options={"type": PlotType.CURVE})
+    win = make.dialog(edit=False, toolbar=True, type="curve")
     plot = win.manager.get_plot()
     for item in items:
         plot.add_item(item)

@@ -50,7 +50,7 @@ COLORS = [
 def test_polygons():
     """Test"""
     with qt_app_context(exec_loop=True):
-        win = PlotDialog(edit=True, toolbar=True, wintitle="Sample multi-polygon item")
+        win = PlotDialog(edit=True, toolbar=True, title="Sample multi-polygon item")
         plot = win.manager.get_plot()
         plot.set_aspect_ratio(lock=True)
         plot.set_antialiasing(False)

@@ -12,9 +12,7 @@ import os
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
-from plotpy.constants import PlotType
 from plotpy.items import Marker
-from plotpy.plot import PlotDialog
 from plotpy.tools import (
     AnnotatedCircleTool,
     AnnotatedEllipseTool,
@@ -39,11 +37,11 @@ from plotpy.tools import (
 
 
 def create_window():
-    win = PlotDialog(
+    win = make.dialog(
         edit=False,
         toolbar=True,
         wintitle="All image and plot tools test",
-        options={"type": PlotType.IMAGE},
+        type="image",
     )
     for toolklass in (
         LabelTool,

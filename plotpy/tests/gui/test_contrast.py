@@ -14,8 +14,6 @@ from guidata.env import execenv
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog
 
 
 def test_contrast():
@@ -24,12 +22,12 @@ def test_contrast():
     with qt_app_context(exec_loop=True):
         filename = osp.join(osp.dirname(__file__), "brain.png")
         image = make.image(filename=filename, title="Original", colormap="gray")
-
-        win = PlotDialog(
+        win = make.dialog(
             edit=False,
             toolbar=True,
             wintitle="Contrast test",
-            options=dict(show_contrast=True, type=PlotType.IMAGE),
+            show_contrast=True,
+            type="image",
         )
         plot = win.manager.get_plot()
         plot.add_item(image)
