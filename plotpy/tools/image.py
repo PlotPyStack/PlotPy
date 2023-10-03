@@ -9,7 +9,7 @@ from guidata.configtools import get_icon
 from guidata.dataset.dataitems import BoolItem, FloatItem
 from guidata.dataset.datatypes import DataSet
 from guidata.qthelpers import add_actions
-from guidata.widgets.objecteditor import oedit
+from guidata.widgets.arrayeditor import ArrayEditor
 from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
@@ -903,11 +903,11 @@ def update_image_tool_status(tool, plot: BasePlot) -> bool:
 
 def export_image_data(item):
     """Export image item data to file"""
-
     exec_image_save_dialog(item.plot(), item.data)
 
 
 def edit_image_data(item):
-    """Edit image item data to file"""
-
-    oedit(item.data)
+    """Edit image item data in array editor"""
+    dialog = ArrayEditor(item.plot())
+    dialog.setup_and_check(item.data)
+    dialog.exec_()

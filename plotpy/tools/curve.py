@@ -2,7 +2,7 @@
 import weakref
 
 import numpy as np
-from guidata.widgets.objecteditor import oedit
+from guidata.widgets.arrayeditor import ArrayEditor
 from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
@@ -301,7 +301,7 @@ def export_curve_data(item):
 
 
 def edit_curve_data(item):
-    """Edit curve item data to text file"""
+    """Edit curve item data in array editor"""
     item_data = item.get_data()
     if len(item_data) > 2:
         x, y, dx, dy = item_data
@@ -315,7 +315,9 @@ def edit_curve_data(item):
         x, y = item_data
         data = np.array([x, y]).T
 
-    if oedit(data) is not None:
+    dialog = ArrayEditor(item.plot())
+    dialog.setup_and_check(data)
+    if dialog.exec_():
         if data.shape[1] > 2:
             if data.shape[1] == 3:
                 x, y, tmp = data.T
