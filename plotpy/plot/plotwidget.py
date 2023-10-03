@@ -124,7 +124,7 @@ class BasePlotWidget(QW.QSplitter):
         super().__init__(parent)
         self.options = options = options if options is not None else PlotOptions()
         self.setSizePolicy(QW.QSizePolicy.Expanding, QW.QSizePolicy.Expanding)
-        self.plot = BasePlot(parent=self, options=options)
+        self.plot = self.create_plot()
 
         self.itemlist = PlotItemList(self)
         self.itemlist.setVisible(options.show_itemlist)
@@ -228,6 +228,23 @@ class BasePlotWidget(QW.QSplitter):
         else:
             self.__adjust_ycsw_height(0)
 
+    # ---- Public API ------------------------------------------------------------------
+    def create_plot(self) -> BasePlot:
+        """Create the plot, which is the main widget of the base plot widget.
+        In subclasses, this method can be overriden to create a custom plot object,
+        as for example multiple plots in a grid layout."""
+        return BasePlot(parent=self, options=self.options)
+
+    def add_panels_to_manager(self, manager: PlotManager) -> None:
+        """Add the panels to the plot manager"""
+        manager.add_panel(self.itemlist)
+        if self.xcsw is not None:
+            manager.add_panel(self.xcsw)
+        if self.ycsw is not None:
+            manager.add_panel(self.ycsw)
+        if self.contrast is not None:
+            manager.add_panel(self.contrast)
+
 
 class PlotWidget(BasePlotWidget):
     """Plot widget with integrated plot manager, toolbar, tools and panels
@@ -251,6 +268,7 @@ class PlotWidget(BasePlotWidget):
     ) -> None:
         super().__init__(parent, options)
         self.manager = PlotManager(self)
+        self.toolbar: QW.QToolBar | None = None
         self.configure_manager(panels, toolbar)
         if auto_tools:
             self.register_tools()
@@ -275,14 +293,8 @@ class PlotWidget(BasePlotWidget):
             panels: additionnal panels (list, tuple). Defaults to None.
             toolbar: [description]. Defaults to True.
         """
-        self.manager.add_plot(self.plot)
-        self.manager.add_panel(self.itemlist)
-        if self.xcsw is not None:
-            self.manager.add_panel(self.xcsw)
-        if self.ycsw is not None:
-            self.manager.add_panel(self.ycsw)
-        if self.contrast is not None:
-            self.manager.add_panel(self.contrast)
+        self.manager.add_plot(self.get_plot())
+        self.add_panels_to_manager(self.manager)
         if panels is not None:
             for panel in panels:
                 self.manager.add_panel(panel)
@@ -679,7 +691,7 @@ class PlotWindow(QW.QMainWindow, AbstractPlotDialogWindow, metaclass=PlotWindowM
         QW.QMainWindow.closeEvent(self, event)
 
 
-class SubplotWidget(QW.QSplitter):
+class SubplotWidget(BasePlotWidget):
     """Construct a Widget that helps managing several plots
     together handled by the same manager
 
@@ -690,34 +702,26 @@ class SubplotWidget(QW.QSplitter):
     Args:
         manager: The plot manager
         parent: The parent widget
-        kwargs: Extra arguments passed to the QSplitter constructor
+        options: Plot options
     """
 
     def __init__(
-        self, manager: PlotManager, parent: QWidget | None = None, **kwargs
+        self,
+        manager: PlotManager,
+        parent: QWidget | None = None,
+        options: PlotOptions | None = None,
     ) -> None:
-        super().__init__(parent, **kwargs)
-        self.setOrientation(QC.Qt.Orientation.Horizontal)
-        self.setSizePolicy(QW.QSizePolicy.Expanding, QW.QSizePolicy.Expanding)
+        self.plotlayout: QW.QGridLayout | None = None
+        super().__init__(parent, options=options)
         self.manager = manager
         self.plots: list[BasePlot] = []
-        self.itemlist = None
+
+    def create_plot(self) -> QWidget:
+        """Create the plot, which is the main widget of the plot widget"""
         main = QWidget()
         self.plotlayout = QW.QGridLayout()
         main.setLayout(self.plotlayout)
-        self.addWidget(main)
-
-    def add_itemlist(self, show_itemlist: bool = False) -> None:
-        """Add the itemlist to the widget
-
-        Args:
-            show_itemlist: If True, the itemlist is visible
-        """
-        self.itemlist = PlotItemList(self)
-        self.itemlist.setVisible(show_itemlist)
-        self.addWidget(self.itemlist)
-        configure_plot_splitter(self)
-        self.manager.add_panel(self.itemlist)
+        return main
 
     def get_plots(self) -> list[BasePlot]:
         """Return the plots
@@ -743,6 +747,10 @@ class SubplotWidget(QW.QSplitter):
         if plot_id is None:
             plot_id = id(plot)
         self.manager.add_plot(plot, plot_id)
+
+    def configure_manager(self) -> None:
+        """Configure the plot manager"""
+        self.add_panels_to_manager(self.manager)
 
 
 # TODO: Migrate DataLab's SyncPlotWindow right here

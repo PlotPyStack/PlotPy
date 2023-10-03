@@ -7,6 +7,7 @@
 
 import numpy as np
 from guidata.qthelpers import qt_app_context
+from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
 
@@ -16,54 +17,64 @@ from plotpy.plot import BasePlot, BasePlotOptions, SubplotWidget, set_widget_tit
 from plotpy.plot.manager import PlotManager
 
 
-class SyncPlotDialog(QW.QDialog):
+class SyncPlotWindow(QW.QMainWindow):
     """Dialog demonstrating plot synchronization feature"""
 
     def __init__(self, parent=None):
         super().__init__(parent)
         set_widget_title_icon(self, self.__doc__, "plotpy.svg")
 
-        self.manager = manager = PlotManager(None)
-        manager.set_main(self)
-        self.subplotwidget = spwidget = SubplotWidget(manager, parent=self)
-        self.setLayout(QW.QVBoxLayout())
-        toolbar = QW.QToolBar(_("Tools"))
-        manager.add_toolbar(toolbar)
-        self.layout().addWidget(toolbar)
-        self.layout().addWidget(spwidget)
+        self.manager = mgr = PlotManager(None)
+        mgr.set_main(self)
 
-        spwidget.add_plot(BasePlot(self, BasePlotOptions(title="TL")), 0, 0, "1")
-        spwidget.add_plot(BasePlot(self, BasePlotOptions(title="TR")), 0, 1, "2")
-        spwidget.add_plot(BasePlot(self, BasePlotOptions(title="BL")), 1, 0, "3")
-        spwidget.add_plot(BasePlot(self, BasePlotOptions(title="BR")), 1, 1, "4")
+        self.toolbar = QW.QToolBar(_("Tools"), self)
+        mgr.add_toolbar(self.toolbar, "default")
+        self.toolbar.setMovable(True)
+        self.toolbar.setFloatable(True)
+        self.addToolBar(QC.Qt.TopToolBarArea, self.toolbar)
 
-        spwidget.add_itemlist()
+        self.subplotwidget = subplotw = SubplotWidget(mgr, parent=self)
+        self.setCentralWidget(subplotw)
 
-        manager.synchronize_axis(BasePlot.X_BOTTOM, ["1", "3"])
-        manager.synchronize_axis(BasePlot.X_BOTTOM, ["2", "4"])
-        manager.synchronize_axis(BasePlot.Y_LEFT, ["1", "2"])
-        manager.synchronize_axis(BasePlot.Y_LEFT, ["3", "4"])
+        p_opts = [("TL", 0, 0), ("TR", 0, 1), ("BL", 1, 0), ("BR", 1, 1)]
+        for index, (title, row, col) in enumerate(p_opts):
+            plot = BasePlot(self, BasePlotOptions(title=title))
+            subplotw.add_plot(plot, row, col, str(index + 1))
 
-        self.manager.register_all_curve_tools()
+        subplotw.configure_manager()
+
+        mgr.synchronize_axis(BasePlot.X_BOTTOM, ["1", "3"])
+        mgr.synchronize_axis(BasePlot.X_BOTTOM, ["2", "4"])
+        mgr.synchronize_axis(BasePlot.Y_LEFT, ["1", "2"])
+        mgr.synchronize_axis(BasePlot.Y_LEFT, ["3", "4"])
+
+        mgr.register_all_curve_tools()
+
+    def get_plots(self) -> list[BasePlot]:
+        """Return the plots
+
+        Returns:
+            list[BasePlot]: The plots
+        """
+        return self.subplotwidget.get_plots()
 
 
 def plot(items1, items2, items3, items4):
     """Plot items in SyncPlotDialog"""
-    dlg = SyncPlotDialog()
+    win = SyncPlotWindow()
     items = [items1, items2, items3, items4]
-    for i, plot in enumerate(dlg.subplotwidget.plots):
+    for i, plot in enumerate(win.get_plots()):
         for item in items[i]:
             plot.add_item(item)
         plot.set_axis_font("left", QG.QFont("Courier"))
         plot.set_items_readonly(False)
-    dlg.manager.get_panel("itemlist").show()
-    dlg.show()
-    dlg.exec_()
+    win.manager.get_panel("itemlist").show()
+    win.show()
 
 
 def test_syncplot():
     """Test plot synchronization"""
-    with qt_app_context():
+    with qt_app_context(exec_loop=True):
         x = np.linspace(-10, 10, 200)
         dy = x / 100.0
         y = np.sin(np.sin(np.sin(x)))
