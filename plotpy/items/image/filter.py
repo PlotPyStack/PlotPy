@@ -156,6 +156,8 @@ class ImageFilterItem(BaseImageItem):
         """
         npos = canvas_to_axes(self, pos)
         self.border_rect.move_point_to(handle, npos, ctrl)
+        if self.plot():
+            self.plot().SIG_ITEM_HANDLE_MOVED.emit(self)
 
     def move_local_shape(self, old_pos: QPointF, new_pos: QPointF) -> None:
         """Translate the shape such that old_pos becomes new_pos in canvas coordinates

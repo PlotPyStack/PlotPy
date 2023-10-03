@@ -221,6 +221,8 @@ class AbstractShape(QwtPlotItem):
         self.move_point_to(handle, pt, ctrl)
         if self.plot():
             self.plot().SIG_ITEM_RESIZED.emit(self, 0, 0)
+        if self.plot():
+            self.plot().SIG_ITEM_HANDLE_MOVED.emit(self)
 
     def move_local_shape(self, old_pos: QC.QPointF, new_pos: QC.QPointF) -> None:
         """Translate the shape such that old_pos becomes new_pos in canvas coordinates

@@ -78,7 +78,6 @@ class TrImageItem(TransformImageMixin, RawImageItem):
         return TrImageParam(_("Image"))
 
     # ---- Public API ----------------------------------------------------------
-
     def set_crop(self, left, top, right, bottom):
         """
 

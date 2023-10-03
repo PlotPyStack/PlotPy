@@ -16,6 +16,7 @@ from `guiqwt` v2 to v3, then to plotpy.
 Signals emitted by :py:class:`.BasePlot` objects:
 
 - :py:attr:`.BasePlot.SIG_ITEM_MOVED`
+- :py:attr:`.BasePlot.SIG_ITEM_HANDLE_MOVED`
 - :py:attr:`.BasePlot.SIG_ITEM_RESIZED`
 - :py:attr:`.BasePlot.SIG_ITEM_ROTATED`
 - :py:attr:`.BasePlot.SIG_MARKER_CHANGED`

@@ -180,6 +180,9 @@ class TransformImageMixin:
                 self.plot().SIG_ITEM_RESIZED.emit(self, zoom, zoom)
         self.set_transform(x0, y0, angle, dx, dy, hflip, vflip)
 
+        if self.plot():
+            self.plot().SIG_ITEM_HANDLE_MOVED.emit(self)
+
     def move_local_shape(self, old_pos: QPointF, new_pos: QPointF) -> None:
         """Translate the shape such that old_pos becomes new_pos in canvas coordinates
 

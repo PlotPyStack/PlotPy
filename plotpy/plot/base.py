@@ -158,6 +158,12 @@ class BasePlot(qwt.QwtPlot):
     #:     y1 (float): the new y position
     SIG_ITEM_MOVED = QC.Signal(object, float, float, float, float)
 
+    #: Signal emitted by plot when an IBasePlotItem handle was moved
+    #:
+    #: Args:
+    #:     item: the moved item
+    SIG_ITEM_HANDLE_MOVED = QC.Signal(object)
+
     #: Signal emitted by plot when an IBasePlotItem object was resized
     #:
     #: Args:
