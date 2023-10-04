@@ -29,8 +29,7 @@ from qtpy import QtWidgets as QW
 
 from plotpy.config import CONF, _
 from plotpy.constants import PlotType
-from plotpy.interfaces.common import IVoiImageItemType
-from plotpy.interfaces.panel import IPanel
+from plotpy.interfaces import IPanel, IVoiImageItemType
 from plotpy.items import HistogramItem, XRangeSelection
 from plotpy.lutrange import lut_range_threshold
 from plotpy.panels.base import ID_CONTRAST, PanelWidget

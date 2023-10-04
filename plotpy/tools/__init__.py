@@ -11,7 +11,13 @@ from .annotations import (
     AnnotatedSegmentTool,
 )
 from .axes import AxisScaleTool, PlaceAxesTool
-from .base import PanelTool
+from .base import (
+    CommandTool,
+    DefaultToolbarID,
+    InteractiveTool,
+    PanelTool,
+    RectangularActionTool,
+)
 from .cross_section import (
     AverageCrossSectionTool,
     CrossSectionTool,
@@ -70,5 +76,6 @@ from .shapes import (
     ObliqueRectangleTool,
     PointTool,
     RectangleTool,
+    RectangularShapeTool,
     SegmentTool,
 )

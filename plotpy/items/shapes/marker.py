@@ -13,7 +13,7 @@ from qwt import QwtPlotMarker
 
 from plotpy.config import CONF, _
 from plotpy.coords import canvas_to_axes
-from plotpy.interfaces.common import IBasePlotItem, IShapeItemType
+from plotpy.interfaces import IBasePlotItem, IShapeItemType
 from plotpy.styles.base import MARKERSTYLES
 from plotpy.styles.shape import MarkerParam
 
@@ -25,7 +25,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from qtpy.QtCore import QPointF, QRectF
     from qtpy.QtGui import QPainter
 
-    from plotpy.interfaces.common import IItemType
+    from plotpy.interfaces import IItemType
     from plotpy.styles.base import ItemParameters
 
 

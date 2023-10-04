@@ -35,7 +35,7 @@ from plotpy.config import _
 if TYPE_CHECKING:  # pragma: no cover
     import guidata.dataset.datatypes
 
-    from plotpy.interfaces.common import IBasePlotItem
+    from plotpy.interfaces import IBasePlotItem
     from plotpy.plot import BasePlot
 
 LINESTYLES = {"-": "SolidLine", "--": "DashLine", ":": "DotLine", "-.": "DashDotLine"}

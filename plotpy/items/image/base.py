@@ -26,7 +26,7 @@ from plotpy._scaler import (
     _scale_rect,
 )
 from plotpy.config import _
-from plotpy.interfaces.common import (
+from plotpy.interfaces import (
     IBaseImageItem,
     IBasePlotItem,
     IColormapImageItemType,
@@ -51,7 +51,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from qtpy.QtCore import QPointF, QRectF
     from qtpy.QtGui import QColor, QPainter
 
-    from plotpy.interfaces.common import IItemType
+    from plotpy.interfaces import IItemType
     from plotpy.items import RectangleShape
     from plotpy.styles.base import ItemParameters
 

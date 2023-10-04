@@ -23,7 +23,7 @@ from guidata.utils.misc import assert_interfaces_valid
 
 from plotpy.config import CONF, _
 from plotpy.coords import canvas_to_axes
-from plotpy.interfaces.common import IBasePlotItem, ISerializableType, IShapeItemType
+from plotpy.interfaces import IBasePlotItem, ISerializableType, IShapeItemType
 from plotpy.items.label import DataInfoLabel
 from plotpy.items.shapes.base import AbstractShape
 from plotpy.items.shapes.ellipse import EllipseShape
@@ -45,7 +45,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from qtpy.QtCore import QPointF, QRectF
     from qtpy.QtGui import QPainter
 
-    from plotpy.interfaces.common import IItemType
+    from plotpy.interfaces import IItemType
     from plotpy.styles.base import ItemParameters
 
 

@@ -24,7 +24,7 @@ from qtpy import QtGui as QG
 from qwt import QwtPlotItem
 
 from plotpy.config import CONF, _
-from plotpy.interfaces.common import IBasePlotItem, ISerializableType, IShapeItemType
+from plotpy.interfaces import IBasePlotItem, ISerializableType, IShapeItemType
 from plotpy.items.curve.base import CurveItem
 from plotpy.styles.label import LabelParam
 
@@ -37,7 +37,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from qtpy.QtCore import QPointF, QRectF
     from qtpy.QtGui import QBrush, QPainter, QPen, QTextDocument
 
-    from plotpy.interfaces.common import IItemType
+    from plotpy.interfaces import IItemType
     from plotpy.items import ImageItem, RectangleShape, XRangeSelection
     from plotpy.styles.base import ItemParameters
 

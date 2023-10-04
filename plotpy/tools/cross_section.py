@@ -3,7 +3,7 @@
 from guidata.configtools import get_icon
 
 from plotpy.config import _
-from plotpy.interfaces.common import IImageItemType
+from plotpy.interfaces import IImageItemType
 from plotpy.items import AnnotatedObliqueRectangle, AnnotatedPoint, AnnotatedRectangle
 from plotpy.panels.base import ID_OCS, ID_XCS, ID_YCS
 from plotpy.tools.base import PanelTool

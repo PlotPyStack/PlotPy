@@ -4,9 +4,9 @@ Reference
 Base classes
 ^^^^^^^^^^^^
 
-.. autoclass:: plotpy.interfaces.common.IItemType
-.. autoclass:: plotpy.interfaces.common.IBasePlotItem
-.. autoclass:: plotpy.interfaces.common.IColormapImageItemType
+.. autoclass:: plotpy.interfaces.IItemType
+.. autoclass:: plotpy.interfaces.IBasePlotItem
+.. autoclass:: plotpy.interfaces.IColormapImageItemType
 
 Curves
 ^^^^^^

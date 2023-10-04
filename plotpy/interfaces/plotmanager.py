@@ -1,6 +1,3 @@
-from plotpy.plot.base import BasePlot
-
-
 class IPlotManager:
     """A 'controller' that organizes relations between
     plots (BasePlot), panels, tools (GuiTool) and toolbar
@@ -12,6 +9,10 @@ class IPlotManager:
         :param plot:
         :param plot_id:
         """
+        # Avoid circular import
+        # pylint: disable=import-outside-toplevel
+        from plotpy.plot.base import BasePlot
+
         assert id not in self.plots  # pylint: disable=no-member
         assert isinstance(plot, BasePlot)
 

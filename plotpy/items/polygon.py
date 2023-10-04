@@ -19,7 +19,7 @@ from qtpy import QtGui as QG
 from qwt import QwtPlotItem
 
 from plotpy.config import _
-from plotpy.interfaces.common import (
+from plotpy.interfaces import (
     IBasePlotItem,
     ICurveItemType,
     ISerializableType,
@@ -33,7 +33,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from qtpy.QtCore import QPointF
     from qwt import QwtScaleMap
 
-    from plotpy.interfaces.common import IItemType
+    from plotpy.interfaces import IItemType
     from plotpy.styles.base import ItemParameters
 
 

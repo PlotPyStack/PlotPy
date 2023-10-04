@@ -17,7 +17,7 @@ from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
 from plotpy.config import _
-from plotpy.interfaces.panel import IPanel
+from plotpy.interfaces import IPanel
 from plotpy.panels.base import ID_ITEMLIST, PanelWidget
 
 

@@ -12,7 +12,7 @@ from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
 
 from plotpy.coords import canvas_to_axes
-from plotpy.interfaces.common import (
+from plotpy.interfaces import (
     IBaseImageItem,
     IBasePlotItem,
     IColormapImageItemType,
@@ -42,7 +42,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from qtpy.QtCore import QPointF, QRectF
     from qtpy.QtGui import QPainter
 
-    from plotpy.interfaces.common import IItemType
+    from plotpy.interfaces import IItemType
     from plotpy.styles.base import ItemParameters
 
 

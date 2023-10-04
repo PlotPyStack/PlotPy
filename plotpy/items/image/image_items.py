@@ -13,7 +13,7 @@ from qtpy import QtCore as QC
 from plotpy import io
 from plotpy.config import _
 from plotpy.coords import canvas_to_axes
-from plotpy.interfaces.common import (
+from plotpy.interfaces import (
     IBaseImageItem,
     IBasePlotItem,
     IColormapImageItemType,
@@ -37,7 +37,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from qtpy.QtCore import QPointF, QRectF
     from qtpy.QtGui import QColor, QPainter
 
-    from plotpy.interfaces.common import IItemType
+    from plotpy.interfaces import IItemType
 
 try:
     from plotpy._scaler import INTERP_NEAREST, _scale_rect, _scale_xy

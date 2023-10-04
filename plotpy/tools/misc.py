@@ -14,7 +14,7 @@ from qtpy.QtPrintSupport import QPrintDialog, QPrinter
 
 from plotpy import io
 from plotpy.config import _
-from plotpy.interfaces.common import IImageItemType
+from plotpy.interfaces import IImageItemType
 from plotpy.items import (
     compute_trimageitems_original_size,
     get_image_from_plot,

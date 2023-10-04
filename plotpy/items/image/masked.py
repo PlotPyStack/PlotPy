@@ -11,7 +11,7 @@ from qtpy import QtCore as QC
 from plotpy import io
 from plotpy._scaler import INTERP_NEAREST, _scale_rect, _scale_xy
 from plotpy.config import _
-from plotpy.interfaces.common import (
+from plotpy.interfaces import (
     IBaseImageItem,
     IBasePlotItem,
     IHistDataSource,

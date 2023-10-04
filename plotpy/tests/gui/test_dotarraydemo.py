@@ -32,14 +32,14 @@ from qtpy import QtWidgets as QW
 
 import plotpy.config  # Loading icons
 import plotpy.widgets
-from plotpy.interfaces.common import IImageItemType
+from plotpy.interfaces import IImageItemType
 from plotpy.items import RawImageItem
 from plotpy.items.curve.errorbar import vmap
 from plotpy.plot import PlotDialog, PlotOptions
 from plotpy.tools import CopyToClipboardTool, HelpTool, PrintTool, SaveAsTool
 
 if TYPE_CHECKING:  # pragma: no cover
-    from plotpy.interfaces.common import IItemType
+    from plotpy.interfaces import IItemType
 
 
 class DotArrayParam(gdt.DataSet):

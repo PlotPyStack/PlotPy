@@ -8,7 +8,7 @@ from qtpy import QtWidgets as QW
 
 from plotpy.config import _
 from plotpy.events import QtDragHandler, setup_standard_tool_filter
-from plotpy.interfaces.common import ICurveItemType
+from plotpy.interfaces import ICurveItemType
 from plotpy.items import Marker, XRangeSelection
 from plotpy.tools.base import (
     SHAPE_Z_OFFSET,

@@ -15,13 +15,13 @@ from guidata.utils.misc import assert_interfaces_valid
 from qwt import QwtPlot, QwtPlotGrid
 
 from plotpy.config import _
-from plotpy.interfaces.common import IBasePlotItem, IDecoratorItemType
+from plotpy.interfaces import IBasePlotItem, IDecoratorItemType
 from plotpy.styles.base import GridParam
 
 if TYPE_CHECKING:  # pragma: no cover
     from qtpy.QtCore import QPointF
 
-    from plotpy.interfaces.common import IItemType
+    from plotpy.interfaces import IItemType
     from plotpy.styles.base import ItemParameters
 
 

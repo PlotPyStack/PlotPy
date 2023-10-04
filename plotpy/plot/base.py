@@ -34,7 +34,7 @@ from plotpy import io
 from plotpy.config import CONF, _
 from plotpy.constants import PARAMETERS_TITLE_ICON, PlotType
 from plotpy.events import StatefulEventFilter
-from plotpy.interfaces import common as itf
+from plotpy.interfaces import items as itf
 from plotpy.items import annotations
 from plotpy.items.curve.base import CurveItem
 from plotpy.items.grid import GridItem

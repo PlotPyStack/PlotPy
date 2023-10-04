@@ -14,7 +14,7 @@ from qtpy import QtCore as QC
 from plotpy import io
 from plotpy.config import _
 from plotpy.coords import axes_to_canvas
-from plotpy.interfaces.common import (
+from plotpy.interfaces import (
     IBaseImageItem,
     IBasePlotItem,
     IColormapImageItemType,
@@ -50,7 +50,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from qtpy.QtCore import QPointF, QRectF
     from qtpy.QtGui import QPainter
 
-    from plotpy.interfaces.common import IItemType
+    from plotpy.interfaces import IItemType
     from plotpy.items import BaseImageItem, RectangleShape, TrImageItem
     from plotpy.plot import BasePlot
     from plotpy.styles.base import ItemParameters

@@ -7,7 +7,7 @@ from qtpy import QtCore as QC
 
 from plotpy.config import _
 from plotpy.coords import axes_to_canvas, canvas_to_axes
-from plotpy.interfaces.common import IBasePlotItem
+from plotpy.interfaces import IBasePlotItem
 from plotpy.items.curve.errorbar import ErrorBarCurveItem
 from plotpy.items.image.misc import get_image_from_qrect
 from plotpy.mathutils.geometry import rotate, translate, vector_angle, vector_norm

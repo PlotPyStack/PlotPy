@@ -3,7 +3,7 @@ from guidata.qthelpers import get_std_icon
 from qtpy import QtWidgets as QW
 
 from plotpy.config import _
-from plotpy.interfaces.common import ICurveItemType
+from plotpy.interfaces import ICurveItemType
 from plotpy.items import (
     AnnotatedCircle,
     AnnotatedEllipse,

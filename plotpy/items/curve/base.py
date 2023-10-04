@@ -14,7 +14,7 @@ from qwt import QwtPlotCurve
 
 from plotpy.config import CONF, _
 from plotpy.coords import canvas_to_axes
-from plotpy.interfaces.common import (
+from plotpy.interfaces import (
     IBasePlotItem,
     ICurveItemType,
     ISerializableType,
@@ -27,7 +27,7 @@ if TYPE_CHECKING:  # pragma: no cover
     import guidata.dataset.io
     from qtpy import QtCore as QC
 
-    from plotpy.interfaces.common import IItemType
+    from plotpy.interfaces import IItemType
     from plotpy.styles.base import ItemParameters
 
 

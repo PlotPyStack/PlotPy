@@ -18,7 +18,7 @@ from guidata.utils.misc import assert_interfaces_valid
 from qwt import QwtPlotCurve
 
 from plotpy.config import _
-from plotpy.interfaces.common import IBasePlotItem, IHistDataSource
+from plotpy.interfaces import IBasePlotItem, IHistDataSource
 from plotpy.items.curve.base import CurveItem
 from plotpy.styles.curve import CurveParam
 from plotpy.styles.histogram import HistogramParam

@@ -13,11 +13,7 @@ from qtpy.QtCore import QPointF
 
 from plotpy.config import _
 from plotpy.coords import axes_to_canvas, canvas_to_axes
-from plotpy.interfaces.common import (
-    IBaseImageItem,
-    IBasePlotItem,
-    IExportROIImageItemType,
-)
+from plotpy.interfaces import IBaseImageItem, IBasePlotItem, IExportROIImageItemType
 from plotpy.items.image.base import RawImageItem
 from plotpy.mathutils.geometry import colvector, rotate, scale, translate
 from plotpy.styles.image import TrImageParam

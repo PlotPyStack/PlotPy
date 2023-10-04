@@ -17,7 +17,7 @@ from plotpy import io
 from plotpy.config import _
 from plotpy.constants import PlotType
 from plotpy.events import QtDragHandler, setup_standard_tool_filter
-from plotpy.interfaces.common import (
+from plotpy.interfaces import (
     IColormapImageItemType,
     IStatsImageItemType,
     IVoiImageItemType,

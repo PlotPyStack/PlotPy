@@ -7,7 +7,7 @@ from qtpy import QtWidgets as QW
 from plotpy.config import _
 from plotpy.constants import PARAMETERS_TITLE_ICON
 from plotpy.events import ZoomRectHandler, setup_standard_tool_filter
-from plotpy.interfaces.common import IImageItemType, IShapeItemType
+from plotpy.interfaces import IImageItemType, IShapeItemType
 from plotpy.items import RectangleShape, get_items_in_rectangle
 from plotpy.tools.base import (
     CommandTool,
