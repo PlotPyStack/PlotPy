@@ -749,7 +749,6 @@ class PlotManager:
         """
         Register all image friendly annotation tools for the plot
         """
-
         # No curve-specific annotation tool, so this is equivalent to the
         # register_all_annotation_tools function for now
         self.register_all_annotation_tools()

@@ -267,6 +267,21 @@ class BasePlotWidget(QW.QSplitter):
         elif self.options.type == PlotType.AUTO:
             self.manager.register_all_tools()
 
+    def register_annotation_tools(self) -> None:
+        """Register the annotation tools according to the plot type
+
+        Raises:
+            RuntimeError: If the plot manager is not defined
+        """
+        if self.manager is None:
+            raise RuntimeError("Plot manager is not defined")
+        if self.options.type == PlotType.CURVE:
+            self.manager.register_curve_annotation_tools()
+        elif self.options.type == PlotType.IMAGE:
+            self.manager.register_image_annotation_tools()
+        elif self.options.type == PlotType.AUTO:
+            self.manager.register_all_annotation_tools()
+
 
 class PlotWidget(BasePlotWidget):
     """Plot widget with integrated plot manager, toolbar, tools and panels
@@ -446,6 +461,15 @@ class AbstractPlotDialogWindow(abc.ABC):
         This method may be overriden to provide a fully customized set of tools
         """
 
+    @abc.abstractmethod
+    def register_annotation_tools(self):
+        """
+        Register the annotation tools: the base implementation of this method
+        register tools according to the plot type (curve, image, etc.)
+
+        This method may be overriden to provide a fully customized set of tools
+        """
+
 
 class PlotDialogMeta(type(QW.QDialog), abc.ABCMeta):
     """Mixed metaclass to avoid conflicts"""
@@ -578,6 +602,14 @@ class PlotDialog(QW.QDialog, AbstractPlotDialogWindow, metaclass=PlotDialogMeta)
         """
         self.plot_widget.register_tools()
 
+    def register_annotation_tools(self):
+        """Register the annotation tools: the base implementation of this method
+        register tools according to the plot type (curve, image, etc.)
+
+        This method may be overriden to provide a fully customized set of tools
+        """
+        self.plot_widget.register_annotation_tools()
+
 
 class PlotWindowMeta(type(QW.QMainWindow), abc.ABCMeta):
     """Mixed metaclass to avoid conflicts"""
@@ -689,6 +721,14 @@ class PlotWindow(QW.QMainWindow, AbstractPlotDialogWindow, metaclass=PlotWindowM
         This method may be overriden to provide a fully customized set of tools
         """
         self.plot_widget.register_tools()
+
+    def register_annotation_tools(self):
+        """Register the annotation tools: the base implementation of this method
+        register tools according to the plot type (curve, image, etc.)
+
+        This method may be overriden to provide a fully customized set of tools
+        """
+        self.plot_widget.register_annotation_tools()
 
     def closeEvent(self, event) -> None:
         """Reimplement the close event to close all panels

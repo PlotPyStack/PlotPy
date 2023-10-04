@@ -59,13 +59,7 @@ def plot(*items, type=PlotType.AUTO):
         title=title,
         options=PlotOptions(title="Title", xlabel="xlabel", ylabel="ylabel", type=type),
     )
-    if type == PlotType.CURVE:
-        win.manager.register_curve_annotation_tools()
-    elif type == PlotType.IMAGE:
-        win.manager.register_image_annotation_tools()
-    else:
-        win.manager.register_all_annotation_tools()
-
+    win.register_annotation_tools()
     plot = win.manager.get_plot()
     for item in items:
         plot.add_item(item)
