@@ -34,6 +34,7 @@ from .image import (
     ContrastPanelTool,
     ImageMaskTool,
     ImageStatsTool,
+    LockTrImageTool,
     OpenImageTool,
     ReverseYAxisTool,
     RotateCropTool,
