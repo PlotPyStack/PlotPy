@@ -5,4 +5,5 @@ omit =
     */plotpy/tests/*
     */plotpy/plot/interactive.py
     *.vscode/extensions*
+    */qwt/*
     */guidata/*
