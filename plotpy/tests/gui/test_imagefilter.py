@@ -15,7 +15,7 @@ from scipy.ndimage import gaussian_filter
 
 from plotpy import io
 from plotpy.builder import make
-from plotpy.tests.gui.test_imagexy import compute_image
+from plotpy.tests import data as ptd
 
 
 def imshow(x, y, data, filter_area, yreverse=True):
@@ -33,14 +33,8 @@ def imshow(x, y, data, filter_area, yreverse=True):
         plot = win.manager.get_plot()
         plot.add_item(image)
         xmin, xmax, ymin, ymax = filter_area
-        flt = make.imagefilter(
-            xmin,
-            xmax,
-            ymin,
-            ymax,
-            image,
-            filter=lambda x, y, data: gaussian_filter(data, 5),
-        )
+        ifilter = lambda x, y, data: gaussian_filter(data, 5)
+        flt = make.imagefilter(xmin, xmax, ymin, ymax, image, filter=ifilter)
         plot.add_item(flt, z=1)
         plot.replot()
         win.show()
@@ -48,7 +42,7 @@ def imshow(x, y, data, filter_area, yreverse=True):
 
 def test_imagefilter():
     """Test image filter"""
-    x, y, data = compute_image()
+    x, y, data = ptd.gen_xyimage()
     imshow(x, y, data, filter_area=(-3.0, -1.0, 0.0, 2.0), yreverse=False)
 
     filename = os.path.join(os.path.dirname(__file__), "brain.png")

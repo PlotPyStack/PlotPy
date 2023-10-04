@@ -7,65 +7,20 @@
 
 # guitest: show
 
-import numpy as np
 from guidata.qthelpers import qt_app_context
 from numpy import linspace, sin
 
 from plotpy.builder import make
-from plotpy.constants import PlotType
-from plotpy.plot import PlotDialog, PlotOptions
+from plotpy.tests import data as ptd
+from plotpy.tests import vistools as ptv
 
 
-def compute_image(N=2000, grid=True):
-    T = np.float32
-    x = np.array(np.linspace(-5, 5, N), T)
-    img = np.zeros((N, N), T)
-    x.shape = (1, N)
-    img += x**2
-    x.shape = (N, 1)
-    img += x**2
-    np.cos(img, img)  # inplace cosine
-    if not grid:
-        return img
-    x.shape = (N,)
-    for k in range(-5, 5):
-        i = x.searchsorted(k)
-        if k < 0:
-            v = -1.1
-        else:
-            v = 1.1
-        img[i, :] = v
-        img[:, i] = v
-    m1, m2, m3, m4 = -1.1, -0.3, 0.3, 1.1
-    K = 100
-    img[:K, :K] = m1  # (0,0)
-    img[:K, -K:] = m2  # (0,N)
-    img[-K:, -K:] = m3  # (N,N)
-    img[-K:, :K] = m4  # (N,0)
-    # img = array( 30000*(img+1.1), uint16 )
-    return img
-
-
-def plot(*items, type=PlotType.AUTO):
-    if type == PlotType.CURVE:
-        title = "Curve specialized plot annotation tools"
-    elif type == PlotType.IMAGE:
-        title = "Image specialized plot annotation tools"
-    else:
-        title = "All annotation tools"
-    win = PlotDialog(
-        edit=False,
-        toolbar=True,
-        title=title,
-        options=PlotOptions(title="Title", xlabel="xlabel", ylabel="ylabel", type=type),
-    )
+def plot(*items, plot_type="auto"):
+    title = "All annotation tools"
+    if plot_type in ("curve", "image"):
+        title = f"{plot_type.capitalize()} specialized plot annotation tools"
+    win = ptv.show_items(items, plot_type=plot_type, wintitle=title, title=title)
     win.register_annotation_tools()
-    plot = win.manager.get_plot()
-    for item in items:
-        plot.add_item(item)
-    win.manager.get_itemlist_panel().show()
-    plot.set_items_readonly(False)
-    win.show()
     return win
 
 
@@ -75,9 +30,9 @@ def test_annotation():
     y = sin(sin(sin(x)))
     persist = []
     with qt_app_context(exec_loop=True):
-        persist.append(plot(make.curve(x, y, color="b"), type=PlotType.CURVE))
-        persist.append(plot(make.image(compute_image()), type=PlotType.IMAGE))
-        persist.append(plot(make.curve(x, y, color="b"), make.image(compute_image())))
+        persist.append(plot(make.curve(x, y, color="b"), plot_type="curve"))
+        persist.append(plot(make.image(ptd.gen_image1()), plot_type="image"))
+        persist.append(plot(make.curve(x, y, color="b"), make.image(ptd.gen_image1())))
 
 
 if __name__ == "__main__":

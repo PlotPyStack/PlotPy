@@ -16,7 +16,7 @@ from plotpy.builder import make
 from plotpy.panels import ContrastAdjustment, PlotItemList
 from plotpy.plot import BasePlot, BasePlotOptions
 from plotpy.plot.manager import PlotManager
-from plotpy.tests.gui.test_image import compute_image
+from plotpy.tests import data as ptd
 
 
 class CentralWidget(QW.QWidget):
@@ -54,8 +54,7 @@ class Window(QW.QMainWindow):
 
         filename = os.path.join(os.path.dirname(__file__), "brain.png")
         image1 = make.image(filename=filename, title="Original", colormap="gray")
-
-        image2 = make.image(compute_image())
+        image2 = make.image(ptd.gen_image4(500, 500))
 
         widget = CentralWidget(self)
         self.setCentralWidget(widget)

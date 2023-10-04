@@ -14,15 +14,7 @@ from guidata.qthelpers import qt_app_context
 
 from plotpy._scaler import _scale_quads
 from plotpy.builder import make
-
-
-def imshow(items):
-    win = make.dialog(toolbar=True, yreverse=False, wintitle="Pcolor test")
-    plot = win.manager.get_plot()
-    for item in items:
-        plot.add_item(item)
-    win.show()
-    return win
+from plotpy.tests import vistools as ptv
 
 
 def polar_demo(N=300):
@@ -69,10 +61,10 @@ def compute_quads3():
 
 
 def test_pcolor():
-    """Test pcolor"""
+    """Testing pcolor"""
     with qt_app_context(exec_loop=True):
         items = compute_quads() + compute_quads3()
-        _persist_plot = imshow(items)
+        _win = ptv.show_items(items, plot_type="image", wintitle=test_pcolor.__doc__)
 
 
 def test_valgrind(K=20):

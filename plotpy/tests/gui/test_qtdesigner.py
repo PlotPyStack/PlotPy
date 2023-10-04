@@ -18,7 +18,7 @@ import os
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
-from plotpy.tests.gui.test_image import compute_image
+from plotpy.tests import data as ptd
 from plotpy.widgets.qtdesigner import loadui
 
 FormClass = loadui(os.path.splitext(__file__)[0] + ".ui")
@@ -34,7 +34,7 @@ class WindowTest(FormClass):
 
 def test_qtdesigner():
     with qt_app_context(exec_loop=True):
-        form = WindowTest(compute_image())
+        form = WindowTest(ptd.gen_image4(200, 200))
         form.show()
 
 

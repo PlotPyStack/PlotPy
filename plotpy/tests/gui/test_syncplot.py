@@ -15,7 +15,7 @@ from plotpy.builder import make
 from plotpy.config import _
 from plotpy.plot import BasePlot, PlotOptions, SubplotWidget, set_widget_title_icon
 from plotpy.plot.manager import PlotManager
-from plotpy.tests.gui.test_image_coords import create_2d_gaussian
+from plotpy.tests.data import gen_2d_gaussian
 
 
 class SyncPlotWindow(QW.QMainWindow):
@@ -126,9 +126,9 @@ def test_syncplot_curves():
 
 def test_syncplot_images():
     """Test plot synchronization: images"""
-    img1 = create_2d_gaussian(20, np.uint8, x0=-10, y0=-10, mu=7, sigma=10.0)
-    img2 = create_2d_gaussian(20, np.uint8, x0=-10, y0=-10, mu=5, sigma=8.0)
-    img3 = create_2d_gaussian(20, np.uint8, x0=-10, y0=-10, mu=3, sigma=6.0)
+    img1 = gen_2d_gaussian(20, np.uint8, x0=-10, y0=-10, mu=7, sigma=10.0)
+    img2 = gen_2d_gaussian(20, np.uint8, x0=-10, y0=-10, mu=5, sigma=8.0)
+    img3 = gen_2d_gaussian(20, np.uint8, x0=-10, y0=-10, mu=3, sigma=6.0)
     with qt_app_context(exec_loop=True):
 
         def makeim(data):

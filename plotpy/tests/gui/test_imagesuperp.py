@@ -21,7 +21,6 @@ def create_window():
         background="black", minor_enabled=(False, False), major_style=(".", "gray", 1)
     )
     win = make.dialog(
-        edit=False,
         toolbar=True,
         wintitle="Image superposition test",
         gridparam=gridparam,
@@ -34,7 +33,6 @@ def create_window():
 
 def test_imagesuperp():
     """Test image superposition"""
-
     filename = os.path.join(os.path.dirname(__file__), "brain.png")
     with qt_app_context(exec_loop=True):
         win = create_window()

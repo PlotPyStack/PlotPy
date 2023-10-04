@@ -11,15 +11,7 @@ from guidata.qthelpers import qt_app_context
 from numpy import linspace, sin
 
 from plotpy.builder import make
-
-
-def plot(*items):
-    win = make.dialog(edit=False, toolbar=True, type="curve")
-    plot = win.manager.get_plot()
-    for item in items:
-        plot.add_item(item)
-    win.show()
-    return win
+from plotpy.tests import vistools as ptv
 
 
 def test_cursor():
@@ -33,7 +25,9 @@ def test_cursor():
         vcursor2 = make.vcursor(-1, label="NOT MOVABLE = %.2f", movable=False)
         xcursor = make.xcursor(-4, 2.5, label="x = %.2f<br>y = %.2f")
         legend = make.legend("TR")
-        persist_obj = plot(curve, hcursor, vcursor, vcursor2, xcursor, legend)
+        _win = ptv.show_items(
+            [curve, hcursor, vcursor, vcursor2, xcursor, legend], plot_type="curve"
+        )
 
 
 if __name__ == "__main__":

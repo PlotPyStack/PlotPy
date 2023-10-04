@@ -18,6 +18,7 @@ from qtpy import QtGui as QG
 from plotpy import io
 from plotpy.builder import LUTAlpha, make
 from plotpy.items import assemble_imageitems
+from plotpy.tests.data import gen_image4
 
 DEFAULT_CHARS = "".join([chr(c) for c in range(32, 256)])
 
@@ -74,22 +75,6 @@ def txtwrite(data, x, y, sz, txt, range=None):
     data[y : y + dy, x : x + dx] = arr
 
 
-def compute_image(NX, NY):
-    BX, BY = 40, 40
-    img = np.random.normal(0, 100, size=(BX, BY))
-    timg = np.fft.fftshift(np.fft.fft2(img))
-    print(timg.shape)
-    cx = NX // 2
-    cy = NY // 2
-    bx2 = BX // 2
-    by2 = BY // 2
-    z = np.zeros((NX, NY), np.complex64)
-    z[cx - bx2 : cx - bx2 + BX, cy - by2 : cy - by2 + BY] = timg
-    z = np.fft.ifftshift(z)
-    rev = np.fft.ifft2(z)
-    return np.abs(rev)
-
-
 def get_bbox(items):
     r = QC.QRectF()
     for it in items:
@@ -131,7 +116,7 @@ def build_image(items):
 def test_transform():
     """Test"""
     N = 500
-    data = compute_image(N, N)
+    data = gen_image4(N, N)
     m = data.min()
     M = data.max()
     with qt_app_context(exec_loop=True):

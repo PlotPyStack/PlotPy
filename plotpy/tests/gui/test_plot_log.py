@@ -11,6 +11,7 @@ import numpy as np
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
+from plotpy.tests import vistools as ptv
 
 
 def test_plot_log():
@@ -19,15 +20,12 @@ def test_plot_log():
         x = np.linspace(1, 10, 200)
         y = np.exp(-x)
         y[0] = 0
-        item = make.curve(x, y, color="b")
-        item = make.error(x, y, None, y * 0.23)
-        win = make.dialog(type="curve")
+        items = [make.curve(x, y, color="b"), make.error(x, y, None, y * 0.23)]
+        win = ptv.show_items(items, plot_type="curve")
         plot = win.manager.get_plot()
         plot.set_axis_scale("left", "log")
         plot.set_axis_scale("bottom", "log")
         #    plot.set_axis_limits("left", 4.53999297625e-05, 22026.4657948)
-        plot.add_item(item)
-        win.show()
 
 
 if __name__ == "__main__":

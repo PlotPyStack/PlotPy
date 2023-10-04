@@ -13,29 +13,18 @@ from guidata.qthelpers import qt_app_context
 
 import plotpy
 from plotpy.builder import make
+from plotpy.tests import vistools as ptv
 
 PLOTPYDIR = os.path.abspath(os.path.dirname(plotpy.__file__))
 IMGFILE = os.path.join(PLOTPYDIR, "images", "items", "image.png")
 
 
-def imshow(filename):
-    win = make.dialog(
-        edit=False,
-        toolbar=True,
-        wintitle="RGB image item test",
-        type="image",
-    )
-    item = make.rgbimage(filename=filename, xdata=[-1, 1], ydata=[-1, 1])
-    plot = win.manager.get_plot()
-    plot.add_item(item)
-    win.show()
-    return win
-
-
 def test_image_rgb():
-    """Test"""
+    """Testing RGB image item"""
+    title = test_image_rgb.__doc__
     with qt_app_context(exec_loop=True):
-        _win_persist = imshow(IMGFILE)
+        item = make.rgbimage(filename=IMGFILE, xdata=[-1, 1], ydata=[-1, 1])
+        _win = ptv.show_items([item], plot_type="image", wintitle=title)
 
 
 if __name__ == "__main__":
