@@ -718,10 +718,10 @@ class BaseImageItem(QwtPlotItem):
             yMap.transform(yb) + 1,
         )
 
-        W = canvasRect.right()
-        H = canvasRect.bottom()
+        W = int(canvasRect.right())
+        H = int(canvasRect.bottom())
         if self._offscreen.shape != (H, W):
-            self._offscreen = np.empty((int(H), int(W)), np.uint32)
+            self._offscreen = np.empty((H, W), np.uint32)
             self._image = QG.QImage(self._offscreen, W, H, QG.QImage.Format_ARGB32)
             self._image.ndarray = self._offscreen
             self.notify_new_offscreen()

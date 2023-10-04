@@ -1157,7 +1157,7 @@ class BasePlot(qwt.QwtPlot):
         if fname.lower().endswith(".pdf"):
             printer = QPrinter()
             printer.setOutputFormat(QPrinter.OutputFormat.PdfFormat)
-            printer.setOrientation(QPrinter.orientation.Landscape)
+            printer.setPageOrientation(QG.QPageLayout.Landscape)
             printer.setOutputFileName(fname)
             printer.setCreator("plotpy")
             self.print_(printer)

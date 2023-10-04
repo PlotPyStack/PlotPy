@@ -182,8 +182,9 @@ class PickleTest(IOTest):
 
     def save_items(self):
         """Save items"""
+        self.plot.select_all()
         f = open(self.FNAME, "wb")
-        self.plot.save_items(f)
+        self.plot.save_items(f, selected=True)
 
 
 def test_pickle():
