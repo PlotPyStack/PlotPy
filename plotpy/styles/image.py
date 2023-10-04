@@ -141,153 +141,7 @@ class BaseImageParam(DataSet):
             plot.blockSignals(False)
 
 
-class TransformParamMixin(DataSet):
-    lock_position = BoolItem(
-        _("Lock position"),
-        _("Position"),
-        default=True,
-        help=_("Locked images are not movable with the mouse"),
-    )
-
-    _ps = BeginGroup(_("Pixel size")).set_prop(
-        "display", hide=GetAttrProp("_multiselection")
-    )
-    dx = FloatItem(_("Width (dx)"), default=1.0)
-    dy = FloatItem(_("Height (dy)"), default=1.0)
-    _end_ps = EndGroup(_("Pixel size")).set_prop(
-        "display", hide=GetAttrProp("_multiselection")
-    )
-    _pos = BeginGroup(_("Translate, rotate and flip"))
-    pos_x0 = FloatItem(_("x<sub>CENTER</sub>"), default=0.0).set_prop(
-        "display", hide=GetAttrProp("_multiselection")
-    )
-    hflip = BoolItem(_("Flip horizontally"), default=False).set_prop("display", col=1)
-    pos_y0 = FloatItem(_("y<sub>CENTER</sub>"), default=0.0).set_prop(
-        "display", hide=GetAttrProp("_multiselection")
-    )
-    vflip = BoolItem(_("Flip vertically"), default=False).set_prop("display", col=1)
-    pos_angle = FloatItem(_("θ (°)"), default=0.0).set_prop("display", col=0)
-    _end_pos = EndGroup(_("Translate, rotate and flip"))
-
-    def _update_transform(self, image):
-        """
-
-        :param image:
-        """
-        plot = image.plot()
-        if plot is not None:
-            plot.blockSignals(True)  # Avoid unwanted calls of update_param
-            # triggered by the setter methods below
-        try:
-            image.set_transform(*self.get_transform())
-        except Exception:
-            pass
-        if plot is not None:
-            plot.blockSignals(False)
-
-    def get_transform(self):
-        """
-        Return the transformation parameters
-
-        :return: tuple (x0, y0, angle, dx, dy, hflip, yflip)
-        """
-        return (
-            self.pos_x0,
-            self.pos_y0,
-            self.pos_angle * np.pi / 180,
-            self.dx,
-            self.dy,
-            self.hflip,
-            self.vflip,
-        )
-
-    def set_transform(self, x0, y0, angle, dx=1.0, dy=1.0, hflip=False, vflip=False):
-        """
-        Set the transformation
-
-        :param x0: X translation
-        :param y0: Y translation
-        :param angle: rotation angle in radians
-        :param dx: X-scaling factor
-        :param dy: Y-scaling factor
-        :param hflip: True if image if flip horizontally
-        :param vflip: True if image is flip vertically
-        """
-        self.pos_x0 = x0
-        self.pos_y0 = y0
-        self.pos_angle = angle * 180 / np.pi
-        self.dx = dx
-        self.dy = dy
-        self.hflip = hflip
-        self.vflip = vflip
-
-
-class ImageParamMixin(DataSet):
-    """Mixin allowing to use all not trimage as previously in guidata/guiqwt
-    without having to modify existing code"""
-
-    dx = 1.0
-    dy = 1.0
-    pos_x0 = 0.0
-    hflip = False
-    pos_y0 = 0.0
-    vflip = False
-    pos_angle = 0.0
-
-    def _update_transform(self, image):
-        """
-
-        :param image:
-        """
-        plot = image.plot()
-        if plot is not None:
-            plot.blockSignals(True)  # Avoid unwanted calls of update_param
-            # triggered by the setter methods below
-        try:
-            image.set_transform(*self.get_transform())
-        except Exception:
-            pass
-        if plot is not None:
-            plot.blockSignals(False)
-
-    def get_transform(self):
-        """
-        Return the transformation parameters
-
-        :return: tuple (x0, y0, angle, dx, dy, hflip, yflip)
-        """
-        return (
-            self.pos_x0,
-            self.pos_y0,
-            self.pos_angle * np.pi / 180,
-            self.dx,
-            self.dy,
-            self.hflip,
-            self.vflip,
-        )
-
-    def set_transform(self, x0, y0, angle, dx=1.0, dy=1.0, hflip=False, vflip=False):
-        """
-        Set the transformation
-
-        :param x0: X translation
-        :param y0: Y translation
-        :param angle: rotation angle in radians
-        :param dx: X-scaling factor
-        :param dy: Y-scaling factor
-        :param hflip: True if image if flip horizontally
-        :param vflip: True if image is flip vertically
-        """
-        self.pos_x0 = x0
-        self.pos_y0 = y0
-        self.pos_angle = angle * 180 / np.pi
-        self.dx = dx
-        self.dy = dy
-        self.hflip = hflip
-        self.vflip = vflip
-
-
-class QuadGridParam(ImageParamMixin):
+class QuadGridParam(DataSet):
     _multiselection = False
     label = StringItem(_("Image title"), default=_("Image")).set_prop(
         "display", hide=GetAttrProp("_multiselection")
@@ -362,8 +216,6 @@ class QuadGridParam(ImageParamMixin):
         if plot is not None:
             plot.blockSignals(False)
 
-        self._update_transform(image)
-
 
 class RawImageParam(BaseImageParam):
     _hide_background = False
@@ -401,14 +253,8 @@ class RawImageParam_MS(RawImageParam):
 ItemParameters.register_multiselection(RawImageParam, RawImageParam_MS)
 
 
-class XYImageParam(RawImageParam, ImageParamMixin):
-    def update_item(self, image):
-        """
-
-        :param image:
-        """
-        super().update_item(image)
-        self._update_transform(image)
+class XYImageParam(RawImageParam):
+    pass
 
 
 class XYImageParam_MS(XYImageParam):

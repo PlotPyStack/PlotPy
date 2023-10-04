@@ -16,7 +16,6 @@ cdef inline double double_min(double a, double b): return a if a <= b else b
 @cython.boundscheck(False)
 def histogram2d(np.ndarray[double, ndim=1] X, np.ndarray[double, ndim=1] Y,
                 double i0, double i1, double j0, double j1,
-                np.ndarray[double, ndim=2] tr,
                 np.ndarray[double, ndim=2] data, logscale):
     """Compute 2-D Histogram from data X, Y"""
     cdef double cx, cy, nmax, ix, iy
@@ -25,17 +24,13 @@ def histogram2d(np.ndarray[double, ndim=1] X, np.ndarray[double, ndim=1] Y,
     cdef unsigned int nx = data.shape[1]
     cdef unsigned int ny = data.shape[0]
 
-    cdef double x0 = tr[0,2], y0 = tr[1,2]
-    cdef double xx = tr[0,0], xy = tr[0,1]
-    cdef double yx = tr[1,0], yy = tr[1,1]
-
     cx = nx/(i1-i0)
     cy = ny/(j1-j0)
 
     for i in range(n):
         #  Centered bins => - .5
-        ix = (X[i] * xx + Y[i] * xy + x0 -i0)*cx - .5
-        iy = (Y[i] * yy + X[i] * yx + y0 -j0)*cy - .5
+        ix = (X[i] - i0) * cx - .5
+        iy = (Y[i] - j0) * cy - .5
         if ix >= 0 and ix <= nx-1 and iy >= 0 and iy <= ny-1:
             data[<int> iy, <int> ix] += 1
 
@@ -57,7 +52,6 @@ def histogram2d_func(np.ndarray[double, ndim=1] X,
                      np.ndarray[double, ndim=1] Y,
                      np.ndarray[double, ndim=1] Z,
                      double i0, double i1, double j0, double j1,
-                     np.ndarray[double, ndim=2] tr,
                      np.ndarray[double, ndim=2] data_tmp,
                      np.ndarray[double, ndim=2] data, int computation):
     """Compute 2-D Histogram from data X, Y"""
@@ -67,17 +61,13 @@ def histogram2d_func(np.ndarray[double, ndim=1] X,
     cdef unsigned int nx = data.shape[1]
     cdef unsigned int ny = data.shape[0]
 
-    cdef double x0 = tr[0,2], y0 = tr[1,2]
-    cdef double xx = tr[0,0], xy = tr[0,1]
-    cdef double yx = tr[1,0], yy = tr[1,1]
-
     cx = nx/(i1-i0)
     cy = ny/(j1-j0)
 
     for i in range(n):
         #  Centered bins => - .5
-        ix = (X[i] * xx + Y[i] * xy + x0 -i0)*cx - .5
-        iy = (Y[i] * yy + X[i] * yx + y0 -j0)*cy - .5
+        ix = (X[i] - i0) * cx - .5
+        iy = (Y[i] - j0) * cy - .5
         if ix >= 0 and ix <= nx-1 and iy >= 0 and iy <= ny-1:
             u, v = <int> iy, <int> ix
             if computation == 0:  # max

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import weakref
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 from guidata.configtools import get_icon
 from guidata.dataset.dataitems import BoolItem, FloatItem
@@ -25,11 +25,12 @@ from plotpy.interfaces.common import (
 from plotpy.items import (
     AnnotatedRectangle,
     EllipseShape,
+    MaskedImageItem,
+    MaskedXYImageItem,
     RectangleShape,
     TrImageItem,
     get_items_in_rectangle,
 )
-from plotpy.items.image.masked import MaskedImageMixin
 from plotpy.mathutils.colormap import build_icon_from_cmap_name, get_colormap_list
 from plotpy.panels.base import ID_CONTRAST
 from plotpy.tools.base import (
@@ -45,6 +46,8 @@ from plotpy.widgets.imagefile import exec_image_save_dialog
 
 if TYPE_CHECKING:  # pragma: no cover
     from plotpy.plot import BasePlot
+
+MaskedItem = Union[MaskedImageItem, MaskedXYImageItem]
 
 
 class ImageStatsRectangle(AnnotatedRectangle):
@@ -596,12 +599,10 @@ class ImageMaskTool(CommandTool):
         :return:
         """
         item = plot.get_active_item()
-        if isinstance(item, MaskedImageMixin):
+        if isinstance(item, MaskedItem):
             return item
         else:
-            items = [
-                item for item in plot.get_items() if isinstance(item, MaskedImageMixin)
-            ]
+            items = [item for item in plot.get_items() if isinstance(item, MaskedItem)]
             if items:
                 return items[-1]
 

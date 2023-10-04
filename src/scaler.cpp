@@ -698,12 +698,12 @@ static PyObject *dispatch_source(Params &p)
 static PyObject *py_scale_xy(PyObject *self, PyObject *args)
 {
     typedef params<XYScale> Params;
-    PyArrayObject *p_src = 0, *p_dst = 0, *p_ax = 0, *p_ay = 0, *p_tr = 0;
+    PyArrayObject *p_src = 0, *p_dst = 0, *p_ax = 0, *p_ay = 0;
     PyObject *p_lut_data, *p_src_data, *p_dst_data, *p_interp_data;
     double x1, y1, x2, y2;
 
-    if (!PyArg_ParseTuple(args, "OOOOOOO:_scale_xy",
-                          &p_src, &p_src_data, &p_tr,
+    if (!PyArg_ParseTuple(args, "OOOOOO:_scale_xy",
+                          &p_src, &p_src_data,
                           &p_dst, &p_dst_data,
                           &p_lut_data, &p_interp_data))
     {
@@ -720,13 +720,12 @@ static PyObject *py_scale_xy(PyObject *self, PyObject *args)
     }
     int ni = PyArray_DIM(p_src, 0);
     int nj = PyArray_DIM(p_src, 1);
+    int dni = PyArray_DIM(p_dst, 0);
+    int dnj = PyArray_DIM(p_dst, 1);
+    double dx = (x2 - x1) / dnj;
+    double dy = (y2 - y1) / dni;
     Array1D<double> ax(p_ax), ay(p_ay);
-    Array2D<double> tr(p_tr);
-    XYScale trans(nj, ni, ax, ay,
-                  tr.value(2, 0), tr.value(2, 1), // x0, y0
-                  tr.value(0, 0), tr.value(1, 0), // xx, xy
-                  tr.value(0, 1), tr.value(1, 1)  // yx, yy
-    );
+    XYScale trans(nj, ni, ax, ay, x1, y1, dx, dy);
     Params scale_params(p_src, p_dst, p_dst_data,
                         p_lut_data, p_interp_data, trans);
 

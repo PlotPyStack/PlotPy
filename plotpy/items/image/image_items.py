@@ -27,7 +27,6 @@ from plotpy.interfaces.common import (
 )
 from plotpy.items.image.base import RawImageItem, pixelround
 from plotpy.items.image.filter import XYImageFilterItem, to_bins
-from plotpy.items.image.mixin import ImageMixin
 from plotpy.mathutils.geometry import colvector
 from plotpy.styles.image import ImageParam, LUTAlpha, RGBImageParam, XYImageParam
 
@@ -471,7 +470,7 @@ class ImageItem(RawImageItem):
 assert_interfaces_valid(ImageItem)
 
 
-class XYImageItem(ImageMixin, RawImageItem):
+class XYImageItem(RawImageItem):
     """XY image item (non-linear axes)
 
     Args:
@@ -499,16 +498,11 @@ class XYImageItem(ImageMixin, RawImageItem):
             y_idx = np.argsort(y)
             y = y[y_idx]
             data = data[y_idx, :]
+        super().__init__(data, param)
         self.x = None
         self.y = None
-        self.tr = np.eye(3, dtype=float)
-        self.itr = np.eye(3, dtype=float)
-        self.points = np.array([[0, 0, 2, 2], [0, 2, 2, 0], [1, 1, 1, 1]], float)
-        super().__init__(data, param)
-
         if x is not None and y is not None:
             self.set_xy(x, y)
-        self.set_transform(0, 0, 0)
 
     # ---- Public API ----------------------------------------------------------
 
@@ -541,7 +535,6 @@ class XYImageItem(ImageMixin, RawImageItem):
         self.set_xy(x, y)
         self.setZ(z)
         self.param.update_item(self)
-        self.set_transform(*self.get_transform())
 
     def serialize(
         self,
@@ -573,12 +566,9 @@ class XYImageItem(ImageMixin, RawImageItem):
         x = reader.read(group_name="Xdata", func=reader.read_array)
         y = reader.read(group_name="Ydata", func=reader.read_array)
         self.set_xy(x, y)
-        self.set_transform(*self.get_transform())
 
     # ---- Public API ----------------------------------------------------------
-    def set_xy(
-        self, x: np.ndarray | list[float, ...], y: np.ndarray | list[float, ...]
-    ) -> None:
+    def set_xy(self, x: np.ndarray | list[float], y: np.ndarray | list[float]) -> None:
         """Set X and Y data
 
         Args:
@@ -608,14 +598,10 @@ class XYImageItem(ImageMixin, RawImageItem):
             self.y = y
         else:
             raise IndexError(f"y must be a 1D array of length {ni:d} or {ni + 1:d}")
-        xmin = self.x[0]
-        xmax = self.x[-1]
-        ymin = self.y[0]
-        ymax = self.y[-1]
-        self.points = np.array(
-            [[xmin, xmin, xmax, xmax], [ymin, ymax, ymax, ymin], [1, 1, 1, 1]], float
+        self.bounds = QC.QRectF(
+            QC.QPointF(self.x[0], self.y[0]), QC.QPointF(self.x[-1], self.y[-1])
         )
-        # self.compute_bounds()
+        self.update_border()
 
     # --- BaseImageItem API ----------------------------------------------------
     def get_filter(self, filterobj, filterparam):
@@ -641,24 +627,10 @@ class XYImageItem(ImageMixin, RawImageItem):
             xMap: X axis scale map
             yMap: Y axis scale map
         """
-        W = canvasRect.width()
-        H = canvasRect.height()
-        if W <= 1 or H <= 1:
-            return
-
-        x0, y0, x1, y1 = src_rect
-        cx = canvasRect.left()
-        cy = canvasRect.top()
-        sx = (x1 - x0) / (W - 1)
-        sy = (y1 - y0) / (H - 1)
-        # tr1 = tr(x0,y0)*scale(sx,sy)*tr(-cx,-cy)
-        tr = np.matrix([[sx, 0, x0 - cx * sx], [0, sy, y0 - cy * sy], [0, 0, 1]], float)
-        mat = self.tr * tr
-
         xytr = self.x, self.y, src_rect
         dst_rect = tuple([int(i) for i in dst_rect])
         dest = _scale_xy(
-            self.data, xytr, mat, self._offscreen, dst_rect, self.lut, self.interpolate
+            self.data, xytr, self._offscreen, dst_rect, self.lut, self.interpolate
         )
         qrect = QC.QRectF(QC.QPointF(dest[0], dest[1]), QC.QPointF(dest[2], dest[3]))
         painter.drawImage(qrect, self._image, qrect)
@@ -673,9 +645,7 @@ class XYImageItem(ImageMixin, RawImageItem):
         Returns:
             Pixel coordinates
         """
-        v = self.tr * colvector(xplot, yplot)
-        xpixel, ypixel, _ = v[:, 0]
-        return self.x.searchsorted(xpixel), self.y.searchsorted(ypixel)
+        return self.x.searchsorted(xplot), self.y.searchsorted(yplot)
 
     def get_plot_coordinates(self, xpixel: float, ypixel: float) -> tuple[float, float]:
         """Get plot coordinates from pixel coordinates
@@ -699,11 +669,7 @@ class XYImageItem(ImageMixin, RawImageItem):
         Returns:
             X values corresponding to the given pixel indexes
         """
-        zeros = np.zeros(self.x.shape)
-        ones = np.ones(self.x.shape)
-        xv = np.dstack((self.x, zeros, ones))
-        x = (self.itr * xv.T).A[0]
-        return x[i0:i1]
+        return self.x[i0:i1]
 
     def get_y_values(self, j0: int, j1: int) -> np.ndarray:
         """Get Y values from pixel indexes
@@ -715,11 +681,7 @@ class XYImageItem(ImageMixin, RawImageItem):
         Returns:
             Y values corresponding to the given pixel indexes
         """
-        zeros = np.zeros(self.y.shape)
-        ones = np.ones(self.y.shape)
-        yv = np.dstack((zeros, self.y, ones))
-        y = (self.itr * yv.T).A[1]
-        return y[j0:j1]
+        return self.y[j0:j1]
 
     def get_closest_coordinates(self, x: float, y: float) -> tuple[float, float]:
         """
@@ -733,10 +695,7 @@ class XYImageItem(ImageMixin, RawImageItem):
             tuple[float, float]: Closest coordinates
         """
         i, j = self.get_closest_indexes(x, y)
-        xi, yi = self.x[i], self.y[j]
-        v = self.itr * colvector(xi, yi)
-        x, y, _ = v[:, 0].A.ravel()
-        return x, y
+        return self.x[i], self.y[j]
 
     # ---- IBasePlotItem API ---------------------------------------------------
     def types(self) -> tuple[type[IItemType], ...]:

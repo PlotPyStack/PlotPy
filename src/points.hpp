@@ -301,14 +301,10 @@ public:
                 const axis_type &_ax,
                 const axis_type &_ay,
                 real _x0, real _y0,
-                real _xx, real _xy,
-                real _yx, real _yy) : nx(_nx), ny(_ny),
+                real _dx, real _dy) : nx(_nx), ny(_ny),
                                       ax(_ax), ay(_ay),
                                       x0(_x0), y0(_y0),
-                                      xx(_xx), xy(_xy),
-                                      yx(_yx), yy(_yy)
-    {
-    }
+                                      dx(_dx), dy(_dy) {}
 
     void testx(point &p) const
     {
@@ -334,29 +330,25 @@ public:
     }
     void set(point &p, int x, int y) const
     {
-        p.set(ax, x0 + x * xx + y * xy, ay, y0 + x * yx + y * yy);
+        p.set(ax, x0 + x * dx, ay, y0 + y * dy);
         testx(p);
         testy(p);
     }
     void incx(point &p, real k = 1) const
     {
-        p.incx(ax, k * xx);
-        p.incy(ay, k * yx);
+        p.incx(ax, k * dx);
         testx(p);
-        testy(p);
     }
     void incy(point &p, real k = 1) const
     {
-        p.incx(ax, k * xy);
-        p.incy(ay, k * yy);
-        testx(p);
+        p.incy(ay, k * dy);
         testy(p);
     }
 
 public:
     int nx, ny;
     real x0, y0;
-    real xx, xy, yx, yy;
+    real dx, dy;
     const axis_type &ax;
     const axis_type &ay;
 };

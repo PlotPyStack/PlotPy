@@ -72,18 +72,12 @@ def test_valgrind(K=20):
     lut = (1.0, 0.0, None, np.zeros((1024,), np.uint32))
     offscreen = np.zeros((1200, 1920), np.uint32)
     border = 1
-    flat = 0
-    uflat = 0.5
-    vflat = 0.5
-    interpolate = (flat, uflat, vflat)
+    interpolate = (0, 0.5, 0.5)
     src_rect = (X.min(), Y.min(), X.max(), Y.max())
     dst_rect = (0, 0, 1920, 1200)
     t0 = time()
-    tr = np.eye(3, 3, dtype=float)
-    for count in range(K):
-        dest = _scale_quads(
-            X, Y, Z, src_rect, tr, offscreen, dst_rect, lut, interpolate, border
-        )
+    for _count in range(K):
+        _scale_quads(X, Y, Z, src_rect, offscreen, dst_rect, lut, interpolate, border)
     print((time() - t0) / K, " secs per loop")
 
 

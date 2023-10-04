@@ -118,7 +118,6 @@ struct QuadHelper
     const Array2D<T> &X;
     const Array2D<T> &Y;
     const Array2D<T> &Z;
-    const Array2D<T> &tr;
     Array2D<npy_uint32> &D;
     LutScale<T, npy_uint32> &scale;
     double x1, x2, y1, y2, m_dx, m_dy;
@@ -134,11 +133,9 @@ struct QuadHelper
                Array2D<npy_uint32> &D_,
                LutScale<T, npy_uint32> &scale_,
                double x1_, double x2_, double y1_, double y2_,
-               const Array2D<T> &tr_,
                bool _border, bool _flat,
                double _uflat, double _vflat) : X(X_), Y(Y_), Z(Z_), D(D_), scale(scale_),
                                                x1(x1_), x2(x2_), y1(y1_), y2(y2_),
-                                               tr(tr_),
                                                bgcolor(0xff000000),
                                                border(_border),
                                                flat(_flat), uflat(_uflat), vflat(_vflat)
@@ -173,17 +170,11 @@ struct QuadHelper
         double u, v;
         double v0, v1, v2, v3, v4;
 
-        double x0 = tr.value(2, 0), y0 = tr.value(2, 1);
-        double xx = tr.value(0, 0), xy = tr.value(1, 0);
-        double yx = tr.value(0, 1), yy = tr.value(1, 1);
-
-// Coordonnees du quad dans l'offscreen
-#define fx(ix, iy) (X.value(qj + ix, qi + iy) * xx + Y.value(qj + ix, qi + iy) * xy + x0 - x1) * m_dx
-#define fy(ix, iy) (Y.value(qj + ix, qi + iy) * yy + X.value(qj + ix, qi + iy) * yx + y0 - y1) * m_dy
-        double ax = fx(0, 0), ay = fy(0, 0);
-        double bx = fx(0, 1), by = fy(0, 1);
-        double cx = fx(1, 1), cy = fy(1, 1);
-        double dx = fx(1, 0), dy = fy(1, 0);
+        // Coordonnees du quad dans l'offscreen
+        double ax = (X.value(qj + 0, qi + 0) - x1) * m_dx, ay = (Y.value(qj + 0, qi + 0) - y1) * m_dy;
+        double bx = (X.value(qj + 0, qi + 1) - x1) * m_dx, by = (Y.value(qj + 0, qi + 1) - y1) * m_dy;
+        double cx = (X.value(qj + 1, qi + 1) - x1) * m_dx, cy = (Y.value(qj + 1, qi + 1) - y1) * m_dy;
+        double dx = (X.value(qj + 1, qi + 0) - x1) * m_dx, dy = (Y.value(qj + 1, qi + 0) - y1) * m_dy;
 
         // indice des sommets (A,B,C,D)<->0,1,2,3<->(qi,qj),(qi+1,qj),(qi+1,qj+1),(qi,qj+1)
         // trie par ordre x croissant ou y croissant (selon xarg, yarg)
@@ -388,15 +379,15 @@ struct QuadHelper
 */
 PyObject *py_scale_quads(PyObject *self, PyObject *args)
 {
-    PyArrayObject *p_src_x = 0, *p_src_y = 0, *p_src_z = 0, *p_dst = 0, *p_tr = 0;
+    PyArrayObject *p_src_x = 0, *p_src_y = 0, *p_src_z = 0, *p_dst = 0;
     PyObject *p_lut_data, *p_dst_data, *p_interp_data, *p_src_data;
     double x1, x2, y1, y2;
     int border = 0, flat = 0;
     double uflat = 0.5;
     double vflat = 0.5;
 
-    if (!PyArg_ParseTuple(args, "OOOOOOOOO|i:_scale_quads",
-                          &p_src_x, &p_src_y, &p_src_z, &p_src_data, &p_tr,
+    if (!PyArg_ParseTuple(args, "OOOOOOOO|i:_scale_quads",
+                          &p_src_x, &p_src_y, &p_src_z, &p_src_data,
                           &p_dst, &p_dst_data,
                           &p_lut_data, &p_interp_data,
                           &border))
@@ -442,7 +433,7 @@ PyObject *py_scale_quads(PyObject *self, PyObject *args)
     if (p_bg == Py_None)
         apply_bg = false;
 
-    Array2D<double> X(p_src_x), Y(p_src_y), Z(p_src_z), tr(p_tr);
+    Array2D<double> X(p_src_x), Y(p_src_y), Z(p_src_z);
     /* Destination is RGB */
     unsigned long bg = 0;
     Array2D<npy_uint32> dest(p_dst);
@@ -462,7 +453,7 @@ PyObject *py_scale_quads(PyObject *self, PyObject *args)
     }
     Array1D<npy_uint32> cmap(p_cmap);
     LutScale<npy_float64, npy_uint32> scale(a, b, cmap, bg, apply_bg);
-    QuadHelper<double> quad(X, Y, Z, dest, scale, x1, x2, y1, y2, tr, border, flat, uflat, vflat);
+    QuadHelper<double> quad(X, Y, Z, dest, scale, x1, x2, y1, y2, border, flat, uflat, vflat);
 
     quad.draw_triangles();
 

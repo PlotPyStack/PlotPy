@@ -9,17 +9,17 @@ import numpy as np
 from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
+from qtpy.QtCore import QPointF
 
 from plotpy.config import _
-from plotpy.coords import axes_to_canvas
+from plotpy.coords import axes_to_canvas, canvas_to_axes
 from plotpy.interfaces.common import (
     IBaseImageItem,
     IBasePlotItem,
     IExportROIImageItemType,
 )
 from plotpy.items.image.base import RawImageItem
-from plotpy.items.image.mixin import TransformImageMixin
-from plotpy.mathutils.geometry import colvector, scale, translate
+from plotpy.mathutils.geometry import colvector, rotate, scale, translate
 from plotpy.styles.image import TrImageParam
 
 try:
@@ -44,7 +44,7 @@ if TYPE_CHECKING:  # pragma: no cover
 # ==============================================================================
 # Image with a custom linear transform
 # ==============================================================================
-class TrImageItem(TransformImageMixin, RawImageItem):
+class TrImageItem(RawImageItem):
     """
     Construct a transformable image item
 
@@ -246,6 +246,11 @@ class TrImageItem(TransformImageMixin, RawImageItem):
         x, y, _ = v[:, 0].A.ravel()
         return x, y
 
+    def update_border(self) -> None:
+        """Update image border rectangle to fit image shape"""
+        tpos = np.dot(self.itr, self.points)
+        self.border_rect.set_points(tpos.T[:, :2])
+
     def draw_image(
         self,
         painter: QPainter,
@@ -365,6 +370,272 @@ class TrImageItem(TransformImageMixin, RawImageItem):
         else:  # don't apply interpolation --> INTERP_NEAREST
             interp = (INTERP_NEAREST,)
         _scale_tr(self.data, mat, dst_image, dst_rect, (a, b, None), interp)
+
+    # ---- IBasePlotItem API ---------------------------------------------------
+    def move_local_point_to(self, handle: int, pos: QPointF, ctrl: bool = None) -> None:
+        """Move a handle as returned by hit_test to the new position
+
+        Args:
+            handle: Handle
+            pos: Position
+            ctrl: True if <Ctrl> button is being pressed, False otherwise
+        """
+        if self.is_locked():
+            return
+        x0, y0, angle, dx, dy, hflip, vflip = self.get_transform()
+        nx, ny = canvas_to_axes(self, pos)
+        handles = self.itr * self.points
+        p0 = colvector(nx, ny)
+        if self.can_rotate():
+            if self.rotation_point is None:
+                self.set_rotation_point_to_center()
+            vec0 = handles[:, handle] - self.rotation_point
+            vec1 = p0 - self.rotation_point
+            a0 = np.arctan2(vec0[1], vec0[0])
+            a1 = np.arctan2(vec1[1], vec1[0])
+            # compute angles
+            angle = float(angle + a1 - a0)
+            tr1 = translate(-self.rotation_point[0], -self.rotation_point[1])
+            rot = rotate(a1 - a0)
+            tr = tr1.I * rot * tr1
+            vc = colvector(x0, y0)
+            new_vc = tr.A.dot(vc)
+            x0, y0 = new_vc[0], new_vc[1]
+            if self.plot():
+                self.plot().SIG_ITEM_ROTATED.emit(self, angle)
+
+        if self.can_resize():
+            if self.rotation_point is None:
+                self.set_rotation_point_to_center()
+            center = handles.sum(axis=1) / 4
+            vec0 = handles[:, handle] - center
+            vec1 = p0 - center
+            # compute pixel size
+            zoom = np.linalg.norm(vec1) / np.linalg.norm(vec0)
+            dx = float(zoom * dx)
+            dy = float(zoom * dy)
+            self.rotation_point[0] = (
+                center.item(0) + (self.rotation_point[0] - center.item(0)) * zoom
+            )
+            self.rotation_point[1] = (
+                center.item(1) + (self.rotation_point[1] - center.item(1)) * zoom
+            )
+            if self.plot():
+                self.plot().SIG_ITEM_RESIZED.emit(self, zoom, zoom)
+        self.set_transform(x0, y0, angle, dx, dy, hflip, vflip)
+
+        if self.plot():
+            self.plot().SIG_ITEM_HANDLE_MOVED.emit(self)
+
+    def move_local_shape(self, old_pos: QPointF, new_pos: QPointF) -> None:
+        """Translate the shape such that old_pos becomes new_pos in canvas coordinates
+
+        Args:
+            old_pos: Old position
+            new_pos: New position
+        """
+        if self.is_locked():
+            return
+        if self.rotation_point is None:
+            self.set_rotation_point_to_center()
+        x0, y0, angle, dx, dy, hflip, vflip = self.get_transform()
+        nx, ny = canvas_to_axes(self, new_pos)
+        ox, oy = canvas_to_axes(self, old_pos)
+        self.set_transform(x0 + nx - ox, y0 + ny - oy, angle, dx, dy, hflip, vflip)
+        if self.rotation_point_move_with_shape:
+            self.rotation_point[0] = self.rotation_point[0] + nx - ox
+            self.rotation_point[1] = self.rotation_point[1] + ny - oy
+        if self.plot():
+            self.plot().SIG_ITEM_MOVED.emit(self, ox, oy, nx, ny)
+
+    # ---- TrImageItem specific API ---------------------------------------------------
+    def rotate_local_shape(self, old_pos, new_pos):
+        """Contrairement à move_local_point_to, le déplacement se fait
+        entre les deux positions et non pas depuis un handle jusqu'à un point"""
+        if self.is_locked():
+            return
+        if not self.can_rotate():
+            return
+        x0, y0, angle, dx, dy, hflip, vflip = self.get_transform()
+        nx, ny = canvas_to_axes(self, new_pos)
+        ox, oy = canvas_to_axes(self, old_pos)
+        if self.rotation_point is None:
+            self.set_rotation_point_to_center()
+        vec0 = colvector(ox, oy) - self.rotation_point
+        vec1 = colvector(nx, ny) - self.rotation_point
+        a0 = np.arctan2(vec0[1, 0], vec0[0, 0])
+        a1 = np.arctan2(vec1[1, 0], vec1[0, 0])
+        # compute angles
+        angle += a1 - a0
+        angle = float(angle)
+        tr1 = translate(-self.rotation_point[0], -self.rotation_point[1])
+        rot = rotate(a1 - a0)
+        tr = tr1.I * rot * tr1
+        vc = colvector(x0, y0)
+        new_vc = tr * vc
+        x0, y0 = float(new_vc[0]), float(new_vc[1])
+        if self.plot():
+            self.plot().SIG_ITEM_ROTATED.emit(self, angle)
+        self.set_transform(x0, y0, angle, dx, dy, hflip, vflip)
+
+    def move_with_arrows(self, dx, dy):
+        """Translate the shape with arrows in canvas coordinates"""
+        if not self.can_move() or self.is_locked():
+            return
+        if self.rotation_point is None:
+            self.set_rotation_point_to_center()
+        x0, y0, _angle, _dx, _dy, _hflip, _vflip = self.get_transform()
+        old_pos = QC.QPointF(*axes_to_canvas(self, x0, y0))
+        new_pos = QC.QPointF(old_pos.x() + dx, old_pos.y() + dy)
+        nx, ny = canvas_to_axes(self, new_pos)
+        ox, oy = canvas_to_axes(self, old_pos)
+        self.set_transform(nx, ny, _angle, _dx, _dy, _hflip, _vflip)
+        if self.rotation_point_move_with_shape:
+            self.rotation_point[0] = self.rotation_point[0] + nx - ox
+            self.rotation_point[1] = self.rotation_point[1] + ny - oy
+        if self.plot():
+            self.plot().SIG_ITEM_MOVED.emit(self, ox, oy, nx, ny)
+
+    def rotate_with_arrows(self, dangle):
+        """
+        Rotate the shape with arrows in canvas coordinates
+        angle0 : old rotation angle
+        angle1 : new rotation angle
+        """
+        if not self.can_rotate() or self.is_locked():
+            return
+        if self.rotation_point is None:
+            self.set_rotation_point_to_center()
+        x0, y0, angle0, dx, dy, hflip, vflip = self.get_transform()
+
+        tr1 = translate(-self.rotation_point[0], -self.rotation_point[1])
+        rot = rotate(dangle)
+        tr = tr1.I * rot * tr1
+        vc = colvector(x0, y0)
+        new_vc = tr * vc
+        x0, y0 = float(new_vc[0]), float(new_vc[1])
+        new_angle = angle0 + dangle
+        self.set_transform(x0, y0, angle0 + dangle, dx, dy, hflip, vflip)
+        if self.plot():
+            self.plot().SIG_ITEM_ROTATED.emit(self, new_angle)
+
+    def move_with_selection(self, delta_x: float, delta_y: float) -> None:
+        """Translate the item together with other selected items
+
+        Args:
+            delta_x: Translation in plot coordinates along x-axis
+            delta_y: Translation in plot coordinates along y-axis
+        """
+        if self.is_locked():
+            return
+        if self.rotation_point is None:
+            self.set_rotation_point_to_center()
+        x0, y0, angle, dx, dy, hflip, vflip = self.get_transform()
+        if self.rotation_point_move_with_shape:
+            self.rotation_point[0] = self.rotation_point[0] + delta_x
+            self.rotation_point[1] = self.rotation_point[1] + delta_y
+        self.set_transform(x0 + delta_x, y0 + delta_y, angle, dx, dy, hflip, vflip)
+
+    def resize_with_selection(self, zoom_dx, zoom_dy):
+        """
+        Resize the shape together with other selected items
+        zoom_dx, zoom_dy : zoom factor for dx and dy
+        """
+        if self.is_locked():
+            return
+        if self.rotation_point is None:
+            self.set_rotation_point_to_center()
+        x0, y0, angle, dx, dy, hflip, vflip = self.get_transform()
+        handles = self.itr * self.points
+        center = handles.sum(axis=1) / 4
+        if self.rotation_point_move_with_shape:
+            self.rotation_point[0] = (
+                center[0] + (self.rotation_point[0] - center[0]) * zoom_dx
+            )
+            self.rotation_point[1] = (
+                center[1] + (self.rotation_point[1] - center[1]) * zoom_dy
+            )
+        self.set_transform(x0, y0, angle, zoom_dx * dx, zoom_dy * dy, hflip, vflip)
+
+    def rotate_with_selection(self, angle):
+        """
+        Rotate the shape together with other selected items
+        angle0 : old rotation angle
+        angle1 : new rotation angle
+        """
+        if self.is_locked():
+            return
+        if self.rotation_point is None:
+            self.set_rotation_point_to_center()
+        x0, y0, angle0, dx, dy, hflip, vflip = self.get_transform()
+        dangle = float(angle - angle0)
+        tr1 = translate(-self.rotation_point[0], -self.rotation_point[1])
+        rot = rotate(dangle)
+        tr = tr1.I * rot * tr1
+        vc = colvector(x0, y0)
+        new_vc = tr * vc
+        x0, y0 = float(new_vc[0]), float(new_vc[1])
+        self.set_transform(x0, y0, angle, dx, dy, hflip, vflip)
+
+    def set_transform(self, x0, y0, angle, dx=1.0, dy=1.0, hflip=False, vflip=False):
+        """
+        Set the transformation
+
+        :param x0: X translation
+        :param y0: Y translation
+        :param angle: rotation angle in radians
+        :param dx: X-scaling factor
+        :param dy: Y-scaling factor
+        :param hflip: True if image if flip horizontally
+        :param vflip: True if image is flip vertically
+        """
+        self.param.set_transform(x0, y0, angle, dx, dy, hflip, vflip)
+        if self.data is None:
+            return
+        ni, nj = self.data.shape
+        rot = rotate(-angle)
+        tr1 = translate(nj / 2.0 + 0.5, ni / 2.0 + 0.5)
+        xflip = -1.0 if hflip else 1.0
+        yflip = -1.0 if vflip else 1.0
+        sc = scale(xflip / dx, yflip / dy)
+        tr2 = translate(-x0, -y0)
+        self.tr = tr1 * sc * rot * tr2
+        self.itr = self.tr.I
+        self.compute_bounds()
+
+    def get_transform(self):
+        """
+        Return the transformation parameters
+
+        :return: tuple (x0, y0, angle, dx, dy, hflip, yflip)
+        """
+        return self.param.get_transform()
+
+    def debug_transform(self, pt):  # pragma: no cover
+        """
+        Print debug data on how the given point is moved.
+
+        :param pt: array (x, y, z=1)
+        """
+        x0, y0, angle, dx, dy, _hflip, _vflip = self.get_transform()
+        rot = rotate(-angle)
+        xmin = self.points[0].min()
+        xmax = self.points[0].max()
+        ymin = self.points[1].min()
+        ymax = self.points[1].max()
+        a, b = (xmax - xmin) / 2.0 + self._trx, (ymax - ymin) / 2.0 + self._try
+        tr1 = translate(xmin + a, ymin + b)
+        sc = scale(dx, dy)
+        tr2 = translate(-x0, -y0)
+        p1 = tr1.I * pt
+        p2 = rot.I * pt
+        p3 = sc.I * pt
+        p4 = tr2.I * pt
+        print("src=", pt.T)
+        print("tr1:", p1.T)
+        print("tr1+rot:", p2.T)
+        print("tr1+rot+sc:", p3.T)
+        print("tr1+rot+tr2:", p4.T)
 
 
 assert_interfaces_valid(TrImageItem)

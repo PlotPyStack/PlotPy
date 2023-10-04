@@ -10,7 +10,7 @@ from guidata.dataset.datatypes import DataSet, GetAttrProp
 
 from plotpy.config import _
 from plotpy.styles.base import ItemParameters
-from plotpy.styles.image import BaseImageParam, ImageParamMixin
+from plotpy.styles.image import BaseImageParam
 
 
 class HistogramParam(DataSet):
@@ -34,7 +34,7 @@ class HistogramParam(DataSet):
         hist.set_logscale(self.logscale)
 
 
-class Histogram2DParam(BaseImageParam, ImageParamMixin):
+class Histogram2DParam(BaseImageParam):
     """Histogram"""
 
     _multiselection = False
@@ -95,7 +95,6 @@ class Histogram2DParam(BaseImageParam, ImageParamMixin):
         histogram.set_background_color(self.background)
         histogram.set_bins(self.nx_bins, self.ny_bins)
         self.update_item(histogram)
-        self._update_transform(histogram)
 
 
 class Histogram2DParam_MS(Histogram2DParam):

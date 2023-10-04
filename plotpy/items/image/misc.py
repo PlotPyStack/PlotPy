@@ -26,7 +26,6 @@ from plotpy.interfaces.common import (
     IVoiImageItemType,
 )
 from plotpy.items.image.base import BaseImageItem, RawImageItem, _nanmax, _nanmin
-from plotpy.items.image.mixin import ImageMixin
 from plotpy.items.image.transform import TrImageItem
 from plotpy.styles import Histogram2DParam, ImageParam, QuadGridParam
 
@@ -57,7 +56,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from plotpy.styles.base import ItemParameters
 
 
-class QuadGridItem(ImageMixin, RawImageItem):
+class QuadGridItem(RawImageItem):
     """Quad grid item
 
     Args:
@@ -86,16 +85,11 @@ class QuadGridItem(ImageMixin, RawImageItem):
         self.Y = Y
         assert X.shape == Y.shape
         assert Z.shape == X.shape
-        self.tr = np.eye(3, dtype=float)
-        self.itr = np.eye(3, dtype=float)
-        self.points = np.array([[0, 0, 2, 2], [0, 2, 2, 0], [1, 1, 1, 1]], float)
         super().__init__(Z, param)
         self.set_data(Z)
         self.grid = 1
         self.interpolate = (0, 0.5, 0.5)
         self.param.update_item(self)
-
-        self.set_transform(0, 0, 0)
 
     # ---- BaseImageItem API ---------------------------------------------------
     def get_default_param(self) -> QuadGridParam:
@@ -115,6 +109,14 @@ class QuadGridItem(ImageMixin, RawImageItem):
             IColormapImageItemType,
             ITrackableItemType,
         )
+
+    def update_bounds(self) -> None:
+        """Update image bounds to fit image shape"""
+        xmin = self.X.min()
+        xmax = self.X.max()
+        ymin = self.Y.min()
+        ymax = self.Y.max()
+        self.bounds = QC.QRectF(xmin, ymin, xmax - xmin, ymax - ymin)
 
     def set_data(
         self,
@@ -143,13 +145,6 @@ class QuadGridItem(ImageMixin, RawImageItem):
             self.X = X
             self.Y = Y
 
-        xmin = self.X.min()
-        xmax = self.X.max()
-        ymin = self.Y.min()
-        ymax = self.Y.max()
-        self.points = np.array(
-            [[xmin, xmin, xmax, xmax], [ymin, ymax, ymax, ymin], [1, 1, 1, 1]], float
-        )
         self.update_bounds()
         self.update_border()
         self.set_lut_range([_min, _max])
@@ -179,7 +174,6 @@ class QuadGridItem(ImageMixin, RawImageItem):
             self.Y,
             self.data,
             src_rect,
-            self.itr,
             self._offscreen,
             dst_rect,
             self.lut,
@@ -200,7 +194,7 @@ class QuadGridItem(ImageMixin, RawImageItem):
 assert_interfaces_valid(QuadGridItem)
 
 
-class Histogram2DItem(ImageMixin, BaseImageItem):
+class Histogram2DItem(BaseImageItem):
     """2D histogram item
 
     Args:
@@ -221,9 +215,6 @@ class Histogram2DItem(ImageMixin, BaseImageItem):
         if param is None:
             param = ImageParam(_("Image"))
         self._z = Z  # allows set_bins to
-        self.tr = np.eye(3, dtype=float)
-        self.itr = np.eye(3, dtype=float)
-        self.points = np.array([[0, 0, 2, 2], [0, 2, 2, 0], [1, 1, 1, 1]], float)
         super().__init__(param=param)
 
         # Set by parameters
@@ -242,7 +233,6 @@ class Histogram2DItem(ImageMixin, BaseImageItem):
         self.set_lut_range([0, 10.0])
         self.set_data(X, Y, Z)
         self.setIcon(get_icon("histogram2d.png"))
-        self.set_transform(0, 0, 0)
 
     # ---- BaseImageItem API ---------------------------------------------------
     def get_default_param(self) -> Histogram2DParam:
@@ -276,14 +266,10 @@ class Histogram2DItem(ImageMixin, BaseImageItem):
         self._x = X
         self._y = Y
         self._z = Z
-        xmin = self._x.min()
-        xmax = self._x.max()
-        ymin = self._y.min()
-        ymax = self._y.max()
-        self.points = np.array(
-            [[xmin, xmin, xmax, xmax], [ymin, ymax, ymax, ymin], [1, 1, 1, 1]], float
+        self.bounds = QC.QRectF(
+            QC.QPointF(X.min(), Y.min()), QC.QPointF(X.max(), Y.max())
         )
-        self.compute_bounds()
+        self.update_border()
 
     # ---- QwtPlotItem API ------------------------------------------------------
     fill_canvas = True
@@ -313,7 +299,7 @@ class Histogram2DItem(ImageMixin, BaseImageItem):
         if computation == -1 or self._z is None:
             self.data[:, :] = 0.0
             nmax = histogram2d(
-                self._x, self._y, i1, i2, j1, j2, self.itr.A, self.data, self.logscale
+                self._x, self._y, i1, i2, j1, j2, self.data, self.logscale
             )
         else:
             self.data_tmp[:, :] = 0.0
@@ -335,7 +321,6 @@ class Histogram2DItem(ImageMixin, BaseImageItem):
                 i2,
                 j1,
                 j2,
-                self.itr.A,
                 self.data_tmp,
                 self.data,
                 computation,
