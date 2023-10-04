@@ -16,9 +16,6 @@ from qtpy.QtWidgets import QWidget  # only to help intersphinx find QWidget
 
 from plotpy.config import _
 from plotpy.constants import PlotType
-from plotpy.panels.contrastadjustment import ContrastAdjustment
-from plotpy.panels.csection.cswidget import XCrossSection, YCrossSection
-from plotpy.panels.itemlist import PlotItemList
 from plotpy.plot.base import BasePlot, BasePlotOptions
 from plotpy.plot.manager import PlotManager
 
@@ -127,6 +124,10 @@ class BasePlotWidget(QW.QSplitter):
         self.setSizePolicy(QW.QSizePolicy.Expanding, QW.QSizePolicy.Expanding)
         self.plot = self.create_plot()
 
+        # Avoid circular import
+        # pylint: disable=import-outside-toplevel
+        from plotpy.panels.itemlist import PlotItemList
+
         self.itemlist = PlotItemList(self)
         self.itemlist.setVisible(options.show_itemlist)
 
@@ -157,6 +158,11 @@ class BasePlotWidget(QW.QSplitter):
         """Set the layout for image only plots"""
         self.setOrientation(QC.Qt.Orientation.Vertical)
         self.sub_splitter = QW.QSplitter(QC.Qt.Orientation.Horizontal, self)
+
+        # Avoid circular import
+        # pylint: disable=import-outside-toplevel
+        from plotpy.panels.csection.cswidget import (XCrossSection,
+                                                     YCrossSection)
 
         self.ycsw = YCrossSection(
             self,
@@ -200,6 +206,9 @@ class BasePlotWidget(QW.QSplitter):
         self.sub_splitter.addWidget(self.itemlist)
 
         # Contrast adjustment (Levels histogram)
+        # Avoid circular import
+        # pylint: disable=import-outside-toplevel
+        from plotpy.panels.contrastadjustment import ContrastAdjustment
 
         self.contrast = ContrastAdjustment(self)
         self.contrast.setVisible(self.options.show_contrast)
