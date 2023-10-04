@@ -1,5 +1,6 @@
 [run]
 parallel = True
+concurrency = multiprocessing,thread
 omit =
     */plotpy/tests/*
     */plotpy/plot/interactive.py
