@@ -17,7 +17,7 @@ from plotpy.coords import canvas_to_axes
 from plotpy.items.shapes.base import AbstractShape
 from plotpy.styles.shape import RangeShapeParam
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import qwt.scale_map
     from qtpy.QtCore import QPointF, QRectF
     from qtpy.QtGui import QPainter

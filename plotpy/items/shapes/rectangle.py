@@ -16,7 +16,7 @@ from plotpy.mathutils.geometry import (
     vector_rotation,
 )
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from plotpy.styles.shape import ShapeParam
 
 

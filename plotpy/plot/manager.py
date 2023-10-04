@@ -55,7 +55,7 @@ from plotpy.tools import (
     YCSPanelTool,
 )
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from qwt import QwtPlotCanvas, QwtScaleDiv
 
     from plotpy.panels.base import PanelWidget

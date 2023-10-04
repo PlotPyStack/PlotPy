@@ -13,7 +13,7 @@ from qwt import QwtPlotItem
 from plotpy.coords import canvas_to_axes
 from plotpy.interfaces.common import IBasePlotItem, IShapeItemType
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from qtpy import QtCore as QC
 
     from plotpy.interfaces.common import IItemType

@@ -35,7 +35,7 @@ from plotpy.config import _
 from plotpy.items import get_image_in_shape
 from plotpy.widgets import basetransform
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import numpy as np
 
     from plotpy.items import AnnotatedRectangle, TrImageItem

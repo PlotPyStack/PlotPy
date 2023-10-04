@@ -22,7 +22,7 @@ from plotpy.panels.itemlist import PlotItemList
 from plotpy.plot.base import BasePlot, BasePlotOptions
 from plotpy.plot.manager import PlotManager
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from plotpy.panels.base import PanelWidget
     from plotpy.styles import GridParam
 
@@ -760,7 +760,6 @@ class SubplotWidget(BasePlotWidget):
         if plot_id is None:
             plot_id = id(plot)
         self.manager.add_plot(plot, plot_id)
-
 
 
 # TODO: Migrate DataLab's SyncPlotWindow right here

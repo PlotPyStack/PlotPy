@@ -72,7 +72,7 @@ from plotpy.builder import make
 from plotpy.config import _
 from plotpy.plot import PlotDialog, PlotOptions, PlotWidget
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from plotpy.items import XRangeSelection
     from plotpy.panels import PanelWidget
 

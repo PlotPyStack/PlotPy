@@ -28,7 +28,7 @@ from plotpy.interfaces.common import (
 from plotpy.items.curve.base import SELECTED_SYMBOL
 from plotpy.styles.curve import CurveParam
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import guidata.dataset.io
     from qtpy.QtCore import QPointF
     from qwt import QwtScaleMap

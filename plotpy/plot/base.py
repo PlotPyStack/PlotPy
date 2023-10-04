@@ -45,7 +45,7 @@ from plotpy.items.shapes.polygon import PolygonShape
 from plotpy.styles.axes import AxesParam, AxeStyleParam, AxisParam, ImageAxesParam
 from plotpy.styles.base import GridParam, ItemParameters
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from typing import IO
 
     from qwt.scale_widget import QwtScaleWidget

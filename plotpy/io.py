@@ -43,7 +43,7 @@ import PIL.TiffImagePlugin  # py2exe
 
 from plotpy.config import _
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import guidata.dataset.io
 
 

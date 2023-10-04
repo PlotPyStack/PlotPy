@@ -20,7 +20,7 @@ from plotpy.interfaces.common import IBasePlotItem, ISerializableType, IShapeIte
 from plotpy.items.shapes.base import AbstractShape
 from plotpy.styles.shape import ShapeParam
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import guidata.dataset.io
     import qwt.scale_map
     import qwt.symbol

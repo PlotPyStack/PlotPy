@@ -43,7 +43,7 @@ from plotpy.tools.misc import OpenFileTool
 from plotpy.tools.shapes import CircleTool, RectangleTool, RectangularShapeTool
 from plotpy.widgets.imagefile import exec_image_save_dialog
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from plotpy.plot import BasePlot
 
 

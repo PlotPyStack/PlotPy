@@ -44,7 +44,7 @@ from plotpy.lutrange import lut_range_threshold
 from plotpy.mathutils.colormap import FULLRANGE, get_cmap, get_cmap_name
 from plotpy.styles.image import LUTAlpha, RawImageParam
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import guidata.dataset.io
     import qwt.color_map
     import qwt.scale_map

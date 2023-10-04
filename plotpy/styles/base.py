@@ -32,7 +32,7 @@ from qwt import QwtPlotCurve, QwtPlotMarker, QwtSymbol
 
 from plotpy.config import _
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import guidata.dataset.datatypes
 
     from plotpy.interfaces.common import IBasePlotItem

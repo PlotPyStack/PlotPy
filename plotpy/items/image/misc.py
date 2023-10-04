@@ -44,7 +44,7 @@ except ImportError:
     )
     raise
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import numpy
     import qwt.plot
     import qwt.scale_map

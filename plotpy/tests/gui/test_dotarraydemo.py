@@ -38,7 +38,7 @@ from plotpy.items.curve.errorbar import vmap
 from plotpy.plot import PlotDialog, PlotOptions
 from plotpy.tools import CopyToClipboardTool, HelpTool, PrintTool, SaveAsTool
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from plotpy.interfaces.common import IItemType
 
 

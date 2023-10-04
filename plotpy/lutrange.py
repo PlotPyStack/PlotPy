@@ -21,7 +21,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from plotpy.items import BaseImageItem, Histogram2DItem
     from plotpy.items.histogram import HistDataSource
 

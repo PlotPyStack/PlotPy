@@ -16,7 +16,7 @@ from plotpy.config import CONF, _
 from plotpy.items.shapes.polygon import PolygonShape
 from plotpy.styles.shape import AxesShapeParam
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import guidata.dataset.io
     import qwt.scale_map
     from qtpy.QtCore import QRectF

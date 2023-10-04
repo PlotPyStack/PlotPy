@@ -12,7 +12,7 @@ from plotpy.coords import axes_to_canvas, canvas_to_axes
 from plotpy.items.image.masked_area import MaskedArea
 from plotpy.mathutils.geometry import colvector, rotate, scale, translate
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import guidata.dataset.io
     from qtpy.QtCore import QPointF
 

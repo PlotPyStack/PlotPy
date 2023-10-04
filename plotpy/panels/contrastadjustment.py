@@ -39,7 +39,7 @@ from plotpy.plot.manager import PlotManager
 from plotpy.styles import CurveParam, HistogramParam
 from plotpy.tools import AntiAliasingTool, BasePlotMenuTool, SelectPointTool, SelectTool
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
 
     from qtpy.QtWidgets import QWidget

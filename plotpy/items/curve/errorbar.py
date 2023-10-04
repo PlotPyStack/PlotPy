@@ -18,7 +18,7 @@ from plotpy.items.curve.base import CurveItem
 from plotpy.styles.curve import CurveParam
 from plotpy.styles.errorbar import ErrorBarParam
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import guidata.dataset.io
 
     from plotpy.plot.base import BasePlot

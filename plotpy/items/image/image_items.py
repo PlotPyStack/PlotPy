@@ -31,7 +31,7 @@ from plotpy.items.image.mixin import ImageMixin
 from plotpy.mathutils.geometry import colvector
 from plotpy.styles.image import ImageParam, LUTAlpha, RGBImageParam, XYImageParam
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import guidata.dataset.io
     import qwt.color_map
     import qwt.scale_map

@@ -16,7 +16,7 @@ from qwt import QwtSymbol
 from plotpy.items.shapes.polygon import PolygonShape
 from plotpy.mathutils.geometry import compute_angle, compute_center
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import qwt.scale_map
     from qtpy.QtCore import QLineF, QPointF, QRectF
     from qtpy.QtGui import QPainter, QPolygonF

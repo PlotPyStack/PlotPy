@@ -10,7 +10,7 @@ from guidata.utils.misc import assert_interfaces_valid
 
 from plotpy.items.shapes.polygon import PolygonShape
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from plotpy.styles.shape import ShapeParam
 
 

@@ -28,7 +28,7 @@ from plotpy.interfaces.common import IBasePlotItem, ISerializableType, IShapeIte
 from plotpy.items.curve.base import CurveItem
 from plotpy.styles.label import LabelParam
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
 
     import guidata.dataset.io

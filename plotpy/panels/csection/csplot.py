@@ -23,7 +23,7 @@ from plotpy.styles.curve import CurveParam
 LUT_AXIS_TITLE = _("LUT scale") + (" (0-%d)" % LUT_MAX)
 
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from qtpy.QtWidgets import QWidget
 
 

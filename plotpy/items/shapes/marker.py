@@ -17,7 +17,7 @@ from plotpy.interfaces.common import IBasePlotItem, IShapeItemType
 from plotpy.styles.base import MARKERSTYLES
 from plotpy.styles.shape import MarkerParam
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
 
     import guidata.dataset.io

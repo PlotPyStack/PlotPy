@@ -12,7 +12,7 @@ from qtpy import QtGui as QG
 from plotpy.config import _
 from plotpy.items.shapes.polygon import PolygonShape
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from plotpy.styles.shape import ShapeParam
 
 

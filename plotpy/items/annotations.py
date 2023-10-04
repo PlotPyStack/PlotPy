@@ -39,7 +39,7 @@ from plotpy.mathutils.geometry import (
 from plotpy.styles.label import LabelParam
 from plotpy.styles.shape import AnnotationParam
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import guidata.dataset.io
     import qwt.scale_map
     from qtpy.QtCore import QPointF, QRectF

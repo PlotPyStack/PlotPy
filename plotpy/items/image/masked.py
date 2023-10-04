@@ -20,7 +20,7 @@ from plotpy.items.image.masked_area import MaskedArea
 from plotpy.items.image.mixin import MaskedImageMixin
 from plotpy.styles.image import MaskedImageParam, MaskedXYImageParam
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import guidata.dataset.io
     import qwt.scale_map
     from qtpy.QtCore import QRectF

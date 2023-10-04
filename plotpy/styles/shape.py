@@ -37,7 +37,7 @@ from plotpy.styles.base import (
     TextStyleItem,
 )
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from plotpy.items import AnnotatedShape, Axes, Marker, PolygonShape, XRangeSelection
 
 

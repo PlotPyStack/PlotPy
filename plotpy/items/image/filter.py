@@ -35,7 +35,7 @@ except ImportError:
     )
     raise
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import qwt.color_map
     import qwt.scale_map
     from qtpy import QtGui as QG
