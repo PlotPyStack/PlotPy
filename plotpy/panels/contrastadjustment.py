@@ -156,7 +156,7 @@ class LevelsHistogram(BasePlot):
         for item in items:
             if item not in known_items:
                 imin, imax = item.get_lut_range_full()
-                delta = int(imax - imin)
+                delta = int(float(imax) - float(imin))
                 if delta > 0 and delta < 256:
                     self.histparam.n_bins = delta
                 else:
