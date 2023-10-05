@@ -70,7 +70,7 @@ def dialog_test(fname="brain.png"):
     dlg = RotateCropDialog(None)
     dlg.transform.set_item(item)
     if exec_dialog(dlg) == dlg.Accepted:
-        array1 = dlg.transform.output_array
+        array1 = dlg.transform.get_result()
         if array0.shape == array1.shape:
             assert (array1 == array0).all()
             imshow(array1 - array0, title="array1-array0")

@@ -55,7 +55,7 @@ def dialog_test(fname):
 
     dlg.transform.set_item(item)
     if exec_dialog(dlg) == dlg.Accepted:
-        array1 = dlg.transform.output_array
+        array1 = dlg.transform.get_result()
         dlg1 = imshow(array0, title="array0")
         dlg2 = imshow(array1, title="array1")
         return dlg, dlg1, dlg2

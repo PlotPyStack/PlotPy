@@ -153,6 +153,7 @@ class RotateCropDialog(QW.QDialog):
 
         if title is None:
             title = _("Rotate & Crop")
+        self.setWindowTitle(title)
         self.widget = RotateCropWidget(parent=parent, options=options, toolbar=toolbar)
         self.setWindowFlags(QC.Qt.WindowType.Window)
 

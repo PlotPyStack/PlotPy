@@ -110,6 +110,7 @@ class FlipRotateDialog(QW.QDialog):
 
         if title is None:
             title = _("Flip & Rotate")
+        self.setWindowTitle(title)
         self.widget = FlipRotateWidget(parent=parent, options=options, toolbar=toolbar)
         self.setWindowFlags(QC.Qt.WindowType.Window)
 

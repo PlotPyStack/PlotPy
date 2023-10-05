@@ -57,6 +57,13 @@ class BaseTransform:
         self.output_array: np.ndarray = None
 
     # ------Public API----------------------------------------------------------
+    def get_result(self) -> np.ndarray:
+        """Return the result array
+
+        Returns:
+            numpy.ndarray: Result array
+        """
+        return self.output_array
 
     def set_item(self, item: TrImageItem) -> None:
         """Set associated item
@@ -165,6 +172,7 @@ class BaseTransformWidget(QW.QWidget):
         options = options if options is not None else PlotOptions()
         options.type = "image"
         self.plot_widget = PlotWidget(self, options=options, toolbar=toolbar)
+        self.plot_widget.manager.register_all_image_tools()
         hlayout = QW.QHBoxLayout()
         self.add_buttons_to_layout(hlayout)
 
