@@ -2,6 +2,7 @@
 
 # pylint: disable=unused-import
 from .base import BasePlot, BasePlotOptions
+from .manager import PlotManager
 from .plotwidget import (
     PlotDialog,
     PlotOptions,

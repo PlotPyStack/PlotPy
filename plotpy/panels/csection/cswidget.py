@@ -14,7 +14,6 @@ from plotpy.panels.csection.csplot import (
     XCrossSectionPlot,
     YCrossSectionPlot,
 )
-from plotpy.plot.manager import PlotManager
 from plotpy.tools import ExportItemDataTool
 
 
@@ -38,6 +37,10 @@ class CrossSectionWidget(PanelWidget):
         self.lockscales_ac = None
 
         self.manager = None  # manager for the associated image plot
+
+        # Avoid circular import
+        # pylint-disable=import-outside-toplevel
+        from plotpy.plot.manager import PlotManager
 
         self.local_manager = PlotManager(self)
         self.cs_plot = self.CrossSectionPlotKlass(parent)

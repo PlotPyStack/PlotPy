@@ -34,7 +34,6 @@ from plotpy.items import HistogramItem, XRangeSelection
 from plotpy.lutrange import lut_range_threshold
 from plotpy.panels.base import ID_CONTRAST, PanelWidget
 from plotpy.plot.base import BasePlot, BasePlotOptions
-from plotpy.plot.manager import PlotManager
 from plotpy.styles import CurveParam, HistogramParam
 from plotpy.tools import AntiAliasingTool, BasePlotMenuTool, SelectPointTool, SelectTool
 
@@ -44,6 +43,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from qtpy.QtWidgets import QWidget
 
     from plotpy.items import BaseImageItem, CurveItem
+    from plotpy.plot.manager import PlotManager
 
 
 class LevelsHistogram(BasePlot):
@@ -415,6 +415,11 @@ class ContrastAdjustment(PanelWidget):
         layout.setAlignment(QC.Qt.AlignCenter)
         vlayout = QW.QVBoxLayout()
         vlayout.addLayout(layout)
+
+        # Avoid circular import
+        # pylint-disable=import-outside-toplevel
+        from plotpy.plot.manager import PlotManager
+
         self.local_manager = PlotManager(self)
         self.histogram = LevelsHistogram(parent)
         vlayout.addWidget(self.histogram)
