@@ -23,21 +23,21 @@ def test_transform_matrix() -> None:
     angle = 30.0
     vect0 = geom.colvector(x0, y0)
     # print("vect0:", repr(vect0))
-    vect1 = geom.scale(scale_x, scale_y) * vect0
-    assert np.allclose(vect1, np.matrix([[2.0], [6.0], [1.0]]))
+    vect1 = geom.scale(scale_x, scale_y) @ vect0
     # print("vect1:", repr(vect1))
-    vect2 = geom.translate(delta_x, delta_y) * vect1
-    assert np.allclose(vect2, np.matrix([[17.3], [16.4], [1.0]]))
+    assert np.allclose(vect1, np.array([2.0, 6.0, 1.0]))
+    vect2 = geom.translate(delta_x, delta_y) @ vect1
     # print("vect2:", repr(vect2))
-    vect3 = geom.rotate(angle) * vect2
-    assert np.allclose(vect3, np.matrix([[18.87226872], [-14.56322332], [1.0]]))
+    assert np.allclose(vect2, np.array([17.3, 16.4, 1.0]))
+    vect3 = geom.rotate(angle) @ vect2
     # print("vect3:", repr(vect3))
+    assert np.allclose(vect3, np.array([18.87226872, -14.56322332, 1.0]))
     trmat = (
         geom.scale(1.0 / scale_x, 1.0 / scale_y)
-        * geom.translate(-delta_x, -delta_y)
-        * geom.rotate(-angle)
+        @ geom.translate(-delta_x, -delta_y)
+        @ geom.rotate(-angle)
     )
-    vect4 = trmat * vect3
+    vect4 = trmat @ vect3
     # print("vect4:", repr(vect4))
     assert np.allclose(vect0, vect4)
 

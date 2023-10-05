@@ -326,9 +326,9 @@ class XYImageFilterItem(ImageFilterItem):
         cy = canvasRect.top()
         sx = (x1 - x0) / (W - 1)
         sy = (y1 - y0) / (H - 1)
-        # tr1 = tr(x0,y0)*scale(sx,sy)*tr(-cx,-cy)
-        tr = np.matrix([[sx, 0, x0 - cx * sx], [0, sy, y0 - cy * sy], [0, 0, 1]], float)
-        mat = self.image.tr * tr
+        # tr1 = tr(x0,y0)@scale(sx,sy)@tr(-cx,-cy)
+        tr = np.array([[sx, 0, x0 - cx * sx], [0, sy, y0 - cy * sy], [0, 0, 1]], float)
+        mat = self.image.tr @ tr
 
         xytr = x - self.image.x[0], y - self.image.y[0], src_rect
 

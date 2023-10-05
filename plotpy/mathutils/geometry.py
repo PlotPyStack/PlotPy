@@ -51,8 +51,8 @@ import numpy as np
 # ===============================================================================
 
 
-def translate(tx: float, ty: float) -> np.matrix:
-    """Return translation matrix (NumPy matrix object)
+def translate(tx: float, ty: float) -> np.ndarray:
+    """Return translation matrix
 
     Args:
         tx: Translation along X-axis
@@ -61,11 +61,11 @@ def translate(tx: float, ty: float) -> np.matrix:
     Returns:
         Translation matrix
     """
-    return np.matrix([[1, 0, tx], [0, 1, ty], [0, 0, 1]], float)
+    return np.array([[1, 0, tx], [0, 1, ty], [0, 0, 1]], float)
 
 
-def scale(sx: float, sy: float) -> np.matrix:
-    """Return scale matrix (NumPy matrix object)
+def scale(sx: float, sy: float) -> np.ndarray:
+    """Return scale matrix
 
     Args:
         sx: Scale along X-axis
@@ -74,11 +74,11 @@ def scale(sx: float, sy: float) -> np.matrix:
     Returns:
         Scale matrix
     """
-    return np.matrix([[sx, 0, 0], [0, sy, 0], [0, 0, 1]], float)
+    return np.array([[sx, 0, 0], [0, sy, 0], [0, 0, 1]], float)
 
 
-def rotate(alpha: float) -> np.matrix:
-    """Return rotation matrix (NumPy matrix object)
+def rotate(alpha: float) -> np.ndarray:
+    """Return rotation matrix
 
     Args:
         alpha: Rotation angle (in radians)
@@ -86,7 +86,7 @@ def rotate(alpha: float) -> np.matrix:
     Returns:
         Rotation matrix
     """
-    return np.matrix(
+    return np.array(
         [
             [np.cos(alpha), -np.sin(alpha), 0],
             [np.sin(alpha), np.cos(alpha), 0],
@@ -96,17 +96,17 @@ def rotate(alpha: float) -> np.matrix:
     )
 
 
-def colvector(x: float, y: float) -> np.matrix:
-    """Return vector (NumPy matrix object) from coordinates
+def colvector(x: float, y: float) -> np.ndarray:
+    """Return vector from coordinates
 
     Args:
         x: x-coordinate
         y: y-coordinate
 
     Returns:
-        Vector (NumPy matrix object)
+        Vector
     """
-    return np.matrix([x, y, 1]).T
+    return np.array([x, y, 1]).T
 
 
 # ===============================================================================
@@ -129,7 +129,9 @@ def vector_norm(xa: float, ya: float, xb: float, yb: float) -> float:
     return np.linalg.norm(np.array((xb - xa, yb - ya)))
 
 
-def vector_projection(dv: np.ndarray, xa: float, ya: float, xb: float, yb: float):
+def vector_projection(
+    dv: np.ndarray, xa: float, ya: float, xb: float, yb: float
+) -> np.ndarray:
     """Return vector projection
 
     Args:
@@ -159,7 +161,7 @@ def vector_rotation(theta: float, dx: float, dy: float) -> tuple[float, float]:
     Returns:
         Tuple of (x, y) coordinates of rotated vector
     """
-    return np.array(rotate(theta) * colvector(dx, dy)).ravel()[:2]
+    return (rotate(theta) @ colvector(dx, dy)).ravel()[:2]
 
 
 def vector_angle(dx: float, dy: float) -> float:

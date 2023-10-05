@@ -110,7 +110,7 @@ class TrImageItem(RawImageItem):
         self.rotation_point = colvector(x, y)
 
     def set_rotation_point_to_center(self):
-        handles = self.itr * self.points
+        handles = self.itr @ self.points
         center = handles.sum(axis=1) / 4
         self.set_rotation_point(
             center.item(0), center.item(1), rotation_point_move_with_shape=True
@@ -153,7 +153,7 @@ class TrImageItem(RawImageItem):
         Returns:
             Pixel coordinates
         """
-        v = self.tr * colvector(xplot, yplot)
+        v = self.tr @ colvector(xplot, yplot)
         xpixel, ypixel, _ = v[:, 0]
         return xpixel, ypixel
 
@@ -167,8 +167,8 @@ class TrImageItem(RawImageItem):
         Returns:
             Plot coordinates
         """
-        v0 = self.itr * colvector(xpixel, ypixel)
-        xplot, yplot, _ = v0[:, 0].A.ravel()
+        v0 = self.itr @ colvector(xpixel, ypixel)
+        xplot, yplot, _ = v0[:, 0].ravel()
         return xplot, yplot
 
     def get_x_values(self, i0: int, i1: int) -> np.ndarray:
@@ -181,10 +181,10 @@ class TrImageItem(RawImageItem):
         Returns:
             X values corresponding to the given pixel indexes
         """
-        v0 = self.itr * colvector(i0, 0)
-        x0, _y0, _ = v0[:, 0].A.ravel()
-        v1 = self.itr * colvector(i1, 0)
-        x1, _y1, _ = v1[:, 0].A.ravel()
+        v0 = self.itr @ colvector(i0, 0)
+        x0, _y0, _ = v0[:, 0].ravel()
+        v1 = self.itr @ colvector(i1, 0)
+        x1, _y1, _ = v1[:, 0].ravel()
         return np.linspace(x0, x1, i1 - i0)
 
     def get_y_values(self, j0: int, j1: int) -> np.ndarray:
@@ -197,10 +197,10 @@ class TrImageItem(RawImageItem):
         Returns:
             Y values corresponding to the given pixel indexes
         """
-        v0 = self.itr * colvector(0, j0)
-        _x0, y0, _ = v0[:, 0].A.ravel()
-        v1 = self.itr * colvector(0, j1)
-        _x1, y1, _ = v1[:, 0].A.ravel()
+        v0 = self.itr @ colvector(0, j0)
+        _x0, y0, _ = v0[:, 0].ravel()
+        v1 = self.itr @ colvector(0, j1)
+        _x1, y1, _ = v1[:, 0].ravel()
         return np.linspace(y0, y1, j1 - j0)
 
     def get_r_values(self, i0, i1, j0, j1, flag_circle=False):
@@ -216,10 +216,10 @@ class TrImageItem(RawImageItem):
         Returns:
             Radial values corresponding to the given pixel indexes
         """
-        v0 = self.itr * colvector(i0, j0)
-        x0, y0, _ = v0[:, 0].A.ravel()
-        v1 = self.itr * colvector(i1, j1)
-        x1, y1, _ = v1[:, 0].A.ravel()
+        v0 = self.itr @ colvector(i0, j0)
+        x0, y0, _ = v0[:, 0].ravel()
+        v1 = self.itr @ colvector(i1, j1)
+        x1, y1, _ = v1[:, 0].ravel()
         if flag_circle:
             r = abs(y1 - y0)
         else:
@@ -238,8 +238,8 @@ class TrImageItem(RawImageItem):
             tuple[float, float]: Closest coordinates
         """
         xi, yi = self.get_closest_indexes(x, y)
-        v = self.itr * colvector(xi, yi)
-        x, y, _ = v[:, 0].A.ravel()
+        v = self.itr @ colvector(xi, yi)
+        x, y, _ = v[:, 0].ravel()
         return x, y
 
     def update_border(self) -> None:
@@ -276,9 +276,9 @@ class TrImageItem(RawImageItem):
         cy = canvasRect.top()
         sx = (x1 - x0) / (W - 1)
         sy = (y1 - y0) / (H - 1)
-        # tr1 = tr(x0,y0)*scale(sx,sy)*tr(-cx,-cy)
-        tr = np.matrix([[sx, 0, x0 - cx * sx], [0, sy, y0 - cy * sy], [0, 0, 1]], float)
-        mat = self.tr * tr
+        # tr1 = tr(x0,y0)@scale(sx,sy)@tr(-cx,-cy)
+        tr = np.array([[sx, 0, x0 - cx * sx], [0, sy, y0 - cy * sy], [0, 0, 1]], float)
+        mat = self.tr @ tr
 
         dst_rect = tuple([int(i) for i in dst_rect])
         dest = _scale_tr(
@@ -343,7 +343,7 @@ class TrImageItem(RawImageItem):
                 (ys1 - ys0) / float(yd1 - yd0),
             )
 
-        mat = self.tr * (translate(xs0, ys0) * scale(xscale, yscale))
+        mat = self.tr @ (translate(xs0, ys0) @ scale(xscale, yscale))
 
         x0, y0, x1, y1 = self.get_crop_coordinates()
         xd0 = max([xd0, xd0 + int((x0 - xs0) / xscale)])
@@ -380,7 +380,7 @@ class TrImageItem(RawImageItem):
             return
         x0, y0, angle, dx, dy, hflip, vflip = self.get_transform()
         nx, ny = canvas_to_axes(self, pos)
-        handles = self.itr * self.points
+        handles = self.itr @ self.points
         p0 = colvector(nx, ny)
         if self.can_rotate():
             if self.rotation_point is None:
@@ -393,9 +393,9 @@ class TrImageItem(RawImageItem):
             angle = float(angle + a1 - a0)
             tr1 = translate(-self.rotation_point[0], -self.rotation_point[1])
             rot = rotate(a1 - a0)
-            tr = tr1.I * rot * tr1
+            tr = np.linalg.inv(tr1) @ rot @ tr1
             vc = colvector(x0, y0)
-            new_vc = tr.A.dot(vc)
+            new_vc = tr.dot(vc)
             x0, y0 = new_vc[0], new_vc[1]
             if self.plot():
                 self.plot().SIG_ITEM_ROTATED.emit(self, angle)
@@ -466,9 +466,9 @@ class TrImageItem(RawImageItem):
         angle = float(angle)
         tr1 = translate(-self.rotation_point[0], -self.rotation_point[1])
         rot = rotate(a1 - a0)
-        tr = tr1.I * rot * tr1
+        tr = np.linalg.inv(tr1) @ rot @ tr1
         vc = colvector(x0, y0)
-        new_vc = tr * vc
+        new_vc = tr @ vc
         x0, y0 = float(new_vc[0]), float(new_vc[1])
         if self.plot():
             self.plot().SIG_ITEM_ROTATED.emit(self, angle)
@@ -506,9 +506,9 @@ class TrImageItem(RawImageItem):
 
         tr1 = translate(-self.rotation_point[0], -self.rotation_point[1])
         rot = rotate(dangle)
-        tr = tr1.I * rot * tr1
+        tr = np.linalg.inv(tr1) @ rot @ tr1
         vc = colvector(x0, y0)
-        new_vc = tr * vc
+        new_vc = tr @ vc
         x0, y0 = float(new_vc[0]), float(new_vc[1])
         new_angle = angle0 + dangle
         self.set_transform(x0, y0, angle0 + dangle, dx, dy, hflip, vflip)
@@ -542,7 +542,7 @@ class TrImageItem(RawImageItem):
         if self.rotation_point is None:
             self.set_rotation_point_to_center()
         x0, y0, angle, dx, dy, hflip, vflip = self.get_transform()
-        handles = self.itr * self.points
+        handles = self.itr @ self.points
         center = handles.sum(axis=1) / 4
         if self.rotation_point_move_with_shape:
             self.rotation_point[0] = (
@@ -567,9 +567,9 @@ class TrImageItem(RawImageItem):
         dangle = float(angle - angle0)
         tr1 = translate(-self.rotation_point[0], -self.rotation_point[1])
         rot = rotate(dangle)
-        tr = tr1.I * rot * tr1
+        tr = np.linalg.inv(tr1) @ rot @ tr1
         vc = colvector(x0, y0)
-        new_vc = tr * vc
+        new_vc = tr @ vc
         x0, y0 = float(new_vc[0]), float(new_vc[1])
         self.set_transform(x0, y0, angle, dx, dy, hflip, vflip)
 
@@ -595,8 +595,8 @@ class TrImageItem(RawImageItem):
         yflip = -1.0 if vflip else 1.0
         sc = scale(xflip / dx, yflip / dy)
         tr2 = translate(-x0, -y0)
-        self.tr = tr1 * sc * rot * tr2
-        self.itr = self.tr.I
+        self.tr = tr1 @ sc @ rot @ tr2
+        self.itr = np.linalg.inv(self.tr)
         self.compute_bounds()
 
     def get_transform(self):
@@ -623,10 +623,10 @@ class TrImageItem(RawImageItem):
         tr1 = translate(xmin + a, ymin + b)
         sc = scale(dx, dy)
         tr2 = translate(-x0, -y0)
-        p1 = tr1.I * pt
-        p2 = rot.I * pt
-        p3 = sc.I * pt
-        p4 = tr2.I * pt
+        p1 = np.linalg.inv(tr1) @ pt
+        p2 = np.linalg.inv(rot) @ pt
+        p3 = np.linalg.inv(sc) @ pt
+        p4 = np.linalg.inv(tr2) @ pt
         print("src=", pt.T)
         print("tr1:", p1.T)
         print("tr1+rot:", p2.T)
