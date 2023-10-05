@@ -194,8 +194,9 @@ def build_image(items: list[TrImageItem]) -> None:
     print("-" * 80)
 
 
+@pytest.mark.parametrize("N", [500])
 @pytest.mark.parametrize("assemble_images", [False, True])
-def test_transform(N: int = 500, assemble_images: bool = False) -> None:
+def test_transform(N: int, assemble_images: bool) -> None:
     """Test image transforms
 
     Args:
@@ -215,4 +216,4 @@ def test_transform(N: int = 500, assemble_images: bool = False) -> None:
 
 
 if __name__ == "__main__":
-    test_transform(assemble_images=True)
+    test_transform(N=500, assemble_images=True)
