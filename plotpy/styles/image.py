@@ -122,6 +122,8 @@ class BaseImageParam(DataSet):
 
         :param image:
         """
+        if isinstance(self.alpha_function, LUTAlpha):
+            self.alpha_function = self.alpha_function.value
         plot = image.plot()
         if plot is not None:
             plot.blockSignals(True)  # Avoid unwanted calls of update_param
@@ -205,6 +207,8 @@ class QuadGridParam(DataSet):
 
         :param image:
         """
+        if isinstance(self.alpha_function, LUTAlpha):
+            self.alpha_function = self.alpha_function.value
         plot = image.plot()
         if plot is not None:
             plot.blockSignals(True)  # Avoid unwanted calls of update_param
