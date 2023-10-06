@@ -13,13 +13,8 @@ LIBNAME = "plotpy"
 SRCPATH = osp.join(".", "src")
 
 
-# We create requirements for C/pyx dependencies compilation and integration into wheel
-# file
 def is_msvc():
     """Detect if Microsoft Visual C++ compiler was chosen to build package"""
-    # checking if mingw is the compiler
-    # mingw32 compiler configured in %USERPROFILE%\pydistutils.cfg
-    # or distutils\distutils.cfg
     dist = Distribution()
     dist.parse_config_files()
     bld = dist.get_option_dict("build")
@@ -30,43 +25,55 @@ def is_msvc():
     return os.name == "nt" and "mingw" not in "".join(sys.argv)
 
 
-CFLAGS = ["-Wall"]
-if is_msvc():
-    CFLAGS.insert(0, "/EHsc")
-for arg, compile_arg in (("--sse2", "-msse2"), ("--sse3", "-msse3")):
-    if arg in sys.argv:
-        sys.argv.pop(sys.argv.index(arg))
-        CFLAGS.insert(0, compile_arg)
+def get_compiler_flags():
+    """Get compiler flags for C++ dependencies compilation"""
+    if is_msvc():
+        cflags = ["/EHsc"]
+    else:
+        cflags = ["-Wall"]
+    for arg, compile_arg in (("--sse2", "-msse2"), ("--sse3", "-msse3")):
+        if arg in sys.argv:
+            sys.argv.pop(sys.argv.index(arg))
+            cflags.insert(0, compile_arg)
+    return cflags
 
 
-for fname in os.listdir(SRCPATH):
-    if osp.splitext(fname)[1] == ".pyx":
-        Main.compile(osp.join(SRCPATH, fname), language_level=2)
+def compile_cython_extensions():
+    """Compile Cython extensions"""
+    for fname in os.listdir(SRCPATH):
+        if osp.splitext(fname)[1] == ".pyx":
+            Main.compile(osp.join(SRCPATH, fname), language_level=2)
+
+
+compile_cython_extensions()
+
+INCLUDE_DIRS = [SRCPATH, numpy.get_include()]
+DEFINE_MACROS = [("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")]
 
 setup(
     ext_modules=[
         Extension(
             name=f"{LIBNAME}.mandelbrot",
             sources=[osp.join(SRCPATH, "mandelbrot.c")],
-            include_dirs=[SRCPATH, numpy.get_include()],
-            define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")],
+            include_dirs=INCLUDE_DIRS,
+            define_macros=DEFINE_MACROS,
         ),
         Extension(
             name=f"{LIBNAME}.histogram2d",
             sources=[osp.join(SRCPATH, "histogram2d.c")],
-            include_dirs=[SRCPATH, numpy.get_include()],
-            define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")],
+            include_dirs=INCLUDE_DIRS,
+            define_macros=DEFINE_MACROS,
         ),
         Extension(
             name=f"{LIBNAME}.contour2d",
             sources=[osp.join(SRCPATH, "contour2d.c")],
-            include_dirs=[SRCPATH, numpy.get_include()],
-            define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")],
+            include_dirs=INCLUDE_DIRS,
+            define_macros=DEFINE_MACROS,
         ),
         Extension(
             name=f"{LIBNAME}._scaler",
             sources=[osp.join(SRCPATH, "scaler.cpp"), osp.join(SRCPATH, "pcolor.cpp")],
-            extra_compile_args=CFLAGS,
+            extra_compile_args=get_compiler_flags(),
             depends=[
                 osp.join(SRCPATH, "traits.hpp"),
                 osp.join(SRCPATH, "points.hpp"),
@@ -74,7 +81,8 @@ setup(
                 osp.join(SRCPATH, "scaler.hpp"),
                 osp.join(SRCPATH, "debug.hpp"),
             ],
-            include_dirs=[SRCPATH, numpy.get_include()],
+            include_dirs=INCLUDE_DIRS,
+            define_macros=DEFINE_MACROS,
         ),
     ]
 )

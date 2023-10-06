@@ -386,7 +386,7 @@ static bool check_array_2d(const char *name, PyArrayObject *arr, int dtype)
         PyErr_Format(PyExc_TypeError, "%s must be a ndarray", name);
         return false;
     }
-    if (arr->nd != 2)
+    if (PyArray_NDIM(arr) != 2)
     {
         PyErr_Format(PyExc_TypeError, "%s must be 2-D array", name);
         return false;
@@ -413,7 +413,7 @@ bool check_arrays(PyArrayObject *p_src, PyArrayObject *p_dest)
         PyErr_SetString(PyExc_TypeError, "dst data type must be uint32 or float");
         return false;
     }
-    if (p_src->nd != 2 || p_dest->nd != 2)
+    if (PyArray_NDIM(p_src) != 2 || PyArray_NDIM(p_dest) != 2)
     {
         PyErr_SetString(PyExc_TypeError, "dst and src must be 2-D arrays");
         return false;
@@ -428,7 +428,7 @@ bool check_lut(PyArrayObject *p_lut)
         PyErr_SetString(PyExc_TypeError, "lut must be an ndarray");
         return false;
     }
-    if (p_lut->nd != 1)
+    if (PyArray_NDIM(p_lut) != 1)
     {
         PyErr_SetString(PyExc_TypeError, "lut must be a 1D array");
         return false;
