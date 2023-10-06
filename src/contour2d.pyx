@@ -236,6 +236,9 @@ cdef void compute_contour_2d(double [:, :] data, coord, double[:] values, list c
     cdef double d1, d2, d3, d4
     cdef double val
     cdef Contour ctr
+
+    x1 = 0.0; y1 = 0.0; x2 = 0.0; y2 = 0.0
+
     for i in range(nx-1):
         for j in range(ny-1):
             d1 = data[i,j]
