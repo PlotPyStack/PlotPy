@@ -6,23 +6,25 @@
 """2D-Histogram algorithm"""
 
 cimport cython
-cimport numpy as np
+cimport numpy as cnp
 from libc.math cimport log
+
+cnp.import_array()
 
 cdef inline double double_max(double a, double b): return a if a >= b else b
 cdef inline double double_min(double a, double b): return a if a <= b else b
 
 @cython.profile(False)
 @cython.boundscheck(False)
-def histogram2d(np.ndarray[double, ndim=1] X, np.ndarray[double, ndim=1] Y,
+def histogram2d(cnp.ndarray[double, ndim=1] X, cnp.ndarray[double, ndim=1] Y,
                 double i0, double i1, double j0, double j1,
-                np.ndarray[double, ndim=2] data, logscale):
+                cnp.ndarray[double, ndim=2] data, logscale):
     """Compute 2-D Histogram from data X, Y"""
     cdef double cx, cy, nmax, ix, iy
     cdef unsigned int i
-    cdef unsigned int n = X.shape[0]
-    cdef unsigned int nx = data.shape[1]
-    cdef unsigned int ny = data.shape[0]
+    cdef Py_ssize_t n = X.shape[0]
+    cdef Py_ssize_t nx = data.shape[1]
+    cdef Py_ssize_t ny = data.shape[0]
 
     cx = nx/(i1-i0)
     cy = ny/(j1-j0)
@@ -48,18 +50,18 @@ def histogram2d(np.ndarray[double, ndim=1] X, np.ndarray[double, ndim=1] Y,
 
 @cython.profile(False)
 @cython.boundscheck(False)
-def histogram2d_func(np.ndarray[double, ndim=1] X,
-                     np.ndarray[double, ndim=1] Y,
-                     np.ndarray[double, ndim=1] Z,
+def histogram2d_func(cnp.ndarray[double, ndim=1] X,
+                     cnp.ndarray[double, ndim=1] Y,
+                     cnp.ndarray[double, ndim=1] Z,
                      double i0, double i1, double j0, double j1,
-                     np.ndarray[double, ndim=2] data_tmp,
-                     np.ndarray[double, ndim=2] data, int computation):
+                     cnp.ndarray[double, ndim=2] data_tmp,
+                     cnp.ndarray[double, ndim=2] data, int computation):
     """Compute 2-D Histogram from data X, Y"""
     cdef double cx, cy, nmax, ix, iy
     cdef unsigned int i, u, v
-    cdef unsigned int n = X.shape[0]
-    cdef unsigned int nx = data.shape[1]
-    cdef unsigned int ny = data.shape[0]
+    cdef Py_ssize_t n = X.shape[0]
+    cdef Py_ssize_t nx = data.shape[1]
+    cdef Py_ssize_t ny = data.shape[0]
 
     cx = nx/(i1-i0)
     cy = ny/(j1-j0)

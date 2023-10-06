@@ -3,12 +3,16 @@
 # Licensed under the terms of the BSD 3-Clause
 # (see plotpy/__init__.py for details)
 
+"""2-D contouring algorithms"""
 
 import numpy as np
-cimport numpy as np
+cimport numpy as cnp
 import cython
 from cpython cimport array
 from libc cimport math
+
+cnp.import_array()
+
 
 cdef class segment:
     cdef public int p0, p1, next
@@ -29,6 +33,7 @@ cdef class CoordOrtho:
 
     cpdef double x(self, int i, int j):
         return self._x[j]
+
     cpdef double y(self, int i, int j):
         return self._y[i]
 
@@ -43,6 +48,7 @@ cdef class CoordGrid:
 
     cpdef double x(self, int i, int j):
         return self._x[i, j]
+
     cpdef double y(self, int i, int j):
         return self._y[i, j]
 
@@ -64,7 +70,7 @@ cdef class Contour:
         self.seg_map = {}
 
     @cython.cdivision(True)
-    cdef int add_point(self, double x, double y):
+    cdef Py_ssize_t add_point(self, double x, double y):
         pt = (math.floor(x * 1e10) / 1e10, math.floor(y * 1e10) / 1e10)
         cdef int p = self.pt_map.get(pt, -1)
         if p != -1:
@@ -80,11 +86,11 @@ cdef class Contour:
         if (x1, y1) < (x0, y0):
             x0, x1 = x1, x0
             y0, y1 = y1, y0
-        cdef int p0 = self.add_point(x0, y0)
-        cdef int p1 = self.add_point(x1, y1)
+        cdef Py_ssize_t p0 = self.add_point(x0, y0)
+        cdef Py_ssize_t p1 = self.add_point(x1, y1)
         if p0 == p1:
             return
-        cdef int seg = len(self.segments)
+        cdef Py_ssize_t seg = len(self.segments)
         if p1 < p0:
             p0, p1 = p1, p0
 
@@ -203,8 +209,8 @@ cdef inline double ysect(int p1,int p2, double vv[5], double xx[5], double yy[5]
 @cython.wraparound(False)
 cdef void compute_contour_2d(double [:, :] data, coord, double[:] values, list contours):
 
-    cdef unsigned int nx = data.shape[0]
-    cdef unsigned int ny = data.shape[1]
+    cdef Py_ssize_t nx = data.shape[0]
+    cdef Py_ssize_t ny = data.shape[1]
 
     # Dispatch table according to sign of value for each of the 3 vertices (m1m2m3)
     # (-, = or +)
@@ -300,10 +306,10 @@ cdef void compute_contour_2d(double [:, :] data, coord, double[:] values, list c
                 ctr.add_edge(x1,y1,x2,y2)
 
 
-cdef contour_2d_coord(double [:, :] data, coord, np.ndarray[double, ndim=1] values):
+cdef contour_2d_coord(double [:, :] data, coord, cnp.ndarray[double, ndim=1] values):
 
-    cdef np.ndarray[double, ndim=2] points;
-    cdef np.ndarray[int, ndim=2] offsets;
+    cdef cnp.ndarray[double, ndim=2] points;
+    cdef cnp.ndarray[int, ndim=2] offsets;
     cdef array.array vpts = array.array('d', [])
     cdef array.array voff = array.array('i',[0])
     cdef array.array vval = array.array('i', [0])
@@ -337,13 +343,13 @@ cdef contour_2d_coord(double [:, :] data, coord, np.ndarray[double, ndim=1] valu
 
 @cython.profile(False)
 @cython.boundscheck(False)
-def contour_2d_ortho(double [:, :] data, double [:] x, double [:] y, np.ndarray[double, ndim=1] values):
+def contour_2d_ortho(double [:, :] data, double [:] x, double [:] y, cnp.ndarray[double, ndim=1] values):
     coord = CoordOrtho(x, y)
     return contour_2d_coord(data, coord, values)
 
 
 @cython.profile(False)
 @cython.boundscheck(False)
-def contour_2d_grid(double [:, :] data, double [:, :] x, double [:, :] y, np.ndarray[double, ndim=1] values):
+def contour_2d_grid(double [:, :] data, double [:, :] x, double [:, :] y, cnp.ndarray[double, ndim=1] values):
     coord = CoordGrid(x, y)
     return contour_2d_coord(data, coord, values)

@@ -49,16 +49,19 @@ setup(
             name=f"{LIBNAME}.mandelbrot",
             sources=[osp.join(SRCPATH, "mandelbrot.c")],
             include_dirs=[SRCPATH, numpy.get_include()],
+            define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")],
         ),
         Extension(
             name=f"{LIBNAME}.histogram2d",
             sources=[osp.join(SRCPATH, "histogram2d.c")],
             include_dirs=[SRCPATH, numpy.get_include()],
+            define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")],
         ),
         Extension(
             name=f"{LIBNAME}.contour2d",
             sources=[osp.join(SRCPATH, "contour2d.c")],
             include_dirs=[SRCPATH, numpy.get_include()],
+            define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")],
         ),
         Extension(
             name=f"{LIBNAME}._scaler",
