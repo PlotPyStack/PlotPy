@@ -12,50 +12,34 @@ ignored in computations, like the average cross sections.
 
 # guitest: show
 
-import os
-import pickle
-
-from guidata.qthelpers import qt_app_context
+import os.path as osp
 
 from plotpy.builder import make
-from plotpy.tools import ImageMaskTool
+from plotpy.tests.gui.test_loadsaveitems_pickle import PickleTest
 
-FNAME = "image_masked.pickle"
 
-# TODO: Rewrite the test so that it does not leave a file behind
-# (do something like in test_loadsaveitems_pickle.py)
+class MaskedImageTest(PickleTest):
+    """Test class for MaskedImageItem tests"""
+
+    FNAME = f"{osp.splitext(osp.basename(__file__))[0]}.pickle"
+    IMAGE_FN = osp.join(osp.abspath(osp.dirname(__file__)), "brain.png")
+
+    def build_items(self) -> list:
+        """Build items"""
+        image = make.maskedimage(
+            filename=self.IMAGE_FN,
+            colormap="gray",
+            show_mask=True,
+            xdata=[0, 20],
+            ydata=[0, 25],
+        )
+        return [image]
 
 
 def test_image_masked():
-    with qt_app_context(exec_loop=True):
-        win = make.dialog(
-            toolbar=True,
-            wintitle="Masked image item test",
-            type="image",
-        )
-        win.manager.add_tool(ImageMaskTool)
-        if os.access(FNAME, os.R_OK):
-            print("Restoring mask...", end=" ")
-            iofile = open(FNAME, "rb")
-            image = pickle.load(iofile)
-            iofile.close()
-            print("OK")
-        else:
-            fname = os.path.join(
-                os.path.abspath(os.path.dirname(__file__)), "brain.png"
-            )
-            image = make.maskedimage(
-                filename=fname,
-                colormap="gray",
-                show_mask=True,
-                xdata=[0, 20],
-                ydata=[0, 25],
-            )
-        win.manager.get_plot().add_item(image)
-        win.show()
-
-    iofile = open(FNAME, "wb")
-    pickle.dump(image, iofile)
+    """Test MaskedImageItem"""
+    test = MaskedImageTest("MaskedImageItem test")
+    test.run()
 
 
 if __name__ == "__main__":

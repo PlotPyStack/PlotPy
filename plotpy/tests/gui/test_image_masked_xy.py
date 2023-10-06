@@ -12,58 +12,34 @@ ignored in computations, like the average cross sections.
 
 # guitest: show
 
-import os
-import pickle
-
-from guidata.qthelpers import qt_app_context
-
+from plotpy import io
 from plotpy.builder import make
-from plotpy.tools import ImageMaskTool
+from plotpy.tests.gui.test_image_masked import MaskedImageTest
 
-FNAME = "image_masked_xy.pickle"
 
-# TODO: Rewrite the test so that it does not leave a file behind
-# (do something like in test_loadsaveitems_pickle.py)
+class XYMaskedImageTest(MaskedImageTest):
+    """XYMaskedImageItem test class"""
+
+    def build_items(self) -> list:
+        """Build items"""
+        data = io.imread(self.IMAGE_FN, to_grayscale=True)
+        x = [0]
+        delta = 1
+        for x_val in range(data.shape[0] - 1):
+            delta = delta + 0.1
+            x.append(x[-1] + delta)
+        y = [0]
+        for y_val in range(data.shape[1] - 1):
+            delta = delta + 0.1
+            y.append(y[-1] + delta)
+        image = make.maskedimage(data=data, colormap="gray", show_mask=True, x=x, y=y)
+        return [image]
 
 
 def test_image_masked_xy():
-    with qt_app_context(exec_loop=True):
-        win = make.dialog(
-            toolbar=True,
-            wintitle="Masked XY image item test",
-            type="image",
-        )
-        win.manager.add_tool(ImageMaskTool)
-        if os.access(FNAME, os.R_OK):
-            print("Restoring mask...", end=" ")
-            iofile = open(FNAME, "rb")
-            image = pickle.load(iofile)
-            iofile.close()
-            print("OK")
-        else:
-            fname = os.path.join(
-                os.path.abspath(os.path.dirname(__file__)), "brain.png"
-            )
-            data, fname, title = make._get_image_data(
-                None, fname, "XY Brain Image", to_grayscale=True
-            )
-            x = [0]
-            delta = 1
-            for x_val in range(data.shape[0] - 1):
-                delta = delta + 0.1
-                x.append(x[-1] + delta)
-            y = [0]
-            for y_val in range(data.shape[1] - 1):
-                delta = delta + 0.1
-                y.append(y[-1] + delta)
-            image = make.maskedimage(
-                data=data, colormap="gray", show_mask=True, x=x, y=y
-            )
-        win.manager.get_plot().add_item(image)
-        win.show()
-
-    iofile = open(FNAME, "wb")
-    pickle.dump(image, iofile)
+    """Test MaskedImageItem"""
+    test = XYMaskedImageTest("MaskedImageItem test")
+    test.run()
 
 
 if __name__ == "__main__":

@@ -20,13 +20,13 @@ class HDF5Test(IOTest):
 
     FNAME = "loadsavecanvas.h5"
 
-    def restore_items(self):
+    def restore_items(self) -> None:
         """Restore items from HDF5 file"""
         reader = HDF5Reader(self.FNAME)
         self.plot.deserialize(reader)
         reader.close()
 
-    def save_items(self):
+    def save_items(self) -> None:
         """Save items to HDF5 file"""
         writer = HDF5Writer(self.FNAME)
         self.plot.serialize(writer)
@@ -35,7 +35,7 @@ class HDF5Test(IOTest):
 
 def test_loadsaveitems_hdf5():
     """Test load/save items from/to HDF5 file"""
-    test = HDF5Test()
+    test = HDF5Test("Load/save items from/to HDF5 file")
     test.run()
 
 

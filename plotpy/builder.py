@@ -658,8 +658,8 @@ class PlotBuilder:
         (may returns a list of curves if data contains more than one signal)
 
         Args:
-            \*args: x, y, style
-            \*\*kwargs: title, color, linestyle, linewidth, marker, markersize,
+            args: x, y, style
+            kwargs: title, color, linestyle, linewidth, marker, markersize,
             markerfacecolor, markeredgecolor, shade, curvestyle, baseline
 
         Returns:
@@ -840,8 +840,8 @@ class PlotBuilder:
         """Make an errorbar curve `plot item` based on MATLAB-like syntax
 
         Args:
-            \*args: x, y, dx, dy, style
-            \*\*kwargs: title, color, linestyle, linewidth, marker, markersize,
+            args: x, y, dx, dy, style
+            kwargs: title, color, linestyle, linewidth, marker, markersize,
              markerfacecolor, markeredgecolor, shade, curvestyle, baseline,
              xaxis, yaxis, errorbarwidth, errorbarcap, errorbarmode,
              errorbaralpha
@@ -1614,8 +1614,8 @@ class PlotBuilder:
         based on MATLAB-like syntax
 
         Args:
-            \*args: non-keyword arguments
-            \*\*kwargs: keyword arguments
+            args: non-keyword arguments
+            kwargs: keyword arguments
 
         Returns:
             :py:class:`.QuadGridItem` object

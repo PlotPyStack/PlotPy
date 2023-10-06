@@ -10,7 +10,10 @@
 # WARNING:
 # This script requires read/write permissions on current directory
 
+from __future__ import annotations
+
 import os
+from typing import TYPE_CHECKING
 
 import numpy as np
 from guidata.env import execenv
@@ -23,8 +26,11 @@ from plotpy.items import Axes, PolygonShape
 from plotpy.plot import PlotDialog, PlotOptions
 from plotpy.tools import ImageMaskTool, LoadItemsTool, SaveItemsTool
 
+if TYPE_CHECKING:  # pragma: no cover
+    from plotpy.plot import BasePlot
 
-def build_items():
+
+def build_items() -> list:
     """Build items"""
     x = np.linspace(-10, 10, 200)
     y = np.sin(np.sin(np.sin(x)))
@@ -86,11 +92,11 @@ class LoadSaveDialog(PlotDialog):
 
     SIG_SAVE_RESTORE_ITEMS = QC.Signal()
 
-    def __init__(self):
+    def __init__(self, title: str) -> None:
         super().__init__(
             edit=False,
             toolbar=True,
-            title="Load/save test",
+            title=title,
             options=PlotOptions(
                 title="Title", xlabel="xlabel", ylabel="ylabel", type="image"
             ),
@@ -113,21 +119,23 @@ class LoadSaveDialog(PlotDialog):
 class IOTest:
     """Base class for load/save items tests"""
 
-    FNAME = None
+    FNAME: str = ""
 
-    def __init__(self):
+    def __init__(self, title: str) -> None:
+        self.title = title
         self.dlg = None
 
     @property
-    def plot(self):
-        """Return the plot"""
-        if self.dlg is not None:
-            return self.dlg.manager.get_plot()
+    def plot(self) -> BasePlot:
+        """Get the plot object"""
+        if self.dlg is None:
+            raise RuntimeError("No dialog")
+        return self.dlg.manager.get_plot()
 
-    def run(self):
+    def run(self) -> None:
         """Run test"""
         with qt_app_context(exec_loop=True):
-            self.dlg = LoadSaveDialog()
+            self.dlg = LoadSaveDialog(self.title)
             self.dlg.SIG_SAVE_RESTORE_ITEMS.connect(self.save_and_restore_items)
             print("Building items and add them to plotting canvas", end=" ")
             self.add_items()
@@ -142,7 +150,7 @@ class IOTest:
         else:
             print("No file to clean up")
 
-    def save_and_restore_items(self):
+    def save_and_restore_items(self) -> None:
         """Save and restore items"""
         print("Saving items...", end=" ")
         self.save_items()
@@ -154,18 +162,22 @@ class IOTest:
         self.restore_items()
         print("OK")
 
-    def add_items(self):
+    def build_items(self) -> list:
+        """Build items"""
+        return build_items()
+
+    def add_items(self) -> None:
         """Add items to plotting canvas"""
-        for item in build_items():
+        for item in self.build_items():
             self.plot.add_item(item)
         self.dlg.manager.get_itemlist_panel().show()
         self.plot.set_items_readonly(False)
 
-    def restore_items(self):
+    def restore_items(self) -> None:
         """Restore items"""
         raise NotImplementedError
 
-    def save_items(self):
+    def save_items(self) -> None:
         """Save items"""
         raise NotImplementedError
 
@@ -175,21 +187,21 @@ class PickleTest(IOTest):
 
     FNAME = "loadsavecanvas.pickle"
 
-    def restore_items(self):
+    def restore_items(self) -> None:
         """Restore items"""
         f = open(self.FNAME, "rb")
         self.plot.restore_items(f)
 
-    def save_items(self):
+    def save_items(self) -> None:
         """Save items"""
         self.plot.select_all()
         f = open(self.FNAME, "wb")
         self.plot.save_items(f, selected=True)
 
 
-def test_pickle():
+def test_pickle() -> None:
     """Test load/save items using Python's pickle protocol"""
-    test = PickleTest()
+    test = PickleTest("Load/save items using Python's pickle protocol")
     test.run()
 
 

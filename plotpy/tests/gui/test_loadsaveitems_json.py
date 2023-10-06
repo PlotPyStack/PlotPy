@@ -36,11 +36,11 @@ class JSONTest(IOTest):
 
     FNAME = "loadsavecanvas.json"
 
-    def restore_items(self):
+    def restore_items(self) -> None:
         """Restore plot items"""
         self.plot.deserialize(JSONReader(self.FNAME))
 
-    def save_items(self):
+    def save_items(self) -> None:
         """Save plot items"""
         writer = JSONWriter(self.FNAME)
         self.plot.serialize(writer)
@@ -49,7 +49,7 @@ class JSONTest(IOTest):
 
 def test_loadsaveitems_json():
     """Test load/save items from/to JSON file"""
-    test = JSONTest()
+    test = JSONTest("Load/save items from/to JSON file")
     test.run()
 
 
