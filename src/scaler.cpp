@@ -481,7 +481,6 @@ static bool scale_src_dst_interp(Params &p, PixelScale &pixel_scale, Interp &int
 {
     typedef typename PixelScale::source_type ST;
     typedef typename PixelScale::dest_type DT;
-    typedef typename Params::transform_type Transform;
 
     Array2D<ST> src(p.p_src);
     Array2D<DT> dst(p.p_dst);
