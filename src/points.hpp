@@ -293,7 +293,6 @@ template <class axis_type>
 class XYTransform
 {
 public:
-    static const int toto = 1;
     typedef Point2DAxis<axis_type> point;
     typedef typename point::real real;
 
@@ -347,10 +346,10 @@ public:
 
 public:
     int nx, ny;
-    real x0, y0;
-    real dx, dy;
     const axis_type &ax;
     const axis_type &ay;
+    real x0, y0;
+    real dx, dy;
 };
 
 #endif
