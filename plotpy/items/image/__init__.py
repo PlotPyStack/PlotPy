@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 
 # pylint: disable=unused-import
-from plotpy.items.image.base import BaseImageItem, RawImageItem
-from plotpy.items.image.filter import ImageFilterItem, XYImageFilterItem
-from plotpy.items.image.image_items import ImageItem, RGBImageItem, XYImageItem
-from plotpy.items.image.masked import MaskedImageItem, MaskedXYImageItem
-from plotpy.items.image.masked_area import MaskedArea
-from plotpy.items.image.misc import (
+from .base import BaseImageItem, RawImageItem
+from .filter import ImageFilterItem, XYImageFilterItem
+from .image_items import ImageItem, RGBImageItem, XYImageItem
+from .masked import MaskedArea, MaskedImageItem, MaskedXYImageItem
+from .misc import (
     Histogram2DItem,
     QuadGridItem,
     assemble_imageitems,
@@ -17,4 +16,4 @@ from plotpy.items.image.misc import (
     get_items_in_rectangle,
     get_plot_qrect,
 )
-from plotpy.items.image.transform import TrImageItem
+from .transform import TrImageItem

@@ -31,6 +31,8 @@ Images
    :members:
 .. autoclass:: plotpy.items.RGBImageItem
    :members:
+.. autoclass:: plotpy.items.MaskedArea
+   :members:
 .. autoclass:: plotpy.items.MaskedImageItem
    :members:
 .. autoclass:: plotpy.items.MaskedXYImageItem

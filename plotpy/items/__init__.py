@@ -19,7 +19,6 @@ from .image import (
     Histogram2DItem,
     ImageFilterItem,
     ImageItem,
-    MaskedArea,
     MaskedImageItem,
     MaskedXYImageItem,
     QuadGridItem,
@@ -36,6 +35,7 @@ from .image import (
     get_items_in_rectangle,
     get_plot_qrect,
 )
+from .image.masked import MaskedArea, MaskedImageItem, MaskedXYImageItem
 from .label import (
     AbstractLabelItem,
     DataInfoLabel,

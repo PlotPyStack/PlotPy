@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 import guidata.dataset.io
 import numpy as np
+import numpy.ma as ma
 from qtpy import QtCore as QC
 
 from plotpy import io
@@ -18,7 +19,6 @@ from plotpy.interfaces import (
     IVoiImageItemType,
 )
 from plotpy.items.image.image_items import ImageItem, XYImageItem
-from plotpy.items.image.masked_area import MaskedArea
 from plotpy.styles.image import MaskedImageParam, MaskedXYImageParam
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -27,20 +27,96 @@ if TYPE_CHECKING:  # pragma: no cover
     from qtpy.QtCore import QRectF
     from qtpy.QtGui import QPainter
 
+    from plotpy.plot import BasePlot
+
+
+class MaskedArea:
+    """Defines masked areas for a masked image item
+
+    Args:
+        geometry: Geometry of the area ('rectangular' or anything else for circular)
+        x0: X coordinate of first point
+        y0: Y coordinate of first point
+        x1: X coordinate of second point
+        y1: Y coordinate of second point
+        inside: True if the area is inside the geometry, False if it is outside
+    """
+
+    def __init__(
+        self,
+        geometry: str | None = None,
+        x0: float | None = None,
+        y0: float | None = None,
+        x1: float | None = None,
+        y1: float | None = None,
+        inside: bool | None = None,
+    ) -> None:
+        self.geometry = geometry
+        self.x0 = x0
+        self.y0 = y0
+        self.x1 = x1
+        self.y1 = y1
+        self.inside = inside
+
+    def __eq__(self, other):
+        return (
+            self.geometry == other.geometry
+            and self.x0 == other.x0
+            and self.y0 == other.y0
+            and self.x1 == other.x1
+            and self.y1 == other.y1
+            and self.inside == other.inside
+        )
+
+    def serialize(
+        self,
+        writer: guidata.dataset.io.HDF5Writer
+        | guidata.dataset.io.INIWriter
+        | guidata.dataset.io.JSONWriter,
+    ) -> None:
+        """Serialize object to HDF5 writer
+
+        Args:
+            writer: HDF5, INI or JSON writer
+        """
+        for name in ("geometry", "inside", "x0", "y0", "x1", "y1"):
+            writer.write(getattr(self, name), name)
+
+    def deserialize(
+        self,
+        reader: guidata.dataset.io.HDF5Reader
+        | guidata.dataset.io.INIReader
+        | guidata.dataset.io.JSONReader,
+    ) -> None:
+        """Deserialize object from HDF5 reader
+
+        Args:
+            reader: HDF5, INI or JSON reader
+        """
+        self.geometry = reader.read("geometry")
+        self.inside = reader.read("inside")
+        for name in ("x0", "y0", "x1", "y1"):
+            setattr(self, name, reader.read(name, func=reader.read_float))
+
 
 class MaskedImageMixin:
-    """
-    Mixin used to factorize mask mechanism to the different ImageItems classes. See
-    :py:class:`.MaskedImageItem` and :py:class:`.MaskedXYImageItem`
+    """Masked image mixin
 
-        * mask: 2D NumPy array
+    This class is a mixin providing array mask features to image items. It is used by
+    :py:class:`.MaskedImageItem` and :py:class:`.MaskedXYImageItem` classes.
+
+    Args:
+        mask: 2D masked array
     """
 
-    def __init__(self, mask=None):
-        self.orig_data = None
-        self._mask = mask
-        self._mask_filename = None
-        self._masked_areas = []
+    def __init__(self, mask: ma.MaskedArray | None = None) -> None:
+        self.orig_data: np.ndarray | None = None
+        self._mask: ma.MaskedArray | None = mask
+        self._mask_filename: str | None = None
+        self._masked_areas: list[MaskedArea] = []
+        # ImageItem and XYImageItem attributes:
+        self.data: ma.MaskedArray | None = None
+        self.param: MaskedImageParam | MaskedXYImageParam | None = None
 
     # ---- Pickle methods -------------------------------------------------------
     def serialize(
@@ -78,67 +154,94 @@ class MaskedImageMixin:
             self.apply_masked_areas()
 
     # ---- Public API -----------------------------------------------------------
-    def update_mask(self):
-        """ """
+    def update_mask(self) -> None:
+        """Update mask"""
         if isinstance(self.data, np.ma.MaskedArray):
-            self.data.set_fill_value(self.param.filling_value)
 
-    def set_mask(self, mask):
-        """Set image mask"""
+            # Casting filling_value to data dtype, otherwise this may raise an error
+            # in future versions of NumPy (at the time of writing, this raises a
+            # DeprecationWarning "NumPy will stop allowing conversion of out-of-bound
+            # Python integers to integer arrays.")
+            val = np.array(self.param.filling_value).astype(self.data.dtype)
+
+            self.data.set_fill_value(val)
+
+    def set_mask(self, mask: ma.MaskedArray) -> None:
+        """Set image mask
+
+        Args:
+            mask: 2D masked array
+        """
         self.data.mask = mask
 
-    def get_mask(self):
-        """Return image mask"""
+    def get_mask(self) -> ma.MaskedArray | None:
+        """Get image mask
+
+        Returns:
+            2D masked array
+        """
         return self.data.mask
 
-    def set_mask_filename(self, fname):
-        """
-        Set mask filename
+    def set_mask_filename(self, fname: str) -> None:
+        """Set mask filename
+
+        Args:
+            fname: Mask filename
 
         There are two ways for pickling mask data of `MaskedImageItem` objects:
 
             1. using the mask filename (as for data itself)
-            2. using the mask areas (`MaskedAreas` instance, see set_mask_areas)
+            2. using the mask areas (`MaskedArea` instance, see set_mask_areas)
 
         When saving objects, the first method is tried and then, if no
         filename has been defined for mask data, the second method is used.
         """
         self._mask_filename = fname
 
-    def get_mask_filename(self):
-        """
+    def get_mask_filename(self) -> str:
+        """Get mask filename
 
-        :return:
+        Returns:
+            Mask filename
         """
         return self._mask_filename
 
-    def load_mask_data(self):
-        """ """
+    def load_mask_data(self) -> None:
+        """Load mask data from file"""
         data = io.imread(self.get_mask_filename(), to_grayscale=True)
         self.set_mask(data)
         self._mask_changed()
 
-    def set_masked_areas(self, areas):
-        """Set masked areas (see set_mask_filename)"""
+    def set_masked_areas(self, areas: list[MaskedArea]) -> None:
+        """Set masked areas
+
+        Args:
+            areas: List of masked areas
+
+        .. seealso:: :py:meth:`.set_mask_filename`
+        """
         self._masked_areas = areas
 
-    def get_masked_areas(self):
-        """
+    def get_masked_areas(self) -> list[MaskedArea]:
+        """Get masked areas
 
-        :return:
+        Returns:
+            List of masked areas
         """
         return self._masked_areas
 
-    def add_masked_area(self, geometry, x0, y0, x1, y1, inside):
-        """
+    def add_masked_area(
+        self, geometry: str, x0: float, y0: float, x1: float, y1: float, inside: bool
+    ) -> None:
+        """Add masked area
 
-        :param geometry:
-        :param x0:
-        :param y0:
-        :param x1:
-        :param y1:
-        :param inside:
-        :return:
+        Args:
+            geometry: Area geometry
+            x0: top left x coordinate
+            y0: top left y coordinate
+            x1: bottom right x coordinate
+            y1: bottom right y coordinate
+            inside: Inside or outside
         """
         area = MaskedArea(geometry=geometry, x0=x0, y0=y0, x1=x1, y1=y1, inside=inside)
         for _area in self._masked_areas:
@@ -146,13 +249,13 @@ class MaskedImageMixin:
                 return
         self._masked_areas.append(area)
 
-    def _mask_changed(self):
+    def _mask_changed(self) -> None:
         """Emit the :py:data:`.baseplot.BasePlot.SIG_MASK_CHANGED` signal"""
-        plot = self.plot()
+        plot: BasePlot = self.plot()
         if plot is not None:
             plot.SIG_MASK_CHANGED.emit(self)
 
-    def apply_masked_areas(self):
+    def apply_masked_areas(self) -> None:
         """Apply masked areas"""
         for area in self._masked_areas:
             if area.geometry == "rectangular":
@@ -177,24 +280,39 @@ class MaskedImageMixin:
                 )
         self._mask_changed()
 
-    def mask_all(self):
+    def mask_all(self) -> None:
         """Mask all pixels"""
         self.data.mask = True
         self._mask_changed()
 
-    def unmask_all(self):
+    def unmask_all(self) -> None:
         """Unmask all pixels"""
         self.data.mask = np.ma.nomask
         self.set_masked_areas([])
         self._mask_changed()
 
     def mask_rectangular_area(
-        self, x0, y0, x1, y1, inside=True, trace=True, do_signal=True
-    ):
-        """
-        Mask rectangular area
-        If inside is True (default), mask the inside of the area
-        Otherwise, mask the outside
+        self,
+        x0: float,
+        y0: float,
+        x1: float,
+        y1: float,
+        inside: bool = True,
+        trace: bool = True,
+        do_signal: bool = True,
+    ) -> None:
+        """Mask rectangular area
+
+        Args:
+            x0: top left x coordinate
+            y0: top left y coordinate
+            x1: bottom right x coordinate
+            y1: bottom right y coordinate
+            inside: if True (default), mask the inside of the area, otherwise
+             mask the outside
+            trace: if True (default), add the area to the list of masked areas
+            do_signal: if True (default), emit the
+             :py:data:`.baseplot.BasePlot.SIG_MASK_CHANGED` signal
         """
         ix0, iy0, ix1, iy1 = self.get_closest_index_rect(x0, y0, x1, y1)
         if inside:
@@ -209,13 +327,27 @@ class MaskedImageMixin:
             self._mask_changed()
 
     def mask_circular_area(
-        self, x0, y0, x1, y1, inside=True, trace=True, do_signal=True
-    ):
-        """
-        Mask circular area, inside the rectangle (x0, y0, x1, y1), i.e.
-        circle with a radius of ``.5/*(x1-x0)``
-        If inside is True (default), mask the inside of the area
-        Otherwise, mask the outside
+        self,
+        x0: float,
+        y0: float,
+        x1: float,
+        y1: float,
+        inside: bool = True,
+        trace: bool = True,
+        do_signal: bool = True,
+    ) -> None:
+        """Mask circular area (as a circle inscribed in a rectangle)
+
+        Args:
+            x0: top left x coordinate
+            y0: top left y coordinate
+            x1: bottom right x coordinate
+            y1: bottom right y coordinate
+            inside: if True (default), mask the inside of the area, otherwise
+             mask the outside
+            trace: if True (default), add the area to the list of masked areas
+            do_signal: if True (default), emit the
+             :py:data:`.baseplot.BasePlot.SIG_MASK_CHANGED` signal
         """
         ix0, iy0, ix1, iy1 = self.get_closest_index_rect(x0, y0, x1, y1)
         xc, yc = 0.5 * (x0 + x1), 0.5 * (y0 + y1)
@@ -240,25 +372,37 @@ class MaskedImageMixin:
         if do_signal:
             self._mask_changed()
 
-    def is_mask_visible(self):
-        """Return mask visibility"""
+    def is_mask_visible(self) -> bool:
+        """Return mask visibility
+
+        Returns:
+            True if mask is visible, False otherwise
+        """
         return self.param.show_mask
 
-    def set_mask_visible(self, state):
-        """Set mask visibility"""
+    def set_mask_visible(self, state: bool) -> None:
+        """Set mask visibility
+
+        Args:
+            state: True to show mask, False to hide it
+        """
         self.param.show_mask = state
         plot = self.plot()
         if plot is not None:
             plot.replot()
 
-    def _set_data(self, data):
+    def _set_data(self, data: np.ndarray) -> None:
+        """Set image data
+
+        Args:
+            data: 2D NumPy array
+        """
         self.orig_data = data
         self.data = data.view(np.ma.MaskedArray)
         self.set_mask(self._mask)
         self._mask = None  # removing reference to this temporary array
         if self.param.filling_value is None:
             self.param.filling_value = self.data.get_fill_value()
-        #        self.data.harden_mask()
         self.update_mask()
 
 

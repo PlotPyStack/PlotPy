@@ -16,6 +16,9 @@
             // "args": [
             //     "--unattended"
             // ],
+            "pythonArgs": [
+                "-W error::DeprecationWarning",
+            ],
             "env": {}
         },
         {
