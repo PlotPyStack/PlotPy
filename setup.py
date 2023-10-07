@@ -48,7 +48,17 @@ def compile_cython_extensions():
 compile_cython_extensions()
 
 INCLUDE_DIRS = [SRCPATH, numpy.get_include()]
-DEFINE_MACROS = [("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")]
+
+# -------------------------------------------------------------------------------------
+# TODO: When dropping support for Cython < 3.0, we can remove the following line
+# and uncomment the next one.
+# In the meantime, we should not be worried about the deprecation warnings when
+# building the package.
+DEFINE_MACROS_CYTHON = []
+# DEFINE_MACROS_CYTHON = [("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")]
+# -------------------------------------------------------------------------------------
+
+DEFINE_MACROS_CPP = [("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")]
 
 setup(
     ext_modules=[
@@ -56,19 +66,19 @@ setup(
             name=f"{LIBNAME}.mandelbrot",
             sources=[osp.join(SRCPATH, "mandelbrot.c")],
             include_dirs=INCLUDE_DIRS,
-            define_macros=DEFINE_MACROS,
+            define_macros=DEFINE_MACROS_CYTHON,
         ),
         Extension(
             name=f"{LIBNAME}.histogram2d",
             sources=[osp.join(SRCPATH, "histogram2d.c")],
             include_dirs=INCLUDE_DIRS,
-            define_macros=DEFINE_MACROS,
+            define_macros=DEFINE_MACROS_CYTHON,
         ),
         Extension(
             name=f"{LIBNAME}.contour2d",
             sources=[osp.join(SRCPATH, "contour2d.c")],
             include_dirs=INCLUDE_DIRS,
-            define_macros=DEFINE_MACROS,
+            define_macros=DEFINE_MACROS_CYTHON,
         ),
         Extension(
             name=f"{LIBNAME}._scaler",
@@ -82,7 +92,7 @@ setup(
                 osp.join(SRCPATH, "debug.hpp"),
             ],
             include_dirs=INCLUDE_DIRS,
-            define_macros=DEFINE_MACROS,
+            define_macros=DEFINE_MACROS_CPP,
         ),
     ]
 )
