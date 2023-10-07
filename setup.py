@@ -38,6 +38,9 @@ def get_compiler_flags():
     return cflags
 
 
+CFLAGS_CPP = get_compiler_flags()
+
+
 def compile_cython_extensions():
     """Compile Cython extensions"""
     for fname in os.listdir(SRCPATH):
@@ -55,7 +58,9 @@ INCLUDE_DIRS = [SRCPATH, numpy.get_include()]
 # In the meantime, we should not be worried about the deprecation warnings when
 # building the package.
 DEFINE_MACROS_CYTHON = []
+CFLAGS_CYTHON = ["-Wno-cpp"]
 # DEFINE_MACROS_CYTHON = [("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")]
+# CFLAGS_CYTHON = []
 # -------------------------------------------------------------------------------------
 
 DEFINE_MACROS_CPP = [("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")]
@@ -66,24 +71,27 @@ setup(
             name=f"{LIBNAME}.mandelbrot",
             sources=[osp.join(SRCPATH, "mandelbrot.c")],
             include_dirs=INCLUDE_DIRS,
+            extra_compile_args=CFLAGS_CYTHON,
             define_macros=DEFINE_MACROS_CYTHON,
         ),
         Extension(
             name=f"{LIBNAME}.histogram2d",
             sources=[osp.join(SRCPATH, "histogram2d.c")],
             include_dirs=INCLUDE_DIRS,
+            extra_compile_args=CFLAGS_CYTHON,
             define_macros=DEFINE_MACROS_CYTHON,
         ),
         Extension(
             name=f"{LIBNAME}.contour2d",
             sources=[osp.join(SRCPATH, "contour2d.c")],
             include_dirs=INCLUDE_DIRS,
+            extra_compile_args=CFLAGS_CYTHON,
             define_macros=DEFINE_MACROS_CYTHON,
         ),
         Extension(
             name=f"{LIBNAME}._scaler",
             sources=[osp.join(SRCPATH, "scaler.cpp"), osp.join(SRCPATH, "pcolor.cpp")],
-            extra_compile_args=get_compiler_flags(),
+            extra_compile_args=CFLAGS_CPP,
             depends=[
                 osp.join(SRCPATH, "traits.hpp"),
                 osp.join(SRCPATH, "points.hpp"),
