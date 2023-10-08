@@ -43,8 +43,6 @@ CFLAGS_CPP = get_compiler_flags()
 
 def compile_cython_extensions():
     """Compile Cython extensions"""
-    import Cython
-    raise RuntimeError(f"Cython version: {Cython.__version__}")
     for fname in os.listdir(SRCPATH):
         if osp.splitext(fname)[1] == ".pyx":
             Main.compile(osp.join(SRCPATH, fname), language_level=2)
@@ -57,8 +55,7 @@ INCLUDE_DIRS = [SRCPATH, numpy.get_include()]
 # -------------------------------------------------------------------------------------
 # TODO: When dropping support for Cython < 3.0, we can remove the following line
 # and uncomment the next one.
-# In the meantime, we should not be worried about the deprecation warnings when
-# building the package.
+# In the meantime, we hide the deprecation warnings when building the package.
 DEFINE_MACROS_CYTHON = []
 CFLAGS_CYTHON = ["-Wno-cpp"]
 # DEFINE_MACROS_CYTHON = [("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")]
