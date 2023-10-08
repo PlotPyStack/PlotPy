@@ -2209,11 +2209,7 @@ class BasePlot(qwt.QwtPlot):
         dy2 = (h * dx1) / (w * self.__aspect_ratio)
         dx2 = (w * dy1 * self.__aspect_ratio) / h
 
-        fix_yaxis = False
-        if dy2 > dy1:
-            fix_yaxis = True
-        elif full_scale:
-            fix_yaxis = True
+        fix_yaxis = not full_scale or dy2 > dy1
 
         if fix_yaxis:
             delta_y = 0.5 * (dy2 - dy1)
