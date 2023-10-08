@@ -47,8 +47,6 @@ from plotpy.widgets.imagefile import exec_image_save_dialog
 if TYPE_CHECKING:  # pragma: no cover
     from plotpy.plot import BasePlot
 
-MaskedItem = Union[MaskedImageItem, MaskedXYImageItem]
-
 
 class ImageStatsRectangle(AnnotatedRectangle):
     """ """
@@ -598,11 +596,12 @@ class ImageMaskTool(CommandTool):
         :param plot:
         :return:
         """
+        maskedtypes = (MaskedImageItem, MaskedXYImageItem)
         item = plot.get_active_item()
-        if isinstance(item, MaskedItem):
+        if isinstance(item, maskedtypes):
             return item
         else:
-            items = [item for item in plot.get_items() if isinstance(item, MaskedItem)]
+            items = [item for item in plot.get_items() if isinstance(item, maskedtypes)]
             if items:
                 return items[-1]
 
