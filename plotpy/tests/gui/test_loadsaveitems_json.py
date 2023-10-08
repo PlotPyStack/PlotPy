@@ -26,6 +26,8 @@ How to save/restore items to/from a JSON string?
 # WARNING:
 # This script requires read/write permissions on current directory
 
+from __future__ import annotations
+
 from guidata.dataset.io import JSONReader, JSONWriter
 
 from plotpy.tests.gui.test_loadsaveitems_pickle import IOTest

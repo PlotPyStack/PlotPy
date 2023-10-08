@@ -17,10 +17,10 @@ The :mod:`plotpy` package requires the following Python modules:
       - >=0.10
       - Qt plotting widgets for Python
     * - NumPy
-      - >=1.3
+      - >=1.17
       - Fundamental package for array computing in Python
     * - SciPy
-      - >=0.7
+      - >=1.3
       - Fundamental algorithms for scientific computing in Python
     * - Pillow
       - 

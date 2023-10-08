@@ -12,6 +12,8 @@ ignored in computations, like the average cross sections.
 
 # guitest: show
 
+from __future__ import annotations
+
 import os.path as osp
 
 from plotpy.builder import make

@@ -10,6 +10,8 @@
 # WARNING:
 # This script requires read/write permissions on current directory
 
+from __future__ import annotations
+
 from guidata.dataset.io import HDF5Reader, HDF5Writer
 
 from plotpy.tests.gui.test_loadsaveitems_pickle import IOTest

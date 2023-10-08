@@ -12,6 +12,8 @@ ignored in computations, like the average cross sections.
 
 # guitest: show
 
+from __future__ import annotations
+
 from plotpy import io
 from plotpy.builder import make
 from plotpy.tests.gui.test_image_masked import MaskedImageTest

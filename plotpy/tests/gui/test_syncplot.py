@@ -5,6 +5,8 @@
 
 """Testing plot with synchronized axes"""
 
+from __future__ import annotations
+
 import numpy as np
 from guidata.qthelpers import qt_app_context
 from qtpy import QtCore as QC

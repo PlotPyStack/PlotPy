@@ -35,7 +35,7 @@ class OCSImageDialog(PlotDialog):
         for tool in (ObliqueCrossSectionTool, OCSPanelTool, ImageMaskTool):
             self.manager.add_tool(tool)
 
-    def populate_plot_layout(self) -> None:
+    def populate_plot_layout(self):
         """Populate the plot layout"""
         super().populate_plot_layout()
         ra_panel = ObliqueCrossSection(self)

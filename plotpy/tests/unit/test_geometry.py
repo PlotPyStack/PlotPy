@@ -7,6 +7,8 @@
 Unit tests for geometry module
 """
 
+from __future__ import annotations
+
 import numpy as np
 
 from plotpy.mathutils import geometry as geom
