@@ -43,6 +43,8 @@ CFLAGS_CPP = get_compiler_flags()
 
 def compile_cython_extensions():
     """Compile Cython extensions"""
+    import Cython
+    raise RuntimeError(f"Cython version: {Cython.__version__}")
     for fname in os.listdir(SRCPATH):
         if osp.splitext(fname)[1] == ".pyx":
             Main.compile(osp.join(SRCPATH, fname), language_level=2)
