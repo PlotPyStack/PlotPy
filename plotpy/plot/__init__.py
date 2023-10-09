@@ -9,5 +9,6 @@ from .plotwidget import (
     PlotWidget,
     PlotWindow,
     SubplotWidget,
+    SyncPlotWindow,
     set_widget_title_icon,
 )

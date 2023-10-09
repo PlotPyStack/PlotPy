@@ -9,68 +9,13 @@ from __future__ import annotations
 
 import numpy as np
 from guidata.qthelpers import qt_app_context
-from qtpy import QtCore as QC
 from qtpy import QtGui as QG
-from qtpy import QtWidgets as QW
 
 from plotpy.builder import make
 from plotpy.config import _
-from plotpy.plot import BasePlot, PlotOptions, SubplotWidget, set_widget_title_icon
-from plotpy.plot.manager import PlotManager
+from plotpy.plot import BasePlot, PlotOptions
+from plotpy.plot.plotwidget import SyncPlotWindow
 from plotpy.tests.data import gen_2d_gaussian
-
-
-class SyncPlotWindow(QW.QMainWindow):
-    """Window for showing plots, optionally synchronized"""
-
-    def __init__(self, parent=None, title=None, options=None):
-        super().__init__(parent)
-        title = self.__doc__ if title is None else title
-        set_widget_title_icon(self, title, "plotpy.svg")
-        self.manager = PlotManager(None)
-        self.manager.set_main(self)
-        self.subplotwidget = SubplotWidget(self.manager, parent=self, options=options)
-        self.setCentralWidget(self.subplotwidget)
-        toolbar = QW.QToolBar(_("Tools"), self)
-        self.manager.add_toolbar(toolbar, "default")
-        toolbar.setMovable(True)
-        toolbar.setFloatable(True)
-        self.addToolBar(toolbar)
-
-    def finalize_configuration(self):
-        """Configure plot manager and register all tools"""
-        self.subplotwidget.add_panels_to_manager()
-        self.subplotwidget.register_tools()
-
-    def rescale_plots(self):
-        """Rescale all plots"""
-        QW.QApplication.instance().processEvents()
-        for plot in self.subplotwidget.plots:
-            plot.do_autoscale()
-
-    def showEvent(self, event):  # pylint: disable=C0103
-        """Reimplement Qt method"""
-        super().showEvent(event)
-        QC.QTimer.singleShot(0, self.rescale_plots)
-
-    def add_plot(self, row, col, plot, sync=False, plot_id=None):
-        """Add plot to window"""
-        if plot_id is None:
-            plot_id = str(len(self.subplotwidget.plots) + 1)
-        self.subplotwidget.add_plot(plot, row, col, plot_id)
-        if sync and len(self.subplotwidget.plots) > 1:
-            syncaxis = self.manager.synchronize_axis
-            for i_plot in range(len(self.subplotwidget.plots) - 1):
-                syncaxis(BasePlot.X_BOTTOM, [plot_id, f"{i_plot + 1}"])
-                syncaxis(BasePlot.Y_LEFT, [plot_id, f"{i_plot + 1}"])
-
-    def get_plots(self) -> list[BasePlot]:
-        """Return the plots
-
-        Returns:
-            list[BasePlot]: The plots
-        """
-        return self.subplotwidget.get_plots()
 
 
 def plot(plot_type, *itemlists):
