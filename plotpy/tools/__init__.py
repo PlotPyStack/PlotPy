@@ -12,8 +12,10 @@ from .annotations import (
 )
 from .axes import AxisScaleTool, PlaceAxesTool
 from .base import (
+    ActionTool,
     CommandTool,
     DefaultToolbarID,
+    GuiTool,
     InteractiveTool,
     PanelTool,
     RectangularActionTool,

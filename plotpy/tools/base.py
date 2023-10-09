@@ -255,6 +255,41 @@ class CommandTool(GuiTool):
             self.action.setEnabled(False)
 
 
+class ActionTool(CommandTool):
+    """Tool that simply associate an action to a tool"""
+
+    def __init__(
+        self,
+        manager,
+        action,
+        item_types=None,
+        toolbar_id=DefaultToolbarID,
+    ):
+        self.associated_action = action
+        self.item_types = item_types
+        super().__init__(
+            manager,
+            action.text(),
+            action.icon(),
+            action.toolTip(),
+            toolbar_id=toolbar_id,
+        )
+
+    def update_status(self, plot):
+        """Update tool status"""
+        if self.item_types is None:
+            self.action.setEnabled(True)
+        else:
+            items = plot.get_selected_items()
+            self.action.setEnabled(
+                any(isinstance(item, self.item_types) for item in items)
+            )
+
+    def create_action(self, manager):
+        """Create and return tool's action"""
+        return self.associated_action
+
+
 class ToggleTool(CommandTool):
     """ """
 

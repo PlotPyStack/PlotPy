@@ -1,11 +1,13 @@
 Reference
 ---------
 
-.. autoclass:: plotpy.tools.base.GuiTool
+.. autoclass:: plotpy.tools.GuiTool
    :members:
-.. autoclass:: plotpy.tools.base.InteractiveTool
+.. autoclass:: plotpy.tools.InteractiveTool
    :members:
-.. autoclass:: plotpy.tools.base.CommandTool
+.. autoclass:: plotpy.tools.CommandTool
+   :members:
+.. autoclass:: plotpy.tools.ActionTool
    :members:
 .. autoclass:: plotpy.tools.RectZoomTool
    :members:
