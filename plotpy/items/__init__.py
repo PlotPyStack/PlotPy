@@ -51,12 +51,15 @@ from .polygon import PolygonMapItem
 from .shapes import (
     AbstractShape,
     Axes,
+    CircleSVGShape,
     EllipseShape,
     Marker,
     ObliqueRectangleShape,
     PointShape,
     PolygonShape,
     RectangleShape,
+    RectangleSVGShape,
     SegmentShape,
+    SquareSVGShape,
     XRangeSelection,
 )

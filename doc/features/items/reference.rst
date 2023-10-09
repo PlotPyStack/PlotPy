@@ -96,6 +96,12 @@ Shapes
    :members:
 .. autoclass:: plotpy.items.Marker
    :members:
+.. autoclass:: plotpy.items.RectangleSVGShape
+   :members:
+.. autoclass:: plotpy.items.SquareSVGShape
+   :members:
+.. autoclass:: plotpy.items.CircleSVGShape
+   :members:
 
 Annotations
 ^^^^^^^^^^^

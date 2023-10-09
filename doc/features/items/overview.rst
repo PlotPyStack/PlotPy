@@ -60,6 +60,9 @@ The following shape items are available:
 * :py:class:`.Axes`
 * :py:class:`.XRangeSelection`
 * :py:class:`.Marker`
+* :py:class:`.RectangleSVGShape`
+* :py:class:`.SquareSVGShape`
+* :py:class:`.CircleSVGShape`
 
 Annotations
 ^^^^^^^^^^^

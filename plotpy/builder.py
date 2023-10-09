@@ -30,6 +30,7 @@ from plotpy.items import (
     AnnotatedPoint,
     AnnotatedRectangle,
     AnnotatedSegment,
+    CircleSVGShape,
     ContourItem,
     CurveItem,
     DataInfoLabel,
@@ -49,9 +50,11 @@ from plotpy.items import (
     RangeComputation2d,
     RangeInfo,
     RectangleShape,
+    RectangleSVGShape,
     RGBImageItem,
     SegmentShape,
     SelectedLegendBoxItem,
+    SquareSVGShape,
     TrImageItem,
     XRangeSelection,
     XYImageItem,
@@ -2311,6 +2314,45 @@ class PlotBuilder:
             :py:class:`.SegmentShape` object
         """
         return self.__shape(SegmentShape, x0, y0, x1, y1, title)
+
+    def svg(
+        self,
+        shape: str,
+        fname_or_data: str | bytes,
+        x0: float,
+        y0: float,
+        x1: float,
+        y1: float,
+        title: str | None = None,
+    ) -> (CircleSVGShape, RectangleSVGShape, SquareSVGShape):
+        """Make a SVG shape `plot item`
+
+        Args:
+            shape: shape type ("circle", "rectangle", "square")
+            fname_or_data: filename or data
+            x0: shape x0 coordinate
+            y0: shape y0 coordinate
+            x1: shape x1 coordinate
+            y1: shape y1 coordinate
+            title: label name. Default is None
+
+        Returns:
+            SVG shape
+        """
+        assert shape in ("circle", "rectangle", "square")
+        assert isinstance(fname_or_data, (str, bytes))
+        if isinstance(fname_or_data, str):
+            data = open(fname_or_data, "rb").read()
+        else:
+            data = fname_or_data
+        shapeklass = {
+            "circle": CircleSVGShape,
+            "rectangle": RectangleSVGShape,
+            "square": SquareSVGShape,
+        }[shape]
+        shape = self.__shape(shapeklass, x0, y0, x1, y1, title)
+        shape.set_data(data)
+        return shape
 
     def __get_annotationparam(self, title: str, subtitle: str) -> AnnotationParam:
         param = AnnotationParam(_("Annotation"), icon="annotation.png")

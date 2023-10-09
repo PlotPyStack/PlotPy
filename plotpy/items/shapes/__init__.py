@@ -10,3 +10,4 @@ from plotpy.items.shapes.polygon import PolygonShape
 from plotpy.items.shapes.range import XRangeSelection
 from plotpy.items.shapes.rectangle import ObliqueRectangleShape, RectangleShape
 from plotpy.items.shapes.segment import SegmentShape
+from plotpy.items.shapes.svg import CircleSVGShape, RectangleSVGShape, SquareSVGShape
