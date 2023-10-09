@@ -17,7 +17,7 @@
                 "env": {
                     "UNATTENDED": "1",
                     "PYTHONUTF8": "1",
-                    "PYTHON": "${env:GUIDATA_PYTHONEXE}",
+                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
                 }
             },
             "group": {
@@ -46,7 +46,7 @@
                 "cwd": "scripts",
                 "env": {
                     "UNATTENDED": "1",
-                    "PYTHON": "${env:GUIDATA_PYTHONEXE}",
+                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
                 }
             },
             "group": {
@@ -74,7 +74,7 @@
                 "cwd": "scripts",
                 "env": {
                     "UNATTENDED": "1",
-                    "PYTHON": "${env:GUIDATA_PYTHONEXE}",
+                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
                 }
             },
             "group": {
@@ -102,7 +102,7 @@
                 "cwd": "scripts",
                 "env": {
                     "UNATTENDED": "1",
-                    "PYTHON": "${env:GUIDATA_PYTHONEXE}"
+                    "PYTHON": "${env:PPSTACK_PYTHONEXE}"
                 }
             },
             "group": {
@@ -132,7 +132,7 @@
                 "cwd": "scripts",
                 "env": {
                     "UNATTENDED": "1",
-                    "PYTHON": "${env:GUIDATA_PYTHONEXE}",
+                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
                 }
             },
             "group": {
@@ -184,7 +184,7 @@
                 "cwd": "scripts",
                 "env": {
                     "UNATTENDED": "1",
-                    "PYTHON": "${env:GUIDATA_PYTHONEXE}",
+                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
                 }
             },
             "group": {
@@ -207,7 +207,7 @@
             "options": {
                 "cwd": "scripts",
                 "env": {
-                    "PYTHON": "${env:GUIDATA_PYTHONEXE}",
+                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
                     "UNATTENDED": "1",
                 }
             },
@@ -236,7 +236,7 @@
             "options": {
                 "cwd": "scripts",
                 "env": {
-                    "PYTHON": "${env:GUIDATA_PYTHONEXE}",
+                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
                     "UNATTENDED": "1",
                 }
             },
@@ -270,7 +270,7 @@
             "options": {
                 "cwd": "scripts",
                 "env": {
-                    "PYTHON": "${env:GUIDATA_PYTHONEXE}",
+                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
                     "UNATTENDED": "1",
                 }
             },
