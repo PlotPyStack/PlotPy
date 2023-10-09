@@ -396,23 +396,6 @@ class BasePlot(qwt.QwtPlot):
         self.set_aspect_ratio(options.aspect_ratio, options.lock_aspect_ratio)
         self.replot()  # Workaround for the empty image widget bug
 
-    def replot(self) -> None:
-        """
-        Redraw the plot
-
-        If the `autoReplot` option is not set (which is the default)
-        or if any curves are attached to raw data, the plot has to
-        be refreshed explicitly in order to make changes visible.
-
-        .. seealso::
-
-            :py:meth:`qwt.plot.QwtPlot.updateAxes`,
-            :py:meth:`qwt.plot.QwtPlot.setAutoReplot`
-        """
-        super().replot()
-        if self.lock_aspect_ratio:
-            self.apply_aspect_ratio()
-
     # ---- Private API ----------------------------------------------------------
     def __del__(self):
         # Sometimes, an obscure exception happens when we quit an application
@@ -1937,11 +1920,9 @@ class BasePlot(qwt.QwtPlot):
                 vmax = 10 ** (np.log10(vmax) + 0.002 * dv)
             self.set_axis_limits(axis_id, vmin, vmax)
         self.setAutoReplot(auto)
-
         self.updateAxes()
-        #        if self.lock_aspect_ratio:
-        #            self.replot()
-        #            self.apply_aspect_ratio(full_scale=True)
+        if self.lock_aspect_ratio:
+            self.apply_aspect_ratio(full_scale=True)
         if replot:
             self.replot()
         self.SIG_PLOT_AXIS_CHANGED.emit(self)
@@ -2185,6 +2166,9 @@ class BasePlot(qwt.QwtPlot):
 
         Args:
             full_scale: if True, the aspect ratio is applied to the full scale
+             (this argument is True only when doing autoscale, i.e. in method
+             :py:meth:`do_autoscale`: it is necessary to ensure that the whole
+             image items are visible after autoscale, whatever their aspect ratio)
         """
         if not self.isVisible():
             return
@@ -2206,19 +2190,30 @@ class BasePlot(qwt.QwtPlot):
         if w == 0 or h == 0:
             return  # avoid division by zero
 
+        # Compute new Y limits, keeping the same X limits and aspect ratio
         dy2 = (h * dx1) / (w * self.__aspect_ratio)
+
+        # Compute new X limits, keeping the same Y limits and aspect ratio
         dx2 = (w * dy1 * self.__aspect_ratio) / h
 
-        fix_yaxis = not full_scale or dy2 > dy1
-
-        if fix_yaxis:
-            delta_y = 0.5 * (dy2 - dy1)
-            y0 -= delta_y
-            y1 += delta_y
-        else:
+        if full_scale and dy2 <= dy1:
+            # If the new Y limits are smaller than the current ones,
+            # *and* if we are doing autoscale, we keep the current Y limits.
+            # Why? Because, if the new Y limits are smaller than the current ones,
+            # it means that the image items would not be entirely visible after
+            # autoscale, and we don't want that.
             delta_x = 0.5 * (dx2 - dx1)
             x0 -= delta_x
             x1 += delta_x
+        else:
+            # If we are not doing autoscale, then we only change the Y limits (that
+            # is a choice, we could also change the X limits).
+            # If we are doing autoscale, then we change the Y limits only if the
+            # new Y limits are larger than the current ones, in order to ensure
+            # that the image items are entirely visible after autoscale.
+            delta_y = 0.5 * (dy2 - dy1)
+            y0 -= delta_y
+            y1 += delta_y
 
         self.set_plot_limits(x0, x1, y0, y1)
 
