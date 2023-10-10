@@ -16,7 +16,10 @@ New major release:
 * Reorganized modules: see documentation for details (section "Development")
 * Removed "Sift" demo as there is now a far better real-world example with the
   [DataLab](https://codra-ingenierie-informatique.github.io/DataLab/) project
-* Added dozen of new features and more than 30 bug fixes thanks to the merge with the [guiqwt](https://github.com/PlotPyStack/guiqwt) project
+* Integrated more than 30 bug fixes thanks to the merge with the [guiqwt](https://github.com/PlotPyStack/guiqwt) project
+* Added dozen of new features thanks to the merge with the [guiqwt]()
+* Added other new features:
+  * ``widgets.selectdialog.SelectDialog``: a dialog box to select items using a shape tool (segment, rectangle or custom)
 
 ## Version 1.2.1 ##
 

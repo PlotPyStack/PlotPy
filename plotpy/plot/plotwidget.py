@@ -483,9 +483,7 @@ class PlotDialogMeta(type(QW.QDialog), abc.ABCMeta):
 
 
 class PlotDialog(QW.QDialog, AbstractPlotDialogWindow, metaclass=PlotDialogMeta):
-    """
-    Construct a PlotDialog object: plotting dialog box with integrated
-    plot manager
+    """Plotting dialog box with integrated plot manager
 
     Args:
         parent: parent widget
@@ -623,9 +621,7 @@ class PlotWindowMeta(type(QW.QMainWindow), abc.ABCMeta):
 
 
 class PlotWindow(QW.QMainWindow, AbstractPlotDialogWindow, metaclass=PlotWindowMeta):
-    """
-    Construct a PlotWindow object: plotting window with integrated plot
-    manager
+    """Plotting window with integrated plot manager
 
     Args:
         parent: parent widget

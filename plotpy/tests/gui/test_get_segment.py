@@ -4,14 +4,12 @@
 # (see plotpy/LICENSE for details)
 
 """
-AnnotatedSegmentTool test
+Test ``get_segment`` feature: select a segment on an image.
 
 This plotpy tool provide a MATLAB-like "ginput" feature.
 """
 
 # guitest: show
-
-import os
 
 import numpy as np
 import qtpy.QtCore as QC
@@ -21,52 +19,43 @@ from guidata.qthelpers import qt_app_context
 from plotpy.builder import make
 from plotpy.config import _
 from plotpy.coords import axes_to_canvas
-from plotpy.tools import AnnotatedSegmentTool, SelectTool
+from plotpy.tools import AnnotatedSegmentTool
+from plotpy.widgets.selectdialog import SelectDialog, select_with_shape_tool
 
 SEG_AXES_COORDS = [20, 20, 70, 70]
 
 
-def get_segment(*items):
-    """Show image and return selected segment coordinates"""
-    win = make.dialog(
-        wintitle=_("Select a segment then press OK to accept"), edit=True, toolbar=True
-    )
-    default = win.manager.add_tool(SelectTool)
-    win.manager.set_default_tool(default)
-    segtool: AnnotatedSegmentTool = win.manager.add_tool(
-        AnnotatedSegmentTool, title="Test", switch_to_default_tool=True
-    )
-    segtool.activate()
-    plot = win.manager.get_plot()
-    for item in items:
-        plot.add_item(item)
-        plot.set_active_item(item)
-    if execenv.unattended:
-        segtool.add_shape_to_plot(
-            win.manager.get_plot(),
-            QC.QPointF(*axes_to_canvas(item, *SEG_AXES_COORDS[:2])),
-            QC.QPointF(*axes_to_canvas(item, *SEG_AXES_COORDS[2:])),
-        )
-    win.show()
-    return win, segtool
+class PatchedSelectDialog(SelectDialog):
+    """Patched SelectDialog"""
+
+    def set_image_and_tool(self, item, toolclass, **kwargs):
+        """Reimplement SelectDialog method"""
+        super().set_image_and_tool(item, toolclass, **kwargs)
+        if execenv.unattended:
+            self.sel_tool.add_shape_to_plot(
+                self.manager.get_plot(),
+                QC.QPointF(*axes_to_canvas(item, *SEG_AXES_COORDS[:2])),
+                QC.QPointF(*axes_to_canvas(item, *SEG_AXES_COORDS[2:])),
+            )
 
 
 def test_get_segment():
     """Test get_segment"""
-    filename = os.path.join(os.path.dirname(__file__), "brain.png")
-    with qt_app_context(exec_loop=True):
-        image = make.image(filename=filename, colormap="bone")
-        _win_persist, segtool = get_segment(image)
-
-    shape = segtool.get_last_final_shape()
-    rect = shape.get_rect()
-    if execenv.unattended:
-        assert [round(i) for i in list(rect)] == SEG_AXES_COORDS
-    elif rect is not None:
-        print(
-            "Distance:",
-            np.sqrt((rect[2] - rect[0]) ** 2 + (rect[3] - rect[1]) ** 2),
+    with qt_app_context():
+        image = make.image(data=np.random.rand(200, 200), colormap="gray")
+        shape = select_with_shape_tool(
+            None,
+            AnnotatedSegmentTool,
+            image,
+            "Test",
+            tooldialogclass=PatchedSelectDialog,
         )
+        rect = shape.get_rect()
+        if execenv.unattended:
+            assert [round(i) for i in list(rect)] == SEG_AXES_COORDS
+        elif rect is not None:
+            distance = np.sqrt((rect[2] - rect[0]) ** 2 + (rect[3] - rect[1]) ** 2)
+            print("Distance:", distance)
 
 
 if __name__ == "__main__":

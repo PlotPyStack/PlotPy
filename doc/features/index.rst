@@ -49,6 +49,7 @@ Plot widgets with integrated plot manager:
    panels/index
    fit
    pyplot
+   selectdialog
    io
    signals
    mathutils/index
