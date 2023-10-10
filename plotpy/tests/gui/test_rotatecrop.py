@@ -12,6 +12,7 @@ import os
 import numpy as np
 from guidata.env import execenv
 from guidata.qthelpers import exec_dialog, qt_app_context
+from qtpy import QtWidgets as QW
 
 from plotpy import io
 from plotpy.builder import make
@@ -69,7 +70,7 @@ def dialog_test(fname="brain.png"):
     array0, item = create_test_data(fname)
     dlg = RotateCropDialog(None)
     dlg.transform.set_item(item)
-    if exec_dialog(dlg) == dlg.Accepted:
+    if exec_dialog(dlg) == QW.QDialog.Accepted:
         array1 = dlg.transform.get_result()
         if array0.shape == array1.shape:
             assert (array1 == array0).all()

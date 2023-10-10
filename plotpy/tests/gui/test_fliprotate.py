@@ -54,7 +54,7 @@ def dialog_test(fname):
     dlg.toolbar.addWidget(rot_point_btn)
 
     dlg.transform.set_item(item)
-    if exec_dialog(dlg) == dlg.Accepted:
+    if exec_dialog(dlg) == QW.QDialog.Accepted:
         array1 = dlg.transform.get_result()
         dlg1 = imshow(array0, title="array0")
         dlg2 = imshow(array1, title="array1")
