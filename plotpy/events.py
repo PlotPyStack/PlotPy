@@ -121,7 +121,7 @@ class StandardKeyMatch(EventMatch):
 
     def __init__(self, keysequence):
         super().__init__()
-        assert isinstance(keysequence, int)
+        assert isinstance(keysequence, (int, QG.QKeySequence.StandardKey))
         self.keyseq = keysequence
 
     def get_event_types(self):
@@ -140,7 +140,7 @@ class MouseEventMatch(EventMatch):
 
     def __init__(self, evt_type, btn, modifiers=QC.Qt.NoModifier):
         super().__init__()
-        assert isinstance(modifiers, (int, QC.Qt.KeyboardModifiers))
+        assert isinstance(modifiers, (int, QC.Qt.KeyboardModifier))
         self.evt_type = evt_type
         self.button = btn
         self.modifiers = modifiers

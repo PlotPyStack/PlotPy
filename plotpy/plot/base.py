@@ -409,7 +409,7 @@ class BasePlot(qwt.QwtPlot):
                 # Depending on which widget owns the plot,
                 # Qt may have already deleted the canvas when
                 # the plot is deleted.
-                if "wrapped C/C++ object of type" not in str(exc):
+                if "C++ object" not in str(exc):
                     raise
             except ValueError as exc:
                 # This happens when object has already been deleted

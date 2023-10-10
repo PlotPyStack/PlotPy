@@ -61,14 +61,9 @@ def get_font_array(sz: int, chars: str = DEFAULT_CHARS) -> np.ndarray | None:
     paint.drawText(0, paint.fontMetrics().ascent(), chars)
     paint.end()
     try:
-        try:
-            data = img.bits().asstring(img.numBytes())
-        except AttributeError:
-            # PyQt5
-            data = img.bits().asstring(img.byteCount())
-    except SystemError:
-        # Python 3
-        return
+        data = img.bits().asstring(img.sizeInBytes())
+    except AttributeError:
+        data = img.bits()
     npy = np.frombuffer(data, np.uint8)
     npy.shape = img.height(), img.bytesPerLine() // 4, 4
     return npy[:, :, 0]

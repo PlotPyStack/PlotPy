@@ -97,12 +97,12 @@ class SelectTool(InteractiveTool):
                     (
                         QC.Qt.Key.Key_Left,
                         QC.Qt.KeyboardModifier.ControlModifier
-                        + QC.Qt.KeyboardModifier.ShiftModifier,
+                        | QC.Qt.KeyboardModifier.ShiftModifier,
                     ),
                     (
                         QC.Qt.Key.Key_Right,
                         QC.Qt.KeyboardModifier.ControlModifier
-                        + QC.Qt.KeyboardModifier.ShiftModifier,
+                        | QC.Qt.KeyboardModifier.ShiftModifier,
                     ),
                 ]
             ),
