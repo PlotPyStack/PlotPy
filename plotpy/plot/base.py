@@ -1192,7 +1192,8 @@ class BasePlot(qwt.QwtPlot):
             z (int): the z order (optional, default=None)
             autoscale (bool): autoscale the plot (optional, default=True)
         """
-        assert hasattr(item, "__implements__")
+        if not hasattr(item, "__implements__"):
+            raise TypeError("item must implement IBasePlotItem interface")
         assert itf.IBasePlotItem in item.__implements__
 
         if isinstance(item, qwt.QwtPlotCurve):
