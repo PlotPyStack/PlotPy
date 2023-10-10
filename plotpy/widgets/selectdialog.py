@@ -23,6 +23,11 @@ Example: get rectangle
 
 .. literalinclude:: ../../plotpy/tests/gui/test_get_rectangle.py
 
+Example: get rectangle with SVG
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. literalinclude:: ../../plotpy/tests/gui/test_get_rectangle_with_svg.py
+
 Reference
 ~~~~~~~~~
 

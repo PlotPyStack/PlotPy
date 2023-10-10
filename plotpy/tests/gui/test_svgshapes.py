@@ -23,7 +23,7 @@ def get_path(fname):
 def test_image():
     """Testing ImageItem object"""
     with qt_app_context(exec_loop=True):
-        path1, path2 = get_path("svg_sample.svg"), get_path("svg_target.svg")
+        path1, path2 = get_path("svg_tool.svg"), get_path("svg_target.svg")
         csvg = make.svg("circle", path2, 0, 0, 100, 100, "Circle")
         rsvg = make.svg("rectangle", path1, 150, 0, 200, 100, "Rect")
         ssvg = make.svg("square", path1, 0, 150, 100, 250, "Square")
