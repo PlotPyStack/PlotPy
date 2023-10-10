@@ -165,7 +165,7 @@ class MainWindow(QW.QMainWindow):
 
     def setup(self):
         """Setup window parameters"""
-        self.setWindowIcon(get_icon("plotpy.svg"))
+        self.setWindowIcon(get_icon("python.png"))
         self.setWindowTitle(_("Application example"))
         self.resize(QC.QSize(600, 800))
 
@@ -205,9 +205,9 @@ class MainWindow(QW.QMainWindow):
         help_menu = self.menuBar().addMenu("?")
         about_action = create_action(
             self,
-            _("About..."),
+            _("About %s...") % "PlotPy",
             icon=get_std_icon("MessageBoxInformation"),
-            triggered=lambda parent=self: about.show_about_dialog(parent),
+            triggered=about.show_about_dialog,
         )
         add_actions(help_menu, (about_action,))
 

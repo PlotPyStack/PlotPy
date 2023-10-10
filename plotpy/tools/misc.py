@@ -260,7 +260,7 @@ class AboutTool(CommandTool):
 
     def activate_command(self, plot, checked):
         """Activate tool"""
-        about.show_about_dialog(plot)
+        about.show_about_dialog()
 
 
 class PrintTool(CommandTool):
