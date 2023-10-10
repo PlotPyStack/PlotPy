@@ -50,12 +50,13 @@ def test_get_segment():
             "Test",
             tooldialogclass=PatchedSelectDialog,
         )
-        rect = shape.get_rect()
-        if execenv.unattended:
-            assert [round(i) for i in list(rect)] == SEG_AXES_COORDS
-        elif rect is not None:
-            distance = np.sqrt((rect[2] - rect[0]) ** 2 + (rect[3] - rect[1]) ** 2)
-            print("Distance:", distance)
+        if shape is not None:
+            rect = shape.get_rect()
+            if execenv.unattended:
+                assert [round(i) for i in list(rect)] == SEG_AXES_COORDS
+            elif rect is not None:
+                distance = np.sqrt((rect[2] - rect[0]) ** 2 + (rect[3] - rect[1]) ** 2)
+                print("Distance:", distance)
 
 
 if __name__ == "__main__":

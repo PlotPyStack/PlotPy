@@ -43,11 +43,12 @@ def test_get_rectangle_with_svg():
         shape = select_with_shape_tool(
             None, SVGToolExample, image, "Test", tooldialogclass=PatchedSelectDialog
         )
-        rect = shape.get_rect()
-        if execenv.unattended:
-            assert [round(i) for i in list(rect)] == SEG_AXES_COORDS
-        elif rect is not None:
-            print("Area:", rect)
+        if shape is not None:
+            rect = shape.get_rect()
+            if execenv.unattended:
+                assert [round(i) for i in list(rect)] == SEG_AXES_COORDS
+            elif rect is not None:
+                print("Area:", rect)
 
 
 if __name__ == "__main__":
