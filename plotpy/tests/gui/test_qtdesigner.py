@@ -15,11 +15,20 @@ embedding in GUI layouts directly from QtDesigner.
 
 import os
 
+import pytest
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
 from plotpy.tests import data as ptd
-from plotpy.widgets.qtdesigner import loadui
+
+try:
+    from plotpy.widgets.qtdesigner import loadui
+except ImportError:
+    # PySide6 known to fail
+    pytest.skip(
+        "PySide6 does not support QPyDesignerCustomWidgetPlugin",
+        allow_module_level=True,
+    )
 
 FormClass = loadui(os.path.splitext(__file__)[0] + ".ui")
 
