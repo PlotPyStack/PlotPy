@@ -9,11 +9,26 @@ from __future__ import annotations
 
 import guidata
 import qwt
-from guidata.widgets.about import get_general_infos
+from guidata.widgets import about as guidata_about
 from qtpy.QtWidgets import QMessageBox, QWidget
 
 import plotpy
 from plotpy.config import _
+
+
+def get_python_libs_infos(addinfos: str = "") -> str:
+    """Get Python and libraries information
+
+    Args:
+        addinfos: additional information to be displayed
+
+    Returns:
+        str: Python and libraries information
+    """
+    if addinfos:
+        addinfos = ", " + addinfos
+    addinfos = f"PlotPy {plotpy.__version__}{addinfos}"
+    return guidata_about.get_python_libs_infos(addinfos)
 
 
 def about(html: bool = True, copyright_only: bool = False) -> str:
@@ -27,12 +42,12 @@ def about(html: bool = True, copyright_only: bool = False) -> str:
         str: text about this package
     """
     shortdesc = (
-        f"Plotpy {plotpy.__version__}\n\n"
-        f"Plotpy is a set of tools for curve and image plotting.\n"
+        f"PlotPy {plotpy.__version__}\n\n"
+        f"PlotPy is a set of tools for curve and image plotting.\n"
         f"Created by Pierre Raybaut."
     )
     addinfos = f"guidata {guidata.__version__}, PythonQwt {qwt.__version__}"
-    desc = get_general_infos(addinfos)
+    desc = guidata_about.get_general_infos(addinfos)
     if not copyright_only:
         desc = f"{shortdesc}\n\n{desc}"
     if html:
@@ -46,4 +61,4 @@ def show_about_dialog(parent: QWidget) -> None:
     Args:
         parent (QWidget): parent widget
     """
-    QMessageBox.about(parent, _("About") + " plotpy", about(html=True))
+    QMessageBox.about(parent, _("About") + " PlotPy", about(html=True))
