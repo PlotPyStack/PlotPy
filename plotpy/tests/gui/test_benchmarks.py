@@ -9,12 +9,10 @@ import time
 
 import guidata
 import numpy as np
-import qtpy
 from guidata.qthelpers import qt_app_context
-from qtpy import QtCore as QC
+from guidata.widgets import about
 from qtpy import QtWidgets as QW
 
-import plotpy
 from plotpy.builder import make
 from plotpy.plot import PlotOptions, PlotWindow
 
@@ -127,11 +125,7 @@ class PColorBM(BaseBM):
 def test_benchmarks():
     """Run benchmark"""
     # Print(informations banner)
-
-    qt_lib = "PyQt5"
-    title = "plotpy plot benchmark [{} v{} (Qt v{}), plotpy v{}]".format(
-        qt_lib, QC.PYQT_VERSION_STR, qtpy.QT_VERSION, plotpy.__version__
-    )
+    title = f"PlotPy plot benchmark [{about.get_python_libs_infos()}]"
     print(title)
     print("-" * len(title))
     print()
