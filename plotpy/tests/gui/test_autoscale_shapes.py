@@ -10,9 +10,10 @@
 import numpy as np
 from guidata.qthelpers import qt_app_context
 
-from plotpy.items import AnnotatedRectangle, EllipseShape, PolygonShape
+from plotpy.builder import make
+from plotpy.items import PolygonShape
 from plotpy.plot import PlotDialog
-from plotpy.styles import AnnotationParam, ShapeParam
+from plotpy.styles import ShapeParam
 from plotpy.tools import (
     AnnotatedCircleTool,
     AnnotatedEllipseTool,
@@ -64,30 +65,22 @@ def test_autoscale_shapes():
         win.manager.get_itemlist_panel().show()
 
         # Add a polygon
-        delta = 0.025
-        x = np.arange(-3.0, 3.0, delta)
-        param = ShapeParam()
-        param.label = "Polygon"
-        crv = PolygonShape(closed=False, shapeparam=param)
-        crv.set_points(np.column_stack((x, np.sin(x))))
+        x = np.arange(-3.0, 3.0, 0.2)
+        crv = make.polygon(x, np.sin(x), False, "Polygon")
         plot.add_item(crv)
 
         # Add a circle
-        param = ShapeParam()
-        param.label = "Circle"
-        circle = EllipseShape(-1, 2, shapeparam=param)
+        circle = make.circle(-1, 2, 0, 0, "Circle")
         plot.add_item(circle)
 
         # Add an annotated rectangle
-        param = AnnotationParam()
-        param.title = "Annotated rectangle"
-        rect = AnnotatedRectangle(2.5, 1, 4, 1.2, annotationparam=param)
+        rect = make.annotated_rectangle(2.5, 1, 4, 1.2, "Annotated rectangle")
         plot.add_item(rect)
 
         # Add an annotated rectangle excluded
-        param = AnnotationParam()
-        param.title = "Annotated rectangle excluded from autoscale"
-        rect = AnnotatedRectangle(1.0, 2.0, 5, 10, annotationparam=param)
+        rect = make.annotated_rectangle(
+            1.0, 2.0, 5, 10, "Annotated rectangle excluded from autoscale"
+        )
         plot.add_item(rect)
 
         plot.add_autoscale_excludes([rect])

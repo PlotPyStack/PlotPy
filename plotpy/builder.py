@@ -45,6 +45,7 @@ from plotpy.items import (
     Marker,
     MaskedImageItem,
     MaskedXYImageItem,
+    PolygonShape,
     QuadGridItem,
     RangeComputation,
     RangeComputation2d,
@@ -2277,6 +2278,27 @@ class PlotBuilder:
         item.switch_to_ellipse()
         if x2 is not None and y2 is not None and x3 is not None and y3 is not None:
             item.set_ydiameter(x2, y2, x3, y3)
+        return item
+
+    def polygon(
+        self, x: np.ndarray, y: np.ndarray, closed: bool, title: str | None = None
+    ) -> PolygonShape:
+        """Make a polygon shape `plot item`
+
+        Args:
+            x: polygon x coordinates
+            y: polygon y coordinates
+            closed: closed polygon
+            title: label name. Default is None
+
+        Returns:
+            :py:class:`.PolygonShape` object
+        """
+        points = np.array([x, y]).T
+        item = PolygonShape(points, closed=closed)
+        item.set_style("plot", "shape/drag")
+        if title is not None:
+            item.setTitle(title)
         return item
 
     def circle(
