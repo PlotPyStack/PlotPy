@@ -23,6 +23,8 @@ Reference
    :members:
 .. autoclass:: plotpy.tools.LabelTool
    :members:
+.. autoclass:: plotpy.tools.RectangularShapeTool
+   :members:
 .. autoclass:: plotpy.tools.RectangleTool
    :members:
 .. autoclass:: plotpy.tools.PointTool

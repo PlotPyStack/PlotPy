@@ -37,6 +37,7 @@ The `tools` module provides the following tools:
 * :py:class:`.tools.MultiLineTool`
 * :py:class:`.tools.FreeFormTool`
 * :py:class:`.tools.LabelTool`
+* :py:class:`.tools.RectangularShapeTool`
 * :py:class:`.tools.RectangleTool`
 * :py:class:`.tools.PointTool`
 * :py:class:`.tools.SegmentTool`

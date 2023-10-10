@@ -15,6 +15,7 @@ from plotpy.interfaces import IBasePlotItem, IShapeItemType
 
 if TYPE_CHECKING:  # pragma: no cover
     from qtpy import QtCore as QC
+    from qtpy.QtCore import QPointF  # helping out python_qt_documentation
 
     from plotpy.interfaces import IItemType
     from plotpy.styles.base import ItemParameters
@@ -163,7 +164,7 @@ class AbstractShape(QwtPlotItem):
         self.selected = False
         self.invalidate_plot()
 
-    def hit_test(self, pos: QC.QPointF) -> tuple[float, float, bool, None]:
+    def hit_test(self, pos: QPointF) -> tuple[float, float, bool, None]:
         """Return a tuple (distance, attach point, inside, other_object)
 
         Args:
@@ -208,7 +209,7 @@ class AbstractShape(QwtPlotItem):
         pass
 
     def move_local_point_to(
-        self, handle: int, pos: QC.QPointF, ctrl: bool = False
+        self, handle: int, pos: QPointF, ctrl: bool = False
     ) -> None:
         """Move a handle as returned by hit_test to the new position
 
@@ -224,7 +225,7 @@ class AbstractShape(QwtPlotItem):
         if self.plot():
             self.plot().SIG_ITEM_HANDLE_MOVED.emit(self)
 
-    def move_local_shape(self, old_pos: QC.QPointF, new_pos: QC.QPointF) -> None:
+    def move_local_shape(self, old_pos: QPointF, new_pos: QPointF) -> None:
         """Translate the shape such that old_pos becomes new_pos in canvas coordinates
 
         Args:
@@ -259,7 +260,7 @@ class AbstractShape(QwtPlotItem):
         """
         pass
 
-    def move_shape(self, old_pos: QC.QPointF, new_pos: QC.QPointF) -> None:
+    def move_shape(self, old_pos: QPointF, new_pos: QPointF) -> None:
         """Translate the shape such that old_pos becomes new_pos in axis coordinates
 
         Args:

@@ -31,6 +31,7 @@ from guidata.configtools import get_icon
 from guidata.qthelpers import create_toolbutton, win32_fix_title_bar_background
 from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
+from qtpy.QtWidgets import QWidget  # Helping out python_qt_documentation
 
 from plotpy.config import _
 from plotpy.widgets import basetransform
@@ -63,7 +64,11 @@ class FlipRotateTransform(basetransform.BaseTransform):
         self.manager.get_plot().replot()
 
     def compute_transformation(self) -> np.ndarray:
-        """Compute transformation, return compute output array"""
+        """Compute transformation, return compute output array
+
+        Returns:
+            Output array
+        """
         angle, hflip, vflip = self.parent.get_parameters()
         data = self.item.data.copy()
         if hflip:
@@ -79,20 +84,20 @@ class FlipRotateTransform(basetransform.BaseTransform):
 class FlipRotateDialog(QW.QDialog):
     """Flip & Rotate Dialog
 
-    Flip and rotate a :py:class:`.image.TrImageItem` plot item
+    Flip and rotate a :py:class:`.TrImageItem` plot item
 
     Args:
-        parent (QWidget): Parent widget
-        title (str | None): Window title
-        options (dict | None): Options
-        resize_to (tuple | None): Resize to (width, height)
-        edit (bool | None): Edit mode
-        toolbar (bool | None): Show toolbar
+        parent: Parent widget
+        title: Window title
+        options: Options
+        resize_to: Resize to (width, height)
+        edit: Edit mode
+        toolbar: Show toolbar
     """
 
     def __init__(
         self,
-        parent: QW.QWidget,
+        parent: QWidget,
         title: str | None = None,
         options: dict | None = None,
         resize_to: tuple[int, int] | None = None,
@@ -134,8 +139,8 @@ class FlipRotateDialog(QW.QDialog):
         """Add buttons to layout
 
         Args:
-            layout (QBoxLayout): Layout
-            edit (bool): Edit mode
+            layout: Layout
+            edit: Edit mode
         """
         if edit:
             self.button_box = bbox = QW.QDialogButtonBox(
@@ -149,7 +154,7 @@ class FlipRotateDialog(QW.QDialog):
 class FlipRotateWidget(basetransform.BaseTransformWidget):
     """Flip & Rotate Widget
 
-    Flip and rotate a :py:class:`.image.TrImageItem` plot item
+    Flip and rotate a :py:class:`.TrImageItem` plot item
 
     Args:
         parent: Parent widget
@@ -161,7 +166,7 @@ class FlipRotateWidget(basetransform.BaseTransformWidget):
 
     def __init__(
         self,
-        parent: QW.QWidget,
+        parent: QWidget,
         toolbar: bool = False,
         options: PlotOptions | None = None,
     ):
@@ -176,7 +181,7 @@ class FlipRotateWidget(basetransform.BaseTransformWidget):
         """Add tool buttons to layout
 
         Args:
-            layout (QBoxLayout): Layout
+            layout: Layout
         """
         # Image orientation
         angle_label = QW.QLabel(_("Angle %s:") % "(°)")
@@ -229,14 +234,24 @@ class FlipRotateWidget(basetransform.BaseTransformWidget):
         self.vflip_btn.setChecked(False)
 
     def set_parameters(self, angle: float, hflip: bool, vflip: bool) -> None:
-        """Set transform parameters"""
+        """Set transform parameters
+
+        Args:
+            angle: Angle
+            hflip: Horizontal flip
+            vflip: Vertical flip
+        """
         angle_index = self.ROTATION_ANGLES.index(str(angle))
         self.angle_combo.setCurrentIndex(angle_index)
         self.hflip_btn.setChecked(hflip)
         self.vflip_btn.setChecked(vflip)
 
     def get_parameters(self) -> tuple[float, bool, bool]:
-        """Return transform parameters"""
+        """Return transform parameters
+
+        Returns:
+            Tuple of angle, horizontal flip, vertical flip
+        """
         angle = int(str(self.angle_combo.currentText()))
         hflip = self.hflip_btn.isChecked()
         vflip = self.vflip_btn.isChecked()

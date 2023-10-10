@@ -78,6 +78,8 @@ Grid
 Shapes
 ^^^^^^
 
+.. autoclass:: plotpy.items.AbstractShape
+   :members:
 .. autoclass:: plotpy.items.PolygonShape
    :members:
 .. autoclass:: plotpy.items.RectangleShape

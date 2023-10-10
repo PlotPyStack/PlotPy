@@ -49,7 +49,11 @@ Plot widgets with integrated plot manager:
    panels/index
    fit
    pyplot
+   resizedialog
+   rotatecrop
+   fliprotate
    selectdialog
+   imagefile
    io
    signals
    mathutils/index

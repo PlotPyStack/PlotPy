@@ -29,6 +29,7 @@ from typing import TYPE_CHECKING
 from guidata.qthelpers import win32_fix_title_bar_background
 from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
+from qtpy.QtWidgets import QWidget  # Helping out python_qt_documentation
 
 from plotpy.builder import make
 from plotpy.config import _
@@ -48,8 +49,8 @@ class RotateCropTransform(basetransform.BaseTransform):
     get_plot method, like PlotDialog or RotateCropWidget (see below)
 
     Args:
-        parent (QWidget): Parent widget
-        manager (PlotManager): Plot manager
+        parent: Parent widget
+        manager: Plot manager
     """
 
     def __init__(self, parent: RotateCropWidget, manager: PlotManager) -> None:
@@ -63,7 +64,7 @@ class RotateCropTransform(basetransform.BaseTransform):
         """Set associated item
 
         Args:
-            item (TrImageItem): Associated item
+            item: Associated item
         """
         super().set_item(item)
         crect: AnnotatedRectangle = make.annotated_rectangle(
@@ -103,7 +104,7 @@ class RotateCropTransform(basetransform.BaseTransform):
         """Compute transformation, return compute output array
 
         Returns:
-            numpy.ndarray: Compute output array
+            Compute output array
         """
         return get_image_in_shape(self.crop_rect, apply_interpolation=False)
 
@@ -112,7 +113,7 @@ class RotateCropTransform(basetransform.BaseTransform):
         """Show/hide cropping rectangle shape
 
         Args:
-            state (bool): Show/hide state
+            state: Show/hide state
         """
         self.crop_rect.setVisible(state)
         self.crop_rect.label.setVisible(state)
@@ -122,20 +123,20 @@ class RotateCropTransform(basetransform.BaseTransform):
 class RotateCropDialog(QW.QDialog):
     """Rotate & Crop Dialog
 
-    Rotate and crop a :py:class:`.image.TrImageItem` plot item
+    Rotate and crop a :py:class:`.TrImageItem` plot item
 
     Args:
-        parent (QWidget): Parent widget
-        title (str | None): Dialog title
-        options (dict | None): Options dict
-        resize_to (tuple | None): Resize dialog to (width, height)
-        edit (bool | None): Show "Edit" button
-        toolbar (bool | None): Show toolbar
+        parent: Parent widget
+        title: Dialog title
+        options: Options dict
+        resize_to: Resize dialog to (width, height)
+        edit: Show "Edit" button
+        toolbar: Show toolbar
     """
 
     def __init__(
         self,
-        parent: QW.QWidget,
+        parent: QWidget,
         title: str | None = None,
         options: dict | None = None,
         resize_to: tuple[int, int] | None = None,
@@ -176,7 +177,7 @@ class RotateCropDialog(QW.QDialog):
         """Add buttons to layout
 
         Args:
-            layout (QBoxLayout): Layout
+            layout: Layout
         """
         if edit:
             self.button_box = bbox = QW.QDialogButtonBox(
@@ -190,7 +191,7 @@ class RotateCropDialog(QW.QDialog):
 class RotateCropWidget(basetransform.BaseTransformWidget):
     """Rotate & Crop Widget
 
-    Rotate and crop a :py:class:`.image.TrImageItem` plot item
+    Rotate and crop a :py:class:`.TrImageItem` plot item
 
     Args:
         parent: Parent widget
@@ -200,7 +201,7 @@ class RotateCropWidget(basetransform.BaseTransformWidget):
 
     def __init__(
         self,
-        parent: QW.QWidget,
+        parent: QWidget,
         toolbar: bool = False,
         options: PlotOptions | None = None,
     ) -> None:
@@ -212,7 +213,7 @@ class RotateCropWidget(basetransform.BaseTransformWidget):
         """Add tool buttons to layout
 
         Args:
-            layout (QBoxLayout): Layout
+            layout: Layout
         """
         # Show crop rectangle checkbox
         show_crop = QW.QCheckBox(_("Show cropping rectangle"), self.plot_widget)
@@ -238,7 +239,7 @@ class RotateCropWidget(basetransform.BaseTransformWidget):
         """Show/hide cropping rectangle shape
 
         Args:
-            state (bool): Show/hide state
+            state: Show/hide state
         """
         self.transform.show_crop_rect(state)
 
@@ -246,6 +247,6 @@ class RotateCropWidget(basetransform.BaseTransformWidget):
 class MultipleRotateCropWidget(basetransform.BaseMultipleTransformWidget):
     """Multiple Rotate & Crop Widget
 
-    Rotate and crop several :py:class:`.image.TrImageItem` plot items"""
+    Rotate and crop several :py:class:`.TrImageItem` plot items"""
 
     TRANSFORM_WIDGET_CLASS = RotateCropWidget
