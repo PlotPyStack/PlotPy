@@ -5,7 +5,6 @@
 
 """plotpy plot benchmarking"""
 
-
 import time
 
 import guidata
@@ -142,8 +141,6 @@ def test_benchmarks():
     # Run benchmarks
     persist = []
     with qt_app_context(exec_loop=True):
-        # FIXME: Error 'BasePlot' object has no attribute '_QwtPlot__data', when moving
-        # plot widget position in the screen
         for benchmark in (
             CurveBM("Simple curve", 5e6),
             CurveBM("Curve with markers", 2e5, marker="Ellipse", markersize=10),
