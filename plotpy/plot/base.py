@@ -18,6 +18,7 @@ from __future__ import annotations
 import pickle
 import sys
 import warnings
+import weakref
 from dataclasses import dataclass
 from math import fabs
 from typing import TYPE_CHECKING
@@ -146,7 +147,6 @@ class BasePlot(qwt.QwtPlot):
     DEFAULT_ACTIVE_YAXIS = Y_LEFT
 
     AUTOSCALE_TYPES = (CurveItem, BaseImageItem, PolygonMapItem)
-    AUTOSCALE_EXCLUDES: list[itf.IBasePlotItem] = []
 
     #: Signal emitted by plot when an IBasePlotItem object was moved
     #:
@@ -277,6 +277,7 @@ class BasePlot(qwt.QwtPlot):
         super().__init__(parent)
         self.options = options = options if options is not None else BasePlotOptions()
 
+        self.__autoscale_excluded_items: list[itf.IBasePlotItem] = []
         self.lock_aspect_ratio = options.lock_aspect_ratio
         self.__autoLockAspectRatio = False
         if self.lock_aspect_ratio is None:
@@ -1872,6 +1873,52 @@ class BasePlot(qwt.QwtPlot):
                 param.update_axis(self, axis_id)
                 self.replot()
 
+    def add_autoscale_types(self, item_types: tuple[type]) -> None:
+        """
+        Add item types to autoscale list
+
+        Args:
+            item_types (tuple[type]): the item types
+        """
+        self.AUTOSCALE_TYPES += item_types
+
+    def add_autoscale_excludes(self, items: list[itf.IBasePlotItem]) -> None:
+        """Add items to autoscale excludes list
+
+        Args:
+            items (list[IBasePlotItem]): the items
+        """
+        current_list = self.get_auto_scale_excludes()
+        for item in items:
+            if item not in current_list:
+                self.__autoscale_excluded_items.append(weakref.ref(item))
+
+    def remove_autoscale_excludes(self, items: list[itf.IBasePlotItem]) -> None:
+        """Remove items from autoscale excludes list
+
+        Args:
+            items (list[IBasePlotItem]): the items
+        """
+        current_list = self.get_auto_scale_excludes()
+        for item in items:
+            if item in current_list:
+                self.__autoscale_excluded_items.remove(weakref.ref(item))
+
+    def get_auto_scale_excludes(self) -> list[itf.IBasePlotItem]:
+        """Return autoscale excludes
+
+        Returns:
+            list[IBasePlotItem]: the items
+        """
+        # Update the list of excluded items, removing the items that have been
+        # deleted since the last call to this method
+        self.__autoscale_excluded_items = [
+            item_ref
+            for item_ref in self.__autoscale_excluded_items
+            if item_ref() is not None
+        ]
+        return [item_ref() for item_ref in self.__autoscale_excluded_items]
+
     def do_autoscale(self, replot: bool = True, axis_id: int | None = None) -> None:
         """Do autoscale on all axes
 
@@ -1891,7 +1938,7 @@ class BasePlot(qwt.QwtPlot):
                     isinstance(item, self.AUTOSCALE_TYPES)
                     and not item.is_empty()
                     and item.isVisible()
-                    and item not in self.AUTOSCALE_EXCLUDES
+                    and item not in self.get_auto_scale_excludes()
                 ):
                     bounds = item.boundingRect()
                     if axis_id == item.xAxis():
@@ -2106,25 +2153,6 @@ class BasePlot(qwt.QwtPlot):
         y0, y1 = self.get_axis_limits(yaxis)
         return x0, x1, y0, y1
 
-    def add_autoscale_types(self, item_types: tuple[type]) -> None:
-        """
-        Add item types to autoscale list
-
-        Args:
-            item_types (tuple[type]): the item types
-        """
-        self.AUTOSCALE_TYPES += item_types
-
-    def add_autoscale_excludes(self, items: list[itf.IBasePlotItem]) -> None:
-        """Add items to autoscale excludes list
-
-        Args:
-            items (list[IBasePlotItem]): the items
-        """
-        for item in items:
-            if item not in self.AUTOSCALE_EXCLUDES:
-                self.AUTOSCALE_EXCLUDES.append(item)
-
     # ---- Image scale/aspect ratio -related API -------------------------------
     def get_current_aspect_ratio(self) -> float:
         """Return current aspect ratio
@@ -2247,6 +2275,13 @@ class BasePlot(qwt.QwtPlot):
         )
         self.updateAxes()
 
+    # # Keep this around to debug too many replots
+    # def replot(self):
+    #     import traceback
+
+    #     traceback.print_stack()
+    #     qwt.QwtPlot.replot(self)
+
     @classmethod
     def register_autoscale_type(cls, type_):
         """Add *type_* to the list of types used to check if an item is
@@ -2262,22 +2297,13 @@ class BasePlot(qwt.QwtPlot):
         cls.AUTOSCALE_TYPES += (type_,)
 
 
-# Register PolygonShape and annotated shape.
+# Register PolygonShape and annotated shape classes.
 # It's not possible to simply register AnnotatedShape class
 # because their is no warranty that SHAPE_CLASS implements all methods.
-for shape in (
-    PolygonShape,
-    annotations.AnnotatedRectangle,
-    annotations.AnnotatedCircle,
-    annotations.AnnotatedEllipse,
-    annotations.AnnotatedObliqueRectangle,
-    annotations.AnnotatedSegment,
-    annotations.AnnotatedPoint,
-):
-    BasePlot.register_autoscale_type(shape)
-
-# Keep this around to debug too many replots
-#    def replot(self):
-#        import traceback
-#        traceback.print_stack()
-#        QwtPlot.replot(self)
+BasePlot.register_autoscale_type(PolygonShape)
+BasePlot.register_autoscale_type(annotations.AnnotatedRectangle)
+BasePlot.register_autoscale_type(annotations.AnnotatedCircle)
+BasePlot.register_autoscale_type(annotations.AnnotatedEllipse)
+BasePlot.register_autoscale_type(annotations.AnnotatedObliqueRectangle)
+BasePlot.register_autoscale_type(annotations.AnnotatedSegment)
+BasePlot.register_autoscale_type(annotations.AnnotatedPoint)

@@ -76,6 +76,8 @@ def test_autoscale_shapes():
         # Add an annotated rectangle
         rect = make.annotated_rectangle(2.5, 1, 4, 1.2, "Annotated rectangle")
         plot.add_item(rect)
+        plot.add_autoscale_excludes([rect])
+        plot.remove_autoscale_excludes([rect])  # Just to test the method
 
         # Add an annotated rectangle excluded
         rect = make.annotated_rectangle(
