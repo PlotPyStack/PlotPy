@@ -28,10 +28,7 @@ from plotpy import io
 from plotpy.builder import make
 from plotpy.config import _
 from plotpy.plot import PlotOptions, PlotWidget
-from plotpy.widgets.about import about
-
-APP_NAME = _("Application example")
-VERSION = "1.0.0"
+from plotpy.widgets import about
 
 
 class ImageParam(DataSet):
@@ -168,8 +165,8 @@ class MainWindow(QW.QMainWindow):
 
     def setup(self):
         """Setup window parameters"""
-        self.setWindowIcon(get_icon("python.png"))
-        self.setWindowTitle(APP_NAME)
+        self.setWindowIcon(get_icon("plotpy.svg"))
+        self.setWindowTitle(_("Application example"))
         self.resize(QC.QSize(600, 800))
 
         # Welcome message in statusbar:
@@ -210,7 +207,7 @@ class MainWindow(QW.QMainWindow):
             self,
             _("About..."),
             icon=get_std_icon("MessageBoxInformation"),
-            triggered=self.about,
+            triggered=lambda parent=self: about.show_about_dialog(parent),
         )
         add_actions(help_menu, (about_action,))
 
@@ -221,21 +218,6 @@ class MainWindow(QW.QMainWindow):
         toolbar = self.addToolBar("Image")
         self.mainwidget = CentralWidget(self, toolbar)
         self.setCentralWidget(self.mainwidget)
-
-    # ------?
-    def about(self):
-        """About box"""
-        QW.QMessageBox.about(
-            self,
-            _("About ") + APP_NAME,
-            "<b>{}</b> v{}"
-            "<p>{} Pierre Raybaut<br><br>{}".format(
-                APP_NAME,
-                VERSION,
-                _("Developped by"),
-                about(html=True, copyright_only=True),
-            ),
-        )
 
     # ------I/O
     def new_image(self):

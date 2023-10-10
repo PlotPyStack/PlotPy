@@ -22,7 +22,7 @@ from plotpy.items import (
     get_plot_qrect,
 )
 from plotpy.tools.base import CommandTool, DefaultToolbarID, RectangularActionTool
-from plotpy.widgets.about import about
+from plotpy.widgets import about
 from plotpy.widgets.resizedialog import ResizeDialog
 
 
@@ -260,8 +260,7 @@ class AboutTool(CommandTool):
 
     def activate_command(self, plot, checked):
         """Activate tool"""
-
-        QW.QMessageBox.about(plot, _("About") + " plotpy", about(html=True))
+        about.show_about_dialog(plot)
 
 
 class PrintTool(CommandTool):

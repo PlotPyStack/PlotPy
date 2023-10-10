@@ -5,31 +5,45 @@ about
 
 """
 
-import platform
-import sys
+from __future__ import annotations
 
-from qtpy import QtCore as QC
-from qwt import QWT_VERSION_STR
+import guidata
+import qwt
+from guidata.widgets.about import get_general_infos
+from qtpy.QtWidgets import QMessageBox, QWidget
 
 import plotpy
+from plotpy.config import _
 
 
-def about(html=True, copyright_only=False):
-    """Return text about this package"""
-    python_version = "{} {}".format(
-        platform.python_version(), "64 bits" if sys.maxsize > 2**32 else "32 bits"
-    )
+def about(html: bool = True, copyright_only: bool = False) -> str:
+    """Return text about this package
+
+    Args:
+        html: return html text. Defaults to True.
+        copyright_only: if True, return only copyright
+
+    Returns:
+        str: text about this package
+    """
     shortdesc = (
         f"Plotpy {plotpy.__version__}\n\n"
         f"Plotpy is a set of tools for curve and image plotting.\n"
         f"Created by Pierre Raybaut."
     )
-    desc = (
-        f"Copyright © 2023 CEA\n\nPython {python_version}, "
-        f"Qt {QC.__version__}, PythonQwt {QWT_VERSION_STR} on {platform.system()}"
-    )
+    addinfos = f"guidata {guidata.__version__}, PythonQwt {qwt.__version__}"
+    desc = get_general_infos(addinfos)
     if not copyright_only:
         desc = f"{shortdesc}\n\n{desc}"
     if html:
         desc = desc.replace("\n", "<br />")
     return desc
+
+
+def show_about_dialog(parent: QWidget) -> None:
+    """Show ``plotpy`` about dialog
+
+    Args:
+        parent (QWidget): parent widget
+    """
+    QMessageBox.about(parent, _("About") + " plotpy", about(html=True))
