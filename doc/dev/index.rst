@@ -9,4 +9,4 @@ Development
    build
    guiqwt_to_plotpy
    v1_to_v2
-   platform
+   platforms

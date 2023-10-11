@@ -1,5 +1,24 @@
+.. _platforms:
+
 Reference test platforms
 ------------------------
+
+The following sections describe the reference platforms for the project.
+
+.. note::
+
+    The officially supported Python versions are 3.8, 3.9 and 3.10.
+    However, the project should work on any earlier Python 3 version.
+
+    The officially supported Qt binding is PyQt5. However, efforts have been
+    made and will continue to be made to support PyQt6 and PySide6 as well.
+
+    The project is currently tested on the following platforms:
+
+    * Microsoft Windows 10 (64-bit)
+    * CentOS Stream 8.8 (64-bit)
+
+    However, it should work on any other platform supported by its dependencies.
 
 About requirements
 ^^^^^^^^^^^^^^^^^^

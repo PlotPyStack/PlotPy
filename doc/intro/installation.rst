@@ -4,11 +4,12 @@ Installation
 Dependencies
 ------------
 
-.. include:: ../requirements.rst
-
 .. note::
 
-    Python 3.11 is the reference for production release
+    See :ref:`platforms` section for more information about supported platforms,
+    Python versions and Qt bindings.
+
+.. include:: ../requirements.rst
 
 Installation using pip
 ----------------------
