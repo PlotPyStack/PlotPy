@@ -23,11 +23,6 @@ providing a unified framework for creating scientific GUIs with Python and Qt.
 * [PythonQwt](https://pypi.python.org/pypi/PythonQwt) plotting widgets library
 * [NumPy](https://pypi.python.org/pypi/NumPy) and [SciPy](https://pypi.python.org/pypi/SciPy) scientific computing libraries
 
-Based on PythonQwt and on the scientific modules NumPy and SciPy, plotpy is a
-Python library providing efficient 2D data-plotting features (curve/image
-visualization and related tools) for interactive computing and signal/image
-processing application development.
-
 <img src="https://raw.githubusercontent.com/PlotPyStack/plotpy/master/doc/images/panorama.png">
 
 See [documentation](https://plotpy.readthedocs.io/en/latest/) for more details on
@@ -38,80 +33,43 @@ Copyrights and licensing:
 * Copyright © 2023 [CEA](https://www.cea.fr), [Codra](https://codra.net/), [Pierre Raybaut](https://github.com/PierreRaybaut).
 * Licensed under the terms of the BSD 3-Clause (see [LICENSE](LICENSE)).
 
-### Features
+## Features
 
-The `plotpy` library also provides the following features:
+The `plotpy` library also provides the following features.
+
+General plotting features:
 
 * Ready-to-use [plot widgets and dialog boxes](https://plotpy.readthedocs.io/en/latest/features/plot/index.html)
+* [pyplot](https://plotpy.readthedocs.io/en/latest/features/pyplot.html): interactive
+  plotting widgets, equivalent to `matplotlib.pyplot`, at least for the implemented functions
+* Supported [plot items](https://plotpy.readthedocs.io/en/latest/features/items/index.html):
+  curves, images, contours, histograms, labels, shapes, annotations, ...
 
-* [pyplot](https://plotpy.readthedocs.io/en/latest/features/pyplot.html): interactive plotting widgets, equivalent to `matplotlib.pyplot`, at
-  least for the implemented functions
+Interactive features (i.e. not only programmatic plotting but also with mouse/keyboard):
 
-* supported [plot items](https://plotpy.readthedocs.io/en/latest/features/items/index.html): curve, image, histogram, label, shape, annotation, ...
+* Multiple object selection for moving objects or editing their properties through
+  automatically generated dialog boxes
+* Item list panel: move objects from foreground to background, show/hide objects,
+  remove objects, ...
+* Customizable aspect ratio for images
+* Tons of ready-to-use tools: plot canvas export to image file, image snapshot,
+  interval selection, image rectangular filter, etc.
+* Curve fitting tool with automatic fit, manual fit with sliders, ...
+* Contrast adjustment panel for images: select the LUT by moving a range selection
+  object on the image levels histogram, eliminate outliers, ...
+* X-axis and Y-axis cross-sections: support for multiple images, average
+  cross-section tool on a rectangular area, ...
+* Apply any affine transform to displayed images in real-time (rotation,
+  magnification, translation, horizontal/vertical flip, ...)
 
-* interactive features:
+Application development helpers:
 
-  * multiple object selection for moving objects or editing their
-    properties through automatically generated dialog boxes
+* Ready-to-use [plot widgets and dialog boxes](https://plotpy.readthedocs.io/en/latest/features/plot/index.html)
+* Load/save graphical objects (curves, images, shapes) into HDF5, JSON or INI files
+* A lot of test scripts which demonstrate `plotpy` features
+  (see [examples](https://plotpy.readthedocs.io/en/latest/intro/examples.html))
 
-  * item list panel: move objects from foreground to background,
-    show/hide objects, remove objects, ...
+## Dependencies and installation
 
-  * customizable aspect ratio for images
-
-  * tons of ready-to-use tools: plot canvas export to image file, image
-    snapshot, interval selection, image rectangular filter, etc.
-
-  * curve fitting tool with automatic fit, manual fit with sliders, ...
-
-  * contrast adjustment panel for images: select the LUT by moving a range selection
-    object on the image levels histogram, eliminate outliers, ...
-
-  * X-axis and Y-axis cross-sections: support for multiple images, average
-    cross-section tool on a rectangular area, ...
-
-  * apply any affine transform to displayed images in real-time (rotation,
-    magnification, translation, horizontal/vertical flip, ...)
-
-* application development helpers:
-
-  * ready-to-use [plot widgets and dialog boxes](https://plotpy.readthedocs.io/en/latest/features/plot/index.html)
-  * load/save graphical objects (curves, images, shapes)
-  * a lot of test scripts which demonstrate `plotpy` features (see [examples](https://plotpy.readthedocs.io/en/latest/intro/examples.html))
-
-## Dependencies
-
-### Requirements
-
-* Python 3.8+
-* [PyQt5](https://pypi.python.org/pypi/PyQt5) (Python Qt bindings)
-* [QtPy](https://pypi.org/project/QtPy/) (abstraction layer for Python-Qt binding libraries)
-* [PythonQwt](https://pypi.org/project/PythonQwt/) (Python wrapper for the Qwt C++ class library)
-* [guidata](https://pypi.org/project/guidata/) (Python library generating graphical user interfaces for easy dataset editing and display)
-
-### Build requirements
-
-* [setuptools](https://pypi.org/project/setuptools/) (Python packages management)
-* [wheel](https://pypi.org/project/wheel/) (Python built-package format)
-* [build](https://pypi.org/project/build/) (Python package builder)
-* [numpy](https://pypi.org/project/numpy/) (Python package for scientific computing)
-* [Cython](https://pypi.org/project/Cython/) (Python package for writing C extensions for the Python language)
-* C++ compiler (e.g. [GCC](https://gcc.gnu.org/), [MSVC](https://visualstudio.microsoft.com/vs/features/cplusplus/))
-
-## Installation
-
-### From PyPI
-
-Using ``pip``:
-
-```bash
-pip install plotpy
-```
-
-### From the source package
-
-Using ``build``:
-
-```bash
-python -m build
-```
+See [Installation](https://plotpy.readthedocs.io/en/latest/intro/installation.html)
+section in the documentation for more details.

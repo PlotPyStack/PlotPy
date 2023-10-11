@@ -32,12 +32,12 @@ Supported versions of Python and Qt bindings have been updated:
 
 PlotPy 2.0 is a major release because it also brings a lot of new features:
 
-* ``plot.PlotWidget``, ``plot.PlotDialog``, and ``plot.PlotWindow``: API overhaul
+* `plot.PlotWidget`, `plot.PlotDialog`, and `plot.PlotWindow`: API overhaul
   (simple, more consistent, more flexible, more extensible - see documentation
   for details)
-* ``plot.SyncPlotWindow``: new class to show multiple plots in a single window,
+* `plot.SyncPlotWindow`: new class to show multiple plots in a single window,
   in a synchronized way (zoom, pan, etc.)
-* ``widgets.selectdialog.SelectDialog``: a dialog box to select items using a
+* `widgets.selectdialog.SelectDialog`: a dialog box to select items using a
   shape tool (segment, rectangle or custom)
 * Image lookup table (LUT):
   * Initially, the LUT alpha channel was either constant (input parameter
@@ -56,48 +56,48 @@ PlotPy 2.0 is a major release because it also brings a lot of new features:
   * This is one of the benefits of porting back [guiqwt](https://pypi.org/project/guiqwt/)
     changes since the merge (i.e. between 2016 and 2023)
 * New SVG-based shapes:
-  * ``items.RectangleSVGShape``: rectangle shape based on SVG data or file
-  * ``items.SquareSVGShape``: square shape based on SVG data or file
-  * ``items.CircleSVGShape``: circle shape based on SVG data or file
-* ``builder.PlotBuilder``:
-  * Renamed ``PlotBuilder`` (originally ``guiqwt.builder.PlotItemBuilder``)
-  * Builder instance is still available using ``from plotpy.builder import make``
+  * `items.RectangleSVGShape`: rectangle shape based on SVG data or file
+  * `items.SquareSVGShape`: square shape based on SVG data or file
+  * `items.CircleSVGShape`: circle shape based on SVG data or file
+* `builder.PlotBuilder`:
+  * Renamed `PlotBuilder` (originally `guiqwt.builder.PlotItemBuilder`)
+  * Builder instance is still available using `from plotpy.builder import make`
   * Plot widget creation is now supported:
-    * ``make.widget()`` for ``plot.PlotWidget``
-    * ``make.dialog()`` for ``plot.PlotDialog``
-    * ``make.window()`` for ``plot.PlotWindow``
+    * `make.widget()` for `plot.PlotWidget`
+    * `make.dialog()` for `plot.PlotDialog`
+    * `make.window()` for `plot.PlotWindow`
   * Added support for more plot items:
-    * ``make.contours()`` for generating a list of ``items.ContourItem`` objects
-    * ``make.annotated_point()`` for ``items.AnnotatedPoint``
-    * ``make.polygon()`` for ``items.PolygonShape``
-    * ``make.svg()`` for ``items.RectangleSVGShape``, ``items.SquareSVGShape``,
-      and ``items.CircleSVGShape``
+    * `make.contours()` for generating a list of `items.ContourItem` objects
+    * `make.annotated_point()` for `items.AnnotatedPoint`
+    * `make.polygon()` for `items.PolygonShape`
+    * `make.svg()` for `items.RectangleSVGShape`, `items.SquareSVGShape`,
+      and `items.CircleSVGShape`
 * Added JSON serialization support for all plot items (curve, image, etc.)
 
 * Brand new documentation, based on Sphinx with links to other projects API, examples
   and tutorials (e.g. on development related topics).
 * Black code formatting on all Python files
 * New automated test suite:
-  * Automatic execution: ``--unattended`` command line option (Qt loop is bypassed)
-  * Test suite based on ``pytest``, supporting ``pytest-cov`` for coverage testing,
-    ``pytest-xvfb`` for headless testing, and ``pytest-qt`` for Qt testing
+  * Automatic execution: `--unattended` command line option (Qt loop is bypassed)
+  * Test suite based on `pytest`, supporting `pytest-cov` for coverage testing,
+    `pytest-xvfb` for headless testing, and `pytest-qt` for Qt testing
   * Added support for Coverage: test coverage improved up to 70%
 * Added typing annotations on (almost) all Python files
-* Distribution: switched to ``pyproject.toml`` (still relying on ``setuptools`` and
-  ``setup.py`` for building Cython/C++ extensions)
+* Distribution: switched to `pyproject.toml` (still relying on `setuptools` and
+  `setup.py` for building Cython/C++ extensions)
 * Added code quality configuration files:
-  * ``.pylintrc``: pylint configuration file
-  * ``.isort.cfg``: isort configuration file
-  * ``.coveragerc``: coverage configuration file
+  * `.pylintrc`: pylint configuration file
+  * `.isort.cfg`: isort configuration file
+  * `.coveragerc`: coverage configuration file
 * Added Visual Studio Code configuration files:
-  * ``.vscode/settings.json``: Python interpreter, code formatting, etc.
-  * ``.vscode/tasks.json``: build, test, etc.
-  * ``.vscode/launch.json``: run current file, run tests, etc.
+  * `.vscode/settings.json`: Python interpreter, code formatting, etc.
+  * `.vscode/tasks.json`: build, test, etc.
+  * `.vscode/launch.json`: run current file, run tests, etc.
 
 PlotPy 2.0 also brings a lot of bug fixes and improvements:
 
 * Handled all Cython/C++ extensions compilation warnings
-* Fixed all NumPy deprecation issues (e.g. ``numpy.matrix``)
+* Fixed all NumPy deprecation issues (e.g. `numpy.matrix`)
 * Fixed (annotated) circle/ellipse item creation/test
 * Fixed all documentation build warnings
 * Fixed regressions introduced by PlotPy V1 on top of guiqwt:
@@ -105,7 +105,7 @@ PlotPy 2.0 also brings a lot of bug fixes and improvements:
   * Major aspect ratio issues:
     * When resizing the plot widget (images were downsized indefinitely)
     * When auto-scaling the plot widget (images were not displayed entirely)
-  * ``TrImageItem`` rotation algorithm
+  * `TrImageItem` rotation algorithm
   * Oblique cross-section test
   * About dialog, version informations
 * Ported all [guiqwt](https://pypi.org/project/guiqwt/) bug fixes since the merge
@@ -115,7 +115,7 @@ PlotPy 2.0 also brings a lot of bug fixes and improvements:
   * Optimized colormap icon caching
   * X-axis direction and auto-scale
   * Added load test (with a very large number of plot widgets)
-  * Coordinates inversion in ``EllipseShape``
+  * Coordinates inversion in `EllipseShape`
   * ValueError with levels histogram
   * Various fixes regarding plot item creation, cross-section features,
     PyQt5 support, DICOM support, TIFF support, etc.
