@@ -153,8 +153,7 @@ class TrImageItem(RawImageItem):
         Returns:
             Pixel coordinates
         """
-        v = self.tr @ colvector(xplot, yplot)
-        xpixel, ypixel, _ = v[:, 0]
+        xpixel, ypixel, _ = self.tr @ colvector(xplot, yplot)
         return xpixel, ypixel
 
     def get_plot_coordinates(self, xpixel: float, ypixel: float) -> tuple[float, float]:
@@ -167,8 +166,7 @@ class TrImageItem(RawImageItem):
         Returns:
             Plot coordinates
         """
-        v0 = self.itr @ colvector(xpixel, ypixel)
-        xplot, yplot, _ = v0[:, 0].ravel()
+        xplot, yplot, _ = self.itr @ colvector(xpixel, ypixel)
         return xplot, yplot
 
     def get_x_values(self, i0: int, i1: int) -> np.ndarray:
@@ -181,10 +179,8 @@ class TrImageItem(RawImageItem):
         Returns:
             X values corresponding to the given pixel indexes
         """
-        v0 = self.itr @ colvector(i0, 0)
-        x0, _y0, _ = v0[:, 0].ravel()
-        v1 = self.itr @ colvector(i1, 0)
-        x1, _y1, _ = v1[:, 0].ravel()
+        x0, _y0, _ = self.itr @ colvector(i0, 0)
+        x1, _y1, _ = self.itr @ colvector(i1, 0)
         return np.linspace(x0, x1, i1 - i0)
 
     def get_y_values(self, j0: int, j1: int) -> np.ndarray:
@@ -197,10 +193,8 @@ class TrImageItem(RawImageItem):
         Returns:
             Y values corresponding to the given pixel indexes
         """
-        v0 = self.itr @ colvector(0, j0)
-        _x0, y0, _ = v0[:, 0].ravel()
-        v1 = self.itr @ colvector(0, j1)
-        _x1, y1, _ = v1[:, 0].ravel()
+        _x0, y0, _ = self.itr @ colvector(0, j0)
+        _x1, y1, _ = self.itr @ colvector(0, j1)
         return np.linspace(y0, y1, j1 - j0)
 
     def get_r_values(self, i0, i1, j0, j1, flag_circle=False):
@@ -216,10 +210,8 @@ class TrImageItem(RawImageItem):
         Returns:
             Radial values corresponding to the given pixel indexes
         """
-        v0 = self.itr @ colvector(i0, j0)
-        x0, y0, _ = v0[:, 0].ravel()
-        v1 = self.itr @ colvector(i1, j1)
-        x1, y1, _ = v1[:, 0].ravel()
+        x0, y0, _ = self.itr @ colvector(i0, j0)
+        x1, y1, _ = self.itr @ colvector(i1, j1)
         if flag_circle:
             r = abs(y1 - y0)
         else:
@@ -238,8 +230,7 @@ class TrImageItem(RawImageItem):
             tuple[float, float]: Closest coordinates
         """
         xi, yi = self.get_closest_indexes(x, y)
-        v = self.itr @ colvector(xi, yi)
-        x, y, _ = v[:, 0].ravel()
+        x, y, _ = self.itr @ colvector(xi, yi)
         return x, y
 
     def update_border(self) -> None:
