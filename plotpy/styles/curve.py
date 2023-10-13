@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from guidata.dataset.dataitems import FloatItem, ImageChoiceItem, StringItem
-from guidata.dataset.datatypes import DataSet, GetAttrProp
+
+from guidata.dataset import DataSet, FloatItem, GetAttrProp, ImageChoiceItem, StringItem
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qwt import QwtPlotCurve

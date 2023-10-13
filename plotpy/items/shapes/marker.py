@@ -6,7 +6,7 @@ import math
 from typing import TYPE_CHECKING
 
 from guidata.configtools import get_icon
-from guidata.utils import update_dataset
+from guidata.dataset import update_dataset
 from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
 from qwt import QwtPlotMarker

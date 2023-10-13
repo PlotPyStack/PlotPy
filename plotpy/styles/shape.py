@@ -5,22 +5,20 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import numpy as np
-from guidata.dataset.dataitems import (
-    BoolItem,
-    ColorItem,
-    FloatArrayItem,
-    FloatItem,
-    ImageChoiceItem,
-    IntItem,
-    StringItem,
-)
-from guidata.dataset.datatypes import (
+from guidata.dataset import (
     BeginGroup,
     BeginTabGroup,
+    BoolItem,
+    ColorItem,
     DataSet,
     EndGroup,
     EndTabGroup,
+    FloatArrayItem,
+    FloatItem,
     GetAttrProp,
+    ImageChoiceItem,
+    IntItem,
+    StringItem,
 )
 from qtpy import QtGui as QG
 from qwt import QwtPlotMarker

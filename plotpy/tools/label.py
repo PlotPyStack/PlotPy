@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from guidata.dataset.dataitems import TextItem
-from guidata.dataset.datatypes import DataSet
+from guidata.dataset import DataSet, TextItem
 from qtpy import QtCore as QC
 
 from plotpy.config import _

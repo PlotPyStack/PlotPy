@@ -20,8 +20,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import guidata.dataset.dataitems as gdi
-import guidata.dataset.datatypes as gdt
+import guidata.dataset as gds
 import guidata.dataset.qtwidgets as gdq
 import numpy as np
 from guidata.configtools import get_image_file_path
@@ -42,24 +41,24 @@ if TYPE_CHECKING:  # pragma: no cover
     from plotpy.interfaces import IItemType
 
 
-class DotArrayParam(gdt.DataSet):
+class DotArrayParam(gds.DataSet):
     """Dot array"""
 
     def _update_cb(self, *args):
         """Update callback, to be overriden"""
         pass
 
-    g1 = gdt.BeginGroup("Size of the area")
-    dim_h = gdi.FloatItem("Width", default=20, min=0, unit="mm")
-    dim_v = gdi.FloatItem("Height", default=20, min=0, unit="mm")
-    _g1 = gdt.EndGroup("Size of the area")
+    g1 = gds.BeginGroup("Size of the area")
+    dim_h = gds.FloatItem("Width", default=20, min=0, unit="mm")
+    dim_v = gds.FloatItem("Height", default=20, min=0, unit="mm")
+    _g1 = gds.EndGroup("Size of the area")
 
-    g2 = gdt.BeginGroup("Grid pattern properties")
-    step_x = gdi.FloatItem("Step in X-axis", default=1, min=1, unit="mm")
-    step_y = gdi.FloatItem("Step in Y-axis", default=1, min=1, unit="mm")
-    size = gdi.FloatItem("Dot size", default=0.2, min=0, max=2, slider=True, unit="mm")
-    color = gdi.ColorItem("Dot color", default="red")
-    _g2 = gdt.EndGroup("Grid pattern properties")
+    g2 = gds.BeginGroup("Grid pattern properties")
+    step_x = gds.FloatItem("Step in X-axis", default=1, min=1, unit="mm")
+    step_y = gds.FloatItem("Step in Y-axis", default=1, min=1, unit="mm")
+    size = gds.FloatItem("Dot size", default=0.2, min=0, max=2, slider=True, unit="mm")
+    color = gds.ColorItem("Dot color", default="red")
+    _g2 = gds.EndGroup("Grid pattern properties")
 
     def update_item(self, obj):
         """Update item from parameters"""

@@ -1,6 +1,14 @@
 # -*- coding: utf-8 -*-
-from guidata.dataset.dataitems import ChoiceItem, ColorItem, FloatItem, StringItem
-from guidata.dataset.datatypes import BeginGroup, DataSet, EndGroup, ObjectItem
+from guidata.dataset import (
+    BeginGroup,
+    ChoiceItem,
+    ColorItem,
+    DataSet,
+    EndGroup,
+    FloatItem,
+    ObjectItem,
+    StringItem,
+)
 from guidata.dataset.qtitemwidgets import DataSetWidget
 from guidata.dataset.qtwidgets import DataSetEditLayout
 from qwt import QwtPlot

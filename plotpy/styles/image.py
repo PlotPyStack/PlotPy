@@ -3,16 +3,19 @@
 import enum
 
 import numpy as np
-from guidata.dataset.dataitems import (
+from guidata.dataset import (
+    BeginGroup,
     BoolItem,
     ChoiceItem,
     ColorItem,
+    DataSet,
+    EndGroup,
     FloatItem,
+    GetAttrProp,
     ImageChoiceItem,
     IntItem,
     StringItem,
 )
-from guidata.dataset.datatypes import BeginGroup, DataSet, EndGroup, GetAttrProp
 from qtpy import QtGui as QG
 
 from plotpy._scaler import INTERP_AA, INTERP_LINEAR, INTERP_NEAREST

@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
-from guidata.dataset.dataitems import (
+
+from guidata.dataset import (
     BoolItem,
     ChoiceItem,
     ColorItem,
+    DataSet,
+    GetAttrProp,
     IntItem,
     StringItem,
 )
-from guidata.dataset.datatypes import DataSet, GetAttrProp
 
 from plotpy.config import _
 from plotpy.styles.base import ItemParameters

@@ -8,11 +8,9 @@
 # guitest: show
 
 import scipy.ndimage
-from guidata.dataset.dataitems import ChoiceItem, IntItem, StringItem
-from guidata.dataset.datatypes import DataSet
+from guidata.dataset import ChoiceItem, DataSet, IntItem, StringItem, update_dataset
 from guidata.dataset.qtwidgets import DataSetEditGroupBox, DataSetShowGroupBox
 from guidata.qthelpers import qt_app_context
-from guidata.utils import update_dataset
 
 from plotpy import io
 from plotpy.builder import make

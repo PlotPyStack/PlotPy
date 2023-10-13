@@ -5,8 +5,7 @@ import sys
 
 import numpy as np
 from guidata.configtools import get_icon
-from guidata.dataset.dataitems import BoolItem, ChoiceItem
-from guidata.dataset.datatypes import BeginGroup, DataSet, EndGroup
+from guidata.dataset import BeginGroup, BoolItem, ChoiceItem, DataSet, EndGroup
 from guidata.qthelpers import get_std_icon
 from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW

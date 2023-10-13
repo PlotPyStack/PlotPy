@@ -11,8 +11,15 @@ import sys
 
 import numpy as np
 from guidata.configtools import get_icon
-from guidata.dataset.dataitems import ChoiceItem, FloatArrayItem, IntItem, StringItem
-from guidata.dataset.datatypes import DataSet, GetAttrProp, update_dataset
+from guidata.dataset import (
+    ChoiceItem,
+    DataSet,
+    FloatArrayItem,
+    GetAttrProp,
+    IntItem,
+    StringItem,
+    update_dataset,
+)
 from guidata.dataset.qtwidgets import DataSetEditGroupBox
 from guidata.qthelpers import (
     add_actions,

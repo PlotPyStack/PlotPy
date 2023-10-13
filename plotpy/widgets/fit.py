@@ -52,16 +52,17 @@ from typing import TYPE_CHECKING
 import guidata
 import numpy as np
 from guidata.configtools import get_icon
-from guidata.dataset.dataitems import (
+from guidata.dataset import (
     BoolItem,
     ChoiceItem,
+    DataSet,
     FloatItem,
     IntItem,
     StringItem,
+    restore_dataset,
+    update_dataset,
 )
-from guidata.dataset.datatypes import DataSet
 from guidata.qthelpers import create_groupbox, exec_dialog
-from guidata.utils import restore_dataset, update_dataset
 from numpy import inf  # Do not remove this import (used by optimization funcs)
 from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW

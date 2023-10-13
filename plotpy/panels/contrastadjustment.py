@@ -20,8 +20,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from guidata.configtools import get_icon, get_image_layout
-from guidata.dataset.dataitems import FloatItem
-from guidata.dataset.datatypes import DataSet
+from guidata.dataset import DataSet, FloatItem
 from guidata.qthelpers import add_actions, create_action
 from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC

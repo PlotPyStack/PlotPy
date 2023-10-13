@@ -6,8 +6,7 @@ import weakref
 from typing import TYPE_CHECKING, Union
 
 from guidata.configtools import get_icon
-from guidata.dataset.dataitems import BoolItem, FloatItem
-from guidata.dataset.datatypes import DataSet
+from guidata.dataset import BoolItem, DataSet, FloatItem
 from guidata.qthelpers import add_actions
 from guidata.widgets.arrayeditor import ArrayEditor
 from qtpy import QtCore as QC

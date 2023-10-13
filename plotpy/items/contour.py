@@ -22,10 +22,9 @@ This module provides functions and classes to create contour curves.
 
 from __future__ import annotations
 
+import guidata.dataset as gds
 import numpy as np
 from guidata.configtools import get_icon
-from guidata.dataset import dataitems as gdi
-from guidata.dataset import datatypes as gdt
 from guidata.utils.misc import assert_interfaces_valid
 
 from plotpy.config import _
@@ -34,11 +33,11 @@ from plotpy.items.shapes.polygon import PolygonShape
 from plotpy.styles import ShapeParam
 
 
-class ContourLine(gdt.DataSet):
+class ContourLine(gds.DataSet):
     """A contour line"""
 
-    vertices = gdi.FloatArrayItem(_("Vertices"), help=_("Vertices of the line"))
-    level = gdi.FloatItem(_("Level"), help=_("Level of the line"))
+    vertices = gds.FloatArrayItem(_("Vertices"), help=_("Vertices of the line"))
+    level = gds.FloatItem(_("Level"), help=_("Level of the line"))
 
 
 def compute_contours(

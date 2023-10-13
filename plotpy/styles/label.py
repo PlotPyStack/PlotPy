@@ -1,24 +1,23 @@
 # -*- coding: utf-8 -*-
-from guidata.dataset.dataitems import (
+
+from guidata.dataset import (
+    BeginGroup,
+    BeginTabGroup,
     BoolItem,
     ChoiceItem,
     ColorItem,
-    FloatItem,
-    IntItem,
-    StringItem,
-    TextItem,
-)
-from guidata.dataset.datatypes import (
-    BeginGroup,
-    BeginTabGroup,
     DataSet,
     EndGroup,
     EndTabGroup,
+    FloatItem,
     GetAttrProp,
+    IntItem,
     NotProp,
     Obj,
+    StringItem,
+    TextItem,
+    update_dataset,
 )
-from guidata.utils import update_dataset
 from qtpy import QtGui as QG
 
 from plotpy.config import _

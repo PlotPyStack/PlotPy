@@ -1,12 +1,6 @@
 # -*- coding: utf-8 -*-
-from guidata.dataset.dataitems import (
-    BoolItem,
-    ChoiceItem,
-    ColorItem,
-    FloatItem,
-    IntItem,
-)
-from guidata.dataset.datatypes import DataSet
+
+from guidata.dataset import BoolItem, ChoiceItem, ColorItem, DataSet, FloatItem, IntItem
 from qtpy import QtGui as QG
 
 from plotpy.config import _

@@ -6,25 +6,23 @@ from copy import deepcopy
 from math import atan2, pi, sqrt
 from typing import TYPE_CHECKING
 
-from guidata.dataset.dataitems import (
+from guidata.dataset import (
+    BeginGroup,
     BoolItem,
     ButtonItem,
     ColorItem,
-    FloatItem,
-    ImageChoiceItem,
-    IntItem,
-    StringItem,
-)
-from guidata.dataset.datatypes import (
-    BeginGroup,
     DataSet,
     DataSetGroup,
     EndGroup,
+    FloatItem,
+    ImageChoiceItem,
+    IntItem,
     ObjectItem,
+    StringItem,
+    update_dataset,
 )
 from guidata.dataset.qtitemwidgets import DataSetWidget
 from guidata.dataset.qtwidgets import DataSetEditLayout
-from guidata.utils import update_dataset
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
@@ -33,7 +31,7 @@ from qwt import QwtPlotCurve, QwtPlotMarker, QwtSymbol
 from plotpy.config import _
 
 if TYPE_CHECKING:  # pragma: no cover
-    import guidata.dataset.datatypes
+    import guidata.dataset
 
     from plotpy.interfaces import IBasePlotItem
     from plotpy.plot import BasePlot
@@ -216,7 +214,7 @@ class ItemParameters:
 
     def __init__(self, multiselection: bool = False):
         self.multiselection = multiselection
-        self.paramdict: dict[str, guidata.dataset.datatypes.DataSet] = {}
+        self.paramdict: dict[str, guidata.dataset.DataSet] = {}
         self.items: set[IBasePlotItem] = set()
 
     @classmethod
@@ -234,7 +232,7 @@ class ItemParameters:
         self,
         key: str,
         item: IBasePlotItem,
-        param: guidata.dataset.datatypes.DataSet,
+        param: guidata.dataset.DataSet,
     ) -> None:
         """
         Add parameters for a given item
@@ -258,7 +256,7 @@ class ItemParameters:
                     return
         self.__add(key, item, param)
 
-    def get(self, key: str) -> guidata.dataset.datatypes.DataSet:
+    def get(self, key: str) -> guidata.dataset.DataSet:
         """
         Get parameters for a given item
 
