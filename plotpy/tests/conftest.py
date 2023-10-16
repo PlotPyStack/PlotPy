@@ -1,11 +1,6 @@
 # content of conftest.py
 
+from guidata.env import execenv
 
-def pytest_addoption(parser):
-    """Add custom options to the pytest command line."""
-    parser.addoption(
-        "--unattended",
-        action="store_true",
-        default=None,
-        help="Unattended mode for gui tests",
-    )
+# Turn on unattended mode for executing tests without user interaction
+execenv.unattended = True

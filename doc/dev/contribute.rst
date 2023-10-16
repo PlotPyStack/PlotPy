@@ -75,7 +75,7 @@ Before submitting a patch, please check the following points:
 
     .. code-block:: bash
 
-        pytest --unattended plotpy
+        pytest plotpy
 
 Pull request
 ~~~~~~~~~~~~
