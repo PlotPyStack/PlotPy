@@ -42,7 +42,6 @@
         "-v",
         "--cov",
         "--cov-report=html",
-        "--unattended",
         "plotpy"
     ],
     "python.analysis.autoFormatStrings": true,
