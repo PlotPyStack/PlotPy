@@ -64,25 +64,26 @@ def test_autoscale_shapes():
         plot.set_antialiasing(False)
         win.manager.get_itemlist_panel().show()
 
+        incl = "Included in autoscale"
+        noti = "Excluded from autoscale"
+
         # Add a polygon
         x = np.arange(-3.0, 3.0, 0.2)
         crv = make.polygon(x, np.sin(x), False, "Polygon")
         plot.add_item(crv)
 
         # Add a circle
-        circle = make.circle(-1, 2, 0, 0, "Circle")
+        circle = make.annotated_circle(-1, 2, 0, 0, incl, show_computations=False)
         plot.add_item(circle)
 
         # Add an annotated rectangle
-        rect = make.annotated_rectangle(2.5, 1, 4, 1.2, "Annotated rectangle")
+        rect = make.annotated_rectangle(2.5, 1, 4, 1.2, incl, show_computations=False)
         plot.add_item(rect)
         plot.add_autoscale_excludes([rect])
         plot.remove_autoscale_excludes([rect])  # Just to test the method
 
         # Add an annotated rectangle excluded
-        rect = make.annotated_rectangle(
-            1.0, 2.0, 5, 10, "Annotated rectangle excluded from autoscale"
-        )
+        rect = make.annotated_rectangle(1.0, 2.0, 5, 10, noti, show_computations=False)
         plot.add_item(rect)
 
         plot.add_autoscale_excludes([rect])

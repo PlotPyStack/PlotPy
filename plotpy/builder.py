@@ -2376,16 +2376,56 @@ class PlotBuilder:
         shape.set_data(data)
         return shape
 
-    def __get_annotationparam(self, title: str, subtitle: str) -> AnnotationParam:
+    def __get_annotationparam(
+        self,
+        title: str | None = None,
+        subtitle: str | None = None,
+        show_label: bool | None = None,
+        show_computations: bool | None = None,
+        show_subtitle: bool | None = None,
+        format: str | None = None,
+        uncertainty: float | None = None,
+        transform_matrix: np.ndarray | None = None,
+        readonly: bool | None = None,
+        private: bool | None = None,
+    ) -> AnnotationParam:
         param = AnnotationParam(_("Annotation"), icon="annotation.png")
         if title is not None:
             param.title = title
         if subtitle is not None:
             param.subtitle = subtitle
+        if show_label is not None:
+            param.show_label = show_label
+        if show_computations is not None:
+            param.show_computations = show_computations
+        if show_subtitle is not None:
+            param.show_subtitle = show_subtitle
+        if format is not None:
+            param.format = format
+        if uncertainty is not None:
+            param.uncertainty = uncertainty
+        if transform_matrix is not None:
+            param.transform_matrix = transform_matrix
+        if readonly is not None:
+            param.readonly = readonly
+        if private is not None:
+            param.private = private
         return param
 
     def annotated_point(
-        self, x: float, y: float, title: str | None = None, subtitle: str | None = None
+        self,
+        x: float,
+        y: float,
+        title: str | None = None,
+        subtitle: str | None = None,
+        show_label: bool | None = None,
+        show_computations: bool | None = None,
+        show_subtitle: bool | None = None,
+        format: str | None = None,
+        uncertainty: float | None = None,
+        transform_matrix: np.ndarray | None = None,
+        readonly: bool | None = None,
+        private: bool | None = None,
     ) -> AnnotatedPoint:
         """Make an annotated point `plot item`
 
@@ -2394,17 +2434,64 @@ class PlotBuilder:
             y: point y coordinate
             title: label name. Default is None
             subtitle: label subtitle. Default is None
+            show_label: show label. Default is None
+            show_computations: show computations. Default is None
+            show_subtitle: show subtitle. Default is None
+            format: string formatting. Default is None
+            uncertainty: measurement relative uncertainty. Default is None
+            transform_matrix: transform matrix. Default is None
+            readonly: readonly. Default is None
+            private: private. Default is None
 
         Returns:
             :py:class:`.AnnotatedPoint` object
         """
-        param = self.__get_annotationparam(title, subtitle)
+        param = self.__get_annotationparam(
+            title=title,
+            subtitle=subtitle,
+            show_label=show_label,
+            show_computations=show_computations,
+            show_subtitle=show_subtitle,
+            format=format,
+            uncertainty=uncertainty,
+            transform_matrix=transform_matrix,
+            readonly=readonly,
+            private=private,
+        )
         shape = AnnotatedPoint(x, y, param)
         shape.set_style("plot", "shape/drag")
         return shape
 
-    def __annotated_shape(self, shapeclass, x0, y0, x1, y1, title, subtitle):
-        param = self.__get_annotationparam(title, subtitle)
+    def __annotated_shape(
+        self,
+        shapeclass,
+        x0,
+        y0,
+        x1,
+        y1,
+        title,
+        subtitle,
+        show_label,
+        show_computations,
+        show_subtitle,
+        format,
+        uncertainty,
+        transform_matrix,
+        readonly,
+        private,
+    ):
+        param = self.__get_annotationparam(
+            title=title,
+            subtitle=subtitle,
+            show_label=show_label,
+            show_computations=show_computations,
+            show_subtitle=show_subtitle,
+            format=format,
+            uncertainty=uncertainty,
+            transform_matrix=transform_matrix,
+            readonly=readonly,
+            private=private,
+        )
         shape = shapeclass(x0, y0, x1, y1, param)
         shape.set_style("plot", "shape/drag")
         return shape
@@ -2417,6 +2504,14 @@ class PlotBuilder:
         y1: float,
         title: str | None = None,
         subtitle: str | None = None,
+        show_label: bool | None = None,
+        show_computations: bool | None = None,
+        show_subtitle: bool | None = None,
+        format: str | None = None,
+        uncertainty: float | None = None,
+        transform_matrix: np.ndarray | None = None,
+        readonly: bool | None = None,
+        private: bool | None = None,
     ) -> AnnotatedRectangle:
         """Make an annotated rectangle `plot item`
 
@@ -2427,12 +2522,34 @@ class PlotBuilder:
             y1: rectangle y1 coordinate
             title: label name. Default is None
             subtitle: label subtitle. Default is None
+            show_label: show label. Default is None
+            show_computations: show computations. Default is None
+            show_subtitle: show subtitle. Default is None
+            format: string formatting. Default is None
+            uncertainty: measurement relative uncertainty. Default is None
+            transform_matrix: transform matrix. Default is None
+            readonly: readonly. Default is None
+            private: private. Default is None
 
         Returns:
             :py:class:`.AnnotatedRectangle` object
         """
         return self.__annotated_shape(
-            AnnotatedRectangle, x0, y0, x1, y1, title, subtitle
+            AnnotatedRectangle,
+            x0,
+            y0,
+            x1,
+            y1,
+            title,
+            subtitle,
+            show_label,
+            show_computations,
+            show_subtitle,
+            format,
+            uncertainty,
+            transform_matrix,
+            readonly,
+            private,
         )
 
     def annotated_ellipse(
@@ -2447,6 +2564,14 @@ class PlotBuilder:
         y3: float = None,
         title: str | None = None,
         subtitle: str | None = None,
+        show_label: bool | None = None,
+        show_computations: bool | None = None,
+        show_subtitle: bool | None = None,
+        format: str | None = None,
+        uncertainty: float | None = None,
+        transform_matrix: np.ndarray | None = None,
+        readonly: bool | None = None,
+        private: bool | None = None,
     ) -> AnnotatedEllipse:
         """Make an annotated ellipse `plot item`
 
@@ -2461,11 +2586,35 @@ class PlotBuilder:
             y3: ellipse y3 coordinate. Default is None
             title: label name. Default is None
             subtitle: label subtitle. Default is None
+            show_label: show label. Default is None
+            show_computations: show computations. Default is None
+            show_subtitle: show subtitle. Default is None
+            format: string formatting. Default is None
+            uncertainty: measurement relative uncertainty. Default is None
+            transform_matrix: transform matrix. Default is None
+            readonly: readonly. Default is None
+            private: private. Default is None
 
         Returns:
             :py:class:`.AnnotatedEllipse` object
         """
-        item = self.__annotated_shape(AnnotatedEllipse, x0, y0, x1, y1, title, subtitle)
+        item = self.__annotated_shape(
+            AnnotatedEllipse,
+            x0,
+            y0,
+            x1,
+            y1,
+            title,
+            subtitle,
+            show_label,
+            show_computations,
+            show_subtitle,
+            format,
+            uncertainty,
+            transform_matrix,
+            readonly,
+            private,
+        )
         if x2 is not None and y2 is not None and x3 is not None and y3 is not None:
             item.set_ydiameter(x2, y2, x3, y3)
         return item
@@ -2478,6 +2627,14 @@ class PlotBuilder:
         y1: float,
         title: str | None = None,
         subtitle: str | None = None,
+        show_label: bool | None = None,
+        show_computations: bool | None = None,
+        show_subtitle: bool | None = None,
+        format: str | None = None,
+        uncertainty: float | None = None,
+        transform_matrix: np.ndarray | None = None,
+        readonly: bool | None = None,
+        private: bool | None = None,
     ) -> AnnotatedCircle:
         """Make an annotated circle `plot item`
 
@@ -2488,11 +2645,35 @@ class PlotBuilder:
             y1: circle y1 coordinate
             title: label name. Default is None
             subtitle: label subtitle. Default is None
+            show_label: show label. Default is None
+            show_computations: show computations. Default is None
+            show_subtitle: show subtitle. Default is None
+            format: string formatting. Default is None
+            uncertainty: measurement relative uncertainty. Default is None
+            transform_matrix: transform matrix. Default is None
+            readonly: readonly. Default is None
+            private: private. Default is None
 
         Returns:
             :py:class:`.AnnotatedCircle` object
         """
-        return self.__annotated_shape(AnnotatedCircle, x0, y0, x1, y1, title, subtitle)
+        return self.__annotated_shape(
+            AnnotatedCircle,
+            x0,
+            y0,
+            x1,
+            y1,
+            title,
+            subtitle,
+            show_label,
+            show_computations,
+            show_subtitle,
+            format,
+            uncertainty,
+            transform_matrix,
+            readonly,
+            private,
+        )
 
     def annotated_segment(
         self,
@@ -2502,6 +2683,14 @@ class PlotBuilder:
         y1: float,
         title: str | None = None,
         subtitle: str | None = None,
+        show_label: bool | None = None,
+        show_computations: bool | None = None,
+        show_subtitle: bool | None = None,
+        format: str | None = None,
+        uncertainty: float | None = None,
+        transform_matrix: np.ndarray | None = None,
+        readonly: bool | None = None,
+        private: bool | None = None,
     ) -> AnnotatedSegment:
         """Make an annotated segment `plot item`
 
@@ -2512,11 +2701,35 @@ class PlotBuilder:
             y1: segment y1 coordinate
             title: label name. Default is None
             subtitle: label subtitle. Default is None
+            show_label: show label. Default is None
+            show_computations: show computations. Default is None
+            show_subtitle: show subtitle. Default is None
+            format: string formatting. Default is None
+            uncertainty: measurement relative uncertainty. Default is None
+            transform_matrix: transform matrix. Default is None
+            readonly: readonly. Default is None
+            private: private. Default is None
 
         Returns:
             :py:class:`.AnnotatedSegment` object
         """
-        return self.__annotated_shape(AnnotatedSegment, x0, y0, x1, y1, title, subtitle)
+        return self.__annotated_shape(
+            AnnotatedSegment,
+            x0,
+            y0,
+            x1,
+            y1,
+            title,
+            subtitle,
+            show_label,
+            show_computations,
+            show_subtitle,
+            format,
+            uncertainty,
+            transform_matrix,
+            readonly,
+            private,
+        )
 
     def info_label(
         self, anchor: str, comps: list, title: str | None = None
