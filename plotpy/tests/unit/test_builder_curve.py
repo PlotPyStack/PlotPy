@@ -13,11 +13,12 @@ from qwt import QwtPlotCurve
 from plotpy.builder import make
 
 
-def show_item(qtbot, item, type="curve"):
+def show_items_qtbot(qtbot, items, type="curve"):
     """Plot curve in a dialog"""
     win = make.dialog(type=type)
     plot = win.manager.get_plot()
-    plot.add_item(item)
+    for item in items:
+        plot.add_item(item)
     win.show()
     qtbot.keyClick(win, Qt.Key_Enter)
 
@@ -43,7 +44,7 @@ def _make_curve_style(shade, curvestyle, baseline):
 def test_builder_curve_curve_style(qtbot, shade, curvestyle, baseline):
     """Test curve parameters of curve() method"""
     curve = _make_curve_style(shade, curvestyle, baseline)
-    show_item(qtbot, curve, "curve")
+    show_items_qtbot(qtbot, [curve], "curve")
 
 
 @pytest.mark.parametrize("shade", [0, 0.4, 1.0])
@@ -52,7 +53,7 @@ def test_builder_curve_curve_style(qtbot, shade, curvestyle, baseline):
 def test_builder_curve_curve_shade_baseline(qtbot, shade, curvestyle, baseline):
     """Test curve parameters of curve() method"""
     curve = _make_curve_style(shade, curvestyle, baseline)
-    show_item(qtbot, curve, "curve")
+    show_items_qtbot(qtbot, [curve], "curve")
 
 
 def _make_curve_linestyle(color, linestyle, linewidth):
@@ -76,7 +77,7 @@ def _make_curve_linestyle(color, linestyle, linewidth):
 def test_builder_curve_line_style(qtbot, color, linestyle, linewidth):
     """Test line parameters of curve() method"""
     curve = _make_curve_linestyle(color, linestyle, linewidth)
-    show_item(qtbot, curve, "curve")
+    show_items_qtbot(qtbot, [curve], "curve")
 
 
 @pytest.mark.parametrize("color", ["red", "blue"])
@@ -85,7 +86,7 @@ def test_builder_curve_line_style(qtbot, color, linestyle, linewidth):
 def test_builder_curve_line_color(qtbot, color, linestyle, linewidth):
     """Test line parameters of curve() method"""
     curve = _make_curve_linestyle(color, linestyle, linewidth)
-    show_item(qtbot, curve, "curve")
+    show_items_qtbot(qtbot, [curve], "curve")
 
 
 def _make_curve_marker(marker, markersize, markerfacecolor, markeredgecolor):
@@ -134,7 +135,7 @@ def test_builder_curve_marker_params_symbol(
 ):
     """Test marker parameters of curve() methodg"""
     curve = _make_curve_marker(marker, markersize, markerfacecolor, markeredgecolor)
-    show_item(qtbot, curve, "curve")
+    show_items_qtbot(qtbot, [curve], "curve")
 
 
 @pytest.mark.parametrize("marker", ["Cross"])
@@ -146,4 +147,4 @@ def test_builder_curve_marker_size_color(
 ):
     """Test marker parameters of curve() methodg"""
     curve = _make_curve_marker(marker, markersize, markerfacecolor, markeredgecolor)
-    show_item(qtbot, curve, "curve")
+    show_items_qtbot(qtbot, [curve], "curve")
