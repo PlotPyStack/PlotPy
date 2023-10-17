@@ -806,28 +806,62 @@ class SubplotWidget(BasePlotWidget):
 
 
 class SyncPlotWindow(QW.QMainWindow):
-    """Window for showing plots, optionally synchronized"""
+    """Window for showing plots, optionally synchronized
 
-    def __init__(self, parent=None, title=None, options=None):
+    Args:
+        parent: parent widget
+        toolbar: show/hide toolbar
+        options: plot options
+        panels: additionnal panels
+        auto_tools: If True, the plot tools are automatically registered.
+         If False, the user must register the tools manually.
+        title: The window title
+        icon: The window icon
+
+    Usage: first, create a window, then add plots to it, then call the
+    :py:meth:`.SyncPlotWindow.finalize_configuration` method to add panels and
+    eventually register tools.
+
+    Example::
+
+        from plotpy.plot import BasePlot, SyncPlotWindow
+        win = SyncPlotWindow(title="My window")
+        plot = BasePlot()
+        win.add_plot(plot)
+        win.finalize_configuration()
+        win.show()
+    """
+
+    def __init__(
+        self,
+        parent: QWidget | None = None,
+        toolbar: bool = True,
+        options: PlotOptions | None = None,
+        auto_tools: bool = True,
+        title: str = "PlotPy",
+        icon: str = "plotpy.svg",
+    ) -> None:
         super().__init__(parent)
-        title = self.__doc__ if title is None else title
-        set_widget_title_icon(self, title, "plotpy.svg")
+        set_widget_title_icon(self, title, icon)
         self.manager = PlotManager(None)
         self.manager.set_main(self)
         self.subplotwidget = SubplotWidget(self.manager, parent=self, options=options)
         self.setCentralWidget(self.subplotwidget)
-        toolbar = QW.QToolBar(_("Tools"), self)
-        self.manager.add_toolbar(toolbar, "default")
-        toolbar.setMovable(True)
-        toolbar.setFloatable(True)
-        self.addToolBar(toolbar)
+        self.toolbar = QW.QToolBar(_("Tools"), self)
+        self.toolbar.setVisible(toolbar)
+        self.manager.add_toolbar(self.toolbar, "default")
+        self.toolbar.setMovable(True)
+        self.toolbar.setFloatable(True)
+        self.addToolBar(self.toolbar)
+        self.auto_tools = auto_tools
 
-    def finalize_configuration(self):
+    def finalize_configuration(self) -> None:
         """Configure plot manager and register all tools"""
         self.subplotwidget.add_panels_to_manager()
-        self.subplotwidget.register_tools()
+        if self.auto_tools:
+            self.subplotwidget.register_tools()
 
-    def rescale_plots(self):
+    def rescale_plots(self) -> None:
         """Rescale all plots"""
         QW.QApplication.instance().processEvents()
         for plot in self.subplotwidget.plots:
@@ -838,8 +872,23 @@ class SyncPlotWindow(QW.QMainWindow):
         super().showEvent(event)
         QC.QTimer.singleShot(0, self.rescale_plots)
 
-    def add_plot(self, row, col, plot, sync=False, plot_id=None):
-        """Add plot to window"""
+    def add_plot(
+        self,
+        row: int,
+        col: int,
+        plot: BasePlot,
+        sync: bool = False,
+        plot_id: str | None = None,
+    ) -> None:
+        """Add plot to window
+
+        Args:
+            row: The row index
+            col: The column index
+            plot: The plot to add
+            sync: If True, the axes are synchronized
+            plot_id: The plot id
+        """
         if plot_id is None:
             plot_id = str(len(self.subplotwidget.plots) + 1)
         self.subplotwidget.add_plot(plot, row, col, plot_id)

@@ -20,7 +20,10 @@ from plotpy.tests.data import gen_2d_gaussian
 
 def plot(plot_type, *itemlists):
     """Plot items in SyncPlotDialog"""
-    win = SyncPlotWindow(options=PlotOptions(type=plot_type))
+    win = SyncPlotWindow(
+        title="Window for showing plots, optionally synchronized",
+        options=PlotOptions(type=plot_type),
+    )
     row, col = 0, 0
     for items in itemlists:
         plot = BasePlot()
