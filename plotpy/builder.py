@@ -1728,7 +1728,7 @@ class PlotBuilder:
         y: numpy.ndarray,
         data: numpy.ndarray,
         title: str | None = None,
-        alpha_function: bool | None = None,
+        alpha_function: LUTAlpha | None = None,
         alpha: float | None = None,
         background_color: str | None = None,
         colormap: str | None = None,
