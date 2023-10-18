@@ -17,7 +17,7 @@ from qwt import QwtSymbol
 from plotpy.config import CONF, _
 from plotpy.coords import canvas_to_axes
 from plotpy.interfaces import IBasePlotItem, ISerializableType, IShapeItemType
-from plotpy.items.shapes.base import AbstractShape
+from plotpy.items.shape.base import AbstractShape
 from plotpy.styles.shape import ShapeParam
 
 if TYPE_CHECKING:  # pragma: no cover

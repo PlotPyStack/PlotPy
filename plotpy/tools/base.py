@@ -6,7 +6,7 @@ from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
 from plotpy.events import RectangularSelectionHandler, setup_standard_tool_filter
-from plotpy.items.shapes.rectangle import RectangleShape
+from plotpy.items.shape.rectangle import RectangleShape
 
 SHAPE_Z_OFFSET = 1000
 

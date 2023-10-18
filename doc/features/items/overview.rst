@@ -69,21 +69,21 @@ Annotations
 
 The following annotation items are available:
 
-* :py:class:`.annotations.AnnotatedPoint`
-* :py:class:`.annotations.AnnotatedSegment`
-* :py:class:`.annotations.AnnotatedRectangle`
-* :py:class:`.annotations.AnnotatedObliqueRectangle`
-* :py:class:`.annotations.AnnotatedEllipse`
-* :py:class:`.annotations.AnnotatedCircle`
+* :py:class:`.AnnotatedPoint`
+* :py:class:`.AnnotatedSegment`
+* :py:class:`.AnnotatedRectangle`
+* :py:class:`.AnnotatedObliqueRectangle`
+* :py:class:`.AnnotatedEllipse`
+* :py:class:`.AnnotatedCircle`
 
 Labels
 ^^^^^^
 
 The following label items are available:
 
-* :py:class:`.label.LabelItem`
-* :py:class:`.label.LegendBoxItem`
-* :py:class:`.label.SelectedLegendBoxItem`
-* :py:class:`.label.RangeComputation`
-* :py:class:`.label.RangeComputation2d`
-* :py:class:`.label.DataInfoLabel`
+* :py:class:`.LabelItem`
+* :py:class:`.LegendBoxItem`
+* :py:class:`.SelectedLegendBoxItem`
+* :py:class:`.RangeComputation`
+* :py:class:`.RangeComputation2d`
+* :py:class:`.DataInfoLabel`

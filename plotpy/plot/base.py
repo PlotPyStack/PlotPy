@@ -36,13 +36,20 @@ from plotpy.config import CONF, _
 from plotpy.constants import PARAMETERS_TITLE_ICON, PlotType
 from plotpy.events import StatefulEventFilter
 from plotpy.interfaces import items as itf
-from plotpy.items import annotations
-from plotpy.items.curve.base import CurveItem
-from plotpy.items.grid import GridItem
-from plotpy.items.image.base import BaseImageItem
-from plotpy.items.polygon import PolygonMapItem
-from plotpy.items.shapes.marker import Marker
-from plotpy.items.shapes.polygon import PolygonShape
+from plotpy.items import (
+    AnnotatedCircle,
+    AnnotatedEllipse,
+    AnnotatedObliqueRectangle,
+    AnnotatedPoint,
+    AnnotatedRectangle,
+    AnnotatedSegment,
+    BaseImageItem,
+    CurveItem,
+    GridItem,
+    Marker,
+    PolygonMapItem,
+    PolygonShape,
+)
 from plotpy.styles.axes import AxesParam, AxeStyleParam, AxisParam, ImageAxesParam
 from plotpy.styles.base import GridParam, ItemParameters
 
@@ -179,13 +186,13 @@ class BasePlot(qwt.QwtPlot):
     #:     angle (float): the new angle (in radians)
     SIG_ITEM_ROTATED = QC.Signal(object, float)
 
-    #: Signal emitted by plot when a shapes.Marker position changes
+    #: Signal emitted by plot when a shape.Marker position changes
     #:
     #: Args:
     #:     marker: the moved marker
     SIG_MARKER_CHANGED = QC.Signal(object)
 
-    #: Signal emitted by plot when a shapes.Axes position (or the angle) changes
+    #: Signal emitted by plot when a shape.Axes position (or the angle) changes
     #:
     #: Args:
     #:     axes: the moved axes
@@ -197,7 +204,7 @@ class BasePlot(qwt.QwtPlot):
     #:     annotation: the moved annotation
     SIG_ANNOTATION_CHANGED = QC.Signal(object)
 
-    #: Signal emitted by plot when the a shapes.XRangeSelection range changes
+    #: Signal emitted by plot when the a shape.XRangeSelection range changes
     #:
     #: Args:
     #:     selection: the selection item
@@ -2301,9 +2308,9 @@ class BasePlot(qwt.QwtPlot):
 # It's not possible to simply register AnnotatedShape class
 # because their is no warranty that SHAPE_CLASS implements all methods.
 BasePlot.register_autoscale_type(PolygonShape)
-BasePlot.register_autoscale_type(annotations.AnnotatedRectangle)
-BasePlot.register_autoscale_type(annotations.AnnotatedCircle)
-BasePlot.register_autoscale_type(annotations.AnnotatedEllipse)
-BasePlot.register_autoscale_type(annotations.AnnotatedObliqueRectangle)
-BasePlot.register_autoscale_type(annotations.AnnotatedSegment)
-BasePlot.register_autoscale_type(annotations.AnnotatedPoint)
+BasePlot.register_autoscale_type(AnnotatedRectangle)
+BasePlot.register_autoscale_type(AnnotatedCircle)
+BasePlot.register_autoscale_type(AnnotatedEllipse)
+BasePlot.register_autoscale_type(AnnotatedObliqueRectangle)
+BasePlot.register_autoscale_type(AnnotatedSegment)
+BasePlot.register_autoscale_type(AnnotatedPoint)

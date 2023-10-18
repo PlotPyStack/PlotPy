@@ -29,7 +29,7 @@ from guidata.utils.misc import assert_interfaces_valid
 
 from plotpy.config import _
 from plotpy.contour2d import contour_2d_grid, contour_2d_ortho
-from plotpy.items.shapes.polygon import PolygonShape
+from plotpy.items.shape.polygon import PolygonShape
 from plotpy.styles import ShapeParam
 
 

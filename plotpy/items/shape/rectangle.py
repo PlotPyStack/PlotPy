@@ -8,7 +8,7 @@ import numpy as np
 from guidata.configtools import get_icon
 from guidata.utils.misc import assert_interfaces_valid
 
-from plotpy.items.shapes.polygon import PolygonShape
+from plotpy.items.shape.polygon import PolygonShape
 from plotpy.mathutils.geometry import (
     compute_center,
     vector_norm,

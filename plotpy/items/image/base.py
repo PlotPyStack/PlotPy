@@ -39,7 +39,7 @@ from plotpy.interfaces import (
     ITrackableItemType,
     IVoiImageItemType,
 )
-from plotpy.items.shapes.rectangle import RectangleShape
+from plotpy.items.shape.rectangle import RectangleShape
 from plotpy.lutrange import lut_range_threshold
 from plotpy.mathutils.colormap import FULLRANGE, get_cmap, get_cmap_name
 from plotpy.styles.image import LUTAlpha, RawImageParam

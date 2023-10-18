@@ -40,7 +40,7 @@ from plotpy.tools.base import (
     ToggleTool,
 )
 from plotpy.tools.misc import OpenFileTool
-from plotpy.tools.shapes import CircleTool, RectangleTool, RectangularShapeTool
+from plotpy.tools.shape import CircleTool, RectangleTool, RectangularShapeTool
 from plotpy.widgets.imagefile import exec_image_save_dialog
 
 if TYPE_CHECKING:  # pragma: no cover

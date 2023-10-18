@@ -8,7 +8,7 @@ from plotpy.items import AnnotatedObliqueRectangle, AnnotatedPoint, AnnotatedRec
 from plotpy.panels.base import ID_OCS, ID_XCS, ID_YCS
 from plotpy.tools.base import PanelTool
 from plotpy.tools.image import update_image_tool_status
-from plotpy.tools.shapes import RectangularShapeTool
+from plotpy.tools.shape import RectangularShapeTool
 
 
 class CrossSectionTool(RectangularShapeTool):

@@ -2,7 +2,7 @@
 
 # pylint: disable=unused-import
 
-from .annotations import (
+from .annotation import (
     AnnotatedCircleTool,
     AnnotatedEllipseTool,
     AnnotatedObliqueRectangleTool,
@@ -71,7 +71,7 @@ from .plot import (
     RectZoomTool,
 )
 from .selection import SelectTool
-from .shapes import (
+from .shape import (
     CircleTool,
     EllipseTool,
     FreeFormTool,

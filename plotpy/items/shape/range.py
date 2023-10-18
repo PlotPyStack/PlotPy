@@ -14,7 +14,7 @@ from qtpy import QtGui as QG
 
 from plotpy.config import CONF, _
 from plotpy.coords import canvas_to_axes
-from plotpy.items.shapes.base import AbstractShape
+from plotpy.items.shape.base import AbstractShape
 from plotpy.styles.shape import RangeShapeParam
 
 if TYPE_CHECKING:  # pragma: no cover

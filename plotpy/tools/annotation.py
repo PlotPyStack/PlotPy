@@ -7,7 +7,7 @@ from plotpy.items import (
     AnnotatedRectangle,
     AnnotatedSegment,
 )
-from plotpy.tools.shapes import (
+from plotpy.tools.shape import (
     CircleTool,
     EllipseTool,
     ObliqueRectangleTool,

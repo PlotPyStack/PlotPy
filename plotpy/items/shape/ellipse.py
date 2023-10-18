@@ -13,7 +13,7 @@ from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qwt import QwtSymbol
 
-from plotpy.items.shapes.polygon import PolygonShape
+from plotpy.items.shape.polygon import PolygonShape
 from plotpy.mathutils.geometry import compute_angle, compute_center
 
 if TYPE_CHECKING:  # pragma: no cover

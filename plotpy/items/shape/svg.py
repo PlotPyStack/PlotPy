@@ -12,11 +12,11 @@ from qtpy import QtSvg as QS
 from qwt.scale_map import QwtScaleMap
 from qwt.symbol import QwtSymbol
 
-from plotpy.items import shapes
+from plotpy.items import shape
 from plotpy.styles import ShapeParam
 
 
-class RectangleSVGShape(shapes.RectangleShape):
+class RectangleSVGShape(shape.RectangleShape):
     """Rectangle SVG shape
 
     Args:
@@ -38,7 +38,7 @@ class RectangleSVGShape(shapes.RectangleShape):
         shapeparam: ShapeParam = None,
     ) -> None:
         self.svg_data = svg_data
-        shapes.RectangleShape.__init__(self, x1, y1, x2, y2, shapeparam)
+        shape.RectangleShape.__init__(self, x1, y1, x2, y2, shapeparam)
 
     def set_data(self, svg_data: bytes) -> None:
         """Set SVG data"""
@@ -51,7 +51,7 @@ class RectangleSVGShape(shapes.RectangleShape):
         yMap: QwtScaleMap,
         canvasRect: QC.QRectF,
     ) -> None:
-        """Draw shape (reimplement shapes.Shape.draw))"""
+        """Draw shape (reimplement shape.Shape.draw))"""
         points = self.transform_points(xMap, yMap)
         renderer = QS.QSvgRenderer(self.svg_data)
         renderer.render(painter, points.boundingRect())
@@ -86,7 +86,7 @@ class SquareSVGShape(RectangleSVGShape):
             self.points += delta
 
 
-class CircleSVGShape(shapes.EllipseShape):
+class CircleSVGShape(shape.EllipseShape):
     """Circle SVG shape
 
     Args:
@@ -108,7 +108,7 @@ class CircleSVGShape(shapes.EllipseShape):
         shapeparam: ShapeParam = None,
     ) -> None:
         self.svg_data = svg_data
-        shapes.EllipseShape.__init__(self, x1, y1, x2, y2, shapeparam)
+        shape.EllipseShape.__init__(self, x1, y1, x2, y2, shapeparam)
 
     def set_data(self, svg_data: bytes) -> None:
         """Set SVG data"""
@@ -121,7 +121,7 @@ class CircleSVGShape(shapes.EllipseShape):
         yMap: QwtScaleMap,
         canvasRect: QC.QRect,
     ) -> None:
-        """Draw shape (reimplement shapes.Shape.draw))"""
+        """Draw shape (reimplement shape.Shape.draw))"""
         points, line0, line1, rect = self.compute_elements(xMap, yMap)
         if canvasRect.intersects(rect.toRect()) and self.svg_data is not None:
             pen, brush, symbol = self.get_pen_brush(xMap, yMap)

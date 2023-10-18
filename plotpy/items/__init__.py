@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # pylint: disable=unused-import
-from .annotations import (
+from .annotation import (
     AnnotatedCircle,
     AnnotatedEllipse,
     AnnotatedObliqueRectangle,
@@ -48,7 +48,7 @@ from .label import (
     SelectedLegendBoxItem,
 )
 from .polygon import PolygonMapItem
-from .shapes import (
+from .shape import (
     AbstractShape,
     Axes,
     CircleSVGShape,

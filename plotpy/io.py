@@ -623,38 +623,18 @@ def register_serializable_items(modname, classnames):
 
 # Curves
 register_serializable_items(
-    "plotpy.items.curve.base",
-    ["CurveItem"],
-)
-register_serializable_items(
-    "plotpy.items.polygon",
-    ["PolygonMapItem"],
-)
-register_serializable_items(
-    "plotpy.items.curve.errorbar",
-    ["ErrorBarCurveItem"],
-)
-# Images
-register_serializable_items(
-    "plotpy.items.image.base",
-    ["RawImageItem"],
-)
-register_serializable_items(
-    "plotpy.items.image.image_items",
-    ["ImageItem", "XYImageItem", "RGBImageItem"],
-)
-register_serializable_items(
-    "plotpy.items.image.transform",
-    ["TrImageItem"],
-)
-register_serializable_items(
-    "plotpy.items.image.masked",
-    ["MaskedImageItem", "MaskedXYImageItem"],
-)
-# Shapes
-register_serializable_items(
-    "plotpy.items.shapes",
+    "plotpy.items",
     [
+        "CurveItem",
+        "PolygonMapItem",
+        "ErrorBarCurveItem",
+        "RawImageItem",
+        "ImageItem",
+        "XYImageItem",
+        "RGBImageItem",
+        "TrImageItem",
+        "MaskedImageItem",
+        "MaskedXYImageItem",
         "Marker",
         "PolygonShape",
         "PointShape",
@@ -663,24 +643,16 @@ register_serializable_items(
         "ObliqueRectangleShape",
         "EllipseShape",
         "Axes",
-    ],
-)
-# Annotations
-register_serializable_items(
-    "plotpy.items.annotations",
-    [
         "AnnotatedPoint",
         "AnnotatedSegment",
         "AnnotatedRectangle",
         "AnnotatedObliqueRectangle",
         "AnnotatedEllipse",
         "AnnotatedCircle",
+        "LabelItem",
+        "LegendBoxItem",
+        "SelectedLegendBoxItem",
     ],
-)
-# Labels
-register_serializable_items(
-    "plotpy.items.label",
-    ["LabelItem", "LegendBoxItem", "SelectedLegendBoxItem"],
 )
 
 

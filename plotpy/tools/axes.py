@@ -7,7 +7,7 @@ from qtpy import QtWidgets as QW
 from plotpy.config import _
 from plotpy.items import Axes
 from plotpy.tools.base import CommandTool
-from plotpy.tools.shapes import RectangularShapeTool
+from plotpy.tools.shape import RectangularShapeTool
 
 
 class AxisScaleTool(CommandTool):

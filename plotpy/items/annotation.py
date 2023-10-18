@@ -9,7 +9,7 @@
 Annotations
 -----------
 
-The :mod:`annotations` module provides annotated shape plot items.
+The :mod:`annotation` module provides annotated shape plot items.
 """
 
 from __future__ import annotations
@@ -25,11 +25,11 @@ from plotpy.config import CONF, _
 from plotpy.coords import canvas_to_axes
 from plotpy.interfaces import IBasePlotItem, ISerializableType, IShapeItemType
 from plotpy.items.label import DataInfoLabel
-from plotpy.items.shapes.base import AbstractShape
-from plotpy.items.shapes.ellipse import EllipseShape
-from plotpy.items.shapes.point import PointShape
-from plotpy.items.shapes.rectangle import ObliqueRectangleShape, RectangleShape
-from plotpy.items.shapes.segment import SegmentShape
+from plotpy.items.shape.base import AbstractShape
+from plotpy.items.shape.ellipse import EllipseShape
+from plotpy.items.shape.point import PointShape
+from plotpy.items.shape.rectangle import ObliqueRectangleShape, RectangleShape
+from plotpy.items.shape.segment import SegmentShape
 from plotpy.mathutils.geometry import (
     compute_angle,
     compute_center,
