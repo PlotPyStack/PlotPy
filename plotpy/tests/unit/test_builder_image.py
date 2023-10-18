@@ -80,7 +80,7 @@ def test_builder_image_pixel_size(qtbot, pixel_size):
 
 @pytest.mark.parametrize("center_on", [None, [1.0, 3.0]])
 def test_builder_image_center_on(qtbot, center_on):
-    item = _make_image(center_on=center_on)
+    item = _make_image(center_on=center_on, pixel_size=(1.0, 1.0))
     show_items_qtbot(qtbot, [item])
 
 

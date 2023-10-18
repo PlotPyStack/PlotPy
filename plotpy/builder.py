@@ -1257,8 +1257,7 @@ class PlotBuilder:
         assert data.ndim == 2, "Data must have 2 dimensions"
         if pixel_size is None:
             assert center_on is None, (
-                "Ambiguous parameters: both `center_on`"
-                " and `xdata`/`ydata` were specified"
+                "Argument `pixel_size` must be specified when `center_on`"
             )
             xmin, xmax = xdata
             ymin, ymax = ydata
