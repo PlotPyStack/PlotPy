@@ -56,11 +56,11 @@ The new keyword parameter ``alpha_function`` has been added to the methods
 compute the alpha channel of the image from the data values. The supported
 functions are:
 
-* :py:attr:`plotpy.builder.LUTAlpha.NONE` (default)
-* :py:attr:`plotpy.builder.LUTAlpha.CONSTANT`
-* :py:attr:`plotpy.builder.LUTAlpha.LINEAR`
-* :py:attr:`plotpy.builder.LUTAlpha.SIGMOID`
-* :py:attr:`plotpy.builder.LUTAlpha.TANH`
+* :py:attr:`plotpy.constants.LUTAlpha.NONE` (default)
+* :py:attr:`plotpy.constants.LUTAlpha.CONSTANT`
+* :py:attr:`plotpy.constants.LUTAlpha.LINEAR`
+* :py:attr:`plotpy.constants.LUTAlpha.SIGMOID`
+* :py:attr:`plotpy.constants.LUTAlpha.TANH`
 
 .. warning:: The ``alpha_mask`` parameter has been removed from the methods
              :py:meth:`.PlotBuilder.image`, :py:meth:`.PlotBuilder.xyimage`,

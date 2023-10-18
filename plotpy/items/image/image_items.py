@@ -12,6 +12,7 @@ from qtpy import QtCore as QC
 
 from plotpy import io
 from plotpy.config import _
+from plotpy.constants import LUTAlpha
 from plotpy.coords import canvas_to_axes
 from plotpy.interfaces import (
     IBaseImageItem,
@@ -28,7 +29,7 @@ from plotpy.interfaces import (
 from plotpy.items.image.base import RawImageItem, pixelround
 from plotpy.items.image.filter import XYImageFilterItem, to_bins
 from plotpy.mathutils.geometry import colvector
-from plotpy.styles.image import ImageParam, LUTAlpha, RGBImageParam, XYImageParam
+from plotpy.styles.image import ImageParam, RGBImageParam, XYImageParam
 
 if TYPE_CHECKING:  # pragma: no cover
     import guidata.dataset.io

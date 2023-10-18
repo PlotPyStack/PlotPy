@@ -10,7 +10,7 @@
 import numpy as np
 from guidata.qthelpers import qt_app_context
 
-from plotpy.builder import LUTAlpha, make
+from plotpy.builder import make
 from plotpy.tests import get_path
 
 
@@ -35,7 +35,7 @@ def test_cross_section():
         win.show()
         image = make.image(filename=filename, colormap="bone")
         data2 = np.array(image.data.T[200:], copy=True)
-        image2 = make.image(data2, title="Modified", alpha_function=LUTAlpha.LINEAR)
+        image2 = make.image(data2, title="Modified", alpha_function="linear")
         plot = win.manager.get_plot()
         plot.add_item(image)
         plot.add_item(image2, z=1)

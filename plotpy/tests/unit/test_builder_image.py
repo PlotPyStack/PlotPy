@@ -9,7 +9,7 @@ import numpy as np
 import pytest
 
 from plotpy.builder import make
-from plotpy.styles import LUTAlpha
+from plotpy.constants import LUTAlpha
 from plotpy.tests.unit.test_builder_curve import show_items_qtbot
 
 

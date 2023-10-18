@@ -45,7 +45,6 @@ from plotpy.styles.image import (
     ImageFilterParam,
     ImageParam,
     ImageParam_MS,
-    LUTAlpha,
     MaskedImageParam,
     MaskedImageParam_MS,
     MaskedImageParamMixin,

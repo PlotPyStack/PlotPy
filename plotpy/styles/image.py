@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import enum
-
 import numpy as np
 from guidata.dataset import (
     BeginGroup,
@@ -20,6 +18,7 @@ from qtpy import QtGui as QG
 
 from plotpy._scaler import INTERP_AA, INTERP_LINEAR, INTERP_NEAREST
 from plotpy.config import _
+from plotpy.constants import LUTAlpha
 from plotpy.mathutils.colormap import build_icon_from_cmap_name, get_colormap_list
 from plotpy.styles.base import ItemParameters
 
@@ -29,35 +28,6 @@ def _create_choices():
     for cmap_name in get_colormap_list():
         choices.append((cmap_name, cmap_name, build_icon_from_cmap_name))
     return choices
-
-
-class LUTAlpha(enum.Enum):
-    """LUT Alpha functions"""
-
-    #: No alpha function
-    NONE = 0
-
-    #: Constant alpha function
-    CONSTANT = 1
-
-    #: Linear alpha function
-    LINEAR = 2
-
-    #: Sigmoid alpha function
-    SIGMOID = 3
-
-    #: Hyperbolic tangent alpha function
-    TANH = 4
-
-    def get_choices(self):
-        """Return the list of choices"""
-        return [
-            (LUTAlpha.NONE.value, _("None")),
-            (LUTAlpha.CONSTANT.value, _("Constant")),
-            (LUTAlpha.LINEAR.value, _("Linear")),
-            (LUTAlpha.SIGMOID.value, _("Sigmoid")),
-            (LUTAlpha.TANH.value, _("Hyperbolic tangent")),
-        ]
 
 
 # TODO: Use an "enum" like LUTAlpha for the interpolation mode as well

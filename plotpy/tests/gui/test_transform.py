@@ -19,7 +19,8 @@ from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 
 from plotpy import io
-from plotpy.builder import LUTAlpha, make
+from plotpy.builder import make
+from plotpy.constants import LUTAlpha
 from plotpy.items import TrImageItem, assemble_imageitems
 from plotpy.tests import vistools as ptv
 from plotpy.tests.data import gen_image4

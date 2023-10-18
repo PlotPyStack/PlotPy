@@ -9,8 +9,9 @@
 
 from guidata.qthelpers import qt_app_context
 
-from plotpy.builder import LUTAlpha, make
-from plotpy.styles.base import style_generator, update_style_attr
+from plotpy.builder import make
+from plotpy.constants import LUTAlpha
+from plotpy.styles import style_generator, update_style_attr
 from plotpy.tests import get_path
 from plotpy.tools import (
     EllipseTool,

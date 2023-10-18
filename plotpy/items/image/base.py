@@ -26,6 +26,7 @@ from plotpy._scaler import (
     _scale_rect,
 )
 from plotpy.config import _
+from plotpy.constants import LUTAlpha
 from plotpy.interfaces import (
     IBaseImageItem,
     IBasePlotItem,
@@ -42,7 +43,7 @@ from plotpy.interfaces import (
 from plotpy.items.shape.rectangle import RectangleShape
 from plotpy.lutrange import lut_range_threshold
 from plotpy.mathutils.colormap import FULLRANGE, get_cmap, get_cmap_name
-from plotpy.styles.image import LUTAlpha, RawImageParam
+from plotpy.styles.image import RawImageParam
 
 if TYPE_CHECKING:  # pragma: no cover
     import guidata.dataset.io

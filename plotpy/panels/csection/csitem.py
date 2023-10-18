@@ -231,7 +231,7 @@ def compute_oblique_section(item, obj, debug=False):
         else:
             TEMP_ITEM.set_data(dst_image)
         if False:
-            from plotpy.styles import LUTAlpha
+            from plotpy.constants import LUTAlpha
 
             TEMP_ITEM.param.alpha_function = LUTAlpha.LINEAR.value
             xmin, ymin = ixa, iya

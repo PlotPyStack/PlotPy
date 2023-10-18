@@ -4,7 +4,7 @@
 max-line-length=88
 
 [TYPECHECK]
-ignored-modules=qtpy.QtWidgets,qtpy.QtCore,qtpy.QtGui,qtpy.QtPrintSupport,qtpy.QtDesigner,plotpy._scaler,plotpy.mandelbrot,plotpy.contour2d,plotpy.histogram2d
+ignored-modules=qtpy.QtWidgets,qtpy.QtCore,qtpy.QtGui,qtpy.QtSvg,qtpy.QtPrintSupport,qtpy.QtDesigner,plotpy._scaler,plotpy.mandelbrot,plotpy.contour2d,plotpy.histogram2d
 
 [MESSAGES CONTROL]
 disable=wrong-import-order
