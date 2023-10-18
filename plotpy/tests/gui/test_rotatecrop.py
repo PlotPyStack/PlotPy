@@ -7,8 +7,6 @@
 
 # guitest: show
 
-import os
-
 import numpy as np
 from guidata.env import execenv
 from guidata.qthelpers import exec_dialog, qt_app_context
@@ -16,6 +14,7 @@ from qtpy import QtWidgets as QW
 
 from plotpy import io
 from plotpy.builder import make
+from plotpy.tests import get_path
 from plotpy.widgets.rotatecrop import (
     MultipleRotateCropWidget,
     RotateCropDialog,
@@ -25,9 +24,7 @@ from plotpy.widgets.rotatecrop import (
 
 def create_test_data(fname, func=None):
     """Create test data"""
-    array0 = io.imread(
-        os.path.join(os.path.dirname(__file__), fname), to_grayscale=True
-    )
+    array0 = io.imread(get_path(fname), to_grayscale=True)
     if func is not None:
         array0 = func(array0)
     item0 = make.trimage(array0, dx=0.1, dy=0.1)
@@ -95,5 +92,3 @@ def test_rotate_crop():
 
 if __name__ == "__main__":
     test_rotate_crop()
-    # dialog_test("contrast.png", interactive=False)
-    # test_dialog("brain.png", interactive=True)

@@ -7,12 +7,11 @@
 
 # guitest: show
 
-import os
-
 import numpy as np
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import LUTAlpha, make
+from plotpy.tests import get_path
 
 
 def create_window():
@@ -31,7 +30,7 @@ def create_window():
 def test_cross_section():
     """Test cross section"""
     with qt_app_context(exec_loop=True):
-        filename = os.path.join(os.path.dirname(__file__), "brain.png")
+        filename = get_path("brain.png")
         win = create_window()
         win.show()
         image = make.image(filename=filename, colormap="bone")

@@ -17,6 +17,7 @@ from __future__ import annotations
 import os.path as osp
 
 from plotpy.builder import make
+from plotpy.tests import get_path
 from plotpy.tests.gui.test_loadsaveitems_pickle import PickleTest
 
 
@@ -24,7 +25,7 @@ class MaskedImageTest(PickleTest):
     """Test class for MaskedImageItem tests"""
 
     FNAME = f"{osp.splitext(osp.basename(__file__))[0]}.pickle"
-    IMAGE_FN = osp.join(osp.abspath(osp.dirname(__file__)), "brain.png")
+    IMAGE_FN = get_path("brain.png")
 
     def build_items(self) -> list:
         """Build items"""

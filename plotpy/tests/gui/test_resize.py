@@ -7,19 +7,18 @@
 
 # guitest: show
 
-import os
-
 from guidata.qthelpers import qt_app_context
 
 from plotpy import io
 from plotpy.mathutils import scaler
+from plotpy.tests import get_path
 from plotpy.tests.gui.test_rotatecrop import imshow
 
 
 def test_resize():
     """Test"""
     with qt_app_context(exec_loop=False):
-        filename = os.path.join(os.path.dirname(__file__), "brain.png")
+        filename = get_path("brain.png")
         data = io.imread(filename)
         dst_image = scaler.resize(data, (2000, 3000))
         imshow(dst_image)

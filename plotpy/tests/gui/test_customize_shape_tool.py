@@ -7,12 +7,11 @@
 
 # guitest: show
 
-import os
-
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import LUTAlpha, make
 from plotpy.styles.base import style_generator, update_style_attr
+from plotpy.tests import get_path
 from plotpy.tools import (
     EllipseTool,
     FreeFormTool,
@@ -58,7 +57,7 @@ def create_window():
 def test_customize_shape_tool():
     """Test"""
     with qt_app_context(exec_loop=True):
-        filename = os.path.join(os.path.dirname(__file__), "brain.png")
+        filename = get_path("brain.png")
         win = create_window()
         image = make.image(
             filename=filename, colormap="bone", alpha_function=LUTAlpha.LINEAR

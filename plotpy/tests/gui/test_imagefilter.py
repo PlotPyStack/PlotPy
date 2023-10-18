@@ -7,8 +7,6 @@
 
 # guitest: show
 
-import os
-
 import numpy as np
 from guidata.qthelpers import qt_app_context
 from scipy.ndimage import gaussian_filter
@@ -16,6 +14,7 @@ from scipy.ndimage import gaussian_filter
 from plotpy import io
 from plotpy.builder import make
 from plotpy.tests import data as ptd
+from plotpy.tests import get_path
 
 
 def imshow(x, y, data, filter_area, yreverse=True):
@@ -45,7 +44,7 @@ def test_imagefilter():
     x, y, data = ptd.gen_xyimage()
     imshow(x, y, data, filter_area=(-3.0, -1.0, 0.0, 2.0), yreverse=False)
 
-    filename = os.path.join(os.path.dirname(__file__), "brain.png")
+    filename = get_path("brain.png")
     data = io.imread(filename, to_grayscale=True)
     x = np.linspace(0, 30.0, data.shape[1])
     y = np.linspace(0, 30.0, data.shape[0])

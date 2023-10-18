@@ -7,8 +7,6 @@
 
 # guitest: show
 
-import os
-
 from guidata.qthelpers import qt_app_context, win32_fix_title_bar_background
 from qtpy import QtWidgets as QW
 
@@ -17,6 +15,7 @@ from plotpy.panels import ContrastAdjustment, PlotItemList
 from plotpy.plot import BasePlot, BasePlotOptions
 from plotpy.plot.manager import PlotManager
 from plotpy.tests import data as ptd
+from plotpy.tests import get_path
 
 
 class CentralWidget(QW.QWidget):
@@ -52,7 +51,7 @@ class Window(QW.QMainWindow):
         super().__init__()
         win32_fix_title_bar_background(self)
 
-        filename = os.path.join(os.path.dirname(__file__), "brain.png")
+        filename = get_path("brain.png")
         image1 = make.image(filename=filename, title="Original", colormap="gray")
         image2 = make.image(ptd.gen_image4(500, 500))
 

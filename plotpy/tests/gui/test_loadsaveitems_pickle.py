@@ -24,6 +24,7 @@ from qtpy import QtWidgets as QW
 from plotpy.builder import make
 from plotpy.items import Axes, PolygonShape
 from plotpy.plot import PlotDialog, PlotOptions
+from plotpy.tests import get_path
 from plotpy.tools import ImageMaskTool, LoadItemsTool, SaveItemsTool
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -34,7 +35,7 @@ def build_items() -> list:
     """Build items"""
     x = np.linspace(-10, 10, 200)
     y = np.sin(np.sin(np.sin(x)))
-    filename = os.path.join(os.path.dirname(__file__), "brain.png")
+    filename = get_path("brain.png")
     xydata = make._get_image_data(None, filename, "XY Brain Image", to_grayscale=True)[
         0
     ]

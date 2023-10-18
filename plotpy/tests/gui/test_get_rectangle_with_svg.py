@@ -8,12 +8,11 @@ Get rectangular selection from image with SVG shape
 
 # guitest: show
 
-import os.path as osp
-
 from guidata.env import execenv
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
+from plotpy.tests import get_path
 from plotpy.tests.data import gen_image4
 from plotpy.tests.gui.test_get_segment import SEG_AXES_COORDS, PatchedSelectDialog
 from plotpy.tools import RectangularShapeTool
@@ -26,7 +25,7 @@ class SVGToolExample(RectangularShapeTool):
     TITLE = "Pattern selection tool"
     ICON = "pattern.svg"
     AVOID_NULL_SHAPE = True
-    SVG_FNAME = osp.join(osp.dirname(__file__), "svg_tool.svg")
+    SVG_FNAME = get_path("svg_tool.svg")
 
     def create_shape(self):
         """Create shape to be drawn"""

@@ -12,12 +12,8 @@ import os.path as osp
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
+from plotpy.tests import get_path
 from plotpy.tests import vistools as ptv
-
-
-def get_path(fname):
-    """Return absolute path of data file"""
-    return osp.join(osp.dirname(__file__), fname)
 
 
 def test_image():

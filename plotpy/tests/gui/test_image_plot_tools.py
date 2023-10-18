@@ -7,12 +7,11 @@
 
 # guitest: show
 
-import os
-
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
 from plotpy.items import Marker
+from plotpy.tests import get_path
 from plotpy.tools import (
     AnnotatedCircleTool,
     AnnotatedEllipseTool,
@@ -71,7 +70,7 @@ def create_window():
 def test_image_plot_tools():
     """Test"""
     with qt_app_context(exec_loop=True):
-        filename = os.path.join(os.path.dirname(__file__), "brain.png")
+        filename = get_path("brain.png")
         win = create_window()
         win.show()
         image = make.image(filename=filename, colormap="bone")

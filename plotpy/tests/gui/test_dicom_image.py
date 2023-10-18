@@ -9,12 +9,11 @@ Requires pydicom (>=0.9.3)"""
 
 # guitest: show
 
-import os
-
 import pytest
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
+from plotpy.tests import get_path
 
 try:
     import pydicom  # type:ignore
@@ -32,7 +31,7 @@ def test_dicom_image():
             show_contrast=True,
             type="image",
         )
-        filename = os.path.join(os.path.dirname(__file__), "mr-brain.dcm")
+        filename = get_path("mr-brain.dcm")
         image = make.image(filename=filename, title="DICOM img", colormap="gray")
         plot = win.manager.get_plot()
         plot.add_item(image)

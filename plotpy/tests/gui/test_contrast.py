@@ -14,13 +14,14 @@ from guidata.env import execenv
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
+from plotpy.tests import get_path
 
 
 def test_contrast():
     """Test"""
     # -- Create QApplication
     with qt_app_context(exec_loop=True):
-        filename = osp.join(osp.dirname(__file__), "brain.png")
+        filename = get_path("brain.png")
         image = make.image(filename=filename, title="Original", colormap="gray")
         win = make.dialog(
             edit=False,

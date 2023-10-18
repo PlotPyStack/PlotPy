@@ -7,12 +7,11 @@
 
 # guitest: show
 
-import os
-
 import numpy as np
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
+from plotpy.tests import get_path
 from plotpy.tools import EllipseTool, FreeFormTool, PlaceAxesTool, RectangleTool
 
 
@@ -33,7 +32,7 @@ def create_window():
 
 def test_imagesuperp():
     """Test image superposition"""
-    filename = os.path.join(os.path.dirname(__file__), "brain.png")
+    filename = get_path("brain.png")
     with qt_app_context(exec_loop=True):
         win = create_window()
         image1 = make.image(filename=filename, title="Original", colormap="gray")

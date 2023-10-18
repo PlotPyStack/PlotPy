@@ -7,12 +7,12 @@
 Unit tests for io module
 """
 
-from pathlib import Path
-
 import numpy as np
 import pytest
 from guidata.configtools import get_image_file_path
 from qtpy.QtGui import QImage
+
+from plotpy.tests import get_path
 
 try:
     import pydicom  # type:ignore
@@ -79,7 +79,7 @@ def test_imwrite_csv(tmpdir):
 
 def test_imread_brain_png():
     """Test reading of brain png file"""
-    brain_path = Path(__file__).parents[1] / "gui" / "brain.png"
+    brain_path = get_path("brain.png")
     data = imread(brain_path)
     assert data.shape == (256, 256)
 
@@ -102,7 +102,7 @@ def test_imread_python_icon_grayscale():
 @pytest.mark.skipif(pydicom is None, reason="pydicom not installed")
 def test_imread_dcm():
     """Test reading of dcm file"""
-    brain_path = Path(__file__).parents[1] / "gui" / "mr-brain.dcm"
+    brain_path = get_path("mr-brain.dcm")
     data = imread(brain_path)
     assert data.shape == (512, 512)
 

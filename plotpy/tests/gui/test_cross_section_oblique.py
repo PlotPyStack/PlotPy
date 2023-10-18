@@ -7,14 +7,13 @@
 
 # guitest: show
 
-import os.path as osp
-
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
 from plotpy.panels.csection.csitem import ObliqueCrossSectionItem
 from plotpy.panels.csection.cswidget import ObliqueCrossSection
 from plotpy.plot import PlotDialog, PlotOptions
+from plotpy.tests import get_path
 from plotpy.tools import ImageMaskTool, ObliqueCrossSectionTool, OCSPanelTool
 
 # debug mode shows the ROI in the top-left corner of the image plot:
@@ -60,7 +59,7 @@ def test_cross_section_oblique():
         #    data = np.array((compute_image(4000, grid=False)+1)*32e3, dtype=np.uint16)
         #    image = make.maskedimage(data, colormap="bone", show_mask=True)
 
-        filename = osp.join(osp.dirname(__file__), "brain_cylinder.png")
+        filename = get_path("brain_cylinder.png")
         image = make.maskedimage(filename=filename, colormap="bone")
 
         plot = win.manager.get_plot()
