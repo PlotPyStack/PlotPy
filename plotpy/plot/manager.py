@@ -203,13 +203,10 @@ class PlotManager:
             # This is the very first tool to be added to this manager
             self._first_tool_flag = False
             self.configure_panels()
-        if not any(isinstance(x, ToolKlass) for x in self.tools):
-            tool = ToolKlass(self, *args, **kwargs)
-            self.tools.append(tool)
-            for plot in list(self.plots.values()):
-                tool.register_plot(plot)
-        else:
-            tool = self.get_tool(ToolKlass)
+        tool = ToolKlass(self, *args, **kwargs)
+        self.tools.append(tool)
+        for plot in list(self.plots.values()):
+            tool.register_plot(plot)
         if len(self.tools) == 1 or self.default_tool is None:
             self.default_tool = tool
         return tool
