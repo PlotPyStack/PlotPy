@@ -3,7 +3,7 @@
 # Licensed under the terms of the BSD 3-Clause
 # (see plotpy/LICENSE for details)
 
-"""Test PlotBuilder annotations factory methods"""
+"""Test PlotBuilder annotation factory methods"""
 
 import numpy as np
 import pytest
