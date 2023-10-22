@@ -720,15 +720,12 @@ class PlotManager:
         Register all annotation tools for the plot
         """
         self.add_separator_tool()
-
         self.add_tool(AnnotatedPointTool)
         self.add_tool(AnnotatedSegmentTool)
-
         self.add_tool(AnnotatedRectangleTool)
         self.add_tool(AnnotatedObliqueRectangleTool)
         self.add_tool(AnnotatedCircleTool)
         self.add_tool(AnnotatedEllipseTool)
-
         self.add_tool(LabelTool)
 
     def register_curve_annotation_tools(self) -> None:
@@ -736,10 +733,8 @@ class PlotManager:
         Register all curve friendly annotation tools for the plot
         """
         self.add_separator_tool()
-
         self.add_tool(AnnotatedPointTool)
         self.add_tool(AnnotatedSegmentTool)
-
         self.add_tool(LabelTool)
 
     def register_image_annotation_tools(self) -> None:

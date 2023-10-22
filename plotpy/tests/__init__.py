@@ -12,6 +12,8 @@ import os.path as osp
 
 from guidata.configtools import get_module_data_path
 
+import plotpy
+
 TESTDATAPATH = get_module_data_path("plotpy", osp.join("tests", "data"))
 
 
@@ -24,7 +26,7 @@ def run() -> None:
     """Run plotpy test launcher"""
     from guidata.guitest import run_testlauncher
 
-    import plotpy
+    import plotpy.config  # load icons
 
     run_testlauncher(plotpy)
 

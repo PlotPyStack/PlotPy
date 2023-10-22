@@ -9,7 +9,7 @@ a simple plot with a curve and a filtering tool. In this example, the plot
 manager (see :class:`.PlotManager`) is not used, at least not directly:
 the plot manager is integrated in the :class:`.PlotWidget` class.
 
-.. literalinclude:: ../../../plotpy/tests/gui/test_filtertest1.py
+.. literalinclude:: ../../../plotpy/tests/widgets/test_filtertest1.py
    :start-after: guitest:
 
 Using a plot manager
@@ -20,5 +20,5 @@ Even if this simple example does not justify the use of the :class:`.PlotManager
 applications, using the :class:`.PlotManager` allows to design highly versatile
 graphical user interfaces.
 
-.. literalinclude:: ../../../plotpy/tests/gui/test_filtertest2.py
+.. literalinclude:: ../../../plotpy/tests/widgets/test_filtertest2.py
    :start-after: guitest:

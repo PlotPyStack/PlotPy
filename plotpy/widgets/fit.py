@@ -25,7 +25,7 @@ Example
 
 Here is an example of use of the :func:`guifit` function:
 
-.. literalinclude:: ../../plotpy/tests/gui/test_fit.py
+.. literalinclude:: ../../plotpy/tests/features/test_fit.py
    :start-after: guitest:
 
 

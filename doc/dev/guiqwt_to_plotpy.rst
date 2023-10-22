@@ -53,7 +53,7 @@ As a consequence :
     as stated above, you may consider using the ``'auto'`` value or the
     ``'manual'`` value.
 
-See demo script `tests/gui/test_plot_types.py`.
+See demo script `tests/features/test_plot_types.py`.
 
 Minor changes to the BasePlot class
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -136,7 +136,7 @@ Some new methods were added to class :py:class:`.PlotManager`:
 You may use those methods to simplify you code if you were previously registering
 annotation tools one by one.
 
-See demo script `tests/gui/test_annotations.py`.
+See demo script `tests/items/test_annotations.py`.
 
 New contour features
 ~~~~~~~~~~~~~~~~~~~~
@@ -145,7 +145,7 @@ plotpy integrates now a contour detection algorithm, so that plotpy based
 applications depending on matplotlib only for this function can drop this
 additional dependency.
 
-See demo script `tests/gui/test_contour.py`.
+See demo script `tests/items/test_contour.py`.
 
 MaskedXYImages
 ~~~~~~~~~~~~~~
@@ -156,7 +156,7 @@ You can now use the :py:class:`.MaskedXYImageItem` to apply masks to XYImageItem
 You can use the convenience methods :py:meth:`.PlotBuilder.maskedxyimage` to
 help you build such items.
 
-See demo script `tests/gui/test_image_masked_xy.py`.
+See demo script `tests/items/test_image_masked_xy.py`.
 
 New options added to plot builder
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -174,7 +174,7 @@ New methods for creating ready-to-use plots have been added to the class:
 The method :py:meth:`.PlotBuilder.contours` has been added, in order to create
 contour curves. It returns a list of :py:class:`plotpy.items.ContourItem` objects.
 
-See demo script `tests/gui/test_contour.py`.
+See demo script `tests/items/test_contour.py`.
 
 The new keyword parameter ``alpha_function`` has been added to the methods
 :py:meth:`.PlotBuilder.image`, :py:meth:`.PlotBuilder.xyimage`,
@@ -203,14 +203,14 @@ The new keyword parameter ``lut_range`` has been added to the methods
 and :py:meth:`.PlotBuilder.trimage`, so you can now avoid to make calls
 to set_lut_range after the PlotItem is built.
 
-See demo script `tests/gui/test_builder.py`.
+See demo script `tests/features/test_builder.py`.
 
 The method :py:meth:`.PlotBuilder.image` now accepts
 optional ``x`` and ``y`` keyword arguments, to automatically create a
 :py:class:`plotpy.items.XYImageItem` instead of a simple
 :py:class:`plotpy.items.ImageItem` if needed.
 
-See demo script `tests/gui/test_builder.py`.
+See demo script `tests/features/test_builder.py`.
 
 The method :py:meth:`.PlotBuilder.curve` now accepts
 optional ``dx``, ``dy``, ``errorbarwidth``, ``errorbarcap``, ``errorbarmode``,
@@ -218,7 +218,7 @@ optional ``dx``, ``dy``, ``errorbarwidth``, ``errorbarcap``, ``errorbarmode``,
 :py:class:`plotpy.items.ErrorBarCurveItem` instead of a simple
 :py:class:`plotpy.items.CurveItem` if needed.
 
-See demo script `tests/gui/test_builder.py`.
+See demo script `tests/features/test_builder.py`.
 
 Transformation (translation, rotate, resize) of ImageItem
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -231,4 +231,4 @@ Auto-scaling and shapes
 Auto-scaling takes now into account visible shapes
 (subclasses of :py:class:`.PolygonShape`).
 
-See demo script `tests/gui/test_autoscale_shapes.py`.
+See demo script `tests/features/test_autoscale_shapes.py`.

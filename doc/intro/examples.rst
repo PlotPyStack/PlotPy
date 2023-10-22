@@ -8,7 +8,7 @@ The test launcher
 
 A lot of examples are available in the `plotpy.tests` test module ::
 
-    from plotpy.tests.gui import run
+    from plotpy.tests import run
     run()
 
 The two lines above execute the `test launcher`:
@@ -22,7 +22,7 @@ Curve plotting
 Basic curve plotting
 ~~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: ../../plotpy/tests/gui/test_plot.py
+.. literalinclude:: ../../plotpy/tests/items/test_curve.py
    :start-after: guitest:
 
 
@@ -34,7 +34,7 @@ Basic curve plotting
 Computations on curves
 ~~~~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: ../../plotpy/tests/gui/test_computations.py
+.. literalinclude:: ../../plotpy/tests/features/test_computations.py
    :start-after: guitest:
 
 
@@ -44,7 +44,7 @@ Computations on curves
 Curve fitting
 -------------
 
-.. literalinclude:: ../../plotpy/tests/gui/test_fit.py
+.. literalinclude:: ../../plotpy/tests/features/test_fit.py
    :start-after: guitest:
 
 
@@ -57,7 +57,7 @@ Image visualization
 Image contrast adjustment
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: ../../plotpy/tests/gui/test_contrast.py
+.. literalinclude:: ../../plotpy/tests/features/test_contrast.py
    :start-after: guitest:
 
 
@@ -66,7 +66,7 @@ Image contrast adjustment
 Image cross-sections
 ~~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: ../../plotpy/tests/gui/test_cross_section.py
+.. literalinclude:: ../../plotpy/tests/tools/test_cross_section.py
    :start-after: guitest:
 
 
@@ -77,7 +77,7 @@ Transformable images
 
 Affine transforms example on 3000x3000 images (real-time transforms):
 
-.. literalinclude:: ../../plotpy/tests/gui/test_transform.py
+.. literalinclude:: ../../plotpy/tests/items/test_transform.py
    :start-after: guitest:
 
 
@@ -86,7 +86,7 @@ Affine transforms example on 3000x3000 images (real-time transforms):
 Image rectangular filter
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: ../../plotpy/tests/gui/test_imagefilter.py
+.. literalinclude:: ../../plotpy/tests/features/test_imagefilter.py
    :start-after: guitest:
 
 
@@ -99,7 +99,7 @@ Histograms
 2-D histogram
 ~~~~~~~~~~~~~
 
-.. literalinclude:: ../../plotpy/tests/gui/test_hist2d.py
+.. literalinclude:: ../../plotpy/tests/items/test_hist2d.py
    :start-after: guitest:
 
 
@@ -112,7 +112,7 @@ Other examples
 Dot Array Demo
 ~~~~~~~~~~~~~~
 
-.. literalinclude:: ../../plotpy/tests/gui/test_dotarraydemo.py
+.. literalinclude:: ../../plotpy/tests/widgets/test_dotarraydemo.py
    :start-after: guitest:
 
 
@@ -121,7 +121,7 @@ Dot Array Demo
 Image plot tools
 ~~~~~~~~~~~~~~~~
 
-.. literalinclude:: ../../plotpy/tests/gui/test_image_plot_tools.py
+.. literalinclude:: ../../plotpy/tests/tools/test_image_plot_tools.py
    :start-after: guitest:
 
 
@@ -130,7 +130,7 @@ Image plot tools
 Real-time Mandelbrot plotting
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: ../../plotpy/tests/gui/test_mandelbrot.py
+.. literalinclude:: ../../plotpy/tests/items/test_mandelbrot.py
    :start-after: guitest:
 
 
@@ -139,7 +139,7 @@ Real-time Mandelbrot plotting
 Simple application
 ~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: ../../plotpy/tests/gui/test_simple_window.py
+.. literalinclude:: ../../plotpy/tests/widgets/test_simple_window.py
    :start-after: guitest:
 
 

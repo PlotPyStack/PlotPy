@@ -46,7 +46,7 @@ New methods for creating ready-to-use plots have been added to the class:
 The method :py:meth:`.PlotBuilder.contours` has been added, in order to create
 contour curves. It returns a list of :py:class:`plotpy.items.ContourItem` objects.
 
-See demo script `tests/gui/test_contour.py`.
+See demo script `tests/items/test_contour.py`.
 
 The new keyword parameter ``alpha_function`` has been added to the methods
 :py:meth:`.PlotBuilder.image`, :py:meth:`.PlotBuilder.xyimage`,
