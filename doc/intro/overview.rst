@@ -5,11 +5,11 @@ Main features
 -------------
 
 :mod:`plotpy` is a Python module providing a set of high-level widgets and
-functions to ease plotting data with Python and PyQt5.
+functions to ease plotting data with Python and Qt.
 
 :mod:`plotpy` is based on the following Python modules:
 
-* :mod:`qwt`: a Python reimplementation of the Qwt C++ library which
+* :mod:`qwt` (PythonQwt): a Python reimplementation of the Qwt C++ library which
   provides a lot of plotting types and a flexible widget class
   (:py:class:`qwt.plot.QwtPlot`) which may be used to create custom plotting
   widgets.
@@ -29,6 +29,7 @@ The :mod:`plotpy` library provides the following main features:
 * Components for custom plotting widgets and Qt applications
 * Curve fitting tools
 * Interactive plotting tools
+* And more...
 
 Performance
 -----------
@@ -63,17 +64,15 @@ The :mod:`plotpy` library provides the following features:
   (polygon, polyline, rectangle, circle, ellipse, segment, etc.), annotations
   (shapes with labels showing position and dimensions), markers, etc.
 
-* :ref:`plot` - ready-to-use curve and image plotting widgets:
+* :ref:`plot`:
 
-  - common features:
+  - ready-to-use plotting widgets (widget, dialog box, window)
 
-    - ready-to-use plotting widgets (widget, dialog box, window)
+  - multiple curve/image selection for moving curves or editing their
+    properties through automatically generated dialog boxes
 
-    - multiple curve/image selection for moving curves or editing their
-      properties through automatically generated dialog boxes
-
-    - item list panel: move curves/images from foreground to background,
-      show/hide curves/images, remove curves/images, ...
+  - item list panel: move curves/images from foreground to background,
+    show/hide curves/images, remove curves/images, ...
 
   - specific curve features:
 
