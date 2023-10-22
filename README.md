@@ -7,7 +7,7 @@
 
 ℹ️ Created in 2016 by Pierre Raybaut and maintained by the [PlotPyStack](https://github.com/PlotPyStack) organization.
 
-ℹ️ `plotpy` is the new major release of [`guiqwt`](https://github.com/PierreRaybaut/guiqwt): same team 🏋️, same goal 🎯, same long-term support ⏳.
+ℹ️ PlotPy ***V2*** is the new major release of [`guiqwt`](https://github.com/PierreRaybaut/guiqwt): same team 🏋️, same goal 🎯, same long-term support ⏳.
 
 ## Overview
 
