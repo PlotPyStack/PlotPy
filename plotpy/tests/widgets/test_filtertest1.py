@@ -78,7 +78,7 @@ class WindowTest(QW.QWidget):
         self.layout().addWidget(widget)
 
 
-def test_filtre1():
+def test_filter1():
     """Testing this simple Qt/plotpy example"""
     x = np.linspace(-10, 10, 500)
     y = np.random.rand(len(x)) + 5 * np.sin(2 * x**2) / x
@@ -90,4 +90,4 @@ def test_filtre1():
 
 
 if __name__ == "__main__":
-    test_filtre1()
+    test_filter1()

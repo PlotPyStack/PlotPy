@@ -53,3 +53,4 @@ htmlcov
 # Other
 *.bak
 *_ui.py
+.guidata_faulthandler.log

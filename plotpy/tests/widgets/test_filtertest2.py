@@ -99,7 +99,7 @@ class WindowTest(QW.QMainWindow):
         # ---
 
 
-def test_filtre2():
+def test_filter2():
     """Testing this simple Qt/plotpy example"""
     x = np.linspace(-10, 10, 500)
     y = np.random.rand(len(x)) + 5 * np.sin(2 * x**2) / x
@@ -112,4 +112,4 @@ def test_filtre2():
 
 
 if __name__ == "__main__":
-    test_filtre2()
+    test_filter2()
