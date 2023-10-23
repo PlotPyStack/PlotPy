@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -38,12 +39,12 @@ except ImportError:
 if TYPE_CHECKING:  # pragma: no cover
     import qwt.color_map
     import qwt.scale_map
-    from qtpy import QtGui as QG
     from qtpy.QtCore import QPointF, QRectF
     from qtpy.QtGui import QPainter
 
     from plotpy.interfaces import IItemType
-    from plotpy.styles.base import ItemParameters
+    from plotpy.items import RawImageItem, XYImageItem
+    from plotpy.styles import ImageFilterParam, ItemParameters
 
 
 # ==============================================================================
@@ -74,10 +75,15 @@ class ImageFilterItem(BaseImageItem):
     _can_resize = True
     _can_move = True
 
-    def __init__(self, image, filter, param):
+    def __init__(
+        self, image: RawImageItem | None, filter: Callable, param: ImageFilterParam
+    ) -> None:
         self.use_source_cmap = None
-        self.image = None  # BaseImageItem constructor will try to set this
-        # item's color map using the method 'set_color_map'
+
+        # BaseImageItem constructor will try to set this item's color map
+        # using the method 'set_color_map'
+        self.image: RawImageItem | None = None
+
         super().__init__(param=param)
         self.border_rect.set_style("plot", "shape/imagefilter")
         self.image = image
@@ -88,7 +94,7 @@ class ImageFilterItem(BaseImageItem):
         self.setIcon(get_icon("funct.png"))
 
     # ---- Public API -----------------------------------------------------------
-    def set_image(self, image):
+    def set_image(self, image: RawImageItem | None) -> None:
         """
         Set the image item on which the filter will be applied
 
@@ -96,7 +102,7 @@ class ImageFilterItem(BaseImageItem):
         """
         self.image = image
 
-    def set_filter(self, filter):
+    def set_filter(self, filter: Callable) -> None:
         """
         Set the filter function
 
@@ -195,11 +201,8 @@ class ImageFilterItem(BaseImageItem):
         else:
             BaseImageItem.set_color_map(self, name_or_table)
 
-    def get_color_map(self):
-        """
-
-        :return:
-        """
+    def get_color_map(self) -> qwt.color_map.QwtLinearColorMap:
+        """Get colormap"""
         if self.use_source_cmap:
             return self.image.get_color_map()
         else:
@@ -267,8 +270,11 @@ class XYImageFilterItem(ImageFilterItem):
           (:py:class:`.ImageFilterParam` instance)
     """
 
-    def __init__(self, image, filter, param):
-        ImageFilterItem.__init__(self, image, filter, param)
+    def __init__(
+        self, image: XYImageItem, filter: Callable, param: ImageFilterParam
+    ) -> None:
+        self.image: XYImageItem | None = None
+        super().__init__(image, filter, param)
 
     def set_image(self, image):
         """
@@ -321,21 +327,10 @@ class XYImageFilterItem(ImageFilterItem):
         if W <= 1 or H <= 1:
             return
 
-        x0, y0, x1, y1 = src_rect
-        cx = canvasRect.left()
-        cy = canvasRect.top()
-        sx = (x1 - x0) / (W - 1)
-        sy = (y1 - y0) / (H - 1)
-        # tr1 = tr(x0,y0)@scale(sx,sy)@tr(-cx,-cy)
-        tr = np.array([[sx, 0, x0 - cx * sx], [0, sy, y0 - cy * sy], [0, 0, 1]], float)
-        mat = self.image.tr @ tr
-
-        xytr = x - self.image.x[0], y - self.image.y[0], src_rect
-
+        # x, y = x - self.image.x[0], y - self.image.y[0]
         dest = _scale_xy(
             new_data,
-            xytr,
-            mat,
+            (x, y, src_rect),
             self._offscreen,
             dstRect.getCoords(),
             lut,
