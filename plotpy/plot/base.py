@@ -15,13 +15,13 @@ The `base` module provides the :mod:`plotpy` plotting widget base class:
 
 from __future__ import annotations
 
+import dataclasses
 import pickle
 import sys
 import warnings
 import weakref
-from dataclasses import dataclass
 from math import fabs
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 import qwt
@@ -64,7 +64,7 @@ if TYPE_CHECKING:  # pragma: no cover
     import guidata.dataset.io
 
 
-@dataclass
+@dataclasses.dataclass
 class BasePlotOptions:
     """Base plot options
 
@@ -123,6 +123,17 @@ class BasePlotOptions:
                 "so the colorbar will not be displayed",
                 RuntimeWarning,
             )
+
+    def copy(self, other_options: dict[str, Any]) -> BasePlotOptions:
+        """Copy the options and replace some of them with the given dictionary
+
+        Args:
+            other_options: The dictionary
+
+        Returns:
+            BasePlotOptions: The new options
+        """
+        return dataclasses.replace(self, **other_options)
 
 
 class BasePlot(qwt.QwtPlot):
