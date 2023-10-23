@@ -36,8 +36,8 @@ class CrossSectionPlot(BasePlot):
 
     CURVE_LABEL = _("Cross section")
     LABEL_TEXT = _("Enable a marker")
-    _height = None
-    _width = None
+    _HEIGHT = None
+    _WIDTH = None
     CS_AXIS = None
     Z_AXIS = None
     Z_MAX_MAJOR = 5
@@ -62,9 +62,9 @@ class CrossSectionPlot(BasePlot):
         self.param = CurveParam(_("Curve"), icon="curve.png")
         self.set_curve_style("cross_section", "curve")
 
-        if self._height is not None:
+        if self._HEIGHT is not None:
             self.setSizePolicy(QW.QSizePolicy.Expanding, QW.QSizePolicy.Minimum)
-        elif self._width is not None:
+        elif self._WIDTH is not None:
             self.setSizePolicy(QW.QSizePolicy.Minimum, QW.QSizePolicy.Expanding)
 
         # The following import is here to avoid circular imports
@@ -387,14 +387,14 @@ class VerticalCrossSectionPlot(CrossSectionPlot):
 class XCrossSectionPlot(HorizontalCrossSectionPlot):
     """X-axis cross section plot"""
 
-    _height = 130
+    _HEIGHT = 130
 
     def sizeHint(self):
         """
 
         :return:
         """
-        return QC.QSize(self.width(), self._height)
+        return QC.QSize(self.width(), self._HEIGHT)
 
     def create_cross_section_item(self):
         """
@@ -407,14 +407,14 @@ class XCrossSectionPlot(HorizontalCrossSectionPlot):
 class YCrossSectionPlot(VerticalCrossSectionPlot):
     """Y-axis cross section plot"""
 
-    _width = 140
+    _WIDTH = 140
 
     def sizeHint(self):
         """
 
         :return:
         """
-        return QC.QSize(self._width, self.height())
+        return QC.QSize(self._WIDTH, self.height())
 
     def create_cross_section_item(self):
         """
