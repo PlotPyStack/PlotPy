@@ -12,6 +12,7 @@ from plotpy.styles.axes import (
 )
 from plotpy.styles.base import (
     COLORS,
+    LINESTYLES,
     MARKERS,
     BrushStyleItem,
     BrushStyleItemWidget,
