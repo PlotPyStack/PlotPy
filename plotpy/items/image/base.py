@@ -27,6 +27,7 @@ from plotpy._scaler import (
 )
 from plotpy.config import _
 from plotpy.constants import LUTAlpha
+from plotpy.coords import pixelround
 from plotpy.interfaces import (
     IBaseImageItem,
     IBasePlotItem,
@@ -42,6 +43,7 @@ from plotpy.interfaces import (
 )
 from plotpy.items.shape.rectangle import RectangleShape
 from plotpy.lutrange import lut_range_threshold
+from plotpy.mathutils.arrayfuncs import get_nan_range
 from plotpy.mathutils.colormap import FULLRANGE, get_cmap, get_cmap_name
 from plotpy.styles.image import RawImageParam
 
@@ -58,60 +60,6 @@ if TYPE_CHECKING:  # pragma: no cover
 
 LUT_SIZE = 1024
 LUT_MAX = float(LUT_SIZE - 1)
-
-
-def _nanmin(data: np.ndarray) -> float:
-    """Return minimum value of data, ignoring NaNs
-
-    Args:
-        data: Data array
-
-    Returns:
-        float: Minimum value of data, ignoring NaNs
-    """
-    if isinstance(data, np.ma.MaskedArray):
-        data = data.data
-    if data.dtype.name in ("float32", "float64", "float128"):
-        return np.nanmin(data)
-    else:
-        return data.min()
-
-
-def _nanmax(data: np.ndarray) -> float:
-    """Return maximum value of data, ignoring NaNs
-
-    Args:
-        data: Data array
-
-    Returns:
-        float: Maximum value of data, ignoring NaNs
-    """
-    if isinstance(data, np.ma.MaskedArray):
-        data = data.data
-    if data.dtype.name in ("float32", "float64", "float128"):
-        return np.nanmax(data)
-    else:
-        return data.max()
-
-
-def pixelround(x: float, corner: str | None = None) -> int:
-    """Get pixel index from pixel coordinate
-
-    Args:
-        x: Pixel coordinate
-        corner: None (not a corner), 'TL' (top-left corner),
-         'BR' (bottom-right corner)
-
-    Returns:
-        int: Pixel index
-    """
-    assert corner is None or corner in ("TL", "BR")
-    if corner is None:
-        return np.floor(x)
-    elif corner == "BR":
-        return np.ceil(x)
-    elif corner == "TL":
-        return np.floor(x)
 
 
 class BaseImageItem(QwtPlotItem):
@@ -391,7 +339,7 @@ class BaseImageItem(QwtPlotItem):
         if lut_range is not None:
             _min, _max = lut_range
         else:
-            _min, _max = _nanmin(data), _nanmax(data)
+            _min, _max = get_nan_range(data)
 
         self.data = data
         self.histogram_cache = None
@@ -592,7 +540,7 @@ class BaseImageItem(QwtPlotItem):
         Returns:
             tuple[float, float]: Lut range, tuple(min, max)
         """
-        return _nanmin(self.data), _nanmax(self.data)
+        return get_nan_range(self.data)
 
     def get_lut_range_max(self) -> tuple[float, float]:
         """Get maximum range for this dataset
@@ -1019,8 +967,7 @@ class BaseImageItem(QwtPlotItem):
                 res = np.histogram(self.data[~np.isnan(self.data)], nbins)
             else:
                 # TODO: _histogram is faster, but caching is buggy in this version
-                _min = _nanmin(self.data)
-                _max = _nanmax(self.data)
+                _min, _max = get_nan_range(self.data)
                 if self.data.dtype in (np.float64, np.float32):
                     bins = np.unique(
                         np.array(

@@ -25,8 +25,9 @@ from plotpy.interfaces import (
     ITrackableItemType,
     IVoiImageItemType,
 )
-from plotpy.items.image.base import BaseImageItem, RawImageItem, _nanmax, _nanmin
+from plotpy.items.image.base import BaseImageItem, RawImageItem
 from plotpy.items.image.transform import TrImageItem
+from plotpy.mathutils.arrayfuncs import get_nan_range
 from plotpy.styles import Histogram2DParam, ImageParam, QuadGridParam
 
 try:
@@ -136,7 +137,7 @@ class QuadGridItem(RawImageItem):
         if lut_range is not None:
             _min, _max = lut_range
         else:
-            _min, _max = _nanmin(data), _nanmax(data)
+            _min, _max = get_nan_range(data)
 
         self.data = data
         self.histogram_cache = None
@@ -330,8 +331,7 @@ class Histogram2DItem(BaseImageItem):
             else:
                 self.data[self.data_tmp == 0.0] = np.nan
         if self.histparam.auto_lut:
-            nmin = _nanmin(self.data)
-            nmax = _nanmax(self.data)
+            nmin, nmax = get_nan_range(self.data)
             self.set_lut_range([nmin, nmax])
             self.plot().update_colormap_axis(self)
         src_rect = (0, 0, self.nx_bins, self.ny_bins)
@@ -417,8 +417,7 @@ class Histogram2DItem(BaseImageItem):
         """
         if self.data is None:
             return [0], [0, 1]
-        _min = _nanmin(self.data)
-        _max = _nanmax(self.data)
+        _min, _max = get_nan_range(self.data)
         if self.data.dtype in (np.float64, np.float32):
             bins = np.unique(
                 np.array(np.linspace(_min, _max, nbins + 1), dtype=self.data.dtype)

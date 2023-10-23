@@ -7,19 +7,31 @@
 Plot coordinates
 ----------------
 
+Overview
+^^^^^^^^
+
 The :mod:`plotpy.coords` module provides functions to convert coordinates
 between canvas and axes coordinates systems.
 
+The following functions are available:
+
+* :py:func:`.canvas_to_axes`
+* :py:func:`.axes_to_canvas`
+* :py:func:`.pixelround`
+
 Reference
-~~~~~~~~~
+^^^^^^^^^
 
 .. autofunction:: canvas_to_axes
 .. autofunction:: axes_to_canvas
+.. autofunction:: pixelround
 """
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+
+import numpy as np
 
 if TYPE_CHECKING:  # pragma: no cover
     from qtpy.QtCore import QPointF
@@ -59,3 +71,23 @@ def axes_to_canvas(item: QwtPlotItem, x: float, y: float) -> tuple[float, float]
     plot: QwtPlot = item.plot()
     ax, ay = item.xAxis(), item.yAxis()
     return plot.transform(ax, x), plot.transform(ay, y)
+
+
+def pixelround(x: float, corner: str | None = None) -> int:
+    """Get pixel index from pixel coordinate
+
+    Args:
+        x: Pixel coordinate
+        corner: None (not a corner), 'TL' (top-left corner),
+         'BR' (bottom-right corner)
+
+    Returns:
+        int: Pixel index
+    """
+    assert corner is None or corner in ("TL", "BR")
+    if corner is None:
+        return np.floor(x)
+    elif corner == "BR":
+        return np.ceil(x)
+    elif corner == "TL":
+        return np.floor(x)
