@@ -160,7 +160,7 @@ class ImageBuilder:
         y: numpy.ndarray | None = None,
         lut_range: tuple[float, float] | None = None,
         lock_position: bool = True,
-    ) -> ImageItem:
+    ) -> ImageItem | XYImageItem | RGBImageItem:
         """Make an image `plot item` from data
 
         Args:
@@ -189,6 +189,7 @@ class ImageBuilder:
 
         Returns:
             :py:class:`.ImageItem` object or
+            :py:class:`.XYImageItem` object if `x` and `y` are specified or
             :py:class:`.RGBImageItem` object if data has 3 dimensions
         """
         if x is not None or y is not None:
@@ -307,7 +308,7 @@ class ImageBuilder:
         y: numpy.ndarray | None = None,
         lut_range: tuple[float, float] | None = None,
         lock_position: bool = True,
-    ) -> ImageItem | RGBImageItem:
+    ) -> MaskedImageItem | MaskedXYImageItem:
         """Make a masked image `plot item` from data
 
         Args:
@@ -338,7 +339,7 @@ class ImageBuilder:
             lock_position: lock position. Default is True
 
         Returns:
-            :py:class:`.MaskedImageItem` object
+            :py:class:`.MaskedImageItem` object or :py:class:`.MaskedXYImageItem` object
         """
         if x is not None or y is not None:
             assert pixel_size is None and center_on is None, (
@@ -434,7 +435,7 @@ class ImageBuilder:
         zformat: str = "%.1f",
         lut_range: tuple[float, float] | None = None,
         lock_position: bool = True,
-    ) -> MaskedImageItem:
+    ) -> MaskedXYImageItem:
         """Make a masked XY image `plot item` from data
 
         Args:
@@ -652,7 +653,7 @@ class ImageBuilder:
         zformat: str = "%.1f",
         lut_range: tuple[float, float] | None = None,
         lock_position: bool = False,
-    ):
+    ) -> TrImageItem:
         """Make a transformable image `plot item` (image with an arbitrary
         affine transform)
 
