@@ -326,6 +326,22 @@ class PlotWidget(BasePlotWidget):
         """
         return self.plot
 
+    def get_toolbar(self) -> QW.QToolBar:
+        """Return main toolbar
+
+        Returns:
+            The plot widget main toolbar
+        """
+        return self.toolbar
+
+    def get_manager(self) -> PlotManager:
+        """Return the plot manager
+
+        Returns:
+            The plot widget manager
+        """
+        return self.manager
+
     def configure_manager(
         self,
         panels: tuple[PanelWidget] | None = None,
@@ -529,6 +545,26 @@ class PlotDialog(QW.QDialog, AbstractPlotDialogWindow, metaclass=PlotDialogMeta)
             return self.plot_widget.get_plot()
         return None
 
+    def get_toolbar(self) -> QW.QToolBar:
+        """Return main toolbar
+
+        Returns:
+            The plot widget main toolbar
+        """
+        if self.plot_widget is not None:
+            return self.plot_widget.get_toolbar()
+        return None
+
+    def get_manager(self) -> PlotManager:
+        """Return the plot manager
+
+        Returns:
+            The plot widget manager
+        """
+        if self.plot_widget is not None:
+            return self.plot_widget.get_manager()
+        return None
+
     def setup_widget(
         self,
         toolbar: bool = False,
@@ -659,6 +695,26 @@ class PlotWindow(QW.QMainWindow, AbstractPlotDialogWindow, metaclass=PlotWindowM
         """
         if self.plot_widget is not None:
             return self.plot_widget.get_plot()
+        return None
+
+    def get_toolbar(self) -> QW.QToolBar:
+        """Return main toolbar
+
+        Returns:
+            The plot widget main toolbar
+        """
+        if self.plot_widget is not None:
+            return self.plot_widget.get_toolbar()
+        return None
+
+    def get_manager(self) -> PlotManager:
+        """Return the plot manager
+
+        Returns:
+            The plot widget manager
+        """
+        if self.plot_widget is not None:
+            return self.plot_widget.get_manager()
         return None
 
     def setup_widget(
