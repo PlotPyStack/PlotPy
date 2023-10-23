@@ -913,6 +913,10 @@ class FitDialog(PlotDialog):
         """
         return self.fit_widget.get_values()
 
+    def autofit(self) -> None:
+        """Autofit"""
+        self.fit_widget.autofit()
+
 
 def guifit(
     x: np.ndarray,
