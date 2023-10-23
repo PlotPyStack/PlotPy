@@ -15,6 +15,7 @@ from plotpy.tests import vistools as ptv
 
 
 def test_contour():
+    """Contour plotting test"""
     with qt_app_context(exec_loop=True):
         # compute the image
         delta = 0.025
@@ -27,7 +28,7 @@ def test_contour():
         # show the image
         _win = ptv.show_items(
             [make.image(Z)] + make.contours(Z, np.arange(-2, 2, 0.5)),
-            wintitle="Sample contour plotting",
+            wintitle=test_contour.__doc__,
             curve_antialiasing=False,
             lock_aspect_ratio=True,
         )

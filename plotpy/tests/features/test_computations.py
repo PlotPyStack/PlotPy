@@ -40,7 +40,9 @@ def test_computations():
         )
         legend = make.legend("TR")
         _win = ptv.show_items(
-            [curve, range, disp0, disp1, disp2, legend], plot_type="curve"
+            wintitle="Plot computations",
+            items=[curve, range, disp0, disp1, disp2, legend],
+            plot_type="curve",
         )
 
 

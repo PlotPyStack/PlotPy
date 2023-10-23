@@ -132,7 +132,7 @@ class CentralWidget(QW.QSplitter):
             self.plot_widget.manager.set_contrast_range(*lut_range)
             self.plot_widget.manager.update_cross_sections()
         else:
-            self.item = make.image(data)
+            self.item = make.image(data, interpolation="nearest")
             plot.add_item(self.item, z=0)
         plot.replot()
 

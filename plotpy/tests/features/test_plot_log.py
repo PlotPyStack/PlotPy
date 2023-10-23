@@ -21,7 +21,7 @@ def test_plot_log():
         y = np.exp(-x)
         y[0] = 0
         items = [make.curve(x, y, color="b"), make.error(x, y, None, y * 0.23)]
-        win = ptv.show_items(items, plot_type="curve")
+        win = ptv.show_items(items, plot_type="curve", wintitle=test_plot_log.__doc__)
         plot = win.manager.get_plot()
         plot.set_axis_scale("left", "log")
         plot.set_axis_scale("bottom", "log")

@@ -19,7 +19,11 @@ def test_no_auto_tools():
     x = linspace(-10, 10, 200)
     y = sin(sin(sin(x)))
     with qt_app_context(exec_loop=True):
-        _win = ptv.show_items([make.curve(x, y, color="b")], auto_tools=False)
+        _win = ptv.show_items(
+            [make.curve(x, y, color="b")],
+            auto_tools=False,
+            wintitle=test_no_auto_tools.__doc__,
+        )
 
 
 if __name__ == "__main__":

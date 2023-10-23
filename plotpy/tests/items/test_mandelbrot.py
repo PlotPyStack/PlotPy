@@ -54,7 +54,7 @@ class MandelItem(RawImageItem):
         NX = x2 - x1
         NY = y2 - y1
         if self.data.shape != (NX, NY):
-            self.data = np.zeros((NY, NX), np.uint8)
+            self.data = np.zeros((NY, NX), np.int16)
         mandelbrot(i1, j1, i2, j2, self.data, self.IMAX)
 
         srcRect = (0, 0, NX, NY)

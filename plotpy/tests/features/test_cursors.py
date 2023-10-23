@@ -26,7 +26,9 @@ def test_cursor():
         xcursor = make.xcursor(-4, 2.5, label="x = %.2f<br>y = %.2f")
         legend = make.legend("TR")
         _win = ptv.show_items(
-            [curve, hcursor, vcursor, vcursor2, xcursor, legend], plot_type="curve"
+            wintitle="Plot cursors",
+            items=[curve, hcursor, vcursor, vcursor2, xcursor, legend],
+            plot_type="curve",
         )
 
 

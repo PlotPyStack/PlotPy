@@ -15,7 +15,7 @@ from plotpy.tests import vistools as ptv
 
 
 def test_plot():
-    """Test plot"""
+    """Curve plotting test"""
     x = np.linspace(-10, 10, 200)
     dy = x / 100.0
     y = np.sin(np.sin(np.sin(x)))
@@ -40,7 +40,7 @@ def test_plot():
                 movable=False,
             ),
         ]
-        _win = ptv.show_items(items, wintitle="Curve plotting test", title="Curves")
+        _win = ptv.show_items(items, wintitle=test_plot.__doc__, title="Curves")
 
 
 if __name__ == "__main__":

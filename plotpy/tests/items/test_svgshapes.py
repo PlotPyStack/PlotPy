@@ -16,16 +16,16 @@ from plotpy.tests import get_path
 from plotpy.tests import vistools as ptv
 
 
-def test_image():
-    """Testing ImageItem object"""
+def test_svg():
+    """Test showing SVG shapes"""
     with qt_app_context(exec_loop=True):
         path1, path2 = get_path("svg_tool.svg"), get_path("svg_target.svg")
         csvg = make.svg("circle", path2, 0, 0, 100, 100, "Circle")
         rsvg = make.svg("rectangle", path1, 150, 0, 200, 100, "Rect")
         ssvg = make.svg("square", path1, 0, 150, 100, 250, "Square")
         items = [csvg, rsvg, ssvg]
-        _win = ptv.show_items(items, wintitle="SVG shapes", lock_aspect_ratio=True)
+        _win = ptv.show_items(items, wintitle=test_svg.__doc__, lock_aspect_ratio=True)
 
 
 if __name__ == "__main__":
-    test_image()
+    test_svg()

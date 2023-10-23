@@ -50,6 +50,7 @@ class Window(QW.QMainWindow):
     def __init__(self):
         super().__init__()
         win32_fix_title_bar_background(self)
+        self.setWindowTitle("PlotManager test")
 
         filename = get_path("brain.png")
         image1 = make.image(filename=filename, title="Original", colormap="gray")
