@@ -160,7 +160,8 @@ class BasePlotWidget(QW.QSplitter):
 
         # Avoid circular import
         # pylint: disable=import-outside-toplevel
-        from plotpy.panels.csection.cswidget import XCrossSection, YCrossSection
+        from plotpy.panels.csection.cswidget import (XCrossSection,
+                                                     YCrossSection)
 
         self.ycsw = YCrossSection(
             self,
@@ -429,6 +430,30 @@ def add_widget_to_grid_layout(
 
 class AbstractPlotDialogWindow(abc.ABC):
     """Abstract base class for plot dialog and plot window"""
+
+    @abc.abstractmethod
+    def get_plot(self) -> BasePlot | None:
+        """Return the plot object
+
+        Returns:
+            BasePlot: The plot object
+        """
+
+    @abc.abstractmethod
+    def get_toolbar(self) -> QW.QToolBar:
+        """Return main toolbar
+
+        Returns:
+            The plot widget main toolbar
+        """
+
+    @abc.abstractmethod
+    def get_manager(self) -> PlotManager:
+        """Return the plot manager
+
+        Returns:
+            The plot widget manager
+        """
 
     @abc.abstractmethod
     def setup_widget(
@@ -910,6 +935,22 @@ class SyncPlotWindow(QW.QMainWindow):
         self.toolbar.setFloatable(True)
         self.addToolBar(self.toolbar)
         self.auto_tools = auto_tools
+
+    def get_toolbar(self) -> QW.QToolBar:
+        """Return main toolbar
+
+        Returns:
+            The plot widget main toolbar
+        """
+        return self.toolbar
+
+    def get_manager(self) -> PlotManager:
+        """Return the plot manager
+
+        Returns:
+            The plot widget manager
+        """
+        return self.manager
 
     def finalize_configuration(self) -> None:
         """Configure plot manager and register all tools"""
