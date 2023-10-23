@@ -160,8 +160,7 @@ class BasePlotWidget(QW.QSplitter):
 
         # Avoid circular import
         # pylint: disable=import-outside-toplevel
-        from plotpy.panels.csection.cswidget import (XCrossSection,
-                                                     YCrossSection)
+        from plotpy.panels.csection.cswidget import XCrossSection, YCrossSection
 
         self.ycsw = YCrossSection(
             self,
@@ -174,6 +173,7 @@ class BasePlotWidget(QW.QSplitter):
         self.xcsw.setVisible(self.options.show_xsection)
 
         self.xcsw.SIG_VISIBILITY_CHANGED.connect(self.__xcsw_is_visible)
+        self.xcsw.SIG_RESIZED.connect(self.__adjust_ycsw_height)
 
         self.xcsw_splitter = QW.QSplitter(QC.Qt.Orientation.Vertical, self)
         if self.options.xsection_pos == "top":
@@ -182,9 +182,6 @@ class BasePlotWidget(QW.QSplitter):
         else:
             self.xcsw_splitter.addWidget(self.plot)
             self.xcsw_splitter.addWidget(self.xcsw)
-        self.xcsw_splitter.splitterMoved.connect(
-            lambda pos, index: self.__adjust_ycsw_height()
-        )
 
         self.ycsw_splitter = QW.QSplitter(QC.Qt.Orientation.Horizontal, self)
         if self.options.ysection_pos == "left":

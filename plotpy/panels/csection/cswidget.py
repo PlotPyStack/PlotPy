@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from guidata.configtools import get_icon
 from guidata.qthelpers import add_actions, create_action
 from guidata.utils.misc import assert_interfaces_valid
@@ -18,8 +19,13 @@ from plotpy.tools import ExportItemDataTool
 
 
 class CrossSectionWidget(PanelWidget):
-    """ """
+    """Base class for cross section panels
 
+    Args:
+        parent: parent widget
+    """
+
+    SIG_RESIZED = QC.Signal()  # emitted when the widget is resized
     PANEL_ID = None
     PANEL_TITLE = _("Cross section tool")
     PANEL_ICON = "csection.png"
@@ -52,6 +58,15 @@ class CrossSectionWidget(PanelWidget):
         self.toolbar.setOrientation(QC.Qt.Orientation.Vertical)
 
         self.setup_widget()
+
+    # Reimplement Qt method for sending a signal when the widget is resized
+    def resizeEvent(self, event):
+        """
+
+        :param event:
+        """
+        super().resizeEvent(event)
+        self.SIG_RESIZED.emit()
 
     def set_options(self, autoscale=None, autorefresh=None, lockscales=None):
         """
@@ -193,7 +208,11 @@ assert_interfaces_valid(CrossSectionWidget)
 
 
 class XCrossSection(CrossSectionWidget):
-    """X-axis cross section widget"""
+    """X-axis cross section panel
+
+    Args:
+        parent: parent widget
+    """
 
     PANEL_ID = ID_XCS
     OTHER_PANEL_ID = ID_YCS
@@ -319,10 +338,12 @@ class XCrossSection(CrossSectionWidget):
 
 
 class YCrossSection(XCrossSection):
-    """
-    Y-axis cross section widget
-    parent (QWidget): parent widget
-    position (string): "left" or "right"
+    """Y-axis cross section panel
+
+    Args:
+        parent: parent widget
+        position: position of the panel ('left' or 'right')
+        xsection_pos: position of the cross section plot ('top' or 'bottom')
     """
 
     PANEL_ID = ID_YCS
@@ -360,7 +381,11 @@ class YCrossSection(XCrossSection):
 
 # Oblique cross section panel
 class ObliqueCrossSection(CrossSectionWidget):
-    """Oblique averaged cross section widget"""
+    """Oblique averaged cross section panel
+
+    Args:
+        parent: parent widget
+    """
 
     PANEL_ID = ID_OCS
     CrossSectionPlotKlass = ObliqueCrossSectionPlot
