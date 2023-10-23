@@ -12,6 +12,8 @@ the plot manager is integrated in the :class:`.PlotWidget` class.
 .. literalinclude:: ../../../plotpy/tests/widgets/test_filtertest1.py
    :start-after: guitest:
 
+.. image:: ../../images/screenshots/filtertest1.png
+
 Using a plot manager
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -22,3 +24,5 @@ graphical user interfaces.
 
 .. literalinclude:: ../../../plotpy/tests/widgets/test_filtertest2.py
    :start-after: guitest:
+
+.. image:: ../../images/screenshots/filtertest2.png
