@@ -19,6 +19,7 @@ from .base import (
     InteractiveTool,
     PanelTool,
     RectangularActionTool,
+    ToggleTool,
 )
 from .cross_section import (
     AverageCrossSectionTool,
