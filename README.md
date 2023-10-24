@@ -5,7 +5,7 @@
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/plotpy.svg)](https://pypi.python.org/pypi/plotpy/)
 [![download count](https://img.shields.io/conda/dn/conda-forge/plotpy.svg)](https://www.anaconda.com/download/)
 
-ℹ️ Created in 2016 by Pierre Raybaut and maintained by the [PlotPyStack](https://github.com/PlotPyStack) organization.
+ℹ️ Created in 2016 by [Pierre Raybaut](https://github.com/PierreRaybaut) and maintained by the [PlotPyStack](https://github.com/PlotPyStack) organization.
 
 ℹ️ PlotPy ***V2*** is the new major release of [`guiqwt`](https://github.com/PierreRaybaut/guiqwt): same team 🏋️, same goal 🎯, same long-term support ⏳.
 
