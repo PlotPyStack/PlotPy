@@ -36,7 +36,7 @@ def get_point(*args):
         SelectPointTool,
         title="Test",
         on_active_item=True,
-        mode="create",
+        mode="reuse",
         end_callback=callback_function,
     )
     default.activate()
@@ -45,6 +45,7 @@ def get_point(*args):
         item = make.mcurve(cx, cy)
         plot.add_item(item)
     plot.set_active_item(item)
+    plot.unselect_item(item)
     win.show()
     return win, default.get_coordinates()
 
@@ -52,9 +53,9 @@ def get_point(*args):
 def test_get_point():
     """Test"""
     with qt_app_context(exec_loop=True):
-        x = linspace(-10, 10, 1000)
-        y = sin(sin(sin(x)))
-        x2 = linspace(-10, 10, 20)
+        x = linspace(-10, 10, 500)
+        y = 0.25 * sin(sin(sin(x * 0.5)))
+        x2 = linspace(-10, 10, 200)
         y2 = sin(sin(sin(x2)))
         _persist_dialog, coordinates = get_point((x, y), (x2, y2), (x, sin(2 * y)))
         print(coordinates)
