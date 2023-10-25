@@ -187,7 +187,7 @@ class BaseTransformWidget(QW.QWidget):
         Returns:
             BasePlot: Plot widget
         """
-        return self.plot_widget.plot
+        return self.plot_widget.get_plot()
 
     def add_buttons_to_layout(
         self, layout: QW.QBoxLayout, apply=True, reset=True

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from plotpy.items import (
     AnnotatedCircle,
     AnnotatedEllipse,

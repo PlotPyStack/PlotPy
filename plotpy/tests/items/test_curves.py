@@ -40,7 +40,9 @@ def test_plot():
                 movable=False,
             ),
         ]
-        _win = ptv.show_items(items, wintitle=test_plot.__doc__, title="Curves")
+        _win = ptv.show_items(
+            items, wintitle=test_plot.__doc__, title="Curves", plot_type="curve"
+        )
 
 
 if __name__ == "__main__":
