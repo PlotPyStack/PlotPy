@@ -6,6 +6,7 @@ import sys
 from distutils.core import setup
 
 import numpy
+from Cython import __version__ as __cython_version__
 from Cython.Compiler import Main
 from setuptools import Distribution, Extension
 
@@ -41,9 +42,11 @@ CFLAGS_CYTHON = []
 # -------------------------------------------------------------------------------------
 # TODO: When dropping support for Cython < 3.0, we can remove the following lines.
 # In the meantime, we hide the deprecation warnings when building the package.
-if not is_msvc():
+if tuple(map(int, __cython_version__.split(".")[:2])) < (3, 0):
+    # hide deprecation warnings
     MACROS_CYTHON = []
-    CFLAGS_CYTHON = ["-Wno-cpp"]
+    if not is_msvc():
+        CFLAGS_CYTHON = ["-Wno-cpp"]
 # -------------------------------------------------------------------------------------
 
 MACROS_CPP = [("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")]
