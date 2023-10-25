@@ -198,7 +198,6 @@ class DynCurveWidget(QW.QWidget):
             panels=panels,
         )
         self.plotwidget.plot.set_antialiasing(True)
-        self.plotwidget.manager.register_all_curve_tools()
 
         self.nav_actions = []
         self.play_pause_act = None
