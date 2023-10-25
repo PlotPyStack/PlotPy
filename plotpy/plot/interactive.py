@@ -200,13 +200,20 @@ class Figure:
         """
         if isinstance(fname, str):
             if format == "pdf":
-                if draft:
-                    mode = QW.QPrinter.ScreenResolution
-                else:
+                try:
                     mode = QPrinter.HighResolution
+                except AttributeError:
+                    # Some PySide6 / PyQt6 versions do not have this attribute on Linux
+                    mode = QPrinter.ScreenResolution
+                if draft:
+                    mode = QPrinter.ScreenResolution
                 printer = QPrinter(mode)
-                printer.setOutputFormat(QPrinter.PdfFormat)
-                printer.setOrientation(QPrinter.Landscape)
+                try:
+                    printer.setOutputFormat(QPrinter.PdfFormat)
+                except AttributeError:
+                    # PyQt6 on Linux
+                    printer.setPrinterName("")
+                printer.setPageOrientation(QG.QPageLayout.Landscape)
                 printer.setOutputFileName(fname)
                 printer.setCreator("plotpy.pyplot")
                 self.print_(printer)
