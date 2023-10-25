@@ -43,18 +43,16 @@ def about(html: bool = True, copyright_only: bool = False) -> str:
     Returns:
         str: text about this package
     """
-    shortdesc = (
-        f"PlotPy {plotpy.__version__}\n\n"
-        f"PlotPy is a set of tools for curve and image plotting.\n"
-        f"Created by Pierre Raybaut."
+    info = guidata_about.AboutInfo(
+        name="PlotPy",
+        version=plotpy.__version__,
+        description=_("Set of tools for curve and image plotting."),
+        author="Pierre Raybaut",
+        year=2016,
+        organization="PlotPyStack",
     )
     addinfos = f"guidata {guidata.__version__}, PythonQwt {qwt.__version__}"
-    desc = guidata_about.get_general_infos(addinfos)
-    if not copyright_only:
-        desc = f"{shortdesc}\n\n{desc}"
-    if html:
-        desc = desc.replace("\n", "<br />")
-    return desc
+    return info.about(html=html, copyright_only=copyright_only, addinfos=addinfos)
 
 
 def show_about_dialog() -> None:
