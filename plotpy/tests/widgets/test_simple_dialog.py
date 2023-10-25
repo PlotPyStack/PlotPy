@@ -58,6 +58,7 @@ class ExampleDialog(PlotDialog):
             toolbar=True,
             edit=edit,
             options=options,
+            auto_tools=False,
         )
         self.resize(600, 600)
         opentool = self.manager.add_tool(OpenImageTool)
