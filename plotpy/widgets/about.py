@@ -46,7 +46,7 @@ def about(html: bool = True, copyright_only: bool = False) -> str:
     info = guidata_about.AboutInfo(
         name="PlotPy",
         version=plotpy.__version__,
-        description=_("Set of tools for curve and image plotting."),
+        description=_("Set of tools for curve and image plotting"),
         author="Pierre Raybaut",
         year=2016,
         organization="PlotPyStack",

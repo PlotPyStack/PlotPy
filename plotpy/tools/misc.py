@@ -232,11 +232,8 @@ class HelpTool(CommandTool):
 
     def activate_command(self, plot, checked):
         """Activate tool"""
-        QW.QMessageBox.information(
-            plot,
-            _("Help"),
-            _(
-                """<b>Keyboard/mouse shortcuts:</b><br><br>
+        info = _(
+            """<b>Keyboard/mouse shortcuts:</b><br><br>
   - <u>single left-click</u>: item (curve, image, ...) selection<br>
   - <u>single right-click</u>: context-menu relative to selected item<br>
   - <u>shift</u>: on-active-curve (or image) cursor (+ <u>control</u> to maintain cursor visible)<br>
@@ -245,8 +242,10 @@ class HelpTool(CommandTool):
   - <u>left-click + mouse move</u>: move item (when available)<br>
   - <u>middle-click + mouse move</u>: pan<br>
   - <u>right-click + mouse move</u>: zoom"""
-            ),
         )
+        info += "<br><hr><br><b>Information on PlotPy:</b><br><br>"
+        info += about.about(html=True)
+        QW.QMessageBox.information(plot, _("Help"), info)
 
 
 class AboutTool(CommandTool):
