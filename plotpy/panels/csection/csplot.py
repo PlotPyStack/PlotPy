@@ -9,9 +9,8 @@ from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
 from plotpy.config import CONF, _
-from plotpy.constants import PlotType
+from plotpy.constants import LUT_MAX, PlotType
 from plotpy.interfaces import ICSImageItemType
-from plotpy.items.image.base import LUT_MAX
 from plotpy.panels.csection.csitem import (
     ObliqueCrossSectionItem,
     XCrossSectionItem,

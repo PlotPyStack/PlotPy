@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
+
 import weakref
 
 from guidata.configtools import get_icon
 from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
+from plotpy.constants import SHAPE_Z_OFFSET
 from plotpy.events import RectangularSelectionHandler, setup_standard_tool_filter
 from plotpy.items.shape.rectangle import RectangleShape
-
-SHAPE_Z_OFFSET = 1000
 
 
 class DefaultToolbarID:

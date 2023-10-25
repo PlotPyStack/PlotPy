@@ -3,6 +3,7 @@ from guidata.qthelpers import get_std_icon
 from qtpy import QtWidgets as QW
 
 from plotpy.config import _
+from plotpy.constants import ID_ITEMLIST
 from plotpy.interfaces import ICurveItemType
 from plotpy.items import (
     AnnotatedCircle,
@@ -14,7 +15,6 @@ from plotpy.items import (
     RawImageItem,
     RectangleShape,
 )
-from plotpy.panels.base import ID_ITEMLIST
 from plotpy.tools.base import CommandTool, DefaultToolbarID, PanelTool
 from plotpy.tools.curve import edit_curve_data, export_curve_data
 from plotpy.tools.image import edit_image_data, export_image_data

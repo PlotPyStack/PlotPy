@@ -2,6 +2,7 @@
 from qtpy import QtCore as QC
 
 from plotpy.config import _
+from plotpy.constants import SHAPE_Z_OFFSET
 from plotpy.events import (
     KeyEventMatch,
     PointSelectionHandler,
@@ -15,12 +16,7 @@ from plotpy.items import (
     PolygonShape,
     SegmentShape,
 )
-from plotpy.tools.base import (
-    SHAPE_Z_OFFSET,
-    DefaultToolbarID,
-    InteractiveTool,
-    RectangularActionTool,
-)
+from plotpy.tools.base import DefaultToolbarID, InteractiveTool, RectangularActionTool
 
 
 class MultiLineTool(InteractiveTool):

@@ -12,8 +12,8 @@ from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
 
+from plotpy.constants import ID_CONTRAST, ID_ITEMLIST, ID_XCS, ID_YCS
 from plotpy.interfaces import IPlotManager
-from plotpy.panels import ID_CONTRAST, ID_ITEMLIST, ID_XCS, ID_YCS
 from plotpy.plot import BasePlot
 from plotpy.tools import (
     AboutTool,

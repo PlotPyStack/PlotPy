@@ -27,11 +27,11 @@ from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
 from plotpy.config import CONF, _
-from plotpy.constants import PlotType
+from plotpy.constants import ID_CONTRAST, PlotType
 from plotpy.interfaces import IPanel, IVoiImageItemType
 from plotpy.items import HistogramItem, XRangeSelection
 from plotpy.lutrange import lut_range_threshold
-from plotpy.panels.base import ID_CONTRAST, PanelWidget
+from plotpy.panels.base import PanelWidget
 from plotpy.plot.base import BasePlot, BasePlotOptions
 from plotpy.styles import CurveParam, HistogramParam
 from plotpy.tools import AntiAliasingTool, BasePlotMenuTool, SelectPointTool, SelectTool

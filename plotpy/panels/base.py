@@ -11,11 +11,11 @@ The panels base module provides :py:class:`.PanelWidget` (the `panel` widget
 class from which all panels must derived from) and identifiers for each kind
 of panel.
 
-.. autodata:: ID_ITEMLIST
-.. autodata:: ID_CONTRAST
-.. autodata:: ID_XCS
-.. autodata:: ID_YCS
-.. autodata:: ID_OCS
+.. autodata:: plotpy.constants.ID_ITEMLIST
+.. autodata:: plotpy.constants.ID_CONTRAST
+.. autodata:: plotpy.constants.ID_XCS
+.. autodata:: plotpy.constants.ID_YCS
+.. autodata:: plotpy.constants.ID_OCS
 
 .. autoclass:: PanelWidget
     :members:
@@ -24,25 +24,6 @@ of panel.
 from guidata.configtools import get_icon
 from guidata.widgets.dockable import DockableWidget
 from qtpy import QtCore as QC
-
-# ===============================================================================
-# Panel IDs
-# ===============================================================================
-
-#: ID of the `item list` panel
-ID_ITEMLIST = "itemlist"
-
-#: ID of the `contrast adjustment` panel
-ID_CONTRAST = "contrast"
-
-#: ID of the `X-axis cross section` panel
-ID_XCS = "x_cross_section"
-
-#: ID of the `Y-axis cross section` panel
-ID_YCS = "y_cross_section"
-
-#: ID of the `oblique averaged cross section` panel
-ID_OCS = "oblique_cross_section"
 
 
 # ===============================================================================

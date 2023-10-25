@@ -26,7 +26,7 @@ from plotpy._scaler import (
     _scale_rect,
 )
 from plotpy.config import _
-from plotpy.constants import LUTAlpha
+from plotpy.constants import LUT_MAX, LUT_SIZE, LUTAlpha
 from plotpy.coords import pixelround
 from plotpy.interfaces import (
     IBaseImageItem,
@@ -57,9 +57,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from plotpy.interfaces import IItemType
     from plotpy.items import RectangleShape
     from plotpy.styles.base import ItemParameters
-
-LUT_SIZE = 1024
-LUT_MAX = float(LUT_SIZE - 1)
 
 
 class BaseImageItem(QwtPlotItem):

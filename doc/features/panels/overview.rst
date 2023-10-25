@@ -20,8 +20,8 @@ Panels are objects inheriting from the :py:class:`.PanelWidget` class.
 
 The built-in panels are:
 
-* :py:data:`.ID_ITEMLIST`: `item list` panel
-* :py:data:`.ID_CONTRAST`: `contrast adjustment` panel
-* :py:data:`.ID_XCS`: `X-axis cross section` panel
-* :py:data:`.ID_YCS`: `Y-axis cross section` panel
-* :py:data:`.ID_OCS`: `oblique cross section` panel
+* :py:data:`plotpy.constants.ID_ITEMLIST`: `item list` panel
+* :py:data:`plotpy.constants.ID_CONTRAST`: `contrast adjustment` panel
+* :py:data:`plotpy.constants.ID_XCS`: `X-axis cross section` panel
+* :py:data:`plotpy.constants.ID_YCS`: `Y-axis cross section` panel
+* :py:data:`plotpy.constants.ID_OCS`: `oblique cross section` panel

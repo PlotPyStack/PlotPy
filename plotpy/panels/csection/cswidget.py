@@ -7,8 +7,9 @@ from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
 from plotpy.config import _
+from plotpy.constants import ID_OCS, ID_XCS, ID_YCS
 from plotpy.interfaces import IPanel
-from plotpy.panels.base import ID_OCS, ID_XCS, ID_YCS, PanelWidget
+from plotpy.panels.base import PanelWidget
 from plotpy.panels.csection.csplot import (
     CrossSectionPlot,
     ObliqueCrossSectionPlot,

@@ -3,9 +3,10 @@
 from qtpy import QtCore as QC
 
 from plotpy.config import _
+from plotpy.constants import SHAPE_Z_OFFSET
 from plotpy.events import QtDragHandler, setup_standard_tool_filter
 from plotpy.items import Marker, XRangeSelection
-from plotpy.tools.base import SHAPE_Z_OFFSET, DefaultToolbarID, InteractiveTool
+from plotpy.tools.base import DefaultToolbarID, InteractiveTool
 
 
 class BaseCursorTool(InteractiveTool):

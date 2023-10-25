@@ -16,7 +16,9 @@ import enum
 
 from plotpy.config import _
 
-# TODO: Move here other constants from around the codebase
+# ===============================================================================
+# Plot types
+# ===============================================================================
 
 
 class PlotType(enum.Enum):
@@ -44,6 +46,10 @@ class PlotType(enum.Enum):
     MANUAL = 4
 
 
+# ===============================================================================
+# Plot parameters
+# ===============================================================================
+
 PARAMETERS_TITLE_ICON = {
     "grid": (_("Grid..."), "grid.png"),
     "axes": (_("Axes style..."), "axes.png"),
@@ -51,6 +57,31 @@ PARAMETERS_TITLE_ICON = {
 }
 
 
+# ===============================================================================
+# Panels
+# ===============================================================================
+
+#: ID of the `item list` panel
+ID_ITEMLIST = "itemlist"
+#: ID of the `contrast adjustment` panel
+ID_CONTRAST = "contrast"
+#: ID of the `X-axis cross section` panel
+ID_XCS = "x_cross_section"
+#: ID of the `Y-axis cross section` panel
+ID_YCS = "y_cross_section"
+#: ID of the `oblique averaged cross section` panel
+ID_OCS = "oblique_cross_section"
+
+
+# ===============================================================================
+# Plot items
+# ===============================================================================
+
+# Shape Z offset used when adding shapes to the plot
+SHAPE_Z_OFFSET = 1000
+
+
+# Lookup table alpha functions for image items
 class LUTAlpha(enum.Enum):
     """LUT Alpha functions"""
 
@@ -86,3 +117,8 @@ class LUTAlpha(enum.Enum):
             (LUTAlpha.SIGMOID.value, _("Sigmoid")),
             (LUTAlpha.TANH.value, _("Hyperbolic tangent")),
         ]
+
+
+# Lookup table size
+LUT_SIZE = 1024
+LUT_MAX = float(LUT_SIZE - 1)
