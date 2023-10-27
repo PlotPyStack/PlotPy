@@ -18,6 +18,9 @@ The `plot` module provides the following features:
   curve/image displaying with an integrated and preconfigured `plot manager`
   providing the `item list panel` and curve/image-related `tools`
 
+* :py:class:`.SyncPlotWindow`: a ready-to-use window for curve/image
+  displaying with plot axes synchronization
+
 .. seealso::
 
     :ref:`items`

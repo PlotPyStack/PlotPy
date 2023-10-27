@@ -14,6 +14,8 @@ High-level features
    :members:
 .. autoclass:: plotpy.plot.PlotWindow
    :members:
+.. autoclass:: plotpy.plot.SyncPlotWindow
+   :members:
 
 Low-level features
 ^^^^^^^^^^^^^^^^^^
