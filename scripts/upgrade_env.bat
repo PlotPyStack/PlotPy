@@ -7,7 +7,7 @@ REM Licensed under the terms of the MIT License
 REM Copyright (c) 2020 Pierre Raybaut
 REM (see PythonQwt LICENSE file for more details)
 REM ======================================================
-setlocal
+setlocal enabledelayedexpansion
 call %~dp0utils GetScriptPath SCRIPTPATH
 cd %SCRIPTPATH%\..
 
@@ -18,7 +18,8 @@ for /D %%d in ("%DIR0%*") do (
     set WINPYDIRBASE=%%d
     call !WINPYDIRBASE!\scripts\env.bat
     echo Upgrading environment for "%%d":
-    python -m pip install --upgrade -r dev\requirements.txt
+    python -m pip install --upgrade pip
+    python -m pip install --upgrade -r requirements.txt
     echo ----
 )
 
