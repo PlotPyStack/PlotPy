@@ -6,6 +6,7 @@ Getting started
    :caption: Contents:
 
    overview
+   motivation
    installation
    examples
    licenses
