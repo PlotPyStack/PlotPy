@@ -1,0 +1,5 @@
+PlotPy V2 is now live! 🎉Introducing an optimized 2D curve/image plotting library📊.
+It's the successor to guiqwt. <https://pypi.org/project/PlotPy/>
+PlotPy is part of PlotPyStack, representing 15 years of expertise
+in Python-Qt scientific software development.
+#Python #Plotting

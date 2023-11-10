@@ -5,18 +5,23 @@ Main features
 -------------
 
 :mod:`plotpy` is a Python module providing a set of high-level widgets and
-functions to ease plotting data with Python and Qt.
+functions to ease plotting data with Python and Qt. It can also be seen as a
+handy toolbox to develop custom scientific or technical data visualization
+applications using Python and Qt.
 
-:mod:`plotpy` is based on the following Python modules:
+:mod:`plotpy` is part of the `PlotPyStack`_ project, a software stack for
+scientific data visualization containing the following modules:
+
+* :mod:`guidata`: a Python library generating graphical user interfaces
+  (GUIs) for easy dataset editing and display. It also provides helpers and
+  application development tools for creating Qt applications.
 
 * :mod:`qwt` (PythonQwt): a Python reimplementation of the Qwt C++ library which
   provides a lot of plotting types and a flexible widget class
   (:py:class:`qwt.plot.QwtPlot`) which may be used to create custom plotting
   widgets.
 
-* :mod:`guidata`: a Python library generating graphical user interfaces
-  (GUIs) for easy dataset editing and display. It also provides helpers and
-  application development tools for PyQt5.
+:mod:`plotpy` is also based on the following Python modules:
 
 * :mod:`numpy`: a Python module providing efficient array manipulation
   facilities.
@@ -30,6 +35,23 @@ The :mod:`plotpy` library provides the following main features:
 * Curve fitting tools
 * Interactive plotting tools
 * And more...
+
+Advanced features
+-----------------
+
+The :mod:`plotpy` library provides the following advanced features.
+
+Curve plotting:
+
+* Curve fitting tools
+* Interval selection tools for computing on selected area
+
+Image plotting:
+
+* Contrast adjustment panel
+* X-axis and Y-axis cross-sections
+* Powerful C++ image transform engine for real-time affine transform, interpolation
+  (including antialiasing) or non-linear X and Y axes
 
 Performance
 -----------
@@ -101,3 +123,5 @@ The :mod:`plotpy` library provides the following features:
   - graphical objects (curves, images, shapes) serialization/deserialization
     to/from ``.ini``, ``.h5`` or ``.json`` files
   - a lot of test scripts (see :ref:`examples`)
+
+.. _PlotPyStack: https://github.com/PlotPyStack

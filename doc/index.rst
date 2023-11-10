@@ -8,11 +8,14 @@ Welcome to :mod:`plotpy`'s documentation!
 features for interactive computing and signal/image processing application
 development.
 
+:mod:`plotpy` is part of the `PlotPyStack`_ project, which aims at providing
+a full set of Python libraries for data plotting and data analysis.
+
 :mod:`plotpy` is based on:
 
 * `Python`_ language and `Qt`_ GUI toolkit (via `PySide`_ or `PyQt`_)
-* `guidata`_ automatic GUI generation library
-* `PythonQwt`_ plotting widgets library
+* `guidata`_ automatic GUI generation library (`PlotPyStack`_ project)
+* `PythonQwt`_ plotting widgets library (`PlotPyStack`_ project)
 * `NumPy`_ and `SciPy`_ scientific computing libraries
 
 .. figure:: images/panorama.png
@@ -34,6 +37,7 @@ External resources:
 .. _PythonQwt: https://pypi.python.org/pypi/PythonQwt
 .. _NumPy: https://pypi.python.org/pypi/NumPy
 .. _SciPy: https://pypi.python.org/pypi/SciPy
+.. _PlotPyStack: https://github.com/PlotPyStack
 
 .. module:: plotpy
 

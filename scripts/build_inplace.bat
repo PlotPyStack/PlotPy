@@ -17,12 +17,20 @@ if exist MANIFEST ( del /q MANIFEST )
 :: (WinPython base directories)
 call %FUNC% GetPythonExeGrandParentDir DIR0
 for /D %%d in ("%DIR0%*") do (
-    set WINPYDIRBASE=%%d
-    call !WINPYDIRBASE!\scripts\env.bat
-    echo ******************************************************************************
-    echo Building %MODNAME% from "%%d"
-    echo ******************************************************************************
-    python setup.py build_ext --inplace
-    echo ----
+    :: Get the directory name without the path
+    for %%n in (%%d) do set "DIRNAME=%%~nxn"
+
+    :: Check if the directory ends with "-PyQt6" or "-PySide6"
+    if not "!DIRNAME:~-6!"=="-PyQt6" (
+        if not "!DIRNAME:~-8!"=="-PySide6" (
+            set WINPYDIRBASE=%%d
+            call !WINPYDIRBASE!\scripts\env.bat
+            echo ******************************************************************************
+            echo Building %MODNAME% from "%%d"
+            echo ******************************************************************************
+            python setup.py build_ext --inplace
+            echo ----
+        )
+    )
 )
 call %FUNC% EndOfScript
