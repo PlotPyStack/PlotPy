@@ -64,14 +64,6 @@ class AnnotatedEllipseTool(EllipseTool):
         self.set_shape_style(annotation)
         return annotation, 0, 1
 
-    def handle_final_shape(self, shape):
-        """
-
-        :param shape:
-        """
-        shape.shape.switch_to_ellipse()
-        super().handle_final_shape(shape)
-
 
 class AnnotatedPointTool(PointTool):
     def create_shape(self):

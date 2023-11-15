@@ -746,9 +746,17 @@ class AnnotatedEllipse(AnnotatedShape):
         AnnotatedShape.__init__(self, annotationparam)
         self.set_xdiameter(x1, y1, x2, y2)
         self.setIcon(get_icon("ellipse_shape.png"))
-        self.shape.switch_to_ellipse()
+        self.switch_to_ellipse()
 
     # ----Public API-------------------------------------------------------------
+    def switch_to_ellipse(self):
+        """Switch to ellipse mode"""
+        self.shape.switch_to_ellipse()
+
+    def switch_to_circle(self):
+        """Switch to circle mode"""
+        self.shape.switch_to_circle()
+
     def set_xdiameter(self, x0, y0, x1, y1):
         """Set the coordinates of the ellipse's X-axis diameter
         Warning: transform matrix is not applied here"""

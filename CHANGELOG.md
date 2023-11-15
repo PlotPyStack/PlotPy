@@ -1,5 +1,11 @@
 # PlotPy Releases #
 
+## Version 2.0.1 ##
+
+🛠️ Bug fixes:
+
+* Fixed `plotpy.tools.AnnotatedEllipseTool`: `AttributeError` when finalizing the shape
+
 ## Version 2.0.0 ##
 
 This version is the first release of the 2.0 series, which is distributed under the
