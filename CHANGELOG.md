@@ -6,6 +6,12 @@
 
 * Fixed `plotpy.tools.AnnotatedEllipseTool`: `AttributeError` when finalizing the shape
 
+📚 Documentation:
+
+* `plotpy.plot.SyncPlotWindow`: added missing documentation
+* Added more information on PlotPyStack
+* New "Motivation" section explaining the reasons behind the creation of PlotPy
+
 ## Version 2.0.0 ##
 
 This version is the first release of the 2.0 series, which is distributed under the
