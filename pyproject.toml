@@ -51,6 +51,7 @@ dev = ["black", "isort", "pylint", "Coverage", "Cython"]
 doc = [
     "PyQt5",
     "sphinx",
+    "myst_parser",
     "sphinx-copybutton",
     "sphinx_qt_documentation",
     "python-docs-theme",

@@ -1,4 +1,4 @@
-# PlotPy Releases #
+# Changelog #
 
 ## Version 2.0.1 ##
 

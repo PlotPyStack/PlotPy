@@ -15,5 +15,6 @@ pytest-qt
 pytest-xvfb
 python-docs-theme
 sphinx
+myst_parser
 sphinx-copybutton
 sphinx_qt_documentation
