@@ -142,6 +142,8 @@ def select_with_shape_tool(
     size: tuple[int, int] = None,
     other_items: list[QwtPlotItem] = [],
     tooldialogclass: SelectDialog = SelectDialog,
+    toolbar: bool = False,
+    options: PlotOptions | None = None,
     icon=None,
     **kwargs,
 ) -> AbstractShape:
@@ -155,6 +157,8 @@ def select_with_shape_tool(
         size: Dialog size
         other_items: Other items to be displayed
         tooldialogclass: Tool dialog class
+        toolbar: show/hide toolbar
+        options: plot options
         icon: Icon
         kwargs: Keyword arguments for the tool class
 
@@ -165,7 +169,9 @@ def select_with_shape_tool(
         title = "Select an area then press OK to accept"
     if icon is not None:
         icon = get_icon(icon) if isinstance(icon, str) else icon
-    win: SelectDialog = tooldialogclass(parent, title=title, edit=True, icon=icon)
+    win: SelectDialog = tooldialogclass(
+        parent, title=title, edit=True, toolbar=toolbar, options=options, icon=icon
+    )
     win.set_image_and_tool(item, toolclass, **kwargs)
     plot = win.get_plot()
     for other_item in other_items:
