@@ -5,6 +5,19 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Run Test Launcher",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/plotpy/tests/__init__.py",
+            "console": "integratedTerminal",
+            "envFile": "${workspaceFolder}/.env",
+            "python": "${config:python.defaultInterpreterPath}",
+            "justMyCode": true,
+            "env": {
+                "QT_COLOR_MODE": "light",
+            }
+        },
+        {
             "name": "Run current file",
             "type": "python",
             "request": "launch",
@@ -13,27 +26,29 @@
             "envFile": "${workspaceFolder}/.env",
             "python": "${config:python.defaultInterpreterPath}",
             "justMyCode": false,
-            // "args": [
-            //     "--unattended"
-            // ],
             "pythonArgs": [
                 "-W error::DeprecationWarning",
             ],
             "env": {}
         },
         {
-            "name": "Python: Debug Tests",
+            "name": "Run current file (unattended)",
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "purpose": [
-                "debug-test"
-            ],
             "console": "integratedTerminal",
+            "envFile": "${workspaceFolder}/.env",
+            "python": "${config:python.defaultInterpreterPath}",
+            "pythonArgs": [
+                "-W error::DeprecationWarning",
+            ],
+            "justMyCode": false,
+            "args": [
+                "--unattended"
+            ],
             "env": {
-                "PYTEST_ADDOPTS": "--no-cov"
-            },
-            "justMyCode": false
+                "GUIDATA_PARSE_ARGS": "1",
+            }
         }
     ]
 }
