@@ -430,7 +430,7 @@ class BasePlot(qwt.QwtPlot):
                 # the plot is deleted.
                 if "C++ object" not in str(exc):
                     raise
-            except ValueError as exc:
+            except ValueError:
                 # This happens when object has already been deleted
                 pass
 

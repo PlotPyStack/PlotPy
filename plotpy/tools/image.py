@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import weakref
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from guidata.configtools import get_icon
 from guidata.dataset import BoolItem, DataSet, FloatItem

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from guidata.configtools import get_icon
 from guidata.qthelpers import add_actions, add_separator
 from qtpy import QtCore as QC

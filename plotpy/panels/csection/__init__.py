@@ -14,4 +14,6 @@ an oblique rectangle).
 """
 
 # pylint: disable=unused-import
+# flake8: noqa
+
 from .cswidget import ObliqueCrossSection, XCrossSection, YCrossSection

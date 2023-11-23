@@ -52,7 +52,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from qtpy.QtGui import QPainter
 
     from plotpy.interfaces import IItemType
-    from plotpy.items import BaseImageItem, RectangleShape, TrImageItem
+    from plotpy.items import RectangleShape
     from plotpy.plot import BasePlot
     from plotpy.styles.base import ItemParameters
 

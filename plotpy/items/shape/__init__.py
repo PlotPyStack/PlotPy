@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 # pylint: disable=W0611
+# flake8: noqa
+
 from .axis import Axes
 from .base import AbstractShape
 from .ellipse import EllipseShape

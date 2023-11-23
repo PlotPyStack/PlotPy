@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 # pylint: disable=unused-import
+# flake8: noqa
+
 from .items import (
     IBaseImageItem,
     IBasePlotItem,

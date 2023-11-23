@@ -9,7 +9,6 @@ from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 
-from plotpy.config import _
 from plotpy.items.shape.polygon import PolygonShape
 
 if TYPE_CHECKING:  # pragma: no cover

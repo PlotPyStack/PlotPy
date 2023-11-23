@@ -14,7 +14,6 @@ from plotpy.coords import canvas_to_axes
 from plotpy.interfaces import IBasePlotItem, IShapeItemType
 
 if TYPE_CHECKING:  # pragma: no cover
-    from qtpy import QtCore as QC
     from qtpy.QtCore import QPointF  # helping out python_qt_documentation
 
     from plotpy.interfaces import IItemType

@@ -25,7 +25,6 @@ from plotpy.styles.curve import CurveParam
 
 if TYPE_CHECKING:  # pragma: no cover
     import guidata.dataset.io
-    from qtpy import QtCore as QC
 
     from plotpy.interfaces import IItemType
     from plotpy.styles.base import ItemParameters

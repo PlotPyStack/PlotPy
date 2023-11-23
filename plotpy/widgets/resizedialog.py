@@ -46,7 +46,9 @@ class ResizeDialog(QW.QDialog):
         QW.QDialog.__init__(self, parent)
         win32_fix_title_bar_background(self)
 
-        intfunc = lambda tup: [int(val) for val in tup]
+        def intfunc(tup):
+            return [int(val) for val in tup]
+
         if intfunc(new_size) == intfunc(old_size):
             self.keep_original_size = True
         else:

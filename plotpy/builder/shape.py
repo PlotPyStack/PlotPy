@@ -22,7 +22,6 @@ from __future__ import annotations
 
 import numpy as np
 
-from plotpy.config import _
 from plotpy.items import (
     CircleSVGShape,
     EllipseShape,

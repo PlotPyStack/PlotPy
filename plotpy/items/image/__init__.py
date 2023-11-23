@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 # pylint: disable=unused-import
+# flake8: noqa
+
 from .base import BaseImageItem, RawImageItem
 from .filter import ImageFilterItem, XYImageFilterItem
 from .image_items import ImageItem, RGBImageItem, XYImageItem

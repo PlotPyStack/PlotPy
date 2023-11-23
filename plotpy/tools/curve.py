@@ -216,10 +216,16 @@ class SelectPointTool(InteractiveTool):
                 title = f"<b>{self.TITLE}</b><br>"
             if self.on_active_item:
                 constraint_cb = filter.plot.on_active_curve
-                label_cb = lambda x, y: title + filter.plot.get_coordinates_str(x, y)
+
+                def label_cb(x, y):
+                    return title + filter.plot.get_coordinates_str(x, y)
+
             else:
                 constraint_cb = None
-                label_cb = lambda x, y: f"{title}x = {x:g}<br>y = {y:g}"
+
+                def label_cb(x, y):
+                    return f"{title}x = {x:g}<br>y = {y:g}"
+
             self.marker = Marker(label_cb=label_cb, constraint_cb=constraint_cb)
             self.set_marker_style(self.marker)
         self.marker.attach(filter.plot)

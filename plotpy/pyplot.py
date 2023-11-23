@@ -101,4 +101,6 @@ Reference
 
 # pylint: disable=unused-import
 # pylint: disable=wildcard-import
+# flake8: noqa
+
 from plotpy.plot.interactive import *
