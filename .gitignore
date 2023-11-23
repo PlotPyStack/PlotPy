@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Visual Studio Code
+.env
+.venv
+
 # C extensions
 *.so
 *.pyd
@@ -46,11 +50,9 @@ src/mandelbrot.c
 # qt.conf files
 doc/source/deployment_example/qt.conf
 
-# Virtual env
-.venv/
+# Coverage
 htmlcov
 
 # Other
 *.bak
 *_ui.py
-.guidata_faulthandler.log
