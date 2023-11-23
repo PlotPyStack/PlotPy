@@ -6,7 +6,7 @@ ResizeDialog test
 # guitest: show
 
 import pytest
-from guidata.qthelpers import qt_app_context
+from guidata.qthelpers import exec_dialog, qt_app_context
 from qtpy.QtCore import Qt
 
 from plotpy.widgets.resizedialog import ResizeDialog
@@ -60,7 +60,12 @@ def test_resize_dialog_qtbot_reject(qtbot):
         assert dialog.keep_original_size is False
 
 
-if __name__ == "__main__":
+def simple_test():
+    """ResizeDialog simple test"""
     with qt_app_context():
         dialog = ResizeDialog(None, (150, 100), (300, 250), "Enter the new size:")
-        dialog.exec()
+        exec_dialog(dialog)
+
+
+if __name__ == "__main__":
+    simple_test()
