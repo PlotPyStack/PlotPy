@@ -665,6 +665,9 @@ def item_class_from_name(name: str) -> type[Any] | None:
 
     Returns:
         plot item class
+
+    Raises:
+        AssertionError: if class name is unknown (item is not serializable)
     """
     global SERIALIZABLE_ITEMS, ITEM_MODULES
     assert name in SERIALIZABLE_ITEMS, "Unknown class %r" % name
