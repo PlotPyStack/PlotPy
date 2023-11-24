@@ -5,6 +5,7 @@ from __future__ import annotations
 import math
 from typing import TYPE_CHECKING
 
+import guidata.dataset.io
 import numpy as np
 from guidata.configtools import get_icon
 from guidata.dataset import update_dataset
@@ -35,7 +36,10 @@ class XRangeSelection(AbstractShape):
     """
 
     def __init__(
-        self, _min: float, _max: float, shapeparam: RangeShapeParam | None = None
+        self,
+        _min: float | None = None,
+        _max: float | None = None,
+        shapeparam: RangeShapeParam | None = None,
     ) -> None:
         super().__init__()
         self._min = _min
@@ -51,8 +55,53 @@ class XRangeSelection(AbstractShape):
         self.handle = None
         self.symbol = None
         self.sel_symbol = None
-        self.shapeparam.update_range(self)  # creates all the above QObjects
+        if self._min is not None and self._max is not None:
+            self.shapeparam.update_range(self)  # creates all the above QObjects
         self.setIcon(get_icon("xrange.png"))
+
+    def __reduce__(self) -> tuple[type, tuple, tuple]:
+        """Return state information for pickling"""
+        self.shapeparam.update_param(self)
+        state = (self.shapeparam, self._min, self._max)
+        return (XRangeSelection, (), state)
+
+    def __setstate__(self, state: tuple) -> None:
+        """Restore state information from pickling"""
+        self.shapeparam, self._min, self._max = state
+        self.shapeparam.update_range(self)
+
+    def serialize(
+        self,
+        writer: guidata.dataset.io.HDF5Writer
+        | guidata.dataset.io.INIWriter
+        | guidata.dataset.io.JSONWriter,
+    ) -> None:
+        """Serialize object to HDF5 writer
+
+        Args:
+            writer: HDF5, INI or JSON writer
+        """
+        self.shapeparam.update_param(self)
+        writer.write(self.shapeparam, group_name="shapeparam")
+        writer.write(self._min, group_name="min")
+        writer.write(self._max, group_name="max")
+
+    def deserialize(
+        self,
+        reader: guidata.dataset.io.HDF5Reader
+        | guidata.dataset.io.INIReader
+        | guidata.dataset.io.JSONReader,
+    ) -> None:
+        """Deserialize object from HDF5 reader
+
+        Args:
+            reader: HDF5, INI or JSON reader
+        """
+        self._min = reader.read("min")
+        self._max = reader.read("max")
+        self.shapeparam = RangeShapeParam(_("Range"), icon="xrange.png")
+        reader.read("shapeparam", instance=self.shapeparam)
+        self.shapeparam.update_range(self)
 
     def get_handles_pos(self) -> tuple[float, float, float]:
         """Return the handles position

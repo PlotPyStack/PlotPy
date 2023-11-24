@@ -636,6 +636,7 @@ register_serializable_items(
         "MaskedImageItem",
         "MaskedXYImageItem",
         "Marker",
+        "XRangeSelection",
         "PolygonShape",
         "PointShape",
         "SegmentShape",

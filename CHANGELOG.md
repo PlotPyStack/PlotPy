@@ -6,6 +6,7 @@
 
 * Fixed `plotpy.tools.AnnotatedEllipseTool`: `AttributeError` when finalizing the shape
 * `plotpy.widgets.select_with_shape_tool`: added missing `toolbar` and `options` parameters
+* `items.XRangeSelection` is now serializable, as expected
 
 📚 Documentation:
 
