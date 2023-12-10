@@ -15,7 +15,7 @@ from plotpy.builder import make
 from plotpy.config import _
 from plotpy.items import RawImageItem
 from plotpy.mandelbrot import mandelbrot
-from plotpy.tools.base import ToggleTool
+from plotpy.tools import ToggleTool
 
 
 class FullScale(ToggleTool):
@@ -64,20 +64,26 @@ class MandelItem(RawImageItem):
         )
 
 
+def create_mandelbrot_window():
+    """Create a Mandelbrot set window"""
+    win = make.window(
+        toolbar=True,
+        wintitle="Mandelbrot",
+        yreverse=False,
+        type="image",
+    )
+    mandel = MandelItem(-1.5, 0.5, -1.0, 1.0)
+    fstool = win.manager.add_tool(FullScale, mandel)
+    plot = win.get_plot()
+    plot.set_aspect_ratio(lock=False)
+    plot.add_item(mandel)
+    return win, mandel, fstool
+
+
 def test_mandel():
+    """Test Mandelbrot set window"""
     with qt_app_context(exec_loop=True):
-        win = make.dialog(
-            edit=True,
-            toolbar=True,
-            wintitle="Mandelbrot",
-            yreverse=False,
-            type="image",
-        )
-        mandel = MandelItem(-1.5, 0.5, -1.0, 1.0)
-        win.manager.add_tool(FullScale, mandel)
-        plot = win.manager.get_plot()
-        plot.set_aspect_ratio(lock=False)
-        plot.add_item(mandel)
+        win, _mandel, _fstool = create_mandelbrot_window()
         win.show()
 
 
