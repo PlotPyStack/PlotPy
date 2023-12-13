@@ -243,7 +243,7 @@ class HelpTool(CommandTool):
   - <u>middle-click + mouse move</u>: pan<br>
   - <u>right-click + mouse move</u>: zoom"""
         )
-        info += "<br><hr><br><b>Information on PlotPy:</b><br><br>"
+        info += "<br><hr><br><b>" + _("Information on PlotPy:") + "</b><br><br>"
         info += about.about(html=True)
         QW.QMessageBox.information(plot, _("Help"), info)
 
