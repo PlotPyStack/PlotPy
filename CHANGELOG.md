@@ -1,5 +1,11 @@
 # Changelog #
 
+## Version 2.0.2 ##
+
+🛠️ Bug fixes:
+
+* [Issue #4](https://github.com/PlotPyStack/PlotPy/issues/4) - Average cross section: `RuntimeWarning: Mean of empty slice.`
+
 ## Version 2.0.1 ##
 
 🛠️ Bug fixes:

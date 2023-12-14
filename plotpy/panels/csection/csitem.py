@@ -311,14 +311,6 @@ class CrossSectionItem(ErrorBarCurveItem):
         sectx, secty = self.get_cross_section(obj)
         if secty.size == 0 or np.all(np.isnan(secty)):
             sectx, secty = np.array([]), np.array([])
-        elif self.param.curvestyle != "Steps":
-            # Center the symbols at the middle of pixels
-            # Bugfix, we deactivate warnings only for numpy method call.
-            # (V1.0.10 => V1.0.11)
-            # Deactivate following warnings after 20210218 mail
-            # warnings.filterwarnings('ignore')
-            sectx[:-1] += np.mean(np.diff(sectx) / 2)
-            # warnings.filterwarnings('default')
         if self.orientation() == QC.Qt.Orientation.Vertical:
             self.process_curve_data(secty, sectx)
         else:
