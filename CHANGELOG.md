@@ -6,6 +6,7 @@
 
 * [Issue #3](https://github.com/PlotPyStack/PlotPy/issues/3) - `PlotWidget`: `ZeroDivisionError` on resize while ignoring constraints
 * [Issue #4](https://github.com/PlotPyStack/PlotPy/issues/4) - Average cross section: `RuntimeWarning: Mean of empty slice.`
+* [Issue #6](https://github.com/PlotPyStack/PlotPy/issues/6) - 1D Histogram items are not properly drawn
 
 ## Version 2.0.1 ##
 

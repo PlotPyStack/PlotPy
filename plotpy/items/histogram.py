@@ -170,7 +170,8 @@ class HistogramItem(CurveItem):
         if self.get_hist_source() is None:
             return
         hist, bin_edges = self.compute_histogram()
-        hist = np.concatenate((hist, [0]))
+        # Duplicate the first `hist` value to get a step-like histogram:
+        hist = np.concatenate(([hist[0]], hist))
         if self.logscale:
             hist = np.log(hist + 1)
 
