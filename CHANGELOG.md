@@ -9,6 +9,7 @@
 * [Issue #5](https://github.com/PlotPyStack/PlotPy/issues/5) - Contrast panel: levels histogram is sometimes not updated
 * [Issue #6](https://github.com/PlotPyStack/PlotPy/issues/6) - 1D Histogram items are not properly drawn
 * [Issue #7](https://github.com/PlotPyStack/PlotPy/issues/7) - Contrast panel: histogram may contains zeros periodically due to improper bin sizes
+* [Issue #8](https://github.com/PlotPyStack/PlotPy/issues/8) - Contrast panel: switch back to default tool after selecting min/max
 
 ## Version 2.0.1 ##
 

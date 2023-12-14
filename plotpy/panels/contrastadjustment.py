@@ -475,6 +475,7 @@ class ContrastAdjustment(PanelWidget):
             tip=_("Select minimum level on image"),
             toolbar_id="contrast",
             end_callback=self.apply_min_selection,
+            switch_to_default_tool=True,
         )
         self.max_select_tool = self.manager.add_tool(
             SelectPointTool,
@@ -484,6 +485,7 @@ class ContrastAdjustment(PanelWidget):
             tip=_("Select maximum level on image"),
             toolbar_id="contrast",
             end_callback=self.apply_max_selection,
+            switch_to_default_tool=True,
         )
 
     def get_plot(self) -> BasePlot:
@@ -544,6 +546,7 @@ class ContrastAdjustment(PanelWidget):
         point = self.min_select_tool.get_coordinates()
         z = item.get_data(*point)
         self.histogram.set_min(z)
+        tool.SIG_TOOL_JOB_FINISHED.emit()
 
     def apply_max_selection(self, tool: SelectPointTool) -> None:
         """Apply maximum selection
@@ -555,6 +558,7 @@ class ContrastAdjustment(PanelWidget):
         point = self.max_select_tool.get_coordinates()
         z = item.get_data(*point)
         self.histogram.set_max(z)
+        tool.SIG_TOOL_JOB_FINISHED.emit()
 
     def set_range(self, _min: float, _max: float) -> None:
         """Set contrast panel's histogram range
