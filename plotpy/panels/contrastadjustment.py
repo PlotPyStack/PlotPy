@@ -19,6 +19,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import numpy as np
 from guidata.configtools import get_icon, get_image_layout
 from guidata.dataset import DataSet, FloatItem
 from guidata.qthelpers import add_actions, create_action
@@ -37,7 +38,7 @@ from plotpy.styles import CurveParam, HistogramParam
 from plotpy.tools import AntiAliasingTool, BasePlotMenuTool, SelectPointTool, SelectTool
 
 if TYPE_CHECKING:  # pragma: no cover
-    from collections.abc import Callable
+    from collections.abc import Callable, Generator
 
     from qtpy.QtWidgets import QWidget
 
@@ -65,13 +66,9 @@ class LevelsHistogram(BasePlot):
         self.antialiased = False
 
         # a dict of dict : plot -> selected items -> HistogramItem
-        self._tracked_items: dict[BasePlot, dict[BaseImageItem, CurveItem]] = {}
+        self._tracked_items: dict[BasePlot, dict[BaseImageItem, HistogramItem]] = {}
         self.param = CurveParam(_("Curve"), icon="curve.png")
         self.param.read_config(CONF, "histogram", "curve")
-
-        self.histparam = HistogramParam(_("Histogram"), icon="histogram.png")
-        self.histparam.logscale = False
-        self.histparam.n_bins = 256
 
         self.range = XRangeSelection(0, 1)
         self.range_mono_color = self.range.shapeparam.sel_line.color
@@ -103,11 +100,13 @@ class LevelsHistogram(BasePlot):
         plot.SIG_ITEM_REMOVED.connect(self.item_removed)
         plot.SIG_ACTIVE_ITEM_CHANGED.connect(self.active_item_changed)
 
-    def tracked_items_gen(self) -> tuple[BaseImageItem, CurveItem]:
+    def tracked_items_gen(
+        self,
+    ) -> Generator[tuple[BaseImageItem, HistogramItem], None, None]:
         """Generator of tracked items"""
-        for plot, items in list(self._tracked_items.items()):
-            for item in list(items.items()):
-                yield item  # tuple item,curve
+        for _plot, items in list(self._tracked_items.items()):
+            for item_curve_tuple in list(items.items()):
+                yield item_curve_tuple  # tuple item,curve
 
     def __del_known_items(self, known_items: dict, items: list) -> None:
         """Delete known items
@@ -129,7 +128,9 @@ class LevelsHistogram(BasePlot):
         Args:
             plot: plot whose selection changed
         """
-        items = plot.get_selected_items(item_type=IVoiImageItemType)
+        items: list[BaseImageItem] = plot.get_selected_items(
+            item_type=IVoiImageItemType
+        )
         known_items = self._tracked_items.setdefault(plot, {})
 
         if items:
@@ -153,13 +154,10 @@ class LevelsHistogram(BasePlot):
 
         for item in items:
             if item not in known_items:
-                imin, imax = item.get_lut_range_full()
-                delta = int(float(imax) - float(imin))
-                if delta > 0 and delta < 256:
-                    self.histparam.n_bins = delta
-                else:
-                    self.histparam.n_bins = 256
-                curve = HistogramItem(self.param, self.histparam, keep_weakref=True)
+                histparam = HistogramParam(_("Histogram"), icon="histogram.png")
+                histparam.logscale = False
+                histparam.n_bins = 256
+                curve = HistogramItem(self.param, histparam, keep_weakref=True)
                 curve.set_hist_source(item)
                 self.add_item(curve, z=0)
                 known_items[item] = curve
@@ -170,8 +168,18 @@ class LevelsHistogram(BasePlot):
             return
         self.param.shade = 1.0 / nb_selected
         for item, curve in self.tracked_items_gen():
+            if np.issubdtype(item.data.dtype, np.integer):
+                # For integer data, we use the full range of data type
+                info = np.iinfo(item.data.dtype)
+                curve.histparam.bin_min = info.min
+                curve.histparam.bin_max = info.max
+                curve.histparam.n_bins = min(info.max - info.min + 1, 256)
+            else:
+                curve.histparam.bin_min = None
+                curve.histparam.bin_max = None
+                curve.histparam.n_bins = 256
             self.param.update_item(curve)
-            self.histparam.update_hist(curve)
+            curve.histparam.update_hist(curve)
 
         self.active_item_changed(plot)
 

@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from guidata.dataset import (
     BoolItem,
     ChoiceItem,
     ColorItem,
     DataSet,
+    FloatItem,
     GetAttrProp,
     IntItem,
     StringItem,
@@ -14,26 +19,39 @@ from plotpy.config import _
 from plotpy.styles.base import ItemParameters
 from plotpy.styles.image import BaseImageParam
 
+if TYPE_CHECKING:  # pragma: no cover
+    from plotpy.items import Histogram2DItem, HistogramItem
+
 
 class HistogramParam(DataSet):
     n_bins = IntItem(_("Bins"), default=100, min=1, help=_("Number of bins"))
+    bin_min = FloatItem(_("Min"), default=None, help=_("Minimum value"), check=False)
+    bin_max = FloatItem(_("Max"), default=None, help=_("Maximum value"), check=False)
     logscale = BoolItem(_("logarithmic"), _("Y-axis scale"), default=False)
 
-    def update_param(self, obj):
-        """
+    def update_param(self, item: HistogramItem) -> None:
+        """Update the histogram parameters from the plot item
 
-        :param obj:
+        Args:
+            item: Histogram item
         """
-        self.n_bins = obj.get_bins()
-        self.logscale = obj.get_logscale()
+        self.n_bins = item.get_bins()
+        self.bin_min, self.bin_max = item.get_bin_range()
+        self.logscale = item.get_logscale()
 
-    def update_hist(self, hist):
-        """
+    def update_hist(self, item: HistogramItem) -> None:
+        """Update the histogram plot item from the parameters
 
-        :param hist:
+        Args:
+            item: Histogram item
         """
-        hist.set_bins(self.n_bins)
-        hist.set_logscale(self.logscale)
+        if self.bin_min is None or self.bin_max is None:
+            item.bin_range = None
+        else:
+            item.bin_range = (self.bin_min, self.bin_max)
+        item.bins = self.n_bins
+        item.logscale = self.logscale
+        item.update_histogram()
 
 
 class Histogram2DParam(BaseImageParam):
@@ -79,24 +97,26 @@ class Histogram2DParam(BaseImageParam):
         help=_("Background color when no data is present"),
     )
 
-    def update_param(self, obj):
-        """
+    def update_param(self, item: Histogram2DItem) -> None:
+        """Update the histogram parameters from the plot item
 
-        :param obj:
+        Args:
+            item: 2D Histogram item
         """
-        super().update_param(obj)
-        self.logscale = obj.logscale
-        self.nx_bins, self.ny_bins = obj.nx_bins, obj.ny_bins
+        super().update_param(item)
+        self.logscale = item.logscale
+        self.nx_bins, self.ny_bins = item.nx_bins, item.ny_bins
 
-    def update_histogram(self, histogram):
-        """
+    def update_histogram(self, item: Histogram2DItem) -> None:
+        """Update the histogram plot item from the parameters
 
-        :param histogram:
+        Args:
+            item: 2D Histogram item
         """
-        histogram.logscale = int(self.logscale)
-        histogram.set_background_color(self.background)
-        histogram.set_bins(self.nx_bins, self.ny_bins)
-        self.update_item(histogram)
+        item.logscale = int(self.logscale)
+        item.set_background_color(self.background)
+        item.set_bins(self.nx_bins, self.ny_bins)
+        self.update_item(item)
 
 
 class Histogram2DParam_MS(Histogram2DParam):

@@ -38,17 +38,21 @@ class HistDataSource:
     def __init__(self, data: np.ndarray) -> None:
         self.data = data
 
-    def get_histogram(self, nbins: int) -> tuple[np.ndarray, np.ndarray]:
+    def get_histogram(
+        self, nbins: int, drange: tuple[float, float] | None = None
+    ) -> tuple[np.ndarray, np.ndarray]:
         """
         Return a tuple (hist, bins) where hist is a list of histogram values
 
         Args:
-            nbins (int): number of bins
+            nbins: number of bins
+            drange: lower and upper range of the bins. If not provided, range is
+             simply (data.min(), data.max()). Values outside the range are ignored.
 
         Returns:
-            tuple: (hist, bins)
+            Tuple (hist, bins)
         """
-        return np.histogram(self.data, nbins)
+        return np.histogram(self.data, bins=nbins, range=drange)
 
 
 assert_interfaces_valid(HistDataSource)
@@ -73,6 +77,7 @@ class HistogramItem(CurveItem):
         self.hist_count = None
         self.hist_bins = None
         self.bins = None
+        self.bin_range = None
         self.old_bins = None
         self.source: BaseImageItem | None = None
         self.logscale: bool | None = None
@@ -157,13 +162,30 @@ class HistogramItem(CurveItem):
         """
         return self.bins
 
+    def set_bin_range(self, bin_range: tuple[float, float] | None) -> None:
+        """Sets the range of the bins
+
+        Args:
+            bin_range: (min, max) or None for automatic range
+        """
+        self.bin_range = bin_range
+        self.update_histogram()
+
+    def get_bin_range(self) -> tuple[float, float] | None:
+        """Returns the range of the bins
+
+        Returns:
+            tuple: (min, max)
+        """
+        return self.bin_range
+
     def compute_histogram(self) -> tuple[np.ndarray, np.ndarray]:
         """Compute histogram data
 
         Returns:
             tuple: (hist, bins)
         """
-        return self.get_hist_source().get_histogram(self.bins)
+        return self.get_hist_source().get_histogram(self.bins, self.bin_range)
 
     def update_histogram(self) -> None:
         """Update histogram data"""

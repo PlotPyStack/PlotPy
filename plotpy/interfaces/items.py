@@ -489,20 +489,24 @@ class IBaseImageItem:
 
 
 class IHistDataSource:
-    def get_histogram(self, nbins: int) -> tuple[np.ndarray, np.ndarray]:
+    def get_histogram(
+        self, nbins: int, drange: tuple[float, float] | None = None
+    ) -> tuple[np.ndarray, np.ndarray]:
         """
         Return a tuple (hist, bins) where hist is a list of histogram values
 
         Args:
-            nbins (int): number of bins
+            nbins: number of bins
+            drange: lower and upper range of the bins. If not provided, range is
+             simply (data.min(), data.max()). Values outside the range are ignored.
 
         Returns:
-            tuple: (hist, bins)
+            Tuple (hist, bins)
 
         Example of implementation:
 
-        def get_histogram(self, nbins):
+        def get_histogram(self, nbins, drange=None):
             data = self.get_data()
-            return np.histogram(data, nbins)
+            return np.histogram(data, bins=nbins, range=drange)
         """
         pass

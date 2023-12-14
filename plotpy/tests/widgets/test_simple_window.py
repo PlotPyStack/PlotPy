@@ -35,6 +35,7 @@ from plotpy import io
 from plotpy.builder import make
 from plotpy.config import _
 from plotpy.plot import PlotOptions, PlotWidget
+from plotpy.tests import get_path
 from plotpy.widgets import about
 
 
@@ -82,7 +83,9 @@ class CentralWidget(QW.QSplitter):
         self.properties.SIG_APPLY_BUTTON_CLICKED.connect(self.properties_changed)
 
         self.plot_widget = PlotWidget(
-            self, options=PlotOptions(type="image"), auto_tools=False
+            self,
+            options=PlotOptions(type="image", show_contrast=True),
+            auto_tools=False,
         )
         self.plot_widget.plot.SIG_LUT_CHANGED.connect(self.lut_range_changed)
         self.item = None  # image item
@@ -112,6 +115,8 @@ class CentralWidget(QW.QSplitter):
 
     def current_item_changed(self, row):
         """Image list: current image changed"""
+        if row == -1:
+            return
         image, lut_range = self.images[row], self.lut_ranges[row]
         self.show_data(image.data, lut_range)
         update_dataset(self.properties.dataset, image)
@@ -134,6 +139,8 @@ class CentralWidget(QW.QSplitter):
         else:
             self.item = make.image(data, interpolation="nearest")
             plot.add_item(self.item, z=0)
+        plot.select_item(self.item)
+        plot.do_autoscale()
         plot.replot()
 
     def properties_changed(self):
@@ -161,6 +168,20 @@ class CentralWidget(QW.QSplitter):
         image.height, image.width = image.data.shape
         self.add_image(image)
 
+    def remove_image(self, index=None):
+        """Remove image"""
+        if index is None:
+            index = self.imagelist.currentRow()
+        del self.images[index]
+        del self.lut_ranges[index]
+        self.refresh_list()
+        if self.imagelist.count() > 0:
+            self.imagelist.setCurrentRow(0)
+        else:
+            self.item = None
+            self.plot_widget.plot.del_all_items()
+            self.plot_widget.plot.replot()
+
 
 class MainWindow(QW.QMainWindow):
     """Main Window"""
@@ -179,6 +200,12 @@ class MainWindow(QW.QMainWindow):
         # Welcome message in statusbar:
         status = self.statusBar()
         status.showMessage(_("Welcome to plotpy application example!"), 5000)
+
+        # Set central widget:
+        main_toolbar = self.addToolBar("Main")
+        toolbar = self.addToolBar("Image")
+        self.mainwidget = CentralWidget(self, toolbar)
+        self.setCentralWidget(self.mainwidget)
 
         # File menu
         file_menu = self.menuBar().addMenu(_("File"))
@@ -208,6 +235,18 @@ class MainWindow(QW.QMainWindow):
         )
         add_actions(file_menu, (new_action, open_action, None, quit_action))
 
+        # Edit menu
+        edit_menu = self.menuBar().addMenu(_("Edit"))
+        del_action = create_action(
+            self,
+            _("Delete"),
+            shortcut="Del",
+            icon=get_icon("editdelete.png"),
+            tip=_("Delete selected image"),
+            triggered=self.mainwidget.remove_image,
+        )
+        add_actions(edit_menu, (del_action,))
+
         # Help menu
         help_menu = self.menuBar().addMenu("?")
         about_action = create_action(
@@ -218,20 +257,15 @@ class MainWindow(QW.QMainWindow):
         )
         add_actions(help_menu, (about_action,))
 
-        main_toolbar = self.addToolBar("Main")
         add_actions(main_toolbar, (new_action, open_action))
 
-        # Set central widget:
-        toolbar = self.addToolBar("Image")
-        self.mainwidget = CentralWidget(self, toolbar)
-        self.setCentralWidget(self.mainwidget)
-
     # ------I/O
-    def new_image(self):
+    def new_image(self, imagenew=None):
         """Create a new image"""
-        imagenew = ImageParamNew(title=_("Create a new image"))
-        if not imagenew.edit(self):
-            return
+        if imagenew is None:
+            imagenew = ImageParamNew(title=_("Create a new image"))
+            if not imagenew.edit(self):
+                return
         image = ImageParam()
         image.title = imagenew.title
         if imagenew.type == "zeros":
@@ -240,19 +274,20 @@ class MainWindow(QW.QMainWindow):
             image.data = np.random.randn(imagenew.width, imagenew.height)
         self.mainwidget.add_image(image)
 
-    def open_image(self):
+    def open_image(self, filename=None):
         """Open image file"""
-        saved_in, saved_out, saved_err = sys.stdin, sys.stdout, sys.stderr
-        sys.stdout = None
-        filename, _filter = QW.QFileDialog.getOpenFileName(
-            self,
-            _("Open"),
-            "",
-            io.iohandler.get_filters("load"),
-            "",
-            options=QW.QFileDialog.ShowDirsOnly,
-        )
-        sys.stdin, sys.stdout, sys.stderr = saved_in, saved_out, saved_err
+        if filename is None:
+            saved_in, saved_out, saved_err = sys.stdin, sys.stdout, sys.stderr
+            sys.stdout = None
+            filename, _filter = QW.QFileDialog.getOpenFileName(
+                self,
+                _("Open"),
+                "",
+                io.iohandler.get_filters("load"),
+                "",
+                options=QW.QFileDialog.ShowDirsOnly,
+            )
+            sys.stdin, sys.stdout, sys.stderr = saved_in, saved_out, saved_err
         if filename:
             self.mainwidget.add_image_from_file(filename)
 
@@ -262,6 +297,8 @@ def test_simple_window():
     with qt_app_context(exec_loop=True):
         window = MainWindow()
         window.show()
+        window.new_image(imagenew=ImageParamNew.create(type="rand"))
+        window.open_image(filename=get_path("brain.png"))
 
 
 if __name__ == "__main__":

@@ -405,20 +405,26 @@ class Histogram2DItem(BaseImageItem):
         """
         return True
 
-    def get_histogram(self, nbins: int) -> tuple[np.ndarray, np.ndarray]:
+    def get_histogram(
+        self, nbins: int, drange: tuple[float, float] | None = None
+    ) -> tuple[np.ndarray, np.ndarray]:
         """
         Return a tuple (hist, bins) where hist is a list of histogram values
 
         Args:
-            nbins (int): number of bins
+            nbins: number of bins
+            drange: lower and upper range of the bins. If not provided, range is
+             simply (data.min(), data.max()). Values outside the range are ignored.
 
         Returns:
-            tuple: (hist, bins)
+            Tuple (hist, bins)
         """
         if self.data is None:
             return [0], [0, 1]
         _min, _max = get_nan_range(self.data)
-        if self.data.dtype in (np.float64, np.float32):
+        if drange is not None:
+            bins = np.linspace(drange[0], drange[1], nbins + 1)
+        elif self.data.dtype in (np.float64, np.float32):
             bins = np.unique(
                 np.array(np.linspace(_min, _max, nbins + 1), dtype=self.data.dtype)
             )

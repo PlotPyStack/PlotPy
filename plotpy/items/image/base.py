@@ -946,22 +946,28 @@ class BaseImageItem(QwtPlotItem):
         """
         return False
 
-    def get_histogram(self, nbins: int) -> tuple[np.ndarray, np.ndarray]:
+    def get_histogram(
+        self, nbins: int, drange: tuple[float, float] | None = None
+    ) -> tuple[np.ndarray, np.ndarray]:
         """
         Return a tuple (hist, bins) where hist is a list of histogram values
 
         Args:
-            nbins (int): number of bins
+            nbins: number of bins
+            drange: lower and upper range of the bins. If not provided, range is
+             simply (data.min(), data.max()). Values outside the range are ignored.
 
         Returns:
-            tuple: (hist, bins)
+            Tuple (hist, bins)
         """
         if self.data is None:
             return [0], [0, 1]
         if self.histogram_cache is None or nbins != self.histogram_cache[0].shape[0]:
             if True:
                 # Note: np.histogram does not accept data with NaN
-                res = np.histogram(self.data[~np.isnan(self.data)], nbins)
+                res = np.histogram(
+                    self.data[~np.isnan(self.data)], bins=nbins, range=drange
+                )
             else:
                 # TODO: _histogram is faster, but caching is buggy in this version
                 _min, _max = get_nan_range(self.data)
