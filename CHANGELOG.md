@@ -4,6 +4,7 @@
 
 🛠️ Bug fixes:
 
+* [Issue #3](https://github.com/PlotPyStack/PlotPy/issues/3) - `PlotWidget`: `ZeroDivisionError` on resize while ignoring constraints
 * [Issue #4](https://github.com/PlotPyStack/PlotPy/issues/4) - Average cross section: `RuntimeWarning: Mean of empty slice.`
 
 ## Version 2.0.1 ##
