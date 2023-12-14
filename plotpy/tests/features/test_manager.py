@@ -8,6 +8,7 @@
 # guitest: show
 
 from guidata.qthelpers import qt_app_context, win32_fix_title_bar_background
+from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
 from plotpy.builder import make
@@ -45,6 +46,12 @@ class CentralWidget(QW.QWidget):
     def register_tools(self):
         self.manager.register_all_image_tools()
 
+    def minimumSizeHint(self):
+        """Override QWidget method"""
+        # The purpose of this reimplementation is to trigger the issue #3
+        # (see https://github.com/PlotPyStack/PlotPy/issues/3)
+        return QC.QSize(150, 100)
+
 
 class Window(QW.QMainWindow):
     def __init__(self):
@@ -75,5 +82,19 @@ def test_manager():
         win.show()
 
 
+def test_resize_to_minimum_width():
+    """Testing resize window to minimum width"""
+    # This test was failing at the time of Issue #3
+    # (see https://github.com/PlotPyStack/PlotPy/issues/3)
+    with qt_app_context(exec_loop=False):
+        win = Window()
+        win.show()
+        width = 350
+        while width > win.minimumWidth():
+            width -= 1
+            win.resize(width, 100)
+
+
 if __name__ == "__main__":
     test_manager()
+    # test_resize_to_minimum_width()

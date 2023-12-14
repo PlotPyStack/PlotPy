@@ -2172,17 +2172,22 @@ class BasePlot(qwt.QwtPlot):
         return x0, x1, y0, y1
 
     # ---- Image scale/aspect ratio -related API -------------------------------
-    def get_current_aspect_ratio(self) -> float:
+    def get_current_aspect_ratio(self) -> float | None:
         """Return current aspect ratio
 
         Returns:
-            float: the current aspect ratio
+            The current aspect ratio or None if the aspect ratio cannot be computed
+            (this happens when the plot has been shrunk to a size so that the
+            width is zero)
         """
         dx = self.axisScaleDiv(self.X_BOTTOM).range()
         dy = self.axisScaleDiv(self.Y_LEFT).range()
         h = self.canvasMap(self.Y_LEFT).pDist()
         w = self.canvasMap(self.X_BOTTOM).pDist()
-        return fabs((h * dx) / (w * dy))
+        try:
+            return fabs((h * dx) / (w * dy))
+        except ZeroDivisionError:
+            return None
 
     def get_aspect_ratio(self) -> float:
         """Return aspect ratio
@@ -2220,7 +2225,9 @@ class BasePlot(qwt.QwtPlot):
         if not self.isVisible():
             return
         current_aspect = self.get_current_aspect_ratio()
-        if abs(current_aspect - self.__aspect_ratio) < self.EPSILON_ASPECT_RATIO:
+        if current_aspect is None or (
+            abs(current_aspect - self.__aspect_ratio) < self.EPSILON_ASPECT_RATIO
+        ):
             return
         ymap = self.canvasMap(self.Y_LEFT)
         xmap = self.canvasMap(self.X_BOTTOM)
