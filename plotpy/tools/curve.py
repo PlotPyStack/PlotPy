@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 import weakref
+from email.mime import base
+from sre_parse import State
+from turtle import update
+from typing import Callable
 
 import numpy as np
 from guidata.widgets.arrayeditor import ArrayEditor
@@ -8,9 +12,10 @@ from qtpy import QtWidgets as QW
 
 from plotpy.config import _
 from plotpy.constants import SHAPE_Z_OFFSET
-from plotpy.events import QtDragHandler, setup_standard_tool_filter
+from plotpy.events import QtDragHandler, StatefulEventFilter, setup_standard_tool_filter
 from plotpy.interfaces import ICurveItemType
 from plotpy.items import Marker, XRangeSelection
+from plotpy.plot.base import BasePlot
 from plotpy.tools.base import DefaultToolbarID, InteractiveTool, ToggleTool
 from plotpy.tools.cursor import BaseCursorTool
 
@@ -264,6 +269,234 @@ class SelectPointTool(InteractiveTool):
         :return:
         """
         return self.last_pos
+
+
+class SelectPointsTool(InteractiveTool):
+    """ """
+
+    TITLE = _("Multi-point selection")
+    ICON = "point_selection.png"
+    MARKER_STYLE_SECT = "plot"
+    MARKER_STYLE_KEY = "marker/curve"
+    CURSOR = QC.Qt.CursorShape.PointingHandCursor
+
+    def __init__(
+        self,
+        manager,
+        mode="reuse",
+        on_active_item=False,
+        title=None,
+        icon=None,
+        tip=None,
+        end_callback=None,
+        toolbar_id=DefaultToolbarID,
+        marker_style=None,
+        switch_to_default_tool=None,
+        max_select: int | None = None,
+    ):
+        super().__init__(
+            manager,
+            toolbar_id,
+            title=title,
+            icon=icon,
+            tip=tip,
+            switch_to_default_tool=switch_to_default_tool,
+        )
+        assert mode in ("reuse", "create")
+        self.mode = mode
+        self.end_callback = end_callback
+        self.current_location_marker: Marker | None = None
+        self.markers: dict[tuple[float, float], Marker] = {}
+        self.on_active_item = on_active_item
+        self.max_select = max_select
+        if marker_style is not None:
+            self.marker_style_sect = marker_style[0]
+            self.marker_style_key = marker_style[1]
+        else:
+            self.marker_style_sect = self.MARKER_STYLE_SECT
+            self.marker_style_key = self.MARKER_STYLE_KEY
+
+    def set_marker_style(self, marker):
+        """
+
+        :param marker:
+        """
+        marker.set_style(self.marker_style_sect, self.marker_style_key)
+
+    def setup_filter(self, baseplot: BasePlot):
+        """
+
+        :param baseplot:
+        :return:
+        """
+        filter = baseplot.filter
+        # Initialisation du filtre
+        start_state = filter.new_state()
+        # Bouton gauche :
+        single_selection_handler = QtDragHandler(
+            filter,
+            QC.Qt.MouseButton.LeftButton,
+            start_state=start_state,
+        )
+        single_selection_handler.SIG_START_TRACKING.connect(self.start_single_selection)
+        single_selection_handler.SIG_MOVE.connect(self.move)
+        single_selection_handler.SIG_STOP_NOT_MOVING.connect(self.stop_single_selection)
+        single_selection_handler.SIG_STOP_MOVING.connect(self.stop_single_selection)
+
+        multi_selection_handler = QtDragHandler(
+            filter,
+            QC.Qt.MouseButton.LeftButton,
+            start_state=start_state,
+            mods=QC.Qt.KeyboardModifier.ControlModifier,
+        )
+        multi_selection_handler.SIG_START_TRACKING.connect(self.start_multi_selection)
+        multi_selection_handler.SIG_MOVE.connect(self.move)
+        multi_selection_handler.SIG_STOP_NOT_MOVING.connect(self.stop_multi_selection)
+        multi_selection_handler.SIG_STOP_MOVING.connect(self.stop_multi_selection)
+
+        return setup_standard_tool_filter(filter, start_state)
+
+    def _init_current_marker(
+        self,
+        filter: StatefulEventFilter,
+        event: QC.QEvent,
+        force_new_marker=False,
+        title: str = "",
+    ):
+        if force_new_marker or self.current_location_marker is None:
+            title = title or f"<b>{self.TITLE} {len(self.markers)}</b><br>"
+            if self.on_active_item:
+                constraint_cb = filter.plot.on_active_curve
+
+            else:
+                constraint_cb = None
+
+            label_cb = self._new_label_cb(filter, title)
+            self.current_location_marker = Marker(
+                label_cb=label_cb, constraint_cb=constraint_cb
+            )
+        assert self.current_location_marker
+        self.set_marker_style(self.current_location_marker)
+        self.current_location_marker.attach(filter.plot)
+        self.current_location_marker.setZ(filter.plot.get_max_z() + 1)
+        self.current_location_marker.setVisible(True)
+
+    def start_single_selection(self, filter: StatefulEventFilter, event: QC.QEvent):
+        """
+
+        :param filter:
+        :param event:
+        """
+        self._init_current_marker(filter, event, force_new_marker=True)
+
+    def start_multi_selection(self, filter: StatefulEventFilter, event: QC.QEvent):
+        """
+
+        :param filter:
+        :param event:
+        """
+        self._init_current_marker(filter, event, force_new_marker=True)
+        assert self.current_location_marker
+        self.current_location_marker.label_cb = self._new_label_cb(
+            filter, index=len(self.markers) + 1
+        )
+
+    def move(self, filter: StatefulEventFilter, event: QC.QEvent):
+        """
+
+        :param filter:
+        :param event:
+        :return:
+        """
+        if self.current_location_marker is None:
+            return  # something is wrong ...
+        self.current_location_marker.move_local_point_to(0, event.pos())
+        filter.plot.replot()
+
+    def common_stop(self, filter: StatefulEventFilter, event: QC.QEvent):
+        self.move(filter, event)
+        if self.mode != "reuse":
+            self.current_location_marker.detach()
+            self.current_location_marker = None
+
+    def stop_single_selection(self, filter: StatefulEventFilter, event: QC.QEvent):
+        """
+
+        :param filter:
+        :param event:
+        """
+        assert self.current_location_marker
+        self.common_stop(filter, event)
+        # self.clear_markers((self.current_location_marker,))
+        self.clear_markers()
+        self.toggle_marker(self.current_location_marker)
+        self.update_labels(filter)
+        if self.end_callback:
+            self.end_callback(self)
+
+    def stop_multi_selection(self, filter: StatefulEventFilter, event: QC.QEvent):
+        """
+
+        :param filter:
+        :param event:
+        """
+        assert self.current_location_marker
+        self.common_stop(filter, event)
+        self.toggle_marker(self.current_location_marker)
+        if self.max_select is not None and len(self.markers) > self.max_select:
+            xy = next(iter(self.markers))
+            self.markers.pop(xy).detach()
+            self.update_labels(filter)
+        if self.end_callback:
+            self.end_callback(self)
+
+    def toggle_marker(self, marker: Marker) -> bool:
+        assert marker
+        xy = marker.xValue(), marker.yValue()
+        entry_marker = self.markers.setdefault(xy, marker)
+        if entry_marker is not marker:
+            self.markers.pop(xy).detach()
+            entry_marker.detach()
+            marker.detach()
+            self.current_location_marker = None
+            return False
+        return True
+
+    def clear_markers(self, exclude_detach: tuple[Marker, ...] | None = None):
+        exclude_detach = exclude_detach or tuple()
+        _ = list(
+            map(
+                lambda m: m.detach(),
+                filter(
+                    lambda m: m not in exclude_detach,
+                    self.markers.values(),
+                ),
+            )
+        )
+        self.markers.clear()
+
+    def update_labels(self, filter: StatefulEventFilter):
+        for i, marker in enumerate(self.markers.values()):
+            marker.label_cb = self._new_label_cb(filter, index=i + 1)
+
+    def _new_label_cb(
+        self, filter: StatefulEventFilter, title: str = "", index: int = 1
+    ) -> Callable[[float, float], str]:
+        title = title or f"<b>{self.TITLE} - {index}</b><br>"
+        if self.on_active_item:
+
+            def label_cb(x, y):
+                return title + filter.plot.get_coordinates_str(x, y)
+
+        else:
+
+            def label_cb(x, y):
+                return f"{title}{' - ' if title else ''}{index} x = {x:g}<br>y = {y:g}"
+
+        return label_cb
+
+    def get_coordinates(self):
+        return tuple(self.markers.keys())
 
 
 def export_curve_data(item):

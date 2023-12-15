@@ -553,7 +553,7 @@ class PlotDialog(QW.QDialog, AbstractPlotDialogWindow, metaclass=PlotDialogMeta)
         self.button_layout = None
         self.plot_layout = QW.QGridLayout()
         self.plot_widget: PlotWidget = None
-        self.manager: PlotManager = None
+        self. manager: PlotManager = None
         self.setup_widget(toolbar, options, panels, auto_tools)
         self.setWindowFlags(QC.Qt.Window)
 

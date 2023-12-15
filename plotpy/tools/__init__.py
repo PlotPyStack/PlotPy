@@ -31,7 +31,7 @@ from .cross_section import (
     YCSPanelTool,
 )
 from .cursor import HCursorTool, HRangeTool, VCursorTool, XCursorTool
-from .curve import AntiAliasingTool, CurveStatsTool, SelectPointTool
+from .curve import AntiAliasingTool, CurveStatsTool, SelectPointsTool, SelectPointTool
 from .image import (
     AspectRatioTool,
     ColormapTool,

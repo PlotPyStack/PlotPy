@@ -16,14 +16,15 @@ from numpy import linspace, sin
 
 from plotpy.builder import make
 from plotpy.config import _
-from plotpy.tools import SelectPointTool
+from plotpy.tools import SelectPointsTool
 
 
-def callback_function(tool):
-    print("Current coordinates:", tool.get_coordinates())
+def callback_function(tool: SelectPointsTool):
+    points = tool.get_coordinates()
+    print("Points : ", points)
 
 
-def get_point(*args):
+def get_points(*args):
     """
     Plot curves and return selected point(s) coordinates
     """
@@ -31,19 +32,22 @@ def get_point(*args):
         wintitle=_("Select one point then press OK to accept"),
         edit=True,
         type="curve",
+        curve_antialiasing=True,
     )
     default = win.manager.add_tool(
-        SelectPointTool,
+        SelectPointsTool,
         title="Test",
         on_active_item=True,
         mode="reuse",
         end_callback=callback_function,
+        max_select=5,
     )
     default.activate()
     plot = win.manager.get_plot()
     for cx, cy in args[:-1]:
         item = make.mcurve(cx, cy)
         plot.add_item(item)
+    # the last curve will be actibe and needs to have a different style for explictness
     item = make.mcurve(*args[-1], "r-+")
     plot.add_item(item)
     plot.set_active_item(item)
@@ -54,11 +58,11 @@ def get_point(*args):
 def test_get_point():
     """Test"""
     with qt_app_context(exec_loop=False):
-        x = linspace(-10, 10, 200)
+        x = linspace(-10, 10, num=200)
         y = 0.25 * sin(sin(sin(x * 0.5)))
         x2 = linspace(-10, 10, 200)
         y2 = sin(sin(sin(x2)))
-        get_point((x, y), (x2, y2), (x, sin(2 * y)))
+        get_points((x, y), (x2, y2), (x, sin(2 * y)))
 
 
 if __name__ == "__main__":
