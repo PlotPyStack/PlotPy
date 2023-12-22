@@ -1,5 +1,11 @@
 # Changelog #
 
+## Version 2.0.3 ##
+
+🛠️ Bug fixes:
+
+* [Issue #9](https://github.com/PlotPyStack/PlotPy/issues/9) - MacOS: `error: a space is required between consecutive right angle brackets (use '> >')`
+
 ## Version 2.0.2 ##
 
 🛠️ Bug fixes:
