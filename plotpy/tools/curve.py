@@ -286,7 +286,7 @@ class SelectPointsTool(InteractiveTool):
     """ """
 
     TITLE = _("Multi-point selection")
-    ICON = "point_selection.png"
+    ICON = "multipoint_selection2.png"
     MARKER_STYLE_SECT = "plot"
     MARKER_STYLE_KEY = "marker/curve"
     CURSOR = QC.Qt.CursorShape.PointingHandCursor
@@ -295,7 +295,7 @@ class SelectPointsTool(InteractiveTool):
         self,
         manager,
         mode="reuse",
-        on_active_item=False,
+        on_active_item=True,
         title=None,
         icon=None,
         tip=None,
@@ -528,7 +528,7 @@ class EditPointTool(InteractiveTool):
     """
 
     TITLE = _("Edit point")
-    ICON = "point_selection.png"
+    ICON = "edit_point_selection2.png"
     MARKER_STYLE_SECT = "plot"
     MARKER_STYLE_KEY = "marker/curve"
     CURSOR = QC.Qt.CursorShape.PointingHandCursor
@@ -842,18 +842,22 @@ class EditPointTool(InteractiveTool):
         self._indexed_changes.clear()
 
 
-class DownsampleCurveTool(ToggleTool):
+class DownSampleCurveTool(ToggleTool):
     """ """
 
     # TODO: Create and add tool icon!
 
     def __init__(self, manager, toolbar_id=DefaultToolbarID) -> None:
-        super().__init__(manager, _("Downsample (curves)"), toolbar_id=toolbar_id)
+        super().__init__(
+            manager,
+            _("Downsample curves"),
+            icon="curve_downsample2.png",
+            toolbar_id=toolbar_id,
+        )
 
     def activate_command(self, plot: BasePlot, checked: bool):
         """Activate tool"""
         curve_item: CurveItem | None = plot.get_last_active_item(ICurveItemType)  # type: ignore
-        print(f"activate_command: {checked}, for curve: {curve_item}")
         if curve_item is not None:
             curve_item.param.use_downsampling = checked
             curve_item.update_data()
@@ -865,7 +869,6 @@ class DownsampleCurveTool(ToggleTool):
         :param plot:
         """
         curve_item: CurveItem | None = plot.get_last_active_item(ICurveItemType)  # type: ignore
-        print(f"update_status for curve: {curve_item}")
         if curve_item is not None and self.action is not None:
             self.action.setChecked(curve_item.param.use_downsampling)
             curve_item.update_data()

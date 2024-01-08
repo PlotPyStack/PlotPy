@@ -50,7 +50,7 @@ class CurveParam(DataSet):
     # )
     downsampling_factor = IntItem(_("Downsampling factor"), default=10, min=1)
 
-    def update_param(self, curve: CurveItem):
+    def update_param(self, curve: CurveItem | PolygonMapItem):
         """
 
         :param curve:
@@ -66,6 +66,8 @@ class CurveParam(DataSet):
 
         :param curve:
         """
+        curve.update_data()
+
         plot = curve.plot()
         if plot is not None:
             plot.blockSignals(True)  # Avoid unwanted calls of update_param
