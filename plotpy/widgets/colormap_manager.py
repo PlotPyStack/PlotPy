@@ -237,7 +237,8 @@ class ColorMapManagerDialog(QW.QDialog):
             )
             if save:
                 self.cmap_manager.saveColormap()
-        super().close()
+        if self.cmap_manager._changes_saved:
+            super().close()
 
     def show(self) -> None:
         return super().show()

@@ -421,7 +421,6 @@ class BaseImageItem(QwtPlotItem):
         Args:
             name_or_table: Colormap name or colormap
         """
-        print(f"set_color_map to {name_or_table=}")
         if name_or_table is self.cmap_table:
             # This avoids rebuilding the LUT all the time
             return

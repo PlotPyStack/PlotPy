@@ -363,7 +363,7 @@ class ColormapTool(CommandTool):
         self.default_icon = build_icon_from_cmap_name(self._active_colormap)
         self.action.setIcon(self.default_icon)
 
-    def create_action_menu(self, manager):
+    def create_action_menu(self, manager) -> QW.QMenu:
         """Create and return menu for the tool's action"""
         menu = QW.QMenu()
 

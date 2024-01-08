@@ -45,10 +45,9 @@ class CurveParam(DataSet):
     use_downsampling = BoolItem(_("Use downsampling"), default=False).set_prop(
         "display", store=_downsampling_prop
     )
-    # downsampling_factor = IntItem(_("Downsampling factor"), default=10, min=1).set_prop(
-    #     "display", active=GetAttrProp(_downsampling_prop)
-    # )
-    downsampling_factor = IntItem(_("Downsampling factor"), default=10, min=1)
+    downsampling_factor = IntItem(_("Downsampling factor"), default=10, min=1).set_prop(
+        "display", active=_downsampling_prop
+    )
 
     def update_param(self, curve: CurveItem | PolygonMapItem):
         """

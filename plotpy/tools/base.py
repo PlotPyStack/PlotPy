@@ -27,7 +27,7 @@ class GuiTool(QC.QObject):
 
         # pylint: disable=assignment-from-none
         self.action = self.create_action(manager)
-        self.menu = self.create_action_menu(manager)
+        self.menu: QW.QMenu | None = self.create_action_menu(manager)
 
         if self.menu is not None:
             self.action.setMenu(self.menu)

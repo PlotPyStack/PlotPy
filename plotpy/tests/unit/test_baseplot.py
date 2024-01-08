@@ -28,9 +28,6 @@ def test_baseplot_api():
         plot.manager.add_tool(EditPointTool)
         plot.manager.add_tool(DownSampleCurveTool)  # noqa: F821
         plot.get_default_item()
-        plot.manager.add_tool(SelectPointsTool)
-        plot.manager.add_tool(EditPointTool)
-        plot.manager.add_tool(DownsampleCurveTool)
         title = "Test title"
         plot.set_title(title)
         assert plot.get_title() == title
