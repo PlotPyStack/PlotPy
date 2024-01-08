@@ -40,9 +40,17 @@ from __future__ import annotations
 
 from numpy import array, linspace, newaxis, uint8, zeros
 from qtpy import QtGui as QG
-from qwt import QwtInterval, QwtLinearColorMap, toQImage
+from qwt import QwtInterval, toQImage
 
-from plotpy.mathutils import _cm  # Reuse matplotlib data
+from plotpy.colormaps import _cm
+from plotpy.mathutils.colormaps import (
+    DEFAULT_COLORMAPS,
+    DEFAULT_COLORMAPS_PATH,
+    save_colormaps,
+)
+from plotpy.widgets.colormap_widget import (
+    CustomQwtLinearColormap,  # Reuse matplotlib data
+)
 
 # usefull to obtain a full color map
 FULLRANGE = QwtInterval(0.0, 1.0)
@@ -60,8 +68,8 @@ def _interpolate(val, vmin, vmax):
     return (1 - interp) * vmin[1] + interp * vmax[2]
 
 
-def _setup_colormap(cmap, cmdata):
-    """Setup a QwtLinearColorMap according to
+def _setup_colormap(cmap: CustomQwtLinearColormap, cmdata):
+    """Setup a CustomQwtLinearColorMap according to
     matplotlib's data
     """
     red = array(cmdata["red"])
@@ -85,7 +93,7 @@ def _setup_colormap(cmap, cmdata):
         cmap.addColorStop(i, col)
 
 
-def get_cmap(name: str) -> QwtLinearColorMap:
+def get_cmap(name: str) -> CustomQwtLinearColormap:
     """Get a colormap from its name
 
     Args:
@@ -98,7 +106,7 @@ def get_cmap(name: str) -> QwtLinearColorMap:
     if name in COLORMAPS:
         return COLORMAPS[name]
 
-    colormap = QwtLinearColorMap()
+    colormap = CustomQwtLinearColormap()
     COLORMAPS[name] = colormap
     COLORMAPS[colormap] = name
     data = getattr(_cm, "_" + name + "_data")
@@ -106,7 +114,7 @@ def get_cmap(name: str) -> QwtLinearColorMap:
     return colormap
 
 
-def get_cmap_name(cmap: QwtLinearColorMap) -> str:
+def get_cmap_name(cmap: CustomQwtLinearColormap) -> str:
     """Return colormap's name
 
     Args:
@@ -135,7 +143,7 @@ def get_colormap_list() -> list[str]:
 
 
 def build_icon_from_cmap(
-    cmap: QwtLinearColorMap, width: int = 24, height: int = 24
+    cmap: CustomQwtLinearColormap, width: int = 24, height: int = 24
 ) -> QG.QIcon:
     """Builds an icon representing the colormap
 
@@ -168,7 +176,7 @@ def build_icon_from_cmap_name(cmap_name: str) -> QG.QIcon:
     return icon
 
 
-def register_extra_colormap(name: str, colormap: QwtLinearColorMap) -> None:
+def register_extra_colormap(name: str, colormap: CustomQwtLinearColormap) -> None:
     """Add a custom colormap to the list of known colormaps
     must be done early in the import process because
     datasets will use get_color_map list at import time
@@ -180,3 +188,9 @@ def register_extra_colormap(name: str, colormap: QwtLinearColorMap) -> None:
     COLORMAPS[name] = colormap
     COLORMAPS[colormap] = name
     EXTRA_COLORMAPS.append(name)
+
+
+if __name__ == "__main__":
+    for cmap in get_colormap_list():
+        DEFAULT_COLORMAPS[cmap] = get_cmap(cmap)
+    save_colormaps(DEFAULT_COLORMAPS_PATH, DEFAULT_COLORMAPS)

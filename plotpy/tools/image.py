@@ -30,7 +30,13 @@ from plotpy.items import (
     TrImageItem,
     get_items_in_rectangle,
 )
-from plotpy.mathutils.colormap import build_icon_from_cmap_name, get_colormap_list
+from plotpy.mathutils.colormaps import (
+    ALL_COLORMAPS,
+    CUSTOM_COLORMAPS,
+    DEFAULT_COLORMAPS,
+    build_icon_from_cmap,
+    build_icon_from_cmap_name,
+)
 from plotpy.tools.base import (
     CommandTool,
     DefaultToolbarID,
@@ -40,6 +46,8 @@ from plotpy.tools.base import (
 )
 from plotpy.tools.misc import OpenFileTool
 from plotpy.tools.shape import CircleTool, RectangleTool, RectangularShapeTool
+from plotpy.widgets.colormap_manager import ColorMapManagerDialog
+from plotpy.widgets.colormap_widget import CustomQwtLinearColormap
 from plotpy.widgets.imagefile import exec_image_save_dialog
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -351,18 +359,58 @@ class ColormapTool(CommandTool):
         )
         self.action.setEnabled(False)
         self.action.setIconText("")
-        self.default_icon = build_icon_from_cmap_name("jet")
+        self._active_colormap = "jet"
+        self.default_icon = build_icon_from_cmap_name(self._active_colormap)
         self.action.setIcon(self.default_icon)
 
     def create_action_menu(self, manager):
         """Create and return menu for the tool's action"""
         menu = QW.QMenu()
-        for cmap_name in get_colormap_list():
-            icon = build_icon_from_cmap_name(cmap_name)
+
+        default_cmaps_action_group = QW.QActionGroup(menu)
+        for cmap_name, cmap in DEFAULT_COLORMAPS.items():
+            icon = build_icon_from_cmap(cmap)
             action = menu.addAction(icon, cmap_name)
             action.setEnabled(True)
-        menu.triggered.connect(self.activate_cmap)
+            action.setData(cmap_name)
+            action = default_cmaps_action_group.addAction(action)
+        default_cmaps_action_group.triggered.connect(self.activate_cmap)
+
+        menu.addSeparator()
+
+        custom_cmaps_action_group = QW.QActionGroup(menu)
+        for cmap_name, cmap in CUSTOM_COLORMAPS.items():
+            icon = build_icon_from_cmap(cmap)
+            action = menu.addAction(icon, cmap_name)
+            custom_cmaps_action_group.addAction(action)
+            action.setEnabled(True)
+            action.setData(cmap_name)
+        custom_cmaps_action_group.triggered.connect(self.activate_cmap)
+
+        menu.addSeparator()
+
+        action = menu.addAction(_("Edit colormap"))
+        action.setEnabled(True)
+        action.setIcon(get_icon("edit.png"))
+        action.triggered.connect(self.open_cmap_manager)
+
         return menu
+
+    def open_cmap_manager(self):
+        plot = self.get_active_plot()
+        if (
+            plot is None
+            or not isinstance(self.action, QC.QObject)
+            or not isinstance(self.action.text(), str)
+        ):
+            return
+        manager = ColorMapManagerDialog(None, active_colormap=self._active_colormap)
+        manager.exec_()
+
+        self._active_colormap = manager.getColormap().name
+        self.menu = self.create_action_menu(None)
+        self.action.setMenu(self.menu)
+        self.activate_cmap(None)
 
     def activate_command(self, plot, checked):
         """Activate tool"""
@@ -381,19 +429,31 @@ class ColormapTool(CommandTool):
                 items = [active_image]
         return items
 
-    def activate_cmap(self, action):
+    def activate_cmap(
+        self, cmap: QW.QAction | str | CustomQwtLinearColormap | None = None
+    ):
         """
 
         :param action:
         """
+        # action = self.sender()
+        # if action is not None:
+        assert isinstance(cmap, QW.QAction | str | CustomQwtLinearColormap | None)
+        if isinstance(cmap, QW.QAction):
+            self._active_colormap = cmap.data()
+        elif isinstance(cmap, str):
+            assert cmap in ALL_COLORMAPS
+            self._active_colormap = cmap
+        elif isinstance(cmap, CustomQwtLinearColormap):
+            self._active_colormap = cmap.name
+
         plot = self.get_active_plot()
-        if plot is not None:
+        if self._active_colormap is not None and plot is not None:
             items = self.get_selected_images(plot)
-            cmap_name = str(action.text())
             for item in items:
-                item.param.colormap = cmap_name
+                item.param.colormap = self._active_colormap
                 item.param.update_item(item)
-            self.action.setText(cmap_name)
+            self.action.setText(self._active_colormap)
             plot.invalidate()
             self.update_status(plot)
 
@@ -410,8 +470,10 @@ class ColormapTool(CommandTool):
                 cmap_name = item.get_color_map_name()
                 if cmap_name:
                     icon = build_icon_from_cmap_name(cmap_name)
+                    self._active_colormap = cmap_name
             else:
                 self.action.setEnabled(False)
+                self._active_colormap = "jet"
             self.action.setIcon(icon)
 
 

@@ -19,13 +19,13 @@ from qtpy import QtGui as QG
 from plotpy._scaler import INTERP_AA, INTERP_LINEAR, INTERP_NEAREST
 from plotpy.config import _
 from plotpy.constants import LUTAlpha
-from plotpy.mathutils.colormap import build_icon_from_cmap_name, get_colormap_list
+from plotpy.mathutils.colormaps import ALL_COLORMAPS, build_icon_from_cmap_name
 from plotpy.styles.base import ItemParameters
 
 
 def _create_choices():
     choices = []
-    for cmap_name in get_colormap_list():
+    for cmap_name in ALL_COLORMAPS.keys():
         choices.append((cmap_name, cmap_name, build_icon_from_cmap_name))
     return choices
 

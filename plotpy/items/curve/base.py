@@ -357,7 +357,25 @@ class CurveItem(QwtPlotCurve):
         Returns:
             tuple: Tuple with two elements: x and y NumPy arrays
         """
+        assert isinstance(self._x, np.ndarray) and isinstance(self._y, np.ndarray)
+        # if ignore_decimation:
         return self._x, self._y
+        # return (
+        #     self._x[:: self.param.decimation],
+        #     self._y[:: self.param.decimation],
+        # )
+
+    def update_data(self):
+        if isinstance(self._x, np.ndarray) and isinstance(self._y, np.ndarray):
+            self._setData(self._x, self._y)
+
+    def _setData(self, x: np.ndarray, y: np.ndarray):
+        if not self.param.use_downsampling or self.param.downsampling_factor == 1:
+            return super().setData(x, y)
+        return super().setData(
+            x[:: self.param.downsampling_factor],
+            y[:: self.param.downsampling_factor],
+        )
 
     def set_data(self, x: np.ndarray, y: np.ndarray) -> None:
         """Set curve data
@@ -365,10 +383,21 @@ class CurveItem(QwtPlotCurve):
         Args:
             x: X data
             y: Y data
+            decimated_data: Set to True if CurveItem X and Y arrays are already set and
+            this method is called to update decimated data (i.e. only update 1/N value
+            with N set in CurveItem.param.decimation).
         """
+        # if (
+        #     isinstance(self._x, np.ndarray)
+        #     and isinstance(self._y, np.ndarray)
+        #     # and decimated_data > 1
+        # ):
+        #     self._x[:: self.param.decimation] = np.array(x, copy=False)
+        #     self._y[:: self.param.decimation] = np.array(y, copy=False)
+        # else:
         self._x = np.array(x, copy=False)
         self._y = np.array(y, copy=False)
-        self.setData(self._x, self._y)
+        self._setData(self._x, self._y)
 
     def is_empty(self) -> bool:
         """Return True if the item is empty
@@ -431,7 +460,10 @@ class CurveItem(QwtPlotCurve):
             p1x = plot.transform(ax, self._x[i + 1])
             p1y = plot.transform(ay, self._y[i + 1])
         distance = seg_dist(QC.QPointF(pos), QC.QPointF(p0x, p0y), QC.QPointF(p1x, p1y))
-        return distance, i, False, None
+        final_index = i // (
+            int(not self.param.use_downsampling) or self.param.downsampling_factor
+        )
+        return distance, final_index, False, None
 
     def get_closest_coordinates(self, x: float, y: float) -> tuple[float, float]:
         """
@@ -502,7 +534,7 @@ class CurveItem(QwtPlotCurve):
         x, y = canvas_to_axes(self, pos)
         self._x[handle] = x
         self._y[handle] = y
-        self.setData(self._x, self._y)
+        self._setData(self._x, self._y)
         self.plot().replot()
 
     def move_local_shape(self, old_pos: QC.QPointF, new_pos: QC.QPointF) -> None:
@@ -516,7 +548,7 @@ class CurveItem(QwtPlotCurve):
         ox, oy = canvas_to_axes(self, old_pos)
         self._x += nx - ox
         self._y += ny - oy
-        self.setData(self._x, self._y)
+        self._setData(self._x, self._y)
 
     def move_with_selection(self, delta_x: float, delta_y: float) -> None:
         """Translate the item together with other selected items
@@ -527,7 +559,7 @@ class CurveItem(QwtPlotCurve):
         """
         self._x += delta_x
         self._y += delta_y
-        self.setData(self._x, self._y)
+        self._setData(self._x, self._y)
 
     def update_params(self):
         """Update item parameters (object properties) from datasets"""

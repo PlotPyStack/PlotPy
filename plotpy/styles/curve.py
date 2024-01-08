@@ -1,6 +1,19 @@
 # -*- coding: utf-8 -*-
+from __future__ import annotations
 
-from guidata.dataset import DataSet, FloatItem, GetAttrProp, ImageChoiceItem, StringItem
+from multiprocessing import Value
+from typing import TYPE_CHECKING
+
+from guidata.dataset import (
+    BoolItem,
+    DataSet,
+    FloatItem,
+    GetAttrProp,
+    ImageChoiceItem,
+    IntItem,
+    StringItem,
+    ValueProp,
+)
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qwt import QwtPlotCurve
@@ -14,6 +27,9 @@ from plotpy.styles.base import (
     SymbolItem,
 )
 
+if TYPE_CHECKING:
+    from plotpy.items import CurveItem, PolygonMapItem
+
 
 class CurveParam(DataSet):
     _multiselection = False
@@ -25,8 +41,16 @@ class CurveParam(DataSet):
     shade = FloatItem(_("Shadow"), default=0, min=0, max=1)
     curvestyle = ImageChoiceItem(_("Curve style"), CURVESTYLE_CHOICES, default="Lines")
     baseline = FloatItem(_("Baseline"), default=0.0)
+    _downsampling_prop = ValueProp("use_downsampling")
+    use_downsampling = BoolItem(_("Use downsampling"), default=False).set_prop(
+        "display", store=_downsampling_prop
+    )
+    # downsampling_factor = IntItem(_("Downsampling factor"), default=10, min=1).set_prop(
+    #     "display", active=GetAttrProp(_downsampling_prop)
+    # )
+    downsampling_factor = IntItem(_("Downsampling factor"), default=10, min=1)
 
-    def update_param(self, curve):
+    def update_param(self, curve: CurveItem):
         """
 
         :param curve:
@@ -37,7 +61,7 @@ class CurveParam(DataSet):
         self.curvestyle = CURVESTYLE_NAME[curve.style()]
         self.baseline = curve.baseline()
 
-    def update_item(self, curve):
+    def update_item(self, curve: CurveItem | PolygonMapItem):
         """
 
         :param curve:

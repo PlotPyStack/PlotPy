@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2023-10-25 13:56+0200\n"
+"POT-Creation-Date: 2024-01-08 13:31+0100\n"
 "PO-Revision-Date: 2019-02-20 14:42+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -25,26 +25,26 @@ msgstr ""
 msgid "Annotation"
 msgstr "Annotation"
 
-#: plotpy\builder\curvemarker.py:246 plotpy\builder\curvemarker.py:385
-#: plotpy\builder\curvemarker.py:424 plotpy\builder\curvemarker.py:542
-#: plotpy\builder\curvemarker.py:600 plotpy\items\curve\base.py:119
-#: plotpy\items\curve\base.py:287 plotpy\items\curve\errorbar.py:106
+#: plotpy\builder\curvemarker.py:246 plotpy\builder\curvemarker.py:389
+#: plotpy\builder\curvemarker.py:428 plotpy\builder\curvemarker.py:546
+#: plotpy\builder\curvemarker.py:604 plotpy\items\curve\base.py:118
+#: plotpy\items\curve\base.py:286 plotpy\items\curve\errorbar.py:106
 #: plotpy\items\histogram.py:82 plotpy\panels\contrastadjustment.py:69
-#: plotpy\panels\csection\csplot.py:62
+#: plotpy\panels\csection\csplot.py:61
 msgid "Curve"
 msgstr "Courbe"
 
-#: plotpy\builder\curvemarker.py:426 plotpy\builder\curvemarker.py:544
+#: plotpy\builder\curvemarker.py:430 plotpy\builder\curvemarker.py:548
 #: plotpy\items\curve\errorbar.py:65 plotpy\items\curve\errorbar.py:108
 msgid "Error bars"
 msgstr "Barres d'erreur"
 
-#: plotpy\builder\curvemarker.py:598 plotpy\items\histogram.py:85
+#: plotpy\builder\curvemarker.py:602 plotpy\items\histogram.py:85
 #: plotpy\panels\contrastadjustment.py:72 plotpy\styles\histogram.py:43
 msgid "Histogram"
 msgstr "Histogramme"
 
-#: plotpy\builder\curvemarker.py:835 plotpy\items\shape\marker.py:69
+#: plotpy\builder\curvemarker.py:839 plotpy\items\shape\marker.py:69
 #: plotpy\items\shape\marker.py:118
 msgid "Marker"
 msgstr "Marqueur"
@@ -53,7 +53,7 @@ msgstr "Marqueur"
 #: plotpy\builder\image.py:373 plotpy\builder\image.py:472
 #: plotpy\builder\image.py:537 plotpy\builder\image.py:597
 #: plotpy\builder\image.py:686 plotpy\builder\image.py:762
-#: plotpy\items\image\base.py:1186 plotpy\items\image\image_items.py:90
+#: plotpy\items\image\base.py:1185 plotpy\items\image\image_items.py:90
 #: plotpy\items\image\image_items.py:512 plotpy\items\image\image_items.py:755
 #: plotpy\items\image\masked.py:433 plotpy\items\image\masked.py:603
 #: plotpy\items\image\misc.py:217 plotpy\items\image\transform.py:74
@@ -104,35 +104,35 @@ msgstr "Intensité"
 msgid "lsb"
 msgstr "lsb"
 
-#: plotpy\constants.py:48
+#: plotpy\constants.py:54
 msgid "Grid..."
 msgstr "Grille..."
 
-#: plotpy\constants.py:49
+#: plotpy\constants.py:55
 msgid "Axes style..."
 msgstr "Style des axes..."
 
-#: plotpy\constants.py:50 plotpy\panels\itemlist.py:88
+#: plotpy\constants.py:56 plotpy\panels\itemlist.py:89
 msgid "Parameters..."
 msgstr "Paramètres..."
 
-#: plotpy\constants.py:83 plotpy\styles\base.py:135
+#: plotpy\constants.py:114 plotpy\styles\base.py:135
 msgid "None"
 msgstr "Aucun"
 
-#: plotpy\constants.py:84
+#: plotpy\constants.py:115
 msgid "Constant"
 msgstr "Constante"
 
-#: plotpy\constants.py:85
+#: plotpy\constants.py:116
 msgid "Linear"
 msgstr "Linéaire"
 
-#: plotpy\constants.py:86
+#: plotpy\constants.py:117
 msgid "Sigmoid"
 msgstr "Sigmoïde"
 
-#: plotpy\constants.py:87
+#: plotpy\constants.py:118
 msgid "Hyperbolic tangent"
 msgstr "Tangente hyperbolique"
 
@@ -169,8 +169,8 @@ msgid "Position:"
 msgstr "Position :"
 
 #: plotpy\items\annotation.py:574 plotpy\items\annotation.py:632
-#: plotpy\items\annotation.py:723 plotpy\items\annotation.py:827
-#: plotpy\items\annotation.py:858
+#: plotpy\items\annotation.py:723 plotpy\items\annotation.py:835
+#: plotpy\items\annotation.py:866
 msgid "Center:"
 msgstr "Centre :"
 
@@ -179,15 +179,15 @@ msgid "Distance:"
 msgstr "Distance :"
 
 #: plotpy\items\annotation.py:633 plotpy\items\annotation.py:724
-#: plotpy\items\annotation.py:828
+#: plotpy\items\annotation.py:836
 msgid "Size:"
 msgstr "Taille :"
 
-#: plotpy\items\annotation.py:725 plotpy\items\annotation.py:829
+#: plotpy\items\annotation.py:725 plotpy\items\annotation.py:837
 msgid "Angle:"
 msgstr "Angle :"
 
-#: plotpy\items\annotation.py:859
+#: plotpy\items\annotation.py:867
 msgid "Diameter:"
 msgstr "Diamètre :"
 
@@ -211,19 +211,19 @@ msgstr "Niveau de la ligne"
 msgid "Contour"
 msgstr "Contour"
 
-#: plotpy\items\image\base.py:1051
+#: plotpy\items\image\base.py:1050
 msgid "surface = %s"
 msgstr "surface = %s"
 
-#: plotpy\items\image\base.py:1055
+#: plotpy\items\image\base.py:1054
 msgid "sum = %s"
 msgstr "somme = %s"
 
-#: plotpy\items\image\base.py:1068
+#: plotpy\items\image\base.py:1067
 msgid "density = %s"
 msgstr "densité = %s"
 
-#: plotpy\items\image\base.py:1070
+#: plotpy\items\image\base.py:1069
 msgid "density not computed : surface is null !"
 msgstr "densité non calculée : la surface est nulle !"
 
@@ -240,7 +240,7 @@ msgid "PolygonMap"
 msgstr "Polygone"
 
 #: plotpy\items\shape\axis.py:59 plotpy\items\shape\axis.py:108
-#: plotpy\plot\base.py:1835 plotpy\tools\axes.py:95
+#: plotpy\plot\base.py:1836 plotpy\tools\axes.py:95
 msgid "Axes"
 msgstr "Axes"
 
@@ -248,7 +248,7 @@ msgstr "Axes"
 msgid "Shape"
 msgstr "Forme"
 
-#: plotpy\items\shape\range.py:44
+#: plotpy\items\shape\range.py:48 plotpy\items\shape\range.py:102
 msgid "Range"
 msgstr "Intervalle"
 
@@ -294,7 +294,7 @@ msgstr ""
 "l'image, puis affiche l'image résultante"
 
 #: plotpy\panels\csection\csitem.py:377 plotpy\panels\csection\csitem.py:409
-#: plotpy\panels\csection\csplot.py:37 plotpy\tools\cross_section.py:16
+#: plotpy\panels\csection\csplot.py:36 plotpy\tools\cross_section.py:16
 msgid "Cross section"
 msgstr "Profil rectiligne"
 
@@ -303,52 +303,52 @@ msgstr "Profil rectiligne"
 msgid "Average cross section"
 msgstr "Profil rectiligne moyen"
 
-#: plotpy\panels\csection\csplot.py:23
+#: plotpy\panels\csection\csplot.py:22
 msgid "LUT scale"
 msgstr "Échelle LUT"
 
-#: plotpy\panels\csection\csplot.py:38
+#: plotpy\panels\csection\csplot.py:37
 msgid "Enable a marker"
 msgstr "Activer un marqueur"
 
-#: plotpy\panels\csection\csplot.py:431 plotpy\panels\csection\csplot.py:432
+#: plotpy\panels\csection\csplot.py:430 plotpy\panels\csection\csplot.py:431
 #: plotpy\tools\cross_section.py:105 plotpy\tools\cross_section.py:133
 msgid "Oblique averaged cross section"
 msgstr "Profil oblique moyen"
 
-#: plotpy\panels\csection\csplot.py:433
+#: plotpy\panels\csection\csplot.py:432
 msgid "Activate the oblique cross section tool"
 msgstr "Activer l'outil de profil oblique moyen"
 
-#: plotpy\panels\csection\cswidget.py:30
+#: plotpy\panels\csection\cswidget.py:31
 msgid "Cross section tool"
 msgstr "Profils d'images"
 
-#: plotpy\panels\csection\cswidget.py:134
+#: plotpy\panels\csection\cswidget.py:135
 msgid "Lock scales"
 msgstr "Synchroniser les échelles"
 
-#: plotpy\panels\csection\cswidget.py:137
+#: plotpy\panels\csection\cswidget.py:138
 msgid "Lock scales to main plot axes"
 msgstr "Synchroniser les échelles à celles du canevas"
 
-#: plotpy\panels\csection\cswidget.py:142
+#: plotpy\panels\csection\cswidget.py:143
 msgid "Auto-scale"
 msgstr "Échelle automatique"
 
-#: plotpy\panels\csection\cswidget.py:150
+#: plotpy\panels\csection\cswidget.py:151
 msgid "Refresh"
 msgstr "Rafraîchir"
 
-#: plotpy\panels\csection\cswidget.py:156
+#: plotpy\panels\csection\cswidget.py:157
 msgid "Auto-refresh"
 msgstr "Rafraîchissement automatique"
 
-#: plotpy\panels\csection\cswidget.py:313
+#: plotpy\panels\csection\cswidget.py:314
 msgid "Per image cross-section"
 msgstr "Un profil par image"
 
-#: plotpy\panels\csection\cswidget.py:316
+#: plotpy\panels\csection\cswidget.py:317
 msgid ""
 "Enable the per-image cross-section mode, which works directly on image rows/"
 "columns.\n"
@@ -360,7 +360,7 @@ msgstr ""
 "C'est la méthode la plus rapide, mais cela ne fonctionne pas sur des images "
 "ayant subies une transformation (rotation, par exemple)."
 
-#: plotpy\panels\csection\cswidget.py:326
+#: plotpy\panels\csection\cswidget.py:327
 msgid ""
 "Apply LUT\n"
 "(contrast settings)"
@@ -368,7 +368,7 @@ msgstr ""
 "Appliquer la LUT\n"
 "(réglages de contraste)"
 
-#: plotpy\panels\csection\cswidget.py:329
+#: plotpy\panels\csection\cswidget.py:330
 msgid ""
 "Apply LUT (Look-Up Table) contrast settings.\n"
 "This is the easiest way to compare images which have slightly different "
@@ -382,28 +382,28 @@ msgstr ""
 "\n"
 "Note : la LUT est codée sur 1024 niveaux (0...1023)"
 
-#: plotpy\panels\itemlist.py:76
+#: plotpy\panels\itemlist.py:77
 msgid "Move to back"
 msgstr "Déplacer vers l'arrière-plan"
 
-#: plotpy\panels\itemlist.py:82
+#: plotpy\panels\itemlist.py:83
 msgid "Move to front"
 msgstr "Déplacer vers le premier plan"
 
-#: plotpy\panels\itemlist.py:93 plotpy\panels\itemlist.py:235
+#: plotpy\panels\itemlist.py:94 plotpy\panels\itemlist.py:236
 #: plotpy\tools\item.py:154 plotpy\tools\item.py:179
 msgid "Remove"
 msgstr "Supprimer"
 
-#: plotpy\panels\itemlist.py:231 plotpy\tools\item.py:175
+#: plotpy\panels\itemlist.py:232 plotpy\tools\item.py:175
 msgid "Do you really want to remove this item?"
 msgstr "Souhaitez-vous vraiment supprimer cet objet ?"
 
-#: plotpy\panels\itemlist.py:233 plotpy\tools\item.py:177
+#: plotpy\panels\itemlist.py:234 plotpy\tools\item.py:177
 msgid "Do you really want to remove selected items?"
 msgstr "Souhaitez-vous vraiment supprimer les objets sélectionnés ?"
 
-#: plotpy\panels\itemlist.py:248 plotpy\tools\item.py:230
+#: plotpy\panels\itemlist.py:249 plotpy\tools\item.py:230
 msgid "Item list"
 msgstr "Liste des objets"
 
@@ -431,16 +431,16 @@ msgstr "Haut"
 msgid "Unknown file extension"
 msgstr "Extension de fichier inconnue"
 
-#: plotpy\plot\base.py:1837
+#: plotpy\plot\base.py:1838
 msgid "Axes associated to selected item"
 msgstr "Axes associés à l'objet sélectionné"
 
-#: plotpy\plot\base.py:1885 plotpy\styles\axes.py:81 plotpy\styles\axes.py:112
+#: plotpy\plot\base.py:1886 plotpy\styles\axes.py:81 plotpy\styles\axes.py:112
 #: plotpy\styles\base.py:567 plotpy\styles\base.py:573
 msgid "Y Axis"
 msgstr "Ordonnées"
 
-#: plotpy\plot\base.py:1887 plotpy\styles\axes.py:75 plotpy\styles\axes.py:108
+#: plotpy\plot\base.py:1888 plotpy\styles\axes.py:75 plotpy\styles\axes.py:108
 #: plotpy\styles\base.py:566 plotpy\styles\base.py:572
 msgid "X Axis"
 msgstr "Abscisses"
@@ -458,7 +458,7 @@ msgstr ""
 "La fonction 'savefig' prend actuellement en charge les formats suivants :\n"
 "%s"
 
-#: plotpy\styles\axes.py:21 plotpy\styles\curve.py:20
+#: plotpy\styles\axes.py:21 plotpy\styles\curve.py:36
 #: plotpy\styles\histogram.py:43 plotpy\styles\image.py:387
 #: plotpy\styles\label.py:31 plotpy\styles\label.py:203
 #: plotpy\styles\shape.py:113 plotpy\styles\shape.py:237
@@ -585,7 +585,7 @@ msgstr "Aucun trait"
 msgid "Cross"
 msgstr "Plus"
 
-#: plotpy\styles\base.py:80 plotpy\tools\shape.py:315
+#: plotpy\styles\base.py:80 plotpy\tools\shape.py:311
 msgid "Ellipse"
 msgstr "Ellipse"
 
@@ -784,7 +784,7 @@ msgid "Major grid"
 msgstr "Quadrillage primaire"
 
 #: plotpy\styles\base.py:568 plotpy\styles\base.py:574
-#: plotpy\styles\curve.py:23 plotpy\styles\shape.py:45
+#: plotpy\styles\curve.py:39 plotpy\styles\shape.py:45
 #: plotpy\styles\shape.py:48 plotpy\styles\shape.py:116
 #: plotpy\styles\shape.py:119 plotpy\styles\shape.py:189
 #: plotpy\styles\shape.py:192 plotpy\styles\shape.py:309
@@ -796,7 +796,7 @@ msgstr "Trait"
 msgid "Minor grid"
 msgstr "Quadrillage secondaire"
 
-#: plotpy\styles\curve.py:24 plotpy\styles\label.py:45
+#: plotpy\styles\curve.py:40 plotpy\styles\label.py:45
 #: plotpy\styles\shape.py:50 plotpy\styles\shape.py:53
 #: plotpy\styles\shape.py:121 plotpy\styles\shape.py:124
 #: plotpy\styles\shape.py:314 plotpy\styles\shape.py:317
@@ -806,17 +806,25 @@ msgstr "Quadrillage secondaire"
 msgid "Symbol"
 msgstr "Symbole"
 
-#: plotpy\styles\curve.py:25
+#: plotpy\styles\curve.py:41
 msgid "Shadow"
 msgstr "Ombre"
 
-#: plotpy\styles\curve.py:26
+#: plotpy\styles\curve.py:42
 msgid "Curve style"
 msgstr "Style de courbe"
 
-#: plotpy\styles\curve.py:27
+#: plotpy\styles\curve.py:43
 msgid "Baseline"
 msgstr "Ligne de base"
+
+#: plotpy\styles\curve.py:45
+msgid "Use downsampling"
+msgstr "Utiliser le sous-échantillonnage"
+
+#: plotpy\styles\curve.py:51
+msgid "Downsampling factor"
+msgstr "Facteur de sous-échantillonnage"
 
 #: plotpy\styles\errorbar.py:11
 msgid "Display"
@@ -953,7 +961,7 @@ msgid "Global alpha value"
 msgstr "Valeur globale du canal alpha"
 
 #: plotpy\styles\image.py:53 plotpy\styles\image.py:135
-#: plotpy\tools\image.py:349
+#: plotpy\tools\image.py:356
 msgid "Colormap"
 msgstr "Échelle de couleur"
 
@@ -1075,7 +1083,7 @@ msgid "y|max"
 msgstr "y|max"
 
 #: plotpy\styles\image.py:337 plotpy\styles\image.py:342
-#: plotpy\tools\image.py:430
+#: plotpy\tools\image.py:491
 msgid "Mask"
 msgstr "Masque"
 
@@ -1083,7 +1091,7 @@ msgstr "Masque"
 msgid "Filling value"
 msgstr "Valeur de remplissage"
 
-#: plotpy\styles\image.py:339 plotpy\tools\image.py:470
+#: plotpy\styles\image.py:339 plotpy\tools\image.py:531
 msgid "Show image mask"
 msgstr "Afficher le masque"
 
@@ -1404,7 +1412,7 @@ msgid "Shade"
 msgstr "Ombrage"
 
 #: plotpy\tests\items\test_hist2d.py:27 plotpy\tests\items\test_hist2d.py:48
-#: plotpy\tools\plot.py:85
+#: plotpy\tools\plot.py:86
 msgid "Markers"
 msgstr "Marqueurs"
 
@@ -1412,9 +1420,17 @@ msgstr "Marqueurs"
 msgid "MAX resolution"
 msgstr "Résolution MAX"
 
+#: plotpy\tests\tools\test_downsample_curve.py:32
+#: plotpy\tests\tools\test_edit_point.py:51
 #: plotpy\tests\tools\test_get_point.py:31
+#: plotpy\tests\tools\test_get_points.py:32
 msgid "Select one point then press OK to accept"
 msgstr "Sélectionner un point puis cliquer sur OK pour valider"
+
+#: plotpy\tests\tools\test_edit_point.py:41
+#, fuzzy
+msgid "Insert point"
+msgstr "Insérer"
 
 #: plotpy\tests\widgets\test_simple_dialog.py:26
 #: plotpy\tests\widgets\test_simple_window.py:47
@@ -1553,156 +1569,188 @@ msgstr "Profil selon l'axe des abscisses"
 msgid "Y-axis cross section"
 msgstr "Profil selon l'axe des ordonnées"
 
-#: plotpy\tools\cursor.py:88
+#: plotpy\tools\cursor.py:89
 msgid "Horizontal selection"
 msgstr "Sélection horizontale"
 
-#: plotpy\tools\cursor.py:101
+#: plotpy\tools\cursor.py:102
 msgid "Vertical cursor"
 msgstr "Curseur vertical"
 
-#: plotpy\tools\cursor.py:115
+#: plotpy\tools\cursor.py:116
 msgid "Horizontal cursor"
 msgstr "Curseur horizontal"
 
-#: plotpy\tools\cursor.py:129
+#: plotpy\tools\cursor.py:130
 msgid "Cross cursor"
 msgstr "Curseur croix"
 
-#: plotpy\tools\curve.py:25
+#: plotpy\tools\curve.py:37
 msgid "Signal statistics"
 msgstr "Statistiques du signal"
 
-#: plotpy\tools\curve.py:127
+#: plotpy\tools\curve.py:139
 msgid "Antialiasing (curves)"
 msgstr "Anticrénelage (courbes)"
 
-#: plotpy\tools\curve.py:145
+#: plotpy\tools\curve.py:157
 msgid "Point selection"
 msgstr "Sélection d'un point"
 
-#: plotpy\tools\curve.py:282 plotpy\tools\curve.py:294
+#: plotpy\tools\curve.py:288
+msgid "Multi-point selection"
+msgstr "Sélection multi-points"
+
+#: plotpy\tools\curve.py:530
+msgid "Edit point"
+msgstr "Modifier le point"
+
+#: plotpy\tools\curve.py:537
+msgid "Insertion index"
+msgstr "Index d'insertion"
+
+#: plotpy\tools\curve.py:539
+msgid "New value"
+msgstr "Nouvelle valeur"
+
+#: plotpy\tools\curve.py:540
+msgid "Location"
+msgstr "Position"
+
+#: plotpy\tools\curve.py:674
+msgid "Insert new value"
+msgstr "Insérer une nouvelle valeur"
+
+#: plotpy\tools\curve.py:851
+msgid "Downsample (curves)"
+msgstr "Sous-échantillonnage (courbes)"
+
+#: plotpy\tools\curve.py:890 plotpy\tools\curve.py:902
 msgid "Export"
 msgstr "Exporter"
 
-#: plotpy\tools\curve.py:286
+#: plotpy\tools\curve.py:894
 msgid "Text file"
 msgstr "Fichier texte"
 
-#: plotpy\tools\curve.py:295
+#: plotpy\tools\curve.py:903
 msgid "Unable to export item data."
 msgstr "Impossible d'exporter les données de l'objet sélectionné."
 
-#: plotpy\tools\curve.py:297
+#: plotpy\tools\curve.py:905
 msgid "Error message:"
 msgstr "Message d'erreur :"
 
-#: plotpy\tools\image.py:102 plotpy\tools\image.py:104
+#: plotpy\tools\image.py:109 plotpy\tools\image.py:111
 msgid "No available data"
 msgstr "Pas de données disponibles"
 
-#: plotpy\tools\image.py:114 plotpy\tools\image.py:177
+#: plotpy\tools\image.py:121 plotpy\tools\image.py:184
 msgid "Image statistics"
 msgstr "Statistiques de l'image"
 
-#: plotpy\tools\image.py:226
+#: plotpy\tools\image.py:233
 msgid "Reverse Y axis"
 msgstr "Inverser l'axe des ordonnées"
 
-#: plotpy\tools\image.py:243
+#: plotpy\tools\image.py:250
 msgid "Lock aspect ratio"
 msgstr "Verrouiller le rapport hauteur/largeur"
 
-#: plotpy\tools\image.py:244
+#: plotpy\tools\image.py:251
 msgid "Current value"
 msgstr "Valeur actuelle"
 
-#: plotpy\tools\image.py:245
+#: plotpy\tools\image.py:252
 msgid "Lock value"
 msgstr "Valeur imposée"
 
-#: plotpy\tools\image.py:252 plotpy\tools\image.py:257
+#: plotpy\tools\image.py:259 plotpy\tools\image.py:264
 msgid "Aspect ratio"
 msgstr "Rapport hauteur/largeur"
 
-#: plotpy\tools\image.py:260 plotpy\tools\image.py:683
-#: plotpy\tools\image.py:710
+#: plotpy\tools\image.py:267 plotpy\tools\image.py:744
+#: plotpy\tools\image.py:771
 msgid "Lock"
 msgstr "Verrouiller"
 
-#: plotpy\tools\image.py:263
+#: plotpy\tools\image.py:270
 msgid "1:1"
 msgstr "1:1"
 
-#: plotpy\tools\image.py:266
+#: plotpy\tools\image.py:273
 msgid "Edit..."
 msgstr "Modifier..."
 
-#: plotpy\tools\image.py:326
+#: plotpy\tools\image.py:333
 msgid "Contrast adjustment"
 msgstr "Réglage du contraste"
 
-#: plotpy\tools\image.py:350
+#: plotpy\tools\image.py:357
 msgid "Select colormap for active image"
 msgstr "Sélectionne l'échelle de couleurs de l'image active"
 
-#: plotpy\tools\image.py:432
+#: plotpy\tools\image.py:392
+msgid "Edit colormap"
+msgstr "Échelle de couleur"
+
+#: plotpy\tools\image.py:493
 msgid "Manage image masking areas"
 msgstr "Gestion des zones de masquage"
 
-#: plotpy\tools\image.py:443
+#: plotpy\tools\image.py:504
 msgid "Mask rectangular area (inside)"
 msgstr "Masquer l'intérieur d'une zone rectangulaire"
 
-#: plotpy\tools\image.py:450
+#: plotpy\tools\image.py:511
 msgid "Mask rectangular area (outside)"
 msgstr "Masquer l'extérieur d'une zone rectangulaire"
 
-#: plotpy\tools\image.py:457
+#: plotpy\tools\image.py:518
 msgid "Mask circular area (inside)"
 msgstr "Masquer l'intérieur d'une zone circulaire"
 
-#: plotpy\tools\image.py:464
+#: plotpy\tools\image.py:525
 msgid "Mask circular area (outside)"
 msgstr "Masquer l'extérieur d'une zone circulaire"
 
-#: plotpy\tools\image.py:473
+#: plotpy\tools\image.py:534
 msgid "Show masking shapes"
 msgstr "Afficher les formes de masquage"
 
-#: plotpy\tools\image.py:477
+#: plotpy\tools\image.py:538
 msgid "Apply mask"
 msgstr "Appliquer le masque"
 
-#: plotpy\tools\image.py:480 plotpy\tools\image.py:667
+#: plotpy\tools\image.py:541 plotpy\tools\image.py:728
 msgid "Clear mask"
 msgstr "Supprimer le masque"
 
-#: plotpy\tools\image.py:483 plotpy\tools\image.py:553
+#: plotpy\tools\image.py:544 plotpy\tools\image.py:614
 msgid "Remove all masking shapes"
 msgstr "Supprimer toutes les formes de masquage"
 
-#: plotpy\tools\image.py:549
+#: plotpy\tools\image.py:610
 msgid "Do you really want to remove all masking shapes?"
 msgstr "Souhaitez-vous vraiment supprimer toutes les formes de masquages ?"
 
-#: plotpy\tools\image.py:664
+#: plotpy\tools\image.py:725
 msgid "Do you really want to clear the mask?"
 msgstr "Souhaitez-vous vraiment effacer le masque ?"
 
-#: plotpy\tools\image.py:716
+#: plotpy\tools\image.py:777
 msgid "Unlock"
 msgstr "Déverrouiller"
 
-#: plotpy\tools\image.py:735
+#: plotpy\tools\image.py:796
 msgid "Open image"
 msgstr "Ouvrir une image"
 
-#: plotpy\tools\image.py:742
+#: plotpy\tools\image.py:803
 msgid "Rotation Center"
 msgstr "Centre de rotation"
 
-#: plotpy\tools\image.py:854
+#: plotpy\tools\image.py:915
 msgid "Rotate and crop"
 msgstr "Rotation et rognage"
 
@@ -1851,23 +1899,23 @@ msgstr "A propos"
 msgid "Print..."
 msgstr "Imprimer..."
 
-#: plotpy\tools\plot.py:29
+#: plotpy\tools\plot.py:30
 msgid "AutoScale"
 msgstr "Échelle automatique"
 
-#: plotpy\tools\plot.py:96
+#: plotpy\tools\plot.py:97
 msgid "Free"
 msgstr "Libre"
 
-#: plotpy\tools\plot.py:99
+#: plotpy\tools\plot.py:100
 msgid "Bound to active item"
 msgstr "Lié à l'objet actif"
 
-#: plotpy\tools\plot.py:132
+#: plotpy\tools\plot.py:133
 msgid "Rectangle zoom"
 msgstr "Zoom rectangulaire"
 
-#: plotpy\tools\plot.py:181
+#: plotpy\tools\plot.py:182
 msgid "Rectangular selection tool"
 msgstr "Outil de sélection rectangulaire"
 
@@ -1875,31 +1923,31 @@ msgstr "Outil de sélection rectangulaire"
 msgid "Selection"
 msgstr "Sélection"
 
-#: plotpy\tools\shape.py:29
+#: plotpy\tools\shape.py:25
 msgid "Polyline"
 msgstr "Ligne brisée"
 
-#: plotpy\tools\shape.py:180
+#: plotpy\tools\shape.py:176
 msgid "Free form"
 msgstr "Forme libre"
 
-#: plotpy\tools\shape.py:248
+#: plotpy\tools\shape.py:244
 msgid "Rectangle"
 msgstr "Rectangle"
 
-#: plotpy\tools\shape.py:253
+#: plotpy\tools\shape.py:249
 msgid "Oblique rectangle"
 msgstr "Rectangle oblique"
 
-#: plotpy\tools\shape.py:268
+#: plotpy\tools\shape.py:264
 msgid "Point"
 msgstr "Point"
 
-#: plotpy\tools\shape.py:286
+#: plotpy\tools\shape.py:282
 msgid "Segment"
 msgstr "Segment"
 
-#: plotpy\tools\shape.py:301
+#: plotpy\tools\shape.py:297
 msgid "Circle"
 msgstr "Cercle"
 
@@ -1914,6 +1962,65 @@ msgstr "Appliquer"
 #: plotpy\widgets\basetransform.py:231
 msgid "Reset"
 msgstr "Réinitialiser"
+
+#: plotpy\widgets\colormap_editor.py:32
+msgid "Relative position"
+msgstr "Relative position"
+
+#: plotpy\widgets\colormap_editor.py:35
+msgid "Must be a value between 0.0 and 1.0."
+msgstr "Doit être une valeur entre 0.0 et 1.0"
+
+#: plotpy\widgets\colormap_manager.py:78
+msgid ""
+"New colormap name cannot contain special characters except underscores (_)."
+msgstr ""
+"Un nom de colormap ne peut pas contenir de caractères spéciauxexcepté les "
+"tirets bas (_)."
+
+#: plotpy\widgets\colormap_manager.py:151
+msgid "Custom colormap %s already exists, do you want to overwrite it?"
+msgstr ""
+"L'échelle de couleur personnalisée %s existe déjà, voulez-vous l'écraser ?"
+
+#: plotpy\widgets\colormap_manager.py:173
+msgid ""
+"New colormap \"%s\" is a default colormap and cannot be overwritten. Change "
+"its name to save it as a custom colormap."
+msgstr ""
+"La nouvelle table des couleurs \"%s\" est une table des couleurs par défaut "
+"et ne peut pas être remplacée. Modifiez son nom pour l'enregistrer en tant "
+"que carte de couleurs personnalisée."
+
+#: plotpy\widgets\colormap_manager.py:211
+msgid "Colormap editor"
+msgstr "Échelle de couleur"
+
+#: plotpy\widgets\colormap_manager.py:215
+msgid "Close"
+msgstr "Fermer"
+
+#: plotpy\widgets\colormap_manager.py:226
+msgid ""
+"Current changes not saved. The current colormap will be discarded when the "
+"editor is closed.\n"
+"Do you want to save the changes?"
+msgstr ""
+"Les modifications actuelles ne sont pas sauvegardées. L'échelle des couleurs "
+"actuelle sera supprimée lorsque l'éditeur éditeur sera fermé.\n"
+"Voulez-vous enregistrer les modifications ?"
+
+#: plotpy\widgets\colormap_widget.py:161
+msgid "Right click to add/remove a color"
+msgstr "Clic droit pour ajouter/supprimer une couleur"
+
+#: plotpy\widgets\colormap_widget.py:419
+msgid "Add new color"
+msgstr "Ajouter une couleur"
+
+#: plotpy\widgets\colormap_widget.py:425
+msgid "Remove color"
+msgstr "Supprimer une couleur"
 
 #: plotpy\widgets\fit.py:87
 msgid "Method"
@@ -2037,27 +2144,27 @@ msgstr ""
 "{filename} n'a pas pu être ouvert:\n"
 "{msg}"
 
-#: plotpy\widgets\resizedialog.py:79
+#: plotpy\widgets\resizedialog.py:81
 msgid "Original size"
 msgstr "Taille d'origine"
 
-#: plotpy\widgets\resizedialog.py:81
+#: plotpy\widgets\resizedialog.py:83
 msgid "Width (pixels)"
 msgstr "Largeur (pixels)"
 
-#: plotpy\widgets\resizedialog.py:82
+#: plotpy\widgets\resizedialog.py:84
 msgid "Height (pixels)"
 msgstr "Hauteur (pixels)"
 
-#: plotpy\widgets\resizedialog.py:85
+#: plotpy\widgets\resizedialog.py:87
 msgid "Original size:"
 msgstr "Taille d'origine :"
 
-#: plotpy\widgets\resizedialog.py:87
+#: plotpy\widgets\resizedialog.py:89
 msgid "Zoom factor:"
 msgstr "Facteur de zoom :"
 
-#: plotpy\widgets\resizedialog.py:101
+#: plotpy\widgets\resizedialog.py:103
 msgid "Resize"
 msgstr "Ajuster"
 
@@ -2072,6 +2179,10 @@ msgstr "Rotation et rognage"
 #: plotpy\widgets\rotatecrop.py:219
 msgid "Show cropping rectangle"
 msgstr "Afficher le rectangle de rognage"
+
+#, fuzzy
+#~ msgid "Custom colormaps"
+#~ msgstr "Échelle de couleur personnalisée"
 
 #~ msgid "Select a segment then press OK to accept"
 #~ msgstr "Sélectionner un segment puis cliquer sur OK pour valider"
@@ -2322,9 +2433,6 @@ msgstr "Afficher le rectangle de rognage"
 #~ msgid "Save and Close"
 #~ msgstr "Enregistrer et fermer"
 
-#~ msgid "Close"
-#~ msgstr "Fermer"
-
 #~ msgid "Index"
 #~ msgstr "Indice"
 
@@ -2356,10 +2464,6 @@ msgstr "Afficher le rectangle de rognage"
 #~ "\n"
 #~ "Souhaitez-vous néanmoins effectuer cette opération ?"
 
-#~| msgid "Load items"
-#~ msgid "Edit item"
-#~ msgstr "Modifier l'élément"
-
 #, python-format
 #~ msgid "<b>Unable to assign data to item.</b><br><br>Error message:<br>%s"
 #~ msgstr ""
@@ -2378,9 +2482,6 @@ msgstr "Afficher le rectangle de rognage"
 
 #~ msgid "Save array"
 #~ msgstr "Enregistrer le tableau"
-
-#~ msgid "Insert"
-#~ msgstr "Insérer"
 
 #~ msgid "Show arrays min/max"
 #~ msgstr "Afficher les min/max des tableaux"

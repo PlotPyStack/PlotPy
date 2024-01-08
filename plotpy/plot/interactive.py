@@ -29,7 +29,7 @@ from plotpy import io
 from plotpy._scaler import INTERP_AA, INTERP_LINEAR, INTERP_NEAREST
 from plotpy.builder import make
 from plotpy.config import _
-from plotpy.mathutils.colormap import get_colormap_list
+from plotpy.mathutils.colormaps import ALL_COLORMAPS
 from plotpy.panels.contrastadjustment import ContrastAdjustment
 from plotpy.panels.csection.cswidget import XCrossSection, YCrossSection
 from plotpy.panels.itemlist import PlotItemList
@@ -792,7 +792,7 @@ def colormap(name):
 
 def _add_colormaps(glbs):
     """Add colormap functions to *glbs*"""
-    for cmap_name in get_colormap_list():
+    for cmap_name in ALL_COLORMAPS.keys():
         glbs[cmap_name] = lambda name=cmap_name: colormap(name)
         glbs[cmap_name].__doc__ = "Set color map to '%s'" % cmap_name
 

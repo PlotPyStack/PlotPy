@@ -253,6 +253,10 @@ class CurveMarkerCursorBuilder:
                 global CURVE_COUNT
                 CURVE_COUNT += 1
                 param.label = make_title(basename, CURVE_COUNT)
+            if "downsampling_factor" in kwargs:
+                param.downsampling_factor = kwargs.pop("downsampling_factor")
+            if "use_downsampling" in kwargs:
+                param.use_downsampling = kwargs.pop("use_downsampling")
             update_style_attr(stylei, param)
             curves.append(self.pcurve(x, yi, param, **kwargs))
         if len(curves) == 1:

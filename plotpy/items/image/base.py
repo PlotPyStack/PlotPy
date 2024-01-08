@@ -44,8 +44,9 @@ from plotpy.interfaces import (
 from plotpy.items.shape.rectangle import RectangleShape
 from plotpy.lutrange import lut_range_threshold
 from plotpy.mathutils.arrayfuncs import get_nan_range
-from plotpy.mathutils.colormap import FULLRANGE, get_cmap, get_cmap_name
+from plotpy.mathutils.colormaps import FULLRANGE, get_cmap
 from plotpy.styles.image import RawImageParam
+from plotpy.widgets.colormap_widget import CustomQwtLinearColormap
 
 if TYPE_CHECKING:  # pragma: no cover
     import guidata.dataset.io
@@ -125,7 +126,7 @@ class BaseImageItem(QwtPlotItem):
         # A, B, Background, Colormap
         self.lut = (1.0, 0.0, None, np.zeros((LUT_SIZE,), np.uint32))
 
-        self.set_lut_range([0.0, 255.0])
+        self.set_lut_range((0.0, 255.0))
         self.setItemAttribute(QwtPlotItem.AutoScale)
         self.setItemAttribute(QwtPlotItem.Legend, True)
         self._filename = None  # The file this image comes from
@@ -325,7 +326,7 @@ class BaseImageItem(QwtPlotItem):
         return self.get_x_values(i0, i1)
 
     def set_data(
-        self, data: np.ndarray, lut_range: list[float, float] | None = None
+        self, data: np.ndarray, lut_range: tuple[float, float] | None = None
     ) -> None:
         """Set image data
 
@@ -342,7 +343,7 @@ class BaseImageItem(QwtPlotItem):
         self.histogram_cache = None
         self.update_bounds()
         self.update_border()
-        self.set_lut_range([_min, _max])
+        self.set_lut_range((_min, _max))
 
     def get_data(
         self, x0: float, y0: float, x1: float | None = None, y1: float | None = None
@@ -414,14 +415,13 @@ class BaseImageItem(QwtPlotItem):
         else:
             self.lut = (a, b, np.uint32(QG.QColor(qcolor).rgb() & 0xFFFFFF), cmap)
 
-    def set_color_map(
-        self, name_or_table: str | qwt.color_map.QwtLinearColorMap
-    ) -> None:
+    def set_color_map(self, name_or_table: str | CustomQwtLinearColormap) -> None:
         """Set colormap
 
         Args:
             name_or_table: Colormap name or colormap
         """
+        print(f"set_color_map to {name_or_table=}")
         if name_or_table is self.cmap_table:
             # This avoids rebuilding the LUT all the time
             return
@@ -459,7 +459,7 @@ class BaseImageItem(QwtPlotItem):
         if plot:
             plot.update_colormap_axis(self)
 
-    def get_color_map(self) -> qwt.color_map.QwtLinearColorMap:
+    def get_color_map(self) -> CustomQwtLinearColormap | None:
         """Get colormap
 
         Returns:
@@ -467,13 +467,15 @@ class BaseImageItem(QwtPlotItem):
         """
         return self.cmap_table
 
-    def get_color_map_name(self) -> str:
+    def get_color_map_name(self) -> str | None:
         """Get colormap name
 
         Returns:
             Colormap name
         """
-        return get_cmap_name(self.get_color_map())
+        if self.cmap_table is None:
+            return None
+        return self.cmap_table.name
 
     def set_interpolation(self, interp_mode: int, size: int | None = None) -> None:
         """Set interpolation mode
