@@ -64,7 +64,6 @@ class CurveParam(DataSet):
 
         :param curve:
         """
-        curve.update_data()
 
         plot = curve.plot()
         if plot is not None:
