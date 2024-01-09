@@ -389,7 +389,7 @@ class ColormapTool(CommandTool):
 
         menu.addSeparator()
 
-        action = menu.addAction(_("Edit colormap"))
+        action = menu.addAction(_("Edit..."))
         action.setEnabled(True)
         action.setIcon(get_icon("edit.png"))
         action.triggered.connect(self.open_cmap_manager)

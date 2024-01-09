@@ -101,6 +101,10 @@ class CustomQwtLinearColormap(QwtLinearColorMap):
         ] = self._QwtLinearColorMap__data.colorStops._ColorStops__stops  # type: ignore
         return res
 
+    def get_stop_color(self, index: int):
+        index = min(index, len(self.stops))
+        return QG.QColor(self.stops[index].rgb)
+
 
 class ColorMapWidget(QW.QWidget):
     colormapChanged = QC.Signal()  # type: ignore
@@ -250,8 +254,7 @@ class ColorMapWidget(QW.QWidget):
     def get_handle_color(
         self, handle_index: int, as_type: type[ColorType] = QG.QColor
     ) -> ColorType:
-        """Returns the color of a handled using its index. Calls self.get_color_from_value
-        behinds the scene.
+        """Returns the color of a handled using its index. Directly return the color of the ColorStop object of the given index.
 
         Args:
             handle_index: index of the handled to assign a color too.
@@ -260,8 +263,8 @@ class ColorMapWidget(QW.QWidget):
         Returns:
             The assigned color for the input handle index using the current colormap.
         """
-        handle_value = self.get_handles_tuple()[handle_index]
-        return self.get_color_from_value(handle_value, as_type)
+        int_color = self._colormap.get_stop_color(handle_index)
+        return as_type(int_color)
 
     def get_hex_color(self, handle_index: int) -> str:
         """Same as self.get_handle_color but returns the color as a hex color string.
@@ -272,8 +275,7 @@ class ColorMapWidget(QW.QWidget):
         Returns:
             Handle's hex color string
         """
-        handle_value = self.get_handles_tuple()[handle_index]
-        return self.get_color_from_value(handle_value, QG.QColor).name()
+        return self.get_handle_color(handle_index, QG.QColor).name()
 
     def edit_color_stop(
         self,

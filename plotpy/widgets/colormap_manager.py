@@ -44,6 +44,7 @@ class ColorMapManager(QW.QWidget):
         super().__init__(parent)
 
         self._vlayout = QW.QVBoxLayout(self)
+        self._vlayout.setContentsMargins(0, 0, 0, 0)
 
         if active_colormap is None or active_colormap not in ALL_COLORMAPS:
             active_colormap = next(iter(ALL_COLORMAPS))
@@ -98,7 +99,14 @@ class ColorMapManager(QW.QWidget):
 
         # self._vlayout.addWidget(self._cmap_choice)
         self._vlayout.addLayout(hlayout)
-        self._vlayout.addWidget(self._colormap_editor)
+
+        groupbox = QW.QGroupBox(_("Editor"), self)
+        groupbox_layout = QW.QVBoxLayout()
+        groupbox_layout.setContentsMargins(0, 0, 0, 0)
+        groupbox_layout.addWidget(self._colormap_editor)
+        groupbox.setLayout(groupbox_layout)
+        self._vlayout.addWidget(groupbox)
+        # self._vlayout.addWidget(self._colormap_editor)
 
         self._colormap_editor.colormap_widget.colormapChanged.connect(
             self._changes_not_saved
@@ -173,7 +181,7 @@ class ColorMapManager(QW.QWidget):
             self._changes_saved = True
         else:
             QW.QMessageBox.critical(
-                None,
+                self,
                 "Colormap map error",
                 _(
                     'New colormap "%s" is a default colormap and cannot be overwritten. Change its name to save it as a custom colormap.'
@@ -213,8 +221,7 @@ class ColorMapManagerDialog(QW.QDialog):
     ) -> None:
         super().__init__(parent)
         self.setWindowIcon(get_icon("edit.png"))
-        self.setWindowTitle(_("Colormap editor"))
-
+        self.setWindowTitle(_("Colormap manager"))
         self._layout = QW.QVBoxLayout()
         self.cmap_manager = ColorMapManager(self, active_colormap)
         self.btn_close = QW.QPushButton(_("Close"), self)

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-01-08 13:31+0100\n"
+"POT-Creation-Date: 2024-01-09 09:23+0100\n"
 "PO-Revision-Date: 2019-02-20 14:42+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -53,7 +53,7 @@ msgstr "Marqueur"
 #: plotpy\builder\image.py:373 plotpy\builder\image.py:472
 #: plotpy\builder\image.py:537 plotpy\builder\image.py:597
 #: plotpy\builder\image.py:686 plotpy\builder\image.py:762
-#: plotpy\items\image\base.py:1185 plotpy\items\image\image_items.py:90
+#: plotpy\items\image\base.py:1184 plotpy\items\image\image_items.py:90
 #: plotpy\items\image\image_items.py:512 plotpy\items\image\image_items.py:755
 #: plotpy\items\image\masked.py:433 plotpy\items\image\masked.py:603
 #: plotpy\items\image\misc.py:217 plotpy\items\image\transform.py:74
@@ -211,19 +211,19 @@ msgstr "Niveau de la ligne"
 msgid "Contour"
 msgstr "Contour"
 
-#: plotpy\items\image\base.py:1050
+#: plotpy\items\image\base.py:1049
 msgid "surface = %s"
 msgstr "surface = %s"
 
-#: plotpy\items\image\base.py:1054
+#: plotpy\items\image\base.py:1053
 msgid "sum = %s"
 msgstr "somme = %s"
 
-#: plotpy\items\image\base.py:1067
+#: plotpy\items\image\base.py:1066
 msgid "density = %s"
 msgstr "densité = %s"
 
-#: plotpy\items\image\base.py:1069
+#: plotpy\items\image\base.py:1068
 msgid "density not computed : surface is null !"
 msgstr "densité non calculée : la surface est nulle !"
 
@@ -458,7 +458,7 @@ msgstr ""
 "La fonction 'savefig' prend actuellement en charge les formats suivants :\n"
 "%s"
 
-#: plotpy\styles\axes.py:21 plotpy\styles\curve.py:36
+#: plotpy\styles\axes.py:21 plotpy\styles\curve.py:35
 #: plotpy\styles\histogram.py:43 plotpy\styles\image.py:387
 #: plotpy\styles\label.py:31 plotpy\styles\label.py:203
 #: plotpy\styles\shape.py:113 plotpy\styles\shape.py:237
@@ -784,7 +784,7 @@ msgid "Major grid"
 msgstr "Quadrillage primaire"
 
 #: plotpy\styles\base.py:568 plotpy\styles\base.py:574
-#: plotpy\styles\curve.py:39 plotpy\styles\shape.py:45
+#: plotpy\styles\curve.py:38 plotpy\styles\shape.py:45
 #: plotpy\styles\shape.py:48 plotpy\styles\shape.py:116
 #: plotpy\styles\shape.py:119 plotpy\styles\shape.py:189
 #: plotpy\styles\shape.py:192 plotpy\styles\shape.py:309
@@ -796,7 +796,7 @@ msgstr "Trait"
 msgid "Minor grid"
 msgstr "Quadrillage secondaire"
 
-#: plotpy\styles\curve.py:40 plotpy\styles\label.py:45
+#: plotpy\styles\curve.py:39 plotpy\styles\label.py:45
 #: plotpy\styles\shape.py:50 plotpy\styles\shape.py:53
 #: plotpy\styles\shape.py:121 plotpy\styles\shape.py:124
 #: plotpy\styles\shape.py:314 plotpy\styles\shape.py:317
@@ -806,23 +806,23 @@ msgstr "Quadrillage secondaire"
 msgid "Symbol"
 msgstr "Symbole"
 
-#: plotpy\styles\curve.py:41
+#: plotpy\styles\curve.py:40
 msgid "Shadow"
 msgstr "Ombre"
 
-#: plotpy\styles\curve.py:42
+#: plotpy\styles\curve.py:41
 msgid "Curve style"
 msgstr "Style de courbe"
 
-#: plotpy\styles\curve.py:43
+#: plotpy\styles\curve.py:42
 msgid "Baseline"
 msgstr "Ligne de base"
 
-#: plotpy\styles\curve.py:45
+#: plotpy\styles\curve.py:44
 msgid "Use downsampling"
 msgstr "Utiliser le sous-échantillonnage"
 
-#: plotpy\styles\curve.py:51
+#: plotpy\styles\curve.py:47
 msgid "Downsampling factor"
 msgstr "Facteur de sous-échantillonnage"
 
@@ -1621,23 +1621,24 @@ msgstr "Position"
 msgid "Insert new value"
 msgstr "Insérer une nouvelle valeur"
 
-#: plotpy\tools\curve.py:851
-msgid "Downsample (curves)"
+#: plotpy\tools\curve.py:853
+#, fuzzy
+msgid "Downsample curves"
 msgstr "Sous-échantillonnage (courbes)"
 
-#: plotpy\tools\curve.py:890 plotpy\tools\curve.py:902
+#: plotpy\tools\curve.py:893 plotpy\tools\curve.py:905
 msgid "Export"
 msgstr "Exporter"
 
-#: plotpy\tools\curve.py:894
+#: plotpy\tools\curve.py:897
 msgid "Text file"
 msgstr "Fichier texte"
 
-#: plotpy\tools\curve.py:903
+#: plotpy\tools\curve.py:906
 msgid "Unable to export item data."
 msgstr "Impossible d'exporter les données de l'objet sélectionné."
 
-#: plotpy\tools\curve.py:905
+#: plotpy\tools\curve.py:908
 msgid "Error message:"
 msgstr "Message d'erreur :"
 
@@ -1678,7 +1679,7 @@ msgstr "Verrouiller"
 msgid "1:1"
 msgstr "1:1"
 
-#: plotpy\tools\image.py:273
+#: plotpy\tools\image.py:273 plotpy\tools\image.py:392
 msgid "Edit..."
 msgstr "Modifier..."
 
@@ -1689,10 +1690,6 @@ msgstr "Réglage du contraste"
 #: plotpy\tools\image.py:357
 msgid "Select colormap for active image"
 msgstr "Sélectionne l'échelle de couleurs de l'image active"
-
-#: plotpy\tools\image.py:392
-msgid "Edit colormap"
-msgstr "Échelle de couleur"
 
 #: plotpy\tools\image.py:493
 msgid "Manage image masking areas"
@@ -1963,27 +1960,32 @@ msgstr "Appliquer"
 msgid "Reset"
 msgstr "Réinitialiser"
 
-#: plotpy\widgets\colormap_editor.py:32
+#: plotpy\widgets\colormap_editor.py:37
 msgid "Relative position"
 msgstr "Relative position"
 
-#: plotpy\widgets\colormap_editor.py:35
+#: plotpy\widgets\colormap_editor.py:40
 msgid "Must be a value between 0.0 and 1.0."
 msgstr "Doit être une valeur entre 0.0 et 1.0"
 
-#: plotpy\widgets\colormap_manager.py:78
+#: plotpy\widgets\colormap_manager.py:84
 msgid ""
 "New colormap name cannot contain special characters except underscores (_)."
 msgstr ""
 "Un nom de colormap ne peut pas contenir de caractères spéciauxexcepté les "
 "tirets bas (_)."
 
-#: plotpy\widgets\colormap_manager.py:151
+#: plotpy\widgets\colormap_manager.py:103
+#, fuzzy
+msgid "Editor"
+msgstr "Modifier..."
+
+#: plotpy\widgets\colormap_manager.py:164
 msgid "Custom colormap %s already exists, do you want to overwrite it?"
 msgstr ""
 "L'échelle de couleur personnalisée %s existe déjà, voulez-vous l'écraser ?"
 
-#: plotpy\widgets\colormap_manager.py:173
+#: plotpy\widgets\colormap_manager.py:186
 msgid ""
 "New colormap \"%s\" is a default colormap and cannot be overwritten. Change "
 "its name to save it as a custom colormap."
@@ -1992,15 +1994,16 @@ msgstr ""
 "et ne peut pas être remplacée. Modifiez son nom pour l'enregistrer en tant "
 "que carte de couleurs personnalisée."
 
-#: plotpy\widgets\colormap_manager.py:211
-msgid "Colormap editor"
+#: plotpy\widgets\colormap_manager.py:224
+#, fuzzy
+msgid "Colormap manager"
 msgstr "Échelle de couleur"
 
-#: plotpy\widgets\colormap_manager.py:215
+#: plotpy\widgets\colormap_manager.py:227
 msgid "Close"
 msgstr "Fermer"
 
-#: plotpy\widgets\colormap_manager.py:226
+#: plotpy\widgets\colormap_manager.py:238
 msgid ""
 "Current changes not saved. The current colormap will be discarded when the "
 "editor is closed.\n"
@@ -2010,15 +2013,15 @@ msgstr ""
 "actuelle sera supprimée lorsque l'éditeur éditeur sera fermé.\n"
 "Voulez-vous enregistrer les modifications ?"
 
-#: plotpy\widgets\colormap_widget.py:161
+#: plotpy\widgets\colormap_widget.py:170
 msgid "Right click to add/remove a color"
 msgstr "Clic droit pour ajouter/supprimer une couleur"
 
-#: plotpy\widgets\colormap_widget.py:419
+#: plotpy\widgets\colormap_widget.py:425
 msgid "Add new color"
 msgstr "Ajouter une couleur"
 
-#: plotpy\widgets\colormap_widget.py:425
+#: plotpy\widgets\colormap_widget.py:431
 msgid "Remove color"
 msgstr "Supprimer une couleur"
 
@@ -2469,10 +2472,6 @@ msgstr "Afficher le rectangle de rognage"
 #~ msgstr ""
 #~ "<b>Impossible d'associer les données à l'élément</b><br><br>Message "
 #~ "d'erreur :<br>%s"
-
-#~| msgid "Edit..."
-#~ msgid "Edit"
-#~ msgstr "Modifier..."
 
 #~ msgid "Plot"
 #~ msgstr "Tracer"

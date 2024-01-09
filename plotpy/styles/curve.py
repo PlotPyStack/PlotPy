@@ -12,7 +12,6 @@ from guidata.dataset import (
     ImageChoiceItem,
     IntItem,
     StringItem,
-    ValueProp,
 )
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
@@ -41,7 +40,7 @@ class CurveParam(DataSet):
     shade = FloatItem(_("Shadow"), default=0, min=0, max=1)
     curvestyle = ImageChoiceItem(_("Curve style"), CURVESTYLE_CHOICES, default="Lines")
     baseline = FloatItem(_("Baseline"), default=0.0)
-    _downsampling_prop = ValueProp("use_downsampling")
+    _downsampling_prop = GetAttrProp("use_downsampling")
     use_downsampling = BoolItem(_("Use downsampling"), default=False).set_prop(
         "display", store=_downsampling_prop
     )
