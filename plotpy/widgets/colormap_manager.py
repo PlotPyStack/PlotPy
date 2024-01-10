@@ -43,7 +43,7 @@ class ColorMapManager(QW.QWidget):
     ) -> None:
         super().__init__(parent)
 
-        self._vlayout = QW.QVBoxLayout(self)
+        self._vlayout = QW.QVBoxLayout()
         self._vlayout.setContentsMargins(0, 0, 0, 0)
 
         if active_colormap is None or active_colormap not in ALL_COLORMAPS:
@@ -70,7 +70,7 @@ class ColorMapManager(QW.QWidget):
             self, colormap=deepcopy(self._cmap_choice.currentData())
         )
 
-        hlayout = QW.QHBoxLayout(self)
+        hlayout = QW.QHBoxLayout()
         hlayout.setAlignment(QC.Qt.AlignmentFlag.AlignRight)
 
         regex = QC.QRegExp("[1-9a-zA-Z_]*")
