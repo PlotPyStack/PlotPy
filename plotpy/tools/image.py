@@ -404,13 +404,15 @@ class ColormapTool(CommandTool):
             or not isinstance(self.action.text(), str)
         ):
             return
-        manager = ColorMapManagerDialog(None, active_colormap=self._active_colormap)
+        manager = ColorMapManagerDialog(
+            parent=plot.parent(), active_colormap=self._active_colormap
+        )
         manager.exec_()
 
         self._active_colormap = manager.getColormap().name
         self.menu = self.create_action_menu(None)
         self.action.setMenu(self.menu)
-        self.activate_cmap(None)
+        self.activate_cmap()
 
     def activate_command(self, plot, checked):
         """Activate tool"""

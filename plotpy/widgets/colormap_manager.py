@@ -141,6 +141,7 @@ class ColorMapManager(QW.QWidget):
         self._colormap_name_edit.setText(cmap_copy.name)
         is_new_colormap = cmap_copy.name not in ALL_COLORMAPS
         self._colormap_name_edit.setEnabled(is_new_colormap)
+        self._changes_saved = True
         self._save_btn.setEnabled(is_new_colormap)
 
     def getColormap(self):
@@ -224,14 +225,14 @@ class ColorMapManagerDialog(QW.QDialog):
         self.setWindowTitle(_("Colormap manager"))
         self._layout = QW.QVBoxLayout()
         self.cmap_manager = ColorMapManager(self, active_colormap)
-        self.btn_close = QW.QPushButton(_("Close"), self)
+        self.btn_close = QW.QPushButton(_("Close"))
         self._layout.addWidget(self.cmap_manager)
         # bottom_layout = QW.QHBoxLayout()
         self._layout.addWidget(self.btn_close, alignment=QC.Qt.AlignmentFlag.AlignRight)
         self.setLayout(self._layout)
         self.btn_close.clicked.connect(self.close)
 
-    def close(self):
+    def check_save_before_close(self) -> bool:
         """Adds logic on top of the normal QDialog.close method to handle colormap save."""
         if not self.cmap_manager.current_changes_saved:
             save = self.cmap_manager.show_validation_modal(
@@ -244,8 +245,15 @@ class ColorMapManagerDialog(QW.QDialog):
             )
             if save:
                 self.cmap_manager.saveColormap()
-        if self.cmap_manager._changes_saved:
-            super().close()
+
+        return self.cmap_manager.current_changes_saved
+
+    def closeEvent(self, event: QC.QEvent):  # noqa: N802
+        if self.check_save_before_close():
+            # self.close()
+            event.accept()
+        else:
+            event.ignore()
 
     def show(self) -> None:
         return super().show()
