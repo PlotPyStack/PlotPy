@@ -405,12 +405,12 @@ class ColormapTool(CommandTool):
         ):
             return
         manager = ColorMapManagerDialog(
-            parent=plot.parent(), active_colormap=self._active_colormap
+            plot.parent(), active_colormap=self._active_colormap
         )
         manager.exec_()
 
         self._active_colormap = manager.getColormap().name
-        self.menu = self.create_action_menu(None)
+        self.menu = self.create_action_menu(plot.manager)
         self.action.setMenu(self.menu)
         self.activate_cmap()
 
