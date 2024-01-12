@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
+
+"""Curve tools"""
+
 from __future__ import annotations
 
 import weakref
-from re import S
-from typing import Any, Callable
+from typing import TYPE_CHECKING, Any, Callable
 
 import numpy as np
 from guidata.dataset import ChoiceItem, DataSet, FloatItem, IntItem
@@ -23,16 +25,28 @@ from plotpy.events import (
     setup_standard_tool_filter,
 )
 from plotpy.interfaces import ICurveItemType
-from plotpy.items import Marker, XRangeSelection, curve
+from plotpy.items import Marker, XRangeSelection
 from plotpy.items.curve.base import CurveItem
 from plotpy.plot.base import BasePlot
-from plotpy.tools import axes
 from plotpy.tools.base import DefaultToolbarID, InteractiveTool, ToggleTool
 from plotpy.tools.cursor import BaseCursorTool
 
+if TYPE_CHECKING:
+    from plotpy.plot.manager import PlotManager
+
 
 class CurveStatsTool(BaseCursorTool):
-    """ """
+    """Curve statistics tool
+
+    Args:
+        manager: PlotManager Instance
+        toolbar_id: Toolbar Id to use. Defaults to DefaultToolbarID.
+        title: Tool name. Defaults to None.
+        icon: Tool icon path. Defaults to None.
+        tip: Available tip. Defaults to None.
+        switch_to_default_tool: Wether to use as the default tool or not.
+         Defaults to None.
+    """
 
     TITLE = _("Signal statistics")
     ICON = "xrange.png"
@@ -45,27 +59,22 @@ class CurveStatsTool(BaseCursorTool):
         self._last_item = None
         self.label = None
 
-    def get_last_item(self):
-        """
-
-        :return:
-        """
+    def get_last_item(self) -> CurveItem | None:
+        """Get last item on which the tool was used"""
         if self._last_item is not None:
             return self._last_item()
+        return None
 
-    def create_shape(self):
-        """
-
-        :return:
-        """
-
+    def create_shape(self) -> XRangeSelection:
+        """Create shape associated with the tool"""
         return XRangeSelection(0, 0)
 
-    def move(self, filter, event):
-        """
+    def move(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
+        """Move tool action
 
-        :param filter:
-        :param event:
+        Args:
+            filter: StatefulEventFilter instance
+            event: Qt mouse event
         """
         super().move(filter, event)
 
@@ -101,58 +110,83 @@ class CurveStatsTool(BaseCursorTool):
             self.label.setZ(plot.get_max_z() + 1)
             self.label.setVisible(True)
 
-    def end_move(self, filter, event):
-        """
+    def end_move(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
+        """End shape move
 
-        :param filter:
-        :param event:
+        Args:
+            filter: StatefulEventFilter instance
+            event: Qt mouse event
         """
         super().end_move(filter, event)
         if self.label is not None:
             filter.plot.add_item_with_z_offset(self.label, SHAPE_Z_OFFSET)
             self.label = None
 
-    def get_associated_item(self, plot):
-        """
+    def get_associated_item(self, plot: BasePlot) -> CurveItem | None:
+        """Get associated item
 
-        :param plot:
-        :return:
+        Args:
+            plot: BasePlot instance
+
+        Returns:
+            curve item or None
         """
         items = plot.get_selected_items(item_type=ICurveItemType)
         if len(items) == 1:
             self._last_item = weakref.ref(items[0])
         return self.get_last_item()
 
-    def update_status(self, plot):
-        """
+    def update_status(self, plot: BasePlot) -> None:
+        """Update tool status
 
-        :param plot:
+        Args:
+            plot: BasePlot instance
         """
         item = self.get_associated_item(plot)
         self.action.setEnabled(item is not None)
 
 
 class AntiAliasingTool(ToggleTool):
-    """ """
+    """Anti-aliasing tool
 
-    def __init__(self, manager):
+    Args:
+        manager: PlotManager Instance
+    """
+
+    def __init__(self, manager: PlotManager) -> None:
         super().__init__(manager, _("Antialiasing (curves)"))
 
-    def activate_command(self, plot, checked):
+    def activate_command(self, plot: BasePlot, checked: bool) -> None:
         """Activate tool"""
         plot.set_antialiasing(checked)
         plot.replot()
 
-    def update_status(self, plot):
-        """
+    def update_status(self, plot: BasePlot) -> None:
+        """Update tool status
 
-        :param plot:
+        Args:
+            plot: BasePlot instance
         """
         self.action.setChecked(plot.antialiased)
 
 
 class SelectPointTool(InteractiveTool):
-    """ """
+    """Curve point selection tool
+
+    Args:
+        manager: PlotManager Instance
+        mode: Selection mode. Defaults to "reuse".
+        on_active_item: Wether to use the active item or not. Defaults to False.
+        title: Tool name. Defaults to None.
+        icon: Tool icon path. Defaults to None.
+        tip: Available tip. Defaults to None.
+        end_callback: Callback function taking a Self instance as argument that will
+        be passed when the user stops dragging the point. Defaults to None.
+        toolbar_id: Toolbar Id to use. Defaults to DefaultToolbarID.
+        marker_style: Marker style. Defaults to None.
+        switch_to_default_tool: Wether to use as the default tool or not.
+         Defaults to None.
+    """
 
     TITLE = _("Point selection")
     ICON = "point_selection.png"
@@ -162,17 +196,17 @@ class SelectPointTool(InteractiveTool):
 
     def __init__(
         self,
-        manager,
-        mode="reuse",
-        on_active_item=False,
-        title=None,
-        icon=None,
-        tip=None,
+        manager: PlotManager,
+        mode: str = "reuse",
+        on_active_item: bool = False,
+        title: str | None = None,
+        icon: str | None = None,
+        tip: str | None = None,
         end_callback: Callable[[SelectPointTool], Any] | None = None,
         toolbar_id=DefaultToolbarID,
         marker_style=None,
         switch_to_default_tool=None,
-    ):
+    ) -> None:
         super().__init__(
             manager,
             toolbar_id,
@@ -194,18 +228,22 @@ class SelectPointTool(InteractiveTool):
             self.marker_style_sect = self.MARKER_STYLE_SECT
             self.marker_style_key = self.MARKER_STYLE_KEY
 
-    def set_marker_style(self, marker):
-        """
+    def set_marker_style(self, marker: Marker) -> None:
+        """Configure marker style
 
-        :param marker:
+        Args:
+            marker: Marker instance
         """
         marker.set_style(self.marker_style_sect, self.marker_style_key)
 
-    def setup_filter(self, baseplot):
-        """
+    def setup_filter(self, baseplot: BasePlot) -> StatefulEventFilter:
+        """Setup event filter
 
-        :param baseplot:
-        :return:
+        Args:
+            baseplot: BasePlot instance
+
+        Returns:
+            StatefulEventFilter instance
         """
         filter = baseplot.filter
         # Initialisation du filtre
@@ -220,11 +258,12 @@ class SelectPointTool(InteractiveTool):
         handler.SIG_STOP_MOVING.connect(self.stop)
         return setup_standard_tool_filter(filter, start_state)
 
-    def start(self, filter, event):
-        """
+    def start(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
+        """Start tool action
 
-        :param filter:
-        :param event:
+        Args:
+            filter: StatefulEventFilter instance
+            event: Qt mouse event
         """
         if self.marker is None:
             title = ""
@@ -248,11 +287,12 @@ class SelectPointTool(InteractiveTool):
         self.marker.setZ(filter.plot.get_max_z() + 1)
         self.marker.setVisible(True)
 
-    def stop(self, filter, event):
-        """
+    def stop(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
+        """Stop tool action
 
-        :param filter:
-        :param event:
+        Args:
+            filter: StatefulEventFilter instance
+            event: Qt mouse event
         """
         self.move(filter, event)
         if self.mode != "reuse":
@@ -261,12 +301,12 @@ class SelectPointTool(InteractiveTool):
         if self.end_callback:
             self.end_callback(self)
 
-    def move(self, filter, event):
-        """
+    def move(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
+        """Move tool action
 
-        :param filter:
-        :param event:
-        :return:
+        Args:
+            filter: StatefulEventFilter instance
+            event: Qt mouse event
         """
         if self.marker is None:
             return  # something is wrong ...
@@ -274,16 +314,13 @@ class SelectPointTool(InteractiveTool):
         filter.plot.replot()
         self.last_pos = self.marker.xValue(), self.marker.yValue()
 
-    def get_coordinates(self):
-        """
-
-        :return:
-        """
+    def get_coordinates(self) -> tuple[float, float] | None:
+        """Get last coordinates"""
         return self.last_pos
 
 
 class SelectPointsTool(InteractiveTool):
-    """ """
+    """Curve points selection tool"""
 
     TITLE = _("Multi-point selection")
     ICON = "multipoint_selection2.png"
@@ -327,18 +364,22 @@ class SelectPointsTool(InteractiveTool):
             self.marker_style_sect = self.MARKER_STYLE_SECT
             self.marker_style_key = self.MARKER_STYLE_KEY
 
-    def set_marker_style(self, marker):
-        """
+    def set_marker_style(self, marker: Marker) -> None:
+        """Configure marker style
 
-        :param marker:
+        Args:
+            marker: Marker instance
         """
         marker.set_style(self.marker_style_sect, self.marker_style_key)
 
-    def setup_filter(self, baseplot: BasePlot):
-        """
+    def setup_filter(self, baseplot: BasePlot) -> StatefulEventFilter:
+        """Setup event filter
 
-        :param baseplot:
-        :return:
+        Args:
+            baseplot: BasePlot instance
+
+        Returns:
+            StatefulEventFilter instance
         """
         filter = baseplot.filter
         # Initialisation du filtre
@@ -373,7 +414,15 @@ class SelectPointsTool(InteractiveTool):
         event: QG.QMouseEvent,
         force_new_marker=False,
         title: str = "",
-    ):
+    ) -> None:
+        """Initialize current marker
+
+        Args:
+            filter: StatefulEventFilter instance
+            event: Qt mouse event
+            force_new_marker: Wether to force a new marker or not. Defaults to False.
+            title: Marker title. Defaults to "".
+        """
         if force_new_marker or self.current_location_marker is None:
             title = title or f"<b>{self.TITLE} {len(self.markers)}</b><br>"
             if self.on_active_item:
@@ -394,19 +443,23 @@ class SelectPointsTool(InteractiveTool):
 
     def start_single_selection(
         self, filter: StatefulEventFilter, event: QG.QMouseEvent
-    ):
-        """
+    ) -> None:
+        """Start single selection
 
-        :param filter:
-        :param event:
+        Args:
+            filter: StatefulEventFilter instance
+            event: Qt mouse event
         """
         self._init_current_marker(filter, event, force_new_marker=True)
 
-    def start_multi_selection(self, filter: StatefulEventFilter, event: QG.QMouseEvent):
-        """
+    def start_multi_selection(
+        self, filter: StatefulEventFilter, event: QG.QMouseEvent
+    ) -> None:
+        """Start multi selection
 
-        :param filter:
-        :param event:
+        Args:
+            filter: StatefulEventFilter instance
+            event: Qt mouse event
         """
         self._init_current_marker(filter, event, force_new_marker=True)
         assert self.current_location_marker
@@ -414,29 +467,38 @@ class SelectPointsTool(InteractiveTool):
             filter, index=len(self.markers) + 1
         )
 
-    def move(self, filter: StatefulEventFilter, event: QG.QMouseEvent):
-        """
+    def move(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
+        """Move tool action
 
-        :param filter:
-        :param event:
-        :return:
+        Args:
+            filter: StatefulEventFilter instance
+            event: Qt mouse event
         """
         if self.current_location_marker is None:
             return  # something is wrong ...
         self.current_location_marker.move_local_point_to(0, event.pos())
         filter.plot.replot()
 
-    def common_stop(self, filter: StatefulEventFilter, event: QG.QMouseEvent):
+    def common_stop(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
+        """Common stop action
+
+        Args:
+            filter: StatefulEventFilter instance
+            event: Qt mouse event
+        """
         self.move(filter, event)
         if self.mode != "reuse":
             self.current_location_marker.detach()
             self.current_location_marker = None
 
-    def stop_single_selection(self, filter: StatefulEventFilter, event: QG.QMouseEvent):
-        """
+    def stop_single_selection(
+        self, filter: StatefulEventFilter, event: QG.QMouseEvent
+    ) -> None:
+        """Stop single selection
 
-        :param filter:
-        :param event:
+        Args:
+            filter: StatefulEventFilter instance
+            event: Qt mouse event
         """
         assert self.current_location_marker
         self.common_stop(filter, event)
@@ -447,11 +509,14 @@ class SelectPointsTool(InteractiveTool):
         if self.end_callback:
             self.end_callback(self)
 
-    def stop_multi_selection(self, filter: StatefulEventFilter, event: QG.QMouseEvent):
-        """
+    def stop_multi_selection(
+        self, filter: StatefulEventFilter, event: QG.QMouseEvent
+    ) -> None:
+        """Stop multi selection
 
-        :param filter:
-        :param event:
+        Args:
+            filter: StatefulEventFilter instance
+            event: Qt mouse event
         """
         assert self.current_location_marker
         self.common_stop(filter, event)
@@ -464,6 +529,14 @@ class SelectPointsTool(InteractiveTool):
             self.end_callback(self)
 
     def toggle_marker(self, marker: Marker) -> bool:
+        """Toggle marker
+
+        Args:
+            marker: Marker instance
+
+        Returns:
+            bool: Wether the marker was added or not
+        """
         assert marker
         xy = marker.xValue(), marker.yValue()
         entry_marker = self.markers.setdefault(xy, marker)
@@ -475,7 +548,12 @@ class SelectPointsTool(InteractiveTool):
             return False
         return True
 
-    def clear_markers(self, exclude_detach: tuple[Marker, ...] | None = None):
+    def clear_markers(self, exclude_detach: tuple[Marker, ...] | None = None) -> None:
+        """Clear markers
+
+        Args:
+            exclude_detach: Markers to exclude from detachment. Defaults to None.
+        """
         exclude_detach = exclude_detach or tuple()
         _ = list(
             map(
@@ -488,13 +566,28 @@ class SelectPointsTool(InteractiveTool):
         )
         self.markers.clear()
 
-    def update_labels(self, filter: StatefulEventFilter):
+    def update_labels(self, filter: StatefulEventFilter) -> None:
+        """Update labels
+
+        Args:
+            filter: StatefulEventFilter instance
+        """
         for i, marker in enumerate(self.markers.values()):
             marker.label_cb = self._new_label_cb(filter, index=i + 1)
 
     def _new_label_cb(
         self, filter: StatefulEventFilter, title: str = "", index: int = 1
     ) -> Callable[[float, float], str]:
+        """Create new label callback
+
+        Args:
+            filter: StatefulEventFilter instance
+            title: Title. Defaults to "".
+            index: Index. Defaults to 1.
+
+        Returns:
+            Label callback
+        """
         title = title or f"<b>{self.TITLE} - {index}</b><br>"
         if self.on_active_item:
 
@@ -508,13 +601,13 @@ class SelectPointsTool(InteractiveTool):
 
         return label_cb
 
-    def get_coordinates(self):
+    def get_coordinates(self) -> tuple[float, float] | None:
+        """Get last coordinates"""
         return tuple(self.markers.keys())
 
 
 class EditPointTool(InteractiveTool):
-    """Tool that allows to modify the x/y values of points on a curve by clicking
-    and dragging them.
+    """Curve point edition tool
 
     Args:
         manager: PlotManager Instance
@@ -522,7 +615,8 @@ class EditPointTool(InteractiveTool):
         title: Tool name. Defaults to None.
         icon: Tool icon path. Defaults to None.
         tip: Available tip. Defaults to None.
-        switch_to_default_tool: Wether to use as the default tool or not. Defaults to None.
+        switch_to_default_tool: Wether to use as the default tool or not.
+         Defaults to None.
         end_callback: Callback function taking a Self instance as argument that will
         be passed when the user stops dragging the point. Defaults to None.
     """
@@ -534,6 +628,8 @@ class EditPointTool(InteractiveTool):
     CURSOR = QC.Qt.CursorShape.PointingHandCursor
 
     class InsertionDataSet(DataSet):
+        """Insertion parameters"""
+
         __index = IntItem(_("Insertion index"), min=0)
         index = __index
         value = FloatItem(_("New value"))
@@ -543,17 +639,16 @@ class EditPointTool(InteractiveTool):
         def set_max_index(cls, max_index: int):
             cls.index.set_prop("data", max=max_index)
 
-    # TODO: Cannot type the manager argument because of circular imports
     def __init__(
         self,
-        manager,
+        manager: PlotManager,
         toolbar_id=DefaultToolbarID,
         title: str | None = None,
         icon: str | None = None,
         tip: str | None = None,
         switch_to_default_tool: bool | None = None,
         end_callback: Callable[[EditPointTool], Any] | None = None,
-    ):
+    ) -> None:
         super().__init__(manager, toolbar_id, title, icon, tip, switch_to_default_tool)
         self._x: np.ndarray | None = None
         self._y: np.ndarray | None = None
@@ -563,6 +658,7 @@ class EditPointTool(InteractiveTool):
         self._current_location_marker: Marker | None = None
         self._index: int = 0
         self._downsampled_index: int = 0
+        self._lower_upper_x_bounds: tuple[float, float] | None = None
         self.marker_style_sect = self.MARKER_STYLE_SECT
         self.marker_style_key = self.MARKER_STYLE_KEY
         self._indexed_changes: dict[CurveItem, dict[int, tuple[float, float]]] = {}
@@ -574,14 +670,23 @@ class EditPointTool(InteractiveTool):
         ] = {}
         self.dragging_point = False
 
-    def set_marker_style(self, marker):
-        """
+    def set_marker_style(self, marker: Marker) -> None:
+        """Configure marker style
 
-        :param marker:
+        Args:
+            marker: Marker instance
         """
         marker.set_style(self.marker_style_sect, self.marker_style_key)
 
     def _get_selection_threshold(self, filter: StatefulEventFilter) -> float:
+        """Get selection threshold
+
+        Args:
+            filter: StatefulEventFilter instance
+
+        Returns:
+            Selection threshold
+        """
         # mean_dx, mean_dy = np.ediff1d(x_array).mean(), np.ediff1d(y_array).mean()
         curve_item = self._get_active_curve_item(filter)
         if self._x is not None and self._y is not None:
@@ -601,10 +706,17 @@ class EditPointTool(InteractiveTool):
                 canva_x_points[i], canva_y_points[i] = new_x, new_y
             dx, dy = np.ediff1d(canva_x_points), np.ediff1d(canva_y_points)
             return np.linalg.norm((dx, dy), axis=0).min() / 2
-        else:
-            return 0.0
+        return 0.0
 
-    def setup_filter(self, baseplot: BasePlot):
+    def setup_filter(self, baseplot: BasePlot) -> StatefulEventFilter:
+        """Setup event filter
+
+        Args:
+            baseplot: BasePlot instance
+
+        Returns:
+            StatefulEventFilter instance
+        """
         filter = baseplot.filter
         # Initialisation du filtre
         start_state = filter.new_state()
@@ -634,7 +746,13 @@ class EditPointTool(InteractiveTool):
 
         return setup_standard_tool_filter(filter, start_state)
 
-    def undo_curve_modifications(self, filter: StatefulEventFilter, _event):
+    def undo_curve_modifications(self, filter: StatefulEventFilter, _event) -> None:
+        """Undo curve modifications
+
+        Args:
+            filter: StatefulEventFilter instance
+            _event: Event instance
+        """
         curve_item = self._get_active_curve_item(filter)
         x_arr, y_arr = self._curve_item_array_backup.get(curve_item, (None, None))
         if (
@@ -652,7 +770,8 @@ class EditPointTool(InteractiveTool):
             self._indexed_changes.get(curve_item, {}).clear()
             self._index = self._downsampled_index = 0
 
-    def trigger_insert_point_at_selection(self):
+    def trigger_insert_point_at_selection(self) -> None:
+        """Trigger insert point at selection"""
         plot: BasePlot | None = self.get_active_plot()
         if plot is None:
             return
@@ -660,7 +779,13 @@ class EditPointTool(InteractiveTool):
 
     def insert_point_at_selection(
         self, filter: StatefulEventFilter, _event: QC.QEvent | None = None
-    ):
+    ) -> None:
+        """Insert point at selection
+
+        Args:
+            filter: StatefulEventFilter instance
+            _event: Event instance
+        """
         curve_item = self._get_active_curve_item(filter)
         if self._current_location_marker is None or self._y is None or self._x is None:
             QW.QMessageBox.warning(
@@ -685,44 +810,86 @@ class EditPointTool(InteractiveTool):
             self._y, insertion_index, insertion_dataset.value  # type: ignore
         )
         curve_item.set_data(self._x, self._y)
+        new_pos = axes_to_canvas(curve_item, new_x, insertion_dataset.value)
         self._current_location_marker.move_local_point_to(
-            0, QC.QPointF(*axes_to_canvas(curve_item, new_x, insertion_dataset.value))  # type: ignore
+            0, QC.QPointF(*new_pos)  # type: ignore
         )
 
     def _get_plot(self, filter: StatefulEventFilter) -> BasePlot:
+        """Get plot
+
+        Args:
+            filter: StatefulEventFilter instance
+
+        Returns:
+            BasePlot instance
+        """
         assert isinstance(plot := filter.plot, BasePlot)
         return plot
 
     def _get_active_curve_item(self, filter: StatefulEventFilter) -> CurveItem:
+        """Get active curve item
+
+        Args:
+            filter: StatefulEventFilter instance
+
+        Returns:
+            curve item
+        """
         plot = self._get_plot(filter)
         assert isinstance(
             curve_item := plot.get_last_active_item(ICurveItemType), CurveItem
         )
         return curve_item
 
-    def _get_current_marker(self, filter):
+    def _get_current_marker(self, filter: StatefulEventFilter) -> Marker:
+        """Get current marker
+
+        Args:
+            filter: StatefulEventFilter instance
+
+        Returns:
+            Marker instance
+        """
         return self._current_location_marker or self._init_current_marker(filter)
 
-    def _gex_x_bounds(self, x_array: np.ndarray, index: int):
+    def _get_x_bounds(self, x_array: np.ndarray, index: int) -> tuple[float, float]:
+        """Get x bounds
+
+        Args:
+            x_array: X array
+            index: Index
+
+        Returns:
+            X bounds
+        """
         lower_bound_index = max(index - 1, 0)
         upper_bound_index = min(x_array.size - 1, index + 1)
         return x_array[lower_bound_index], x_array[upper_bound_index]
 
     @property
-    def downsampled_x(self):
+    def downsampled_x(self) -> np.ndarray:
+        """Downsampled x array"""
         assert self._x is not None
         if self._downsampling > 1:
             return self._x[:: self._downsampling]
         return self._x
 
     @property
-    def downsampled_y(self):
+    def downsampled_y(self) -> np.ndarray:
+        """Downsampled y array"""
         assert self._y is not None
         if self._downsampling > 1:
             return self._y[:: self._downsampling]
         return self._y
 
-    def start(self, filter: StatefulEventFilter, event: QG.QMouseEvent):
+    def start(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
+        """Start tool action
+
+        Args:
+            filter: StatefulEventFilter instance
+            event: Qt mouse event
+        """
         self.dragging_point = False
         curve_item = self._get_active_curve_item(filter)
         if self._current_location_marker is not None:
@@ -742,11 +909,17 @@ class EditPointTool(InteractiveTool):
             x_value = self._current_location_marker.xValue()
             self._downsampled_index = int(np.searchsorted(self.downsampled_x, x_value))
             self._index = self._downsampled_index * self._downsampling
-            self._lower_upper_x_bounds = self._gex_x_bounds(curve_x, self._index)
+            self._lower_upper_x_bounds = self._get_x_bounds(curve_x, self._index)
             self._selection_threshold = self._get_selection_threshold(filter)
             self._get_plot(filter).replot()
 
-    def move_point(self, filter: StatefulEventFilter, event: QG.QMouseEvent):
+    def move_point(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
+        """Move point
+
+        Args:
+            filter: StatefulEventFilter instance
+            event: Qt mouse event
+        """
         self._current_location_marker = self._get_current_marker(filter)
         curve_item = self._get_active_curve_item(filter)
         drag_cursor_pos: QC.QPoint = event.pos()
@@ -790,7 +963,13 @@ class EditPointTool(InteractiveTool):
             )
             self._get_plot(filter).replot()
 
-    def stop(self, filter: StatefulEventFilter, event: QG.QMouseEvent):
+    def stop(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
+        """Stop tool action
+
+        Args:
+            filter: StatefulEventFilter instance
+            event: Qt mouse event
+        """
         if self.dragging_point:
             self.move_point(filter, event)
         self.dragging_point = False
@@ -815,6 +994,14 @@ class EditPointTool(InteractiveTool):
         self,
         filter: StatefulEventFilter,
     ) -> Marker:
+        """Initialize current marker
+
+        Args:
+            filter: StatefulEventFilter instance
+
+        Returns:
+            Marker instance
+        """
         plot = self._get_plot(filter)
         marker = Marker(
             label_cb=lambda x, y: f"{x=:.4f}, {y=:.4f}",
@@ -826,16 +1013,20 @@ class EditPointTool(InteractiveTool):
         marker.setVisible(True)
         return marker
 
-    def get_changes(self):
+    def get_changes(self) -> dict[CurveItem, dict[int, tuple[float, float]]]:
+        """Get changes"""
         return self._indexed_changes
 
-    def get_arrays(self):
+    def get_arrays(self) -> tuple[np.ndarray, np.ndarray]:
+        """Get arrays"""
         return self._x, self._y
 
-    def get_unchanged_arrays(self):
+    def get_unchanged_arrays(self) -> tuple[np.ndarray, np.ndarray]:
+        """Get unchanged arrays"""
         return self._x_bkp, self._y_bkp
 
-    def reset_tool_arrays(self):
+    def reset_tool_arrays(self) -> None:
+        """Reset tool arrays"""
         self._x = self._y = None
         for curve_item, (x_arr, y_arr) in self._curve_item_array_backup.items():
             curve_item.set_data(x_arr, y_arr)
@@ -843,9 +1034,12 @@ class EditPointTool(InteractiveTool):
 
 
 class DownSampleCurveTool(ToggleTool):
-    """ """
+    """Downsample curve tool
 
-    # TODO: Create and add tool icon!
+    Args:
+        manager: PlotManager Instance
+        toolbar_id: Toolbar Id to use . Defaults to DefaultToolbarID.
+    """
 
     def __init__(self, manager, toolbar_id=DefaultToolbarID) -> None:
         super().__init__(
@@ -855,28 +1049,42 @@ class DownSampleCurveTool(ToggleTool):
             toolbar_id=toolbar_id,
         )
 
-    def activate_command(self, plot: BasePlot, checked: bool):
-        """Activate tool"""
-        curve_item: CurveItem | None = plot.get_last_active_item(ICurveItemType)  # type: ignore
+    def activate_command(self, plot: BasePlot, checked: bool) -> None:
+        """Activate tool
+
+        Args:
+            plot: BasePlot instance
+            checked: Wether the tool is checked or not
+        """
+        curve_item: CurveItem | None = plot.get_last_active_item(
+            ICurveItemType
+        )  # type: ignore
         if curve_item is not None:
             curve_item.param.use_downsampling = checked
             curve_item.update_data()
             plot.replot()
 
-    def update_status(self, plot: BasePlot):
-        """
+    def update_status(self, plot: BasePlot) -> None:
+        """Update tool status
 
-        :param plot:
+        Args:
+            plot: BasePlot instance
         """
-        curve_item: CurveItem | None = plot.get_last_active_item(ICurveItemType)  # type: ignore
+        curve_item: CurveItem | None = plot.get_last_active_item(
+            ICurveItemType
+        )  # type: ignore
         if curve_item is not None and self.action is not None:
             self.action.setChecked(curve_item.param.use_downsampling)
             curve_item.update_data()
             plot.replot()
 
 
-def export_curve_data(item):
-    """Export curve item data to text file"""
+def export_curve_data(item: CurveItem) -> None:
+    """Export curve item data to text file
+
+    Args:
+        item: curve item
+    """
     item_data = item.get_data()
     if len(item_data) > 2:
         x, y, dx, dy = item_data
@@ -911,8 +1119,12 @@ def export_curve_data(item):
             )
 
 
-def edit_curve_data(item):
-    """Edit curve item data in array editor"""
+def edit_curve_data(item: CurveItem) -> None:
+    """Edit curve item data in array editor
+
+    Args:
+        item: curve item
+    """
     item_data = item.get_data()
     if len(item_data) > 2:
         x, y, dx, dy = item_data
