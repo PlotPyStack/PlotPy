@@ -4,7 +4,7 @@ import qtpy.QtCore as QC
 import qtpy.QtGui as QG
 import qtpy.QtWidgets as QW
 
-from plotpy.widgets.external.sliders import QDoubleRangeSlider
+from plotpy.external.sliders import QDoubleRangeSlider
 
 
 class QColorMapSlider(QDoubleRangeSlider):
