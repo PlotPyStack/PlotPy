@@ -36,6 +36,7 @@ from plotpy.mathutils.colormaps import (
     DEFAULT_COLORMAPS,
     build_icon_from_cmap,
     build_icon_from_cmap_name,
+    get_cmap,
 )
 from plotpy.tools.base import (
     CommandTool,
@@ -530,12 +531,10 @@ class ColormapTool(CommandTool):
         if isinstance(cmap, QAction):
             self._active_colormap = cmap.data()  # type: ignore
         elif isinstance(cmap, str):
-            cmap = cmap.lower()
-            assert cmap in ALL_COLORMAPS
-            self._active_colormap = ALL_COLORMAPS[cmap]
+            self._active_colormap = get_cmap(cmap)
         elif isinstance(cmap, CustomQwtLinearColormap):
             self._active_colormap = cmap
-
+*
         plot = self.get_active_plot()
         if self._active_colormap is not None and plot is not None:
             items = self.get_selected_images(plot)
@@ -560,9 +559,7 @@ class ColormapTool(CommandTool):
                 cmap_name = item.get_color_map_name()
                 if cmap_name:
                     icon = build_icon_from_cmap_name(cmap_name)
-                    self._active_colormap = ALL_COLORMAPS.get(
-                        cmap_name.lower(), DEFAULT
-                    )
+                    self._active_colormap = get_cmap(cmap_name)
             else:
                 self.action.setEnabled(False)
                 self._active_colormap = ALL_COLORMAPS.get("jet", DEFAULT)

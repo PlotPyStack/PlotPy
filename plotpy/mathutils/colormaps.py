@@ -111,12 +111,14 @@ def get_cmap(cmap_name: str) -> CustomQwtLinearColormap:
     If the colormap is not found, returns the DEFAULT colormap.
 
     Args:
-        cmap_name: colormap name to search in ALL_COLORMAPS
+        cmap_name: colormap name to search in ALL_COLORMAPS. All keys in ALL_COLORMAPS
+        are lower case, so the given name is also lowered.
 
     Returns:
-        A CustomQwtLinearColormap instance corresponding to the given name
+        A CustomQwtLinearColormap instance corresponding to the given name, if no
+        colormap is found, returns the DEFAULT colormap.
     """
-    return ALL_COLORMAPS.get(cmap_name, DEFAULT)
+    return ALL_COLORMAPS.get(cmap_name.lower(), DEFAULT)
 
 
 def get_cmap_path(config_path: str):

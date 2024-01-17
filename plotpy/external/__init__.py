@@ -1,5 +1,3 @@
-
-
 from .sliders import (
     QDoubleRangeSlider,
     QDoubleSlider,
