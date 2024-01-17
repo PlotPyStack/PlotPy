@@ -17,6 +17,7 @@ modifications.
 import qtpy.QtCore as QC
 import qtpy.QtGui as QG
 import qtpy.QtWidgets as QW
+from guidata.env import execenv
 
 from plotpy.widgets.colormap_editor import ColorMapEditor
 from plotpy.widgets.colormap_widget import CustomQwtLinearColormap
@@ -26,6 +27,7 @@ if __name__ == "__main__":
     app = QW.QApplication([])
     editor = ColorMapEditor(None)
     red = QG.QColor(QC.Qt.GlobalColor.red)
+    green = QG.QColor(QC.Qt.GlobalColor.green)
     editor.colormap_widget.add_handle_at_relative_pos(0.5, red)
     editor.show()
     app.exec_()
@@ -57,11 +59,25 @@ if __name__ == "__main__":
     cmap_tuples = tuple((int(val * 255 + 1), color) for val, color in cmap_tuples)
     print(
         "Initialization of a new default colormap editor, "
-        "modified post-initialization with the previous colormap with stops scaled by * 255 + 1: ",
+        "modified post-initialization with the previous colormap with stops scaled by "
+        "255 + 1: ",
         cmap_tuples,
     )
     new_cmap = CustomQwtLinearColormap.from_iterable(cmap_tuples)
     editor = ColorMapEditor(None)
     editor.set_colormap(new_cmap)
+    editor.show()
+    app.exec_()
+
+    print(
+        "Initialization of a new default colormap editor, "
+        "modified post-initialization with the previous colormap where the red stop is "
+        "replaced with a green stop: ",
+        cmap_tuples,
+    )
+
+    editor = ColorMapEditor(None)
+    editor.set_colormap(new_cmap)
+    editor.colormap_widget.edit_color_stop(1, None, green)
     editor.show()
     app.exec_()

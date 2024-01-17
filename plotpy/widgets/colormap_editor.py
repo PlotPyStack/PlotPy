@@ -269,8 +269,6 @@ class ColorMapEditor(QW.QWidget):
 
         if current_index > 0 and current_index < self.tabs.count() - 1:
             relative_pos = current_dataset.get_position()
-            new_slider_values[current_index] = relative_pos
-            self.colormap_widget.set_handles_values(new_slider_values)
         else:
             relative_pos = new_slider_values[current_index]
             current_dataset.set_position(relative_pos)

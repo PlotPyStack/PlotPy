@@ -47,7 +47,7 @@ class ColorMapManager(QW.QWidget):
 
         if active_colormap is None or active_colormap.lower() not in ALL_COLORMAPS:
             active_colormap = next(iter(ALL_COLORMAPS))
-        active_colormap = active_colormap.lower()
+        # active_colormap = active_colormap.lower()
         self._cmap_choice = QW.QComboBox(
             self,
         )
@@ -231,9 +231,7 @@ class ColorMapManagerDialog(QW.QDialog):
         exists, will defaults to the first colormap in the list. Defaults to None
     """
 
-    def __init__(
-        self, parent: QWidget | None, active_colormap: str = "viridis"
-    ) -> None:
+    def __init__(self, parent: QWidget | None, active_colormap: str = "jet") -> None:
         super().__init__(parent)
         self.setWindowIcon(get_icon("edit.png"))
         self.setWindowTitle(_("Colormap manager"))

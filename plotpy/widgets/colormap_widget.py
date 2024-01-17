@@ -401,7 +401,7 @@ class ColorMapWidget(QW.QWidget):
         new_color: QG.QColor | int | None = None,
     ):
         """Edit an existing color stop in the current colormap. Mutates the colormap
-        object.
+        object. Also edits the slider handle position.
 
         Args:
             index: color stop index to mutate
@@ -416,6 +416,7 @@ class ColorMapWidget(QW.QWidget):
             new_color = QG.QColor(self.colortable[new_color])
 
         self._colormap.move_color_stop(index, new_pos, new_color)
+        self.set_handles_values(self._colormap.colorStops())
         self.COLORMAP_CHANGED.emit()
 
     def _edit_color_map_on_slider_change(self, raw_values: tuple[float, ...]):
@@ -460,7 +461,7 @@ class ColorMapWidget(QW.QWidget):
         """
         values = self.get_handles_tuple()
         previous_pos = max(
-            filter(lambda val: val < pos, values[::-1]), default=self.min
+            filter(lambda val: val <= pos, values[::-1]), default=self.min
         )
         next_pos = min(filter(lambda val: val > pos, values), default=self.max)
 
@@ -558,7 +559,9 @@ class ColorMapWidget(QW.QWidget):
         self, relative_pos: float, new_color: QG.QColor | int | None = None
     ):
         """insert a handle in the widget at the relative position (between 0. and 1.).
-        Mutates the colormap object.
+        Mutates the colormap object. If the relative position is already occupied by a
+        handle, the new handle will be inserted at the closest available position then
+        will be moved back to the requested position.
 
         Args:
             relative_pos: insertion position
@@ -567,15 +570,16 @@ class ColorMapWidget(QW.QWidget):
         if new_color is None:
             new_color = self._colormap.color(self.qwt_color_interval, relative_pos)
 
-        self._colormap.addColorStop(relative_pos, new_color)
+        new_relative_pos = self._new_available_pos(relative_pos)
+        self._colormap.addColorStop(new_relative_pos, new_color)
 
         values = self.get_handles_list()
-        values.append(relative_pos)
+        values.append(new_relative_pos)
         values.sort()
-        self.set_handles_values(values)
+        new_value_index = values.index(new_relative_pos)
 
-        self.COLORMAP_CHANGED.emit()
-        self.HANDLE_ADDED.emit(values.index(relative_pos), relative_pos)
+        self.edit_color_stop(new_value_index, relative_pos, None)
+        self.HANDLE_ADDED.emit(new_value_index, relative_pos)
 
     def get_handles_count(self) -> int:
         """Number of slider handles.
