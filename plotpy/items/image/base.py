@@ -41,12 +41,13 @@ from plotpy.interfaces import (
     ITrackableItemType,
     IVoiImageItemType,
 )
+
+# do not import rectangleshape from plotpy.items directly
 from plotpy.items.shape.rectangle import RectangleShape
 from plotpy.lutrange import lut_range_threshold
 from plotpy.mathutils.arrayfuncs import get_nan_range
 from plotpy.mathutils.colormaps import FULLRANGE, get_cmap
 from plotpy.styles.image import RawImageParam
-from plotpy.widgets.colormap_widget import CustomQwtLinearColormap
 
 if TYPE_CHECKING:  # pragma: no cover
     import guidata.dataset.io
@@ -56,8 +57,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from qtpy.QtGui import QColor, QPainter
 
     from plotpy.interfaces import IItemType
-    from plotpy.items import RectangleShape
     from plotpy.styles.base import ItemParameters
+    from plotpy.widgets.colormap_widget import CustomQwtLinearColormap
 
 
 class BaseImageItem(QwtPlotItem):
@@ -111,6 +112,7 @@ class BaseImageItem(QwtPlotItem):
         self.cmap_table = None
         self.cmap = None
         self.colormap_axis = None
+        self._image: QG.QImage | None = None
 
         self._offscreen = np.array((1, 1), np.uint32)
 
@@ -125,7 +127,6 @@ class BaseImageItem(QwtPlotItem):
         self.border_rect.set_style("plot", "shape/imageborder")
         # A, B, Background, Colormap
         self.lut = (1.0, 0.0, None, np.zeros((LUT_SIZE,), np.uint32))
-
         self.set_lut_range((0.0, 255.0))
         self.setItemAttribute(QwtPlotItem.AutoScale)
         self.setItemAttribute(QwtPlotItem.Legend, True)
@@ -467,7 +468,10 @@ class BaseImageItem(QwtPlotItem):
         return self.cmap_table
 
     def get_color_map_name(self) -> str | None:
-        """Get colormap name
+        """Get the current colormap name if set. The output value should not directly
+        be used to retrieve a colormap object from one of the global colormap
+        dictionaries, as the colormap name may contain capital letters whereas the
+        colormap string keys of the dictionaries are all lowercase.
 
         Returns:
             Colormap name
@@ -475,6 +479,18 @@ class BaseImageItem(QwtPlotItem):
         if self.cmap_table is None:
             return None
         return self.cmap_table.name
+
+    def get_color_map_key_name(self) -> str | None:
+        """Same as get_color_map_name, but returns the colormap name in lowercase. This
+        is because the colormap string keys of the global colormap dictionaries are all
+        lowercase.
+
+        Returns:
+            Colormap name
+        """
+        if self.cmap_table is None:
+            return None
+        return self.cmap_table.name.lower()
 
     def set_interpolation(self, interp_mode: int, size: int | None = None) -> None:
         """Set interpolation mode
@@ -984,7 +1000,7 @@ class BaseImageItem(QwtPlotItem):
 
     def __process_cross_section(self, ydata, apply_lut):
         if apply_lut:
-            a, b, bg, cmap = self.lut
+            a, b, _bg, _cmap = self.lut
             return (ydata * a + b).clip(0, LUT_MAX)
         else:
             return ydata

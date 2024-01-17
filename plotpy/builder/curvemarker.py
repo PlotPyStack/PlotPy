@@ -20,7 +20,7 @@ curve, cursor and marker items.
 
 from __future__ import annotations
 
-from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 import numpy  # only to help intersphinx finding numpy doc
 import numpy as np
@@ -44,6 +44,9 @@ from plotpy.styles import (
     style_generator,
     update_style_attr,
 )
+
+if TYPE_CHECKING:
+    from typing import Callable
 
 CURVE_COUNT = 0
 HISTOGRAM_COUNT = 0
@@ -228,7 +231,8 @@ class CurveMarkerCursorBuilder:
         Args:
             args: x, y, style
             kwargs: title, color, linestyle, linewidth, marker, markersize,
-            markerfacecolor, markeredgecolor, shade, curvestyle, baseline
+            markerfacecolor, markeredgecolor, shade, curvestyle, baseline,
+            downsampling_factor, use_downsampling
 
         Returns:
             :py:class:`.CurveItem` object

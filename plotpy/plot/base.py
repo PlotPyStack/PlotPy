@@ -1585,8 +1585,9 @@ class BasePlot(qwt.QwtPlot):
         item.unselect()
         self.SIG_ITEM_SELECTION_CHANGED.emit(self)
 
-    #TODO: fix return type of the following method (should probably return a QwtPlotItem)
-    def get_last_active_item(self, item_type: type[itf.IItemType]) -> itf.IBasePlotItem | None:
+    def get_last_active_item(
+        self, item_type: type[itf.IItemType]
+    ) -> itf.IBasePlotItem | None:
         """Return last active item corresponding to passed `item_type`
 
         Args:

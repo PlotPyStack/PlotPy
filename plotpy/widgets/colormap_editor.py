@@ -17,19 +17,25 @@ from plotpy.widgets.colormap_widget import ColorMapWidget, CustomQwtLinearColorm
 class ColorMapEditor(QW.QWidget):
     """Widget that allows a user to edit a colormap by changing its color stops (
     add/delete/move/change color). Right click on the colorbar or slider to add or
-    remove colors stops. A existing colormap instance can be used. However, the modifications
-    are inplace so you should copy the object if you do not want to mutate it.
+    remove colors stops. A existing colormap instance can be used. However, the
+    modifications are inplace so you should copy the object if you do not want to
+    mutate it.
 
     Args:
         parent: Parent widget.
         cmap_width: Cmap size in pixels. Defaults to 400.
         cmap_height: Cmap height in pixels. Defaults to 50.
-        color1: First color of the colormap. Ignored if argument 'colormap' is used. Defaults to QG.QColor(QC.Qt.GlobalColor.blue).
-        color2: Last color of the colormap. Ignored if argument 'colormap' is used. Defaults to QG.QColor(QC.Qt.GlobalColor.yellow).
-        colormap: An already initialized colormap to use in the widget. Defaults to None.
+        color1: First color of the colormap. If None, color blue is used. Ignored if
+        argument 'colormap' is used. Defaults to None.
+        color2: Last color of the colormap. If None, color yellow is used.Ignored if
+        argument 'colormap' is used. Defaults to None
+        colormap: An already initialized colormap to use in the widget.
+        Defaults to None.
     """
 
     class ColorPickDataSet(DataSet):
+        """Dataset with the field used to edit a color stop."""
+
         _position_locked = False
 
         position = (
@@ -47,21 +53,51 @@ class ColorMapEditor(QW.QWidget):
         )
 
         def lock_position(self, lock=True):
+            """Used to lock the position of the cursor value.
+
+            Args:
+                lock: True if value must be locked. Defaults to True.
+            """
             self._position_locked = lock
 
         def is_position_locked(self):
+            """Returns True if the position is locked.
+
+            Returns:
+                True if position is locked, False otherwise.
+            """
             return self._position_locked
 
         def set_position(self, position: float):
+            """Set a new position for the cursor. Value is rounded to 2 decimals.
+
+            Args:
+                position: new position to set
+            """
             self.position = round(position, 2)
 
         def get_position(self) -> float:
+            """Return the current position of the cursor.
+
+            Returns:
+                float value of the cursor position
+            """
             return self.position  # type: ignore
 
         def set_color(self, hex_color: str):
+            """Set a new hex color for the cursor.
+
+            Args:
+                hex_color: str hex color to set (e.g. "#FF0000" for red)
+            """
             self.hex_color = hex_color
 
         def get_hex_color(self) -> str:
+            """Return the current str hex color of the cursor.
+
+            Returns:
+                str hex color of the cursor (e.g. "#FF0000" for red)
+            """
             return self.hex_color  # type: ignore
 
     def __init__(
@@ -69,11 +105,14 @@ class ColorMapEditor(QW.QWidget):
         parent: QW.QWidget | None,
         cmap_width: int = 400,
         cmap_height: int = 50,
-        color1: QG.QColor = QG.QColor(QC.Qt.GlobalColor.blue),
-        color2: QG.QColor = QG.QColor(QC.Qt.GlobalColor.yellow),
+        color1: QG.QColor | None = None,
+        color2: QG.QColor | None = None,
         colormap: CustomQwtLinearColormap | None = None,
     ) -> None:
         super().__init__(parent)
+
+        color1 = QG.QColor(QC.Qt.GlobalColor.blue) if color1 is None else color1
+        color2 = QG.QColor(QC.Qt.GlobalColor.yellow) if color2 is None else color2
         self.colormap_widget = ColorMapWidget(
             self, cmap_width, cmap_height, color1, color2, colormap
         )
@@ -93,31 +132,31 @@ class ColorMapEditor(QW.QWidget):
 
         self.setLayout(self.editor_layout)
 
-        self.colormap_widget.handleSelected.connect(self.change_current_dataset)
-        self.colormap_widget.handleAdded.connect(self.new_tab)
-        self.colormap_widget.handleDeleted.connect(self.delete_tab)
+        self.colormap_widget.HANDLE_SELECTED.connect(self.change_current_dataset)
+        self.colormap_widget.HANDLE_ADDED.connect(self.new_tab)
+        self.colormap_widget.HANDLE_DELETED.connect(self.delete_tab)
         self.colormap_widget.multi_range_hslider.sliderMoved.connect(
             self.update_current_dataset
         )
 
-    def setColormap(self, colormap: CustomQwtLinearColormap):
+    def set_colormap(self, colormap: CustomQwtLinearColormap):
         """Replaces the current colormap.
 
         Args:
             colormap: replacement colormap
         """
         self.colormap_widget.blockSignals(True)
-        self.colormap_widget.setColormap(colormap)
+        self.colormap_widget.set_colormap(colormap)
         self.colormap_widget.blockSignals(False)
         self.setup_tabs()
 
-    def getColormap(self) -> CustomQwtLinearColormap:
+    def get_colormap(self) -> CustomQwtLinearColormap:
         """Get the current colormap being edited.
 
         Returns:
             current colormap
         """
-        return self.colormap_widget.getColormap()
+        return self.colormap_widget.get_colormap()
 
     def change_current_dataset(self, dataset_index: int):
         """Wrapper functio to change the current dataset (=current tab)
@@ -146,13 +185,16 @@ class ColorMapEditor(QW.QWidget):
         dataset_grp.get()
 
     def update_tabs_names_from_current(self):
-        """Update all the tab names from the current active tab (useful when a new one is added)."""
+        """Update all the tab names from the current active tab (useful when a new one
+        is added).
+        """
         start_index = self.tabs.currentIndex()
         for i in range(start_index, self.tabs.count()):
             self.tabs.setTabText(i, str(i + 1))
 
     def new_tab(self, index: int, handle_pos: float):
-        """Add/insert a new tab at the given index and set its relative position and color
+        """Add/insert a new tab at the given index and set its relative position and
+        color.
 
         Args:
             index: index of the insertion/appending.

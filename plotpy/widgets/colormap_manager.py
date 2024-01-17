@@ -11,7 +11,6 @@ import qtpy.QtGui as QG
 import qtpy.QtWidgets as QW
 from guidata.config import _
 from guidata.configtools import get_icon
-from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget
 
 from plotpy.mathutils.colormaps import (
@@ -44,11 +43,11 @@ class ColorMapManager(QW.QWidget):
         super().__init__(parent)
 
         self._vlayout = QW.QVBoxLayout()
-        self._vlayout.setContentsMargins(0, 0, 0, 0)
+        # self._vlayout.setContentsMargins(0, 0, 0, 0)
 
-        if active_colormap is None or active_colormap not in ALL_COLORMAPS:
+        if active_colormap is None or active_colormap.lower() not in ALL_COLORMAPS:
             active_colormap = next(iter(ALL_COLORMAPS))
-
+        active_colormap = active_colormap.lower()
         self._cmap_choice = QW.QComboBox(
             self,
         )
@@ -61,12 +60,12 @@ class ColorMapManager(QW.QWidget):
         icon = build_icon_from_cmap(new_colormap)
         self._cmap_choice.addItem(icon, new_colormap.name, new_colormap)
 
-        for cmap_name, cmap in ALL_COLORMAPS.items():
+        for cmap in ALL_COLORMAPS.values():
             icon = build_icon_from_cmap(cmap)
-            self._cmap_choice.addItem(icon, cmap_name, cmap)
+            self._cmap_choice.addItem(icon, cmap.name, cmap)
         self._cmap_choice.setCurrentText(active_colormap)
 
-        self._colormap_editor = ColorMapEditor(
+        self.colormap_editor = ColorMapEditor(
             self, colormap=deepcopy(self._cmap_choice.currentData())
         )
 
@@ -81,7 +80,8 @@ class ColorMapManager(QW.QWidget):
         self._colormap_name_edit.setText(active_colormap)
         self._colormap_name_edit.setToolTip(
             _(
-                "New colormap name cannot contain special characters except underscores (_)."
+                "New colormap name cannot contain special characters "
+                "except underscores (_)."
             )
         )
         self._colormap_name_edit.setEnabled(False)
@@ -102,16 +102,16 @@ class ColorMapManager(QW.QWidget):
         groupbox = QW.QGroupBox(_("Editor"), self)
         groupbox_layout = QW.QVBoxLayout()
         groupbox_layout.setContentsMargins(0, 0, 0, 0)
-        groupbox_layout.addWidget(self._colormap_editor)
+        groupbox_layout.addWidget(self.colormap_editor)
         groupbox.setLayout(groupbox_layout)
         self._vlayout.addWidget(groupbox)
-        # self._vlayout.addWidget(self._colormap_editor)
+        # self._vlayout.addWidget(self.colormap_editor)
 
-        self._colormap_editor.colormap_widget.colormapChanged.connect(
+        self.colormap_editor.colormap_widget.COLORMAP_CHANGED.connect(
             self._changes_not_saved
         )
-        self._cmap_choice.currentIndexChanged.connect(self.setColormap)
-        self._save_btn.clicked.connect(self.saveColormap)
+        self._cmap_choice.currentIndexChanged.connect(self.set_colormap)
+        self._save_btn.clicked.connect(self.save_colormap)
         self._colormap_name_edit.editingFinished.connect(self.update_colormap_name)
         self.setLayout(self._vlayout)
 
@@ -121,13 +121,19 @@ class ColorMapManager(QW.QWidget):
         self._changes_saved = False
 
     @property
-    def current_changes_saved(self):
+    def current_changes_saved(self) -> bool:
+        """Getter to know if the current colormap has been saved or not.
+
+        Returns:
+            True if the current colormap has been saved, False otherwise.
+        """
         return self._changes_saved
 
-    def update_colormap_name(self):
-        self.getColormap().name = self._colormap_name_edit.text()
+    def update_colormap_name(self) -> None:
+        """Updates the colormap name to the value present in the QLineEdit."""
+        self.get_colormap().name = self._colormap_name_edit.text()
 
-    def setColormap(self, index: int):
+    def set_colormap(self, index: int):
         """Set the current colormap to the value present at the given index in the
         QComboBox. Makes a copy of the colormap object so the ColorMapEditor does not
         mutate the original colormap object.
@@ -136,39 +142,40 @@ class ColorMapManager(QW.QWidget):
             index: index of the colormap in the QComboBox.
         """
         cmap_copy: CustomQwtLinearColormap = deepcopy(self._cmap_choice.itemData(index))
-        self._colormap_editor.setColormap(cmap_copy)
+        self.colormap_editor.set_colormap(cmap_copy)
         self._colormap_name_edit.setText(cmap_copy.name)
-        is_new_colormap = cmap_copy.name not in ALL_COLORMAPS
+        is_new_colormap = cmap_copy.name.lower() not in ALL_COLORMAPS
         self._colormap_name_edit.setEnabled(is_new_colormap)
         self._changes_saved = True
         self._save_btn.setEnabled(is_new_colormap)
 
-    def getColormap(self):
+    def get_colormap(self) -> CustomQwtLinearColormap:
         """Return the current colormap object.
 
         Returns:
             current colormap object
         """
-        return self._colormap_editor.getColormap()
+        return self.colormap_editor.get_colormap()
 
-    def saveColormap(self):
+    def save_colormap(self) -> None:
         """Saves the current colormap and handles the validation process. The saved
         colormaps can only be saved in the custom colormaps.
         """
-        cmap = self.getColormap()
+        cmap = self.get_colormap()
         new_cmap_name = cmap.name
+        lower_cmap_name = new_cmap_name.lower()
 
-        if new_cmap_name not in DEFAULT_COLORMAPS:
-            is_cmap_in_default = new_cmap_name in CUSTOM_COLORMAPS
-            if is_cmap_in_default and not self.show_validation_modal(
+        if lower_cmap_name not in DEFAULT_COLORMAPS:
+            is_existing_custom_cmap = lower_cmap_name in CUSTOM_COLORMAPS
+            if is_existing_custom_cmap and not self.show_validation_modal(
                 _("Custom colormap %s already exists, do you want to overwrite it?")
                 % new_cmap_name
             ):
                 return
             icon = build_icon_from_cmap(cmap)
-            CUSTOM_COLORMAPS[new_cmap_name] = ALL_COLORMAPS[new_cmap_name] = cmap
+            CUSTOM_COLORMAPS[lower_cmap_name] = ALL_COLORMAPS[lower_cmap_name] = cmap
             save_colormaps(CUSTOM_COLORMAPS_PATH, CUSTOM_COLORMAPS)
-            if is_cmap_in_default:
+            if is_existing_custom_cmap:
                 self._cmap_choice.setCurrentText(new_cmap_name)
                 current_index = self._cmap_choice.currentIndex()
                 self._cmap_choice.setItemData(current_index, cmap)
@@ -184,7 +191,8 @@ class ColorMapManager(QW.QWidget):
                 self,
                 "Colormap map error",
                 _(
-                    'New colormap "%s" is a default colormap and cannot be overwritten. Change its name to save it as a custom colormap.'
+                    'New colormap "%s" is a default colormap and cannot be '
+                    "overwritten. Change its name to save it as a custom colormap."
                 )
                 % new_cmap_name,
             )
@@ -193,17 +201,24 @@ class ColorMapManager(QW.QWidget):
         self,
         message: str,
         validation_btn: QW.QMessageBox.StandardButton = QW.QMessageBox.StandardButton.Ok,
-    ):
+    ) -> bool:
         """Opens a simple QMessageBox with the given message and validation button
 
         Args:
             message: message to display
-            validation_btn: validation button. Defaults to QW.QMessageBox.StandardButton.Ok.
+            validation_btn: validation button. Defaults to
+            QW.QMessageBox.StandardButton.Ok.
 
         Returns:
             _description_
         """
-        ret = QW.QMessageBox.question(self, "Validation", message, validation_btn | QW.QMessageBox.StandardButton.Cancel, QW.QMessageBox.StandardButton.Cancel)  # type: ignore
+        ret = QW.QMessageBox.question(
+            self,
+            "Validation",
+            message,
+            validation_btn | QW.QMessageBox.StandardButton.Cancel,  # type: ignore
+            QW.QMessageBox.StandardButton.Cancel,
+        )
         return ret == validation_btn
 
 
@@ -230,25 +245,29 @@ class ColorMapManagerDialog(QW.QDialog):
         self.setLayout(self._layout)
         self.btn_close.clicked.connect(self.check_save_before_close)
 
-    def check_save_before_close(self):
-        """Adds logic on top of the normal QDialog.close method to handle colormap save."""
+    def check_save_before_close(self) -> None:
+        """Adds logic on top of the normal QDialog.close method to handle colormap
+        save.
+        """
         if not self.cmap_manager.current_changes_saved:
             save = self.cmap_manager.show_validation_modal(
                 _(
                     "Current changes not saved. "
-                    "The current colormap will be discarded when the editor is closed.\n"
-                    "Do you want to save the changes?"
+                    "The current colormap will be discarded when the editor is "
+                    "closed.\nDo you want to save the changes?"
                 ),
                 QW.QMessageBox.StandardButton.Save,
             )
             if save:
-                self.cmap_manager.saveColormap()
+                self.cmap_manager.save_colormap()
 
         if self.cmap_manager.current_changes_saved:
             self.close()
 
-    def show(self) -> None:
-        return super().show()
+    def get_colormap(self) -> CustomQwtLinearColormap:
+        """Return the current colormap object that is selected in the ColorMapManager.
 
-    def getColormap(self):
-        return self.cmap_manager.getColormap()
+        Returns:
+            current colormap object
+        """
+        return self.cmap_manager.get_colormap()

@@ -16,29 +16,78 @@ from qwt.color_map import ColorStop
 from plotpy.config import _
 from plotpy.widgets._colormap_slider import QColorMapSlider
 
-ColorType = TypeVar("ColorType", bound=Union[QG.QColor, int])
+ColorTypeT = TypeVar("ColorTypeT", bound=Union[QG.QColor, int])
+QColorInitTypes = (
+    QG.QColor | int | tuple[int, int, int, int] | str | QC.Qt.GlobalColor | None
+)
 
 
 class CustomQwtLinearColormap(QwtLinearColorMap):
-    def __init__(self, *args, name: str | None = "None"):
+    """Overload of the QwtLinearColorMap class to add some features. This class is
+    temporary and should be removed when its features are added to QwtPython.
+
+    Args:
+        *args: QwtLinearColorMap arguments
+        name: Optional str name given to the colormap. Useful for the interactions
+        with the rest of PlotPy, notably with the gobal colormaps dictionnary
+        such as colormaps.ALL_COLORMAPS. Defaults to "None".
+    """
+
+    def __init__(self, *args, name: str | None = None):
         super().__init__(*args)
         # TODO: Add this feature in a release of QwtPython
-        self.stops: list[ColorStop] = self._QwtLinearColorMap__data.colorStops._ColorStops__stops  # type: ignore
-        self.name = name or "tmp"
+        self.stops: list[
+            ColorStop
+        ] = (
+            self._QwtLinearColorMap__data.colorStops._ColorStops__stops  # pylint: disable=no-member
+        )
+        self.name = name or "temporary"
 
     def is_boundary_stop_index(self, stop_index: int):
+        """Checks if the given index is a boundary index (first or last).
+
+        Args:
+            stop_index: stop color index to check
+
+        Returns:
+            True if the index is a boundary index, False otherwise.
+        """
         return not (
             self._can_update_next_stop(stop_index)
             and self._can_update_previous_stop(stop_index)
         )
 
     def _can_update_next_stop(self, stop_index: int) -> bool:
+        """Checks if the next color stop can be updated.
+
+        Args:
+            stop_index: current color stop index
+
+        Returns:
+            True if the next color stop can be updated, False otherwise.
+        """
         return stop_index < (len(self.stops) - 1)
 
     def _can_update_previous_stop(self, stop_index: int) -> bool:
+        """Checks if the previous color stop can be updated.
+
+        Args:
+            stop_index: current color stop index
+
+        Returns:
+            True if the previous color stop can be updated, False otherwise.
+        """
         return stop_index > 0
 
     def update_stops_steps(self, stop_index: int):
+        """Updates the steps of the previous and next color stops of the given index.
+        The steps are the distance between the current stop and the next color stop.
+        This method can update the given color stop index, the previous one and the next
+        stop if necessary.
+
+        Args:
+            stop_index: current color stop index to update.
+        """
         current_stop = self.stops[stop_index]
         if self._can_update_previous_stop(stop_index):
             prev_stop = self.stops[stop_index - 1]
@@ -51,6 +100,19 @@ class CustomQwtLinearColormap(QwtLinearColorMap):
     def from_iterable(
         cls, iterable: Sequence[tuple[float, str]], name=None
     ) -> "CustomQwtLinearColormap":
+        """Converts the given iterable of tuples to a colormap (instance of Self).
+        The iterable must be at least of length 2. If the iterable is of length 1,
+        the colormap will be composed of two identical colors. If the iterable is
+        empty, the colormap will be composed of two default colors (blue and yellow).
+
+        Args:
+            iterable: Iterable of tuples composed of a float position and a hex color
+            string.
+            name: Name of the new colormap instance. Defaults to None.
+
+        Returns:
+            New CustomQwtLinearColormap instance.
+        """
         if len(iterable) == 1:
             iterable = (iterable[0],) * 2
         elif len(iterable) == 0:
@@ -69,11 +131,26 @@ class CustomQwtLinearColormap(QwtLinearColorMap):
         return colormap
 
     def to_tuples(self) -> tuple[tuple[float, str], ...]:
+        """Converts a colormap to a tuple of tuples composed of a float position and a
+        hex color string.
+
+        Returns:
+            Tuple of tuples composed of a float position and a hex color string.
+        """
         return tuple((stop.pos, QG.QColor(stop.rgb).name()) for stop in self.stops)
 
     def move_color_stop(
         self, stop_index: int, new_pos: float, new_color: QG.QColor | None = None
     ):
+        """Moves a color stop to a new position and updates the steps of the previous
+        and next color stops if necessary. Mutates the colormap object!
+
+        Args:
+            stop_index: color stop index to move
+            new_pos: new color stop position
+            new_color: new color stop color. If None, will use the current stop color.
+            Defaults to None.
+        """
         try:
             stop: ColorStop | None = self.stops[stop_index]
         except IndexError as e:
@@ -90,36 +167,76 @@ class CustomQwtLinearColormap(QwtLinearColorMap):
         self.update_stops_steps(stop_index)
 
     def delete_stop(self, stop_index: int):
+        """Deletes the color stop at given index and updates the previous color stop
+        steps if necessary. Mutates the colormap object!
+
+        Args:
+            stop_index: color stop index to delete
+        """
         if not self.is_boundary_stop_index(stop_index):
             self.stops.pop(stop_index)
             self.stops[stop_index - 1].updateSteps(self.stops[stop_index])
 
-    def setColorInterval(self, color1, color2) -> None:
-        res = super().setColorInterval(color1, color2)
+    def setColorInterval(
+        self, color1: QColorInitTypes, color2: QColorInitTypes
+    ) -> None:
+        """Overload of QwtLinearColorMap.setColorInterval to update the stops list
+        attribute.
+
+        Args:
+            color1: first color of the interval
+            color2: last color of the interval
+        """
+        super().setColorInterval(color1, color2)
         self.stops: list[
             ColorStop
         ] = self._QwtLinearColorMap__data.colorStops._ColorStops__stops  # type: ignore
-        return res
 
     def get_stop_color(self, index: int):
+        """Returns the color of the given color stop index.
+
+        Args:
+            index: color stop index
+
+        Returns:
+            Color of the given color stop index.
+        """
         index = min(index, len(self.stops))
         return QG.QColor(self.stops[index].rgb)
 
 
 class ColorMapWidget(QW.QWidget):
-    colormapChanged = QC.Signal()  # type: ignore
-    handleSelected = QC.Signal(int)  # type: ignore
+    """Simple colormap widget containing a horizontal slider and a colorbar image.
+    The slider is used to edit the colormap that changes in real time. It is
+    possible to add/remove handles by right-clicking on the colorbar image. This
+    widget does not provide a way to change a handle color. For this, use the
+    ColorMapEditor widget or the ColorMapManager widget.
+
+    Args:
+        parent: parent widget
+        cmap_width: minimum width of the widget. Defaults to 400.
+        cmap_height: minimum height of the colorbar. Defaults to 50.
+        color1: first color. Ignored if the 'colormap' argument is used. If None,
+            default color is blue. Defaults to None.
+        color2: second color. Ignored if the 'colormap' argument is used. If None,
+            default color is yellow. Defaults to None.
+        colormap: colormap instance. If None, color1 and color2 will be used
+            to create a new colormap. Defaults to None.
+    """
+
+    COLORMAP_CHANGED = QC.Signal()  # type: ignore
+    HANDLE_SELECTED = QC.Signal(int)  # type: ignore
     # handleReleased = QC.Signal(int)  # type: ignore
-    handleAdded = QC.Signal(int, float)  # type: ignore
-    handleDeleted = QC.Signal(int)  # type: ignore
+    HANDLE_ADDED = QC.Signal(int, float)  # type: ignore
+    HANDLE_DELETED = QC.Signal(int)  # type: ignore
 
     def __init__(
         self,
         parent: QW.QWidget | None,
         cmap_width: int = 400,
         cmap_height: int = 50,
-        color1: QG.QColor = QG.QColor(QC.Qt.GlobalColor.blue),
-        color2: QG.QColor = QG.QColor(QC.Qt.GlobalColor.yellow),
+        color1: QG.QColor | None = None,
+        color2: QG.QColor | None = None,
         colormap: CustomQwtLinearColormap | None = None,
     ) -> None:
         super().__init__(parent)
@@ -128,7 +245,8 @@ class ColorMapWidget(QW.QWidget):
         self.cmap_height = cmap_height
         self.min, self.max = 0.0, 1.0
         self._tolerance = 0.05
-        self._px_cursor_offset = 0  # This is a patch because the cursor position is not exactly the handle position...
+        self._px_cursor_offset = 0  # This is a patch because the cursor position is
+        # not exactly the handle position...
         self._handle_selected = None
 
         self.slider_menu = self.setup_menu()
@@ -148,8 +266,9 @@ class ColorMapWidget(QW.QWidget):
         self.qwt_color_interval = QwtInterval(self.min, self.max)
 
         if colormap is None:
-            self.color1, self.color2 = color1, color2
-            self._colormap = CustomQwtLinearColormap(self.color1, self.color2)
+            color1 = QG.QColor(QC.Qt.GlobalColor.blue) if color1 is None else color1
+            color2 = QG.QColor(QC.Qt.GlobalColor.yellow) if color2 is None else color2
+            self._colormap = CustomQwtLinearColormap(color1, color2)
         else:
             self._colormap = colormap
             self.set_handles_values(colormap.colorStops())
@@ -169,7 +288,7 @@ class ColorMapWidget(QW.QWidget):
         self.setLayout(layout)
         self.setToolTip(_("Right click to add/remove a color"))
 
-        self.colormapChanged.connect(self.draw_colormap_image)
+        self.COLORMAP_CHANGED.connect(self.draw_colormap_image)
         self.multi_range_hslider.valueChanged.connect(
             self._edit_color_map_on_slider_change
         )
@@ -177,11 +296,7 @@ class ColorMapWidget(QW.QWidget):
         self.multi_range_hslider.sliderReleased.connect(self.release_handle)
         self.customContextMenuRequested.connect(self.open_slider_menu)
 
-        # self.setGeometry(600, 300, 580, 300)
-        # self.activateWindow()
-        # self.show()
-
-    def setColormap(self, colormap: CustomQwtLinearColormap):
+    def set_colormap(self, colormap: CustomQwtLinearColormap):
         """Replaces the current colormap.
 
         Args:
@@ -190,9 +305,9 @@ class ColorMapWidget(QW.QWidget):
         new_values = colormap.colorStops()
         self._colormap = colormap
         self.set_handles_values(new_values)
-        self.colormapChanged.emit()
+        self.COLORMAP_CHANGED.emit()
 
-    def getColormap(self) -> CustomQwtLinearColormap:
+    def get_colormap(self) -> CustomQwtLinearColormap:
         """Get the current colormap being edited.
 
         Returns:
@@ -205,21 +320,19 @@ class ColorMapWidget(QW.QWidget):
         self.colortable[:] = self._colormap.colorTable(self.qwt_color_interval)
 
     def emit_handle_selected(self):
-        """When called, computes a slider position from the current position of the mouse
-        and maps it to slider range. Then finds which handles was selected and emits the
-        custom signal handleSelected(handle_index) and caches the index."""
+        """When called, computes a slider position from the current position of the
+        mouse and maps it to slider range. Then finds which handles was selected and
+        emits the custom signal HANDLE_SELECTED(handle_index) and caches the index."""
         # pos = (
         #     self.multi_range_hslider.mapFromGlobal(QG.QCursor.pos()).x()
         #     - self._px_cursor_offset
         # )
         # handle_pos = self.multi_range_hslider.widget_pos_to_value(pos)
         # handle_index, _ = self._get_closest_handle_index(handle_pos)
-        # print(
-        #     f"Handle {handle_index} vs {self.multi_range_hslider._pressedIndex} at {handle_pos} selected"
-        # )
+
         # self._handle_selected = handle_index
         self._handle_selected = self.multi_range_hslider.pressed_index
-        self.handleSelected.emit(self._handle_selected)
+        self.HANDLE_SELECTED.emit(self._handle_selected)
 
     def release_handle(self):
         """When called, unset the cached current handle index."""
@@ -227,7 +340,8 @@ class ColorMapWidget(QW.QWidget):
 
     def draw_colormap_image(self):
         """Recomputes and redraws the colorbar image."""
-        # TODO: check how to update the image without having to recreate one, just by updating the colortable
+        # TODO: check how to update the image without having to recreate one,
+        # just by updating the colortable
         self.update_color_table()
         # if (pixmap := self._colormap_label.pixmap()) is not None:
         #     image = pixmap.toImage()
@@ -237,13 +351,14 @@ class ColorMapWidget(QW.QWidget):
         self._colormap_label.setPixmap(self.cmap_to_qimage())
 
     def get_color_from_value(
-        self, value: float, as_type: type[ColorType] = QG.QColor
-    ) -> ColorType:
+        self, value: float, as_type: type[ColorTypeT] = QG.QColor
+    ) -> ColorTypeT:
         """Returns the color assigned to a given value using the current colormap.
 
         Args:
             value: value to assign a color to
-            as_type: Color type to be returned (int or QG.QColor). Defaults to QG.QColor.
+            as_type: Color type to be returned (int or QG.QColor). Defaults to
+            QG.QColor.
 
         Returns:
             The assigned color for the input value using the current colormap.
@@ -252,13 +367,15 @@ class ColorMapWidget(QW.QWidget):
         return as_type(int_color)
 
     def get_handle_color(
-        self, handle_index: int, as_type: type[ColorType] = QG.QColor
-    ) -> ColorType:
-        """Returns the color of a handled using its index. Directly return the color of the ColorStop object of the given index.
+        self, handle_index: int, as_type: type[ColorTypeT] = QG.QColor
+    ) -> ColorTypeT:
+        """Returns the color of a handled using its index. Directly return the color of
+        the ColorStop object of the given index.
 
         Args:
             handle_index: index of the handled to assign a color too.
-            as_type: Color type to be returned (int or QG.QColor). Defaults to QG.QColor.
+            as_type: Color type to be returned (int or QG.QColor). Defaults to
+            QG.QColor.
 
         Returns:
             The assigned color for the input handle index using the current colormap.
@@ -299,7 +416,7 @@ class ColorMapWidget(QW.QWidget):
             new_color = QG.QColor(self.colortable[new_color])
 
         self._colormap.move_color_stop(index, new_pos, new_color)
-        self.colormapChanged.emit()
+        self.COLORMAP_CHANGED.emit()
 
     def _edit_color_map_on_slider_change(self, raw_values: tuple[float, ...]):
         """Modifies the colormap depending on the currently selected handle. Tiggered on
@@ -316,7 +433,7 @@ class ColorMapWidget(QW.QWidget):
                 return
 
             self._colormap.move_color_stop(handle_index, handle_pos)
-            self.colormapChanged.emit()
+            self.COLORMAP_CHANGED.emit()
 
     def _get_closest_handle_index(self, pos: float) -> tuple[int, float]:
         """Return the index of the closest handle from the given position
@@ -332,8 +449,8 @@ class ColorMapWidget(QW.QWidget):
         return closest_handle, abs(pos - values[closest_handle])
 
     def _get_neighbour_positions(self, pos: float) -> tuple[float, float]:
-        """Return the positions of the previous and next handles from the given position.
-        If no handle is found, the method can return self.min and/or self.max
+        """Return the positions of the previous and next handles from the given
+        position. If no handle is found, the method can return self.min and/or self.max
 
         Args:
             pos: position from which to look for the previous and next handles
@@ -362,7 +479,7 @@ class ColorMapWidget(QW.QWidget):
             Best position for insertion according to parameters cited above.
         """
         previous_pos, next_pos = self._get_neighbour_positions(pos)
-        if (neighbour_diff := (next_pos - previous_pos)) < self._tolerance * 2:
+        if (neighbour_diff := next_pos - previous_pos) < self._tolerance * 2:
             return previous_pos + (neighbour_diff / 2)
 
         elif (pos - previous_pos) < self._tolerance:
@@ -387,7 +504,7 @@ class ColorMapWidget(QW.QWidget):
         values.append(new_handle_value)
         values.sort()
         self.set_handles_values(values)
-        self.handleAdded.emit(values.index(new_handle_value), new_handle_value)
+        self.HANDLE_ADDED.emit(values.index(new_handle_value), new_handle_value)
 
     def _delete_handle_at_click(self):
         """Tries to delete an existing handle at the right-clicked position thanks to
@@ -410,8 +527,8 @@ class ColorMapWidget(QW.QWidget):
         self.set_handles_values(tuple(values))
         self._colormap.delete_stop(closest_handle_index)
 
-        self.handleDeleted.emit(closest_handle_index)
-        self.colormapChanged.emit()
+        self.HANDLE_DELETED.emit(closest_handle_index)
+        self.COLORMAP_CHANGED.emit()
 
     def setup_menu(self):
         """Setups the contextual menu used to insert and delete handles.
@@ -457,8 +574,8 @@ class ColorMapWidget(QW.QWidget):
         values.sort()
         self.set_handles_values(values)
 
-        self.colormapChanged.emit()
-        self.handleAdded.emit(values.index(relative_pos), relative_pos)
+        self.COLORMAP_CHANGED.emit()
+        self.HANDLE_ADDED.emit(values.index(relative_pos), relative_pos)
 
     def get_handles_count(self) -> int:
         """Number of slider handles.
@@ -523,6 +640,5 @@ if __name__ == "__main__":
     app = QW.QApplication([])
     demo = ColorMapWidget(None)
     demo.add_handle_at_relative_pos(0.5, QG.QColor(QC.Qt.GlobalColor.red))
-    # demo.add_handle_at_relative_pos(0.7, QG.QColor(QC.Qt.GlobalColor.red))
     demo.show()
     app.exec_()

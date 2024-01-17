@@ -4,9 +4,9 @@
 # (see plotpy/LICENSE for details)
 
 """
-SelectPointTool test
+DownSampleCurveTool test
 
-This plotpy tool provide a MATLAB-like "ginput" feature.
+This plotpy tool provides a toggle to downsample the current curve with a given factor.
 """
 
 # guitest: show
@@ -16,7 +16,7 @@ from numpy import linspace, sin
 
 from plotpy.builder import make
 from plotpy.config import _
-from plotpy.tools import EditPointTool
+from plotpy.tools import DownSampleCurveTool, EditPointTool
 
 
 def callback_function(tool: EditPointTool):
@@ -33,12 +33,16 @@ def edit_downsampled_curve(downsampling_factor: int, *args):
         edit=True,
         type="curve",
     )
-    default = win.manager.add_tool(
+    __ = win.manager.add_tool(
         EditPointTool,
         title="Test",
         end_callback=callback_function,
     )
-    default.activate()
+    # tool accessible via right click menu
+    downsample_tool = win.manager.add_tool(
+        DownSampleCurveTool,
+    )
+    downsample_tool.activate()
     plot = win.manager.get_plot()
     for cx, cy in args[:-1]:
         item = make.mcurve(cx, cy)

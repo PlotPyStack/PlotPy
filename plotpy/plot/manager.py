@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import weakref
-from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
 from guidata.qthelpers import create_action
@@ -56,13 +55,15 @@ from plotpy.tools import (
 )
 
 if TYPE_CHECKING:  # pragma: no cover
+    from typing import Callable
+
     from qwt import QwtPlotCanvas, QwtScaleDiv
 
     from plotpy.panels.base import PanelWidget
     from plotpy.panels.contrastadjustment import ContrastAdjustment
     from plotpy.panels.csection import XCrossSection, YCrossSection
     from plotpy.panels.itemlist import PlotItemList
-    from plotpy.tools.base import GuiTool
+    from plotpy.tools.base import GuiTool, GuiToolT
 
 
 class DefaultPlotID:
@@ -187,7 +188,7 @@ class PlotManager:
         """
         return self.default_toolbar
 
-    def add_tool(self, ToolKlass: GuiTool, *args, **kwargs) -> GuiTool:
+    def add_tool(self, ToolKlass: type[GuiToolT], *args, **kwargs) -> GuiToolT:
         """
         Register a tool to the manager
             * ToolKlass: tool's class (see :ref:`tools`)
@@ -211,7 +212,7 @@ class PlotManager:
             self.default_tool = tool
         return tool
 
-    def get_tool(self, ToolKlass: GuiTool) -> GuiTool:
+    def get_tool(self, ToolKlass: type[GuiToolT]) -> GuiToolT | None:
         """Return tool instance from its class
 
         Args:
@@ -497,7 +498,7 @@ class PlotManager:
         icon: QG.QIcon | None = None,
         tip: str | None = None,
         checkable: bool | None = None,
-        context: QC.Qt.ShortcutContext = QC.Qt.WindowShortcut,
+        context: QC.Qt.ShortcutContext = QC.Qt.ShortcutContext.WindowShortcut,
         enabled: bool | None = None,
     ):
         """

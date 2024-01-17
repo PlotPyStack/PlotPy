@@ -10,7 +10,6 @@ from typing import Sequence
 
 import numpy as np
 import qtpy.QtGui as QG
-import qtpy.QtWidgets as QW
 from guidata.configtools import get_module_data_path
 from qwt import QwtInterval, toQImage
 
@@ -57,7 +56,7 @@ def load_qwt_colormaps_from_json(json_path: str) -> dict[str, CustomQwtLinearCol
         Dictionnary of colormpas names -> CustomQwtLinearColormap
     """
     return {
-        name: CustomQwtLinearColormap.from_iterable(iterable, name=name)
+        name.lower(): CustomQwtLinearColormap.from_iterable(iterable, name=name)
         for name, iterable in load_raw_colormaps_from_json(json_path).items()
     }
 
@@ -95,10 +94,28 @@ def build_icon_from_cmap(
 
 
 def build_icon_from_cmap_name(cmap_name: str) -> QG.QIcon:
-    return build_icon_from_cmap(get_cmap(cmap_name))
+    """Builds an QIcon representing the colormap from the colormap name found in
+    ALL_COLORMAPS global variable.
+
+    Args:
+        cmap_name: colormap name to search in ALL_COLORMAPS
+
+    Returns:
+        QIcon representing the colormap
+    """
+    return build_icon_from_cmap(get_cmap(cmap_name.lower()))
 
 
 def get_cmap(cmap_name: str) -> CustomQwtLinearColormap:
+    """Returns the colormap with the given name from the ALL_COLORMAPS global variable.
+    If the colormap is not found, returns the DEFAULT colormap.
+
+    Args:
+        cmap_name: colormap name to search in ALL_COLORMAPS
+
+    Returns:
+        A CustomQwtLinearColormap instance corresponding to the given name
+    """
     return ALL_COLORMAPS.get(cmap_name, DEFAULT)
 
 
@@ -133,22 +150,18 @@ def get_cmap_path(config_path: str):
     return user_config_path
 
 
+# Load default colormaps path from the config file
 DEFAULT_COLORMAPS_PATH = get_cmap_path(
     CONF.get("colormaps", "colormaps/default", default="colormaps_default.json")  # type: ignore
 )
+# Load custom colormaps path from the config file
 CUSTOM_COLORMAPS_PATH = get_cmap_path(
     CONF.get("colormaps", "colormaps/custom", default="colormaps_custom.json")  # type: ignore
 )
 
+# Load default and custom colormaps from json files
 DEFAULT_COLORMAPS = load_qwt_colormaps_from_json(DEFAULT_COLORMAPS_PATH)
 CUSTOM_COLORMAPS = load_qwt_colormaps_from_json(CUSTOM_COLORMAPS_PATH)
 
+# Merge default and custom colormaps into a single dictionnary to simplify access
 ALL_COLORMAPS = {**DEFAULT_COLORMAPS, **CUSTOM_COLORMAPS}
-
-if __name__ == "__main__":
-    CUSTOM_COLORMAPS["glow_hot"] = CustomQwtLinearColormap.from_iterable(
-        ((0, "#0000ff"), (0.5, "#ff0000"), (1.0, "#ffff00"))
-    )
-    # print(f"Saving custom_colormaps at {CONF.get_path(CUSTOM_COLORMAPS_PATH)}")
-    save_colormaps(CUSTOM_COLORMAPS_PATH, CUSTOM_COLORMAPS)
-    print(CUSTOM_COLORMAPS)

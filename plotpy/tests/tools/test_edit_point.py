@@ -4,12 +4,14 @@
 # (see plotpy/LICENSE for details)
 
 """
-SelectPointTool test
+EditPointTool test
 
-This plotpy tool provide a MATLAB-like "ginput" feature.
+This plotpy tool can be used to edit (move and/or add points) to a curve.
 """
 
 # guitest: show
+
+from typing import TYPE_CHECKING
 
 import qtpy.QtWidgets as QW
 from guidata.qthelpers import exec_dialog, qt_app_context
@@ -18,21 +20,28 @@ from numpy import linspace, sin
 from plotpy.builder import make
 from plotpy.config import _
 from plotpy.interfaces.items import ICurveItemType
-from plotpy.items.curve.base import CurveItem
 from plotpy.plot.plotwidget import PlotDialog
 from plotpy.tools import EditPointTool
 
+if TYPE_CHECKING:
+    from plotpy.items.curve.base import CurveItem
+
 
 def callback_function(tool: EditPointTool):
-    # print("New arrays:", tool.get_arrays())
+    """Callback function to be called by the tool after a point has moved
+
+    Args:
+        tool: EditPointTool instance that will use this callback
+    """
     print("Indexed changes:", tool.get_changes())
 
 
 def make_new_bbox(dialog: PlotDialog):
-    # new_bbox = QW.QDialogButtonBox(QW.QDialogButtonBox.Ok | QW.QDialogButtonBox.Cancel)
-    # bbox.accepted.connect(dialog.accept)
-    # bbox.rejected.connect(dialog.reject)
-    # dialog.button_layout.addWidget(bbox)
+    """Add a new button to the dialog to insert a point at the current selection
+
+    Args:
+        dialog: PlotDialog instance
+    """
     if (
         dialog.button_box is not None
         and dialog.button_layout is not None

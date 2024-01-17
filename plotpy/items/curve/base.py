@@ -358,18 +358,15 @@ class CurveItem(QwtPlotCurve):
             tuple: Tuple with two elements: x and y NumPy arrays
         """
         assert isinstance(self._x, np.ndarray) and isinstance(self._y, np.ndarray)
-        # if ignore_decimation:
         return self._x, self._y
-        # return (
-        #     self._x[:: self.param.decimation],
-        #     self._y[:: self.param.decimation],
-        # )
 
     def update_data(self):
+        """Update curve data with current arrays."""
         if isinstance(self._x, np.ndarray) and isinstance(self._y, np.ndarray):
             self._setData(self._x, self._y)
 
     def _setData(self, x: np.ndarray, y: np.ndarray):
+        """Wrapper around QwtPlotCurve.setData() to handle downsampling"""
         if not self.param.use_downsampling or self.param.downsampling_factor == 1:
             return super().setData(x, y)
         return super().setData(
@@ -387,14 +384,6 @@ class CurveItem(QwtPlotCurve):
             this method is called to update decimated data (i.e. only update 1/N value
             with N set in CurveItem.param.decimation).
         """
-        # if (
-        #     isinstance(self._x, np.ndarray)
-        #     and isinstance(self._y, np.ndarray)
-        #     # and decimated_data > 1
-        # ):
-        #     self._x[:: self.param.decimation] = np.array(x, copy=False)
-        #     self._y[:: self.param.decimation] = np.array(y, copy=False)
-        # else:
         self._x = np.array(x, copy=False)
         self._y = np.array(y, copy=False)
         self._setData(self._x, self._y)
@@ -512,9 +501,8 @@ class CurveItem(QwtPlotCurve):
         # We assume X is sorted, otherwise we'd need :
         # argmin(abs(x-xc))
         i = self._x.searchsorted(xc)
-        if i > 0:
-            if np.fabs(self._x[i - 1] - xc) < np.fabs(self._x[i] - xc):
-                return self._x[i - 1], self._y[i - 1]
+        if i > 0 and np.fabs(self._x[i - 1] - xc) < np.fabs(self._x[i] - xc):
+            return self._x[i - 1], self._y[i - 1]
         return self._x[i], self._y[i]
 
     def move_local_point_to(

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
-from multiprocessing import Value
 from typing import TYPE_CHECKING
 
 from guidata.dataset import (
@@ -49,9 +48,10 @@ class CurveParam(DataSet):
     )
 
     def update_param(self, curve: CurveItem | PolygonMapItem):
-        """
+        """Updates the parameters using values from a given CurveItem/PolygonMapItem
 
-        :param curve:
+        Args:
+            curve: reference CurveItem/PolygonMapItem instance
         """
         self.label = str(curve.title().text())
         self.symbol.update_param(curve.symbol())
@@ -60,9 +60,10 @@ class CurveParam(DataSet):
         self.baseline = curve.baseline()
 
     def update_item(self, curve: CurveItem | PolygonMapItem):
-        """
+        """Updates a given CurveItem/PolygonMapItem using the current parameters
 
-        :param curve:
+        Args:
+            curve: instance of CurveItem/PolygonMapItem to update
         """
 
         plot = curve.plot()

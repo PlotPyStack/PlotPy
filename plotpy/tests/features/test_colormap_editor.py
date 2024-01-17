@@ -3,7 +3,14 @@
 # Licensed under the terms of the BSD 3-Clause
 # (see plotpy/LICENSE for details)
 
-"""Builder tests"""
+"""
+ColorMapEditor test
+
+This plotpy widget can be used to edit and visualize a colormap. This test is used
+to verify the consistancy of the colormap editor widget and some of the
+CustomQwtLinearColormap features like initialization from a list of tuples or
+modifications.
+"""
 
 # guitest: show
 
@@ -23,7 +30,7 @@ if __name__ == "__main__":
     editor.show()
     app.exec_()
 
-    cmap_tuples = editor.getColormap().to_tuples()
+    cmap_tuples = editor.get_colormap().to_tuples()
     print(
         "Initialization of a new colormap editor with the previous colormap: ",
         cmap_tuples,
@@ -34,7 +41,7 @@ if __name__ == "__main__":
     editor.show()
     app.exec_()
 
-    cmap_tuples = editor.getColormap().to_tuples()
+    cmap_tuples = editor.get_colormap().to_tuples()
     print(
         "Initialization of a new default colormap editor, "
         "modified post-initialization with the previous colormap: ",
@@ -42,11 +49,11 @@ if __name__ == "__main__":
     )
     new_cmap = CustomQwtLinearColormap.from_iterable(cmap_tuples)
     editor = ColorMapEditor(None)
-    editor.setColormap(new_cmap)
+    editor.set_colormap(new_cmap)
     editor.show()
     app.exec_()
 
-    cmap_tuples = editor.getColormap().to_tuples()
+    cmap_tuples = editor.get_colormap().to_tuples()
     cmap_tuples = tuple((int(val * 255 + 1), color) for val, color in cmap_tuples)
     print(
         "Initialization of a new default colormap editor, "
@@ -55,6 +62,6 @@ if __name__ == "__main__":
     )
     new_cmap = CustomQwtLinearColormap.from_iterable(cmap_tuples)
     editor = ColorMapEditor(None)
-    editor.setColormap(new_cmap)
+    editor.set_colormap(new_cmap)
     editor.show()
     app.exec_()

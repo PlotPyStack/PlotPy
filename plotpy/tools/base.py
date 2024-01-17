@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import weakref
+from typing import Any, TypeVar
 
 from guidata.configtools import get_icon
 from qtpy import QtCore as QC
@@ -13,6 +14,9 @@ from plotpy.items.shape.rectangle import RectangleShape
 
 class DefaultToolbarID:
     pass
+
+
+GuiToolT = TypeVar("GuiToolT", bound="GuiTool")
 
 
 class GuiTool(QC.QObject):
@@ -202,7 +206,12 @@ class CommandTool(GuiTool):
     CHECKABLE = False
 
     def __init__(
-        self, manager, title, icon=None, tip=None, toolbar_id=DefaultToolbarID
+        self,
+        manager,
+        title,
+        icon=None,
+        tip=None,
+        toolbar_id: Any | type[DefaultToolbarID] | None = DefaultToolbarID,
     ):
         self.title = title
         if icon and isinstance(icon, str):

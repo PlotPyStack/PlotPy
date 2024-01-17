@@ -742,6 +742,7 @@ DEFAULTS = {
         "marker/cross/pen/width": 1,
         "marker/cross/markerstyle": "Cross",
     },
+    # colormaps options
     "colormaps": {
         "colormaps/default": "colormaps_default.json",
         "colormaps/custom": "colormaps_custom.json",
