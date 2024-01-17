@@ -1,3 +1,5 @@
+"""Image tools"""
+
 from __future__ import annotations
 
 import weakref
@@ -113,10 +115,10 @@ class ImageStatsRectangle(AnnotatedRectangle):
             str: Formatted string with informations on current shape
         """
         if self.image_item is None:
-            return
+            return None
         plot = self.image_item.plot()
         if plot is None:
-            return
+            return None
         p0y = plot.transform(0, self.shape.get_points()[0][1])
         p0x = plot.transform(2, self.shape.get_points()[0][0])
         p1y = plot.transform(0, self.shape.get_points()[1][1])
@@ -198,6 +200,7 @@ class ImageStatsTool(RectangularShapeTool):
         """
         if self._last_item is not None:
             return self._last_item()
+        return None
 
     def create_shape(self):
         """Returns a new ImageStatsRectangle instance with default x1, y1, x2, y2values
@@ -509,7 +512,7 @@ class ColormapTool(CommandTool):
         Returns:
             list of currently selected images in the given plot
         """
-        items = [it for it in plot.get_selected_items(item_type=IColormapImageItemType)]
+        items = plot.get_selected_items(item_type=IColormapImageItemType)
         if not items:
             active_image = plot.get_last_active_item(IColormapImageItemType)
             if active_image:
@@ -758,10 +761,10 @@ class ImageMaskTool(CommandTool):
         item = plot.get_active_item()
         if isinstance(item, maskedtypes):
             return item
-        else:
-            items = [item for item in plot.get_items() if isinstance(item, maskedtypes)]
-            if items:
-                return items[-1]
+        items = [item for item in plot.get_items() if isinstance(item, maskedtypes)]
+        if items:
+            return items[-1]
+        return None
 
     def create_shapes_from_masked_areas(self):
         """Creates shapes from the masked areas of the masked image (rectangular or
@@ -1118,7 +1121,7 @@ class RotateCropTool(CommandTool):
             plot: Plot instance
         """
         status = any(
-            [isinstance(item, TrImageItem) for item in plot.get_selected_items()]
+            isinstance(item, TrImageItem) for item in plot.get_selected_items()
         )
         self.action.setEnabled(status)
 

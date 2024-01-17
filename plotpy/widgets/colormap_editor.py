@@ -3,6 +3,11 @@
 # Licensed under the terms of the BSD 3-Clause
 # (see plotpy/LICENSE for details)
 
+"""This module provides a more complete colormap editor widget than the one provided
+by ColorMapWidget (plotpy/widgets/colormap_widget.py). It allows to edit a colormap
+by changing its color stops (add/delete/move/change color).
+"""
+
 import qtpy.QtCore as QC
 import qtpy.QtGui as QG
 import qtpy.QtWidgets as QW
@@ -267,7 +272,7 @@ class ColorMapEditor(QW.QWidget):
 
         new_slider_values = self.colormap_widget.get_handles_list()
 
-        if current_index > 0 and current_index < self.tabs.count() - 1:
+        if 0 < current_index < self.tabs.count() - 1:
             relative_pos = current_dataset.get_position()
         else:
             relative_pos = new_slider_values[current_index]

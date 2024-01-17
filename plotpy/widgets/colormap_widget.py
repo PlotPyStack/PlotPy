@@ -2,7 +2,9 @@
 #
 # Licensed under the terms of the BSD 3-Clause
 # (see plotpy/LICENSE for details)
-
+"""This module provides a basic widget to edit a colormap that contains a multi-slider
+and a colorap representation.
+"""
 from typing import Sequence, TypeVar, Union
 
 import numpy as np
@@ -483,10 +485,10 @@ class ColorMapWidget(QW.QWidget):
         if (neighbour_diff := next_pos - previous_pos) < self._tolerance * 2:
             return previous_pos + (neighbour_diff / 2)
 
-        elif (pos - previous_pos) < self._tolerance:
+        if (pos - previous_pos) < self._tolerance:
             return previous_pos + self._tolerance
 
-        elif (next_pos - pos) < self._tolerance:
+        if (next_pos - pos) < self._tolerance:
             return next_pos - self._tolerance
 
         return pos

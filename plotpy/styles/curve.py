@@ -30,6 +30,8 @@ if TYPE_CHECKING:
 
 
 class CurveParam(DataSet):
+    """Dataset defining the parameters of a CurveItem or PolygonMapItem"""
+
     _multiselection = False
     label = StringItem(_("Title"), default="").set_prop(
         "display", hide=GetAttrProp("_multiselection")
@@ -91,6 +93,8 @@ class CurveParam(DataSet):
 
 
 class CurveParam_MS(CurveParam):
+    """Same as CurveParam but for multiselection"""
+
     _multiselection = True
 
 

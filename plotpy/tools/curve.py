@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 """Curve tools"""
 
 from __future__ import annotations
@@ -425,7 +424,7 @@ class SelectPointsTool(InteractiveTool):
         """
         plot = filter.plot
         if not isinstance(plot, BasePlot):
-            return None
+            return
         if force_new_marker or self.current_location_marker is None:
             title = title or f"<b>{self.TITLE} {len(self.markers)}</b><br>"
             constraint_cb = plot.on_active_curve if self.on_active_item else None
@@ -475,7 +474,7 @@ class SelectPointsTool(InteractiveTool):
         """
         plot = filter.plot
         if not isinstance(plot, BasePlot):
-            return None
+            return
         if self.current_location_marker is None:
             return  # something is wrong ...
         self.current_location_marker.move_local_point_to(0, event.pos())
@@ -639,6 +638,11 @@ class EditPointTool(InteractiveTool):
 
         @classmethod
         def set_max_index(cls, max_index: int):
+            """Sets the maximum index value for the index field
+
+            Args:
+                max_index: max index value
+            """
             cls.index.set_prop("data", max=max_index)
 
     def __init__(
@@ -1038,11 +1042,11 @@ class EditPointTool(InteractiveTool):
         """Get changes"""
         return self._indexed_changes
 
-    def get_arrays(self) -> tuple[np.ndarray| None, np.ndarray | None]:
+    def get_arrays(self) -> tuple[np.ndarray | None, np.ndarray | None]:
         """Get arrays"""
         return self._x, self._y
 
-    def get_initial_arrays(self) -> tuple[np.ndarray| None, np.ndarray | None]:
+    def get_initial_arrays(self) -> tuple[np.ndarray | None, np.ndarray | None]:
         """Get initial arrays"""
         return self._x_bkp, self._y_bkp
 

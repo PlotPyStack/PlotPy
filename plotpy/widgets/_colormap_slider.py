@@ -1,14 +1,12 @@
+"""A custom QDoubleRangeSlider with some extra functionnalities for colormap sliders.
+"""
 from typing import Sequence
-
-import qtpy.QtCore as QC
-import qtpy.QtGui as QG
-import qtpy.QtWidgets as QW
 
 from plotpy.external.sliders import QDoubleRangeSlider
 
 
 class QColorMapSlider(QDoubleRangeSlider):
-    """supercharged QDoubleRangeSlider with a few extra features for colormap
+    """Supercharged QDoubleRangeSlider with a few extra features for colormap
     sliders."""
 
     @property
@@ -46,14 +44,14 @@ class QColorMapSlider(QDoubleRangeSlider):
             value[0], value[-1] = self._minimum, self._maximum
         return value
 
-    def _setPosition(self, value: Sequence[float]) -> None:
+    def _setPosition(self, val: Sequence[float]) -> None:
         """Overload of the original _setPosition method to prevent the application from
         crashing if the first and last handles are moved.
 
         Args:
             value: list of handle values
         """
-        return super()._setPosition(self.filter_first_last_positions(value))
+        return super()._setPosition(self.filter_first_last_positions(val))
 
     def setValue(self, value: Sequence[float]) -> None:
         """Overload of the original setValue method to prevent the application from

@@ -13,7 +13,6 @@ This plotpy widget can be used to manage colormaps (visualize, edit, create ans 
 
 import qtpy.QtCore as QC
 import qtpy.QtGui as QG
-import qtpy.QtWidgets as QW
 from guidata.qthelpers import qt_app_context
 
 from plotpy.mathutils.colormaps import ALL_COLORMAPS

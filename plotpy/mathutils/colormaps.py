@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+"""This module provides utilities to interact with colormap. It provides functions
+to load/save colormaps from/to json files and to build icons representing the
+colormaps.
+"""
 #
 # Licensed under the terms of the BSD 3-Clause
 # (see plotpy/LICENSE for details)
@@ -35,10 +39,10 @@ def load_raw_colormaps_from_json(
         Dictionnary of colormaps names -> raw colormap sequences
     """
     if isinstance(json_path, str) and os.path.isfile(json_path):
-        with open(json_path) as f:
+        with open(json_path, encoding="utf-8") as f:
             try:
                 return json.load(f)
-            except BaseException as e:
+            except json.JSONDecodeError as e:
                 print(e)
                 return {}
     return {}
@@ -71,7 +75,7 @@ def save_colormaps(json_filename: str, colormaps: dict[str, CustomQwtLinearColor
     """
     raw_colormaps = {name: cmap.to_tuples() for name, cmap in colormaps.items()}
     json_abs_path = CONF.get_path(json_filename)
-    with open(json_abs_path, "w") as f:
+    with open(json_abs_path, "w", encoding="utf-8") as f:
         json.dump(raw_colormaps, f, indent=4)
 
 
@@ -139,7 +143,7 @@ def get_cmap_path(config_path: str):
         )
         if os.path.isfile(data_config_path):
             return data_config_path
-    except BaseException as e:
+    except (FileNotFoundError, PermissionError, OSError) as e:
         print(e)
 
     user_config_path = CONF.get_path(config_path)
@@ -154,11 +158,17 @@ def get_cmap_path(config_path: str):
 
 # Load default colormaps path from the config file
 DEFAULT_COLORMAPS_PATH = get_cmap_path(
-    CONF.get("colormaps", "colormaps/default", default="colormaps_default.json")  # type: ignore
+    CONF.get(
+        "colormaps",
+        "colormaps/default",
+        default="colormaps_default.json",  # type: ignore
+    )
 )
 # Load custom colormaps path from the config file
 CUSTOM_COLORMAPS_PATH = get_cmap_path(
-    CONF.get("colormaps", "colormaps/custom", default="colormaps_custom.json")  # type: ignore
+    CONF.get(
+        "colormaps", "colormaps/custom", default="colormaps_custom.json"  # type: ignore
+    )
 )
 
 # Load default and custom colormaps from json files

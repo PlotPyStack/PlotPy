@@ -20,6 +20,13 @@ from plotpy.tools import DownSampleCurveTool, EditPointTool
 
 
 def callback_function(tool: EditPointTool):
+    """Callback that is called by the tool when the user stops clicking. Just prints
+    the new arrays and the changes.
+
+    Args:
+        tool: tool instance that can be used to retrieve the new arrays and the
+        changes
+    """
     print("New arrays:", tool.get_arrays())
     print("Indexed changes:", tool.get_changes())
 

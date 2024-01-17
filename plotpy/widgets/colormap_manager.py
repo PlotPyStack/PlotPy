@@ -3,7 +3,9 @@
 # Licensed under the terms of the BSD 3-Clause
 # (see plotpy/LICENSE for details)
 
-
+"""This module provides a fully featured colormap manager widget and dialog window
+that allows to select, edit and save colormaps (existing or new).
+"""
 from copy import deepcopy
 
 import qtpy.QtCore as QC
@@ -200,7 +202,9 @@ class ColorMapManager(QW.QWidget):
     def show_validation_modal(
         self,
         message: str,
-        validation_btn: QW.QMessageBox.StandardButton = QW.QMessageBox.StandardButton.Ok,
+        validation_btn: QW.QMessageBox.StandardButton = (
+            QW.QMessageBox.StandardButton.Ok
+        ),
     ) -> bool:
         """Opens a simple QMessageBox with the given message and validation button
 
