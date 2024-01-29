@@ -21,9 +21,9 @@ from plotpy.config import _
 from plotpy.widgets._colormap_slider import QColorMapSlider
 
 ColorTypeT = TypeVar("ColorTypeT", bound=Union[QG.QColor, int])
-QColorInitTypes = (
-    QG.QColor | int | tuple[int, int, int, int] | str | QC.Qt.GlobalColor | None
-)
+QColorInitTypes = Union[
+    QG.QColor, int, tuple[int, int, int, int], str, QC.Qt.GlobalColor, None
+]
 
 
 class CustomQwtLinearColormap(QwtLinearColorMap):
