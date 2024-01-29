@@ -43,7 +43,7 @@ class CustomQwtLinearColormap(QwtLinearColorMap):
         self.stops: list[
             ColorStop
         ] = (
-            self._QwtLinearColorMap__data.colorStops._ColorStops__stops  # pylint: disable=no-member
+            self._QwtLinearColorMap__data.colorStops._ColorStops__stops  # pylint: disable=no-member # type: ignore
         )
         self.name = name or "temporary"
 
@@ -630,4 +630,3 @@ class ColorMapWidget(QW.QWidget):
         glob_pos = self.mapToGlobal(pos)
 
         self.slider_menu.popup(glob_pos)
-

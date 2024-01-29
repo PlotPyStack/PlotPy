@@ -38,5 +38,5 @@
         "plotpy"
     ],
     "python.analysis.autoFormatStrings": true,
-    "python.analysis.typeCheckingMode": "off",
+    "python.analysis.typeCheckingMode": "basic",
 }
