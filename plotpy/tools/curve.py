@@ -319,7 +319,23 @@ class SelectPointTool(InteractiveTool):
 
 
 class SelectPointsTool(InteractiveTool):
-    """Curve points selection tool"""
+    """Curve points selection tool
+
+    Args:
+        manager: PlotManager Instance
+        mode: Selection mode. Defaults to "reuse".
+        on_active_item: Wether to use the active item or not. Defaults to False.
+        title: Tool name. Defaults to None.
+        icon: Tool icon path. Defaults to None.
+        tip: Available tip. Defaults to None.
+        end_callback: Callback function taking a Self instance as argument that will
+        be passed when the user stops dragging the point. Defaults to None.
+        toolbar_id: Toolbar Id to use. Defaults to DefaultToolbarID.
+        marker_style: Marker style. Defaults to None.
+        switch_to_default_tool: Wether to use as the default tool or not.
+         Defaults to None.
+        max_select: Maximum number of points to select. Defaults to None.
+    """
 
     TITLE = _("Multi-point selection")
     ICON = "multipoint_selection2.png"

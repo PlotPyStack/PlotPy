@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 import weakref
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Any, Callable, Literal
 
 from guidata.configtools import get_icon
 from guidata.dataset import BoolItem, DataSet, FloatItem
@@ -59,6 +59,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from qtpy import QtGui as QG
 
     from plotpy.events import StatefulEventFilter
+    from plotpy.interfaces.items import IBasePlotItem
     from plotpy.items.image.base import BaseImageItem
     from plotpy.items.shape.base import AbstractShape
     from plotpy.items.shape.polygon import PolygonShape
@@ -100,7 +101,7 @@ class ImageStatsRectangle(AnnotatedRectangle):
         self.show_surface = show_surface
         self.show_integral = show_integral
 
-    def set_image_item(self, image_item: BaseImageItem):
+    def set_image_item(self, image_item: BaseImageItem) -> None:
         """Set image item to be used for statistics
 
         Args:
@@ -113,7 +114,7 @@ class ImageStatsRectangle(AnnotatedRectangle):
         """Get informations on current shape
 
         Returns:
-            str: Formatted string with informations on current shape
+            Formatted string with informations on current shape or None.
         """
         if self.image_item is None:
             return None
@@ -178,7 +179,7 @@ class ImageStatsTool(RectangularShapeTool):
         tip: str | None = None,
         show_surface: bool = False,
         show_integral: bool = False,
-    ):
+    ) -> None:
         super().__init__(
             manager,
             setup_shape_cb,
@@ -203,7 +204,7 @@ class ImageStatsTool(RectangularShapeTool):
             return self._last_item()
         return None
 
-    def create_shape(self):
+    def create_shape(self) -> tuple[ImageStatsRectangle, Literal[0], Literal[2]]:
         """Returns a new ImageStatsRectangle instance with default x1, y1, x2, y2values
         and current show_surface and show_integral values.
 
@@ -223,7 +224,7 @@ class ImageStatsTool(RectangularShapeTool):
             2,
         )
 
-    def setup_shape(self, shape: ImageStatsRectangle):
+    def setup_shape(self, shape: ImageStatsRectangle) -> None:
         """Setup and registers given shape.
 
         Parameters:
@@ -234,7 +235,7 @@ class ImageStatsTool(RectangularShapeTool):
         self.set_shape_style(shape)
         self.register_shape(shape, final=False)
 
-    def register_shape(self, shape: ImageStatsRectangle, final=False):
+    def register_shape(self, shape: ImageStatsRectangle, final=False) -> None:
         """Register given shape
 
         Args:
@@ -248,7 +249,7 @@ class ImageStatsTool(RectangularShapeTool):
             plot.set_active_item(shape)
             shape.set_image_item(image)
 
-    def handle_final_shape(self, shape: ImageStatsRectangle):
+    def handle_final_shape(self, shape: ImageStatsRectangle) -> None:
         """Handle final shape
 
         Args:
@@ -257,7 +258,7 @@ class ImageStatsTool(RectangularShapeTool):
         super().handle_final_shape(shape)
         self.register_shape(shape, final=True)
 
-    def get_associated_item(self, plot: BasePlot):
+    def get_associated_item(self, plot: BasePlot) -> BaseImageItem | None:
         """Return a reference to the last image item associated with the tool
 
         Args:
@@ -271,7 +272,7 @@ class ImageStatsTool(RectangularShapeTool):
             self._last_item = weakref.ref(items[0])
         return self.get_last_item()
 
-    def update_status(self, plot: BasePlot):
+    def update_status(self, plot: BasePlot) -> None:
         """Update tool status if the plot type is not PlotType.CURVE.
 
         Args:
@@ -289,18 +290,24 @@ class ReverseYAxisTool(ToggleTool):
         manager: PlotManager Instance
     """
 
-    def __init__(self, manager: PlotManager):
+    def __init__(self, manager: PlotManager) -> None:
         super().__init__(manager, _("Reverse Y axis"))
 
-    def activate_command(self, plot, checked):
-        """Activate tool"""
+    def activate_command(self, plot: PlotManager, checked: bool) -> None:
+        """Triggers tool action.
+
+        Args:
+            plot: Plot instance
+            checked: True if tool is checked, False otherwise
+        """
         plot.set_axis_direction("left", checked)
         plot.replot()
 
-    def update_status(self, plot):
-        """
+    def update_status(self, plot: PlotManager) -> None:
+        """Update tool status if the plot type is not PlotType.CURVE.
 
-        :param plot:
+        Args:
+            plot: Plot instance
         """
         if update_image_tool_status(self, plot):
             self.action.setChecked(plot.get_axis_direction("left"))
@@ -320,11 +327,11 @@ class AspectRatioTool(CommandTool):
     Args:
         manager: PlotManager instance"""
 
-    def __init__(self, manager: PlotManager):
+    def __init__(self, manager: PlotManager) -> None:
         super().__init__(manager, _("Aspect ratio"), tip=None, toolbar_id=None)
         self.action.setEnabled(True)
 
-    def create_action_menu(self, manager):
+    def create_action_menu(self, manager: PlotManager) -> QW.QMenu:
         """Create and return menu for the tool's action"""
         self.ar_param = AspectRatioParam(_("Aspect ratio"))
         menu = QW.QMenu()
@@ -340,17 +347,22 @@ class AspectRatioTool(CommandTool):
         add_actions(menu, (self.lock_action, None, self.ratio1_action, self.set_action))
         return menu
 
-    def set_aspect_ratio_1_1(self):
+    def set_aspect_ratio_1_1(self) -> None:
         """Reset current aspect ratio to 1:1"""
         plot = self.get_active_plot()
         if plot is not None:
             plot.set_aspect_ratio(ratio=1)
             plot.replot()
 
-    def activate_command(self, plot, checked):
-        """Activate tool"""
+    def activate_command(self, plot: PlotManager, checked: bool) -> None:
+        """Triggers tool action.
 
-    def __update_actions(self, checked: bool):
+        Args:
+            plot: Plot instance
+            checked: True if tool is checked, False otherwise
+        """
+
+    def __update_actions(self, checked: bool) -> None:
         """Update actions state according to given checked state
 
         Args:
@@ -365,15 +377,19 @@ class AspectRatioTool(CommandTool):
             ratio = plot.get_aspect_ratio()
             self.ratio1_action.setEnabled(checked and ratio != 1.0)
 
-    def lock_aspect_ratio(self, checked: bool):
-        """Lock aspect ratio if given checked state is True, unlock it otherwise"""
+    def lock_aspect_ratio(self, checked: bool) -> None:
+        """Lock aspect ratio depending on given checked state.
+
+        Args:
+            checked: True if aspect ratio should be locked, False otherwise
+        """
         plot = self.get_active_plot()
         if plot is not None:
             plot.set_aspect_ratio(lock=checked)
             self.__update_actions(checked)
             plot.replot()
 
-    def edit_aspect_ratio(self):
+    def edit_aspect_ratio(self) -> None:
         """Edit the aspect ratio with a dataset dialog"""
         plot = self.get_active_plot()
         if plot is not None:
@@ -386,7 +402,7 @@ class AspectRatioTool(CommandTool):
                 self.__update_actions(lock)
                 plot.replot()
 
-    def update_status(self, plot: BasePlot):
+    def update_status(self, plot: BasePlot) -> None:
         """Update tool status if the plot type is not PlotType.CURVE.
 
         Args:
@@ -405,7 +421,7 @@ class ContrastPanelTool(PanelTool):
     panel_name = _("Contrast adjustment")
     panel_id = ID_CONTRAST
 
-    def update_status(self, plot: BasePlot):
+    def update_status(self, plot: BasePlot) -> None:
         """Update tool status.
 
         Args:
@@ -429,7 +445,9 @@ class ColormapTool(CommandTool):
         toolbar_id: Toolbar Id to use. Defaults to DefaultToolbarID.
     """
 
-    def __init__(self, manager: PlotManager, toolbar_id=DefaultToolbarID):  # noqa: F821
+    def __init__(
+        self, manager: PlotManager, toolbar_id=DefaultToolbarID
+    ) -> None:  # noqa: F821
         super().__init__(
             manager,
             _("Colormap"),
@@ -447,7 +465,11 @@ class ColormapTool(CommandTool):
 
     def create_action_menu(self, manager: PlotManager) -> QW.QMenu:
         """Create and return menu for the tool's action with all the colormaps and
-        colormap editor available"""
+        colormap editor available
+
+        Args:
+            manager: PlotManager instance
+        """
         menu = QW.QMenu()
 
         default_cmaps_action_group = QActionGroup(menu)
@@ -479,7 +501,7 @@ class ColormapTool(CommandTool):
 
         return menu
 
-    def open_cmap_manager(self):
+    def open_cmap_manager(self) -> None:
         """Opens the colormap manager in a new dialog. The chosen colormap will be
         applied to the active image when the manager is closed.
         """
@@ -500,11 +522,16 @@ class ColormapTool(CommandTool):
         self.action.setMenu(self.menu)
         self.activate_cmap()
 
-    def activate_command(self, plot: BasePlot, checked: bool):
-        """Activate tool (current does not do anything)."""
+    def activate_command(self, plot: BasePlot, checked: bool) -> None:
+        """Triggers tool action.
+
+        Args:
+            plot: Plot instance
+            checked: True if tool is checked, False otherwise
+        """
         pass
 
-    def get_selected_images(self, plot: BasePlot):
+    def get_selected_images(self, plot: BasePlot) -> list[IBasePlotItem]:
         """Returns the currently selected images in the given plot.
 
         Args:
@@ -522,7 +549,7 @@ class ColormapTool(CommandTool):
 
     def activate_cmap(
         self, cmap: QAction | str | CustomQwtLinearColormap | None = None
-    ):
+    ) -> None:
         """Activate the given colormap. Supports mutliple input types.
 
         Args:
@@ -547,7 +574,7 @@ class ColormapTool(CommandTool):
             plot.invalidate()
             self.update_status(plot)
 
-    def update_status(self, plot: BasePlot):
+    def update_status(self, plot: BasePlot) -> None:
         """Update tool status if the plot type is not PlotType.CURVE.
 
         Args:
@@ -579,7 +606,7 @@ class ImageMaskTool(CommandTool):
     #: Signal emitted by ImageMaskTool when mask was applied
     SIG_APPLIED_MASK_TOOL = QC.Signal()
 
-    def __init__(self, manager: PlotManager, toolbar_id=DefaultToolbarID):
+    def __init__(self, manager: PlotManager, toolbar_id=DefaultToolbarID) -> None:
         self._mask_shapes = {}
         self._mask_already_restored = {}
         super().__init__(
@@ -591,8 +618,12 @@ class ImageMaskTool(CommandTool):
         )
         self.masked_image = None  # associated masked image item
 
-    def create_action_menu(self, manager: PlotManager):
-        """Create and return menu for the tool's action"""
+    def create_action_menu(self, manager: PlotManager) -> QW.QMenu:
+        """Create and return the tool's action menu for a given manager.
+
+        Args:
+            manager: PlotManager instance
+        """
         rect_tool = manager.add_tool(
             RectangleTool,
             toolbar_id=None,
@@ -660,16 +691,16 @@ class ImageMaskTool(CommandTool):
         self.action.setMenu(menu)
         return menu
 
-    def update_status(self, plot: BasePlot):
-        """Enables tool if masked_image is set
+    def update_status(self, plot: BasePlot) -> None:
+        """Enables tool if masked_image is set.
 
         Args:
             plot: Plot instance
         """
         self.action.setEnabled(self.masked_image is not None)
 
-    def register_plot(self, baseplot: BasePlot):
-        """Register plot in the tool instance and connect signals
+    def register_plot(self, baseplot: BasePlot) -> None:
+        """Register plot in the tool instance and connect signals.
 
         Args:
             baseplot: Plot instance
@@ -704,7 +735,7 @@ class ImageMaskTool(CommandTool):
         plot.replot()
         self.SIG_APPLIED_MASK_TOOL.emit()
 
-    def remove_all_shapes(self):
+    def remove_all_shapes(self) -> None:
         """Prompts the user to removes all shapes from the plot"""
         message = _("Do you really want to remove all masking shapes?")
         plot = self.get_active_plot()
@@ -717,7 +748,7 @@ class ImageMaskTool(CommandTool):
         if answer == QW.QMessageBox.Yes:
             self.remove_shapes()
 
-    def remove_shapes(self):
+    def remove_shapes(self) -> None:
         """Removes all shapes from the plot"""
         plot = self.get_active_plot()
         plot.del_items(
@@ -726,7 +757,7 @@ class ImageMaskTool(CommandTool):
         self._mask_shapes[plot] = []
         plot.replot()
 
-    def show_shapes(self, state: bool):
+    def show_shapes(self, state: bool) -> None:
         """Shows the masking shapes depending on given state
 
         Args:
@@ -738,7 +769,7 @@ class ImageMaskTool(CommandTool):
                 shape.setVisible(state)
             plot.replot()
 
-    def handle_shape(self, shape: AbstractShape, inside: bool):
+    def handle_shape(self, shape: AbstractShape, inside: bool) -> None:
         """Handles given shape and adds it to the plot and sets it to be the current
         item"""
         shape.set_style("plot", "shape/mask")
@@ -767,7 +798,7 @@ class ImageMaskTool(CommandTool):
             return items[-1]
         return None
 
-    def create_shapes_from_masked_areas(self):
+    def create_shapes_from_masked_areas(self) -> None:
         """Creates shapes from the masked areas of the masked image (rectangular or
         ellipse).
         """
@@ -791,8 +822,8 @@ class ImageMaskTool(CommandTool):
             plot.add_item(shape)
             plot.blockSignals(False)
 
-    def set_masked_image(self, plot: BasePlot):
-        """Sets the masked image item from the masked image found in the given plot
+    def set_masked_image(self, plot: BasePlot) -> None:
+        """Sets the masked image item from the masked image found in the given plot.
 
         Args:
             plot: Plot instance
@@ -804,11 +835,11 @@ class ImageMaskTool(CommandTool):
         enable = False if item is None else item.is_mask_visible()
         self.showmask_action.setChecked(enable)
 
-    def items_changed(self, plot: BasePlot):
-        """Updates the masked image and the tool status.
+    def items_changed(self, plot: BasePlot) -> None:
+        """Updates the masked image and the tool status for a given plot.
 
         Args:
-            plot: _description_
+            plot: Plot instance
         """
         self.set_masked_image(plot)
         self._mask_shapes[plot] = [
@@ -818,12 +849,15 @@ class ImageMaskTool(CommandTool):
         ]
         self.update_status(plot)
 
-    def item_selection_changed(self, plot: BasePlot):
-        """Updates the masked image and the tool status."""
+    def item_selection_changed(self, plot: BasePlot) -> None:
+        """Updates the masked image and the tool status for a given plot.
+        Args:
+            plot: Plot instance
+        """
         self.set_masked_image(plot)
         self.update_status(plot)
 
-    def clear_mask(self):
+    def clear_mask(self) -> None:
         """Prompts the user to clear the image mask (removes all masks)"""
         message = _("Do you really want to clear the mask?")
         plot = self.get_active_plot()
@@ -835,7 +869,12 @@ class ImageMaskTool(CommandTool):
             plot.replot()
 
     def activate_command(self, plot: BasePlot, checked=True):
-        """Activate tool"""
+        """Triggers tool action.
+
+        Args:
+            plot: Plot instance
+            checked: True if tool is checked, False otherwise
+        """
         pass
 
 
@@ -845,13 +884,18 @@ class LockTrImageTool(ToggleTool):
         manager: PlotManager instance
         toolbar_id: Toolbar id value. Not used."""
 
-    def __init__(self, manager: PlotManager, toolbar_id=None):
+    def __init__(self, manager: PlotManager, toolbar_id=None) -> None:
         super().__init__(
             manager, title=_("Lock"), icon=get_icon("lock.png"), toolbar_id=None
         )
 
-    def activate_command(self, plot, checked):
-        """Activate tool"""
+    def activate_command(self, plot: PlotManager, checked: bool) -> None:
+        """Trigger tool action.
+
+        Args:
+            plot: Plot instance
+            checked: True if tool is checked, False otherwise
+        """
         itemlist = self.get_supported_items(plot)
         if self.action is not None and self.action.isEnabled():
             for item in itemlist:
@@ -862,7 +906,7 @@ class LockTrImageTool(ToggleTool):
                     item.setIcon(get_icon("image.png"))
             plot.SIG_ITEMS_CHANGED.emit(plot)
 
-    def get_supported_items(self, plot: BasePlot):
+    def get_supported_items(self, plot: BasePlot) -> list[IBasePlotItem | TrImageItem]:
         """Returns a list of supported items from the given plot selected items.
 
         Args:
@@ -875,7 +919,7 @@ class LockTrImageTool(ToggleTool):
             _it for _it in plot.get_selected_items() if isinstance(_it, TrImageItem)
         ]
 
-    def update_status(self, plot: BasePlot):
+    def update_status(self, plot: BasePlot) -> None:
         """Updates the tool status depending on the selected items in the given plot.
 
         Args:
@@ -900,7 +944,7 @@ class LockTrImageTool(ToggleTool):
         else:
             self.action.setEnabled(False)
 
-    def setup_context_menu(self, menu: QW.QMenu, plot: BasePlot):
+    def setup_context_menu(self, menu: QW.QMenu, plot: BasePlot) -> None:
         """Command Tool re-implement"""
         if self.action is not None and self.action.isEnabled():
             menu.addAction(self.action)
@@ -914,7 +958,7 @@ class OpenImageTool(OpenFileTool):
         toolbar_id: Toolbar id value. Defaults to DefaultToolbarID.
     """
 
-    def __init__(self, manager: PlotManager, toolbar_id=DefaultToolbarID):
+    def __init__(self, manager: PlotManager, toolbar_id=DefaultToolbarID) -> None:
         super().__init__(
             manager,
             title=_("Open image"),
@@ -959,7 +1003,7 @@ class RotationCenterTool(InteractiveTool):
         rotation_point_move_with_shape=True,
         rotation_center=True,
         on_all_items=True,
-    ):
+    ) -> None:
         super().__init__(
             manager,
             toolbar_id,
@@ -998,7 +1042,7 @@ class RotationCenterTool(InteractiveTool):
         #            self.mouse_press(filter, QEvent(QEvent.MouseButtonPress))
         return setup_standard_tool_filter(self.filter, start_state)
 
-    def update_status(self, plot: BasePlot):
+    def update_status(self, plot: BasePlot) -> None:
         """Updates the tool status depending on the selected items in the given plot.
 
         Args:
@@ -1014,7 +1058,7 @@ class RotationCenterTool(InteractiveTool):
         self.action.setEnabled(enabled)
         self.SIG_TOOL_ENABLED.emit(enabled)
 
-    def action_triggered(self, checked: bool):
+    def action_triggered(self, checked: bool) -> None:
         """Action triggered slot
 
         Args:
@@ -1023,9 +1067,13 @@ class RotationCenterTool(InteractiveTool):
         if self.rotation_center and self.filter is not None:
             self.mouse_press(self.filter, QC.QEvent(QC.QEvent.Type.MouseButtonPress))
 
-    def mouse_press(self, filter: StatefulEventFilter, event: QC.QEvent):
+    def mouse_press(self, filter: StatefulEventFilter, event: QC.QEvent) -> None:
         """We create a new shape if it's the first point
-        otherwise we add a new point
+        otherwise we add a new point.
+
+        Args:
+            filter: StatefulEventFilter instance
+            event: QEvent instance
         """
         plot = filter.plot
         selected_items = plot.get_selected_items()
@@ -1081,7 +1129,7 @@ class RotateCropTool(CommandTool):
         manager: PlotManager,
         toolbar_id=DefaultToolbarID,
         options: PlotOptions | None = None,
-    ):
+    ) -> None:
         super().__init__(
             manager,
             title=_("Rotate and crop"),
@@ -1090,12 +1138,12 @@ class RotateCropTool(CommandTool):
         )
         self.options = options
 
-    def activate_command(self, plot: BasePlot, checked: bool):
+    def activate_command(self, plot: BasePlot, checked: bool) -> None:
         """Activate tool
 
         Args:
             plot: Plot instance
-            checked: unused argument
+            checked: True if tool is checked, False otherwise
         """
         # This import can't be done at the module level because it creates a
         # circular import: we create a dialog that itself instantiates a
@@ -1115,7 +1163,7 @@ class RotateCropTool(CommandTool):
                 if not ok:
                     break
 
-    def update_status(self, plot: BasePlot):
+    def update_status(self, plot: BasePlot) -> None:
         """Updates the tool status depending on the selected items in the given plot.
 
         Args:
@@ -1139,12 +1187,12 @@ def update_image_tool_status(tool: GuiTool, plot: BasePlot) -> bool:
     return enabled
 
 
-def export_image_data(item):
+def export_image_data(item) -> None:
     """Export image item data to file"""
     exec_image_save_dialog(item.plot(), item.data)
 
 
-def edit_image_data(item):
+def edit_image_data(item) -> None:
     """Edit image item data in array editor"""
     dialog = ArrayEditor(item.plot())
     dialog.setup_and_check(item.data)
