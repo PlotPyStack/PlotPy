@@ -5,6 +5,8 @@
 """This module provides a basic widget to edit a colormap that contains a multi-slider
 and a colorap representation.
 """
+from __future__ import annotations
+
 from typing import Sequence, TypeVar, Union
 
 import numpy as np
@@ -35,7 +37,7 @@ class CustomQwtLinearColormap(QwtLinearColorMap):
         such as colormaps.ALL_COLORMAPS. Defaults to "None".
     """
 
-    def __init__(self, *args, name: str | None = None):
+    def __init__(self, *args, name: str | None = None) -> None:
         super().__init__(*args)
         # TODO: Add this feature in a release of QwtPython
         self.stops: list[
@@ -45,7 +47,7 @@ class CustomQwtLinearColormap(QwtLinearColorMap):
         )
         self.name = name or "temporary"
 
-    def is_boundary_stop_index(self, stop_index: int):
+    def is_boundary_stop_index(self, stop_index: int) -> bool:
         """Checks if the given index is a boundary index (first or last).
 
         Args:
@@ -81,7 +83,7 @@ class CustomQwtLinearColormap(QwtLinearColorMap):
         """
         return stop_index > 0
 
-    def update_stops_steps(self, stop_index: int):
+    def update_stops_steps(self, stop_index: int) -> None:
         """Updates the steps of the previous and next color stops of the given index.
         The steps are the distance between the current stop and the next color stop.
         This method can update the given color stop index, the previous one and the next
@@ -143,7 +145,7 @@ class CustomQwtLinearColormap(QwtLinearColorMap):
 
     def move_color_stop(
         self, stop_index: int, new_pos: float, new_color: QG.QColor | None = None
-    ):
+    ) -> None:
         """Moves a color stop to a new position and updates the steps of the previous
         and next color stops if necessary. Mutates the colormap object!
 
@@ -168,7 +170,7 @@ class CustomQwtLinearColormap(QwtLinearColorMap):
         self.stops[stop_index] = new_stop
         self.update_stops_steps(stop_index)
 
-    def delete_stop(self, stop_index: int):
+    def delete_stop(self, stop_index: int) -> None:
         """Deletes the color stop at given index and updates the previous color stop
         steps if necessary. Mutates the colormap object!
 
@@ -194,7 +196,7 @@ class CustomQwtLinearColormap(QwtLinearColorMap):
             ColorStop
         ] = self._QwtLinearColorMap__data.colorStops._ColorStops__stops  # type: ignore
 
-    def get_stop_color(self, index: int):
+    def get_stop_color(self, index: int) -> QG.QColor:
         """Returns the color of the given color stop index.
 
         Args:
@@ -298,7 +300,7 @@ class ColorMapWidget(QW.QWidget):
         self.multi_range_hslider.sliderReleased.connect(self.release_handle)
         self.customContextMenuRequested.connect(self.open_slider_menu)
 
-    def set_colormap(self, colormap: CustomQwtLinearColormap):
+    def set_colormap(self, colormap: CustomQwtLinearColormap) -> None:
         """Replaces the current colormap.
 
         Args:
@@ -317,39 +319,27 @@ class ColorMapWidget(QW.QWidget):
         """
         return self._colormap
 
-    def update_color_table(self):
+    def update_color_table(self) -> None:
         """Updates and caches the current color table."""
         self.colortable[:] = self._colormap.colorTable(self.qwt_color_interval)
 
-    def emit_handle_selected(self):
+    def emit_handle_selected(self) -> None:
         """When called, computes a slider position from the current position of the
         mouse and maps it to slider range. Then finds which handles was selected and
         emits the custom signal HANDLE_SELECTED(handle_index) and caches the index."""
-        # pos = (
-        #     self.multi_range_hslider.mapFromGlobal(QG.QCursor.pos()).x()
-        #     - self._px_cursor_offset
-        # )
-        # handle_pos = self.multi_range_hslider.widget_pos_to_value(pos)
-        # handle_index, _ = self._get_closest_handle_index(handle_pos)
 
-        # self._handle_selected = handle_index
         self._handle_selected = self.multi_range_hslider.pressed_index
         self.HANDLE_SELECTED.emit(self._handle_selected)
 
-    def release_handle(self):
+    def release_handle(self) -> None:
         """When called, unset the cached current handle index."""
         self._handle_selected = None
 
-    def draw_colormap_image(self):
+    def draw_colormap_image(self) -> None:
         """Recomputes and redraws the colorbar image."""
         # TODO: check how to update the image without having to recreate one,
         # just by updating the colortable
         self.update_color_table()
-        # if (pixmap := self._colormap_label.pixmap()) is not None:
-        #     image = pixmap.toImage()
-        #     image.setColorTable(self.colortable)
-        #     self._colormap_label.setPixmap(QG.QPixmap.fromImage(image))
-        # else:
         self._colormap_label.setPixmap(self.cmap_to_qimage())
 
     def get_color_from_value(
@@ -401,7 +391,7 @@ class ColorMapWidget(QW.QWidget):
         index: int,
         new_pos: float | None = None,
         new_color: QG.QColor | int | None = None,
-    ):
+    ) -> None:
         """Edit an existing color stop in the current colormap. Mutates the colormap
         object. Also edits the slider handle position.
 
@@ -421,7 +411,7 @@ class ColorMapWidget(QW.QWidget):
         self.set_handles_values(self._colormap.colorStops())
         self.COLORMAP_CHANGED.emit()
 
-    def _edit_color_map_on_slider_change(self, raw_values: tuple[float, ...]):
+    def _edit_color_map_on_slider_change(self, raw_values: tuple[float, ...]) -> None:
         """Modifies the colormap depending on the currently selected handle. Tiggered on
         hanle movement.
 
@@ -493,7 +483,7 @@ class ColorMapWidget(QW.QWidget):
 
         return pos
 
-    def _add_handle_at_click(self):
+    def _add_handle_at_click(self) -> None:
         """Adds a new handle at last right-clicked position thanks to the attribute
         self._last_selection. Mutates the colormap object.
         """
@@ -509,7 +499,7 @@ class ColorMapWidget(QW.QWidget):
         self.set_handles_values(values)
         self.HANDLE_ADDED.emit(values.index(new_handle_value), new_handle_value)
 
-    def _delete_handle_at_click(self):
+    def _delete_handle_at_click(self) -> None:
         """Tries to delete an existing handle at the right-clicked position thanks to
         the attribute self._last_selection. Does nothing if the click is too far from
         a handle. Mutates the colormap object.
@@ -533,11 +523,11 @@ class ColorMapWidget(QW.QWidget):
         self.HANDLE_DELETED.emit(closest_handle_index)
         self.COLORMAP_CHANGED.emit()
 
-    def setup_menu(self):
+    def setup_menu(self) -> QW.QMenu:
         """Setups the contextual menu used to insert and delete handles.
 
         Returns:
-            _description_
+            Colorbar contextual menu
         """
         new_handle_action = create_action(
             self,
@@ -559,7 +549,7 @@ class ColorMapWidget(QW.QWidget):
 
     def add_handle_at_relative_pos(
         self, relative_pos: float, new_color: QG.QColor | int | None = None
-    ):
+    ) -> None:
         """insert a handle in the widget at the relative position (between 0. and 1.).
         Mutates the colormap object. If the relative position is already occupied by a
         handle, the new handle will be inserted at the closest available position then
@@ -609,7 +599,7 @@ class ColorMapWidget(QW.QWidget):
         """
         return self.multi_range_hslider.value()
 
-    def set_handles_values(self, values: Sequence[float]):
+    def set_handles_values(self, values: Sequence[float]) -> None:
         """Passthrough to set handles position.
 
         Args:
@@ -626,7 +616,7 @@ class ColorMapWidget(QW.QWidget):
         img.setColorTable(self.colortable)
         return QG.QPixmap.fromImage(img)
 
-    def open_slider_menu(self, pos: QC.QPoint):
+    def open_slider_menu(self, pos: QC.QPoint) -> None:
         """Opens the contextual menu at input position.
 
         Args:

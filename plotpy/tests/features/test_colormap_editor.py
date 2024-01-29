@@ -23,7 +23,10 @@ from plotpy.widgets.colormap_editor import ColorMapEditor
 from plotpy.widgets.colormap_widget import CustomQwtLinearColormap
 
 
-def test_colormap_manager():
+def test_colormap_manager() -> None:
+    """Test the colormap editor widget and the CustomQwtLinearColormap class
+    by using multiple methods to initialize and export the colormap.
+    """
     with qt_app_context(exec_loop=True):
         print("Initialization of a default colormap editor widget")
         editor = ColorMapEditor(None)

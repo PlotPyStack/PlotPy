@@ -11,6 +11,8 @@ This plotpy tool provides a toggle to downsample the current curve with a given 
 
 # guitest: show
 
+from typing import Any
+
 from guidata.qthelpers import exec_dialog, qt_app_context
 from numpy import linspace, sin
 
@@ -19,7 +21,7 @@ from plotpy.config import _
 from plotpy.tools import DownSampleCurveTool, EditPointTool
 
 
-def callback_function(tool: EditPointTool):
+def callback_function(tool: EditPointTool) -> None:
     """Callback that is called by the tool when the user stops clicking. Just prints
     the new arrays and the changes.
 
@@ -31,9 +33,17 @@ def callback_function(tool: EditPointTool):
     print("Indexed changes:", tool.get_changes())
 
 
-def edit_downsampled_curve(downsampling_factor: int, *args):
+def edit_downsampled_curve(downsampling_factor: int, *args) -> tuple[Any, ...]:
     """
     Plot curves and return selected point(s) coordinates
+
+    Args:
+        downsampling_factor: downsampling factor (>=1)
+        *args: arguments to be passed to the plotpy builder make.mcurve function
+
+    Returns:
+        Modified *args input that can be used in another call to this function to check
+        the interaction between edit tool and the donwsampling tool.
     """
     win = make.dialog(
         wintitle=_("Select one point then press OK to accept"),
@@ -65,8 +75,8 @@ def edit_downsampled_curve(downsampling_factor: int, *args):
     return args
 
 
-def test_edit_curve():
-    """Test"""
+def test_downsample_curve() -> None:
+    """Test the downsample curve tool."""
     with qt_app_context(exec_loop=False):
         nlines = 1000
         x = linspace(-10, 10, num=nlines)
@@ -78,4 +88,4 @@ def test_edit_curve():
 
 
 if __name__ == "__main__":
-    test_edit_curve()
+    test_downsample_curve()

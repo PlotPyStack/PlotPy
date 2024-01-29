@@ -20,9 +20,9 @@ from plotpy.widgets.colormap_manager import ColorMapManager
 from plotpy.widgets.colormap_widget import CustomQwtLinearColormap
 
 
-def test_colormap_manager():
+def test_colormap_manager() -> None:
+    """Test the colormap manager widget."""
     with qt_app_context(exec_loop=True):
-        # app = QW.QApplication([])
         red = QG.QColor(QC.Qt.GlobalColor.red)
         blue = QG.QColor(QC.Qt.GlobalColor.blue)
         yellow = QG.QColor(QC.Qt.GlobalColor.yellow)

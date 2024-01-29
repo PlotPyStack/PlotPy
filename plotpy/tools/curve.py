@@ -53,7 +53,7 @@ class CurveStatsTool(BaseCursorTool):
 
     def __init__(
         self, manager, toolbar_id=DefaultToolbarID, title=None, icon=None, tip=None
-    ):
+    ) -> None:
         super().__init__(manager, toolbar_id, title=title, icon=icon, tip=tip)
         self._last_item = None
         self.label = None
@@ -340,7 +340,7 @@ class SelectPointsTool(InteractiveTool):
         marker_style=None,
         switch_to_default_tool=None,
         max_select: int | None = None,
-    ):
+    ) -> None:
         super().__init__(
             manager,
             toolbar_id,
@@ -637,7 +637,7 @@ class EditPointTool(InteractiveTool):
         index_offset = ChoiceItem(_("Location"), choices=["Before", "After"], default=0)
 
         @classmethod
-        def set_max_index(cls, max_index: int):
+        def set_max_index(cls, max_index: int) -> None:
             """Sets the maximum index value for the index field
 
             Args:

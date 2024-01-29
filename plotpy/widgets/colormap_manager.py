@@ -6,6 +6,8 @@
 """This module provides a fully featured colormap manager widget and dialog window
 that allows to select, edit and save colormaps (existing or new).
 """
+from __future__ import annotations
+
 from copy import deepcopy
 
 import qtpy.QtCore as QC
@@ -135,7 +137,7 @@ class ColorMapManager(QW.QWidget):
         """Updates the colormap name to the value present in the QLineEdit."""
         self.get_colormap().name = self._colormap_name_edit.text()
 
-    def set_colormap(self, index: int):
+    def set_colormap(self, index: int) -> None:
         """Set the current colormap to the value present at the given index in the
         QComboBox. Makes a copy of the colormap object so the ColorMapEditor does not
         mutate the original colormap object.

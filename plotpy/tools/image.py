@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Image tools"""
 
 from __future__ import annotations

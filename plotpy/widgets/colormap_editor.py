@@ -8,6 +8,8 @@ by ColorMapWidget (plotpy/widgets/colormap_widget.py). It allows to edit a color
 by changing its color stops (add/delete/move/change color).
 """
 
+from __future__ import annotations
+
 import qtpy.QtCore as QC
 import qtpy.QtGui as QG
 import qtpy.QtWidgets as QW
@@ -57,7 +59,7 @@ class ColorMapEditor(QW.QWidget):
             "Pick color", help="Pick a color to use for the selected cursor."
         )
 
-        def lock_position(self, lock=True):
+        def lock_position(self, lock=True) -> None:
             """Used to lock the position of the cursor value.
 
             Args:
@@ -73,7 +75,7 @@ class ColorMapEditor(QW.QWidget):
             """
             return self._position_locked
 
-        def set_position(self, position: float):
+        def set_position(self, position: float) -> None:
             """Set a new position for the cursor. Value is rounded to 2 decimals.
 
             Args:
@@ -144,7 +146,7 @@ class ColorMapEditor(QW.QWidget):
             self.update_current_dataset
         )
 
-    def set_colormap(self, colormap: CustomQwtLinearColormap):
+    def set_colormap(self, colormap: CustomQwtLinearColormap) -> None:
         """Replaces the current colormap.
 
         Args:
@@ -163,7 +165,7 @@ class ColorMapEditor(QW.QWidget):
         """
         return self.colormap_widget.get_colormap()
 
-    def change_current_dataset(self, dataset_index: int):
+    def change_current_dataset(self, dataset_index: int) -> None:
         """Wrapper functio to change the current dataset (=current tab)
 
         Args:
@@ -171,7 +173,7 @@ class ColorMapEditor(QW.QWidget):
         """
         self.tabs.setCurrentIndex(dataset_index)
 
-    def update_tab_color(self, tab_index: int):
+    def update_tab_color(self, tab_index: int) -> None:
         """Update the tab icon color for the given tab index.
 
         Args:
@@ -189,7 +191,7 @@ class ColorMapEditor(QW.QWidget):
         dataset_grp.dataset.set_color(hex_color)
         dataset_grp.get()
 
-    def update_tabs_names_from_current(self):
+    def update_tabs_names_from_current(self) -> None:
         """Update all the tab names from the current active tab (useful when a new one
         is added).
         """
@@ -197,7 +199,7 @@ class ColorMapEditor(QW.QWidget):
         for i in range(start_index, self.tabs.count()):
             self.tabs.setTabText(i, str(i + 1))
 
-    def new_tab(self, index: int, handle_pos: float):
+    def new_tab(self, index: int, handle_pos: float) -> None:
         """Add/insert a new tab at the given index and set its relative position and
         color.
 
@@ -234,7 +236,7 @@ class ColorMapEditor(QW.QWidget):
         self.update_tab_color(index)
         self.update_tabs_names_from_current()
 
-    def setup_tabs(self):
+    def setup_tabs(self) -> None:
         """Clear and setup all the tabs from the current colormap. Can be used to reset
         all tabs after initialization.
         """
@@ -252,7 +254,7 @@ class ColorMapEditor(QW.QWidget):
         for i in range(len(self.colormap_widget)):
             self.update_tab_color(i)
 
-    def delete_tab(self, tab_index: int):
+    def delete_tab(self, tab_index: int) -> None:
         """Removes the tab/dataset at given index.
 
         Args:
@@ -263,7 +265,7 @@ class ColorMapEditor(QW.QWidget):
         self.tabs.setCurrentIndex(tab_index)
         self.update_tabs_names_from_current()
 
-    def update_colormap_widget(self):
+    def update_colormap_widget(self) -> None:
         """Update the colormap widget (colorbar and handles) with the values from the
         current tab.
         """
