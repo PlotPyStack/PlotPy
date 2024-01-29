@@ -556,7 +556,7 @@ class ColormapTool(CommandTool):
             cmap: Cmap to apply for currently selected images. If None, the tool's
             active colormap will be used. Defaults to None.
         """
-        assert isinstance(cmap, QAction | str | CustomQwtLinearColormap | None)
+        assert isinstance(cmap, (QAction, str, CustomQwtLinearColormap)) or cmap is None
         if isinstance(cmap, QAction):
             self._active_colormap = cmap.data()  # type: ignore
         elif isinstance(cmap, str):

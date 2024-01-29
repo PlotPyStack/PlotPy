@@ -7,7 +7,7 @@ and a colorap representation.
 """
 from __future__ import annotations
 
-from typing import Sequence, TypeVar, Union
+from typing import Sequence, Tuple, TypeVar, Union
 
 import numpy as np
 import qtpy.QtCore as QC
@@ -22,7 +22,7 @@ from plotpy.widgets._colormap_slider import QColorMapSlider
 
 ColorTypeT = TypeVar("ColorTypeT", bound=Union[QG.QColor, int])
 QColorInitTypes = Union[
-    QG.QColor, int, tuple[int, int, int, int], str, QC.Qt.GlobalColor, None
+    QG.QColor, int, Tuple[int, int, int, int], str, QC.Qt.GlobalColor, None
 ]
 
 

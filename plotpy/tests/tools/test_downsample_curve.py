@@ -11,6 +11,8 @@ This plotpy tool provides a toggle to downsample the current curve with a given 
 
 # guitest: show
 
+from __future__ import annotations
+
 from typing import Any
 
 from guidata.qthelpers import exec_dialog, qt_app_context

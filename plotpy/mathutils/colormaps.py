@@ -6,7 +6,7 @@ colormaps.
 #
 # Licensed under the terms of the BSD 3-Clause
 # (see plotpy/LICENSE for details)
-
+from __future__ import annotations
 
 import json
 import os
