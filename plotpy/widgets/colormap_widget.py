@@ -631,10 +631,3 @@ class ColorMapWidget(QW.QWidget):
 
         self.slider_menu.popup(glob_pos)
 
-
-if __name__ == "__main__":
-    app = QW.QApplication([])
-    demo = ColorMapWidget(None)
-    demo.add_handle_at_relative_pos(0.5, QG.QColor(QC.Qt.GlobalColor.red))
-    demo.show()
-    app.exec_()

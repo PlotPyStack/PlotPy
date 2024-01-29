@@ -294,10 +294,3 @@ class ColorMapEditor(QW.QWidget):
         relative_pos = self.colormap_widget.get_handles_tuple()[current_index]
         current_dataset_grp.dataset.set_position(relative_pos)
         current_dataset_grp.get()
-
-
-if __name__ == "__main__":
-    app = QW.QApplication([])
-    demo = ColorMapEditor(None)
-    demo.show()
-    app.exec_()
