@@ -607,6 +607,24 @@ class SelectPointsTool(InteractiveTool):
         return tuple(self.markers.keys())
 
 
+class InsertionDataSet(DataSet):
+    """Insertion parameters"""
+
+    __index = IntItem(_("Insertion index"), min=0)
+    index = __index
+    value = FloatItem(_("New value"))
+    index_offset = ChoiceItem(_("Location"), choices=["Before", "After"], default=0)
+
+    @classmethod
+    def set_max_index(cls, max_index: int):
+        """Sets the maximum index value for the index field
+
+        Args:
+            max_index: max index value
+        """
+        cls.index.set_prop("data", max=max_index)
+
+
 class EditPointTool(InteractiveTool):
     """Curve point edition tool
 
@@ -628,23 +646,6 @@ class EditPointTool(InteractiveTool):
     MARKER_STYLE_KEY = "marker/curve"
     CURSOR = QC.Qt.CursorShape.PointingHandCursor
 
-    class InsertionDataSet(DataSet):
-        """Insertion parameters"""
-
-        __index = IntItem(_("Insertion index"), min=0)
-        index = __index
-        value = FloatItem(_("New value"))
-        index_offset = ChoiceItem(_("Location"), choices=["Before", "After"], default=0)
-
-        @classmethod
-        def set_max_index(cls, max_index: int):
-            """Sets the maximum index value for the index field
-
-            Args:
-                max_index: max index value
-            """
-            cls.index.set_prop("data", max=max_index)
-
     def __init__(
         self,
         manager: PlotManager,
@@ -656,21 +657,21 @@ class EditPointTool(InteractiveTool):
         end_callback: Callable[[EditPointTool], Any] | None = None,
     ) -> None:
         super().__init__(manager, toolbar_id, title, icon, tip, switch_to_default_tool)
-        self._x: np.ndarray | None = None
-        self._y: np.ndarray | None = None
-        self._x_bkp: np.ndarray | None = None
-        self._y_bkp: np.ndarray | None = None
-        self._current_location_marker: Marker | None = None
-        self._index: int = 0
-        self._downsampled_index: int = 0
-        self._lower_upper_x_bounds: tuple[float, float] = 0, 0
+        self.__x: np.ndarray | None = None
+        self.__y: np.ndarray | None = None
+        self.__x_bkp: np.ndarray | None = None
+        self.__y_bkp: np.ndarray | None = None
+        self.__current_location_marker: Marker | None = None
+        self.__idx: int = 0
+        self.__dsampled_idx: int = 0
+        self.__lower_upper_x_bounds: tuple[float, float] = 0, 0
         self.marker_style_sect = self.MARKER_STYLE_SECT
         self.marker_style_key = self.MARKER_STYLE_KEY
-        self._indexed_changes: dict[CurveItem, dict[int, tuple[float, float]]] = {}
-        self._selection_threshold: float = 0.0
+        self.__indexed_changes: dict[CurveItem, dict[int, tuple[float, float]]] = {}
+        self.__selection_threshold: float = 0.0
         self.end_callback = end_callback
-        self._downsampling = 1  # synchronized with the active CurveItem
-        self._curve_item_array_backup: dict[
+        self.__dsampling = 1  # synchronized with the active CurveItem
+        self.__curve_item_array_backup: dict[
             CurveItem, tuple[np.ndarray, np.ndarray]
         ] = {}
         self.dragging_point = False
@@ -683,7 +684,7 @@ class EditPointTool(InteractiveTool):
         """
         marker.set_style(self.marker_style_sect, self.marker_style_key)
 
-    def _get_selection_threshold(self, filter: StatefulEventFilter) -> float:
+    def __get_selection_threshold(self, filter: StatefulEventFilter) -> float:
         """Computes a distance threshold from the current point selected (self._x,
         self._y) and the previous and next curve points. This threshold can be used to
         know if the user is close enough to the selected point to be allowed to move it.
@@ -696,13 +697,13 @@ class EditPointTool(InteractiveTool):
         Returns:
             Selection threshold (distance)
         """
-        curve_item = self._get_active_curve_item(filter)
+        curve_item = self.__get_active_curve_item(filter)
         # Check if a point has been selected
-        if self._x is not None and self._y is not None:
+        if self.__x is not None and self.__y is not None:
             # get previous and next curve points coordinates with bound checking
-            lower_index_bound = max(self._downsampled_index - 1, 0)
+            lower_index_bound = max(self.__dsampled_idx - 1, 0)
             higher_index_bound = min(
-                self.downsampled_x.shape[0], self._downsampled_index + 2
+                self.downsampled_x.shape[0], self.__dsampled_idx + 2
             )
 
             # Get x and y arrays of neigboring points (at coordinates i-1, i, i+1)
@@ -773,22 +774,22 @@ class EditPointTool(InteractiveTool):
             filter: StatefulEventFilter instance
             _event: Event instance
         """
-        curve_item = self._get_active_curve_item(filter)
-        x_arr, y_arr = self._curve_item_array_backup.get(curve_item, (None, None))
+        curve_item = self.__get_active_curve_item(filter)
+        x_arr, y_arr = self.__curve_item_array_backup.get(curve_item, (None, None))
         if (
             x_arr is not None
             and y_arr is not None
-            and self._x is not None
-            and self._y is not None
+            and self.__x is not None
+            and self.__y is not None
         ):
-            self._x, self._y = x_arr, y_arr
+            self.__x, self.__y = x_arr, y_arr
             curve_item.set_data(x_arr, y_arr)
-            self._get_plot(filter).replot()
-            self._get_current_marker(filter).detach()
-            self._current_location_marker = None
-            self._x = self._y = None
-            self._indexed_changes.get(curve_item, {}).clear()
-            self._index = self._downsampled_index = 0
+            self.__get_plot(filter).replot()
+            self.__get_current_marker(filter).detach()
+            self.__current_location_marker = None
+            self.__x = self.__y = None
+            self.__indexed_changes.get(curve_item, {}).clear()
+            self.__idx = self.__dsampled_idx = 0
 
     def trigger_insert_point_at_selection(self) -> None:
         """Trigger insert point at selection"""
@@ -806,36 +807,39 @@ class EditPointTool(InteractiveTool):
             filter: StatefulEventFilter instance
             _event: Event instance
         """
-        curve_item = self._get_active_curve_item(filter)
-        if self._current_location_marker is None or self._y is None or self._x is None:
+        curve_item = self.__get_active_curve_item(filter)
+        if (
+            self.__current_location_marker is None
+            or self.__y is None
+            or self.__x is None
+        ):
             QW.QMessageBox.warning(
-                self._get_plot(filter),
-                "Point not selected",
-                "Please select a curve point with a left click.",
+                self.__get_plot(filter),
+                _("Insert point"),
+                _(
+                    "Before inserting a new point, "
+                    "please select an existing curve point."
+                ),
             )
             return
 
-        insertion_dataset = self.InsertionDataSet(
-            title=_("Insert new value"), icon="insert.png"
-        )
-        insertion_dataset.set_max_index(self._x.size - 1)
-        insertion_dataset.index = self._index
-        insertion_dataset.value = self._y[self._index - 1 : self._index + 1].mean()
-        insertion_dataset.edit()
+        param = InsertionDataSet(title=_("Insert new value"), icon="insert.png")
+        param.set_max_index(self.__x.size - 1)
+        param.index = self.__idx
+        param.value = self.__y[self.__idx - 1 : self.__idx + 1].mean()
+        param.edit()
 
-        insertion_index: int = insertion_dataset.index + insertion_dataset.index_offset  # type: ignore
-        new_x: float = self._x[insertion_index - 1 : insertion_index + 1].mean()
-        self._x = np.insert(self._x, insertion_index, new_x)  # type: ignore
-        self._y = np.insert(
-            self._y, insertion_index, insertion_dataset.value  # type: ignore
-        )
-        curve_item.set_data(self._x, self._y)
-        new_pos = axes_to_canvas(curve_item, new_x, insertion_dataset.value)  # type: ignore
-        self._current_location_marker.move_local_point_to(
+        insertion_index: int = param.index + param.index_offset  # type: ignore
+        new_x: float = self.__x[insertion_index - 1 : insertion_index + 1].mean()
+        self.__x = np.insert(self.__x, insertion_index, new_x)  # type: ignore
+        self.__y = np.insert(self.__y, insertion_index, param.value)  # type: ignore
+        curve_item.set_data(self.__x, self.__y)
+        new_pos = axes_to_canvas(curve_item, new_x, param.value)  # type: ignore
+        self.__current_location_marker.move_local_point_to(
             0, QC.QPointF(*new_pos)  # type: ignore
         )
 
-    def _get_plot(self, filter: StatefulEventFilter) -> BasePlot:
+    def __get_plot(self, filter: StatefulEventFilter) -> BasePlot:
         """Get plot. Simple method to avoid type checking errors
 
         Args:
@@ -847,7 +851,7 @@ class EditPointTool(InteractiveTool):
         assert isinstance(plot := filter.plot, BasePlot)
         return plot
 
-    def _get_active_curve_item(self, filter: StatefulEventFilter) -> CurveItem:
+    def __get_active_curve_item(self, filter: StatefulEventFilter) -> CurveItem:
         """Get active curve item. Simple method to avoid type checking errors.
 
         Args:
@@ -856,13 +860,13 @@ class EditPointTool(InteractiveTool):
         Returns:
             curve item
         """
-        plot = self._get_plot(filter)
+        plot = self.__get_plot(filter)
         assert isinstance(
             curve_item := plot.get_last_active_item(ICurveItemType), CurveItem
         )
         return curve_item
 
-    def _get_current_marker(self, filter: StatefulEventFilter) -> Marker:
+    def __get_current_marker(self, filter: StatefulEventFilter) -> Marker:
         """Returns a marker instance. If the marker does not exist, it is created and
         returns it.
 
@@ -872,9 +876,9 @@ class EditPointTool(InteractiveTool):
         Returns:
             Marker instance
         """
-        return self._current_location_marker or self._init_current_marker(filter)
+        return self.__current_location_marker or self.__init_current_marker(filter)
 
-    def _get_x_bounds(self, x_array: np.ndarray, index: int) -> tuple[float, float]:
+    def __get_x_bounds(self, x_array: np.ndarray, index: int) -> tuple[float, float]:
         """Returns the x values of the previous and next points and performs an out
         of bound check in case the given index is the first or last of the array.
 
@@ -892,18 +896,18 @@ class EditPointTool(InteractiveTool):
     @property
     def downsampled_x(self) -> np.ndarray:
         """Downsampled x array"""
-        assert self._x is not None
-        if self._downsampling > 1:
-            return self._x[:: self._downsampling]
-        return self._x
+        assert self.__x is not None
+        if self.__dsampling > 1:
+            return self.__x[:: self.__dsampling]
+        return self.__x
 
     @property
     def downsampled_y(self) -> np.ndarray:
         """Downsampled y array"""
-        assert self._y is not None
-        if self._downsampling > 1:
-            return self._y[:: self._downsampling]
-        return self._y
+        assert self.__y is not None
+        if self.__dsampling > 1:
+            return self.__y[:: self.__dsampling]
+        return self.__y
 
     def start(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
         """Start tool action
@@ -913,29 +917,29 @@ class EditPointTool(InteractiveTool):
             event: Qt mouse event
         """
         self.dragging_point = False
-        curve_item = self._get_active_curve_item(filter)
-        if self._current_location_marker is not None:
-            self._current_location_marker.detach()
-            self._current_location_marker = None
+        curve_item = self.__get_active_curve_item(filter)
+        if self.__current_location_marker is not None:
+            self.__current_location_marker.detach()
+            self.__current_location_marker = None
         if curve_item is not None:
             curve_x, curve_y = curve_item.get_data()
-            self._curve_item_array_backup.setdefault(curve_item, (curve_x, curve_y))
-            if self._x is not curve_x or self._x is None or self._y is not curve_y:
-                self._x, self._y = curve_x.copy(), curve_y.copy()
+            self.__curve_item_array_backup.setdefault(curve_item, (curve_x, curve_y))
+            if self.__x is not curve_x or self.__x is None or self.__y is not curve_y:
+                self.__x, self.__y = curve_x.copy(), curve_y.copy()
 
-            self._downsampling: int = (
+            self.__dsampling: int = (
                 1
                 if not curve_item.param.use_downsampling
                 else curve_item.param.downsampling_factor
             )  # type: ignore
-            self._current_location_marker = self._get_current_marker(filter)
-            self._current_location_marker.move_local_point_to(0, event.pos())
-            x_value = self._current_location_marker.xValue()
-            self._downsampled_index = int(np.searchsorted(self.downsampled_x, x_value))
-            self._index = self._downsampled_index * self._downsampling  # type: ignore
-            self._lower_upper_x_bounds = self._get_x_bounds(curve_x, self._index)
-            self._selection_threshold = self._get_selection_threshold(filter)
-            self._get_plot(filter).replot()
+            self.__current_location_marker = self.__get_current_marker(filter)
+            self.__current_location_marker.move_local_point_to(0, event.pos())
+            x_value = self.__current_location_marker.xValue()
+            self.__dsampled_idx = int(np.searchsorted(self.downsampled_x, x_value))
+            self.__idx = self.__dsampled_idx * self.__dsampling  # type: ignore
+            self.__lower_upper_x_bounds = self.__get_x_bounds(curve_x, self.__idx)
+            self.__selection_threshold = self.__get_selection_threshold(filter)
+            self.__get_plot(filter).replot()
 
     def move_point(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
         """Move point
@@ -944,12 +948,12 @@ class EditPointTool(InteractiveTool):
             filter: StatefulEventFilter instance
             event: Qt mouse event
         """
-        self._current_location_marker = self._get_current_marker(filter)
-        curve_item = self._get_active_curve_item(filter)
+        self.__current_location_marker = self.__get_current_marker(filter)
+        curve_item = self.__get_active_curve_item(filter)
         drag_cursor_pos: QC.QPoint = event.pos()
         new_x, new_y = canvas_to_axes(curve_item, drag_cursor_pos) or (None, None)
         marker_canva_x, marker_canva_y = axes_to_canvas(
-            curve_item, *self._current_location_marker.get_pos()
+            curve_item, *self.__current_location_marker.get_pos()
         ) or (0.0, 0.0)
 
         cursor_distance_to_marker = float(
@@ -964,29 +968,30 @@ class EditPointTool(InteractiveTool):
         if (
             new_x is not None
             and new_y is not None
-            and cursor_distance_to_marker < self._selection_threshold
+            and cursor_distance_to_marker < self.__selection_threshold
         ):
             self.dragging_point = True
-            self._selection_threshold = 10_000
+            self.__selection_threshold = 10_000
             new_x = min(
-                max(self._lower_upper_x_bounds[0], new_x), self._lower_upper_x_bounds[1]
+                max(self.__lower_upper_x_bounds[0], new_x),
+                self.__lower_upper_x_bounds[1],
             )
 
-            assert self._x is not None and self._y is not None
+            assert self.__x is not None and self.__y is not None
             (
-                self.downsampled_x[self._downsampled_index],
-                self.downsampled_y[self._downsampled_index],
+                self.downsampled_x[self.__dsampled_idx],
+                self.downsampled_y[self.__dsampled_idx],
             ) = (new_x, new_y)
-            curve_item.set_data(self._x, self._y)
+            curve_item.set_data(self.__x, self.__y)
 
-            self._current_location_marker.constraint_cb = (
-                self._current_location_marker.center_handle
+            self.__current_location_marker.constraint_cb = (
+                self.__current_location_marker.center_handle
             )
             marker_x, marker_y = axes_to_canvas(curve_item, new_x, new_y) or (0, 0)
-            self._current_location_marker.move_local_point_to(
+            self.__current_location_marker.move_local_point_to(
                 0, QC.QPointF(marker_x, marker_y)
             )
-            self._get_plot(filter).replot()
+            self.__get_plot(filter).replot()
 
     def stop(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
         """Stop tool action and save new x and y coordinates.
@@ -999,23 +1004,23 @@ class EditPointTool(InteractiveTool):
             self.move_point(filter, event)
         self.dragging_point = False
 
-        curve_item = self._get_active_curve_item(filter)
-        if not (isinstance(self._x, np.ndarray) and isinstance(self._y, np.ndarray)):
+        curve_item = self.__get_active_curve_item(filter)
+        if not (isinstance(self.__x, np.ndarray) and isinstance(self.__y, np.ndarray)):
             return
 
-        backup_x_arr, backup_y_arr = self._curve_item_array_backup[curve_item]
-        if self._index < backup_x_arr.size and (
-            self._x[self._index] != backup_x_arr[self._index]
-            or self._y[self._index] != backup_y_arr[self._index]
+        backup_x_arr, backup_y_arr = self.__curve_item_array_backup[curve_item]
+        if self.__idx < backup_x_arr.size and (
+            self.__x[self.__idx] != backup_x_arr[self.__idx]
+            or self.__y[self.__idx] != backup_y_arr[self.__idx]
         ):
-            self._indexed_changes.setdefault(curve_item, {})[self._index] = (
-                self._x[self._index],
-                self._y[self._index],
+            self.__indexed_changes.setdefault(curve_item, {})[self.__idx] = (
+                self.__x[self.__idx],
+                self.__y[self.__idx],
             )
         if self.end_callback is not None:
             self.end_callback(self)
 
-    def _init_current_marker(
+    def __init_current_marker(
         self,
         filter: StatefulEventFilter,
     ) -> Marker:
@@ -1027,7 +1032,7 @@ class EditPointTool(InteractiveTool):
         Returns:
             Marker instance
         """
-        plot = self._get_plot(filter)
+        plot = self.__get_plot(filter)
         marker = Marker(
             label_cb=lambda x, y: f"{x=:.4f}, {y=:.4f}",
             constraint_cb=plot.on_active_curve,
@@ -1040,22 +1045,22 @@ class EditPointTool(InteractiveTool):
 
     def get_changes(self) -> dict[CurveItem, dict[int, tuple[float, float]]]:
         """Get changes"""
-        return self._indexed_changes
+        return self.__indexed_changes
 
     def get_arrays(self) -> tuple[np.ndarray | None, np.ndarray | None]:
         """Get arrays"""
-        return self._x, self._y
+        return self.__x, self.__y
 
     def get_initial_arrays(self) -> tuple[np.ndarray | None, np.ndarray | None]:
         """Get initial arrays"""
-        return self._x_bkp, self._y_bkp
+        return self.__x_bkp, self.__y_bkp
 
     def reset_arrays(self) -> None:
         """Reset tool arrays to initial values and reset curve item data"""
-        self._x = self._y = None
-        for curve_item, (x_arr, y_arr) in self._curve_item_array_backup.items():
+        self.__x = self.__y = None
+        for curve_item, (x_arr, y_arr) in self.__curve_item_array_backup.items():
             curve_item.set_data(x_arr, y_arr)
-        self._indexed_changes.clear()
+        self.__indexed_changes.clear()
 
 
 class DownSampleCurveTool(ToggleTool):

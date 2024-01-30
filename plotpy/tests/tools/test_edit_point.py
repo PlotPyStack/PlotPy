@@ -11,20 +11,15 @@ This plotpy tool can be used to edit (move and/or add points) to a curve.
 
 # guitest: show
 
-from typing import TYPE_CHECKING
-
-import qtpy.QtWidgets as QW
+import numpy as np
 from guidata.qthelpers import exec_dialog, qt_app_context
-from numpy import linspace, sin
+from qtpy import QtWidgets as QW
 
 from plotpy.builder import make
 from plotpy.config import _
 from plotpy.interfaces.items import ICurveItemType
 from plotpy.plot.plotwidget import PlotDialog
 from plotpy.tools import EditPointTool
-
-if TYPE_CHECKING:
-    from plotpy.items.curve.base import CurveItem
 
 
 def callback_function(tool: EditPointTool):
@@ -47,9 +42,9 @@ def make_new_bbox(dialog: PlotDialog):
         and dialog.button_layout is not None
         and (tool := dialog.manager.get_tool(EditPointTool)) is not None
     ):
-        custom_button = QW.QPushButton(_("Insert point"), dialog)
-        custom_button.clicked.connect(tool.trigger_insert_point_at_selection)
-        dialog.button_layout.insertWidget(0, custom_button)
+        insert_btn = QW.QPushButton(_("Insert point"), dialog)
+        insert_btn.clicked.connect(tool.trigger_insert_point_at_selection)
+        dialog.button_layout.insertWidget(0, insert_btn)
 
 
 def edit_curve(*args):
@@ -69,7 +64,7 @@ def edit_curve(*args):
     default.activate()
     plot = win.manager.get_plot()
     for cx, cy in args[:-1]:
-        item: CurveItem = make.mcurve(cx, cy)
+        item = make.mcurve(cx, cy)
         plot.add_item(item)
     item = make.mcurve(*args[-1], "r-+")
     plot.add_item(item)
@@ -82,12 +77,12 @@ def edit_curve(*args):
 
 def test_edit_curve():
     """Test"""
-    with qt_app_context(exec_loop=False):
-        x = linspace(-10, 10, num=100)
-        y = 0.25 * sin(sin(sin(x * 0.5)))
-        x2 = linspace(-10, 10, num=100)
-        y2 = sin(sin(sin(x2)))
-        edited_args = edit_curve((x, y), (x2, y2), (x, sin(2 * y)))
+    with qt_app_context():
+        x = np.linspace(-10, 10, num=100)
+        y = 0.25 * np.sin(np.sin(np.sin(x * 0.5)))
+        x2 = np.linspace(-10, 10, num=100)
+        y2 = np.sin(np.sin(np.sin(x2)))
+        edited_args = edit_curve((x, y), (x2, y2), (x, np.sin(2 * y)))
         edit_curve(*edited_args)
         print((y2 == edited_args[1][1]).all())
 

@@ -1427,10 +1427,9 @@ msgstr "Résolution MAX"
 msgid "Select one point then press OK to accept"
 msgstr "Sélectionner un point puis cliquer sur OK pour valider"
 
-#: plotpy\tests\tools\test_edit_point.py:41
-#, fuzzy
+#: plotpy\tests\tools\test_edit_point.py:45 plotpy\tools\curve.py:814
 msgid "Insert point"
-msgstr "Insérer"
+msgstr "Insérer un point"
 
 #: plotpy\tests\widgets\test_simple_dialog.py:26
 #: plotpy\tests\widgets\test_simple_window.py:47
@@ -1617,7 +1616,10 @@ msgstr "Nouvelle valeur"
 msgid "Location"
 msgstr "Position"
 
-#: plotpy\tools\curve.py:674
+
+#: plotpy\tools\curve.py:815
+msgid "Before inserting a new point, please select an existing curve point."
+msgstr "Avant d'insérer un nouveau point, sélectionner un point existant."
 msgid "Insert new value"
 msgstr "Insérer une nouvelle valeur"
 
