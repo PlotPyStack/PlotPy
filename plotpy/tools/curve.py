@@ -1097,9 +1097,7 @@ class DownSamplingTool(ToggleTool):
             plot: BasePlot instance
             checked: Wether the tool is checked or not
         """
-        curve_item: CurveItem | None = plot.get_last_active_item(
-            ICurveItemType
-        )  # type: ignore
+        curve_item: CurveItem | None = plot.get_last_active_item(ICurveItemType)
         if curve_item is not None:
             curve_item.param.use_dsamp = checked
             curve_item.update_params()
@@ -1110,11 +1108,10 @@ class DownSamplingTool(ToggleTool):
         Args:
             plot: BasePlot instance
         """
-        curve_item: CurveItem | None = plot.get_last_active_item(
-            ICurveItemType
-        )  # type: ignore
-        if curve_item is not None and self.action is not None:
-            self.action.setChecked(curve_item.param.use_dsamp)
+        item: CurveItem | None = plot.get_last_active_item(ICurveItemType)
+        self.action.setEnabled(item is not None)
+        if item is not None and self.action is not None:
+            self.action.setChecked(item.param.use_dsamp)
 
 
 def export_curve_data(item: CurveItem) -> None:
