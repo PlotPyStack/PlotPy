@@ -11,6 +11,8 @@ This plotpy tool provide a MATLAB-like "ginput" feature.
 
 # guitest: show
 
+from __future__ import annotations
+
 from guidata.qthelpers import exec_dialog, qt_app_context
 from numpy import linspace, sin
 
@@ -19,13 +21,16 @@ from plotpy.config import _
 from plotpy.tools import SelectPointTool
 
 
-def callback_function(tool):
+def callback_function(tool: SelectPointTool) -> None:
     print("Current coordinates:", tool.get_coordinates())
 
 
-def get_point(*args):
+def get_point(curves: tuple[tuple[float, float], ...]) -> None:
     """
     Plot curves and return selected point(s) coordinates
+
+    Args:
+        curves: A tuple of curves to plot
     """
     win = make.dialog(
         wintitle=_("Select one point then press OK to accept"),
@@ -41,10 +46,10 @@ def get_point(*args):
     )
     default.activate()
     plot = win.manager.get_plot()
-    for cx, cy in args[:-1]:
+    for cx, cy in curves[:-1]:
         item = make.mcurve(cx, cy)
         plot.add_item(item)
-    item = make.mcurve(*args[-1], "r-+")
+    item = make.mcurve(*curves[-1], "r-+")
     plot.add_item(item)
     plot.set_active_item(item)
     plot.unselect_item(item)
@@ -58,7 +63,7 @@ def test_get_point():
         y = 0.25 * sin(sin(sin(x * 0.5)))
         x2 = linspace(-10, 10, 200)
         y2 = sin(sin(sin(x2)))
-        get_point((x, y), (x2, y2), (x, sin(2 * y)))
+        get_point(((x, y), (x2, y2), (x, sin(2 * y))))
 
 
 if __name__ == "__main__":

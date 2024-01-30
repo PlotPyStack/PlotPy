@@ -429,7 +429,7 @@ class SelectPointsTool(InteractiveTool):
             title = title or f"<b>{self.TITLE} {len(self.markers)}</b><br>"
             constraint_cb = plot.on_active_curve if self.on_active_item else None
 
-            label_cb = self._new_label_cb(filter, title)
+            label_cb = self.__new_label_cb(filter, title)
             self.current_location_marker = Marker(
                 label_cb=label_cb, constraint_cb=constraint_cb
             )
@@ -461,7 +461,7 @@ class SelectPointsTool(InteractiveTool):
         """
         self._init_current_marker(filter, event, force_new_marker=True)
         assert self.current_location_marker
-        self.current_location_marker.label_cb = self._new_label_cb(
+        self.current_location_marker.label_cb = self.__new_label_cb(
             filter, index=len(self.markers) + 1
         )
 
@@ -574,9 +574,9 @@ class SelectPointsTool(InteractiveTool):
             filter: StatefulEventFilter instance
         """
         for i, marker in enumerate(self.markers.values()):
-            marker.label_cb = self._new_label_cb(filter, index=i + 1)
+            marker.label_cb = self.__new_label_cb(filter, index=i + 1)
 
-    def _new_label_cb(
+    def __new_label_cb(
         self, filter: StatefulEventFilter, title: str = "", index: int = 1
     ) -> Callable[[float, float], str]:
         """Create new label callback

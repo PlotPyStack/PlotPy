@@ -19,17 +19,29 @@ from plotpy.config import _
 from plotpy.tools import SelectPointsTool
 
 
-def callback_function(tool: SelectPointsTool):
+def callback_function(tool: SelectPointsTool) -> None:
+    """Callback function to be called by the tool after selection
+
+    Args:
+        tool: The tool instance that called the callback
+    """
     points = tool.get_coordinates()
     print("Points : ", points)
 
 
-def get_points(*args):
+def get_points(curves: tuple[tuple[float, float], ...], max_select: int) -> None:
     """
     Plot curves and return selected point(s) coordinates
+
+    Args:
+        curves: A tuple of curves to plot
     """
     win = make.dialog(
-        wintitle=_("Select one point then press OK to accept"),
+        wintitle=_(
+            "Select up to %s points then press OK to accept "
+            "(hold Ctrl to select multiple points)"
+        )
+        % max_select,
         edit=True,
         type="curve",
         curve_antialiasing=True,
@@ -40,15 +52,15 @@ def get_points(*args):
         on_active_item=True,
         mode="reuse",
         end_callback=callback_function,
-        max_select=5,
+        max_select=max_select,
     )
     default.activate()
     plot = win.manager.get_plot()
-    for cx, cy in args[:-1]:
+    for cx, cy in curves[:-1]:
         item = make.mcurve(cx, cy)
         plot.add_item(item)
     # the last curve will be actibe and needs to have a different style for explictness
-    item = make.mcurve(*args[-1], "r-+")
+    item = make.mcurve(*curves[-1], "r-+")
     plot.add_item(item)
     plot.set_active_item(item)
     plot.unselect_item(item)
@@ -62,7 +74,7 @@ def test_get_point():
         y = 0.25 * sin(sin(sin(x * 0.5)))
         x2 = linspace(-10, 10, 200)
         y2 = sin(sin(sin(x2)))
-        get_points((x, y), (x2, y2), (x, sin(2 * y)))
+        get_points(((x, y), (x2, y2), (x, sin(2 * y))), max_select=5)
 
 
 if __name__ == "__main__":
