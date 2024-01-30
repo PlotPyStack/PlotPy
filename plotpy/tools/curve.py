@@ -322,7 +322,7 @@ class SelectPointsTool(InteractiveTool):
     """Curve points selection tool"""
 
     TITLE = _("Multi-point selection")
-    ICON = "multipoint_selection2.png"
+    ICON = "multipoint_selection.png"
     MARKER_STYLE_SECT = "plot"
     MARKER_STYLE_KEY = "marker/curve"
     CURSOR = QC.Qt.CursorShape.PointingHandCursor
@@ -641,7 +641,7 @@ class EditPointTool(InteractiveTool):
     """
 
     TITLE = _("Edit point")
-    ICON = "edit_point_selection2.png"
+    ICON = "edit_point_selection.png"
     MARKER_STYLE_SECT = "plot"
     MARKER_STYLE_KEY = "marker/curve"
     CURSOR = QC.Qt.CursorShape.PointingHandCursor
@@ -1075,7 +1075,7 @@ class DownSampleCurveTool(ToggleTool):
         super().__init__(
             manager,
             _("Downsample curves"),
-            icon="curve_downsample2.png",
+            icon="curve_downsample.png",
             toolbar_id=toolbar_id,
         )
 
