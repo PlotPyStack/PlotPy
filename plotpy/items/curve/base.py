@@ -365,14 +365,22 @@ class CurveItem(QwtPlotCurve):
         if isinstance(self._x, np.ndarray) and isinstance(self._y, np.ndarray):
             self._setData(self._x, self._y)
 
+    def dsamp(self, data: np.ndarray) -> np.ndarray:
+        """Downsample data
+
+        Args:
+            data: Data to downsample
+
+        Returns:
+            Downsampled data
+        """
+        if self.param.use_dsamp and self.param.dsamp_factor > 1:
+            return data[:: self.param.dsamp_factor]
+        return data
+
     def _setData(self, x: np.ndarray, y: np.ndarray):
         """Wrapper around QwtPlotCurve.setData() to handle downsampling"""
-        if not self.param.use_downsampling or self.param.downsampling_factor == 1:
-            return super().setData(x, y)
-        return super().setData(
-            x[:: self.param.downsampling_factor],
-            y[:: self.param.downsampling_factor],
-        )
+        return super().setData(self.dsamp(x), self.dsamp(y))
 
     def set_data(self, x: np.ndarray, y: np.ndarray) -> None:
         """Set curve data
@@ -449,9 +457,7 @@ class CurveItem(QwtPlotCurve):
             p1x = plot.transform(ax, self._x[i + 1])
             p1y = plot.transform(ay, self._y[i + 1])
         distance = seg_dist(QC.QPointF(pos), QC.QPointF(p0x, p0y), QC.QPointF(p1x, p1y))
-        final_index = i // (
-            int(not self.param.use_downsampling) or self.param.downsampling_factor
-        )
+        final_index = i // (int(not self.param.use_dsamp) or self.param.dsamp_factor)
         return distance, final_index, False, None
 
     def get_closest_coordinates(self, x: float, y: float) -> tuple[float, float]:

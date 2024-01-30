@@ -56,6 +56,32 @@ def test_builder_curve_curve_shade_baseline(qtbot, shade, curvestyle, baseline):
     show_items_qtbot(qtbot, [curve], "curve")
 
 
+def _make_curve_dsamp(dsamp_factor, use_dsamp):
+    """Make curve with downsampling parameters"""
+    x = np.linspace(-10, 10, 1000)
+    y = np.sin(x)
+    curve = make.curve(x, y, dsamp_factor=dsamp_factor, use_dsamp=use_dsamp)
+    if use_dsamp:
+        assert curve.dataSize() == x[::dsamp_factor].size
+    return curve
+
+
+@pytest.mark.parametrize("dsamp_factor", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 30, 50])
+@pytest.mark.parametrize("use_dsamp", [True])
+def test_builder_curve_dsamp_on(qtbot, dsamp_factor, use_dsamp):
+    """Test downsampling parameters of curve() method: use_dsamp=True"""
+    curve = _make_curve_dsamp(dsamp_factor, use_dsamp)
+    show_items_qtbot(qtbot, [curve], "curve")
+
+
+@pytest.mark.parametrize("dsamp_factor", [1, 2])
+@pytest.mark.parametrize("use_dsamp", [False])
+def test_builder_curve_dsamp_off(qtbot, dsamp_factor, use_dsamp):
+    """Test downsampling parameters of curve() method: use_dsamp=False"""
+    curve = _make_curve_dsamp(dsamp_factor, use_dsamp)
+    show_items_qtbot(qtbot, [curve], "curve")
+
+
 def _make_curve_linestyle(color, linestyle, linewidth):
     """Make curve with line parameters"""
     x = np.linspace(-10, 10, 200)

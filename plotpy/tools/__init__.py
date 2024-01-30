@@ -34,7 +34,7 @@ from .cursor import HCursorTool, HRangeTool, VCursorTool, XCursorTool
 from .curve import (
     AntiAliasingTool,
     CurveStatsTool,
-    DownSampleCurveTool,
+    DownSamplingTool,
     EditPointTool,
     SelectPointsTool,
     SelectPointTool,

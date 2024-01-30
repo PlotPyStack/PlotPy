@@ -11,6 +11,8 @@ This plotpy tool can be used to edit (move and/or add points) to a curve.
 
 # guitest: show
 
+from __future__ import annotations
+
 import numpy as np
 from guidata.qthelpers import exec_dialog, qt_app_context
 from qtpy import QtWidgets as QW
@@ -47,9 +49,17 @@ def make_new_bbox(dialog: PlotDialog):
         dialog.button_layout.insertWidget(0, insert_btn)
 
 
-def edit_curve(*args):
+def edit_curve(
+    cdata: tuple[tuple[float, float], ...]
+) -> tuple[tuple[float, float], ...]:
     """
     Plot curves and return selected point(s) coordinates
+
+    Args:
+        cdata: tuple of curves to plot
+
+    Returns:
+        tuple of modified curves
     """
     win: PlotDialog = make.dialog(
         wintitle=_("Select one point then press OK to accept"),
@@ -63,10 +73,10 @@ def edit_curve(*args):
     )
     default.activate()
     plot = win.manager.get_plot()
-    for cx, cy in args[:-1]:
+    for cx, cy in cdata[:-1]:
         item = make.mcurve(cx, cy)
         plot.add_item(item)
-    item = make.mcurve(*args[-1], "r-+")
+    item = make.mcurve(*cdata[-1], "r-+")
     plot.add_item(item)
     plot.set_active_item(item)
     plot.unselect_item(item)
@@ -75,16 +85,16 @@ def edit_curve(*args):
     return [curve.get_data() for curve in plot.get_items(item_type=ICurveItemType)]
 
 
-def test_edit_curve():
+def test_edit_curve() -> None:
     """Test"""
     with qt_app_context():
         x = np.linspace(-10, 10, num=100)
         y = 0.25 * np.sin(np.sin(np.sin(x * 0.5)))
         x2 = np.linspace(-10, 10, num=100)
         y2 = np.sin(np.sin(np.sin(x2)))
-        edited_args = edit_curve((x, y), (x2, y2), (x, np.sin(2 * y)))
-        edit_curve(*edited_args)
-        print((y2 == edited_args[1][1]).all())
+        new_cdata = edit_curve(((x, y), (x2, y2), (x, np.sin(2 * y))))
+        edit_curve(new_cdata)
+        print((y2 == new_cdata[1][1]).all())
 
 
 if __name__ == "__main__":

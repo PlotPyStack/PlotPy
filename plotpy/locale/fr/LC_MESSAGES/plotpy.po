@@ -1420,16 +1420,24 @@ msgstr "Marqueurs"
 msgid "MAX resolution"
 msgstr "Résolution MAX"
 
-#: plotpy\tests\tools\test_downsample_curve.py:32
-#: plotpy\tests\tools\test_edit_point.py:51
-#: plotpy\tests\tools\test_get_point.py:31
-#: plotpy\tests\tools\test_get_points.py:32
+#: plotpy\tests\tools\test_downsample_curve.py:35
+msgid "Right-click on the curve to enable/disable downsampling"
+msgstr "Clic droit sur la courbe pour activer/désactiver le sous-échantillonnage"
+
+#: plotpy\tests\tools\test_edit_point.py:47 plotpy\tools\curve.py:818
+msgid "Insert point"
+msgstr "Insérer un point"
+
+#: plotpy\tests\tools\test_edit_point.py:65
+#: plotpy\tests\tools\test_get_point.py:36
 msgid "Select one point then press OK to accept"
 msgstr "Sélectionner un point puis cliquer sur OK pour valider"
 
-#: plotpy\tests\tools\test_edit_point.py:45 plotpy\tools\curve.py:814
-msgid "Insert point"
-msgstr "Insérer un point"
+#: plotpy\tests\tools\test_get_points.py:40
+msgid ""
+"Select up to %s points then press OK to accept (hold Ctrl to select multiple "
+"points)"
+msgstr "Sélectionner jusqu'à %s points puis cliquer sur OK pour valider (maintenir Ctrl pour sélectionner plusieurs points)"
 
 #: plotpy\tests\widgets\test_simple_dialog.py:26
 #: plotpy\tests\widgets\test_simple_window.py:47
@@ -1623,10 +1631,9 @@ msgstr "Avant d'insérer un nouveau point, sélectionner un point existant."
 msgid "Insert new value"
 msgstr "Insérer une nouvelle valeur"
 
-#: plotpy\tools\curve.py:853
-#, fuzzy
-msgid "Downsample curves"
-msgstr "Sous-échantillonnage (courbes)"
+#: plotpy\tools\curve.py:1073
+msgid "Downsample"
+msgstr "Sous-échantillonner"
 
 #: plotpy\tools\curve.py:893 plotpy\tools\curve.py:905
 msgid "Export"

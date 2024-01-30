@@ -928,9 +928,7 @@ class EditPointTool(InteractiveTool):
                 self.__x, self.__y = curve_x.copy(), curve_y.copy()
 
             self.__dsampling: int = (
-                1
-                if not curve_item.param.use_downsampling
-                else curve_item.param.downsampling_factor
+                1 if not curve_item.param.use_dsamp else curve_item.param.dsamp_factor
             )  # type: ignore
             self.__current_location_marker = self.__get_current_marker(filter)
             self.__current_location_marker.move_local_point_to(0, event.pos())
@@ -1063,7 +1061,7 @@ class EditPointTool(InteractiveTool):
         self.__indexed_changes.clear()
 
 
-class DownSampleCurveTool(ToggleTool):
+class DownSamplingTool(ToggleTool):
     """Downsample curve tool
 
     Args:
@@ -1071,13 +1069,10 @@ class DownSampleCurveTool(ToggleTool):
         toolbar_id: Toolbar Id to use . Defaults to DefaultToolbarID.
     """
 
-    def __init__(self, manager, toolbar_id=DefaultToolbarID) -> None:
-        super().__init__(
-            manager,
-            _("Downsample curves"),
-            icon="curve_downsample.png",
-            toolbar_id=toolbar_id,
-        )
+    def __init__(self, manager: PlotManager) -> None:
+        super().__init__(manager, _("Downsample"))
+        # No icon here, on purpose (because, on Windows, the toggle state is not
+        # clearly visible with the icon in the context menu)
 
     def activate_command(self, plot: BasePlot, checked: bool) -> None:
         """Activate tool
@@ -1090,9 +1085,8 @@ class DownSampleCurveTool(ToggleTool):
             ICurveItemType
         )  # type: ignore
         if curve_item is not None:
-            curve_item.param.use_downsampling = checked
-            curve_item.update_data()
-            plot.replot()
+            curve_item.param.use_dsamp = checked
+            curve_item.update_params()
 
     def update_status(self, plot: BasePlot) -> None:
         """Update tool status
@@ -1104,9 +1098,7 @@ class DownSampleCurveTool(ToggleTool):
             ICurveItemType
         )  # type: ignore
         if curve_item is not None and self.action is not None:
-            self.action.setChecked(curve_item.param.use_downsampling)
-            curve_item.update_data()
-            plot.replot()
+            self.action.setChecked(curve_item.param.use_dsamp)
 
 
 def export_curve_data(item: CurveItem) -> None:

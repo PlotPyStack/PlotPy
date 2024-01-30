@@ -35,6 +35,7 @@ from plotpy.tools import (
     DeleteItemTool,
     DisplayCoordsTool,
     DoAutoscaleTool,
+    DownSamplingTool,
     DummySeparatorTool,
     EditItemDataTool,
     ExportItemDataTool,
@@ -575,6 +576,7 @@ class PlotManager:
         self.add_tool(CurveStatsTool)
         self.add_tool(AntiAliasingTool)
         self.add_tool(AxisScaleTool)
+        self.add_tool(DownSamplingTool)
 
     def register_image_tools(self) -> None:
         """

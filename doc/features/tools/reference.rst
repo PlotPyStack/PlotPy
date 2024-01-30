@@ -53,6 +53,8 @@ Reference
    :members:
 .. autoclass:: plotpy.tools.AntiAliasingTool
    :members:
+.. autoclass:: plotpy.tools.DownSamplingTool
+   :members:
 .. autoclass:: plotpy.tools.DisplayCoordsTool
    :members:
 .. autoclass:: plotpy.tools.ReverseYAxisTool

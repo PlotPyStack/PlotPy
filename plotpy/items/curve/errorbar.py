@@ -72,7 +72,7 @@ class ErrorBarCurveItem(CurveItem):
         super().__init__(curveparam)
         self._dx = None
         self._dy = None
-        self._minmaxarrays: dict[bool, tuple[float, float, float, float]] = {}
+        self.__minmaxarrays: dict[bool, tuple[float, float, float, float]] = {}
         self.setIcon(get_icon("errorbar.png"))
 
     def serialize(
@@ -157,7 +157,7 @@ class ErrorBarCurveItem(CurveItem):
                 dy = None
         self._dx = dx
         self._dy = dy
-        self._minmaxarrays = {}
+        self.__minmaxarrays = {}
 
     def get_minmax_arrays(self, all_values: bool = True) -> tuple[float, ...]:
         """Get min/max arrays
@@ -168,11 +168,11 @@ class ErrorBarCurveItem(CurveItem):
         Returns:
             tuple[float, ...]: Min/max arrays
         """
-        if self._minmaxarrays.get(all_values) is None:
-            x = self._x
-            y = self._y
-            dx = self._dx
-            dy = self._dy
+        if self.__minmaxarrays.get(all_values) is None:
+            x = self.dsamp(self._x)
+            y = self.dsamp(self._y)
+            dx = self.dsamp(self._dx)
+            dy = self.dsamp(self._dy)
             if all_values:
                 if dx is None:
                     xmin = xmax = x
@@ -182,7 +182,7 @@ class ErrorBarCurveItem(CurveItem):
                     ymin = ymax = y
                 else:
                     ymin, ymax = y - dy, y + dy
-                self._minmaxarrays.setdefault(all_values, (xmin, xmax, ymin, ymax))
+                self.__minmaxarrays.setdefault(all_values, (xmin, xmax, ymin, ymax))
             else:
                 isf = np.logical_and(np.isfinite(x), np.isfinite(y))
                 if dx is not None:
@@ -197,10 +197,10 @@ class ErrorBarCurveItem(CurveItem):
                     ymin = ymax = y[isf]
                 else:
                     ymin, ymax = y[isf] - dy[isf], y[isf] + dy[isf]
-                self._minmaxarrays.setdefault(
+                self.__minmaxarrays.setdefault(
                     all_values, (x[isf], y[isf], xmin, xmax, ymin, ymax)
                 )
-        return self._minmaxarrays[all_values]
+        return self.__minmaxarrays[all_values]
 
     def get_closest_coordinates(self, x: float, y: float) -> tuple[float, float]:
         """
@@ -218,8 +218,8 @@ class ErrorBarCurveItem(CurveItem):
         xc = plot.transform(self.xAxis(), x)
         yc = plot.transform(self.yAxis(), y)
         _distance, i, _inside, _other = self.hit_test(QC.QPointF(xc, yc))
-        xi = self._x[i]
-        yi = self._y[i]
+        xi = self.dsamp(self._x)[i]
+        yi = self.dsamp(self._y)[i]
         xmin, xmax, ymin, ymax = self.get_minmax_arrays()
         if abs(y - y) > abs(y - ymin[i]):
             yi = ymin[i]
@@ -343,6 +343,11 @@ class ErrorBarCurveItem(CurveItem):
     def update_params(self):
         """Update object properties from item parameters"""
         self.errorbarparam.update_item(self)
+
+        # In case the downsampling factor/state has changed,
+        # we need to invalidate cached data
+        self.__minmaxarrays = {}
+
         CurveItem.update_params(self)
 
     def update_item_parameters(self) -> None:

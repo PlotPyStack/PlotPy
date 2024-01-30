@@ -41,12 +41,12 @@ class CurveParam(DataSet):
     shade = FloatItem(_("Shadow"), default=0, min=0, max=1)
     curvestyle = ImageChoiceItem(_("Curve style"), CURVESTYLE_CHOICES, default="Lines")
     baseline = FloatItem(_("Baseline"), default=0.0)
-    _downsampling_prop = GetAttrProp("use_downsampling")
-    use_downsampling = BoolItem(_("Use downsampling"), default=False).set_prop(
-        "display", store=_downsampling_prop
+    _use_dsamp_prop = GetAttrProp("use_dsamp")
+    use_dsamp = BoolItem(_("Use downsampling"), default=False).set_prop(
+        "display", store=_use_dsamp_prop
     )
-    downsampling_factor = IntItem(_("Downsampling factor"), default=10, min=1).set_prop(
-        "display", active=_downsampling_prop
+    dsamp_factor = IntItem(_("Downsampling factor"), default=10, min=1).set_prop(
+        "display", active=_use_dsamp_prop
     )
 
     def update_param(self, curve: CurveItem | PolygonMapItem):
@@ -88,6 +88,8 @@ class CurveParam(DataSet):
         # Curve style, type and baseline
         curve.setStyle(getattr(QwtPlotCurve, self.curvestyle))
         curve.setBaseline(self.baseline)
+        # Downsampling
+        curve.update_data()
         if plot is not None:
             plot.blockSignals(False)
 

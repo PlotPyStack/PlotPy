@@ -25,12 +25,12 @@ def callback_function(tool: SelectPointTool) -> None:
     print("Current coordinates:", tool.get_coordinates())
 
 
-def get_point(curves: tuple[tuple[float, float], ...]) -> None:
+def get_point(cdata: tuple[tuple[float, float], ...]) -> None:
     """
     Plot curves and return selected point(s) coordinates
 
     Args:
-        curves: A tuple of curves to plot
+        cdata: A tuple of curves to plot
     """
     win = make.dialog(
         wintitle=_("Select one point then press OK to accept"),
@@ -46,10 +46,10 @@ def get_point(curves: tuple[tuple[float, float], ...]) -> None:
     )
     default.activate()
     plot = win.manager.get_plot()
-    for cx, cy in curves[:-1]:
+    for cx, cy in cdata[:-1]:
         item = make.mcurve(cx, cy)
         plot.add_item(item)
-    item = make.mcurve(*curves[-1], "r-+")
+    item = make.mcurve(*cdata[-1], "r-+")
     plot.add_item(item)
     plot.set_active_item(item)
     plot.unselect_item(item)

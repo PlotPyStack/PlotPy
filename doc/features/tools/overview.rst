@@ -52,6 +52,7 @@ The `tools` module provides the following tools:
 * :py:class:`.tools.HRangeTool`
 * :py:class:`.tools.DummySeparatorTool`
 * :py:class:`.tools.AntiAliasingTool`
+* :py:class:`.tools.DownSamplingTool`
 * :py:class:`.tools.DisplayCoordsTool`
 * :py:class:`.tools.ReverseYAxisTool`
 * :py:class:`.tools.AspectRatioTool`

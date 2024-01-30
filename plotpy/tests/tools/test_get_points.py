@@ -29,12 +29,12 @@ def callback_function(tool: SelectPointsTool) -> None:
     print("Points : ", points)
 
 
-def get_points(curves: tuple[tuple[float, float], ...], max_select: int) -> None:
+def get_points(cdata: tuple[tuple[float, float], ...], max_select: int) -> None:
     """
     Plot curves and return selected point(s) coordinates
 
     Args:
-        curves: A tuple of curves to plot
+        cdata: A tuple of curves to plot
     """
     win = make.dialog(
         wintitle=_(
@@ -56,11 +56,11 @@ def get_points(curves: tuple[tuple[float, float], ...], max_select: int) -> None
     )
     default.activate()
     plot = win.manager.get_plot()
-    for cx, cy in curves[:-1]:
+    for cx, cy in cdata[:-1]:
         item = make.mcurve(cx, cy)
         plot.add_item(item)
     # the last curve will be actibe and needs to have a different style for explictness
-    item = make.mcurve(*curves[-1], "r-+")
+    item = make.mcurve(*cdata[-1], "r-+")
     plot.add_item(item)
     plot.set_active_item(item)
     plot.unselect_item(item)
