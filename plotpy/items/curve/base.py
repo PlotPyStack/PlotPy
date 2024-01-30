@@ -360,7 +360,7 @@ class CurveItem(QwtPlotCurve):
         assert isinstance(self._x, np.ndarray) and isinstance(self._y, np.ndarray)
         return self._x, self._y
 
-    def update_data(self):
+    def update_data(self) -> None:
         """Update curve data with current arrays."""
         if isinstance(self._x, np.ndarray) and isinstance(self._y, np.ndarray):
             self._setData(self._x, self._y)
@@ -378,7 +378,7 @@ class CurveItem(QwtPlotCurve):
             return data[:: self.param.dsamp_factor]
         return data
 
-    def _setData(self, x: np.ndarray, y: np.ndarray):
+    def _setData(self, x: np.ndarray, y: np.ndarray) -> None:
         """Wrapper around QwtPlotCurve.setData() to handle downsampling"""
         return super().setData(self.dsamp(x), self.dsamp(y))
 

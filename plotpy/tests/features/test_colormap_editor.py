@@ -17,66 +17,70 @@ modifications.
 import qtpy.QtCore as QC
 import qtpy.QtGui as QG
 import qtpy.QtWidgets as QW
+from guidata.qthelpers import qt_app_context
 
 from plotpy.widgets.colormap_editor import ColorMapEditor
 from plotpy.widgets.colormap_widget import CustomQwtLinearColormap
 
+
+def test_colormap_manager() -> None:
+    """Test the colormap editor widget and the CustomQwtLinearColormap class
+    by using multiple methods to initialize and export the colormap.
+    """
+    with qt_app_context(exec_loop=True):
+        print("Initialization of a default colormap editor widget")
+        editor = ColorMapEditor(None)
+        red = QG.QColor(QC.Qt.GlobalColor.red)
+        green = QG.QColor(QC.Qt.GlobalColor.green)
+        editor.colormap_widget.add_handle_at_relative_pos(0.5, red)
+        editor.show()
+
+        cmap_tuples = editor.get_colormap().to_tuples()
+        print(
+            "Initialization of a new colormap editor with the previous colormap: ",
+            cmap_tuples,
+        )
+        new_cmap = CustomQwtLinearColormap.from_iterable(cmap_tuples)
+        print(f"{new_cmap.to_tuples()}")
+        editor = ColorMapEditor(None, colormap=new_cmap)
+        editor.show()
+
+        cmap_tuples = editor.get_colormap().to_tuples()
+        print(
+            "Initialization of a new default colormap editor, "
+            "modified post-initialization with the previous colormap: ",
+            cmap_tuples,
+        )
+        new_cmap = CustomQwtLinearColormap.from_iterable(cmap_tuples)
+        editor = ColorMapEditor(None)
+        editor.set_colormap(new_cmap)
+        editor.show()
+
+        cmap_tuples = editor.get_colormap().to_tuples()
+        cmap_tuples = tuple((int(val * 255 + 1), color) for val, color in cmap_tuples)
+        print(
+            "Initialization of a new default colormap editor, "
+            "modified post-initialization with the previous colormap with stops scaled by "
+            "255 + 1: ",
+            cmap_tuples,
+        )
+        new_cmap = CustomQwtLinearColormap.from_iterable(cmap_tuples)
+        editor = ColorMapEditor(None)
+        editor.set_colormap(new_cmap)
+        editor.show()
+
+        print(
+            "Initialization of a new default colormap editor, "
+            "modified post-initialization with the previous colormap where the red stop is "
+            "replaced with a green stop: ",
+            cmap_tuples,
+        )
+
+        editor = ColorMapEditor(None)
+        editor.set_colormap(new_cmap)
+        editor.colormap_widget.edit_color_stop(1, None, green)
+        editor.show()
+
+
 if __name__ == "__main__":
-    print("Initialization of a default colormap editor widget")
-    app = QW.QApplication([])
-    editor = ColorMapEditor(None)
-    red = QG.QColor(QC.Qt.GlobalColor.red)
-    green = QG.QColor(QC.Qt.GlobalColor.green)
-    editor.colormap_widget.add_handle_at_relative_pos(0.5, red)
-    editor.show()
-    app.exec_()
-
-    cmap_tuples = editor.get_colormap().to_tuples()
-    print(
-        "Initialization of a new colormap editor with the previous colormap: ",
-        cmap_tuples,
-    )
-    new_cmap = CustomQwtLinearColormap.from_iterable(cmap_tuples)
-    print(f"{new_cmap.to_tuples()}")
-    editor = ColorMapEditor(None, colormap=new_cmap)
-    editor.show()
-    app.exec_()
-
-    cmap_tuples = editor.get_colormap().to_tuples()
-    print(
-        "Initialization of a new default colormap editor, "
-        "modified post-initialization with the previous colormap: ",
-        cmap_tuples,
-    )
-    new_cmap = CustomQwtLinearColormap.from_iterable(cmap_tuples)
-    editor = ColorMapEditor(None)
-    editor.set_colormap(new_cmap)
-    editor.show()
-    app.exec_()
-
-    cmap_tuples = editor.get_colormap().to_tuples()
-    cmap_tuples = tuple((int(val * 255 + 1), color) for val, color in cmap_tuples)
-    print(
-        "Initialization of a new default colormap editor, "
-        "modified post-initialization with the previous colormap with stops scaled by "
-        "255 + 1: ",
-        cmap_tuples,
-    )
-    new_cmap = CustomQwtLinearColormap.from_iterable(cmap_tuples)
-    editor = ColorMapEditor(None)
-    editor.set_colormap(new_cmap)
-    editor.show()
-    app.exec_()
-
-    print(
-        "Initialization of a new default colormap editor, "
-        "modified post-initialization with the previous colormap where the red stop is "
-        "replaced with a green stop: ",
-        cmap_tuples,
-    )
-
-    editor = ColorMapEditor(None)
-    editor.set_colormap(new_cmap)
-    editor.colormap_widget.edit_color_stop(1, None, green)
-    editor.show()
-    app.exec_()
+    test_colormap_manager()

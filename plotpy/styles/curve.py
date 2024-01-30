@@ -49,7 +49,7 @@ class CurveParam(DataSet):
         "display", active=_use_dsamp_prop
     )
 
-    def update_param(self, curve: CurveItem | PolygonMapItem):
+    def update_param(self, curve: CurveItem | PolygonMapItem) -> None:
         """Updates the parameters using values from a given CurveItem/PolygonMapItem
 
         Args:
@@ -61,7 +61,7 @@ class CurveParam(DataSet):
         self.curvestyle = CURVESTYLE_NAME[curve.style()]
         self.baseline = curve.baseline()
 
-    def update_item(self, curve: CurveItem | PolygonMapItem):
+    def update_item(self, curve: CurveItem | PolygonMapItem) -> None:
         """Updates a given CurveItem/PolygonMapItem using the current parameters
 
         Args:

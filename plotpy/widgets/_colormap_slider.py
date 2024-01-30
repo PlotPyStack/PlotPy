@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """A custom QDoubleRangeSlider with some extra functionnalities for colormap sliders.
 """
 from typing import Sequence
@@ -10,7 +12,7 @@ class QColorMapSlider(QDoubleRangeSlider):
     sliders."""
 
     @property
-    def pressed_index(self):
+    def pressed_index(self) -> int:
         """Simple getter for the index of the handle pressed by the user
         (mouse clicked).
 

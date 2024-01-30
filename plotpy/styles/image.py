@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+from __future__ import annotations
+
+from typing import Callable
 
 import numpy as np
 from guidata.dataset import (
@@ -23,9 +26,9 @@ from plotpy.mathutils.colormaps import ALL_COLORMAPS, build_icon_from_cmap_name
 from plotpy.styles.base import ItemParameters
 
 
-def _create_choices():
-    choices = []
-    for cmap_name in ALL_COLORMAPS.keys():
+def _create_choices() -> list[tuple[str, str, Callable[[str], QG.QIcon]]]:
+    choices: list[tuple[str, str, Callable[[str], QG.QIcon]]] = []
+    for cmap_name in ALL_COLORMAPS:
         choices.append((cmap_name, cmap_name, build_icon_from_cmap_name))
     return choices
 
