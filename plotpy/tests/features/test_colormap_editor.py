@@ -16,7 +16,6 @@ modifications.
 
 import qtpy.QtCore as QC
 import qtpy.QtGui as QG
-import qtpy.QtWidgets as QW
 from guidata.qthelpers import qt_app_context
 
 from plotpy.widgets.colormap_editor import ColorMapEditor

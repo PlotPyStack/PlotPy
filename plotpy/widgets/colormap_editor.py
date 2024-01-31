@@ -3,7 +3,8 @@
 # Licensed under the terms of the BSD 3-Clause
 # (see plotpy/LICENSE for details)
 
-"""This module provides a more complete colormap editor widget than the one provided
+"""
+This module provides a more complete colormap editor widget than the one provided
 by ColorMapWidget (plotpy/widgets/colormap_widget.py). It allows to edit a colormap
 by changing its color stops (add/delete/move/change color).
 """

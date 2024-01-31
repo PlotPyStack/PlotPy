@@ -13,6 +13,7 @@ This plotpy widget can be used to manage colormaps (visualize, edit, create ans 
 
 import qtpy.QtCore as QC
 import qtpy.QtGui as QG
+from guidata.env import execenv
 from guidata.qthelpers import qt_app_context
 
 from plotpy.mathutils.colormaps import ALL_COLORMAPS
@@ -22,18 +23,21 @@ from plotpy.widgets.colormap_widget import CustomQwtLinearColormap
 
 def test_colormap_manager() -> None:
     """Test the colormap manager widget."""
-    with qt_app_context(exec_loop=True):
+    with qt_app_context():
         red = QG.QColor(QC.Qt.GlobalColor.red)
         blue = QG.QColor(QC.Qt.GlobalColor.blue)
         yellow = QG.QColor(QC.Qt.GlobalColor.yellow)
         cmap = CustomQwtLinearColormap(blue, yellow, name="kinda_viridis")
         ALL_COLORMAPS["kinda_viridis"] = cmap
-        editor = ColorMapManager(None, active_colormap="YlGn")
-        editor.colormap_editor.colormap_widget.add_handle_at_relative_pos(0.5, red)
-        editor.get_colormap()
-        editor.colormap_editor.update_colormap_widget()
-        editor.colormap_editor.update_current_dataset()
-        editor.show()
+        dlg = ColorMapManager(None, active_colormap="YlGn")
+        dlg.colormap_editor.colormap_widget.add_handle_at_relative_pos(0.5, red)
+        dlg.get_colormap()
+        dlg.colormap_editor.update_colormap_widget()
+        dlg.colormap_editor.update_current_dataset()
+        result = dlg.exec()
+        execenv.print("Dialog result:", result)
+        cmap = dlg.get_colormap()
+        execenv.print("Selected colormap:", cmap.name)
 
 
 if __name__ == "__main__":

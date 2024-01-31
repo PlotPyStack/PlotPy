@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any, Callable, Literal
 
 from guidata.configtools import get_icon
 from guidata.dataset import BoolItem, DataSet, FloatItem
-from guidata.qthelpers import add_actions
+from guidata.qthelpers import add_actions, exec_dialog
 from guidata.widgets.arrayeditor import ArrayEditor
 from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
@@ -51,7 +51,7 @@ from plotpy.tools.base import (
 )
 from plotpy.tools.misc import OpenFileTool
 from plotpy.tools.shape import CircleTool, RectangleTool, RectangularShapeTool
-from plotpy.widgets.colormap_manager import ColorMapManagerDialog
+from plotpy.widgets.colormap_manager import ColorMapManager
 from plotpy.widgets.colormap_widget import CustomQwtLinearColormap
 from plotpy.widgets.imagefile import exec_image_save_dialog
 
@@ -463,65 +463,6 @@ class ColormapTool(CommandTool):
             self.action.setIconText("")
             self.action.setIcon(self.default_icon)
 
-    def create_action_menu(self, manager: PlotManager) -> QW.QMenu:
-        """Create and return menu for the tool's action with all the colormaps and
-        colormap editor available
-
-        Args:
-            manager: PlotManager instance
-        """
-        menu = QW.QMenu()
-
-        default_cmaps_action_group = QActionGroup(menu)
-        for cmap in DEFAULT_COLORMAPS.values():
-            icon = build_icon_from_cmap(cmap)
-            action = menu.addAction(icon, cmap.name)
-            action.setEnabled(True)  # type: ignore
-            action.setData(cmap)  # type: ignore
-            action = default_cmaps_action_group.addAction(action)
-        default_cmaps_action_group.triggered.connect(self.activate_cmap)
-
-        menu.addSeparator()
-
-        custom_cmaps_action_group = QActionGroup(menu)
-        for cmap in CUSTOM_COLORMAPS.values():
-            icon = build_icon_from_cmap(cmap)
-            action = menu.addAction(icon, cmap.name)
-            custom_cmaps_action_group.addAction(action)
-            action.setEnabled(True)  # type: ignore
-            action.setData(cmap)  # type: ignore
-        custom_cmaps_action_group.triggered.connect(self.activate_cmap)
-
-        menu.addSeparator()
-
-        action = menu.addAction(_("Edit..."))
-        action.setEnabled(True)  # type: ignore
-        action.setIcon(get_icon("edit.png"))  # type: ignore
-        action.triggered.connect(self.open_cmap_manager)  # type: ignore
-
-        return menu
-
-    def open_cmap_manager(self) -> None:
-        """Opens the colormap manager in a new dialog. The chosen colormap will be
-        applied to the active image when the manager is closed.
-        """
-        plot = self.get_active_plot()
-        if (
-            plot is None
-            or not isinstance(self.action, QC.QObject)
-            or not isinstance(self.action.text(), str)
-        ):
-            return
-        manager = ColorMapManagerDialog(
-            plot.parent(), active_colormap=self._active_colormap.name
-        )
-        manager.exec_()
-
-        self._active_colormap = manager.get_colormap()
-        self.menu = self.create_action_menu(plot.manager)
-        self.action.setMenu(self.menu)
-        self.activate_cmap()
-
     def activate_command(self, plot: BasePlot, checked: bool) -> None:
         """Triggers tool action.
 
@@ -529,7 +470,17 @@ class ColormapTool(CommandTool):
             plot: Plot instance
             checked: True if tool is checked, False otherwise
         """
-        pass
+        if (
+            plot is None
+            or not isinstance(self.action, QC.QObject)
+            or not isinstance(self.action.text(), str)
+        ):
+            return
+        manager = ColorMapManager(
+            plot.parent(), active_colormap=self._active_colormap.name
+        )
+        if exec_dialog(manager):
+            self.activate_cmap(manager.get_colormap())
 
     def get_selected_images(self, plot: BasePlot) -> list[IBasePlotItem]:
         """Returns the currently selected images in the given plot.
@@ -547,30 +498,24 @@ class ColormapTool(CommandTool):
                 items = [active_image]
         return items
 
-    def activate_cmap(
-        self, cmap: QAction | str | CustomQwtLinearColormap | None = None
-    ) -> None:
+    def activate_cmap(self, cmap: str | CustomQwtLinearColormap) -> None:
         """Activate the given colormap. Supports mutliple input types.
 
         Args:
-            cmap: Cmap to apply for currently selected images. If None, the tool's
-            active colormap will be used. Defaults to None.
+            cmap: Cmap to apply for currently selected images.
         """
-        assert isinstance(cmap, (QAction, str, CustomQwtLinearColormap)) or cmap is None
-        if isinstance(cmap, QAction):
-            self._active_colormap = cmap.data()  # type: ignore
-        elif isinstance(cmap, str):
+        assert isinstance(cmap, (str, CustomQwtLinearColormap))
+        if isinstance(cmap, str):
             self._active_colormap = get_cmap(cmap)
-        elif isinstance(cmap, CustomQwtLinearColormap):
+        else:
             self._active_colormap = cmap
-
         plot = self.get_active_plot()
         if self._active_colormap is not None and plot is not None:
             items = self.get_selected_images(plot)
             for item in items:
                 item.param.colormap = self._active_colormap.name
                 item.param.update_item(item)
-            self.action.setText(self._active_colormap.name)
+            self.action.setText(_("Colormap: %s") % self._active_colormap.name)
             plot.invalidate()
             self.update_status(plot)
 

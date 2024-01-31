@@ -80,7 +80,7 @@ def save_colormaps(json_filename: str, colormaps: dict[str, CustomQwtLinearColor
 
 
 def build_icon_from_cmap(
-    cmap: CustomQwtLinearColormap, width: int = 24, height: int = 24
+    cmap: CustomQwtLinearColormap, width: int = 16, height: int = 16
 ) -> QG.QIcon:
     """Builds an icon representing the colormap
 

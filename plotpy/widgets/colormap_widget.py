@@ -2,9 +2,12 @@
 #
 # Licensed under the terms of the BSD 3-Clause
 # (see plotpy/LICENSE for details)
-"""This module provides a basic widget to edit a colormap that contains a multi-slider
+
+"""
+This module provides a basic widget to edit a colormap that contains a multi-slider
 and a colorap representation.
 """
+
 from __future__ import annotations
 
 from typing import Sequence, Tuple, TypeVar, Union
