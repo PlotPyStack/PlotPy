@@ -134,12 +134,11 @@ class ColorMapEditor(QW.QWidget):
         self.tabs.setCurrentIndex(0)
         self.update_tabs_names_from_current()
 
-        self.editor_layout = QW.QVBoxLayout(self)
-
-        self.editor_layout.addWidget(self.colormap_widget)
-        self.editor_layout.addWidget(self.tabs)
-
-        self.setLayout(self.editor_layout)
+        layout = QW.QVBoxLayout(self)
+        layout.addWidget(self.colormap_widget)
+        layout.addWidget(self.tabs)
+        layout.addStretch(1)
+        self.setLayout(layout)
 
         self.colormap_widget.HANDLE_SELECTED.connect(self.change_current_dataset)
         self.colormap_widget.HANDLE_ADDED.connect(self.new_tab)
