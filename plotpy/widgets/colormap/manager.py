@@ -129,8 +129,7 @@ class ColorMapManager(QW.QDialog):
         select_gbox_layout.addWidget(self._cmap_choice)
         select_gbox_layout.addSpacing(10)
         select_gbox_layout.addWidget(new_btn)
-        # Let the new_btn button occupy all the available space:
-        new_btn.setSizePolicy(QW.QSizePolicy.Expanding, QW.QSizePolicy.Expanding)
+        select_gbox_layout.addStretch(1)
         select_gbox.setLayout(select_gbox_layout)
 
         # Edit the selected colormap
@@ -163,6 +162,9 @@ class ColorMapManager(QW.QDialog):
         dialog_layout.addWidget(edit_gbox)
         dialog_layout.addWidget(self.bbox)
         self.setLayout(dialog_layout)
+
+        # The dialog needs to be resizable horizontally but not vertically:
+        self.setFixedHeight(self.sizeHint().height())
 
     def button_clicked(self, button: QW.QAbstractButton) -> None:
         """Callback function to be called when a button is clicked.
