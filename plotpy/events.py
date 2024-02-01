@@ -28,16 +28,6 @@ from plotpy.coords import axes_to_canvas, canvas_to_axes
 CursorShape = type(QC.Qt.CursorShape.ArrowCursor)
 
 
-def is_touch_screen_available() -> bool:
-    """Check if a touch screen is available.
-
-    Returns:
-        bool: True if a touch screen is available, False otherwise.
-    """
-    touch_devices = QG.QTouchDevice.devices()
-    return any(device.type() == QG.QTouchDevice.TouchScreen for device in touch_devices)
-
-
 def buttons_to_str(buttons: int) -> str:
     """Conversion des flags Qt en chaine"""
     string = ""
@@ -1155,12 +1145,11 @@ def setup_standard_tool_filter(filter, start_state):
     ZoomHandler(filter, QC.Qt.RightButton, start_state=start_state)
     MenuHandler(filter, QC.Qt.RightButton, start_state=start_state)
 
-    if is_touch_screen_available():
-        # Gestes
-        PinchZoomHandler(filter, start_state=start_state)
-        # FIXME: Pinch/PanZoomHandler are currently mutually exclusive: when both
-        # are enabled, it doesn't work ; when only one is enabled, it works
-        PanGestureHandler(filter, start_state=start_state)
+    # Gestes
+    PinchZoomHandler(filter, start_state=start_state)
+    # FIXME: Pinch/PanZoomHandler are currently mutually exclusive: when both
+    # are enabled, it doesn't work ; when only one is enabled, it works
+    PanGestureHandler(filter, start_state=start_state)
 
     # Autres (touches, move)
     MoveHandler(filter, start_state=start_state)

@@ -10,18 +10,15 @@
 
 # guitest: show
 
-from guidata.env import execenv
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
-from plotpy.events import is_touch_screen_available
 from plotpy.tests import data as ptd
 from plotpy.tests import vistools as ptv
 
 
 def test_image():
     """Testing ImageItem object"""
-    execenv.print(f"Touch screen available: {is_touch_screen_available()}")
     for index, func in enumerate((ptd.gen_image1, ptd.gen_image2, ptd.gen_image3)):
         title = test_image.__doc__ + f" #{index+1}"
         data = func()
