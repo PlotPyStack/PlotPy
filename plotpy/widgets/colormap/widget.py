@@ -233,7 +233,6 @@ class ColorMapWidget(QW.QWidget):
 
     COLORMAP_CHANGED = QC.Signal()  # type: ignore
     HANDLE_SELECTED = QC.Signal(int)  # type: ignore
-    # handleReleased = QC.Signal(int)  # type: ignore
     HANDLE_ADDED = QC.Signal(int, float)  # type: ignore
     HANDLE_DELETED = QC.Signal(int)  # type: ignore
 

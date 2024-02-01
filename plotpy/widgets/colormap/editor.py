@@ -22,6 +22,74 @@ from plotpy.config import _
 from plotpy.widgets.colormap.widget import ColorMapWidget, CustomQwtLinearColormap
 
 
+class ColorPickDataSet(DataSet):
+    """Dataset with the field used to edit a color stop."""
+
+    _position_locked = False
+
+    position = (
+        FloatItem(
+            _("Relative position"),
+            min=0.0,
+            max=1.0,
+            help=_("Must be a value between 0.0 and 1.0."),
+        )
+        .set_prop("display", format="%.2f")
+        .set_prop("display", active=NotProp(GetAttrProp("_position_locked")))
+    )
+    hex_color = ColorItem(
+        "Pick color", help="Pick a color to use for the selected cursor."
+    )
+
+    def lock_position(self, lock=True) -> None:
+        """Used to lock the position of the cursor value.
+
+        Args:
+            lock: True if value must be locked. Defaults to True.
+        """
+        self._position_locked = lock
+
+    def is_position_locked(self):
+        """Returns True if the position is locked.
+
+        Returns:
+            True if position is locked, False otherwise.
+        """
+        return self._position_locked
+
+    def set_position(self, position: float) -> None:
+        """Set a new position for the cursor. Value is rounded to 2 decimals.
+
+        Args:
+            position: new position to set
+        """
+        self.position = round(position, 2)
+
+    def get_position(self) -> float:
+        """Return the current position of the cursor.
+
+        Returns:
+            float value of the cursor position
+        """
+        return self.position  # type: ignore
+
+    def set_color(self, hex_color: str):
+        """Set a new hex color for the cursor.
+
+        Args:
+            hex_color: str hex color to set (e.g. "#FF0000" for red)
+        """
+        self.hex_color = hex_color
+
+    def get_hex_color(self) -> str:
+        """Return the current str hex color of the cursor.
+
+        Returns:
+            str hex color of the cursor (e.g. "#FF0000" for red)
+        """
+        return self.hex_color  # type: ignore
+
+
 class ColorMapEditor(QW.QWidget):
     """Widget that allows a user to edit a colormap by changing its color stops (
     add/delete/move/change color). Right click on the colorbar or slider to add or
@@ -40,73 +108,6 @@ class ColorMapEditor(QW.QWidget):
         colormap: An already initialized colormap to use in the widget.
         Defaults to None.
     """
-
-    class ColorPickDataSet(DataSet):
-        """Dataset with the field used to edit a color stop."""
-
-        _position_locked = False
-
-        position = (
-            FloatItem(
-                _("Relative position"),
-                min=0.0,
-                max=1.0,
-                help=_("Must be a value between 0.0 and 1.0."),
-            )
-            .set_prop("display", format="%.2f")
-            .set_prop("display", active=NotProp(GetAttrProp("_position_locked")))
-        )
-        hex_color = ColorItem(
-            "Pick color", help="Pick a color to use for the selected cursor."
-        )
-
-        def lock_position(self, lock=True) -> None:
-            """Used to lock the position of the cursor value.
-
-            Args:
-                lock: True if value must be locked. Defaults to True.
-            """
-            self._position_locked = lock
-
-        def is_position_locked(self):
-            """Returns True if the position is locked.
-
-            Returns:
-                True if position is locked, False otherwise.
-            """
-            return self._position_locked
-
-        def set_position(self, position: float) -> None:
-            """Set a new position for the cursor. Value is rounded to 2 decimals.
-
-            Args:
-                position: new position to set
-            """
-            self.position = round(position, 2)
-
-        def get_position(self) -> float:
-            """Return the current position of the cursor.
-
-            Returns:
-                float value of the cursor position
-            """
-            return self.position  # type: ignore
-
-        def set_color(self, hex_color: str):
-            """Set a new hex color for the cursor.
-
-            Args:
-                hex_color: str hex color to set (e.g. "#FF0000" for red)
-            """
-            self.hex_color = hex_color
-
-        def get_hex_color(self) -> str:
-            """Return the current str hex color of the cursor.
-
-            Returns:
-                str hex color of the cursor (e.g. "#FF0000" for red)
-            """
-            return self.hex_color  # type: ignore
 
     def __init__(
         self,
@@ -127,7 +128,7 @@ class ColorMapEditor(QW.QWidget):
 
         self.tabs = QW.QTabWidget()
 
-        self.datasets: list[DataSetEditGroupBox[ColorMapEditor.ColorPickDataSet]] = []
+        self.datasets: list[DataSetEditGroupBox[ColorPickDataSet]] = []
 
         self.setup_tabs()
         self.tabs.setCurrentIndex(0)
@@ -209,13 +210,8 @@ class ColorMapEditor(QW.QWidget):
             handle_pos: relative value to set in the tab (new handle current position)
         """
         title = ""
-        # title.setPixmap(pixmap)
 
-        dw = DataSetEditGroupBox(
-            QW.QLabel(title, self),
-            self.ColorPickDataSet,
-            # comment=_("Edit color point."),
-        )
+        dw = DataSetEditGroupBox(QW.QLabel(title, self), ColorPickDataSet)
         dw.dataset.set_position(handle_pos)
 
         hex_color = self.colormap_widget.get_hex_color(index)
@@ -294,4 +290,5 @@ class ColorMapEditor(QW.QWidget):
         current_dataset_grp = self.datasets[current_index]
         relative_pos = self.colormap_widget.get_handles_tuple()[current_index]
         current_dataset_grp.dataset.set_position(relative_pos)
+        current_dataset_grp.get()
         current_dataset_grp.get()
