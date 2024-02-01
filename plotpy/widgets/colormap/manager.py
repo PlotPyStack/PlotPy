@@ -27,8 +27,8 @@ from plotpy.mathutils.colormaps import (
     build_icon_from_cmap,
     save_colormaps,
 )
-from plotpy.widgets.colormap_editor import ColorMapEditor
-from plotpy.widgets.colormap_widget import CustomQwtLinearColormap
+from plotpy.widgets.colormap.editor import ColorMapEditor
+from plotpy.widgets.colormap.widget import CustomQwtLinearColormap
 
 
 class ColorMapNameEdit(QW.QDialog):

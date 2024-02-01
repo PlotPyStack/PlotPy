@@ -18,8 +18,8 @@ import qtpy.QtCore as QC
 import qtpy.QtGui as QG
 from guidata.qthelpers import qt_app_context
 
-from plotpy.widgets.colormap_editor import ColorMapEditor
-from plotpy.widgets.colormap_widget import CustomQwtLinearColormap
+from plotpy.widgets.colormap.editor import ColorMapEditor
+from plotpy.widgets.colormap.widget import CustomQwtLinearColormap
 
 
 def test_colormap_manager() -> None:

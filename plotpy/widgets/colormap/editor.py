@@ -19,7 +19,7 @@ from guidata.dataset.datatypes import GetAttrProp, NotProp
 from guidata.dataset.qtwidgets import DataSetEditGroupBox
 
 from plotpy.config import _
-from plotpy.widgets.colormap_widget import ColorMapWidget, CustomQwtLinearColormap
+from plotpy.widgets.colormap.widget import ColorMapWidget, CustomQwtLinearColormap
 
 
 class ColorMapEditor(QW.QWidget):

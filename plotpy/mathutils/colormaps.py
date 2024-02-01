@@ -18,7 +18,7 @@ from guidata.configtools import get_module_data_path
 from qwt import QwtInterval, toQImage
 
 from plotpy.config import CONF
-from plotpy.widgets.colormap_widget import CustomQwtLinearColormap
+from plotpy.widgets.colormap.widget import CustomQwtLinearColormap
 
 # from guidata.dataset.datatypes import NoDefault
 FULLRANGE = QwtInterval(0.0, 1.0)

@@ -51,8 +51,8 @@ from plotpy.tools.base import (
 )
 from plotpy.tools.misc import OpenFileTool
 from plotpy.tools.shape import CircleTool, RectangleTool, RectangularShapeTool
-from plotpy.widgets.colormap_manager import ColorMapManager
-from plotpy.widgets.colormap_widget import CustomQwtLinearColormap
+from plotpy.widgets.colormap.manager import ColorMapManager
+from plotpy.widgets.colormap.widget import CustomQwtLinearColormap
 from plotpy.widgets.imagefile import exec_image_save_dialog
 
 if TYPE_CHECKING:  # pragma: no cover

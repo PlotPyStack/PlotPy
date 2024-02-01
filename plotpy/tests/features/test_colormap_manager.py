@@ -17,8 +17,8 @@ from guidata.env import execenv
 from guidata.qthelpers import qt_app_context
 
 from plotpy.mathutils.colormaps import ALL_COLORMAPS
-from plotpy.widgets.colormap_manager import ColorMapManager
-from plotpy.widgets.colormap_widget import CustomQwtLinearColormap
+from plotpy.widgets.colormap.manager import ColorMapManager
+from plotpy.widgets.colormap.widget import CustomQwtLinearColormap
 
 
 def test_colormap_manager() -> None:

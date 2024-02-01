@@ -58,7 +58,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
     from plotpy.interfaces import IItemType
     from plotpy.styles.base import ItemParameters
-    from plotpy.widgets.colormap_widget import CustomQwtLinearColormap
+    from plotpy.widgets.colormap.widget import CustomQwtLinearColormap
 
 
 class BaseImageItem(QwtPlotItem):

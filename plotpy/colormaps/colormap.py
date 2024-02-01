@@ -48,7 +48,7 @@ from plotpy.mathutils.colormaps import (
     DEFAULT_COLORMAPS_PATH,
     save_colormaps,
 )
-from plotpy.widgets.colormap_widget import (
+from plotpy.widgets.colormap.widget import (
     CustomQwtLinearColormap,  # Reuse matplotlib data
 )
 

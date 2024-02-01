@@ -21,7 +21,7 @@ from qwt import QwtInterval, QwtLinearColorMap, toQImage
 from qwt.color_map import ColorStop
 
 from plotpy.config import _
-from plotpy.widgets._colormap_slider import QColorMapSlider
+from plotpy.widgets.colormap._slider import QColorMapSlider
 
 ColorTypeT = TypeVar("ColorTypeT", bound=Union[QG.QColor, int])
 QColorInitTypes = Union[
