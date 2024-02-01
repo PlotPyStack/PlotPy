@@ -28,7 +28,7 @@ from plotpy.mathutils.colormaps import (
     save_colormaps,
 )
 from plotpy.widgets.colormap.editor import ColorMapEditor
-from plotpy.widgets.colormap.widget import CustomQwtLinearColormap
+from plotpy.widgets.colormap.widget import EditableColormap
 
 
 class ColorMapNameEdit(QW.QDialog):
@@ -109,7 +109,7 @@ class ColorMapManager(QW.QDialog):
         self.setWindowIcon(get_icon("cmap_edit.png"))
         self.setWindowTitle(_("Colormap manager"))
 
-        self.__returned_colormap: CustomQwtLinearColormap | None = None
+        self.__returned_colormap: EditableColormap | None = None
 
         if active_colormap is None or active_colormap.lower() not in ALL_COLORMAPS:
             active_colormap = next(iter(ALL_COLORMAPS))
@@ -200,13 +200,13 @@ class ColorMapManager(QW.QDialog):
         Args:
             index: index of the colormap in the QComboBox.
         """
-        cmap_copy: CustomQwtLinearColormap = deepcopy(self._cmap_choice.itemData(index))
+        cmap_copy: EditableColormap = deepcopy(self._cmap_choice.itemData(index))
         self.colormap_editor.set_colormap(cmap_copy)
         is_new_colormap = cmap_copy.name.lower() not in ALL_COLORMAPS
         self._changes_saved = True
         self._save_btn.setEnabled(is_new_colormap)
 
-    def get_colormap(self) -> CustomQwtLinearColormap:
+    def get_colormap(self) -> EditableColormap:
         """Return the selected colormap object.
 
         Returns:
@@ -263,12 +263,10 @@ class ColorMapManager(QW.QDialog):
 
     def new_colormap(self) -> None:
         """Create a new colormap and set it as the current colormap."""
-        cmap = CustomQwtLinearColormap(
-            QG.QColor(0), QG.QColor(4294967295), name=_("New")
-        )
+        cmap = EditableColormap(QG.QColor(0), QG.QColor(4294967295), name=_("New"))
         self.save_colormap(cmap)
 
-    def save_colormap(self, cmap: CustomQwtLinearColormap | None = None) -> bool:
+    def save_colormap(self, cmap: EditableColormap | None = None) -> bool:
         """Saves the current colormap and handles the validation process. The saved
         colormaps can only be saved in the custom colormaps.
 

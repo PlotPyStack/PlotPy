@@ -19,7 +19,7 @@ from guidata.dataset.datatypes import GetAttrProp, NotProp
 from guidata.dataset.qtwidgets import DataSetEditGroupBox
 
 from plotpy.config import _
-from plotpy.widgets.colormap.widget import ColorMapWidget, CustomQwtLinearColormap
+from plotpy.widgets.colormap.widget import ColorMapWidget, EditableColormap
 
 
 class ColorPickDataSet(DataSet):
@@ -116,7 +116,7 @@ class ColorMapEditor(QW.QWidget):
         cmap_height: int = 50,
         color1: QG.QColor | None = None,
         color2: QG.QColor | None = None,
-        colormap: CustomQwtLinearColormap | None = None,
+        colormap: EditableColormap | None = None,
     ) -> None:
         super().__init__(parent)
 
@@ -148,7 +148,7 @@ class ColorMapEditor(QW.QWidget):
             self.update_current_dataset
         )
 
-    def set_colormap(self, colormap: CustomQwtLinearColormap) -> None:
+    def set_colormap(self, colormap: EditableColormap) -> None:
         """Replaces the current colormap.
 
         Args:
@@ -159,7 +159,7 @@ class ColorMapEditor(QW.QWidget):
         self.colormap_widget.blockSignals(False)
         self.setup_tabs()
 
-    def get_colormap(self) -> CustomQwtLinearColormap:
+    def get_colormap(self) -> EditableColormap:
         """Get the current colormap being edited.
 
         Returns:

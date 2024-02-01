@@ -48,9 +48,7 @@ from plotpy.mathutils.colormaps import (
     DEFAULT_COLORMAPS_PATH,
     save_colormaps,
 )
-from plotpy.widgets.colormap.widget import (
-    CustomQwtLinearColormap,  # Reuse matplotlib data
-)
+from plotpy.widgets.colormap.widget import EditableColormap  # Reuse matplotlib data
 
 # usefull to obtain a full color map
 FULLRANGE = QwtInterval(0.0, 1.0)
@@ -68,7 +66,7 @@ def _interpolate(val, vmin, vmax):
     return (1 - interp) * vmin[1] + interp * vmax[2]
 
 
-def _setup_colormap(cmap: CustomQwtLinearColormap, cmdata):
+def _setup_colormap(cmap: EditableColormap, cmdata):
     """Setup a CustomQwtLinearColorMap according to
     matplotlib's data
     """
@@ -93,7 +91,7 @@ def _setup_colormap(cmap: CustomQwtLinearColormap, cmdata):
         cmap.addColorStop(i, col)
 
 
-def get_cmap(name: str) -> CustomQwtLinearColormap:
+def get_cmap(name: str) -> EditableColormap:
     """Get a colormap from its name
 
     Args:
@@ -106,7 +104,7 @@ def get_cmap(name: str) -> CustomQwtLinearColormap:
     if name in COLORMAPS:
         return COLORMAPS[name]
 
-    colormap = CustomQwtLinearColormap()
+    colormap = EditableColormap()
     COLORMAPS[name] = colormap
     COLORMAPS[colormap] = name
     data = getattr(_cm, "_" + name + "_data")
@@ -114,7 +112,7 @@ def get_cmap(name: str) -> CustomQwtLinearColormap:
     return colormap
 
 
-def get_cmap_name(cmap: CustomQwtLinearColormap) -> str:
+def get_cmap_name(cmap: EditableColormap) -> str:
     """Return colormap's name
 
     Args:
@@ -143,7 +141,7 @@ def get_colormap_list() -> list[str]:
 
 
 def build_icon_from_cmap(
-    cmap: CustomQwtLinearColormap, width: int = 24, height: int = 24
+    cmap: EditableColormap, width: int = 24, height: int = 24
 ) -> QG.QIcon:
     """Builds an icon representing the colormap
 
@@ -176,7 +174,7 @@ def build_icon_from_cmap_name(cmap_name: str) -> QG.QIcon:
     return icon
 
 
-def register_extra_colormap(name: str, colormap: CustomQwtLinearColormap) -> None:
+def register_extra_colormap(name: str, colormap: EditableColormap) -> None:
     """Add a custom colormap to the list of known colormaps
     must be done early in the import process because
     datasets will use get_color_map list at import time

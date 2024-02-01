@@ -52,7 +52,7 @@ from plotpy.tools.base import (
 from plotpy.tools.misc import OpenFileTool
 from plotpy.tools.shape import CircleTool, RectangleTool, RectangularShapeTool
 from plotpy.widgets.colormap.manager import ColorMapManager
-from plotpy.widgets.colormap.widget import CustomQwtLinearColormap
+from plotpy.widgets.colormap.widget import EditableColormap
 from plotpy.widgets.imagefile import exec_image_save_dialog
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -454,9 +454,7 @@ class ColormapTool(CommandTool):
             tip=_("Select colormap for active image"),
             toolbar_id=toolbar_id,
         )
-        self._active_colormap: CustomQwtLinearColormap = ALL_COLORMAPS.get(
-            "jet", DEFAULT
-        )
+        self._active_colormap: EditableColormap = ALL_COLORMAPS.get("jet", DEFAULT)
         self.default_icon = build_icon_from_cmap_name(self._active_colormap.name)
         if self.action is not None:
             self.action.setEnabled(False)
@@ -498,13 +496,13 @@ class ColormapTool(CommandTool):
                 items = [active_image]
         return items
 
-    def activate_cmap(self, cmap: str | CustomQwtLinearColormap) -> None:
+    def activate_cmap(self, cmap: str | EditableColormap) -> None:
         """Activate the given colormap. Supports mutliple input types.
 
         Args:
             cmap: Cmap to apply for currently selected images.
         """
-        assert isinstance(cmap, (str, CustomQwtLinearColormap))
+        assert isinstance(cmap, (str, EditableColormap))
         if isinstance(cmap, str):
             self._active_colormap = get_cmap(cmap)
         else:

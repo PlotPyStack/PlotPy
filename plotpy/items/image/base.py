@@ -58,7 +58,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
     from plotpy.interfaces import IItemType
     from plotpy.styles.base import ItemParameters
-    from plotpy.widgets.colormap.widget import CustomQwtLinearColormap
+    from plotpy.widgets.colormap.widget import EditableColormap
 
 
 class BaseImageItem(QwtPlotItem):
@@ -416,7 +416,7 @@ class BaseImageItem(QwtPlotItem):
         else:
             self.lut = (a, b, np.uint32(QG.QColor(qcolor).rgb() & 0xFFFFFF), cmap)
 
-    def set_color_map(self, name_or_table: str | CustomQwtLinearColormap) -> None:
+    def set_color_map(self, name_or_table: str | EditableColormap) -> None:
         """Set colormap
 
         Args:
@@ -459,7 +459,7 @@ class BaseImageItem(QwtPlotItem):
         if plot:
             plot.update_colormap_axis(self)
 
-    def get_color_map(self) -> CustomQwtLinearColormap | None:
+    def get_color_map(self) -> EditableColormap | None:
         """Get colormap
 
         Returns:

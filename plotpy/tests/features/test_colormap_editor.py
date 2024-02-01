@@ -19,7 +19,7 @@ import qtpy.QtGui as QG
 from guidata.qthelpers import qt_app_context
 
 from plotpy.widgets.colormap.editor import ColorMapEditor
-from plotpy.widgets.colormap.widget import CustomQwtLinearColormap
+from plotpy.widgets.colormap.widget import EditableColormap
 
 
 def test_colormap_manager() -> None:
@@ -39,7 +39,7 @@ def test_colormap_manager() -> None:
             "Initialization of a new colormap editor with the previous colormap: ",
             cmap_tuples,
         )
-        new_cmap = CustomQwtLinearColormap.from_iterable(cmap_tuples)
+        new_cmap = EditableColormap.from_iterable(cmap_tuples)
         print(f"{new_cmap.to_tuples()}")
         editor = ColorMapEditor(None, colormap=new_cmap)
         editor.show()
@@ -50,7 +50,7 @@ def test_colormap_manager() -> None:
             "modified post-initialization with the previous colormap: ",
             cmap_tuples,
         )
-        new_cmap = CustomQwtLinearColormap.from_iterable(cmap_tuples)
+        new_cmap = EditableColormap.from_iterable(cmap_tuples)
         editor = ColorMapEditor(None)
         editor.set_colormap(new_cmap)
         editor.show()
@@ -63,7 +63,7 @@ def test_colormap_manager() -> None:
             "255 + 1: ",
             cmap_tuples,
         )
-        new_cmap = CustomQwtLinearColormap.from_iterable(cmap_tuples)
+        new_cmap = EditableColormap.from_iterable(cmap_tuples)
         editor = ColorMapEditor(None)
         editor.set_colormap(new_cmap)
         editor.show()

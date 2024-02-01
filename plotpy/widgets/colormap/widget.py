@@ -29,7 +29,7 @@ QColorInitTypes = Union[
 ]
 
 
-class CustomQwtLinearColormap(QwtLinearColorMap):
+class EditableColormap(QwtLinearColorMap):
     """Overload of the QwtLinearColorMap class to add some features. This class is
     temporary and should be removed when its features are added to QwtPython.
 
@@ -106,7 +106,7 @@ class CustomQwtLinearColormap(QwtLinearColorMap):
     @classmethod
     def from_iterable(
         cls, iterable: Sequence[tuple[float, str]], name=None
-    ) -> "CustomQwtLinearColormap":
+    ) -> "EditableColormap":
         """Converts the given iterable of tuples to a colormap (instance of Self).
         The iterable must be at least of length 2. If the iterable is of length 1,
         the colormap will be composed of two identical colors. If the iterable is
@@ -243,7 +243,7 @@ class ColorMapWidget(QW.QWidget):
         cmap_height: int = 50,
         color1: QG.QColor | None = None,
         color2: QG.QColor | None = None,
-        colormap: CustomQwtLinearColormap | None = None,
+        colormap: EditableColormap | None = None,
     ) -> None:
         super().__init__(parent)
 
@@ -274,7 +274,7 @@ class ColorMapWidget(QW.QWidget):
         if colormap is None:
             color1 = QG.QColor(QC.Qt.GlobalColor.blue) if color1 is None else color1
             color2 = QG.QColor(QC.Qt.GlobalColor.yellow) if color2 is None else color2
-            self._colormap = CustomQwtLinearColormap(color1, color2)
+            self._colormap = EditableColormap(color1, color2)
         else:
             self._colormap = colormap
             self.set_handles_values(colormap.colorStops())
@@ -302,7 +302,7 @@ class ColorMapWidget(QW.QWidget):
         self.multi_range_hslider.sliderReleased.connect(self.release_handle)
         self.customContextMenuRequested.connect(self.open_slider_menu)
 
-    def set_colormap(self, colormap: CustomQwtLinearColormap) -> None:
+    def set_colormap(self, colormap: EditableColormap) -> None:
         """Replaces the current colormap.
 
         Args:
@@ -313,7 +313,7 @@ class ColorMapWidget(QW.QWidget):
         self.set_handles_values(new_values)
         self.COLORMAP_CHANGED.emit()
 
-    def get_colormap(self) -> CustomQwtLinearColormap:
+    def get_colormap(self) -> EditableColormap:
         """Get the current colormap being edited.
 
         Returns:

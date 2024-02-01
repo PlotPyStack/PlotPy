@@ -18,7 +18,7 @@ from guidata.qthelpers import qt_app_context
 
 from plotpy.mathutils.colormaps import ALL_COLORMAPS
 from plotpy.widgets.colormap.manager import ColorMapManager
-from plotpy.widgets.colormap.widget import CustomQwtLinearColormap
+from plotpy.widgets.colormap.widget import EditableColormap
 
 
 def test_colormap_manager() -> None:
@@ -27,7 +27,7 @@ def test_colormap_manager() -> None:
         red = QG.QColor(QC.Qt.GlobalColor.red)
         blue = QG.QColor(QC.Qt.GlobalColor.blue)
         yellow = QG.QColor(QC.Qt.GlobalColor.yellow)
-        cmap = CustomQwtLinearColormap(blue, yellow, name="kinda_viridis")
+        cmap = EditableColormap(blue, yellow, name="kinda_viridis")
         ALL_COLORMAPS["kinda_viridis"] = cmap
         dlg = ColorMapManager(None, active_colormap="YlGn")
         dlg.colormap_editor.colormap_widget.add_handle_at_relative_pos(0.5, red)

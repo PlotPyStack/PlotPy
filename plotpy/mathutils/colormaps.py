@@ -18,11 +18,11 @@ from guidata.configtools import get_module_data_path
 from qwt import QwtInterval, toQImage
 
 from plotpy.config import CONF
-from plotpy.widgets.colormap.widget import CustomQwtLinearColormap
+from plotpy.widgets.colormap.widget import EditableColormap
 
 # from guidata.dataset.datatypes import NoDefault
 FULLRANGE = QwtInterval(0.0, 1.0)
-DEFAULT = CustomQwtLinearColormap(name="default")
+DEFAULT = EditableColormap(name="default")
 
 
 def load_raw_colormaps_from_json(
@@ -48,7 +48,7 @@ def load_raw_colormaps_from_json(
     return {}
 
 
-def load_qwt_colormaps_from_json(json_path: str) -> dict[str, CustomQwtLinearColormap]:
+def load_qwt_colormaps_from_json(json_path: str) -> dict[str, EditableColormap]:
     """Same as function load_raw_colormaps_from_json but transforms the raw colormaps
     into CustomQwtLinearColormap objects that are used by plotpy.
 
@@ -60,12 +60,12 @@ def load_qwt_colormaps_from_json(json_path: str) -> dict[str, CustomQwtLinearCol
         Dictionnary of colormpas names -> CustomQwtLinearColormap
     """
     return {
-        name.lower(): CustomQwtLinearColormap.from_iterable(iterable, name=name)
+        name.lower(): EditableColormap.from_iterable(iterable, name=name)
         for name, iterable in load_raw_colormaps_from_json(json_path).items()
     }
 
 
-def save_colormaps(json_filename: str, colormaps: dict[str, CustomQwtLinearColormap]):
+def save_colormaps(json_filename: str, colormaps: dict[str, EditableColormap]):
     """Saves colormaps into the given json file. Refer ton function get_cmap_path to
     know what json_filename can be used.
 
@@ -80,7 +80,7 @@ def save_colormaps(json_filename: str, colormaps: dict[str, CustomQwtLinearColor
 
 
 def build_icon_from_cmap(
-    cmap: CustomQwtLinearColormap, width: int = 16, height: int = 16
+    cmap: EditableColormap, width: int = 16, height: int = 16
 ) -> QG.QIcon:
     """Builds an icon representing the colormap
 
@@ -110,7 +110,7 @@ def build_icon_from_cmap_name(cmap_name: str) -> QG.QIcon:
     return build_icon_from_cmap(get_cmap(cmap_name.lower()))
 
 
-def get_cmap(cmap_name: str) -> CustomQwtLinearColormap:
+def get_cmap(cmap_name: str) -> EditableColormap:
     """Returns the colormap with the given name from the ALL_COLORMAPS global variable.
     If the colormap is not found, returns the DEFAULT colormap.
 
