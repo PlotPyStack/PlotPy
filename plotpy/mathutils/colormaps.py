@@ -22,7 +22,7 @@ from plotpy.widgets.colormap.widget import EditableColormap
 
 # from guidata.dataset.datatypes import NoDefault
 FULLRANGE = QwtInterval(0.0, 1.0)
-DEFAULT = EditableColormap(name="default")
+DEFAULT = EditableColormap(name="jet")
 
 
 def load_raw_colormaps_from_json(
@@ -122,7 +122,21 @@ def get_cmap(cmap_name: str) -> EditableColormap:
         A CustomQwtLinearColormap instance corresponding to the given name, if no
         colormap is found, returns the DEFAULT colormap.
     """
+    global ALL_COLORMAPS
     return ALL_COLORMAPS.get(cmap_name.lower(), DEFAULT)
+
+
+def add_cmap(cmap: EditableColormap) -> None:
+    """Adds the given colormap to both ALL_COLORMAPS and CUSTOM_COLORMAPS global
+    variables.
+
+    Args:
+        cmap: colormap to add
+    """
+    global ALL_COLORMAPS, CUSTOM_COLORMAPS
+    ALL_COLORMAPS[cmap.name.lower()] = cmap
+    CUSTOM_COLORMAPS[cmap.name.lower()] = cmap
+    save_colormaps(CUSTOM_COLORMAPS_PATH, CUSTOM_COLORMAPS)
 
 
 def get_cmap_path(config_path: str):

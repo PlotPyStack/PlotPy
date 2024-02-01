@@ -34,10 +34,6 @@ from plotpy.items import (
 )
 from plotpy.mathutils.colormaps import (
     ALL_COLORMAPS,
-    CUSTOM_COLORMAPS,
-    DEFAULT,
-    DEFAULT_COLORMAPS,
-    build_icon_from_cmap,
     build_icon_from_cmap_name,
     get_cmap,
 )
@@ -454,7 +450,7 @@ class ColormapTool(CommandTool):
             tip=_("Select colormap for active image"),
             toolbar_id=toolbar_id,
         )
-        self._active_colormap: EditableColormap = ALL_COLORMAPS.get("jet", DEFAULT)
+        self._active_colormap: EditableColormap = ALL_COLORMAPS["jet"]
         self.default_icon = build_icon_from_cmap_name(self._active_colormap.name)
         if self.action is not None:
             self.action.setEnabled(False)
@@ -534,7 +530,7 @@ class ColormapTool(CommandTool):
                     self._active_colormap = get_cmap(cmap_name)
             else:
                 self.action.setEnabled(False)
-                self._active_colormap = ALL_COLORMAPS.get("jet", DEFAULT)
+                self._active_colormap = ALL_COLORMAPS["jet"]
             self.action.setIcon(icon)
 
 

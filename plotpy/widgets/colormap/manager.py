@@ -22,10 +22,9 @@ from plotpy.config import _
 from plotpy.mathutils.colormaps import (
     ALL_COLORMAPS,
     CUSTOM_COLORMAPS,
-    CUSTOM_COLORMAPS_PATH,
     DEFAULT_COLORMAPS,
+    add_cmap,
     build_icon_from_cmap,
-    save_colormaps,
 )
 from plotpy.widgets.colormap.editor import ColorMapEditor
 from plotpy.widgets.colormap.widget import EditableColormap
@@ -297,8 +296,7 @@ class ColorMapManager(QW.QDialog):
             new_name = CUSTOM_COLORMAPS[new_name.lower()].name
 
         cmap.name = new_name
-        CUSTOM_COLORMAPS[new_name] = ALL_COLORMAPS[new_name] = cmap
-        save_colormaps(CUSTOM_COLORMAPS_PATH, CUSTOM_COLORMAPS)
+        add_cmap(cmap)
 
         icon = build_icon_from_cmap(cmap)
         if is_existing_custom_cmap:
