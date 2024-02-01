@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-01-31 17:00+0100\n"
+"POT-Creation-Date: 2024-02-01 16:50+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1388,7 +1388,7 @@ msgstr ""
 msgid "Right-click on the curve to enable/disable downsampling"
 msgstr ""
 
-#: plotpy\tests\tools\test_edit_point.py:47 plotpy\tools\curve.py:834
+#: plotpy\tests\tools\test_edit_point.py:47 plotpy\tools\curve.py:836
 msgid "Insert point"
 msgstr ""
 
@@ -1578,39 +1578,47 @@ msgstr ""
 msgid "New value"
 msgstr ""
 
-#: plotpy\tools\curve.py:632
+#: plotpy\tools\curve.py:633
+msgid "After"
+msgstr ""
+
+#: plotpy\tools\curve.py:633
+msgid "Before"
+msgstr ""
+
+#: plotpy\tools\curve.py:633
 msgid "Location"
 msgstr ""
 
-#: plotpy\tools\curve.py:659
+#: plotpy\tools\curve.py:661
 msgid "Edit point"
 msgstr ""
 
-#: plotpy\tools\curve.py:835
+#: plotpy\tools\curve.py:837
 msgid "Before inserting a new point, please select an existing curve point."
 msgstr ""
 
-#: plotpy\tools\curve.py:842
+#: plotpy\tools\curve.py:844
 msgid "Insert new value"
 msgstr ""
 
-#: plotpy\tools\curve.py:1089
+#: plotpy\tools\curve.py:1091
 msgid "Downsample"
 msgstr ""
 
-#: plotpy\tools\curve.py:1136 plotpy\tools\curve.py:1148
+#: plotpy\tools\curve.py:1138 plotpy\tools\curve.py:1150
 msgid "Export"
 msgstr ""
 
-#: plotpy\tools\curve.py:1140
+#: plotpy\tools\curve.py:1142
 msgid "Text file"
 msgstr ""
 
-#: plotpy\tools\curve.py:1149
+#: plotpy\tools\curve.py:1151
 msgid "Unable to export item data."
 msgstr ""
 
-#: plotpy\tools\curve.py:1151
+#: plotpy\tools\curve.py:1153
 msgid "Error message:"
 msgstr ""
 

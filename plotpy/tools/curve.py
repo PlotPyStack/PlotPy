@@ -629,7 +629,9 @@ class InsertionDataSet(DataSet):
     __index = IntItem(_("Insertion index"), min=0)
     index = __index
     value = FloatItem(_("New value"))
-    index_offset = ChoiceItem(_("Location"), choices=["Before", "After"], default=0)
+    index_offset = ChoiceItem(
+        _("Location"), choices=[_("Before"), _("After")], default=0
+    )
 
     @classmethod
     def set_max_index(cls, max_index: int):
