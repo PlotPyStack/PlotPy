@@ -23,6 +23,8 @@ from plotpy.mathutils.colormaps import (
     ALL_COLORMAPS,
     CUSTOM_COLORMAPS,
     DEFAULT_COLORMAPS,
+    RECT_ICON_SIZE_H,
+    RECT_ICON_SIZE_W,
     add_cmap,
     build_icon_from_cmap,
     cmap_exists,
@@ -119,14 +121,18 @@ class ColorMapManager(QW.QDialog):
         self._cmap_choice = QW.QComboBox()
         self._cmap_choice.setMaxVisibleItems(15)
         for cmap in ALL_COLORMAPS.values():
-            icon = build_icon_from_cmap(cmap)
+            icon = build_icon_from_cmap(
+                cmap, RECT_ICON_SIZE_W, RECT_ICON_SIZE_H, "h", 1
+            )
             self._cmap_choice.addItem(icon, cmap.name, cmap)
+
+        self._cmap_choice.setIconSize(QC.QSize(RECT_ICON_SIZE_W, RECT_ICON_SIZE_H))
         self._cmap_choice.setCurrentText(active_colormap)
         select_gbox = QW.QGroupBox(_("Select or create a colormap"))
-        select_gbox_layout = QW.QHBoxLayout()
         select_label = QW.QLabel(_("Colormap presets:"))
         new_btn = QW.QPushButton(_("Create new colormap") + "...")
         new_btn.clicked.connect(self.new_colormap)
+        select_gbox_layout = QW.QHBoxLayout()
         select_gbox_layout.addWidget(select_label)
         select_gbox_layout.addWidget(self._cmap_choice)
         select_gbox_layout.addSpacing(10)

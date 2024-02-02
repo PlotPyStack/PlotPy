@@ -10,9 +10,10 @@ from __future__ import annotations
 
 import json
 import os
-from typing import Dict, Sequence
+from typing import Dict, Literal, Sequence
 
 import numpy as np
+import qtpy.QtCore as QC
 import qtpy.QtGui as QG
 from guidata.configtools import get_module_data_path
 from qwt import QwtInterval, toQImage
@@ -23,6 +24,8 @@ from plotpy.widgets.colormap.widget import EditableColormap
 # from guidata.dataset.datatypes import NoDefault
 FULLRANGE = QwtInterval(0.0, 1.0)
 DEFAULT = EditableColormap(name="jet")
+SQUARE_ICON_SIZE = 16
+RECT_ICON_SIZE_W, RECT_ICON_SIZE_H = 80, 16
 
 CmapDictType = Dict[str, EditableColormap]
 
@@ -82,7 +85,11 @@ def save_colormaps(json_filename: str, colormaps: CmapDictType):
 
 
 def build_icon_from_cmap(
-    cmap: EditableColormap, width: int = 16, height: int = 16
+    cmap: EditableColormap,
+    width: int = SQUARE_ICON_SIZE,
+    height: int = SQUARE_ICON_SIZE,
+    orientation: Literal["h", "v"] = "v",
+    margin: int = 0,
 ) -> QG.QIcon:
     """Builds an icon representing the colormap
 
@@ -90,26 +97,73 @@ def build_icon_from_cmap(
         cmap: colormap
         width: icon width
         height: icon height
+        orientation: orientation of the colormap in the icon. Can be "h" for horizontal
+        or "v" for vertical
+        margin: margin around the colormap in the icon. Beware that the margin is
+        included in the given icon size. For example, if margin is 1 and width is 16,
+        the actual colormap width will be 14 (16 - 2 * 1). This was done to prevent
+        interpolation on display.
     """
-    data = np.zeros((width, height), np.uint8)
-    line = np.linspace(0, 255, width)
-    data[:, :] = line[:, np.newaxis]
+
+    padded_width = width - 2 * margin
+    padded_height = height - 2 * margin
+
+    data = np.zeros((padded_height, padded_width), np.uint8)
+
+    if orientation == "h":
+        line = np.linspace(0, 255, padded_width)
+        data[:, :] = line[:]
+    else:
+        line = np.linspace(0, 255, padded_height)
+        data[:, :] = line[:, np.newaxis]
+
     img = toQImage(data)
     img.setColorTable(cmap.colorTable(FULLRANGE))
-    return QG.QIcon(QG.QPixmap.fromImage(img))
+    cm_pxmap = QG.QPixmap.fromImage(img)
+
+    if margin == 0:
+        return QG.QIcon(cm_pxmap)
+
+    padded_pixmap = QG.QPixmap(width, height)
+    padded_pixmap.fill(QC.Qt.GlobalColor.transparent)
+
+    # Create a painter to draw onto the new pixmap
+    painter = QG.QPainter(padded_pixmap)
+    painter.drawPixmap(margin, margin, cm_pxmap)
+    painter.end()
+
+    icon = QG.QIcon(padded_pixmap)
+
+    return icon
 
 
-def build_icon_from_cmap_name(cmap_name: str) -> QG.QIcon:
+def build_icon_from_cmap_name(
+    cmap_name: str,
+    width: int = SQUARE_ICON_SIZE,
+    height: int = SQUARE_ICON_SIZE,
+    orientation: Literal["h", "v"] = "v",
+    margin: int = 0,
+) -> QG.QIcon:
     """Builds an QIcon representing the colormap from the colormap name found in
     ALL_COLORMAPS global variable.
 
     Args:
         cmap_name: colormap name to search in ALL_COLORMAPS
+        width: icon width
+        height: icon height
+        orientation: orientation of the colormap in the icon. Can be "h" for horizontal
+        or "v" for vertical
+        margin: margin around the colormap in the icon. Beware that the margin is
+        included in the given icon size. For example, if margin is 1 and width is 16,
+        the actual colormap width will be 14 (16 - 2 * 1). This was done to prevent
+        interpolation on display.
 
     Returns:
         QIcon representing the colormap
     """
-    return build_icon_from_cmap(get_cmap(cmap_name.lower()))
+    return build_icon_from_cmap(
+        get_cmap(cmap_name.lower()), width, height, orientation, margin
+    )
 
 
 def get_cmap(cmap_name: str) -> EditableColormap:

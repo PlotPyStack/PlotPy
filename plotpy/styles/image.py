@@ -23,7 +23,12 @@ from qtpy import QtGui as QG
 from plotpy._scaler import INTERP_AA, INTERP_LINEAR, INTERP_NEAREST
 from plotpy.config import _
 from plotpy.constants import LUTAlpha
-from plotpy.mathutils.colormaps import ALL_COLORMAPS, build_icon_from_cmap_name
+from plotpy.mathutils.colormaps import (
+    ALL_COLORMAPS,
+    RECT_ICON_SIZE_H,
+    RECT_ICON_SIZE_W,
+    build_icon_from_cmap_name,
+)
 from plotpy.styles.base import ItemParameters
 
 if TYPE_CHECKING:
@@ -36,7 +41,15 @@ def _create_choices(
     """Create the list of choices for the colormap item."""
     choices: list[tuple[str, str, Callable[[str], QG.QIcon]]] = []
     for cmap in ALL_COLORMAPS.values():
-        choices.append((cmap.name, cmap.name, build_icon_from_cmap_name))
+        choices.append(
+            (
+                cmap.name,
+                cmap.name,
+                lambda name: build_icon_from_cmap_name(
+                    name, RECT_ICON_SIZE_W, RECT_ICON_SIZE_H, "h", 1
+                ),
+            )
+        )
     return choices
 
 
@@ -59,8 +72,10 @@ class BaseImageParam(DataSet):
         _("Global alpha"), default=1.0, min=0, max=1, help=_("Global alpha value")
     )
     _hide_colormap = False
-    colormap = ImageChoiceItem(_("Colormap"), _create_choices, default="jet").set_prop(
-        "display", hide=GetAttrProp("_hide_colormap")
+    colormap = (
+        ImageChoiceItem(_("Colormap"), _create_choices, default="jet")
+        .set_prop("display", hide=GetAttrProp("_hide_colormap"))
+        .set_prop("display", size=(RECT_ICON_SIZE_W, RECT_ICON_SIZE_H))
     )
 
     interpolation = ChoiceItem(
