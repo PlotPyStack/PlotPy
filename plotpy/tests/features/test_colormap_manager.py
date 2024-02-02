@@ -37,7 +37,7 @@ def test_colormap_manager() -> None:
         result = dlg.exec()
         execenv.print("Dialog result:", result)
         cmap = dlg.get_colormap()
-        execenv.print("Selected colormap:", cmap.name)
+        execenv.print("Selected colormap:", None if cmap is None else cmap.name)
 
 
 if __name__ == "__main__":

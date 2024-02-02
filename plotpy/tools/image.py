@@ -473,8 +473,8 @@ class ColormapTool(CommandTool):
         manager = ColorMapManager(
             plot.parent(), active_colormap=self._active_colormap.name
         )
-        if exec_dialog(manager):
-            self.activate_cmap(manager.get_colormap())
+        if exec_dialog(manager) and (cmap := manager.get_colormap()) is not None:
+            self.activate_cmap(cmap)
 
     def get_selected_images(self, plot: BasePlot) -> list[IBasePlotItem]:
         """Returns the currently selected images in the given plot.

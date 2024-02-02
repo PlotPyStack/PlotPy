@@ -25,6 +25,8 @@ from plotpy.mathutils.colormaps import (
     DEFAULT_COLORMAPS,
     add_cmap,
     build_icon_from_cmap,
+    cmap_exists,
+    get_cmap,
 )
 from plotpy.widgets.colormap.editor import ColorMapEditor
 from plotpy.widgets.colormap.widget import EditableColormap
@@ -110,11 +112,12 @@ class ColorMapManager(QW.QDialog):
 
         self.__returned_colormap: EditableColormap | None = None
 
-        if active_colormap is None or active_colormap.lower() not in ALL_COLORMAPS:
+        if active_colormap is None or not cmap_exists(active_colormap, ALL_COLORMAPS):
             active_colormap = next(iter(ALL_COLORMAPS))
 
         # Select the active colormap
         self._cmap_choice = QW.QComboBox()
+        self._cmap_choice.setMaxVisibleItems(15)
         for cmap in ALL_COLORMAPS.values():
             icon = build_icon_from_cmap(cmap)
             self._cmap_choice.addItem(icon, cmap.name, cmap)
@@ -140,6 +143,9 @@ class ColorMapManager(QW.QDialog):
         edit_gbox_layout.setContentsMargins(0, 0, 0, 0)
         edit_gbox_layout.addWidget(self.colormap_editor)
         edit_gbox.setLayout(edit_gbox_layout)
+        edit_gbox.setCheckable(True)
+        edit_gbox.setChecked(False)
+        new_btn.clicked.connect(lambda: edit_gbox.setChecked(True))
         self.colormap_editor.colormap_widget.COLORMAP_CHANGED.connect(
             self._changes_not_saved
         )
@@ -153,7 +159,7 @@ class ColorMapManager(QW.QDialog):
         )
         self._changes_saved = True
         self._save_btn = self.bbox.button(QW.QDialogButtonBox.Save)
-        self._save_btn.setEnabled(False)
+        self._save_btn.setEnabled(False)  # type: ignore
         self.bbox.clicked.connect(self.button_clicked)
 
         dialog_layout = QW.QVBoxLayout()
@@ -181,7 +187,7 @@ class ColorMapManager(QW.QDialog):
     def _changes_not_saved(self) -> None:
         """Callback function to be called when the colormap is modified. Enables the
         save button and sets the current_changes_saved attribute to False."""
-        self._save_btn.setEnabled(True)
+        self._save_btn.setEnabled(True)  # type: ignore
         self._changes_saved = False
 
     @property
@@ -203,11 +209,11 @@ class ColorMapManager(QW.QDialog):
         """
         cmap_copy: EditableColormap = deepcopy(self._cmap_choice.itemData(index))
         self.colormap_editor.set_colormap(cmap_copy)
-        is_new_colormap = cmap_copy.name.lower() not in ALL_COLORMAPS
+        is_new_colormap = not cmap_exists(cmap_copy.name, CUSTOM_COLORMAPS)
         self._changes_saved = True
-        self._save_btn.setEnabled(is_new_colormap)
+        self._save_btn.setEnabled(is_new_colormap)  # type: ignore
 
-    def get_colormap(self) -> EditableColormap:
+    def get_colormap(self) -> EditableColormap | None:
         """Return the selected colormap object.
 
         Returns:
@@ -231,7 +237,7 @@ class ColorMapManager(QW.QDialog):
             new_name = ColorMapNameEdit.edit(self, new_name)
             if new_name is None:
                 return None
-            if new_name.lower() in DEFAULT_COLORMAPS:
+            if cmap_exists(new_name, DEFAULT_COLORMAPS):
                 QW.QMessageBox.warning(
                     self,
                     title,
@@ -243,22 +249,21 @@ class ColorMapManager(QW.QDialog):
                     % new_name,
                 )
                 continue
-            if new_name.lower() in CUSTOM_COLORMAPS:
-                if (
-                    QW.QMessageBox.question(
-                        self,
-                        title,
-                        _(
-                            "Name <b>%s</b> is already used by a custom colormap.<br><br>"
-                            "Do you want to overwrite it?"
-                        )
-                        % new_name,
-                        QW.QMessageBox.Yes | QW.QMessageBox.No,
-                        QW.QMessageBox.No,
+            if cmap_exists(new_name, CUSTOM_COLORMAPS) and (
+                QW.QMessageBox.question(
+                    self,
+                    title,
+                    _(
+                        "Name <b>%s</b> is already used by a custom colormap.<br><br>"
+                        "Do you want to overwrite it?"
                     )
-                    == QW.QMessageBox.No
-                ):
-                    continue
+                    % new_name,
+                    QW.QMessageBox.Yes | QW.QMessageBox.No,
+                    QW.QMessageBox.No,
+                )
+                == QW.QMessageBox.No
+            ):
+                continue
             break
         return new_name
 
@@ -287,13 +292,13 @@ class ColorMapManager(QW.QDialog):
             return False
 
         # Before modifying CUSTOM_COLORMAPS, save this boolean expression:
-        is_existing_custom_cmap = new_name.lower() in CUSTOM_COLORMAPS
+        is_existing_custom_cmap = cmap_exists(new_name, CUSTOM_COLORMAPS)
 
         # Take into account the case where the color map exists in custom colormaps
         # but not with the same case (e.g. "viridis" vs "Viridis"). So we need to
         # get the original name of the colormap:
         if is_existing_custom_cmap:
-            new_name = CUSTOM_COLORMAPS[new_name.lower()].name
+            new_name = get_cmap(new_name).name
 
         cmap.name = new_name
         add_cmap(cmap)
@@ -308,7 +313,7 @@ class ColorMapManager(QW.QDialog):
             self._cmap_choice.addItem(icon, new_name, cmap)
             self._cmap_choice.setCurrentText(new_name)
 
-        self._save_btn.setEnabled(False)
+        self._save_btn.setEnabled(False)  # type: ignore
         self._changes_saved = True
         return True
 

@@ -36,16 +36,15 @@ class EditableColormap(QwtLinearColorMap):
     Args:
         *args: QwtLinearColorMap arguments
         name: Optional str name given to the colormap. Useful for the interactions
-        with the rest of PlotPy, notably with the gobal colormaps dictionnary
-        such as colormaps.ALL_COLORMAPS. Defaults to "None".
+        with the rest of PlotPy, notably with the gobal colormaps dictionaries
+        such as colormaps.ALL_COLORMAPS. If None, the colormap name will be set to
+        "temporary". Defaults to None.
     """
 
     def __init__(self, *args, name: str | None = None) -> None:
         super().__init__(*args)
         # TODO: Add this feature in a release of QwtPython
-        self.stops: list[
-            ColorStop
-        ] = (
+        self.stops: list[ColorStop] = (
             self._QwtLinearColorMap__data.colorStops._ColorStops__stops  # pylint: disable=no-member # type: ignore
         )
         self.name = name or "temporary"

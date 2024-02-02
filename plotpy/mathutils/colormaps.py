@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import json
 import os
-from typing import Sequence
+from typing import Dict, Sequence
 
 import numpy as np
 import qtpy.QtGui as QG
@@ -23,6 +23,8 @@ from plotpy.widgets.colormap.widget import EditableColormap
 # from guidata.dataset.datatypes import NoDefault
 FULLRANGE = QwtInterval(0.0, 1.0)
 DEFAULT = EditableColormap(name="jet")
+
+CmapDictType = Dict[str, EditableColormap]
 
 
 def load_raw_colormaps_from_json(
@@ -48,7 +50,7 @@ def load_raw_colormaps_from_json(
     return {}
 
 
-def load_qwt_colormaps_from_json(json_path: str) -> dict[str, EditableColormap]:
+def load_qwt_colormaps_from_json(json_path: str) -> CmapDictType:
     """Same as function load_raw_colormaps_from_json but transforms the raw colormaps
     into CustomQwtLinearColormap objects that are used by plotpy.
 
@@ -65,7 +67,7 @@ def load_qwt_colormaps_from_json(json_path: str) -> dict[str, EditableColormap]:
     }
 
 
-def save_colormaps(json_filename: str, colormaps: dict[str, EditableColormap]):
+def save_colormaps(json_filename: str, colormaps: CmapDictType):
     """Saves colormaps into the given json file. Refer ton function get_cmap_path to
     know what json_filename can be used.
 
@@ -124,6 +126,24 @@ def get_cmap(cmap_name: str) -> EditableColormap:
     """
     global ALL_COLORMAPS
     return ALL_COLORMAPS.get(cmap_name.lower(), DEFAULT)
+
+
+def cmap_exists(cmap_name: str, cmap_dict: CmapDictType | None = None) -> bool:
+    """Returns True if the colormap with the given name exists in the given colormap
+    dictionary, False otherwise. If no dictionary is given, the ALL_COLORMAPS global
+    variable is used.
+
+    Args:
+        cmap_name: colormap name to search in given colormap dictionnary. All keys in
+        the dictionary are lower case, so the given name is also lowered.
+        cmap_dict: colormap dictionnary to search in. If None, ALL_COLORMAPS is used.
+
+    Returns:
+        True if the colormap exists, False otherwise.
+    """
+    if cmap_dict is None:
+        cmap_dict = ALL_COLORMAPS
+    return cmap_name.lower() in cmap_dict
 
 
 def add_cmap(cmap: EditableColormap) -> None:
@@ -186,8 +206,8 @@ CUSTOM_COLORMAPS_PATH = get_cmap_path(
 )
 
 # Load default and custom colormaps from json files
-DEFAULT_COLORMAPS = load_qwt_colormaps_from_json(DEFAULT_COLORMAPS_PATH)
-CUSTOM_COLORMAPS = load_qwt_colormaps_from_json(CUSTOM_COLORMAPS_PATH)
+DEFAULT_COLORMAPS: CmapDictType = load_qwt_colormaps_from_json(DEFAULT_COLORMAPS_PATH)
+CUSTOM_COLORMAPS: CmapDictType = load_qwt_colormaps_from_json(CUSTOM_COLORMAPS_PATH)
 
 # Merge default and custom colormaps into a single dictionnary to simplify access
-ALL_COLORMAPS = {**DEFAULT_COLORMAPS, **CUSTOM_COLORMAPS}
+ALL_COLORMAPS: CmapDictType = {**DEFAULT_COLORMAPS, **CUSTOM_COLORMAPS}
