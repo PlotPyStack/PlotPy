@@ -243,7 +243,10 @@ def compute_oblique_section(item, obj, debug=False):
             TEMP_ITEM.param.update_item(TEMP_ITEM)
         plot.replot()
 
-    ydata = np.ma.fix_invalid(dst_image, copy=debug).mean(axis=1)
+    fixed_image = np.ma.fix_invalid(dst_image, copy=debug)
+    if fixed_image.size == 0:
+        return np.array([]), np.array([])
+    ydata = fixed_image.mean(axis=1)
     xdata = item.get_x_values(0, ydata.size)[: ydata.size]
     try:
         xdata -= xdata[0]
