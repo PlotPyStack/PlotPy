@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
-"""This module provides utilities to interact with colormap. It provides functions
-to load/save colormaps from/to json files and to build icons representing the
-colormaps.
-"""
 #
 # Licensed under the terms of the BSD 3-Clause
 # (see plotpy/LICENSE for details)
+
+"""
+This module provides utilities to interact with colormap. It provides functions
+to load/save colormaps from/to json files and to build icons representing the
+colormaps.
+"""
+
 from __future__ import annotations
 
 import json
@@ -21,9 +24,7 @@ from qwt import QwtInterval, toQImage
 from plotpy.config import CONF
 from plotpy.widgets.colormap.widget import EditableColormap
 
-# from guidata.dataset.datatypes import NoDefault
 FULLRANGE = QwtInterval(0.0, 1.0)
-DEFAULT = EditableColormap(name="jet")
 SQUARE_ICON_SIZE = 16
 RECT_ICON_SIZE_W, RECT_ICON_SIZE_H = 80, 16
 
@@ -68,6 +69,63 @@ def load_qwt_colormaps_from_json(json_path: str) -> CmapDictType:
         name.lower(): EditableColormap.from_iterable(iterable, name=name)
         for name, iterable in load_raw_colormaps_from_json(json_path).items()
     }
+
+
+def get_cmap_path(config_path: str):
+    """Takes a file path (i.e. from the CONF global variable) and tries to find it in
+    this order:
+        1. in Plotpy's data directory
+        2. in user's plotpy configuration directory
+        3. anywhere else using the path as an absolute path
+    If the file is not found, the absolute filepath returned will point to user's plotpy
+    configuration folder.
+
+    Args:
+        config_path: file path/name to check in the order listed above.
+    """
+    try:
+        data_config_path = os.path.join(
+            get_module_data_path("plotpy", "data"), config_path
+        )
+        if os.path.isfile(data_config_path):
+            return data_config_path
+    except (FileNotFoundError, PermissionError, OSError) as e:
+        print(e)
+
+    user_config_path = CONF.get_path(config_path)
+    if os.path.isfile(user_config_path):
+        return user_config_path
+
+    if os.path.isfile(config_path):
+        return config_path
+
+    return user_config_path
+
+
+# Load default colormaps path from the config file
+DEFAULT_COLORMAPS_PATH = get_cmap_path(
+    CONF.get(
+        "colormaps",
+        "colormaps/default",
+        default="colormaps_default.json",  # type: ignore
+    )
+)
+# Load custom colormaps path from the config file
+CUSTOM_COLORMAPS_PATH = get_cmap_path(
+    CONF.get(
+        "colormaps", "colormaps/custom", default="colormaps_custom.json"  # type: ignore
+    )
+)
+
+# Load default and custom colormaps from json files
+DEFAULT_COLORMAPS: CmapDictType = load_qwt_colormaps_from_json(DEFAULT_COLORMAPS_PATH)
+CUSTOM_COLORMAPS: CmapDictType = load_qwt_colormaps_from_json(CUSTOM_COLORMAPS_PATH)
+
+# Merge default and custom colormaps into a single dictionnary to simplify access
+ALL_COLORMAPS: CmapDictType = {**DEFAULT_COLORMAPS, **CUSTOM_COLORMAPS}
+
+# Default colormap to use if a colormap is not found
+DEFAULT = ALL_COLORMAPS["jet"]
 
 
 def save_colormaps(json_filename: str, colormaps: CmapDictType):
@@ -211,57 +269,3 @@ def add_cmap(cmap: EditableColormap) -> None:
     ALL_COLORMAPS[cmap.name.lower()] = cmap
     CUSTOM_COLORMAPS[cmap.name.lower()] = cmap
     save_colormaps(CUSTOM_COLORMAPS_PATH, CUSTOM_COLORMAPS)
-
-
-def get_cmap_path(config_path: str):
-    """Takes a file path (i.e. from the CONF global variable) and tries to find it in
-    this order:
-        1. in Plotpy's data directory
-        2. in user's plotpy configuration directory
-        3. anywhere else using the path as an absolute path
-    If the file is not found, the absolute filepath returned will point to user's plotpy
-    configuration folder.
-
-    Args:
-        config_path: file path/name to check in the order listed above.
-    """
-    try:
-        data_config_path = os.path.join(
-            get_module_data_path("plotpy", "data"), config_path
-        )
-        if os.path.isfile(data_config_path):
-            return data_config_path
-    except (FileNotFoundError, PermissionError, OSError) as e:
-        print(e)
-
-    user_config_path = CONF.get_path(config_path)
-    if os.path.isfile(user_config_path):
-        return user_config_path
-
-    if os.path.isfile(config_path):
-        return config_path
-
-    return user_config_path
-
-
-# Load default colormaps path from the config file
-DEFAULT_COLORMAPS_PATH = get_cmap_path(
-    CONF.get(
-        "colormaps",
-        "colormaps/default",
-        default="colormaps_default.json",  # type: ignore
-    )
-)
-# Load custom colormaps path from the config file
-CUSTOM_COLORMAPS_PATH = get_cmap_path(
-    CONF.get(
-        "colormaps", "colormaps/custom", default="colormaps_custom.json"  # type: ignore
-    )
-)
-
-# Load default and custom colormaps from json files
-DEFAULT_COLORMAPS: CmapDictType = load_qwt_colormaps_from_json(DEFAULT_COLORMAPS_PATH)
-CUSTOM_COLORMAPS: CmapDictType = load_qwt_colormaps_from_json(CUSTOM_COLORMAPS_PATH)
-
-# Merge default and custom colormaps into a single dictionnary to simplify access
-ALL_COLORMAPS: CmapDictType = {**DEFAULT_COLORMAPS, **CUSTOM_COLORMAPS}
