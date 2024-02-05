@@ -215,7 +215,7 @@ class ColorMapManager(QW.QDialog):
         """
         cmap_copy: EditableColormap = deepcopy(self._cmap_choice.itemData(index))
         self.colormap_editor.set_colormap(cmap_copy)
-        is_new_colormap = not cmap_exists(cmap_copy.name, CUSTOM_COLORMAPS)
+        is_new_colormap = not cmap_exists(cmap_copy.name)
         self._changes_saved = True
         self._save_btn.setEnabled(is_new_colormap)  # type: ignore
 
