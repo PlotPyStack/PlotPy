@@ -218,7 +218,7 @@ def compute_oblique_section(item, obj, debug=False):
 
     ixr = 0.5 * (ixb + ixa)
     iyr = 0.5 * (iyb + iya)
-    mat = translate(ixr, iyr) * rotate(-angle) * translate(-0.5 * destw, -0.5 * desth)
+    mat = translate(ixr, iyr) @ rotate(-angle) @ translate(-0.5 * destw, -0.5 * desth)
     _scale_tr(data, mat, dst_image, dst_rect, (1.0, 0.0, np.nan), (INTERP_LINEAR,))
 
     if debug:
