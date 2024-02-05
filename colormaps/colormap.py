@@ -38,11 +38,11 @@ Reference
 
 from __future__ import annotations
 
+import _cm
 from numpy import array, linspace, newaxis, uint8, zeros
 from qtpy import QtGui as QG
 from qwt import QwtInterval, toQImage
 
-from plotpy.colormaps import _cm
 from plotpy.mathutils.colormaps import (
     DEFAULT_COLORMAPS,
     DEFAULT_COLORMAPS_PATH,
