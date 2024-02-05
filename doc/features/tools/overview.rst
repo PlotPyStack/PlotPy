@@ -64,6 +64,7 @@ The `tools` module provides the following tools:
 * :py:class:`.tools.YCSPanelTool`
 * :py:class:`.tools.CrossSectionTool`
 * :py:class:`.tools.AverageCrossSectionTool`
+* :py:class:`.tools.LineCrossSectionTool`
 * :py:class:`.tools.SaveAsTool`
 * :py:class:`.tools.CopyToClipboardTool`
 * :py:class:`.tools.OpenFileTool`

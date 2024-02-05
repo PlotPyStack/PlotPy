@@ -25,6 +25,8 @@ from .base import (
 from .cross_section import (
     AverageCrossSectionTool,
     CrossSectionTool,
+    LCSPanelTool,
+    LineCrossSectionTool,
     ObliqueCrossSectionTool,
     OCSPanelTool,
     XCSPanelTool,

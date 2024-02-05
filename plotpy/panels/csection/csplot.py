@@ -12,6 +12,7 @@ from plotpy.config import CONF, _
 from plotpy.constants import LUT_MAX, PlotType
 from plotpy.interfaces import ICSImageItemType
 from plotpy.panels.csection.csitem import (
+    LineCrossSectionItem,
     ObliqueCrossSectionItem,
     XCrossSectionItem,
     YCrossSectionItem,
@@ -430,6 +431,7 @@ class ObliqueCrossSectionPlot(HorizontalCrossSectionPlot):
     PLOT_TITLE = _("Oblique averaged cross section")
     CURVE_LABEL = _("Oblique averaged cross section")
     LABEL_TEXT = _("Activate the oblique cross section tool")
+    SHADE = 0.0
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -442,6 +444,29 @@ class ObliqueCrossSectionPlot(HorizontalCrossSectionPlot):
         :return:
         """
         return ObliqueCrossSectionItem(self.param)
+
+    def axis_dir_changed(self, plot, axis_id):
+        """An axis direction has changed"""
+        pass
+
+
+# Line cross section plot
+class LineCrossSectionPlot(HorizontalCrossSectionPlot):
+    """Line cross section plot"""
+
+    PLOT_TITLE = _("Line cross section")
+    CURVE_LABEL = _("Line cross section")
+    LABEL_TEXT = _("Activate the line cross section tool")
+    SHADE = 0.0
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.set_title(self.PLOT_TITLE)
+        self.single_source = True
+
+    def create_cross_section_item(self) -> LineCrossSectionItem:
+        """Create cross section item"""
+        return LineCrossSectionItem(self.param)
 
     def axis_dir_changed(self, plot, axis_id):
         """An axis direction has changed"""

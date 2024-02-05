@@ -77,6 +77,8 @@ Reference
    :members:
 .. autoclass:: plotpy.tools.AverageCrossSectionTool
    :members:
+.. autoclass:: plotpy.tools.LineCrossSectionTool
+   :members:
 .. autoclass:: plotpy.tools.SaveAsTool
    :members:
 .. autoclass:: plotpy.tools.CopyToClipboardTool

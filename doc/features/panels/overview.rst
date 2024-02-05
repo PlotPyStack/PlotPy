@@ -25,3 +25,4 @@ The built-in panels are:
 * :py:data:`plotpy.constants.ID_XCS`: `X-axis cross section` panel
 * :py:data:`plotpy.constants.ID_YCS`: `Y-axis cross section` panel
 * :py:data:`plotpy.constants.ID_OCS`: `oblique cross section` panel
+* :py:data:`plotpy.constants.ID_LCS`: `line cross section` panel

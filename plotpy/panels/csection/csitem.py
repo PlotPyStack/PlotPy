@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import annotations
+
 import sys
 import weakref
+from typing import TYPE_CHECKING
 
 import numpy as np
 from qtpy import QtCore as QC
@@ -11,6 +15,9 @@ from plotpy.interfaces import IBasePlotItem
 from plotpy.items.curve.errorbar import ErrorBarCurveItem
 from plotpy.items.image.misc import get_image_from_qrect
 from plotpy.mathutils.geometry import rotate, translate, vector_angle, vector_norm
+
+if TYPE_CHECKING:
+    from plotpy.items import AnnotatedObliqueRectangle, AnnotatedSegment
 
 try:
     from plotpy._scaler import INTERP_LINEAR, _scale_tr
@@ -434,20 +441,62 @@ class ObliqueCrossSectionItem(CrossSectionItem):
 
     DEBUG = False
 
-    def __init__(self, curveparam=None, errorbarparam=None):
-        CrossSectionItem.__init__(self, curveparam, errorbarparam)
-
-    def update_curve_data(self, obj):
-        """
-
-        :param obj:
-        """
+    def update_curve_data(self, obj: AnnotatedObliqueRectangle) -> None:
+        """Update curve data"""
         source = self.get_source_image()
         rect = obj.get_bounding_rect_coords()
         if rect is not None and source.data is not None:
             #            x0, y0, x1, y1 = rect
             #            angle = obj.get_tr_angle()
             sectx, secty = compute_oblique_section(source, obj, debug=self.DEBUG)
+            if secty.size == 0 or np.all(np.isnan(secty)):
+                sectx, secty = np.array([]), np.array([])
+            self.process_curve_data(sectx, secty, None, None)
+
+    def update_scale(self):
+        """ """
+        pass
+
+
+def compute_line_section(
+    data: np.ndarray, row0, col0, row1, col1
+) -> tuple[np.ndarray, np.ndarray]:
+    """Return intensity profile of data along a line
+
+    Args:
+        data: 2D array
+        row0, col0: start point
+        row1, col1: end point
+    """
+    # Keep coordinates inside the image
+    row0 = max(0, min(row0, data.shape[0] - 1))
+    col0 = max(0, min(col0, data.shape[1] - 1))
+    row1 = max(0, min(row1, data.shape[0] - 1))
+    col1 = max(0, min(col1, data.shape[1] - 1))
+    # Keep coordinates in the right order
+    row0, row1 = min(row0, row1), max(row0, row1)
+    col0, col1 = min(col0, col1), max(col0, col1)
+    # Extract the line
+    line = np.zeros((2, max(abs(row1 - row0), abs(col1 - col0)) + 1), dtype=np.float64)
+    line[0, :] = np.linspace(row0, row1, line.shape[1])
+    line[1, :] = np.linspace(col0, col1, line.shape[1])
+    # Interpolate the line
+    return line[1, :], np.array([data[int(r), int(c)] for r, c in line.T])
+
+
+# Line cross section item
+class LineCrossSectionItem(CrossSectionItem):
+    """A Qwt item representing line cross section data"""
+
+    def update_curve_data(self, obj: AnnotatedSegment) -> None:
+        """Update curve data"""
+        source = self.get_source_image()
+        rect = obj.get_rect()
+        if rect is not None and source.data is not None:
+            x0, y0, x1, y1 = obj.get_rect()
+            c0, r0 = source.get_closest_pixel_indexes(x0, y0)
+            c1, r1 = source.get_closest_pixel_indexes(x1, y1)
+            sectx, secty = compute_line_section(source.data, r0, c0, r1, c1)
             if secty.size == 0 or np.all(np.isnan(secty)):
                 sectx, secty = np.array([]), np.array([])
             self.process_curve_data(sectx, secty, None, None)

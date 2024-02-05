@@ -16,6 +16,7 @@ of panel.
 .. autodata:: plotpy.constants.ID_XCS
 .. autodata:: plotpy.constants.ID_YCS
 .. autodata:: plotpy.constants.ID_OCS
+.. autodata:: plotpy.constants.ID_LCS
 
 .. autoclass:: PanelWidget
     :members:
