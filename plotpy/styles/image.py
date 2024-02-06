@@ -25,8 +25,9 @@ from plotpy.config import _
 from plotpy.constants import LUTAlpha
 from plotpy.mathutils.colormaps import (
     ALL_COLORMAPS,
-    RECT_ICON_SIZE_H,
-    RECT_ICON_SIZE_W,
+    LARGE_ICON_HEIGHT,
+    LARGE_ICON_ORIENTATION,
+    LARGE_ICON_WIDTH,
     build_icon_from_cmap_name,
 )
 from plotpy.styles.base import ItemParameters
@@ -46,7 +47,11 @@ def _create_choices(
                 cmap.name,
                 cmap.name,
                 lambda name: build_icon_from_cmap_name(
-                    name, RECT_ICON_SIZE_W, RECT_ICON_SIZE_H, "h", 1
+                    name,
+                    LARGE_ICON_WIDTH,
+                    LARGE_ICON_HEIGHT,
+                    LARGE_ICON_ORIENTATION,
+                    1,
                 ),
             )
         )
@@ -75,7 +80,7 @@ class BaseImageParam(DataSet):
     colormap = (
         ImageChoiceItem(_("Colormap"), _create_choices, default="jet")
         .set_prop("display", hide=GetAttrProp("_hide_colormap"))
-        .set_prop("display", size=(RECT_ICON_SIZE_W, RECT_ICON_SIZE_H))
+        .set_prop("display", size=(LARGE_ICON_WIDTH, LARGE_ICON_HEIGHT))
     )
 
     interpolation = ChoiceItem(

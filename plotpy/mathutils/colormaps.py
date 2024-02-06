@@ -48,8 +48,8 @@ from plotpy.config import CONF
 from plotpy.widgets.colormap.widget import EditableColormap
 
 FULLRANGE = QwtInterval(0.0, 1.0)
-SQUARE_ICON_SIZE = 16
-RECT_ICON_SIZE_W, RECT_ICON_SIZE_H = 80, 16
+SMALL_ICON_WIDTH, SMALL_ICON_HEIGHT, SMALL_ICON_ORIENTATION = 16, 7, "h"
+LARGE_ICON_WIDTH, LARGE_ICON_HEIGHT, LARGE_ICON_ORIENTATION = 80, 16, "h"
 
 CmapDictType = Dict[str, EditableColormap]
 
@@ -167,9 +167,9 @@ def save_colormaps(json_filename: str, colormaps: CmapDictType):
 
 def build_icon_from_cmap(
     cmap: EditableColormap,
-    width: int = SQUARE_ICON_SIZE,
-    height: int = SQUARE_ICON_SIZE,
-    orientation: Literal["h", "v"] = "v",
+    width: int = SMALL_ICON_WIDTH,
+    height: int = SMALL_ICON_HEIGHT,
+    orientation: Literal["h", "v"] = SMALL_ICON_ORIENTATION,
     margin: int = 0,
 ) -> QG.QIcon:
     """Builds an icon representing the colormap
@@ -220,9 +220,9 @@ def build_icon_from_cmap(
 
 def build_icon_from_cmap_name(
     cmap_name: str,
-    width: int = SQUARE_ICON_SIZE,
-    height: int = SQUARE_ICON_SIZE,
-    orientation: Literal["h", "v"] = "v",
+    width: int = SMALL_ICON_WIDTH,
+    height: int = SMALL_ICON_HEIGHT,
+    orientation: Literal["h", "v"] = SMALL_ICON_ORIENTATION,
     margin: int = 0,
 ) -> QG.QIcon:
     """Builds an QIcon representing the colormap from the colormap name found in
