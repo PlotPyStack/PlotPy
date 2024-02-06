@@ -60,11 +60,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
     from qwt import QwtPlotCanvas, QwtScaleDiv
 
-    from plotpy.panels.base import PanelWidget
-    from plotpy.panels.contrastadjustment import ContrastAdjustment
-    from plotpy.panels.csection import XCrossSection, YCrossSection
-    from plotpy.panels.itemlist import PlotItemList
-    from plotpy.tools.base import GuiTool, GuiToolT
+    from plotpy.panels import ContrastAdjustment, PanelWidget, PlotItemList
 
 
 class DefaultPlotID:

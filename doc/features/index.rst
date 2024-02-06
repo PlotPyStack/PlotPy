@@ -47,6 +47,7 @@ Plot widgets with integrated plot manager:
    tools/index
    styles/index
    panels/index
+   colormapmanager
    fit
    pyplot
    resizedialog

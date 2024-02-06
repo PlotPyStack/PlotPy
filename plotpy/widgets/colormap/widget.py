@@ -4,8 +4,20 @@
 # (see plotpy/LICENSE for details)
 
 """
+Colormap widget
+---------------
+
 This module provides a basic widget to edit a colormap that contains a multi-slider
 and a colorap representation.
+
+
+Reference
+~~~~~~~~~
+
+.. autoclass:: EditableColormap
+    :members:
+.. autoclass:: ColorMapWidget
+    :members:
 """
 
 from __future__ import annotations
@@ -23,7 +35,10 @@ from qwt.color_map import ColorStop
 from plotpy.config import _
 from plotpy.widgets.colormap._slider import QColorMapSlider
 
+#: Type variable for color types
 ColorTypeT = TypeVar("ColorTypeT", bound=Union[QG.QColor, int])
+
+#: Type for color initialization types
 QColorInitTypes = Union[
     QG.QColor, int, Tuple[int, int, int, int], str, QC.Qt.GlobalColor, None
 ]
@@ -36,9 +51,9 @@ class EditableColormap(QwtLinearColorMap):
     Args:
         *args: QwtLinearColorMap arguments
         name: Optional str name given to the colormap. Useful for the interactions
-        with the rest of PlotPy, notably with the gobal colormaps dictionaries
-        such as colormaps.ALL_COLORMAPS. If None, the colormap name will be set to
-        "temporary". Defaults to None.
+         with the rest of PlotPy, notably with the gobal colormaps dictionaries
+         such as colormaps.ALL_COLORMAPS. If None, the colormap name will be set to
+         "temporary". Defaults to None.
     """
 
     def __init__(self, *args, name: str | None = None) -> None:
@@ -155,7 +170,7 @@ class EditableColormap(QwtLinearColorMap):
             stop_index: color stop index to move
             new_pos: new color stop position
             new_color: new color stop color. If None, will use the current stop color.
-            Defaults to None.
+             Defaults to None.
         """
         try:
             stop: ColorStop | None = self.stops[stop_index]
@@ -223,11 +238,11 @@ class ColorMapWidget(QW.QWidget):
         cmap_width: minimum width of the widget. Defaults to 400.
         cmap_height: minimum height of the colorbar. Defaults to 50.
         color1: first color. Ignored if the 'colormap' argument is used. If None,
-            default color is blue. Defaults to None.
+         default color is blue. Defaults to None.
         color2: second color. Ignored if the 'colormap' argument is used. If None,
-            default color is yellow. Defaults to None.
+         default color is yellow. Defaults to None.
         colormap: colormap instance. If None, color1 and color2 will be used
-            to create a new colormap. Defaults to None.
+         to create a new colormap. Defaults to None.
     """
 
     COLORMAP_CHANGED = QC.Signal()  # type: ignore
@@ -399,7 +414,7 @@ class ColorMapWidget(QW.QWidget):
         Args:
             index: color stop index to mutate
             new_pos: new color stop position. If not set will remain the same.
-            Defaults to None.
+             Defaults to None.
             new_color: new color. If not set will remain the same. Defaults to None.
         """
         if new_pos is None:

@@ -3,6 +3,8 @@ Reference
 
 .. autoclass:: plotpy.tools.GuiTool
    :members:
+.. autoclass:: plotpy.tools.GuiToolT
+   :members:
 .. autoclass:: plotpy.tools.InteractiveTool
    :members:
 .. autoclass:: plotpy.tools.CommandTool

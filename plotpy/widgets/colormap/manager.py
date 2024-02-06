@@ -4,8 +4,20 @@
 # (see plotpy/LICENSE for details)
 
 """
+Colormap manager
+----------------
+
 This module provides a fully featured colormap manager widget and dialog window
 that allows to select, edit and save colormaps (existing or new).
+
+
+Reference
+~~~~~~~~~
+
+.. autoclass:: ColorMapNameEdit
+    :members:
+.. autoclass:: ColorMapManager
+    :members:
 """
 
 from __future__ import annotations
@@ -100,7 +112,7 @@ class ColorMapManager(QW.QDialog):
     Args:
         parent: parent QWidget. Defaults to None.
         active_colormap: name of the default colormap selected. If None or does not
-        exists, will defaults to the first colormap in the list. Defaults to None
+         *exists, will defaults to the first colormap in the list. Defaults to None
     """
 
     def __init__(

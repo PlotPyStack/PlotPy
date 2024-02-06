@@ -257,9 +257,11 @@ class CurveItem(QwtPlotCurve):
 
     def serialize(
         self,
-        writer: guidata.dataset.io.HDF5Writer
-        | guidata.dataset.io.INIWriter
-        | guidata.dataset.io.JSONWriter,
+        writer: (
+            guidata.dataset.io.HDF5Writer
+            | guidata.dataset.io.INIWriter
+            | guidata.dataset.io.JSONWriter
+        ),
     ) -> None:
         """Serialize object to HDF5 writer
 
@@ -274,9 +276,11 @@ class CurveItem(QwtPlotCurve):
 
     def deserialize(
         self,
-        reader: guidata.dataset.io.HDF5Reader
-        | guidata.dataset.io.INIReader
-        | guidata.dataset.io.JSONReader,
+        reader: (
+            guidata.dataset.io.HDF5Reader
+            | guidata.dataset.io.INIReader
+            | guidata.dataset.io.JSONReader
+        ),
     ) -> None:
         """Deserialize object from HDF5 reader
 
@@ -389,8 +393,8 @@ class CurveItem(QwtPlotCurve):
             x: X data
             y: Y data
             decimated_data: Set to True if CurveItem X and Y arrays are already set and
-            this method is called to update decimated data (i.e. only update 1/N value
-            with N set in CurveItem.param.decimation).
+             this method is called to update decimated data (i.e. only update 1/N value
+             with N set in CurveItem.param.decimation).
         """
         self._x = np.array(x, copy=False)
         self._y = np.array(y, copy=False)

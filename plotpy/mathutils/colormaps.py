@@ -4,9 +4,32 @@
 # (see plotpy/LICENSE for details)
 
 """
-This module provides utilities to interact with colormap. It provides functions
-to load/save colormaps from/to json files and to build icons representing the
-colormaps.
+Colormap functions
+------------------
+
+Overview
+^^^^^^^^
+
+The :py:mod:`.colormap` module contains definition of common colormaps and tools
+to manipulate and create them.
+
+The following functions are available:
+
+* :py:func:`.get_cmap`: get a colormap from its name
+* :py:func:`.cmap_exists`: check if a colormap exists
+* :py:func:`.add_cmap`: add a colormap to the list of available colormaps
+* :py:func:`.build_icon_from_cmap`: build an icon representing the colormap
+* :py:func:`.build_icon_from_cmap_name`: build an icon representing the colormap
+  from its name
+
+Reference
+^^^^^^^^^
+
+.. autofunction:: get_cmap
+.. autofunction:: cmap_exists
+.. autofunction:: add_cmap
+.. autofunction:: build_icon_from_cmap
+.. autofunction:: build_icon_from_cmap_name
 """
 
 from __future__ import annotations

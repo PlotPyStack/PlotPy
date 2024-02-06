@@ -4,9 +4,20 @@
 # (see plotpy/LICENSE for details)
 
 """
+Colormap editor
+---------------
+
 This module provides a more complete colormap editor widget than the one provided
 by ColorMapWidget (plotpy/widgets/colormap_widget.py). It allows to edit a colormap
 by changing its color stops (add/delete/move/change color).
+
+Reference
+~~~~~~~~~
+
+.. autoclass:: ColorPickDataSet
+    :members:
+.. autoclass:: ColorMapEditor
+    :members:
 """
 
 from __future__ import annotations
@@ -102,11 +113,11 @@ class ColorMapEditor(QW.QWidget):
         cmap_width: Cmap size in pixels. Defaults to 400.
         cmap_height: Cmap height in pixels. Defaults to 50.
         color1: First color of the colormap. If None, color blue is used. Ignored if
-        argument 'colormap' is used. Defaults to None.
+         argument 'colormap' is used. Defaults to None.
         color2: Last color of the colormap. If None, color yellow is used.Ignored if
-        argument 'colormap' is used. Defaults to None
+         argument 'colormap' is used. Defaults to None
         colormap: An already initialized colormap to use in the widget.
-        Defaults to None.
+         Defaults to None.
     """
 
     def __init__(

@@ -17,6 +17,7 @@ from .base import (
     CommandTool,
     DefaultToolbarID,
     GuiTool,
+    GuiToolT,
     InteractiveTool,
     PanelTool,
     RectangularActionTool,
