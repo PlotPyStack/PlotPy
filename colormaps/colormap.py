@@ -6,42 +6,17 @@
 # pylint: disable=C0103
 
 """
-Colormap functions
+Colormap utilities
 ------------------
 
-Overview
-^^^^^^^^
-
-The :py:mod:`.colormap` module contains definition of common colormaps and tools
-to manipulate and create them.
-
-The following functions are available:
-
-* :py:func:`.get_cmap`: get a colormap from its name
-* :py:func:`.get_cmap_name`: get a colormap's name
-* :py:func:`.get_colormap_list`: get the list of available colormaps
-* :py:func:`.build_icon_from_cmap`: build an icon representing the colormap
-* :py:func:`.build_icon_from_cmap_name`: build an icon representing the colormap
-  from its name
-* :py:func:`.register_extra_colormap`: register a custom colormap
-
-Reference
-^^^^^^^^^
-
-.. autofunction:: get_cmap
-.. autofunction:: get_cmap_name
-.. autofunction:: get_colormap_list
-.. autofunction:: build_icon_from_cmap
-.. autofunction:: build_icon_from_cmap_name
-.. autofunction:: register_extra_colormap
 """
 
 from __future__ import annotations
 
 import _cm
-from numpy import array, linspace, newaxis, uint8, zeros
+import numpy as np
 from qtpy import QtGui as QG
-from qwt import QwtInterval, toQImage
+from qwt import QwtInterval
 
 from plotpy.mathutils.colormaps import (
     DEFAULT_COLORMAPS,
@@ -70,9 +45,9 @@ def _setup_colormap(cmap: EditableColormap, cmdata):
     """Setup a CustomQwtLinearColorMap according to
     matplotlib's data
     """
-    red = array(cmdata["red"])
-    green = array(cmdata["green"])
-    blue = array(cmdata["blue"])
+    red = np.array(cmdata["red"])
+    green = np.array(cmdata["green"])
+    blue = np.array(cmdata["blue"])
     qmin = QG.QColor()
     qmin.setRgbF(red[0, 2], green[0, 2], blue[0, 2])
     qmax = QG.QColor()
@@ -112,18 +87,6 @@ def get_cmap(name: str) -> EditableColormap:
     return colormap
 
 
-def get_cmap_name(cmap: EditableColormap) -> str:
-    """Return colormap's name
-
-    Args:
-        cmap: colormap
-
-    Returns:
-        colormap's name
-    """
-    return COLORMAPS.get(cmap, None)
-
-
 def get_colormap_list() -> list[str]:
     """Builds a list of available colormaps by introspection of the _cm module
 
@@ -138,54 +101,6 @@ def get_colormap_list() -> list[str]:
             if isinstance(obj, dict):
                 cmlist.append(name[1:-5])
     return cmlist
-
-
-def build_icon_from_cmap(
-    cmap: EditableColormap, width: int = 24, height: int = 24
-) -> QG.QIcon:
-    """Builds an icon representing the colormap
-
-    Args:
-        cmap: colormap
-        width: icon width
-        height: icon height
-    """
-    data = zeros((width, height), uint8)
-    line = linspace(0, 255, width)
-    data[:, :] = line[:, newaxis]
-    img = toQImage(data)
-    img.setColorTable(cmap.colorTable(FULLRANGE))
-    return QG.QIcon(QG.QPixmap.fromImage(img))
-
-
-def build_icon_from_cmap_name(cmap_name: str) -> QG.QIcon:
-    """Builds an icon representing the colormap from its name
-
-    Args:
-        cmap_name: colormap name
-
-    Returns:
-        icon representing the colormap
-    """
-    if cmap_name in ICON_CACHE:
-        return ICON_CACHE[cmap_name]
-    icon = build_icon_from_cmap(get_cmap(cmap_name))
-    ICON_CACHE[cmap_name] = icon
-    return icon
-
-
-def register_extra_colormap(name: str, colormap: EditableColormap) -> None:
-    """Add a custom colormap to the list of known colormaps
-    must be done early in the import process because
-    datasets will use get_color_map list at import time
-
-    Args:
-        name: colormap name
-        colormap: QwtColorMap object
-    """
-    COLORMAPS[name] = colormap
-    COLORMAPS[colormap] = name
-    EXTRA_COLORMAPS.append(name)
 
 
 if __name__ == "__main__":
