@@ -476,7 +476,9 @@ def compute_line_section(
     line[0, :] = np.linspace(row0, row1, line.shape[1])
     line[1, :] = np.linspace(col0, col1, line.shape[1])
     # Interpolate the line
-    return line[1, :], np.array([data[int(r), int(c)] for r, c in line.T])
+    y = np.array([data[int(r), int(c)] for r, c in line.T])
+    x = np.arange(y.size)
+    return x, y
 
 
 # Line cross section item
