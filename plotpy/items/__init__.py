@@ -49,7 +49,7 @@ from .label import (
     RangeInfo,
     SelectedLegendBoxItem,
 )
-from .polygon import PolygonMapItem
+from .polygonmap import PolygonMapItem
 from .shape import (
     AbstractShape,
     Axes,

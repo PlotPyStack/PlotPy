@@ -15,7 +15,7 @@ import numpy as np
 from guidata.qthelpers import qt_app_context
 
 from plotpy.items import PolygonMapItem
-from plotpy.plot import PlotDialog
+from plotpy.plot import PlotDialog, PlotOptions
 
 # Create a sample dataset consisting of tesselated circles randomly placed
 # in a box
@@ -50,7 +50,12 @@ COLORS = [
 def test_polygons():
     """Test"""
     with qt_app_context(exec_loop=True):
-        win = PlotDialog(edit=True, toolbar=True, title="Sample multi-polygon item")
+        win = PlotDialog(
+            edit=True,
+            toolbar=True,
+            title="Sample multi-polygon item",
+            options=PlotOptions(show_itemlist=True),
+        )
         plot = win.manager.get_plot()
         plot.set_aspect_ratio(lock=True)
         plot.set_antialiasing(False)

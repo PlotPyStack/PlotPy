@@ -26,11 +26,11 @@ from plotpy.styles.base import (
 )
 
 if TYPE_CHECKING:
-    from plotpy.items import CurveItem, PolygonMapItem
+    from plotpy.items import CurveItem
 
 
 class CurveParam(DataSet):
-    """Dataset defining the parameters of a CurveItem or PolygonMapItem"""
+    """Dataset defining the parameters of a CurveItem"""
 
     _multiselection = False
     label = StringItem(_("Title"), default="").set_prop(
@@ -49,11 +49,11 @@ class CurveParam(DataSet):
         "display", active=_use_dsamp_prop
     )
 
-    def update_param(self, curve: CurveItem | PolygonMapItem) -> None:
-        """Updates the parameters using values from a given CurveItem/PolygonMapItem
+    def update_param(self, curve: CurveItem) -> None:
+        """Updates the parameters using values from a given CurveItem
 
         Args:
-            curve: reference CurveItem/PolygonMapItem instance
+            curve: reference CurveItem instance
         """
         self.label = str(curve.title().text())
         self.symbol.update_param(curve.symbol())
@@ -61,11 +61,11 @@ class CurveParam(DataSet):
         self.curvestyle = CURVESTYLE_NAME[curve.style()]
         self.baseline = curve.baseline()
 
-    def update_item(self, curve: CurveItem | PolygonMapItem) -> None:
-        """Updates a given CurveItem/PolygonMapItem using the current parameters
+    def update_item(self, curve: CurveItem) -> None:
+        """Updates a given CurveItem using the current parameters
 
         Args:
-            curve: instance of CurveItem/PolygonMapItem to update
+            curve: instance of CurveItem to update
         """
 
         plot = curve.plot()

@@ -19,14 +19,8 @@ from qtpy import QtGui as QG
 from qwt import QwtPlotItem
 
 from plotpy.config import _
-from plotpy.interfaces import (
-    IBasePlotItem,
-    ICurveItemType,
-    ISerializableType,
-    ITrackableItemType,
-)
-from plotpy.items.curve.base import SELECTED_SYMBOL
-from plotpy.styles.curve import CurveParam
+from plotpy.interfaces import IBasePlotItem, ISerializableType, ITrackableItemType
+from plotpy.styles import PolygonMapParam
 
 if TYPE_CHECKING:  # pragma: no cover
     import guidata.dataset.io
@@ -40,7 +34,6 @@ if TYPE_CHECKING:  # pragma: no cover
 def simplify_poly(pts, off, scale, bounds):
     """Simplify a polygon by removing points outside the canvas"""
     ax, bx, ay, by = scale
-    xm, ym, xM, yM = bounds
     a = np.array([[ax, ay]])
     b = np.array([[bx, by]])
     _pts = a * pts + b
@@ -57,9 +50,10 @@ def simplify_poly(pts, off, scale, bounds):
 
 
 class PolygonMapItem(QwtPlotItem):
-    """
-    Construct a curve `plot item` with the parameters *curveparam*
-    (see :py:class:`.styles.CurveParam`)
+    """Construct a PolygonMapItem object
+
+    Args:
+        param: Polygon parameters
     """
 
     __implements__ = (IBasePlotItem, ISerializableType)
@@ -71,12 +65,12 @@ class PolygonMapItem(QwtPlotItem):
     _can_move = False
     _can_rotate = False
 
-    def __init__(self, curveparam=None):
+    def __init__(self, param: PolygonMapParam | None = None) -> None:
         super().__init__()
-        if curveparam is None:
-            self.param = CurveParam(_("PolygonMap"), icon="curve.png")
+        if param is None:
+            self.param = PolygonMapParam(_("PolygonMap"), icon="polygonmap.png")
         else:
-            self.param = curveparam
+            self.param = param
         self.selected = False
         self.immutable = True  # set to false to allow moving points around
         self._pts = None  # Array of points Mx2
@@ -84,7 +78,7 @@ class PolygonMapItem(QwtPlotItem):
         #                 (polygon k points are _pts[_n[k-1]:_n[k]])
         self._c = None  # Color of polygon Nx2 [border,background] as RGBA uint32
         self.update_params()
-        self.setIcon(get_icon("curve.png"))
+        self.setIcon(get_icon("polygonmap.png"))
 
     def types(self) -> tuple[type[IItemType], ...]:
         """Returns a group or category for this item.
@@ -93,7 +87,7 @@ class PolygonMapItem(QwtPlotItem):
         Returns:
             tuple: Tuple of class objects inheriting from IItemType
         """
-        return (ICurveItemType, ITrackableItemType, ISerializableType)
+        return (ITrackableItemType, ISerializableType)
 
     def can_select(self) -> bool:
         """
@@ -164,56 +158,6 @@ class PolygonMapItem(QwtPlotItem):
         """
         self._can_rotate = state
 
-    def setPen(self, x):
-        """
-
-        :param x:
-        """
-        pass
-
-    def setBrush(self, x):
-        """
-
-        :param x:
-        """
-        pass
-
-    def setSymbol(self, x):
-        """
-
-        :param x:
-        """
-        pass
-
-    def setCurveAttribute(self, x, y):
-        """
-
-        :param x:
-        :param y:
-        """
-        pass
-
-    def setStyle(self, x):
-        """
-
-        :param x:
-        """
-        pass
-
-    def setCurveType(self, x):
-        """
-
-        :param x:
-        """
-        pass
-
-    def setBaseline(self, x):
-        """
-
-        :param x:
-        """
-        pass
-
     def __reduce__(self):
         state = (self.param, self._pts, self._n, self._c, self.z())
         res = (PolygonMapItem, (), state)
@@ -228,9 +172,11 @@ class PolygonMapItem(QwtPlotItem):
 
     def serialize(
         self,
-        writer: guidata.dataset.io.HDF5Writer
-        | guidata.dataset.io.INIWriter
-        | guidata.dataset.io.JSONWriter,
+        writer: (
+            guidata.dataset.io.HDF5Writer
+            | guidata.dataset.io.INIWriter
+            | guidata.dataset.io.JSONWriter
+        ),
     ) -> None:
         """Serialize object to HDF5 writer
 
@@ -242,13 +188,15 @@ class PolygonMapItem(QwtPlotItem):
         writer.write(self._c, group_name="Cdata")
         writer.write(self.z(), group_name="z")
         self.param.update_param(self)
-        writer.write(self.param, group_name="curveparam")
+        writer.write(self.param, group_name="param")
 
     def deserialize(
         self,
-        reader: guidata.dataset.io.HDF5Reader
-        | guidata.dataset.io.INIReader
-        | guidata.dataset.io.JSONReader,
+        reader: (
+            guidata.dataset.io.HDF5Reader
+            | guidata.dataset.io.INIReader
+            | guidata.dataset.io.JSONReader
+        ),
     ) -> None:
         """Deserialize object from HDF5 reader
 
@@ -260,8 +208,8 @@ class PolygonMapItem(QwtPlotItem):
         c = reader.read(group_name="Cdata", func=reader.read_array)
         self.set_data(pts, n, c)
         self.setZ(reader.read("z"))
-        self.param = CurveParam(_("PolygonMap"), icon="curve.png")
-        reader.read("curveparam", instance=self.param)
+        self.param = PolygonMapParam(_("PolygonMap"), icon="polygonmap.png")
+        reader.read("param", instance=self.param)
         self.update_params()
 
     def set_readonly(self, state: bool) -> None:
@@ -307,19 +255,12 @@ class PolygonMapItem(QwtPlotItem):
         Select the object and eventually change its appearance to highlight the
         fact that it's selected
         """
-        self.selected = True
-        self.setSymbol(SELECTED_SYMBOL)
-        self.invalidate_plot()
 
     def unselect(self) -> None:
         """
         Unselect the object and eventually restore its original appearance to
         highlight the fact that it's not selected anymore
         """
-        self.selected = False
-        # Restoring initial curve parameters:
-        self.param.update_item(self)
-        self.invalidate_plot()
 
     def get_data(self):
         """Return curve data x, y (NumPy arrays)"""
@@ -451,7 +392,7 @@ class PolygonMapItem(QwtPlotItem):
         Args:
             itemparams: Item parameters
         """
-        update_dataset(self.param, itemparams.get("CurveParam"), visible_only=True)
+        update_dataset(self.param, itemparams.get("PolygonMapParam"), visible_only=True)
         self.update_params()
 
     def draw(
@@ -469,7 +410,6 @@ class PolygonMapItem(QwtPlotItem):
             yMap: Y axis scale map
             canvasRect: Canvas rectangle
         """
-        # from time import time
         p1x = xMap.p1()
         s1x = xMap.s1()
         ax = (xMap.p2() - p1x) / (xMap.s2() - s1x)
@@ -481,13 +421,9 @@ class PolygonMapItem(QwtPlotItem):
         _n = self._n
         fgcol = QG.QColor()
         bgcol = QG.QColor()
-        # t0 = time()
         polygons = simplify_poly(
             self._pts, _n, (ax, bx, ay, by), canvasRect.getCoords()
         )
-        # t1 = time()
-        # print len(polygons), t1-t0
-        # t2 = time()
         for poly, num in polygons:
             points = []
             for i in range(poly.shape[0]):
@@ -498,7 +434,6 @@ class PolygonMapItem(QwtPlotItem):
             painter.setPen(QG.QPen(fgcol))
             painter.setBrush(QG.QBrush(bgcol))
             painter.drawPolygon(pg)
-        # print "poly:", time()-t2
 
     def boundingRect(self) -> QC.QRectF:
         """Return the bounding rectangle of the shape

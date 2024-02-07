@@ -69,6 +69,7 @@ from plotpy.styles.label import (
     LegendParam,
     LegendParam_MS,
 )
+from plotpy.styles.polygonmap import PolygonMapParam, PolygonParam_MS
 from plotpy.styles.shape import (
     AnnotationParam,
     AnnotationParam_MS,
