@@ -542,6 +542,7 @@ class BasePlot(qwt.QwtPlot):
         self,
         dx: tuple[float, float, float, float],
         dy: tuple[float, float, float, float],
+        replot: bool = True
     ) -> None:
         """
         Translate the active axes according to dx, dy axis 'state' tuples
@@ -567,7 +568,10 @@ class BasePlot(qwt.QwtPlot):
             self.set_axis_limits(axis_id, vmin, vmax)
 
         self.setAutoReplot(auto)
-        self.replot()
+        if replot:
+            self.replot()
+        else:
+            self.updateAxes()
         # the signal MUST be emitted after replot, otherwise
         # we receiver won't see the new bounds (don't know why?)
         self.SIG_PLOT_AXIS_CHANGED.emit(self)
@@ -577,6 +581,7 @@ class BasePlot(qwt.QwtPlot):
         dx: tuple[float, float, float, float],
         dy: tuple[float, float, float, float],
         lock_aspect_ratio: bool | None = None,
+        replot: bool = True,
     ) -> None:
         """
         Change the scale of the active axes (zoom/dezoom) according to dx, dy
@@ -627,7 +632,10 @@ class BasePlot(qwt.QwtPlot):
             self.set_axis_limits(axis_id, vmin, vmax)
 
         self.setAutoReplot(auto)
-        self.replot()
+        if replot:
+            self.replot()
+        else:
+            self.updateAxes()
         # the signal MUST be emitted after replot, otherwise
         # we receiver won't see the new bounds (don't know why?)
         self.SIG_PLOT_AXIS_CHANGED.emit(self)
@@ -1443,9 +1451,11 @@ class BasePlot(qwt.QwtPlot):
 
     def serialize(
         self,
-        writer: guidata.dataset.io.HDF5Writer
-        | guidata.dataset.io.INIWriter
-        | guidata.dataset.io.JSONWriter,
+        writer: (
+            guidata.dataset.io.HDF5Writer
+            | guidata.dataset.io.INIWriter
+            | guidata.dataset.io.JSONWriter
+        ),
     ) -> None:
         """Serialize object to HDF5 writer
 
@@ -1459,9 +1469,11 @@ class BasePlot(qwt.QwtPlot):
 
     def deserialize(
         self,
-        reader: guidata.dataset.io.HDF5Reader
-        | guidata.dataset.io.INIReader
-        | guidata.dataset.io.JSONReader,
+        reader: (
+            guidata.dataset.io.HDF5Reader
+            | guidata.dataset.io.INIReader
+            | guidata.dataset.io.JSONReader
+        ),
     ) -> None:
         """Deserialize object from HDF5 reader
 
