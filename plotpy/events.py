@@ -18,12 +18,19 @@ The :mod:`plotpy.events` module provides classes to handle events on a
 from __future__ import annotations
 
 import weakref
+from typing import TYPE_CHECKING
 
+import numpy as np
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
+from qtpy import QtWidgets as QW
 
 from plotpy.config import CONF
 from plotpy.coords import axes_to_canvas, canvas_to_axes
+from plotpy.items.shape.marker import Marker
+
+if TYPE_CHECKING:
+    from plotpy.plot.base import BasePlot
 
 CursorShape = type(QC.Qt.CursorShape.ArrowCursor)
 
@@ -246,14 +253,14 @@ class StatefulEventFilter(QC.QObject):
     d'un canvas
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent: BasePlot):
         super().__init__()
         self.states = {0: {}}  # 0 : cursor 1: panning, 2: zooming
         self.cursors = {}
         self.state = 0
         self.max_state = 0
         self.events = {}
-        self.plot = parent
+        self.plot: BasePlot = parent
         self.all_event_types = frozenset()
 
     def eventFilter(self, _obj, event):
@@ -262,7 +269,6 @@ class StatefulEventFilter(QC.QObject):
             print(repr(self), self)
         if event.type() not in self.all_event_types:
             return False
-
         state = self.states[self.state]
         for match, (call_list, next_state) in list(state.items()):
             if match(event):
@@ -514,123 +520,250 @@ class ZoomHandler(DragHandler):
 
 
 class GestureHandler(QC.QObject):
-    """Classe de base pour les gestionnaires d'événements du type tactile"""
+    """Base class used to handle gestures.
 
-    kind = None
+    Args:
+        filter: event filter into which to add the handler instance.
+        start_state: start state to use in the event filter state machine.
+         Defaults to 0.
 
-    def __init__(self, filter, start_state=0):
-        super(GestureHandler, self).__init__()
+    """
+
+    kind: QC.Qt.GestureType | None = None
+
+    def __init__(self, filter: StatefulEventFilter, start_state=0) -> None:
+        super().__init__()
         filter.plot.canvas().grabGesture(self.kind)
         self.state0 = filter.add_event(
             start_state,
-            filter.gesture(self.kind, QC.Qt.GestureStarted),
+            filter.gesture(self.kind, QC.Qt.GestureState.GestureStarted),
             self.start_tracking,
         )
         self.state1 = filter.add_event(
             self.state0,
-            filter.gesture(self.kind, QC.Qt.GestureUpdated),
+            filter.gesture(self.kind, QC.Qt.GestureState.GestureUpdated),
             self.start_moving,
         )
         filter.add_event(
             self.state1,
-            filter.gesture(self.kind, QC.Qt.GestureUpdated),
+            filter.gesture(self.kind, QC.Qt.GestureState.GestureUpdated),
             self.move,
             self.state1,
         )
         filter.add_event(
             self.state0,
-            filter.gesture(self.kind, QC.Qt.GestureFinished),
+            filter.gesture(self.kind, QC.Qt.GestureState.GestureFinished),
             self.stop_notmoving,
             start_state,
         )
         filter.add_event(
             self.state1,
-            filter.gesture(self.kind, QC.Qt.GestureFinished),
+            filter.gesture(self.kind, QC.Qt.GestureState.GestureFinished),
             self.stop_moving,
             start_state,
         )
         filter.add_event(
             self.state0,
-            filter.gesture(self.kind, QC.Qt.GestureCanceled),
+            filter.gesture(self.kind, QC.Qt.GestureState.GestureCanceled),
             self.stop_notmoving,
             start_state,
         )
         filter.add_event(
             self.state1,
-            filter.gesture(self.kind, QC.Qt.GestureCanceled),
+            filter.gesture(self.kind, QC.Qt.GestureState.GestureCanceled),
             self.stop_notmoving,
             start_state,
         )
-        self.start = None  # first gesture position
-        self.last = None  # gesture position seen during last event
+        self.start = QC.QPoint()  # first gesture position
+        self.last = QC.QPoint()  # gesture position seen during last event
         self.parent_tracking = None
 
-    def get_gesture(self, event):
+    def get_glob_position(self, event: QW.QGestureEvent) -> QC.QPointF:
+        """Returns the hotspot global position of the gesture event.
+
+        Args:
+            event: event from which to get the position
+
+        Returns:
+            event hotspot poisition in global coordinates.
+        """
+        return self.get_gesture(event).hotSpot()
+
+    def get_gesture(self, event: QW.QGestureEvent) -> QW.QGesture:
+        """Returns the gesture from the event.
+
+        Args:
+            event: event from which to get the gesture.
+
+        Returns:
+            gesture from the event.
+        """
         return event.gesture(self.kind)
 
-    def get_move_state(self, filter, gesture):
-        raise NotImplementedError
+    def start_tracking(
+        self, filter: StatefulEventFilter, event: QW.QGestureEvent
+    ) -> None:
+        """Handles the start of the gesture tracking.
 
-    def start_tracking(self, filter, event):
-        #        print("Getting event for start tracking")
-        origin = self.get_gesture(event).hotSpot()
-        self.start = self.last = filter.plot.mapFromGlobal(origin.toPoint())
+        Args:
+            filter: event filter that contains the BasePlot instance
+            event: event that triggered the start of the tracking, used to get
+             a position.
+        """
+        origin = self.get_glob_position(event)
+        self.start = self.last = filter.plot.canvas().mapFromGlobal(origin.toPoint())
 
-    def start_moving(self, filter, event):
+    def start_moving(
+        self, filter: StatefulEventFilter, event: QW.QGestureEvent
+    ) -> None:
+        """Handles the start of the gesture moving.
+
+        Args:
+            filter: event filter that contains the BasePlot instance
+            event: event that triggered the start of the moving
+        """
         return self.move(filter, event)
 
-    def stop_tracking(self, _filter, _event):
+    def stop_tracking(
+        self, _filter: StatefulEventFilter, _event: QW.QGestureEvent
+    ) -> None:
         pass
-        # filter.plot.canvas().setMouseTracking(self.parent_tracking)
 
-    def stop_notmoving(self, filter, event):
+    def stop_notmoving(
+        self, filter: StatefulEventFilter, event: QW.QGestureEvent
+    ) -> None:
         self.stop_tracking(filter, event)
 
-    def stop_moving(self, filter, event):
+    def stop_moving(self, filter: StatefulEventFilter, event: QW.QGestureEvent) -> None:
         self.stop_tracking(filter, event)
 
-    def move(self, filter, event):
+    def move(self, filter: StatefulEventFilter, event: QW.QGestureEvent) -> None:
         raise NotImplementedError
 
 
-class PinchZoomHandler(GestureHandler):
-    """Classe de base pour les gestionnaires d'événements du type tactile"""
+class PinchPanGestureHandler(GestureHandler):
+    """Class used to handle pinch and pan gestures.
 
-    kind = QC.Qt.PinchGesture
+    Args:
+        filter: event filter into which to add the handler instance.
+        start_state: start state to use in the event filter state machine.
+         Defaults to 0.
 
-    def get_move_state(self, filter, gesture):
-        rct = filter.plot.contentsRect()
-        xshift = rct.width() * (gesture.scaleFactor() - 1)
-        yshift = rct.height() * (gesture.scaleFactor() - 1)
-        pos = QC.QPointF(self.last.x() + xshift, self.last.y() + yshift)
+    """
+
+    kind = QC.Qt.GestureType.PinchGesture
+
+    def __init__(
+        self,
+        filter: StatefulEventFilter,
+        start_state=0,
+    ):
+        super().__init__(filter, start_state)
+        self.last_center_diff = 0
+        self.marker: Marker | None = None
+
+    def get_pan_param(
+        self, plot: BasePlot, pos: QC.QPoint
+    ) -> tuple[tuple[float, float, float, float], tuple[float, float, float, float]]:
+        """Returns the parameters to use for panning the plot.
+
+        Args:
+            plot: instance of BasePlot to use as a reference.
+            pos: position on the plot canvas of the current hotspot.
+
+        Returns:
+            Returns two tuples of four floats each, representing the parameters used
+            by BasePlot.do_pan_view.
+        """
+        rct = plot.contentsRect()
         dx = (pos.x(), self.last.x(), self.start.x(), rct.width())
         dy = (pos.y(), self.last.y(), self.start.y(), rct.height())
-        self.last = QC.QPointF(pos)
+        self.last = pos
         return dx, dy
 
-    def move(self, filter, event):
-        gesture = self.get_gesture(event)
-        x_state, y_state = self.get_move_state(filter, gesture)
-        filter.plot.do_zoom_view(x_state, y_state)
+    def get_zoom_param(
+        self, plot: BasePlot, pos: QC.QPoint, factor: float
+    ) -> tuple[tuple[float, float, float, float], tuple[float, float, float, float]]:
+        """Returns the parameters to use for zooming on the plot.
 
+        Args:
+            plot: instance of BasePlot to use as a reference.
+            pos: position on the plot canvas of the current hotspot.
+            factor: factor by which to zoom.
 
-class PanGestureHandler(GestureHandler):
-    """Classe de base pour les gestionnaires d'événements du type tactile"""
-
-    kind = QC.Qt.PanGesture
-
-    def get_move_state(self, filter, gesture):
-        rct = filter.plot.contentsRect()
-        pos = gesture.offset()
-        self.last = gesture.lastOffset()
-        dx = (pos.x(), self.last.x(), self.start.x(), rct.width())
-        dy = (pos.y(), self.last.y(), self.start.y(), rct.height())
+        Returns:
+            Returns two tuples of four floats each, representing the parameters used
+            by BasePlot.do_zoom_view.
+        """
+        rect_width = plot.contentsRect().width()
+        dx = (
+            pos.x() * factor,
+            pos.x(),
+            pos.x(),
+            rect_width,
+        )
+        dy = (
+            pos.y() * factor,
+            pos.y(),
+            pos.y(),
+            rect_width,
+        )
         return dx, dy
 
-    def move(self, filter, event):
-        gesture = self.get_gesture(event)
-        x_state, y_state = self.get_move_state(filter, gesture)
-        filter.plot.do_pan_view(x_state, y_state)
+    def start_tracking(
+        self, filter: StatefulEventFilter, event: QW.QGestureEvent
+    ) -> None:
+        """Overrides the GestureHandler.start_tracking method to add a marker at the
+        hostpot of the pinch gesture.
+
+        Args:
+            filter: event filter that contains the BasePlot instance
+            event: Gesture event that triggered the start of the tracking, used to get
+             a position.
+        """
+        plot = filter.plot
+        if self.marker is None:
+            self.marker = Marker()
+            self.marker.attach(plot)
+            self.marker.setZ(plot.get_max_z() + 1)
+            self.marker.setVisible(True)
+        pos = plot.canvas().mapFromGlobal(self.get_glob_position(event).toPoint())
+        self.marker.move_local_point_to(0, pos)
+
+        return super().start_tracking(filter, event)
+
+    def move(self, filter: StatefulEventFilter, event: QW.QGestureEvent) -> None:
+        """Overrides the GestureHandler.move method to handle the pinch and pan gesture.
+
+        Args:
+            filter: event filter that contains the BasePlot instance
+            event: event that triggered the move, used to get the hotspot position.
+        """
+        gesture: QW.QPinchGesture = self.get_gesture(event)
+        plot = filter.plot
+
+        center_point = self.get_glob_position(event)
+        center_point = filter.plot.canvas().mapFromGlobal(center_point.toPoint())
+        scale_factor = np.clip(gesture.scaleFactor(), 0.90, 1.1)
+
+        pan_dx, pan_dy = self.get_pan_param(plot, center_point)
+        zoom_dx, zoom_dy = self.get_zoom_param(plot, center_point, scale_factor)
+        plot.do_zoom_view(zoom_dx, zoom_dy, replot=False)
+        plot.do_pan_view(pan_dx, pan_dy)
+
+    def stop_tracking(
+        self, _filter: StatefulEventFilter, _event: QW.QGestureEvent
+    ) -> None:
+        """Overrides the GestureHandler.stop_tracking method to remove the marker when
+        the gesture tracking stops.
+
+        Args:
+            _filter: event filter that contains the BasePlot instance
+            _event: event that triggered the stop, not used.
+        """
+        if self.marker is not None:
+            self.marker.detach()
+            self.marker = None
 
 
 class MenuHandler(ClickHandler):
@@ -796,7 +929,12 @@ class ObjectHandler:
     """ """
 
     def __init__(
-        self, filter, btn, mods=QC.Qt.NoModifier, start_state=0, multiselection=False
+        self,
+        filter: StatefulEventFilter,
+        btn,
+        mods=QC.Qt.NoModifier,
+        start_state=0,
+        multiselection=False,
     ):
         self.multiselection = multiselection
         self.start_state = start_state
@@ -1135,7 +1273,7 @@ class ZoomRectHandler(RectangularSelectionHandler):
         filter.plot.do_zoom_rect_view(self.start, event.pos())
 
 
-def setup_standard_tool_filter(filter, start_state):
+def setup_standard_tool_filter(filter: StatefulEventFilter, start_state):
     """Création des filtres standard (pan/zoom) sur boutons milieu/droit"""
     # Bouton du milieu
     PanHandler(filter, QC.Qt.MidButton, start_state=start_state)
@@ -1146,10 +1284,7 @@ def setup_standard_tool_filter(filter, start_state):
     MenuHandler(filter, QC.Qt.RightButton, start_state=start_state)
 
     # Gestes
-    PinchZoomHandler(filter, start_state=start_state)
-    # FIXME: Pinch/PanZoomHandler are currently mutually exclusive: when both
-    # are enabled, it doesn't work ; when only one is enabled, it works
-    PanGestureHandler(filter, start_state=start_state)
+    PinchPanGestureHandler(filter, start_state=start_state)
 
     # Autres (touches, move)
     MoveHandler(filter, start_state=start_state)
