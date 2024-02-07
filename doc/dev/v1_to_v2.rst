@@ -6,7 +6,11 @@ This section describes the steps to migrate python code using plotpy V1 to plotp
 Updating the imports
 ^^^^^^^^^^^^^^^^^^^^
 
-The following table gives the equivalence between plotpy V1 and plotpy V2 classes.
+PlotPy V1 to PlotPy V2
+~~~~~~~~~~~~~~~~~~~~~~
+
+The following table gives the equivalence between plotpy V1 and plotpy V2 imports
+or objects.
 
 For most of them, the change in the module path is the only difference (only
 the import statement have to be updated in your client code). For others, the
@@ -15,6 +19,18 @@ required in your code.
 
 .. csv-table:: Compatibility table
     :file: v1_to_v2.csv
+
+PlotPy V1 to guidata V3
+~~~~~~~~~~~~~~~~~~~~~~~
+
+With the release of PlotPy V2, the ``DataSet`` related features have been moved
+to the `guidata` package (from where they were originally extracted).
+
+The following table gives the equivalence between PlotPy V1 and guidata V3 imports
+or objects.
+
+.. csv-table:: Compatibility table
+    :file: v1_to_guidata_v3.csv
 
 New method for thresholding image item LUTs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

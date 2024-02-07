@@ -1,4 +1,4 @@
-guiqwt v4,plotpy v2,API changes
+guiqwt v4,PlotPy v2,API changes
 ``guiqwt.events``,``plotpy.events``
 ``guiqwt.interfaces``,``plotpy.interfaces``
 ``guiqwt.io``,``plotpy.io``
