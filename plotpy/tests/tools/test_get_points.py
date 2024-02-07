@@ -11,6 +11,8 @@ This plotpy tool provide a MATLAB-like "ginput" feature.
 
 # guitest: show
 
+from __future__ import annotations
+
 from guidata.qthelpers import exec_dialog, qt_app_context
 from numpy import linspace, sin
 
