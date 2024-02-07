@@ -550,6 +550,8 @@ class BasePlot(qwt.QwtPlot):
         Args:
             dx (tuple[float, float, float, float]): the x axis 'state' tuple
             dy (tuple[float, float, float, float]): the y axis 'state' tuple
+            replot: if True, do a full replot else just update the axes to avoid a
+             redraw (default: True)
         """
         # dx and dy are the output of the "DragHandler.get_move_state" method
         # (see module ``plotpy.events``)
@@ -588,6 +590,13 @@ class BasePlot(qwt.QwtPlot):
         axis 'state' tuples
 
         We try to keep initial pos fixed on the canvas as the scale changes
+
+        Args:
+            dx (tuple[float, float, float, float]): the x axis 'state' tuple
+            dy (tuple[float, float, float, float]): the y axis 'state' tuple
+            lock_aspect_ratio: if True, the aspect ratio is locked
+            replot: if True, do a full replot else just update the axes to avoid a
+             redraw (default: True)
         """
         # dx and dy are the output of the "DragHandler.get_move_state" method
         # (see module ``plotpy.events``):
