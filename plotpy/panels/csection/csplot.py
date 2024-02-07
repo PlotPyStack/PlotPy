@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import weakref
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
@@ -26,16 +26,19 @@ LUT_AXIS_TITLE = _("LUT scale") + (" (0-%d)" % LUT_MAX)
 if TYPE_CHECKING:  # pragma: no cover
     from qtpy.QtWidgets import QWidget
 
+    from plotpy.items import BaseImageItem
+    from plotpy.panels.csection.csitem import CrossSectionItem
 
-class CrossSectionPlot(BasePlot):
-    """Cross section plot
+
+class BaseCrossSectionPlot(BasePlot):
+    """Cross section plot base class
 
     Args:
         parent: Parent widget. Defaults to None.
     """
 
     CURVE_LABEL = _("Cross section")
-    LABEL_TEXT = _("Enable a marker")
+    LABEL_TEXT = ""  # to be overridden in subclasses
     _HEIGHT = None
     _WIDTH = None
     CS_AXIS = None
@@ -89,10 +92,10 @@ class CrossSectionPlot(BasePlot):
         self.param.label = self.CURVE_LABEL
 
     def connect_plot(self, plot: BasePlot) -> None:
-        """Connect plot
+        """Connect plot to cross section plot
 
         Args:
-            plot: Plot to connect
+            plot: Plot to connect (containing the image items to be used for)
         """
         if plot.options.type == PlotType.CURVE:
             # Connecting only to image plot widgets (allow mixing image and
@@ -102,7 +105,6 @@ class CrossSectionPlot(BasePlot):
         plot.SIG_LUT_CHANGED.connect(self.lut_changed)
         plot.SIG_MASK_CHANGED.connect(lambda item: self.update_plot())
         plot.SIG_ACTIVE_ITEM_CHANGED.connect(self.active_item_changed)
-        plot.SIG_MARKER_CHANGED.connect(self.marker_changed)
         plot.SIG_ANNOTATION_CHANGED.connect(self.shape_changed)
         plot.SIG_PLOT_LABELS_CHANGED.connect(self.plot_labels_changed)
         plot.SIG_AXIS_DIRECTION_CHANGED.connect(self.axis_dir_changed)
@@ -112,14 +114,13 @@ class CrossSectionPlot(BasePlot):
             self.axis_dir_changed(plot, axis_id)
         self.items_changed(plot)
 
-    def register_shape(self, plot, shape, final, refresh=True):
-        """
+    def register_shape(self, plot: BasePlot, shape: Any, refresh: bool = True) -> None:
+        """Register shape associated to cross section plot
 
-        :param plot:
-        :param shape:
-        :param final:
-        :param refresh:
-        :return:
+        Args:
+            plot: Plot containing the shape and the associated image items
+            shape: Shape to register, and to be used for cross section
+            refresh: Whether to refresh the plot
         """
         known_shapes = self._shapes.get(plot, [])
         if shape in known_shapes:
@@ -127,10 +128,11 @@ class CrossSectionPlot(BasePlot):
         self._shapes[plot] = known_shapes + [shape]
         self.update_plot(shape, refresh=refresh and self.autorefresh_mode)
 
-    def unregister_shape(self, shape):
-        """
+    def unregister_shape(self, shape: Any) -> None:
+        """Unregister shape associated to cross section plot
 
-        :param shape:
+        Args:
+            shape: Shape to unregister
         """
         for plot in self._shapes:
             shapes = self._shapes[plot]
@@ -142,14 +144,15 @@ class CrossSectionPlot(BasePlot):
                     self.replot()
                 break
 
-    def create_cross_section_item(self):
-        """ """
+    def create_cross_section_item(self) -> CrossSectionItem:
+        """Create cross section item"""
         raise NotImplementedError
 
-    def add_cross_section_item(self, source):
-        """
+    def add_cross_section_item(self, source: BaseImageItem) -> None:
+        """Add cross section item
 
-        :param source:
+        Args:
+            source: Source image item to add cross section item for
         """
         curve = self.create_cross_section_item()
         curve.set_source_image(source)
@@ -157,18 +160,15 @@ class CrossSectionPlot(BasePlot):
         self.add_item(curve, z=0)
         self.known_items[source] = curve
 
-    def get_cross_section_curves(self):
-        """
-
-        :return:
-        """
+    def get_cross_section_curves(self) -> list[CrossSectionItem]:
+        """Return cross section curves"""
         return list(self.known_items.values())
 
-    def items_changed(self, plot):
-        """
+    def items_changed(self, plot: BasePlot) -> None:
+        """Items have changed in the plot
 
-        :param plot:
-        :return:
+        Args:
+            plot: Plot containing the image items to be used for cross section
         """
         # Del obsolete cross section items
         new_sources = plot.get_items(item_type=ICSImageItemType)
@@ -196,37 +196,50 @@ class CrossSectionPlot(BasePlot):
                 if not self.single_source or not self.known_items:
                     self.add_cross_section_item(source=source)
 
-    def active_item_changed(self, plot):
-        """Active item has just changed"""
+    def active_item_changed(self, plot: BasePlot) -> None:
+        """Active item has just changed
+
+        Args:
+            plot: Plot containing the image items to be used for cross section
+        """
         self.shape_changed(plot.get_active_item())
 
-    def plot_labels_changed(self, plot):
-        """Plot labels have changed"""
+    def plot_labels_changed(self, plot: BasePlot) -> None:
+        """Plot labels have changed
+
+        Args:
+            plot: Plot containing the image items to be used for cross section
+        """
         raise NotImplementedError
 
-    def axis_dir_changed(self, plot, axis_id):
-        """An axis direction has changed"""
-        raise NotImplementedError
+    def axis_dir_changed(self, plot: BasePlot, axis_id: str) -> None:
+        """An axis direction has changed
 
-    def plot_axis_changed(self, plot):
-        """Plot was just zoomed/panned"""
+        Args:
+            plot: Plot containing the image items to be used for cross section
+            axis_id: Axis ID
+        """
+        pass
+
+    def plot_axis_changed(self, plot: BasePlot) -> None:
+        """Plot was just zoomed/panned
+
+        Args:
+            plot: Plot containing the image items to be used for cross section
+        """
         if self.lockscales:
             self.do_autoscale(replot=False, axis_id=self.Z_AXIS)
             vmin, vmax = plot.get_axis_limits(self.CS_AXIS)
             self.set_axis_limits(self.CS_AXIS, vmin, vmax)
 
-    def marker_changed(self, marker):
-        """
+    def is_shape_known(self, shape: Any) -> bool:
+        """Return whether shape is known
 
-        :param marker:
-        """
-        self.update_plot(marker)
+        Args:
+            shape: Shape to check
 
-    def is_shape_known(self, shape):
-        """
-
-        :param shape:
-        :return:
+        Returns:
+            bool: Whether shape is known
         """
         for shapes in list(self._shapes.values()):
             if shape in shapes:
@@ -234,32 +247,29 @@ class CrossSectionPlot(BasePlot):
         else:
             return False
 
-    def shape_changed(self, shape):
-        """
+    def shape_changed(self, shape: Any) -> None:
+        """Shape has changed
 
-        :param shape:
+        Args:
+            shape: Shape that has changed
         """
         if self.autorefresh_mode:
             if self.is_shape_known(shape):
                 self.update_plot(shape)
 
-    def get_last_obj(self):
-        """
-
-        :return:
-        """
+    def get_last_obj(self) -> BaseImageItem | None:
+        """Return last active object"""
         if self.last_obj is not None:
             return self.last_obj()
 
-    def update_plot(self, obj=None, refresh=True):
+    def update_plot(self, obj: Any = None, refresh: bool = True) -> None:
         """
-        Update cross section curve(s) associated to object *obj*
+        Update cross section curves
 
-        *obj* may be a marker or a rectangular shape
-        (see :py:class:`.tools.CrossSectionTool`
-        and :py:class:`.tools.AverageCrossSectionTool`)
-
-        If obj is None, update the cross sections of the last active object
+        Args:
+            obj: Object to update cross section curves for
+             (may be a marker or a rectangular shape, or None to update)
+            refresh: Whether to refresh the plot
         """
         if obj is None:
             obj = self.get_last_obj()
@@ -288,35 +298,39 @@ class CrossSectionPlot(BasePlot):
         elif self.lockscales:
             self.do_autoscale(replot=True, axis_id=self.Z_AXIS)
 
-    def toggle_perimage_mode(self, state):
-        """
+    def toggle_perimage_mode(self, state: bool) -> None:
+        """Toggle the per item mode
 
-        :param state:
+        Args:
+            state: State to toggle to
         """
         self.perimage_mode = state
         self.update_plot()
 
-    def toggle_autoscale(self, state):
-        """
+    def toggle_autoscale(self, state: bool) -> None:
+        """Toggle the autoscale mode
 
-        :param state:
+        Args:
+            state: State to toggle to
         """
         self.autoscale_mode = state
         self.update_plot()
 
-    def toggle_autorefresh(self, state):
-        """
+    def toggle_autorefresh(self, state: bool) -> None:
+        """Toggle the autorefresh mode
 
-        :param state:
+        Args:
+            state: State to toggle to
         """
         self.autorefresh_mode = state
         if state:
             self.update_plot()
 
-    def toggle_apply_lut(self, state):
-        """
+    def toggle_apply_lut(self, state: bool) -> None:
+        """Toggle the apply LUT mode
 
-        :param state:
+        Args:
+            state: State to toggle to
         """
         self.apply_lut = state
         self.update_plot()
@@ -328,99 +342,123 @@ class CrossSectionPlot(BasePlot):
             if obj is not None and obj.plot() is not None:
                 self.plot_labels_changed(obj.plot())
 
-    def toggle_lockscales(self, state):
-        """
+    def toggle_lockscales(self, state: bool)-> None:
+        """Toggle the lock scales mode
 
-        :param state:
+        Args:
+            state: State to toggle to
         """
         self.lockscales = state
         obj = self.get_last_obj()
         if obj is not None and obj.plot() is not None:
             self.plot_axis_changed(obj.plot())
 
-    def lut_changed(self, plot):
-        """
+    def lut_changed(self, plot: BasePlot) -> None:
+        """LUT has changed
 
-        :param plot:
+        Args:
+            plot: Plot containing the image items to be used for cross section
         """
         if self.apply_lut:
             self.update_plot()
 
 
-class HorizontalCrossSectionPlot(CrossSectionPlot):
+class HorizontalCrossSectionPlot(BaseCrossSectionPlot):
     CS_AXIS = BasePlot.X_BOTTOM
     Z_AXIS = BasePlot.Y_LEFT
 
-    def plot_labels_changed(self, plot):
-        """Plot labels have changed"""
+    def plot_labels_changed(self, plot: BasePlot) -> None:
+        """Plot labels have changed
+
+        Args:
+            plot: Plot containing the image items to be used for cross section
+        """
         self.set_axis_title("left", plot.get_axis_title("right"))
         self.set_axis_title("bottom", plot.get_axis_title("bottom"))
         self.set_axis_color("left", plot.get_axis_color("right"))
         self.set_axis_color("bottom", plot.get_axis_color("bottom"))
 
-    def axis_dir_changed(self, plot, axis_id):
-        """An axis direction has changed"""
+    def axis_dir_changed(self, plot: BasePlot, axis_id: str) -> None:
+        """An axis direction has changed
+
+        Args:
+            plot: Plot containing the image items to be used for cross section
+            axis_id: Axis ID
+        """
         if axis_id == plot.X_BOTTOM:
             self.set_axis_direction("bottom", plot.get_axis_direction("bottom"))
             self.replot()
 
 
-class VerticalCrossSectionPlot(CrossSectionPlot):
+class VerticalCrossSectionPlot(BaseCrossSectionPlot):
     CS_AXIS = BasePlot.Y_LEFT
     Z_AXIS = BasePlot.X_BOTTOM
     Z_MAX_MAJOR = 3
 
-    def plot_labels_changed(self, plot):
-        """Plot labels have changed"""
+    def plot_labels_changed(self, plot: BasePlot) -> None:
+        """Plot labels have changed
+
+        Args:
+            plot: Plot containing the image items to be used for cross section
+        """
         self.set_axis_title("bottom", plot.get_axis_title("right"))
         self.set_axis_title("left", plot.get_axis_title("left"))
         self.set_axis_color("bottom", plot.get_axis_color("right"))
         self.set_axis_color("left", plot.get_axis_color("left"))
 
-    def axis_dir_changed(self, plot, axis_id):
-        """An axis direction has changed"""
+    def axis_dir_changed(self, plot: BasePlot, axis_id: str) -> None:
+        """An axis direction has changed
+
+        Args:
+            plot: Plot containing the image items to be used for cross section
+            axis_id: Axis ID
+        """
         if axis_id == plot.Y_LEFT:
             self.set_axis_direction("left", plot.get_axis_direction("left"))
             self.replot()
 
 
-class XCrossSectionPlot(HorizontalCrossSectionPlot):
+class XYCrossSectionMixin:
+
+    LABEL_TEXT = _("Enable a marker")
+
+    def connect_plot(self, plot: BasePlot) -> None:
+        """Connect plot to cross section plot
+
+        Args:
+            plot: Plot to connect (containing the image items to be used for)
+        """
+        BaseCrossSectionPlot.connect_plot(self, plot)
+        plot.SIG_MARKER_CHANGED.connect(
+            lambda marker: BaseCrossSectionPlot.update_plot(self, marker)
+        )
+
+
+class XCrossSectionPlot(HorizontalCrossSectionPlot, XYCrossSectionMixin):
     """X-axis cross section plot"""
 
     _HEIGHT = 130
 
-    def sizeHint(self):
-        """
-
-        :return:
-        """
+    def sizeHint(self) -> QC.QSize:
+        """Reimplemented from QWidget.sizeHint"""
         return QC.QSize(self.width(), self._HEIGHT)
 
-    def create_cross_section_item(self):
-        """
-
-        :return:
-        """
+    def create_cross_section_item(self) -> XCrossSectionItem:
+        """Create cross section item"""
         return XCrossSectionItem(self.param)
 
 
-class YCrossSectionPlot(VerticalCrossSectionPlot):
+class YCrossSectionPlot(VerticalCrossSectionPlot, XYCrossSectionMixin):
     """Y-axis cross section plot"""
 
     _WIDTH = 140
 
-    def sizeHint(self):
-        """
-
-        :return:
-        """
+    def sizeHint(self) -> QC.QSize:
+        """Reimplemented from QWidget.sizeHint"""
         return QC.QSize(self._WIDTH, self.height())
 
-    def create_cross_section_item(self):
-        """
-
-        :return:
-        """
+    def create_cross_section_item(self) -> YCrossSectionItem:
+        """Create cross section item"""
         return YCrossSectionItem(self.param)
 
 
@@ -438,16 +476,10 @@ class ObliqueCrossSectionPlot(HorizontalCrossSectionPlot):
         self.set_title(self.PLOT_TITLE)
         self.single_source = True
 
-    def create_cross_section_item(self):
-        """
-
-        :return:
-        """
+    def create_cross_section_item(self) -> ObliqueCrossSectionItem:
+        """Create cross section item"""
         return ObliqueCrossSectionItem(self.param)
 
-    def axis_dir_changed(self, plot, axis_id):
-        """An axis direction has changed"""
-        pass
 
 
 # Line cross section plot
@@ -467,7 +499,3 @@ class LineCrossSectionPlot(HorizontalCrossSectionPlot):
     def create_cross_section_item(self) -> LineCrossSectionItem:
         """Create cross section item"""
         return LineCrossSectionItem(self.param)
-
-    def axis_dir_changed(self, plot, axis_id):
-        """An axis direction has changed"""
-        pass

@@ -46,7 +46,7 @@ class CrossSectionTool(RectangularShapeTool):
         """Set up shape for the tool"""
         self.setup_shape_appearance(shape)
         super().setup_shape(shape)
-        self.register_shape(shape, final=False)
+        self.register_shape(shape)
 
     def setup_shape_appearance(self, shape: AnnotatedPoint) -> None:
         """Set up shape appearance"""
@@ -56,7 +56,7 @@ class CrossSectionTool(RectangularShapeTool):
         #        param.show_computations = False
         param.update_annotation(shape)
 
-    def register_shape(self, shape: AnnotatedPoint, final: bool = False) -> None:
+    def register_shape(self, shape: AnnotatedPoint) -> None:
         """Register shape"""
         plot = shape.plot()
         if plot is not None:
@@ -65,7 +65,7 @@ class CrossSectionTool(RectangularShapeTool):
         for panel_id in self.PANEL_IDS:
             panel = self.manager.get_panel(panel_id)
             if panel is not None:
-                panel.register_shape(shape, final=final)
+                panel.register_shape(shape)
 
     def activate(self) -> None:
         """Activate tool"""
@@ -80,7 +80,7 @@ class CrossSectionTool(RectangularShapeTool):
     def handle_final_shape(self, shape: AnnotatedPoint) -> None:
         """Handle final shape"""
         super().handle_final_shape(shape)
-        self.register_shape(shape, final=True)
+        self.register_shape(shape)
 
 
 class AverageCrossSectionTool(CrossSectionTool):
