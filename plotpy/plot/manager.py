@@ -8,7 +8,6 @@ from typing import TYPE_CHECKING, Any
 from guidata.qthelpers import create_action
 from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
-from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
 
 from plotpy.constants import ID_CONTRAST, ID_ITEMLIST, ID_XCS, ID_YCS
@@ -58,9 +57,18 @@ from plotpy.tools import (
 if TYPE_CHECKING:  # pragma: no cover
     from typing import Callable
 
+    from qtpy.QtCore import Qt
+    from qtpy.QtGui import QIcon, QKeySequence
     from qwt import QwtPlotCanvas, QwtScaleDiv
 
-    from plotpy.panels import ContrastAdjustment, PanelWidget, PlotItemList
+    from plotpy.panels import (
+        ContrastAdjustment,
+        PanelWidget,
+        PlotItemList,
+        XCrossSection,
+        YCrossSection,
+    )
+    from plotpy.tools import GuiTool, GuiToolT
 
 
 class DefaultPlotID:
@@ -491,11 +499,11 @@ class PlotManager:
         title: str,
         triggered: Callable | None = None,
         toggled: Callable | None = None,
-        shortcut: QG.QKeySequence | None = None,
-        icon: QG.QIcon | None = None,
+        shortcut: QKeySequence | None = None,
+        icon: QIcon | None = None,
         tip: str | None = None,
         checkable: bool | None = None,
-        context: QC.Qt.ShortcutContext = QC.Qt.ShortcutContext.WindowShortcut,
+        context: Qt.ShortcutContext = QC.Qt.ShortcutContext.WindowShortcut,
         enabled: bool | None = None,
     ):
         """
