@@ -26,11 +26,11 @@ from plotpy.events import (
 from plotpy.interfaces import ICurveItemType
 from plotpy.items import Marker, XRangeSelection
 from plotpy.items.curve.base import CurveItem
-from plotpy.plot.base import BasePlot
 from plotpy.tools.base import DefaultToolbarID, InteractiveTool, ToggleTool
 from plotpy.tools.cursor import BaseCursorTool
 
 if TYPE_CHECKING:
+    from plotpy.plot.base import BasePlot
     from plotpy.plot.manager import PlotManager
 
 
@@ -439,7 +439,7 @@ class SelectPointsTool(InteractiveTool):
             title: Marker title. Defaults to "".
         """
         plot = filter.plot
-        if not isinstance(plot, BasePlot):
+        if plot is None:
             return
         if force_new_marker or self.current_location_marker is None:
             title = title or f"<b>{self.TITLE} {len(self.markers)}</b><br>"
@@ -489,7 +489,7 @@ class SelectPointsTool(InteractiveTool):
             event: Qt mouse event
         """
         plot = filter.plot
-        if not isinstance(plot, BasePlot):
+        if plot is None:
             return
         if self.current_location_marker is None:
             return  # something is wrong ...
