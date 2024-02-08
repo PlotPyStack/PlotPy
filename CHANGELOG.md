@@ -38,6 +38,7 @@ Documentation:
 Bug fixes:
 
 * Fixed critical bug in oblique cross section feature (regression introduced in 2.0.0)
+* Removed dependency to `pytest-qt` for the test suite (due to Qt6 compatibility issues)
 
 ## Version 2.0.3 ##
 
