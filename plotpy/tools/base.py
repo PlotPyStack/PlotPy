@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+from __future__ import annotations
 
 import weakref
+from typing import Any, TypeVar
 
 from guidata.configtools import get_icon
 from qtpy import QtCore as QC
@@ -15,6 +17,9 @@ class DefaultToolbarID:
     pass
 
 
+GuiToolT = TypeVar("GuiToolT", bound="GuiTool")
+
+
 class GuiTool(QC.QObject):
     """Base class for interactive tool applying on a plot"""
 
@@ -27,7 +32,7 @@ class GuiTool(QC.QObject):
 
         # pylint: disable=assignment-from-none
         self.action = self.create_action(manager)
-        self.menu = self.create_action_menu(manager)
+        self.menu: QW.QMenu | None = self.create_action_menu(manager)
 
         if self.menu is not None:
             self.action.setMenu(self.menu)
@@ -202,7 +207,12 @@ class CommandTool(GuiTool):
     CHECKABLE = False
 
     def __init__(
-        self, manager, title, icon=None, tip=None, toolbar_id=DefaultToolbarID
+        self,
+        manager,
+        title,
+        icon=None,
+        tip=None,
+        toolbar_id: Any | type[DefaultToolbarID] | None = DefaultToolbarID,
     ):
         self.title = title
         if icon and isinstance(icon, str):

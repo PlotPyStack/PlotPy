@@ -52,6 +52,7 @@ The `tools` module provides the following tools:
 * :py:class:`.tools.HRangeTool`
 * :py:class:`.tools.DummySeparatorTool`
 * :py:class:`.tools.AntiAliasingTool`
+* :py:class:`.tools.DownSamplingTool`
 * :py:class:`.tools.DisplayCoordsTool`
 * :py:class:`.tools.ReverseYAxisTool`
 * :py:class:`.tools.AspectRatioTool`
@@ -63,6 +64,7 @@ The `tools` module provides the following tools:
 * :py:class:`.tools.YCSPanelTool`
 * :py:class:`.tools.CrossSectionTool`
 * :py:class:`.tools.AverageCrossSectionTool`
+* :py:class:`.tools.LineCrossSectionTool`
 * :py:class:`.tools.SaveAsTool`
 * :py:class:`.tools.CopyToClipboardTool`
 * :py:class:`.tools.OpenFileTool`

@@ -7,11 +7,12 @@ from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
 from plotpy.config import _
-from plotpy.constants import ID_OCS, ID_XCS, ID_YCS
+from plotpy.constants import ID_LCS, ID_OCS, ID_XCS, ID_YCS
 from plotpy.interfaces import IPanel
 from plotpy.panels.base import PanelWidget
 from plotpy.panels.csection.csplot import (
-    CrossSectionPlot,
+    BaseCrossSectionPlot,
+    LineCrossSectionPlot,
     ObliqueCrossSectionPlot,
     XCrossSectionPlot,
     YCrossSectionPlot,
@@ -30,7 +31,7 @@ class CrossSectionWidget(PanelWidget):
     PANEL_ID = None
     PANEL_TITLE = _("Cross section tool")
     PANEL_ICON = "csection.png"
-    CrossSectionPlotKlass = CrossSectionPlot  # to be overridden in subclasses
+    CrossSectionPlotKlass = BaseCrossSectionPlot  # to be overridden in subclasses
 
     __implements__ = (IPanel,)
 
@@ -175,7 +176,7 @@ class CrossSectionWidget(PanelWidget):
             ),
         )
 
-    def register_shape(self, shape, final, refresh=True):
+    def register_shape(self, shape, refresh=True):
         """
 
         :param shape:
@@ -183,7 +184,7 @@ class CrossSectionWidget(PanelWidget):
         :param refresh:
         """
         plot = self.get_plot()
-        self.cs_plot.register_shape(plot, shape, final, refresh)
+        self.cs_plot.register_shape(plot, shape, refresh)
 
     def unregister_shape(self, shape):
         """
@@ -397,3 +398,18 @@ class ObliqueCrossSection(CrossSectionWidget):
         super().setup_actions()
         self.lockscales_ac.setChecked(False)
         self.autoscale_ac.setChecked(True)
+
+
+class LineCrossSection(CrossSectionWidget):
+    """Line cross section panel
+
+    Args:
+        parent: parent widget
+    """
+
+    PANEL_ID = ID_LCS
+    CrossSectionPlotKlass = LineCrossSectionPlot
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.cs_plot.set_axis_direction("bottom", reverse=False)

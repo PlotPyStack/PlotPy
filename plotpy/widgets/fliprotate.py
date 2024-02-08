@@ -4,8 +4,8 @@
 # (see plotpy/LICENSE for details)
 
 """
-fliprotate
-----------
+Flip/rotate dialog
+------------------
 
 The `FlipRotate` module provides a dialog box providing essential GUI elements
 for rotating (arbitrary angle) and cropping an image:

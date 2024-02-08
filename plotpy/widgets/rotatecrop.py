@@ -4,8 +4,8 @@
 # (see plotpy/LICENSE for details)
 
 """
-rotatecrop
-----------
+Rotate/crop dialog
+------------------
 
 The `rotatecrop` module provides a dialog box providing essential GUI elements
 for rotating (arbitrary angle) and cropping an image:
@@ -138,7 +138,7 @@ class RotateCropDialog(QW.QDialog):
         self,
         parent: QWidget,
         title: str | None = None,
-        options: dict | None = None,
+        options: PlotOptions | None = None,
         resize_to: tuple[int, int] | None = None,
         edit: bool = True,
         toolbar: bool = False,

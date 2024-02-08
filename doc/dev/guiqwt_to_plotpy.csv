@@ -1,4 +1,4 @@
-guiqwt v4,plotpy v2,API changes
+guiqwt v4,PlotPy v2,API changes
 ``guiqwt.events``,``plotpy.events``
 ``guiqwt.interfaces``,``plotpy.interfaces``
 ``guiqwt.io``,``plotpy.io``
@@ -31,7 +31,7 @@ guiqwt v4,plotpy v2,API changes
 ``guiqwt.pyplot``,``plotpy.pyplot``
 ``guiqwt.styles``,``plotpy.styles``
 ``guiqwt.tools``,``plotpy.tools``
-``guiqwt.colormap``,``plotpy.mathutils.colormap``
+``guiqwt.colormap``,``plotpy.mathutils.colormaps``
 ``guiqwt.geometry``,``plotpy.mathutils.geometry``
 ``guiqwt.qthelpers.exec_image_save_dialog``,``plotpy.widgets.imagefile.exec_image_save_dialog``
 ``guiqwt.qthelpers.exec_image_open_dialog``,``plotpy.widgets.imagefile.exec_image_open_dialog``

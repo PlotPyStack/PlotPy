@@ -16,7 +16,6 @@ from .base import (
     ActionTool,
     CommandTool,
     DefaultToolbarID,
-    GuiTool,
     InteractiveTool,
     PanelTool,
     RectangularActionTool,
@@ -25,13 +24,22 @@ from .base import (
 from .cross_section import (
     AverageCrossSectionTool,
     CrossSectionTool,
+    LCSPanelTool,
+    LineCrossSectionTool,
     ObliqueCrossSectionTool,
     OCSPanelTool,
     XCSPanelTool,
     YCSPanelTool,
 )
 from .cursor import HCursorTool, HRangeTool, VCursorTool, XCursorTool
-from .curve import AntiAliasingTool, CurveStatsTool, SelectPointTool
+from .curve import (
+    AntiAliasingTool,
+    CurveStatsTool,
+    DownSamplingTool,
+    EditPointTool,
+    SelectPointsTool,
+    SelectPointTool,
+)
 from .image import (
     AspectRatioTool,
     ColormapTool,

@@ -20,7 +20,7 @@ curve, cursor and marker items.
 
 from __future__ import annotations
 
-from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 import numpy  # only to help intersphinx finding numpy doc
 import numpy as np
@@ -44,6 +44,9 @@ from plotpy.styles import (
     style_generator,
     update_style_attr,
 )
+
+if TYPE_CHECKING:
+    from typing import Callable
 
 CURVE_COUNT = 0
 HISTOGRAM_COUNT = 0
@@ -118,6 +121,8 @@ class CurveMarkerCursorBuilder:
         shade: bool | None = None,
         curvestyle: str | None = None,
         baseline: float | None = None,
+        dsamp_factor: int | None = None,
+        use_dsamp: bool | None = None,
     ) -> None:
         """Apply parameters to a :py:class:`.CurveParam` instance"""
         self.__set_baseparam(
@@ -138,6 +143,10 @@ class CurveMarkerCursorBuilder:
             param.curvestyle = curvestyle
         if baseline is not None:
             param.baseline = baseline
+        if dsamp_factor is not None:
+            param.dsamp_factor = dsamp_factor
+        if use_dsamp is not None:
+            param.use_dsamp = use_dsamp
 
     def __get_arg_triple_plot(self, args):
         """Convert MATLAB-like arguments into x, y, style"""
@@ -228,7 +237,8 @@ class CurveMarkerCursorBuilder:
         Args:
             args: x, y, style
             kwargs: title, color, linestyle, linewidth, marker, markersize,
-            markerfacecolor, markeredgecolor, shade, curvestyle, baseline
+            markerfacecolor, markeredgecolor, shade, curvestyle, baseline,
+            dsamp_factor, use_dsamp
 
         Returns:
             :py:class:`.CurveItem` object
@@ -253,6 +263,10 @@ class CurveMarkerCursorBuilder:
                 global CURVE_COUNT
                 CURVE_COUNT += 1
                 param.label = make_title(basename, CURVE_COUNT)
+            if "dsamp_factor" in kwargs:
+                param.dsamp_factor = kwargs.pop("dsamp_factor")
+            if "use_dsamp" in kwargs:
+                param.use_dsamp = kwargs.pop("use_dsamp")
             update_style_attr(stylei, param)
             curves.append(self.pcurve(x, yi, param, **kwargs))
         if len(curves) == 1:
@@ -306,6 +320,8 @@ class CurveMarkerCursorBuilder:
         baseline: float | None = None,
         xaxis: str = "bottom",
         yaxis: str = "left",
+        dsamp_factor: int | None = None,
+        use_dsamp: bool | None = None,
         dx: numpy.ndarray | None = None,
         dy: numpy.ndarray | None = None,
         errorbarwidth: int | None = None,
@@ -337,6 +353,8 @@ class CurveMarkerCursorBuilder:
             baseline: baseline value. Default is None
             xaxis: x axis name. Default is 'bottom'
             yaxis: y axis name. Default is 'left'
+            dsamp_factor: downsampling factor. Default is None
+            use_dsamp: use downsampling. Default is None
             dx: x error data. Default is None
             dy: y error data. Default is None
             errorbarwidth: error bar width (pixels). Default is None
@@ -380,6 +398,8 @@ class CurveMarkerCursorBuilder:
                 baseline=baseline,
                 xaxis=xaxis,
                 yaxis=yaxis,
+                dsamp_factor=dsamp_factor,
+                use_dsamp=use_dsamp,
             )
 
         basename = _("Curve")
@@ -401,6 +421,8 @@ class CurveMarkerCursorBuilder:
             shade,
             curvestyle,
             baseline,
+            dsamp_factor,
+            use_dsamp,
         )
         return self.pcurve(x, y, param, xaxis, yaxis)
 
@@ -493,6 +515,8 @@ class CurveMarkerCursorBuilder:
         baseline: float | None = None,
         xaxis: str = "bottom",
         yaxis: str = "left",
+        dsamp_factor: int | None = None,
+        use_dsamp: bool | None = None,
     ) -> ErrorBarCurveItem:
         """Make an errorbar curve `plot item`
 
@@ -530,6 +554,8 @@ class CurveMarkerCursorBuilder:
             baseline: baseline value. Default is None
             xaxis: x axis name. Default is 'bottom'
             yaxis: y axis name. Default is 'left'
+            dsamp_factor: downsampling factor. Default is None
+            use_dsamp: use downsampling. Default is None
 
         Returns:
             :py:class:`.ErrorBarCurveItem` object
@@ -559,6 +585,8 @@ class CurveMarkerCursorBuilder:
             shade,
             curvestyle,
             baseline,
+            dsamp_factor,
+            use_dsamp,
         )
         errorbarparam.color = curveparam.line.color
         if errorbarwidth is not None:

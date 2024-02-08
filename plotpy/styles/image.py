@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Callable
+
 import numpy as np
 from guidata.dataset import (
     BeginGroup,
@@ -19,14 +23,38 @@ from qtpy import QtGui as QG
 from plotpy._scaler import INTERP_AA, INTERP_LINEAR, INTERP_NEAREST
 from plotpy.config import _
 from plotpy.constants import LUTAlpha
-from plotpy.mathutils.colormap import build_icon_from_cmap_name, get_colormap_list
+from plotpy.mathutils.colormaps import (
+    ALL_COLORMAPS,
+    LARGE_ICON_HEIGHT,
+    LARGE_ICON_ORIENTATION,
+    LARGE_ICON_WIDTH,
+    build_icon_from_cmap_name,
+)
 from plotpy.styles.base import ItemParameters
 
+if TYPE_CHECKING:
+    from guidata.dataset import DataSet
 
-def _create_choices():
-    choices = []
-    for cmap_name in get_colormap_list():
-        choices.append((cmap_name, cmap_name, build_icon_from_cmap_name))
+
+def _create_choices(
+    dataset: DataSet, item: ImageChoiceItem, value: Any
+) -> list[tuple[str, str, Callable[[str], QG.QIcon]]]:
+    """Create the list of choices for the colormap item."""
+    choices: list[tuple[str, str, Callable[[str], QG.QIcon]]] = []
+    for cmap in ALL_COLORMAPS.values():
+        choices.append(
+            (
+                cmap.name,
+                cmap.name,
+                lambda name: build_icon_from_cmap_name(
+                    name,
+                    LARGE_ICON_WIDTH,
+                    LARGE_ICON_HEIGHT,
+                    LARGE_ICON_ORIENTATION,
+                    1,
+                ),
+            )
+        )
     return choices
 
 
@@ -49,9 +77,11 @@ class BaseImageParam(DataSet):
         _("Global alpha"), default=1.0, min=0, max=1, help=_("Global alpha value")
     )
     _hide_colormap = False
-    colormap = ImageChoiceItem(
-        _("Colormap"), _create_choices(), default="jet"
-    ).set_prop("display", hide=GetAttrProp("_hide_colormap"))
+    colormap = (
+        ImageChoiceItem(_("Colormap"), _create_choices, default="jet")
+        .set_prop("display", hide=GetAttrProp("_hide_colormap"))
+        .set_prop("display", size=(LARGE_ICON_WIDTH, LARGE_ICON_HEIGHT))
+    )
 
     interpolation = ChoiceItem(
         _("Interpolation"),
@@ -131,9 +161,9 @@ class QuadGridParam(DataSet):
         _("Global alpha"), default=1.0, min=0, max=1, help=_("Global alpha value")
     )
     _hide_colormap = False
-    colormap = ImageChoiceItem(
-        _("Colormap"), _create_choices(), default="jet"
-    ).set_prop("display", hide=GetAttrProp("_hide_colormap"))
+    colormap = ImageChoiceItem(_("Colormap"), _create_choices, default="jet").set_prop(
+        "display", hide=GetAttrProp("_hide_colormap")
+    )
 
     interpolation = ChoiceItem(
         _("Interpolation"),

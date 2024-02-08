@@ -11,7 +11,12 @@ from qwt import QwtPlotItem
 
 from plotpy.builder import make
 from plotpy.plot import PlotWidget
-from plotpy.tools import AntiAliasingTool, AxisScaleTool, CurveStatsTool
+from plotpy.tools import (
+    AntiAliasingTool,
+    AxisScaleTool,
+    CurveStatsTool,
+    DownSamplingTool,
+)
 
 
 def test_plot_curve(qtbot):
@@ -33,7 +38,12 @@ def test_plot_curve(qtbot):
     assert win.plot_widget.plot == plot
 
     # Check that specific curve tools are added
-    for curve_tool_class in (CurveStatsTool, AntiAliasingTool, AxisScaleTool):
+    for curve_tool_class in (
+        CurveStatsTool,
+        AntiAliasingTool,
+        AxisScaleTool,
+        DownSamplingTool,
+    ):
         tool = win.manager.get_tool(curve_tool_class)
         assert tool is not None, f"Tool of type {curve_tool_class} not found"
 

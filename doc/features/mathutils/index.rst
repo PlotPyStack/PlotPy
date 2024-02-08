@@ -7,4 +7,4 @@ Utilities
 
    geometry
    scaler
-   colormap
+   colormaps

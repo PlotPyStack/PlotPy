@@ -59,7 +59,7 @@ class AnnotatedShape(AbstractShape):
     """
 
     __implements__ = (IBasePlotItem, ISerializableType)
-    SHAPE_CLASS: AbstractShape = RectangleShape  # to be overridden
+    SHAPE_CLASS: type[AbstractShape] = RectangleShape  # to be overridden
     LABEL_ANCHOR: str = ""
 
     def __init__(self, annotationparam: AnnotationParam | None = None) -> None:
@@ -278,7 +278,7 @@ class AnnotatedShape(AbstractShape):
     def get_tr_center_str(self):
         """Return center coordinates as a string (with units)"""
         xc, yc = self.get_tr_center()
-        return "( {} ; {} )".format(self.x_to_str(xc), self.y_to_str(yc))
+        return f"( {self.x_to_str(xc)} ; {self.y_to_str(yc)} )"
 
     def get_tr_size(self):
         """Return shape size after applying transform matrix"""
@@ -287,7 +287,7 @@ class AnnotatedShape(AbstractShape):
     def get_tr_size_str(self):
         """Return size as a string (with units)"""
         xs, ys = self.get_tr_size()
-        return "{} x {}".format(self.x_to_str(xs), self.y_to_str(ys))
+        return f"{self.x_to_str(xs)} x {self.y_to_str(ys)}"
 
     def get_infos(self) -> str:
         """Get informations on current shape
@@ -601,7 +601,7 @@ class AnnotatedRectangle(AnnotatedShape):
         self.shape.set_rect(x1, y1, x2, y2)
         self.set_label_position()
 
-    def get_rect(self):
+    def get_rect(self) -> tuple[float, float, float, float]:
         """
         Return the coordinates of the shape's top-left and bottom-right corners
         """
@@ -659,7 +659,7 @@ class AnnotatedObliqueRectangle(AnnotatedRectangle):
         xcoords = self.get_transformed_coords(0, 1)
         _x, yr1 = self.apply_transform_matrix(1.0, 1.0)
         _x, yr2 = self.apply_transform_matrix(1.0, 2.0)
-        return (compute_angle(reverse=yr1 > yr2, *xcoords) + 90) % 180 - 90
+        return (compute_angle(*xcoords, reverse=yr1 > yr2) + 90) % 180 - 90
 
     def get_bounding_rect_coords(self) -> tuple[float, float, float, float]:
         """Return bounding rectangle coordinates (in plot coordinates)
@@ -802,7 +802,7 @@ class AnnotatedEllipse(AnnotatedShape):
         xcoords = self.get_transformed_coords(0, 1)
         _x, yr1 = self.apply_transform_matrix(1.0, 1.0)
         _x, yr2 = self.apply_transform_matrix(1.0, 2.0)
-        return (compute_angle(reverse=yr1 > yr2, *xcoords) + 90) % 180 - 90
+        return (compute_angle(*xcoords, reverse=yr1 > yr2) + 90) % 180 - 90
 
     # ----AnnotatedShape API-----------------------------------------------------
     def set_label_position(self):
@@ -834,7 +834,7 @@ class AnnotatedEllipse(AnnotatedShape):
             [
                 _("Center:") + " " + self.get_tr_center_str(),
                 _("Size:") + " " + self.get_tr_size_str(),
-                _("Angle:") + " {:.1f}°".format(self.get_tr_angle()),
+                _("Angle:") + f" {self.get_tr_angle():.1f}°",
             ]
         )
 

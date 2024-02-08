@@ -4,8 +4,8 @@
 # (see plotpy/LICENSE for details)
 
 """
-resizedialog
-------------
+Resize dialog
+-------------
 
 The `resizedialog` module provides a dialog box providing essential GUI
 for entering parameters needed to resize an image:

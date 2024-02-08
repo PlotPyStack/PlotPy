@@ -1,7 +1,14 @@
+:tocdepth: 3
+
 Reference
 ---------
 
-.. autoclass:: plotpy.tools.GuiTool
+Base classes
+^^^^^^^^^^^^
+
+.. autoclass:: plotpy.tools.base.GuiTool
+   :members:
+.. autoclass:: plotpy.tools.base.GuiToolT
    :members:
 .. autoclass:: plotpy.tools.InteractiveTool
    :members:
@@ -9,14 +16,52 @@ Reference
    :members:
 .. autoclass:: plotpy.tools.ActionTool
    :members:
-.. autoclass:: plotpy.tools.RectZoomTool
+.. autoclass:: plotpy.tools.PanelTool
    :members:
+
+Selection tools
+^^^^^^^^^^^^^^^
+
 .. autoclass:: plotpy.tools.SelectTool
    :members:
 .. autoclass:: plotpy.tools.SelectPointTool
    :members:
-.. autoclass:: plotpy.tools.RotationCenterTool
+
+Plot tools
+^^^^^^^^^^
+
+.. autoclass:: plotpy.tools.DoAutoscaleTool
    :members:
+.. autoclass:: plotpy.tools.DisplayCoordsTool
+   :members:
+.. autoclass:: plotpy.tools.RectZoomTool
+   :members:
+.. autoclass:: plotpy.tools.DummySeparatorTool
+   :members:
+.. autoclass:: plotpy.tools.RectangularSelectionTool
+   :members:
+
+Item tools
+^^^^^^^^^^
+
+.. autoclass:: plotpy.tools.ItemListPanelTool
+   :members:
+.. autoclass:: plotpy.tools.SaveItemsTool
+   :members:
+.. autoclass:: plotpy.tools.LoadItemsTool
+   :members:
+.. autoclass:: plotpy.tools.ExportItemDataTool
+   :members:
+.. autoclass:: plotpy.tools.EditItemDataTool
+   :members:
+.. autoclass:: plotpy.tools.ItemCenterTool
+   :members:
+.. autoclass:: plotpy.tools.DeleteItemTool
+   :members:
+
+Shape tools
+^^^^^^^^^^^
+
 .. autoclass:: plotpy.tools.MultiLineTool
    :members:
 .. autoclass:: plotpy.tools.FreeFormTool
@@ -35,8 +80,6 @@ Reference
    :members:
 .. autoclass:: plotpy.tools.EllipseTool
    :members:
-.. autoclass:: plotpy.tools.PlaceAxesTool
-   :members:
 .. autoclass:: plotpy.tools.AnnotatedRectangleTool
    :members:
 .. autoclass:: plotpy.tools.AnnotatedCircleTool
@@ -49,19 +92,15 @@ Reference
    :members:
 .. autoclass:: plotpy.tools.HRangeTool
    :members:
-.. autoclass:: plotpy.tools.DummySeparatorTool
-   :members:
-.. autoclass:: plotpy.tools.AntiAliasingTool
-   :members:
-.. autoclass:: plotpy.tools.DisplayCoordsTool
+
+Image tools
+^^^^^^^^^^^
+
+.. autoclass:: plotpy.tools.RotationCenterTool
    :members:
 .. autoclass:: plotpy.tools.ReverseYAxisTool
    :members:
 .. autoclass:: plotpy.tools.AspectRatioTool
-   :members:
-.. autoclass:: plotpy.tools.PanelTool
-   :members:
-.. autoclass:: plotpy.tools.ItemListPanelTool
    :members:
 .. autoclass:: plotpy.tools.ContrastPanelTool
    :members:
@@ -75,6 +114,30 @@ Reference
    :members:
 .. autoclass:: plotpy.tools.AverageCrossSectionTool
    :members:
+.. autoclass:: plotpy.tools.LineCrossSectionTool
+   :members:
+.. autoclass:: plotpy.tools.ImageMaskTool
+   :members:
+
+Curve tools
+^^^^^^^^^^^
+
+.. autoclass:: plotpy.tools.AntiAliasingTool
+   :members:
+.. autoclass:: plotpy.tools.DownSamplingTool
+   :members:
+
+Axes tools
+^^^^^^^^^^
+
+.. autoclass:: plotpy.tools.AxisScaleTool
+   :members:
+.. autoclass:: plotpy.tools.PlaceAxesTool
+   :members:
+
+Miscellaneous tools
+^^^^^^^^^^^^^^^^^^^
+
 .. autoclass:: plotpy.tools.SaveAsTool
    :members:
 .. autoclass:: plotpy.tools.CopyToClipboardTool
@@ -87,21 +150,5 @@ Reference
    :members:
 .. autoclass:: plotpy.tools.PrintTool
    :members:
-.. autoclass:: plotpy.tools.SaveItemsTool
-   :members:
-.. autoclass:: plotpy.tools.LoadItemsTool
-   :members:
-.. autoclass:: plotpy.tools.AxisScaleTool
-   :members:
 .. autoclass:: plotpy.tools.HelpTool
-   :members:
-.. autoclass:: plotpy.tools.ExportItemDataTool
-   :members:
-.. autoclass:: plotpy.tools.EditItemDataTool
-   :members:
-.. autoclass:: plotpy.tools.ItemCenterTool
-   :members:
-.. autoclass:: plotpy.tools.DeleteItemTool
-   :members:
-.. autoclass:: plotpy.tools.ImageMaskTool
    :members:

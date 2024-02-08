@@ -15,6 +15,7 @@ from qtpy import QtWidgets as QW
 
 from plotpy.tests import vistools as ptv
 from plotpy.tests.features.test_auto_curve_image import make_curve_image_legend
+from plotpy.tools.curve import DownSamplingTool, EditPointTool, SelectPointsTool
 
 
 def test_baseplot_api():
@@ -23,6 +24,9 @@ def test_baseplot_api():
         items = make_curve_image_legend()
         win = ptv.show_items(items, wintitle=test_baseplot_api.__doc__)
         plot = win.get_plot()
+        plot.manager.add_tool(SelectPointsTool)
+        plot.manager.add_tool(EditPointTool)
+        plot.manager.add_tool(DownSamplingTool)  # noqa: F821
         plot.get_default_item()
         title = "Test title"
         plot.set_title(title)
@@ -30,7 +34,6 @@ def test_baseplot_api():
         unit = "Test unit"
         plot.set_axis_unit("left", unit)
         assert plot.get_axis_unit("left") == unit
-        axisfont = plot.get_axis_font("left")
         plot.set_axis_ticks("left", 10, 10)
         plot.set_scales("lin", "lin")
         plot.enable_used_axes()

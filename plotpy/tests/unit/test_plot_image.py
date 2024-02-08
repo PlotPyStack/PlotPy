@@ -134,9 +134,9 @@ def test_colormap_tool(qtbot):
 
     # change the colormap
     plot.select_item(item)
-    action = color_map_tool.menu.actions()[0]
-    color_map_tool.activate_cmap(action)
-    assert item.get_color_map_name() == "Accent"
+    cmap_name = "Accent"
+    color_map_tool.activate_cmap(cmap_name)
+    assert item.get_color_map_name() == cmap_name
     accent_img = plot.grab().toImage()
     assert jet_img != accent_img
 

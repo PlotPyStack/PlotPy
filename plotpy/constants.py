@@ -71,6 +71,8 @@ ID_XCS = "x_cross_section"
 ID_YCS = "y_cross_section"
 #: ID of the `oblique averaged cross section` panel
 ID_OCS = "oblique_cross_section"
+#: ID of the `line cross section` panel
+ID_LCS = "line_cross_section"
 
 
 # ===============================================================================

@@ -1,0 +1,10 @@
+plotpy v1,guidata v3
+
+``.gui.dataitems.*``,``.dataset.*``
+``.gui.datatypes.*``,``.dataset.*``
+``.gui.dataset.qtitemwidgets``,``.dataset.qtitemwidgets``
+``.gui.dataset.qtwidgets``,``.dataset.qtwidgets``
+``.core.io.hdf5io``,``.dataset.io.h5fmt``
+``.core.config.userconfigio``,``.dataset.io.inifmt``
+``.core.config.userconfig``,``.userconfig``
+``.core.utils.disthelpers``,*removed*

@@ -50,7 +50,7 @@ class RectangleShape(PolygonShape):
         y1: float = 0.0,
         x2: float = 0.0,
         y2: float = 0.0,
-        shapeparam: ShapeParam = None,
+        shapeparam: ShapeParam | None = None,
     ) -> None:
         super().__init__(shapeparam=shapeparam)
         self.set_rect(x1, y1, x2, y2)
@@ -151,7 +151,7 @@ class ObliqueRectangleShape(PolygonShape):
         y2: float = 0.0,
         x3: float = 0.0,
         y3: float = 0.0,
-        shapeparam: ShapeParam = None,
+        shapeparam: ShapeParam | None = None,
     ) -> None:
         super().__init__(shapeparam=shapeparam)
         self.set_rect(x0, y0, x1, y1, x2, y2, x3, y3)

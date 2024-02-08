@@ -127,6 +127,7 @@
                 "run_pylint.bat",
                 // "--disable=R0801,C0103,C0114,C0115,C0116,W0612,W0613",
                 "--disable=fixme,C,R,W",
+                "--ignore=external",
             ],
             "options": {
                 "cwd": "scripts",

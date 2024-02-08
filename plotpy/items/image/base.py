@@ -41,10 +41,12 @@ from plotpy.interfaces import (
     ITrackableItemType,
     IVoiImageItemType,
 )
+
+# do not import rectangleshape from plotpy.items directly
 from plotpy.items.shape.rectangle import RectangleShape
 from plotpy.lutrange import lut_range_threshold
 from plotpy.mathutils.arrayfuncs import get_nan_range
-from plotpy.mathutils.colormap import FULLRANGE, get_cmap, get_cmap_name
+from plotpy.mathutils.colormaps import FULLRANGE, get_cmap
 from plotpy.styles.image import RawImageParam
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -55,8 +57,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from qtpy.QtGui import QColor, QPainter
 
     from plotpy.interfaces import IItemType
-    from plotpy.items import RectangleShape
     from plotpy.styles.base import ItemParameters
+    from plotpy.widgets.colormap.widget import EditableColormap
 
 
 class BaseImageItem(QwtPlotItem):
@@ -110,6 +112,7 @@ class BaseImageItem(QwtPlotItem):
         self.cmap_table = None
         self.cmap = None
         self.colormap_axis = None
+        self._image: QG.QImage | None = None
 
         self._offscreen = np.array((1, 1), np.uint32)
 
@@ -124,8 +127,7 @@ class BaseImageItem(QwtPlotItem):
         self.border_rect.set_style("plot", "shape/imageborder")
         # A, B, Background, Colormap
         self.lut = (1.0, 0.0, None, np.zeros((LUT_SIZE,), np.uint32))
-
-        self.set_lut_range([0.0, 255.0])
+        self.set_lut_range((0.0, 255.0))
         self.setItemAttribute(QwtPlotItem.AutoScale)
         self.setItemAttribute(QwtPlotItem.Legend, True)
         self._filename = None  # The file this image comes from
@@ -325,7 +327,7 @@ class BaseImageItem(QwtPlotItem):
         return self.get_x_values(i0, i1)
 
     def set_data(
-        self, data: np.ndarray, lut_range: list[float, float] | None = None
+        self, data: np.ndarray, lut_range: tuple[float, float] | None = None
     ) -> None:
         """Set image data
 
@@ -342,7 +344,7 @@ class BaseImageItem(QwtPlotItem):
         self.histogram_cache = None
         self.update_bounds()
         self.update_border()
-        self.set_lut_range([_min, _max])
+        self.set_lut_range((_min, _max))
 
     def get_data(
         self, x0: float, y0: float, x1: float | None = None, y1: float | None = None
@@ -414,9 +416,7 @@ class BaseImageItem(QwtPlotItem):
         else:
             self.lut = (a, b, np.uint32(QG.QColor(qcolor).rgb() & 0xFFFFFF), cmap)
 
-    def set_color_map(
-        self, name_or_table: str | qwt.color_map.QwtLinearColorMap
-    ) -> None:
+    def set_color_map(self, name_or_table: str | EditableColormap) -> None:
         """Set colormap
 
         Args:
@@ -459,7 +459,7 @@ class BaseImageItem(QwtPlotItem):
         if plot:
             plot.update_colormap_axis(self)
 
-    def get_color_map(self) -> qwt.color_map.QwtLinearColorMap:
+    def get_color_map(self) -> EditableColormap | None:
         """Get colormap
 
         Returns:
@@ -467,13 +467,18 @@ class BaseImageItem(QwtPlotItem):
         """
         return self.cmap_table
 
-    def get_color_map_name(self) -> str:
-        """Get colormap name
+    def get_color_map_name(self) -> str | None:
+        """Get the current colormap name if set. The output value should not directly
+        be used to retrieve a colormap object from one of the global colormap
+        dictionaries, as the colormap name may contain capital letters whereas the
+        colormap string keys of the dictionaries are all lowercase.
 
         Returns:
             Colormap name
         """
-        return get_cmap_name(self.get_color_map())
+        if self.cmap_table is None:
+            return None
+        return self.cmap_table.name
 
     def set_interpolation(self, interp_mode: int, size: int | None = None) -> None:
         """Set interpolation mode
@@ -989,7 +994,7 @@ class BaseImageItem(QwtPlotItem):
 
     def __process_cross_section(self, ydata, apply_lut):
         if apply_lut:
-            a, b, bg, cmap = self.lut
+            a, b, _bg, _cmap = self.lut
             return (ydata * a + b).clip(0, LUT_MAX)
         else:
             return ydata
