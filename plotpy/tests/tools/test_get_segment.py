@@ -32,6 +32,7 @@ class PatchedSelectDialog(SelectDialog):
         """Reimplement SelectDialog method"""
         super().set_image_and_tool(item, toolclass, **kwargs)
         if execenv.unattended:
+            self.show()
             self.sel_tool.add_shape_to_plot(
                 self.manager.get_plot(),
                 QC.QPointF(*axes_to_canvas(item, *SEG_AXES_COORDS[:2])),
