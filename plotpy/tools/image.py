@@ -12,7 +12,6 @@ from guidata.qthelpers import add_actions, exec_dialog
 from guidata.widgets.arrayeditor import ArrayEditor
 from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
-from qtpy.QtWidgets import QAction, QActionGroup
 
 from plotpy import io
 from plotpy.config import _
@@ -52,7 +51,8 @@ from plotpy.widgets.colormap.widget import EditableColormap
 from plotpy.widgets.imagefile import exec_image_save_dialog
 
 if TYPE_CHECKING:  # pragma: no cover
-    from qtpy import QtGui as QG
+    from qtpy.QtCore import QEvent
+    from qtpy.QtWidgets import QMenu
 
     from plotpy.events import StatefulEventFilter
     from plotpy.interfaces.items import IBasePlotItem
@@ -327,7 +327,7 @@ class AspectRatioTool(CommandTool):
         super().__init__(manager, _("Aspect ratio"), tip=None, toolbar_id=None)
         self.action.setEnabled(True)
 
-    def create_action_menu(self, manager: PlotManager) -> QW.QMenu:
+    def create_action_menu(self, manager: PlotManager) -> QMenu:
         """Create and return menu for the tool's action"""
         self.ar_param = AspectRatioParam(_("Aspect ratio"))
         menu = QW.QMenu()
@@ -428,7 +428,7 @@ class ContrastPanelTool(PanelTool):
         item = plot.get_last_active_item(IVoiImageItemType)
         panel = self.manager.get_panel(self.panel_id)
         for action in panel.toolbar.actions():
-            if isinstance(action, QAction):
+            if isinstance(action, QW.QAction):
                 action.setEnabled(item is not None)
 
 
@@ -557,7 +557,7 @@ class ImageMaskTool(CommandTool):
         )
         self.masked_image = None  # associated masked image item
 
-    def create_action_menu(self, manager: PlotManager) -> QW.QMenu:
+    def create_action_menu(self, manager: PlotManager) -> QMenu:
         """Create and return the tool's action menu for a given manager.
 
         Args:
@@ -912,16 +912,16 @@ class RotationCenterTool(InteractiveTool):
     Args:
        manager: PlotManager instance
        toolbar_id: toolbar id to use. Defaults to DefaultToolbarID.. Defaults to
-       DefaultToolbarID.
+        DefaultToolbarID.
        title: tool title. Defaults to None.
        icon: tool icon filename. Defaults to None.
        tip: user tip to be displayed. Defaults to None.
        switch_to_default_tool: Flag to switch to default tool. Defaults to True.
        rotation_point_move_with_shape: Flag to move rotation point with shape when it
-       is moved. Defaults to True.
+        is moved. Defaults to True.
        rotation_center: True if image already has a rotation center, False otherwise.
        on_all_items: True if rotation center should be set on all items or False if only
-       on selected ones. Defaults to True.
+        on selected ones. Defaults to True.
 
     """
 
@@ -1006,7 +1006,7 @@ class RotationCenterTool(InteractiveTool):
         if self.rotation_center and self.filter is not None:
             self.mouse_press(self.filter, QC.QEvent(QC.QEvent.Type.MouseButtonPress))
 
-    def mouse_press(self, filter: StatefulEventFilter, event: QC.QEvent) -> None:
+    def mouse_press(self, filter: StatefulEventFilter, event: QEvent) -> None:
         """We create a new shape if it's the first point
         otherwise we add a new point.
 

@@ -62,7 +62,7 @@ def load_raw_colormaps_from_json(
 
     Args:
         json_path: absolute path to the json to open. If file is not found, returns an
-        empty dictionary
+         empty dictionary
 
     Returns:
         Dictionnary of colormaps names -> raw colormap sequences
@@ -179,11 +179,11 @@ def build_icon_from_cmap(
         width: icon width
         height: icon height
         orientation: orientation of the colormap in the icon. Can be "h" for horizontal
-        or "v" for vertical
+         or "v" for vertical
         margin: margin around the colormap in the icon. Beware that the margin is
-        included in the given icon size. For example, if margin is 1 and width is 16,
-        the actual colormap width will be 14 (16 - 2 * 1). This was done to prevent
-        interpolation on display.
+         included in the given icon size. For example, if margin is 1 and width is 16,
+         the actual colormap width will be 14 (16 - 2 * 1). This was done to prevent
+         interpolation on display.
     """
 
     padded_width = width - 2 * margin
@@ -233,11 +233,11 @@ def build_icon_from_cmap_name(
         width: icon width
         height: icon height
         orientation: orientation of the colormap in the icon. Can be "h" for horizontal
-        or "v" for vertical
+         or "v" for vertical
         margin: margin around the colormap in the icon. Beware that the margin is
-        included in the given icon size. For example, if margin is 1 and width is 16,
-        the actual colormap width will be 14 (16 - 2 * 1). This was done to prevent
-        interpolation on display.
+         included in the given icon size. For example, if margin is 1 and width is 16,
+         the actual colormap width will be 14 (16 - 2 * 1). This was done to prevent
+         interpolation on display.
 
     Returns:
         QIcon representing the colormap
@@ -253,7 +253,7 @@ def get_cmap(cmap_name: str) -> EditableColormap:
 
     Args:
         cmap_name: colormap name to search in ALL_COLORMAPS. All keys in ALL_COLORMAPS
-        are lower case, so the given name is also lowered.
+         are lower case, so the given name is also lowered.
 
     Returns:
         A CustomQwtLinearColormap instance corresponding to the given name, if no
@@ -270,7 +270,7 @@ def cmap_exists(cmap_name: str, cmap_dict: CmapDictType | None = None) -> bool:
 
     Args:
         cmap_name: colormap name to search in given colormap dictionnary. All keys in
-        the dictionary are lower case, so the given name is also lowered.
+         the dictionary are lower case, so the given name is also lowered.
         cmap_dict: colormap dictionnary to search in. If None, ALL_COLORMAPS is used.
 
     Returns:

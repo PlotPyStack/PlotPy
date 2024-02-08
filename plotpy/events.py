@@ -30,6 +30,8 @@ from plotpy.coords import axes_to_canvas, canvas_to_axes
 from plotpy.items.shape.marker import Marker
 
 if TYPE_CHECKING:
+    from qtpy.QtCore import QPoint
+
     from plotpy.plot.base import BasePlot
 
 CursorShape = type(QC.Qt.CursorShape.ArrowCursor)
@@ -663,7 +665,7 @@ class PinchPanGestureHandler(GestureHandler):
         self.marker: Marker | None = None
 
     def get_pan_param(
-        self, plot: BasePlot, pos: QC.QPoint
+        self, plot: BasePlot, pos: QPoint
     ) -> tuple[tuple[float, float, float, float], tuple[float, float, float, float]]:
         """Returns the parameters to use for panning the plot.
 
@@ -682,7 +684,7 @@ class PinchPanGestureHandler(GestureHandler):
         return dx, dy
 
     def get_zoom_param(
-        self, plot: BasePlot, pos: QC.QPoint, factor: float
+        self, plot: BasePlot, pos: QPoint, factor: float
     ) -> tuple[tuple[float, float, float, float], tuple[float, float, float, float]]:
         """Returns the parameters to use for zooming on the plot.
 

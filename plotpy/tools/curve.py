@@ -180,7 +180,7 @@ class SelectPointTool(InteractiveTool):
         icon: Tool icon path. Defaults to None.
         tip: Available tip. Defaults to None.
         end_callback: Callback function taking a Self instance as argument that will
-        be passed when the user stops dragging the point. Defaults to None.
+         be passed when the user stops dragging the point. Defaults to None.
         toolbar_id: Toolbar Id to use. Defaults to DefaultToolbarID.
         marker_style: Marker style. Defaults to None.
         switch_to_default_tool: Wether to use as the default tool or not.
