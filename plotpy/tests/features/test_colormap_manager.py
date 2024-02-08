@@ -14,7 +14,7 @@ This plotpy widget can be used to manage colormaps (visualize, edit, create ans 
 import qtpy.QtCore as QC
 import qtpy.QtGui as QG
 from guidata.env import execenv
-from guidata.qthelpers import qt_app_context
+from guidata.qthelpers import exec_dialog, qt_app_context
 
 from plotpy.mathutils.colormaps import ALL_COLORMAPS
 from plotpy.widgets.colormap.manager import ColorMapManager
@@ -34,7 +34,7 @@ def test_colormap_manager() -> None:
         dlg.get_colormap()
         dlg.colormap_editor.update_colormap_widget()
         dlg.colormap_editor.update_current_dataset()
-        result = dlg.exec()
+        result = exec_dialog(dlg)
         execenv.print("Dialog result:", result)
         cmap = dlg.get_colormap()
         execenv.print("Selected colormap:", None if cmap is None else cmap.name)
