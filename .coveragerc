@@ -3,6 +3,7 @@ parallel = True
 concurrency = multiprocessing,thread
 omit =
     */plotpy/tests/*
+    */plotpy/external/*
     */plotpy/plot/interactive.py
     *.vscode/extensions*
     */qwt/*
