@@ -2,6 +2,8 @@
 
 ## Version 2.1.0 ##
 
+In this release, test coverage is 71%.
+
 New features:
 
 * Curve-related features:
