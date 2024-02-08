@@ -9,8 +9,8 @@ import plotpy  # noqa: E402
 
 # -- Project information -----------------------------------------------------
 project = "PlotPy"
-copyright = "2018, CEA"
-author = "CEA"
+copyright = "2023, CEA-Codra"
+author = "CEA-Codra"
 version = ""
 version = ".".join(plotpy.__version__.split(".")[:2])
 release = plotpy.__version__
@@ -24,21 +24,15 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.napoleon",
     "sphinx_qt_documentation",
+    "sphinx.ext.mathjax",
 ]
-if "htmlhelp" in sys.argv:
-    extensions += ["sphinx.ext.imgmath"]
-else:
-    extensions += ["sphinx.ext.mathjax"]
 templates_path = ["_templates"]
 source_suffix = ".rst"
 master_doc = "index"
 exclude_patterns = []
 pygments_style = "sphinx"
 
-if "htmlhelp" in sys.argv:
-    html_theme = "classic"
-else:
-    html_theme = "python_docs_theme"
+html_theme = "python_docs_theme"
 html_title = "%s %s Manual" % (project, version)
 html_short_title = "%s Manual" % project
 html_logo = "images/plotpy-vertical.png"
