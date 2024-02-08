@@ -36,22 +36,22 @@ def _make_standard_shape(
     "method",
     [make.segment, make.rectangle, make.circle, make.ellipse],
 )
-def test_builder_standard_shape(qtbot, method):
+def test_builder_standard_shape(method):
     items = []
     items.append(_make_standard_shape(method, title="title"))
-    show_items_qtbot(qtbot, items)
+    show_items_qtbot(items)
 
 
-def test_builder_polygon(qtbot):
+def test_builder_polygon():
     items = []
     x = np.linspace(0, 1, 10)
     y = x**2
     for closed in [True, False]:
         items.append(make.polygon(x, y, closed=closed, title="title"))
-    show_items_qtbot(qtbot, items)
+    show_items_qtbot(items)
 
 
-def test_builder_svgshape(qtbot):
+def test_builder_svgshape():
     items = []
     svg_path = get_path("svg_target.svg")
     with open(svg_path, "rb") as f:
@@ -63,4 +63,4 @@ def test_builder_svgshape(qtbot):
             items.append(
                 make.svg(shape_str, data_or_path, 0.0, 0.0, 1.0, 1.0, title="title")
             )
-    show_items_qtbot(qtbot, items)
+    show_items_qtbot(items)

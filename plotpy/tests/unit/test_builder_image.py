@@ -59,56 +59,56 @@ def _make_image(
         LUTAlpha.TANH,
     ],
 )
-def test_builder_image_alpha_function(qtbot, alpha_function):
+def test_builder_image_alpha_function(alpha_function):
     item = _make_image(alpha_function=alpha_function)
-    show_items_qtbot(qtbot, [item])
+    show_items_qtbot([item])
 
 
 @pytest.mark.parametrize(
     "xdata,ydata", [[[None, None], [None, None]], [[-10, 10], [-10, 10]]]
 )
-def test_builder_image_xdata_ydata(qtbot, xdata, ydata):
+def test_builder_image_xdata_ydata(xdata, ydata):
     item = _make_image(xdata=xdata, ydata=ydata)
-    show_items_qtbot(qtbot, [item])
+    show_items_qtbot([item])
 
 
 @pytest.mark.parametrize("pixel_size", [None, 1.0, (1.0, 2.0)])
-def test_builder_image_pixel_size(qtbot, pixel_size):
+def test_builder_image_pixel_size(pixel_size):
     item = _make_image(pixel_size=pixel_size)
-    show_items_qtbot(qtbot, [item])
+    show_items_qtbot([item])
 
 
 @pytest.mark.parametrize("center_on", [None, [1.0, 3.0]])
-def test_builder_image_center_on(qtbot, center_on):
+def test_builder_image_center_on(center_on):
     item = _make_image(center_on=center_on, pixel_size=(1.0, 1.0))
-    show_items_qtbot(qtbot, [item])
+    show_items_qtbot([item])
 
 
 @pytest.mark.parametrize("interpolation", ["nearest", "linear", "antialiasing"])
-def test_builder_image_interpolation(qtbot, interpolation):
+def test_builder_image_interpolation(interpolation):
     item = _make_image(interpolation=interpolation)
-    show_items_qtbot(qtbot, [item])
+    show_items_qtbot([item])
 
 
 @pytest.mark.parametrize("background_color", [None, "red"])
-def test_builder_image_background_color(qtbot, background_color):
+def test_builder_image_background_color(background_color):
     item = _make_image(background_color=background_color)
-    show_items_qtbot(qtbot, [item])
+    show_items_qtbot([item])
 
 
 @pytest.mark.parametrize("eliminate_outliers", [None, 3.0])
-def test_builder_image_eliminate_outliers(qtbot, eliminate_outliers):
+def test_builder_image_eliminate_outliers(eliminate_outliers):
     item = _make_image(eliminate_outliers=eliminate_outliers)
-    show_items_qtbot(qtbot, [item])
+    show_items_qtbot([item])
 
 
 @pytest.mark.parametrize("lut_range", [None, [0.0, 100.0]])
-def test_builder_image_lut_range(qtbot, lut_range):
+def test_builder_image_lut_range(lut_range):
     item = _make_image(lut_range=lut_range)
-    show_items_qtbot(qtbot, [item])
+    show_items_qtbot([item])
 
 
 @pytest.mark.parametrize("lock_position", [None, True, False])
-def test_builder_image_lock_position(qtbot, lock_position):
+def test_builder_image_lock_position(lock_position):
     item = _make_image(lock_position=lock_position)
-    show_items_qtbot(qtbot, [item])
+    show_items_qtbot([item])

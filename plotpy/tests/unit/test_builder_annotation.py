@@ -60,7 +60,7 @@ def _make_annotation(
         make.annotated_ellipse,
     ],
 )
-def test_builder_annotation_params(qtbot, method):
+def test_builder_annotation_params(method):
     items = []
     for show_label in [True, False]:
         items.append(
@@ -85,4 +85,4 @@ def test_builder_annotation_params(qtbot, method):
         items.append(_make_annotation(method, readonly=readonly))
     for private in [True, False]:
         items.append(_make_annotation(method, private=private))
-    show_items_qtbot(qtbot, items)
+    show_items_qtbot(items)

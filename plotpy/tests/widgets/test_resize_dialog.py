@@ -7,6 +7,7 @@ ResizeDialog test
 
 import pytest
 from guidata.qthelpers import exec_dialog, qt_app_context
+from qtpy import QtCore as QC
 from qtpy.QtCore import Qt
 
 from plotpy.widgets.resizedialog import ResizeDialog
@@ -30,29 +31,26 @@ def test_resize_dialog(new_size, old_size, keep_original_size, result):
         assert dialog.keep_original_size is keep_original_size
 
 
-def test_resize_dialog_qtbot_accept(qtbot):
+def test_resize_dialog_qtbot_accept():
     with qt_app_context():
         result = (1500, 1000, 5)
         dialog = ResizeDialog(None, (150, 100), (300, 200), "Enter the new size:")
-        qtbot.addWidget(dialog)  # Ensure widget is destroyed
         dialog.show()
-        qtbot.waitActive(dialog)
-        qtbot.keyClicks(dialog.w_edit, "0")
-        qtbot.keyPress(dialog, Qt.Key_Enter)
+        dialog.w_edit.setText("1500")
+        QC.QTimer.singleShot(10, dialog.accept)
+        dialog.exec()
         assert result[0] == dialog.width
         assert result[1] == dialog.height
         assert result[2] == dialog.get_zoom()
         assert dialog.keep_original_size is False
 
 
-def test_resize_dialog_qtbot_reject(qtbot):
+def test_resize_dialog_qtbot_reject():
     with qt_app_context():
         result = (150, 100, 0.5)
         dialog = ResizeDialog(None, (150, 100), (300, 200), "Enter the new size:")
-        qtbot.addWidget(dialog)  # Ensure widget is destroyed
         dialog.show()
-        qtbot.waitActive(dialog)
-        qtbot.keyPress(dialog, Qt.Key_Return)
+        exec_dialog(dialog)
 
         assert result[0] == dialog.width
         assert result[1] == dialog.height

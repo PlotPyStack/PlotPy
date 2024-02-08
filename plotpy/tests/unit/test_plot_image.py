@@ -4,11 +4,12 @@
 # (see plotpy/LICENSE for details)
 
 """Plot Image unit tests"""
+
 import contextlib
 
 import numpy as np
 import pytest
-from pytest import approx
+from guidata.qthelpers import exec_dialog
 from qtpy.QtCore import Qt
 
 from plotpy.builder import make
@@ -27,7 +28,7 @@ def compute_image():
 
 
 @contextlib.contextmanager
-def plot_image(qtbot, item):
+def plot_image(item):
     win = make.dialog(wintitle="Image plot test", type="image", toolbar=True)
     plot = win.manager.get_plot()
     assert isinstance(plot, BasePlot)
@@ -35,15 +36,14 @@ def plot_image(qtbot, item):
     assert item in plot.items
     assert item.plot() is plot
     win.show()
-    qtbot.addWidget(win)
     yield plot
-    qtbot.keyClick(win, Qt.Key_Enter)
+    exec_dialog(win)
 
 
-def test_plot_image(qtbot):
+def test_plot_image():
     """Test plotting of an Image"""
     item = make.image(compute_image())
-    with plot_image(qtbot, item) as plot:
+    with plot_image(item) as plot:
         pass
 
 
@@ -60,14 +60,14 @@ def compute_image_xy():
     return x, (x + 5) ** 0.6, img
 
 
-def test_plot_image_xy(qtbot):
+def test_plot_image_xy():
     """Test plotting of an Image with custom XY coordinates"""
     item = make.xyimage(*compute_image_xy())
-    with plot_image(qtbot, item) as plot:
+    with plot_image(item) as plot:
         ...
 
 
-def test_plot_quad_image(qtbot):
+def test_plot_quad_image():
     """Test plotting of an Image with custom quad coordinates"""
     delta = 0.025
     x = np.arange(-3.0, 3.0, delta)
@@ -75,15 +75,15 @@ def test_plot_quad_image(qtbot):
     X, Y = np.meshgrid(x, y)
     Z = X * Y
     item = make.quadgrid(X, Y, Z)
-    with plot_image(qtbot, item) as plot:
+    with plot_image(item) as plot:
         ...
 
 
-def test_plot_tr_image(qtbot):
+def test_plot_tr_image():
     """Test plotting of a TrImageItem"""
     img = compute_image()
     item = make.trimage(img)
-    with plot_image(qtbot, item) as plot:
+    with plot_image(item) as plot:
         # translate the image and check the new bounds
         bounds1 = item.bounds
         item.set_transform(50, 25, 0)
@@ -102,7 +102,7 @@ def test_plot_tr_image(qtbot):
 
 
 @pytest.mark.parametrize("ratio", [1.0, 0.75, 1.5, 2.0, 3.0])
-def test_set_aspect_ratio(qtbot, ratio):
+def test_set_aspect_ratio(ratio):
     """Test BasePlot.set_aspect_ratio method()
 
     It ensures that the new height is correctly set."""
@@ -111,21 +111,19 @@ def test_set_aspect_ratio(qtbot, ratio):
     plot = win.manager.get_plot()
     plot.add_item(item, autoscale=False)
     win.show()
-    qtbot.addWidget(win)
     x0, x1, y0, y1 = plot.get_plot_limits()
     plot.set_aspect_ratio(ratio, True)
     assert plot.get_aspect_ratio() == ratio
-    qtbot.keyClick(win, Qt.Key_Enter)
+    exec_dialog(win)
 
 
-def test_colormap_tool(qtbot):
+def test_colormap_tool():
     """Test ColorMapTool on an image"""
     win = make.dialog(type="image", toolbar=True)
     item = make.image(compute_image())
     plot = win.manager.get_plot()
     plot.add_item(item)
     win.show()
-    qtbot.addWidget(win)
 
     # default color map should be "jet"
     color_map_tool = win.manager.get_tool(ColormapTool)
@@ -140,4 +138,4 @@ def test_colormap_tool(qtbot):
     accent_img = plot.grab().toImage()
     assert jet_img != accent_img
 
-    qtbot.keyClick(win, Qt.Key_Enter)
+    exec_dialog(win)

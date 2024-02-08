@@ -6,7 +6,7 @@
 """Test plotting of a curve with PlotDialog"""
 
 import numpy as np
-from qtpy.QtCore import Qt
+from guidata.qthelpers import exec_dialog
 from qwt import QwtPlotItem
 
 from plotpy.builder import make
@@ -19,7 +19,7 @@ from plotpy.tools import (
 )
 
 
-def test_plot_curve(qtbot):
+def test_plot_curve():
     """Test plotting of a curve with PlotDialog"""
 
     x = np.linspace(-10, 10, 200)
@@ -31,7 +31,6 @@ def test_plot_curve(qtbot):
     plot = win.manager.get_plot()
     plot.add_item(curve)
 
-    qtbot.addWidget(win)
     win.show()
 
     assert isinstance(win.plot_widget, PlotWidget)
@@ -47,10 +46,10 @@ def test_plot_curve(qtbot):
         tool = win.manager.get_tool(curve_tool_class)
         assert tool is not None, f"Tool of type {curve_tool_class} not found"
 
-    qtbot.keyClick(win, Qt.Key_Enter)
+    exec_dialog(win)
 
 
-def test_plot_curve_anti_aliasing(qtbot):
+def test_plot_curve_anti_aliasing():
     """Test Anti-aliasing tool"""
 
     x = np.linspace(-10, 10, 200)
@@ -61,7 +60,6 @@ def test_plot_curve_anti_aliasing(qtbot):
     plot = win.manager.get_plot()
     plot.add_item(curve)
 
-    qtbot.addWidget(win)
     win.show()
 
     assert isinstance(win.plot_widget, PlotWidget)
@@ -86,4 +84,4 @@ def test_plot_curve_anti_aliasing(qtbot):
     aliased_img = plot.grab().toImage()
     assert original_img == aliased_img
 
-    qtbot.keyClick(win, Qt.Key_Enter)
+    exec_dialog(win)
