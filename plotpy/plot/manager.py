@@ -68,7 +68,7 @@ if TYPE_CHECKING:  # pragma: no cover
         XCrossSection,
         YCrossSection,
     )
-    from plotpy.tools import GuiTool, GuiToolT
+    from plotpy.tools.base import GuiTool, GuiToolT
 
 
 class DefaultPlotID:

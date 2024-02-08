@@ -4,8 +4,8 @@
 # (see plotpy/LICENSE for details)
 
 """
-rotatecrop
-----------
+Rotate/crop dialog
+------------------
 
 The `rotatecrop` module provides a dialog box providing essential GUI elements
 for rotating (arbitrary angle) and cropping an image:

@@ -11,8 +11,75 @@
 Event handling
 --------------
 
+Overview
+^^^^^^^^
+
 The :mod:`plotpy.events` module provides classes to handle events on a
 :class:`plotpy.plot.PlotWidget`.
+
+The following classes are available:
+
+* :class:`.StatefulEventFilter`: stateful event filter
+* :class:`.KeyEventMatch`: key event match
+* :class:`.StandardKeyMatch`: standard key event match
+* :class:`.MouseEventMatch`: mouse event match
+* :class:`.GestureEventMatch`: gesture event match
+* :class:`.DragHandler`: drag handler
+* :class:`.ClickHandler`: click handler
+* :class:`.PanHandler`: pan handler
+* :class:`.ZoomHandler`: zoom handler
+* :class:`.GestureHandler`: gesture handler
+* :class:`.PinchPanGestureHandler`: pinch and pan gesture handler
+* :class:`.MenuHandler`: menu handler
+* :class:`.QtDragHandler`: Qt drag handler
+* :class:`.AutoZoomHandler`: auto zoom handler
+* :class:`.MoveHandler`: move handler
+* :class:`.ObjectHandler`: object handler
+* :class:`.RectangularSelectionHandler`: rectangular selection handler
+* :class:`.PointSelectionHandler`: point selection handler
+* :class:`.ZoomRectHandler`: zoom rectangle handler
+
+Reference
+^^^^^^^^^
+
+.. autoclass:: StatefulEventFilter
+    :members:
+.. autoclass:: KeyEventMatch
+    :members:
+.. autoclass:: StandardKeyMatch
+    :members:
+.. autoclass:: MouseEventMatch
+    :members:
+.. autoclass:: GestureEventMatch
+    :members:
+.. autoclass:: DragHandler
+    :members:
+.. autoclass:: ClickHandler
+    :members:
+.. autoclass:: PanHandler
+    :members:
+.. autoclass:: ZoomHandler
+    :members:
+.. autoclass:: GestureHandler
+    :members:
+.. autoclass:: PinchPanGestureHandler
+    :members:
+.. autoclass:: MenuHandler
+    :members:
+.. autoclass:: QtDragHandler
+    :members:
+.. autoclass:: AutoZoomHandler
+    :members:
+.. autoclass:: MoveHandler
+    :members:
+.. autoclass:: ObjectHandler
+    :members:
+.. autoclass:: RectangularSelectionHandler
+    :members:
+.. autoclass:: PointSelectionHandler
+    :members:
+.. autoclass:: ZoomRectHandler
+    :members:
 """
 
 from __future__ import annotations

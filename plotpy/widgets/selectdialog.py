@@ -1,8 +1,8 @@
 # -*- coding: utf-8
 
 """
-selectdialog
-------------
+Select dialog
+-------------
 
 The `selectdialog` module provides a dialog box to select an area of the plot
 using a tool:

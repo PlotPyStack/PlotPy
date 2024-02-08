@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """
-colormap
-========
+Colormaps
+=========
 
 The `colormap` module contains definition of common colormaps and tools
 to manipulate and create them.
