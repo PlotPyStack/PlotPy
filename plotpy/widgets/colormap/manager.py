@@ -61,7 +61,8 @@ class ColorMapNameEdit(QW.QDialog):
 
         label = QW.QLabel(_("Enter a colormap name:"))
         self._edit = QW.QLineEdit()
-        self._edit.setValidator(QG.QRegExpValidator(QC.QRegExp("[1-9a-zA-Z_]*")))
+        regexp = QC.QRegularExpression("[1-9a-zA-Z_]*")
+        self._edit.setValidator(QG.QRegularExpressionValidator(regexp))
         self._edit.setText(name)
         self._edit.setToolTip(
             _(
