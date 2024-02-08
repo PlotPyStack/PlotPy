@@ -10,7 +10,7 @@
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
-from plotpy.panels.csection.cswidget import LineCrossSection
+from plotpy.panels.csection.cswidget import CrossSectionWidget, LineCrossSection
 from plotpy.plot import PlotDialog, PlotOptions
 from plotpy.tests import get_path
 from plotpy.tools import ImageMaskTool, LCSPanelTool, LineCrossSectionTool
@@ -23,7 +23,7 @@ class BaseCSImageDialog(PlotDialog):
     """
 
     TOOLCLASSES = ()
-    PANELCLASS = None
+    PANELCLASS = CrossSectionWidget  # to be overridden by subclasses
 
     def __init__(self, parent=None, toolbar=True, title=None, options=None):
         super().__init__(

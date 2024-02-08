@@ -47,7 +47,6 @@ from qtpy import QtWidgets as QW
 from qtpy.QtWidgets import QWidget  # only to help intersphinx find QWidget
 from qwt.plot import QwtPlotItem
 
-from plotpy.config import _
 from plotpy.items import AbstractShape, ImageItem
 from plotpy.panels.base import PanelWidget
 from plotpy.plot import BasePlot, PlotDialog, PlotOptions

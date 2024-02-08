@@ -59,8 +59,9 @@ class EditableColormap(QwtLinearColorMap):
     def __init__(self, *args, name: str | None = None) -> None:
         super().__init__(*args)
         # TODO: Add this feature in a release of QwtPython
+        # pylint: disable=no-member
         self.stops: list[ColorStop] = (
-            self._QwtLinearColorMap__data.colorStops._ColorStops__stops  # pylint: disable=no-member # type: ignore
+            self._QwtLinearColorMap__data.colorStops._ColorStops__stops  # type: ignore
         )
         self.name = name or "temporary"
 
@@ -209,6 +210,7 @@ class EditableColormap(QwtLinearColorMap):
             color2: last color of the interval
         """
         super().setColorInterval(color1, color2)
+        # pylint: disable=no-member
         self.stops: list[
             ColorStop
         ] = self._QwtLinearColorMap__data.colorStops._ColorStops__stops  # type: ignore
