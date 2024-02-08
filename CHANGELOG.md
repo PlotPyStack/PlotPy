@@ -1,14 +1,53 @@
 # Changelog #
 
+## Version 2.1.0 ##
+
+New features:
+
+* Curve-related features:
+  * New `tools.SelectPointsTool` to select graphically multiple points on a plot
+  * New `tools.EditPointTool` to edit graphically the position of a point on a plot
+  * New downsampling feature:
+    * The user may enable it to reduce the number of points displayed on a curve
+      (e.g. when the curve is too dense)
+    * The downsampling factor is adjustable
+      (default to 10, i.e. 1 point out of 10 is displayed)
+    * The feature is disabled by default
+* Image-related features:
+  * New "Colormap Manager":
+    * Before this release, the colormap selection was limited to presets (e.g. "gray",
+      "jet", etc.)
+    * Now, the user can select a preset, edit it, or create a new one from scratch
+      thanks to the new "Colormap Manager" dialog
+  * New line cross section feature:
+    * Before this release, the cross section feature was limited to either horizontal
+      or vertical lines, or an average cross section withing a rectangle (aligned with
+      the axes, or oblique)
+    * Now, the user can draw a line cross section with the new "Line Cross Section"
+      tool: the intensity profile associated to the drawn segment is displayed in a
+      dedicated plot
+* Added support for gestures:
+  * Zooming in/out with the a two-finger pinch gesture
+  * Panning with a two-finger drag gesture
+
+Documentation:
+
+* Reorganized some sections
+* Added sections on new features
+
+Bug fixes:
+
+* Fixed critical bug in oblique cross section feature (regression introduced in 2.0.0)
+
 ## Version 2.0.3 ##
 
-🛠️ Bug fixes:
+Bug fixes:
 
 * [Issue #9](https://github.com/PlotPyStack/PlotPy/issues/9) - MacOS: `error: a space is required between consecutive right angle brackets (use '> >')`
 
 ## Version 2.0.2 ##
 
-🛠️ Bug fixes:
+Bug fixes:
 
 * [Issue #3](https://github.com/PlotPyStack/PlotPy/issues/3) - `PlotWidget`: `ZeroDivisionError` on resize while ignoring constraints
 * [Issue #4](https://github.com/PlotPyStack/PlotPy/issues/4) - Average cross section: `RuntimeWarning: Mean of empty slice.`
@@ -19,13 +58,13 @@
 
 ## Version 2.0.1 ##
 
-🛠️ Bug fixes:
+Bug fixes:
 
 * Fixed `plotpy.tools.AnnotatedEllipseTool`: `AttributeError` when finalizing the shape
 * `plotpy.widgets.select_with_shape_tool`: added missing `toolbar` and `options` parameters
 * `items.XRangeSelection` is now serializable, as expected
 
-📚 Documentation:
+Documentation:
 
 * `plotpy.plot.SyncPlotWindow`: added missing documentation
 * Added more information on PlotPyStack
