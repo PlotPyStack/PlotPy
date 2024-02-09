@@ -1,1 +1,1 @@
-.. automodule:: plotpy.mathutils.colormaps
+.. automodule:: plotpy.mathutils.colormap
