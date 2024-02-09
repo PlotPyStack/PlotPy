@@ -6,7 +6,7 @@
     "configurations": [
         {
             "name": "Run Test Launcher",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/plotpy/tests/__init__.py",
             "console": "integratedTerminal",
@@ -19,7 +19,7 @@
         },
         {
             "name": "Run current file",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
@@ -28,12 +28,13 @@
             "justMyCode": false,
             "pythonArgs": [
                 "-W error::DeprecationWarning",
+                "-W error::RuntimeWarning",
             ],
             "env": {}
         },
         {
             "name": "Run current file (unattended)",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
