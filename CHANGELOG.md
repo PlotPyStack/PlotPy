@@ -1,5 +1,14 @@
 # Changelog #
 
+## Version 2.1.1 ##
+
+Bug fixes:
+
+* Colormap selection from the toolbar was not triggering the `SIG_ITEMS_CHANGED` signal
+  (every time an item parameter is changed, the `SIG_ITEMS_CHANGED` signal has to be
+  emitted by the `BasePlot` instance to notify the application that the plot has been
+  modified)
+
 ## Version 2.1.0 ##
 
 In this release, test coverage is 71%.

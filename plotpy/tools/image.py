@@ -512,6 +512,7 @@ class ColormapTool(CommandTool):
             self.action.setText(_("Colormap: %s") % self._active_colormap.name)
             plot.invalidate()
             self.update_status(plot)
+            plot.SIG_ITEMS_CHANGED.emit(plot)
 
     def update_status(self, plot: BasePlot) -> None:
         """Update tool status if the plot type is not PlotType.CURVE.
