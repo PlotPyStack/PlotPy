@@ -23,7 +23,7 @@ from qtpy import QtGui as QG
 from plotpy._scaler import INTERP_AA, INTERP_LINEAR, INTERP_NEAREST
 from plotpy.config import _
 from plotpy.constants import LUTAlpha
-from plotpy.mathutils.colormaps import (
+from plotpy.mathutils.colormap import (
     ALL_COLORMAPS,
     LARGE_ICON_HEIGHT,
     LARGE_ICON_ORIENTATION,

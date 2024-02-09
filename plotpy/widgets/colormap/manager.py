@@ -31,7 +31,7 @@ from guidata.configtools import get_icon
 from guidata.qthelpers import exec_dialog
 
 from plotpy.config import _
-from plotpy.mathutils.colormaps import (
+from plotpy.mathutils.colormap import (
     ALL_COLORMAPS,
     CUSTOM_COLORMAPS,
     DEFAULT_COLORMAPS,

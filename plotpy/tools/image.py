@@ -31,11 +31,7 @@ from plotpy.items import (
     TrImageItem,
     get_items_in_rectangle,
 )
-from plotpy.mathutils.colormaps import (
-    ALL_COLORMAPS,
-    build_icon_from_cmap_name,
-    get_cmap,
-)
+from plotpy.mathutils.colormap import ALL_COLORMAPS, build_icon_from_cmap_name, get_cmap
 from plotpy.tools.base import (
     CommandTool,
     DefaultToolbarID,

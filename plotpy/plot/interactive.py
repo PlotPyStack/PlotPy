@@ -29,7 +29,7 @@ from plotpy import io
 from plotpy._scaler import INTERP_AA, INTERP_LINEAR, INTERP_NEAREST
 from plotpy.builder import make
 from plotpy.config import _
-from plotpy.mathutils.colormaps import ALL_COLORMAPS
+from plotpy.mathutils.colormap import ALL_COLORMAPS
 from plotpy.panels.contrastadjustment import ContrastAdjustment
 from plotpy.panels.csection.cswidget import XCrossSection, YCrossSection
 from plotpy.panels.itemlist import PlotItemList

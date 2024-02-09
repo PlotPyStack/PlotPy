@@ -18,7 +18,7 @@ import numpy as np
 from qtpy import QtGui as QG
 from qwt import QwtInterval
 
-from plotpy.mathutils.colormaps import (
+from plotpy.mathutils.colormap import (
     DEFAULT_COLORMAPS,
     DEFAULT_COLORMAPS_PATH,
     save_colormaps,

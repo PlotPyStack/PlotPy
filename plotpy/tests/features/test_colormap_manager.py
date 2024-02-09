@@ -16,7 +16,7 @@ import qtpy.QtGui as QG
 from guidata.env import execenv
 from guidata.qthelpers import exec_dialog, qt_app_context
 
-from plotpy.mathutils.colormaps import ALL_COLORMAPS
+from plotpy.mathutils.colormap import ALL_COLORMAPS
 from plotpy.widgets.colormap.manager import ColorMapManager
 from plotpy.widgets.colormap.widget import EditableColormap
 
