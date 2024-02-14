@@ -292,3 +292,11 @@ def add_cmap(cmap: EditableColormap) -> None:
     ALL_COLORMAPS[cmap.name.lower()] = cmap
     CUSTOM_COLORMAPS[cmap.name.lower()] = cmap
     save_colormaps(CUSTOM_COLORMAPS_PATH, CUSTOM_COLORMAPS)
+
+
+def delete_cmap(cmap: EditableColormap) -> None:
+    """Deletes the given colormap from both ALL_COLORMAPS and CUSTOM_COLORMAPS global"""
+    global ALL_COLORMAPS, CUSTOM_COLORMAPS
+    if CUSTOM_COLORMAPS.pop(cmap.name.lower(), None) is not None:
+        del ALL_COLORMAPS[cmap.name.lower()]
+        save_colormaps(CUSTOM_COLORMAPS_PATH, CUSTOM_COLORMAPS)

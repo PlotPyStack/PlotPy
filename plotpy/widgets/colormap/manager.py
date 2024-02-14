@@ -41,6 +41,7 @@ from plotpy.mathutils.colormap import (
     add_cmap,
     build_icon_from_cmap,
     cmap_exists,
+    delete_cmap,
     get_cmap,
 )
 from plotpy.widgets.colormap.editor import ColorMapEditor
@@ -142,15 +143,23 @@ class ColorMapManager(QW.QDialog):
 
         self._cmap_choice.setIconSize(QC.QSize(LARGE_ICON_WIDTH, LARGE_ICON_HEIGHT))
         self._cmap_choice.setCurrentText(active_colormap)
-        select_gbox = QW.QGroupBox(_("Select or create a colormap"))
-        select_label = QW.QLabel(_("Colormap presets:"))
+
         new_btn = QW.QPushButton(_("Create new colormap") + "...")
         new_btn.clicked.connect(self.new_colormap)
+        self._del_btn = QW.QPushButton(_("Delete colormap") + "...")
+        is_custom_cmap = cmap_exists(active_colormap, CUSTOM_COLORMAPS)
+        self._del_btn.setEnabled(is_custom_cmap)
+        self._del_btn.clicked.connect(self.delete_colormap)
+
+        select_gbox = QW.QGroupBox(_("Select or create a colormap"))
+        select_label = QW.QLabel(_("Colormap presets:"))
         select_gbox_layout = QW.QHBoxLayout()
         select_gbox_layout.addWidget(select_label)
         select_gbox_layout.addWidget(self._cmap_choice)
         select_gbox_layout.addSpacing(10)
         select_gbox_layout.addWidget(new_btn)
+        select_gbox_layout.addStretch(1)
+        select_gbox_layout.addWidget(self._del_btn)
         select_gbox_layout.addStretch(1)
         select_gbox.setLayout(select_gbox_layout)
 
@@ -229,8 +238,12 @@ class ColorMapManager(QW.QDialog):
         """
         cmap_copy: EditableColormap = deepcopy(self._cmap_choice.itemData(index))
         self.colormap_editor.set_colormap(cmap_copy)
-        is_new_colormap = not cmap_exists(cmap_copy.name)
+
+        is_custom_cmap = cmap_exists(cmap_copy.name, CUSTOM_COLORMAPS)
+        self._del_btn.setEnabled(is_custom_cmap)
+
         self._changes_saved = True
+        is_new_colormap = not cmap_exists(cmap_copy.name)
         self._save_btn.setEnabled(is_new_colormap)  # type: ignore
 
     def get_colormap(self) -> EditableColormap | None:
@@ -291,6 +304,38 @@ class ColorMapManager(QW.QDialog):
         """Create a new colormap and set it as the current colormap."""
         cmap = EditableColormap(QG.QColor(0), QG.QColor(4294967295), name=_("New"))
         self.save_colormap(cmap)
+
+    def delete_colormap(self) -> None:
+        """Delete the current colormap."""
+        cmap = self.colormap_editor.get_colormap()
+        if cmap is None:
+            return
+        if cmap_exists(cmap.name, DEFAULT_COLORMAPS):
+            QW.QMessageBox.warning(
+                self,
+                _("Delete colormap"),
+                _("Colormap <b>%s</b> is a default colormap and cannot be deleted.")
+                % cmap.name,
+                QW.QMessageBox.StandardButton.Cancel,
+            )
+            return
+        if (
+            QW.QMessageBox.question(
+                self,
+                _("Delete colormap"),
+                _("Do you want to delete colormap <b>%s</b>?") % cmap.name,
+                QW.QMessageBox.Yes | QW.QMessageBox.No,
+                QW.QMessageBox.StandardButton.No,
+            )
+            == QW.QMessageBox.No
+        ):
+            return
+        delete_cmap(cmap)
+        current_index = self._cmap_choice.currentIndex()
+        self._cmap_choice.removeItem(current_index)
+        self._changes_saved = True
+        self._save_btn.setEnabled(False)
+        self._cmap_choice.setCurrentIndex(max(current_index - 1, 0))
 
     def save_colormap(self, cmap: EditableColormap | None = None) -> bool:
         """Saves the current colormap and handles the validation process. The saved
