@@ -449,7 +449,10 @@ class StatefulEventFilter(QC.QObject):
         )
 
     def wheel(self, modifiers=QC.Qt.KeyboardModifier.NoModifier):
-        """Création d'un filtre pour l'événement molette"""
+        """Create a filter for wheel events
+
+        Args:
+            modifiers: keyboard modifiers to use with the wheel event"""
         return self.events.setdefault(("wheel", modifiers), WheelEventMatch(modifiers))
 
     def nothing(self, filter, event):
@@ -866,6 +869,15 @@ class MenuHandler(ClickHandler):
 
 
 class WheelHandler(QC.QObject):
+    """Base class for handling mouse wheel events.
+
+    Args:
+        filter: event filter into which to add the handler instance.
+        mods: Keyboard modifier that can be used at the same time as the wheel to
+         trigger the event. Defaults to QC.Qt.KeyboardModifier.NoModifier.
+        start_state: start state to use in the event filter state machine.
+         Defaults to 0."""
+
     def __init__(
         self,
         filter: StatefulEventFilter,
@@ -878,15 +890,17 @@ class WheelHandler(QC.QObject):
         )
 
     def wheel(self, filter: StatefulEventFilter, event: QG.QWheelEvent):
-        """
+        """Handles the wheel event.
 
-        :param filter:
-        :param event:
-        """
+        Args:
+            filter: event filter that contains the BasePlot instance
+            event: the wheel event that triggered the action."""
         raise NotImplementedError()
 
 
 class WheelZoomHandler(WheelHandler):
+    """Class to handle zooming with the mouse wheel."""
+
     def get_zoom_param(
         self, plot: BasePlot, pos: QPoint, factor: float
     ) -> tuple[tuple[float, float, float, float], tuple[float, float, float, float]]:
@@ -917,18 +931,21 @@ class WheelZoomHandler(WheelHandler):
         return dx, dy
 
     def wheel(self, filter: StatefulEventFilter, event: QG.QWheelEvent):
-        """
+        """Overrides the WheelHandler.wheel method to handle the zooming with the mouse
+        wheel.
 
-        :param filter:
-        :param event:
+        Args:
+            filter: event filter that contains the BasePlot instance
+            event: the wheel event that triggered the zooming. Use to get zoom factor
+             and position
         """
         plot = filter.plot
-        delta = event.angleDelta().y() / 360
+        zoom_factor = 1 + (event.angleDelta().y() / 360)
 
         center_point = event.globalPos()
-        center_point = filter.plot.canvas().mapFromGlobal(center_point)
+        center_point = filter.plot.canvas().mapFromGlobal(center_point)  # type: ignore
 
-        dx, dy = self.get_zoom_param(plot, center_point, 1 + delta)
+        dx, dy = self.get_zoom_param(plot, center_point, zoom_factor)
         plot.do_zoom_view(dx, dy)
 
 
