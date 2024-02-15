@@ -1,5 +1,9 @@
 # Changelog #
 
+## Version 2.1.2 ##
+
+Compatibility with PythonQwt 0.12.
+
 ## Version 2.1.1 ##
 
 Bug fixes:
