@@ -144,9 +144,13 @@ class ColorMapManager(QW.QDialog):
         self._cmap_choice.setIconSize(QC.QSize(LARGE_ICON_WIDTH, LARGE_ICON_HEIGHT))
         self._cmap_choice.setCurrentText(active_colormap)
 
-        new_btn = QW.QPushButton(_("Create new colormap") + "...")
+        new_btn = QW.QPushButton(
+            get_icon("edit_add.png"), _("Create new colormap") + "..."
+        )
         new_btn.clicked.connect(self.new_colormap)
-        self._del_btn = QW.QPushButton(_("Delete colormap") + "...")
+        self._del_btn = QW.QPushButton(
+            get_icon("delete.png"), _("Delete colormap") + "..."
+        )
         is_custom_cmap = cmap_exists(active_colormap, CUSTOM_COLORMAPS)
         self._del_btn.setEnabled(is_custom_cmap)
         self._del_btn.clicked.connect(self.delete_colormap)
@@ -158,9 +162,7 @@ class ColorMapManager(QW.QDialog):
         select_gbox_layout.addWidget(self._cmap_choice)
         select_gbox_layout.addSpacing(10)
         select_gbox_layout.addWidget(new_btn)
-        select_gbox_layout.addStretch(1)
         select_gbox_layout.addWidget(self._del_btn)
-        select_gbox_layout.addStretch(1)
         select_gbox.setLayout(select_gbox_layout)
 
         # Edit the selected colormap
@@ -368,7 +370,9 @@ class ColorMapManager(QW.QDialog):
         cmap.name = new_name
         add_cmap(cmap)
 
-        icon = build_icon_from_cmap(cmap)
+        icon = build_icon_from_cmap(
+            cmap, LARGE_ICON_WIDTH, LARGE_ICON_HEIGHT, LARGE_ICON_ORIENTATION, 1
+        )
         if is_existing_custom_cmap:
             self._cmap_choice.setCurrentText(new_name)
             current_index = self._cmap_choice.currentIndex()
