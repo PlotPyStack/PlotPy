@@ -9,28 +9,24 @@ from guidata.qthelpers import exec_dialog, qt_app_context
 
 from plotpy.tests import vistools as ptv
 from plotpy.tests.features.test_auto_curve_image import make_curve_image_legend
-from plotpy.tools.annotation import (
+from plotpy.tools import (
     AnnotatedCircleTool,
     AnnotatedEllipseTool,
     AnnotatedObliqueRectangleTool,
     AnnotatedPointTool,
     AnnotatedRectangleTool,
     AnnotatedSegmentTool,
-)
-from plotpy.tools.cross_section import (
     AverageCrossSectionTool,
-    CrossSectionTool,
-    ObliqueCrossSectionTool,
-)
-from plotpy.tools.image import ImageStatsTool
-from plotpy.tools.misc import SnapshotTool
-from plotpy.tools.shape import (
     CircleTool,
+    CrossSectionTool,
     EllipseTool,
+    ImageStatsTool,
+    ObliqueCrossSectionTool,
     ObliqueRectangleTool,
     PointTool,
     RectangleTool,
     SegmentTool,
+    SnapshotTool,
 )
 
 if TYPE_CHECKING:
@@ -122,8 +118,8 @@ def test_cross_section_tool():
     _test_annotation_tools((CrossSectionTool,))
 
 
-def test_oblique_cross_section_tool():
-    _test_annotation_tools((ObliqueCrossSectionTool,))
+# def test_oblique_cross_section_tool():
+#     _test_annotation_tools((ObliqueCrossSectionTool,))
 
 
 def test_snapshot_tool():

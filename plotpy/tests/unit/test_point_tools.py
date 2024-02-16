@@ -10,16 +10,44 @@ from guidata.qthelpers import exec_dialog, qt_app_context
 from numpy import linspace, sin
 
 from plotpy.builder import make
+from plotpy.interfaces.items import ICurveItemType
 from plotpy.plot.plotwidget import PlotDialog, PlotWindow
 from plotpy.tests import vistools as ptv
-from plotpy.tools.base import InteractiveTool
-from plotpy.tools.curve import EditPointTool, SelectPointsTool, SelectPointTool
+from plotpy.tools import (
+    EditPointTool,
+    InteractiveTool,
+    SelectPointsTool,
+    SelectPointTool,
+)
 
 if TYPE_CHECKING:
     from plotpy.items.curve.base import CurveItem
 
 CLICK = (QC.QEvent.Type.MouseButtonPress, QC.QEvent.Type.MouseButtonRelease)
 ToolT = TypeVar("ToolT", bound=InteractiveTool)
+
+
+def keyboard_event(
+    win: PlotDialog,
+    qapp: QW.QApplication,
+    key: QC.Qt.Key,
+    mod=QC.Qt.KeyboardModifier.NoModifier,
+):
+    """Simulates a keyboard event on the plot.
+
+    Args:
+        win: window containing the plot
+        qapp: Main QApplication instance
+        key: Key to simulate
+        mod: Keyboard modifier. Defaults to QC.Qt.KeyboardModifier.NoModifier.
+
+    Returns:
+        None
+    """
+    plot = win.manager.get_plot()
+    canva: QW.QWidget = plot.canvas()  # type: ignore
+    key_event = QG.QKeyEvent(QC.QEvent.Type.KeyPress, key, mod)
+    qapp.sendEvent(canva, key_event)
 
 
 def mouse_event_at_relative_plot_pos(
@@ -161,6 +189,12 @@ def test_select_points_tool():
 def test_edit_point_tool():
     with qt_app_context(exec_loop=False) as qapp:
         win, tool = create_window(EditPointTool)
+        curve_item: CurveItem = win.manager.get_plot().get_last_active_item(ICurveItemType)  # type: ignore
+        orig_x, orig_y = curve_item.get_data()
+
+        assert orig_x is not None and orig_y is not None
+        orig_x, orig_y = orig_x.copy(), orig_y.copy()
+
         assert tool is not None
 
         n = 100
@@ -173,7 +207,6 @@ def test_edit_point_tool():
 
         drag_mouse(win, qapp, x_path, y_path)
 
-        curve_item: CurveItem = win.manager.get_plot().get_active_item()  # type: ignore
         curve_changes = tool.get_changes()[curve_item]
         for i, (x, y) in curve_changes.items():
             x_arr, y_arr = curve_item.get_data()
@@ -182,6 +215,24 @@ def test_edit_point_tool():
 
         tool.get_arrays()
         tool.get_initial_arrays()
+
+        keyboard_event(
+            win, qapp, QC.Qt.Key.Key_Z, QC.Qt.KeyboardModifier.ControlModifier
+        )
+
+        assert len(curve_changes) == 0
+
+        restored_x, restored_y = curve_item.get_data()
+        assert restored_x is not None and restored_y is not None
+        assert np.allclose(orig_x, restored_x)
+        assert np.allclose(orig_y, restored_y)
+
+        mouse_event_at_relative_plot_pos(win, qapp, (0.5, 0.5), CLICK)
+        tool.trigger_insert_point_at_selection()
+
+        new_x, new_y = curve_item.get_data()
+        assert len(new_x) == len(orig_x) + 1 and len(new_y) == len(orig_y) + 1
+
         exec_dialog(win)
 
 
