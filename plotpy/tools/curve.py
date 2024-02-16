@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Any, Callable
 
 import numpy as np
 from guidata.dataset import ChoiceItem, DataSet, FloatItem, IntItem
+from guidata.qthelpers import execenv
 from guidata.widgets.arrayeditor import ArrayEditor
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
@@ -846,18 +847,17 @@ class EditPointTool(InteractiveTool):
         param.index = self.__idx
         param.value = self.__y[self.__idx - 1 : self.__idx + 1].mean()
 
-        if not param.edit():
-            return
+        if param.edit() or execenv.unattended:
+            insertion_index: int = param.index + param.index_offset  # type: ignore
+            new_x: float = self.__x[insertion_index - 1 : insertion_index + 1].mean()
+            self.__x = np.insert(self.__x, insertion_index, new_x)  # type: ignore
+            self.__y = np.insert(self.__y, insertion_index, param.value)  # type: ignore
+            curve_item.set_data(self.__x, self.__y)
+            new_pos = axes_to_canvas(curve_item, new_x, param.value)  # type: ignore
+            self.__current_location_marker.move_local_point_to(
+                0, QC.QPointF(*new_pos)  # type: ignore
+            )
 
-        insertion_index: int = param.index + param.index_offset  # type: ignore
-        new_x: float = self.__x[insertion_index - 1 : insertion_index + 1].mean()
-        self.__x = np.insert(self.__x, insertion_index, new_x)  # type: ignore
-        self.__y = np.insert(self.__y, insertion_index, param.value)  # type: ignore
-        curve_item.set_data(self.__x, self.__y)
-        new_pos = axes_to_canvas(curve_item, new_x, param.value)  # type: ignore
-        self.__current_location_marker.move_local_point_to(
-            0, QC.QPointF(*new_pos)  # type: ignore
-        )
 
     def __get_plot(self, filter: StatefulEventFilter) -> BasePlot:
         """Get plot. Simple method to avoid type checking errors
