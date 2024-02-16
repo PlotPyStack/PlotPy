@@ -106,7 +106,7 @@ def create_window(tool_class: type[ToolT]) -> tuple[PlotWindow, ToolT]:
     return win, tool
 
 
-def test_select_point_tool_1():
+def test_free_select_point_tool():
     with qt_app_context(exec_loop=False) as qapp:
         win, tool = create_window(SelectPointTool)
 
@@ -120,7 +120,7 @@ def test_select_point_tool_1():
         exec_dialog(win)
 
 
-def test_select_point_tool_2():
+def test_contrained_select_point_tool():
     with qt_app_context(exec_loop=False) as qapp:
         win, tool = create_window(SelectPointTool)
         tool.on_active_item = True
@@ -179,11 +179,14 @@ def test_edit_point_tool():
             x_arr, y_arr = curve_item.get_data()
             assert x == x_arr[i]
             assert y == y_arr[i]
+
+        tool.get_arrays()
+        tool.get_initial_arrays()
         exec_dialog(win)
 
 
 if __name__ == "__main__":
-    test_select_point_tool_1()
-    test_select_point_tool_2()
+    test_free_select_point_tool()
+    test_contrained_select_point_tool()
     test_select_points_tool()
     test_edit_point_tool()
