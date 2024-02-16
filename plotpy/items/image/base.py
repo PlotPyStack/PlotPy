@@ -442,11 +442,17 @@ class BaseImageItem(QwtPlotItem):
             else:
                 x = i / float(LUT_SIZE - 1)
                 if alpha_function == LUTAlpha.LINEAR.value:
+                    # Linear alpha function
                     pix_alpha = alpha * x
                 elif alpha_function == LUTAlpha.SIGMOID.value:
+                    # Sigmoid alpha function
                     pix_alpha = alpha / (1 + np.exp(-10 * x))
                 elif alpha_function == LUTAlpha.TANH.value:
+                    # Hyperbolic tangent alpha function
                     pix_alpha = alpha * np.tanh(5 * x)
+                elif alpha_function == LUTAlpha.STEP.value:
+                    # Fully transparent lowest value and `alpha` transparent elsewhere
+                    pix_alpha = alpha if x > 0 else 0
                 else:
                     raise ValueError(f"Invalid alpha function {alpha_function}")
             # pylint: disable=too-many-function-args
@@ -1220,9 +1226,11 @@ class RawImageItem(BaseImageItem):
 
     def serialize(
         self,
-        writer: guidata.dataset.io.HDF5Writer
-        | guidata.dataset.io.INIWriter
-        | guidata.dataset.io.JSONWriter,
+        writer: (
+            guidata.dataset.io.HDF5Writer
+            | guidata.dataset.io.INIWriter
+            | guidata.dataset.io.JSONWriter
+        ),
     ) -> None:
         """Serialize object to HDF5 writer
 
@@ -1242,9 +1250,11 @@ class RawImageItem(BaseImageItem):
 
     def deserialize(
         self,
-        reader: guidata.dataset.io.HDF5Reader
-        | guidata.dataset.io.INIReader
-        | guidata.dataset.io.JSONReader,
+        reader: (
+            guidata.dataset.io.HDF5Reader
+            | guidata.dataset.io.INIReader
+            | guidata.dataset.io.JSONReader
+        ),
     ) -> None:
         """Deserialize object from HDF5 reader
 

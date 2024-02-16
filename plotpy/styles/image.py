@@ -69,9 +69,9 @@ class BaseImageParam(DataSet):
     )
     alpha_function = ChoiceItem(
         _("Alpha function"),
-        LUTAlpha.NONE.get_choices(),
+        LUTAlpha.get_choices(),
         default=LUTAlpha.NONE.value,
-        help=_("Alpha function applied to the Look-Up Table"),
+        help=LUTAlpha.get_help(),
     )
     alpha = FloatItem(
         _("Global alpha"), default=1.0, min=0, max=1, help=_("Global alpha value")
@@ -153,9 +153,9 @@ class QuadGridParam(DataSet):
     )
     alpha_function = ChoiceItem(
         _("Alpha function"),
-        LUTAlpha.NONE.get_choices(),
+        LUTAlpha.get_choices(),
         default=LUTAlpha.NONE.value,
-        help=_("Alpha function applied to the Look-Up Table"),
+        help=LUTAlpha.get_help(),
     )
     alpha = FloatItem(
         _("Global alpha"), default=1.0, min=0, max=1, help=_("Global alpha value")

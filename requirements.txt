@@ -3,7 +3,7 @@ Cython
 NumPy>=1.17
 Pillow
 PyQt5
-PythonQwt>=0.10
+PythonQwt>=0.12
 SciPy>=1.3
 black
 guidata>=3.1

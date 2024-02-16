@@ -77,6 +77,7 @@ functions are:
 * :py:attr:`plotpy.constants.LUTAlpha.LINEAR`
 * :py:attr:`plotpy.constants.LUTAlpha.SIGMOID`
 * :py:attr:`plotpy.constants.LUTAlpha.TANH`
+* :py:attr:`plotpy.constants.LUTAlpha.STEP`
 
 .. warning:: The ``alpha_mask`` parameter has been removed from the methods
              :py:meth:`.PlotBuilder.image`, :py:meth:`.PlotBuilder.xyimage`,

@@ -58,12 +58,16 @@ class EditableColormap(QwtLinearColorMap):
 
     def __init__(self, *args, name: str | None = None) -> None:
         super().__init__(*args)
-        # TODO: Add this feature in a release of QwtPython
-        # pylint: disable=no-member
-        self.stops: list[ColorStop] = (
-            self._QwtLinearColorMap__data.colorStops._ColorStops__stops  # type: ignore
-        )
         self.name = name or "temporary"
+
+    @property
+    def color_stop_values(self) -> list[float]:
+        """Returns the position values of the color stops.
+
+        Returns:
+            List of color stop positions.
+        """
+        return [stop.pos for stop in self.colorStops()]
 
     def is_boundary_stop_index(self, stop_index: int) -> bool:
         """Checks if the given index is a boundary index (first or last).
@@ -88,7 +92,7 @@ class EditableColormap(QwtLinearColorMap):
         Returns:
             True if the next color stop can be updated, False otherwise.
         """
-        return stop_index < (len(self.stops) - 1)
+        return stop_index < (len(self.colorStops()) - 1)
 
     def _can_update_previous_stop(self, stop_index: int) -> bool:
         """Checks if the previous color stop can be updated.
@@ -110,12 +114,12 @@ class EditableColormap(QwtLinearColorMap):
         Args:
             stop_index: current color stop index to update.
         """
-        current_stop = self.stops[stop_index]
+        current_stop = self.colorStops()[stop_index]
         if self._can_update_previous_stop(stop_index):
-            prev_stop = self.stops[stop_index - 1]
+            prev_stop: ColorStop = self.colorStops()[stop_index - 1]
             prev_stop.updateSteps(current_stop)
         if self._can_update_next_stop(stop_index):
-            next_stop = self.stops[stop_index + 1]
+            next_stop: ColorStop = self.colorStops()[stop_index + 1]
             current_stop.updateSteps(next_stop)
 
     @classmethod
@@ -159,7 +163,9 @@ class EditableColormap(QwtLinearColorMap):
         Returns:
             Tuple of tuples composed of a float position and a hex color string.
         """
-        return tuple((stop.pos, QG.QColor(stop.rgb).name()) for stop in self.stops)
+        return tuple(
+            (stop.pos, QG.QColor(stop.rgb).name()) for stop in self.colorStops()
+        )
 
     def move_color_stop(
         self, stop_index: int, new_pos: float, new_color: QG.QColor | None = None
@@ -174,7 +180,7 @@ class EditableColormap(QwtLinearColorMap):
              Defaults to None.
         """
         try:
-            stop: ColorStop | None = self.stops[stop_index]
+            stop: ColorStop | None = self.colorStops()[stop_index]
         except IndexError as e:
             print(e)
             return
@@ -185,7 +191,7 @@ class EditableColormap(QwtLinearColorMap):
 
         new_color = new_color or QG.QColor(stop.rgb)
         new_stop = ColorStop(new_pos, new_color)
-        self.stops[stop_index] = new_stop
+        self.colorStops()[stop_index] = new_stop
         self.update_stops_steps(stop_index)
 
     def delete_stop(self, stop_index: int) -> None:
@@ -196,24 +202,9 @@ class EditableColormap(QwtLinearColorMap):
             stop_index: color stop index to delete
         """
         if not self.is_boundary_stop_index(stop_index):
-            self.stops.pop(stop_index)
-            self.stops[stop_index - 1].updateSteps(self.stops[stop_index])
-
-    def setColorInterval(
-        self, color1: QColorInitTypes, color2: QColorInitTypes
-    ) -> None:
-        """Overload of QwtLinearColorMap.setColorInterval to update the stops list
-        attribute.
-
-        Args:
-            color1: first color of the interval
-            color2: last color of the interval
-        """
-        super().setColorInterval(color1, color2)
-        # pylint: disable=no-member
-        self.stops: list[
-            ColorStop
-        ] = self._QwtLinearColorMap__data.colorStops._ColorStops__stops  # type: ignore
+            cstops: list[ColorStop] = self.colorStops()
+            cstops.pop(stop_index)
+            cstops[stop_index - 1].updateSteps(cstops[stop_index])
 
     def get_stop_color(self, index: int) -> QG.QColor:
         """Returns the color of the given color stop index.
@@ -224,8 +215,9 @@ class EditableColormap(QwtLinearColorMap):
         Returns:
             Color of the given color stop index.
         """
-        index = min(index, len(self.stops))
-        return QG.QColor(self.stops[index].rgb)
+        index = min(index, len(self.colorStops()))
+        cstop: ColorStop = self.colorStops()[index]
+        return QG.QColor(cstop.rgb)
 
 
 class ColorMapWidget(QW.QWidget):
@@ -293,7 +285,7 @@ class ColorMapWidget(QW.QWidget):
             self._colormap = EditableColormap(color1, color2)
         else:
             self._colormap = colormap
-            self.set_handles_values(colormap.colorStops())
+            self.set_handles_values(colormap.color_stop_values)
 
         self.colortable = self._colormap.colorTable(self.qwt_color_interval)
 
@@ -324,9 +316,8 @@ class ColorMapWidget(QW.QWidget):
         Args:
             colormap: replacement colormap
         """
-        new_values = colormap.colorStops()
         self._colormap = colormap
-        self.set_handles_values(new_values)
+        self.set_handles_values(colormap.color_stop_values)
         self.COLORMAP_CHANGED.emit()
 
     def get_colormap(self) -> EditableColormap:
@@ -426,7 +417,7 @@ class ColorMapWidget(QW.QWidget):
             new_color = QG.QColor(self.colortable[new_color])
 
         self._colormap.move_color_stop(index, new_pos, new_color)
-        self.set_handles_values(self._colormap.colorStops())
+        self.set_handles_values(self._colormap.color_stop_values)
         self.COLORMAP_CHANGED.emit()
 
     def _edit_color_map_on_slider_change(self, raw_values: tuple[float, ...]) -> None:

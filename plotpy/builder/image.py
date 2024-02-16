@@ -168,8 +168,8 @@ class ImageBuilder:
             filename: image filename. Default is None
             title: image title. Default is None
             alpha_function: function for LUT alpha channel.
-             Default is :py:attr:`.LUTAlpha.NONE`
-             (valid string values are 'none', 'constant', 'linear', 'sigmoid', 'tanh')
+             Default is :py:attr:`.LUTAlpha.NONE` (valid string values are 'none',
+             'constant', 'linear', 'sigmoid', 'tanh' and 'step')
             alpha: alpha value. Default is None
             background_color: background color name. Default is None
             colormap: colormap name. Default is None
@@ -317,8 +317,8 @@ class ImageBuilder:
             filename: image filename. Default is None
             title: image title. Default is None
             alpha_function: function for LUT alpha channel.
-             Default is :py:attr:`.LUTAlpha.NONE`
-             (valid string values are 'none', 'constant', 'linear', 'sigmoid', 'tanh')
+             Default is :py:attr:`.LUTAlpha.NONE` (valid string values are 'none',
+             'constant', 'linear', 'sigmoid', 'tanh' and 'step')
             alpha: alpha value. Default is 1.0
             xdata: x data. Default is [None, None]
             ydata: y data. Default is [None, None]
@@ -445,8 +445,8 @@ class ImageBuilder:
             mask: mask. Default is None
             title: image title. Default is None
             alpha_function: function for LUT alpha channel.
-             Default is :py:attr:`.LUTAlpha.NONE`
-             (valid string values are 'none', 'constant', 'linear', 'sigmoid', 'tanh')
+             Default is :py:attr:`.LUTAlpha.NONE` (valid string values are 'none',
+             'constant', 'linear', 'sigmoid', 'tanh' and 'step')
             alpha: alpha value. Default is 1.0
             background_color: background color. Default is None
             colormap: colormap. Default is None
@@ -519,8 +519,8 @@ class ImageBuilder:
             filename: filename. Default is None
             title: image title. Default is None
             alpha_function: function for LUT alpha channel.
-             Default is :py:attr:`.LUTAlpha.NONE`
-             (valid string values are 'none', 'constant', 'linear', 'sigmoid', 'tanh')
+             Default is :py:attr:`.LUTAlpha.NONE` (valid string values are 'none',
+             'constant', 'linear', 'sigmoid', 'tanh' and 'step')
             alpha: alpha value. Default is 1.0
             xdata: x data. Default is [None, None]
             ydata: y data. Default is [None, None]
@@ -584,8 +584,8 @@ class ImageBuilder:
             Z: data
             title: image title. Default is None
             alpha_function: function for LUT alpha channel.
-             Default is :py:attr:`.LUTAlpha.NONE`
-             (valid string values are 'none', 'constant', 'linear', 'sigmoid', 'tanh')
+             Default is :py:attr:`.LUTAlpha.NONE` (valid string values are 'none',
+             'constant', 'linear', 'sigmoid', 'tanh' and 'step')
             alpha: alpha value. Default is None
             colormap: colormap. Default is None
             interpolation: interpolation method. Default is 'linear'
@@ -662,8 +662,8 @@ class ImageBuilder:
             filename: filename. Default is None
             title: image title. Default is None
             alpha_function: function for LUT alpha channel.
-             Default is :py:attr:`.LUTAlpha.NONE`
-             (valid string values are 'none', 'constant', 'linear', 'sigmoid', 'tanh')
+             Default is :py:attr:`.LUTAlpha.NONE` (valid string values are 'none',
+             'constant', 'linear', 'sigmoid', 'tanh' and 'step')
             alpha: alpha value. Default is None
             background_color: background color. Default is None
             colormap: colormap. Default is None
@@ -743,8 +743,8 @@ class ImageBuilder:
             data: data
             title: image title. Default is None
             alpha_function: function for LUT alpha channel.
-             Default is :py:attr:`.LUTAlpha.NONE`
-             (valid string values are 'none', 'constant', 'linear', 'sigmoid', 'tanh')
+             Default is :py:attr:`.LUTAlpha.NONE` (valid string values are 'none',
+             'constant', 'linear', 'sigmoid', 'tanh' and 'step')
             alpha: alpha value. Default is None
             background_color: background color. Default is None
             colormap: colormap. Default is None

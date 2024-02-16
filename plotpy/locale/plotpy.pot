@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-02-08 11:05+0100\n"
+"POT-Creation-Date: 2024-02-16 09:47+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -48,7 +48,7 @@ msgstr ""
 #: plotpy\builder\image.py:373 plotpy\builder\image.py:472
 #: plotpy\builder\image.py:537 plotpy\builder\image.py:597
 #: plotpy\builder\image.py:686 plotpy\builder\image.py:762
-#: plotpy\items\image\base.py:1194 plotpy\items\image\image_items.py:90
+#: plotpy\items\image\base.py:1200 plotpy\items\image\image_items.py:90
 #: plotpy\items\image\image_items.py:512 plotpy\items\image\image_items.py:755
 #: plotpy\items\image\masked.py:433 plotpy\items\image\masked.py:603
 #: plotpy\items\image\misc.py:217 plotpy\items\image\transform.py:74
@@ -111,24 +111,32 @@ msgstr ""
 msgid "Parameters..."
 msgstr ""
 
-#: plotpy\constants.py:116 plotpy\styles\base.py:135
+#: plotpy\constants.py:120 plotpy\styles\base.py:135
 msgid "None"
 msgstr ""
 
-#: plotpy\constants.py:117
+#: plotpy\constants.py:121
 msgid "Constant"
 msgstr ""
 
-#: plotpy\constants.py:118
+#: plotpy\constants.py:122
 msgid "Linear"
 msgstr ""
 
-#: plotpy\constants.py:119
+#: plotpy\constants.py:123
 msgid "Sigmoid"
 msgstr ""
 
-#: plotpy\constants.py:120
+#: plotpy\constants.py:124
 msgid "Hyperbolic tangent"
+msgstr ""
+
+#: plotpy\constants.py:125
+msgid "Step"
+msgstr ""
+
+#: plotpy\constants.py:131
+msgid "Alpha function applied to the Look-Up Table (LUT)<br>to control the transparency of the image:<br>(maximum opacity is given by the <b>Global alpha</b> parameter)<br><br><b>None</b>: No alpha function<br><b>Constant</b>: Constant alpha function<br><b>Linear</b>: Linear alpha function<br><b>Sigmoid</b>: Sigmoid alpha function<br><b>Hyperbolic tangent</b>: Hyperbolic tangent alpha function<br><b>Step</b>: Lowest value of the LUT is 100% transparent, other values are opaque"
 msgstr ""
 
 #: plotpy\io.py:157
@@ -206,19 +214,19 @@ msgstr ""
 msgid "Contour"
 msgstr ""
 
-#: plotpy\items\image\base.py:1059
+#: plotpy\items\image\base.py:1065
 msgid "surface = %s"
 msgstr ""
 
-#: plotpy\items\image\base.py:1063
+#: plotpy\items\image\base.py:1069
 msgid "sum = %s"
 msgstr ""
 
-#: plotpy\items\image\base.py:1076
+#: plotpy\items\image\base.py:1082
 msgid "density = %s"
 msgstr ""
 
-#: plotpy\items\image\base.py:1078
+#: plotpy\items\image\base.py:1084
 msgid "density not computed : surface is null !"
 msgstr ""
 
@@ -939,10 +947,6 @@ msgstr ""
 msgid "Alpha function"
 msgstr ""
 
-#: plotpy\styles\image.py:74 plotpy\styles\image.py:158
-msgid "Alpha function applied to the Look-Up Table"
-msgstr ""
-
 #: plotpy\styles\image.py:77 plotpy\styles\image.py:161
 msgid "Global alpha"
 msgstr ""
@@ -952,7 +956,7 @@ msgid "Global alpha value"
 msgstr ""
 
 #: plotpy\styles\image.py:81 plotpy\styles\image.py:164
-#: plotpy\tools\image.py:449
+#: plotpy\tools\image.py:445
 msgid "Colormap"
 msgstr ""
 
@@ -1071,7 +1075,7 @@ msgid "y|max"
 msgstr ""
 
 #: plotpy\styles\image.py:367 plotpy\styles\image.py:372
-#: plotpy\tools\image.py:553
+#: plotpy\tools\image.py:550
 msgid "Mask"
 msgstr ""
 
@@ -1079,7 +1083,7 @@ msgstr ""
 msgid "Filling value"
 msgstr ""
 
-#: plotpy\styles\image.py:369 plotpy\tools\image.py:597
+#: plotpy\styles\image.py:369 plotpy\tools\image.py:594
 msgid "Show image mask"
 msgstr ""
 
@@ -1655,116 +1659,116 @@ msgstr ""
 msgid "Error message:"
 msgstr ""
 
-#: plotpy\tools\image.py:134 plotpy\tools\image.py:136
+#: plotpy\tools\image.py:130 plotpy\tools\image.py:132
 msgid "No available data"
 msgstr ""
 
-#: plotpy\tools\image.py:162 plotpy\tools\image.py:230
+#: plotpy\tools\image.py:158 plotpy\tools\image.py:226
 msgid "Image statistics"
 msgstr ""
 
-#: plotpy\tools\image.py:290
+#: plotpy\tools\image.py:286
 msgid "Reverse Y axis"
 msgstr ""
 
-#: plotpy\tools\image.py:315
+#: plotpy\tools\image.py:311
 msgid "Lock aspect ratio"
 msgstr ""
 
-#: plotpy\tools\image.py:316
+#: plotpy\tools\image.py:312
 msgid "Current value"
 msgstr ""
 
-#: plotpy\tools\image.py:317
+#: plotpy\tools\image.py:313
 msgid "Lock value"
 msgstr ""
 
-#: plotpy\tools\image.py:327 plotpy\tools\image.py:332
+#: plotpy\tools\image.py:323 plotpy\tools\image.py:328
 msgid "Aspect ratio"
 msgstr ""
 
-#: plotpy\tools\image.py:335 plotpy\tools\image.py:828
-#: plotpy\tools\image.py:873
+#: plotpy\tools\image.py:331 plotpy\tools\image.py:825
+#: plotpy\tools\image.py:870
 msgid "Lock"
 msgstr ""
 
-#: plotpy\tools\image.py:338
+#: plotpy\tools\image.py:334
 msgid "1:1"
 msgstr ""
 
-#: plotpy\tools\image.py:341
+#: plotpy\tools\image.py:337
 msgid "Edit..."
 msgstr ""
 
-#: plotpy\tools\image.py:417
+#: plotpy\tools\image.py:413
 msgid "Contrast adjustment"
 msgstr ""
 
-#: plotpy\tools\image.py:450
+#: plotpy\tools\image.py:446
 msgid "Select colormap for active image"
 msgstr ""
 
-#: plotpy\tools\image.py:512
+#: plotpy\tools\image.py:508
 msgid "Colormap: %s"
 msgstr ""
 
-#: plotpy\tools\image.py:555
+#: plotpy\tools\image.py:552
 msgid "Manage image masking areas"
 msgstr ""
 
-#: plotpy\tools\image.py:570
+#: plotpy\tools\image.py:567
 msgid "Mask rectangular area (inside)"
 msgstr ""
 
-#: plotpy\tools\image.py:577
+#: plotpy\tools\image.py:574
 msgid "Mask rectangular area (outside)"
 msgstr ""
 
-#: plotpy\tools\image.py:584
+#: plotpy\tools\image.py:581
 msgid "Mask circular area (inside)"
 msgstr ""
 
-#: plotpy\tools\image.py:591
+#: plotpy\tools\image.py:588
 msgid "Mask circular area (outside)"
 msgstr ""
 
-#: plotpy\tools\image.py:600
+#: plotpy\tools\image.py:597
 msgid "Show masking shapes"
 msgstr ""
 
-#: plotpy\tools\image.py:604
+#: plotpy\tools\image.py:601
 msgid "Apply mask"
 msgstr ""
 
-#: plotpy\tools\image.py:607 plotpy\tools\image.py:804
+#: plotpy\tools\image.py:604 plotpy\tools\image.py:801
 msgid "Clear mask"
 msgstr ""
 
-#: plotpy\tools\image.py:610 plotpy\tools\image.py:683
+#: plotpy\tools\image.py:607 plotpy\tools\image.py:680
 msgid "Remove all masking shapes"
 msgstr ""
 
-#: plotpy\tools\image.py:679
+#: plotpy\tools\image.py:676
 msgid "Do you really want to remove all masking shapes?"
 msgstr ""
 
-#: plotpy\tools\image.py:801
+#: plotpy\tools\image.py:798
 msgid "Do you really want to clear the mask?"
 msgstr ""
 
-#: plotpy\tools\image.py:879
+#: plotpy\tools\image.py:876
 msgid "Unlock"
 msgstr ""
 
-#: plotpy\tools\image.py:903
+#: plotpy\tools\image.py:900
 msgid "Open image"
 msgstr ""
 
-#: plotpy\tools\image.py:928
+#: plotpy\tools\image.py:925
 msgid "Rotation Center"
 msgstr ""
 
-#: plotpy\tools\image.py:1074
+#: plotpy\tools\image.py:1071
 msgid "Rotate and crop"
 msgstr ""
 
@@ -1978,59 +1982,59 @@ msgstr ""
 msgid "Enter a colormap name:"
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:67
+#: plotpy\widgets\colormap\manager.py:68
 msgid "New colormap name cannot contain special characters except underscores (_)."
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:126
+#: plotpy\widgets\colormap\manager.py:127
 msgid "Colormap manager"
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:144
+#: plotpy\widgets\colormap\manager.py:145
 msgid "Select or create a colormap"
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:145
+#: plotpy\widgets\colormap\manager.py:146
 msgid "Colormap presets:"
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:146
+#: plotpy\widgets\colormap\manager.py:147
 msgid "Create new colormap"
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:160
+#: plotpy\widgets\colormap\manager.py:161
 msgid "Edit the selected colormap"
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:263
+#: plotpy\widgets\colormap\manager.py:264
 msgid "Name <b>%s</b> is already used by a default colormap, and cannot be used for a custom colormap.<br><br>Please choose another name."
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:275
+#: plotpy\widgets\colormap\manager.py:276
 msgid "Name <b>%s</b> is already used by a custom colormap.<br><br>Do you want to overwrite it?"
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:291
+#: plotpy\widgets\colormap\manager.py:292
 msgid "New"
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:306
+#: plotpy\widgets\colormap\manager.py:307
 msgid "Save colormap"
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:308
+#: plotpy\widgets\colormap\manager.py:309
 msgid "New colormap"
 msgstr ""
 
-#: plotpy\widgets\colormap\widget.py:311
+#: plotpy\widgets\colormap\widget.py:303
 msgid "Right click to add/remove a color"
 msgstr ""
 
-#: plotpy\widgets\colormap\widget.py:552
+#: plotpy\widgets\colormap\widget.py:543
 msgid "Add new color"
 msgstr ""
 
-#: plotpy\widgets\colormap\widget.py:558
+#: plotpy\widgets\colormap\widget.py:549
 msgid "Remove color"
 msgstr ""
 
