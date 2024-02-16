@@ -9,7 +9,11 @@ from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
 from plotpy.constants import SHAPE_Z_OFFSET
-from plotpy.events import RectangularSelectionHandler, setup_standard_tool_filter
+from plotpy.events import (
+    RectangularSelectionHandler,
+    StatefulEventFilter,
+    setup_standard_tool_filter,
+)
 from plotpy.items.shape.rectangle import RectangleShape
 
 
@@ -442,7 +446,7 @@ class RectangularActionTool(InteractiveTool):
         handler.SIG_END_RECT.connect(self.end_rect)
         return setup_standard_tool_filter(filter, start_state)
 
-    def end_rect(self, filter, p0, p1):
+    def end_rect(self, filter: StatefulEventFilter, p0: QC.QPointF, p1: QC.QPointF):
         """
 
         :param filter:

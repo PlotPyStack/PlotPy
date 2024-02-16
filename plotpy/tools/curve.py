@@ -26,11 +26,11 @@ from plotpy.events import (
 from plotpy.interfaces import ICurveItemType
 from plotpy.items import Marker, XRangeSelection
 from plotpy.items.curve.base import CurveItem
+from plotpy.plot.base import BasePlot
 from plotpy.tools.base import DefaultToolbarID, InteractiveTool, ToggleTool
 from plotpy.tools.cursor import BaseCursorTool
 
 if TYPE_CHECKING:
-    from plotpy.plot.base import BasePlot
     from plotpy.plot.manager import PlotManager
 
 
@@ -618,7 +618,7 @@ class SelectPointsTool(InteractiveTool):
 
         return label_cb
 
-    def get_coordinates(self) -> tuple[tuple[float, float], ...] | None:
+    def get_coordinates(self) -> tuple[tuple[float, float], ...]:
         """Get all selected coordinates"""
         return tuple(self.markers.keys())
 
