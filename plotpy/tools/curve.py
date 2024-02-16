@@ -845,7 +845,9 @@ class EditPointTool(InteractiveTool):
         param.set_max_index(self.__x.size - 1)
         param.index = self.__idx
         param.value = self.__y[self.__idx - 1 : self.__idx + 1].mean()
-        param.edit()
+
+        if not param.edit():
+            return
 
         insertion_index: int = param.index + param.index_offset  # type: ignore
         new_x: float = self.__x[insertion_index - 1 : insertion_index + 1].mean()
