@@ -233,6 +233,11 @@ def test_edit_point_tool():
         new_x, new_y = curve_item.get_data()
         assert len(new_x) == len(orig_x) + 1 and len(new_y) == len(orig_y) + 1
 
+        tool.reset_arrays()
+        assert tool.get_changes() == {}
+        x_arr, y_arr = curve_item.get_data()
+        assert np.in1d(x_arr, orig_x).all() and np.in1d(y_arr, orig_y).all()
+
         exec_dialog(win)
 
 
