@@ -38,7 +38,7 @@ def test_imagesuperp():
         image1 = make.image(filename=filename, title="Original", colormap="gray")
         data2 = np.array(image1.data[:, :150], copy=True)
         data2[:100] = data2[-100:] = 0
-        image2 = make.image(data2, title="Modified", alpha_function="tanh")
+        image2 = make.image(data2, title="Modified", alpha_function="step")
         plot = win.manager.get_plot()
         plot.add_item(image1, z=0)
         plot.add_item(image2, z=1)

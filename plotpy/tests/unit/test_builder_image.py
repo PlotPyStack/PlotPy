@@ -57,6 +57,7 @@ def _make_image(
         LUTAlpha.LINEAR,
         LUTAlpha.SIGMOID,
         LUTAlpha.TANH,
+        LUTAlpha.STEP,
     ],
 )
 def test_builder_image_alpha_function(alpha_function):

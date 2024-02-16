@@ -102,6 +102,9 @@ class LUTAlpha(enum.Enum):
     #: Hyperbolic tangent alpha function
     TANH = 4
 
+    #: Transparent lowest value and opaque highest value
+    STEP = 5
+
     @classmethod
     def get_member_from_name(cls: type["LUTAlpha"], name: str) -> "LUTAlpha|None":
         """Return the member of the enum from its name"""
@@ -110,7 +113,8 @@ class LUTAlpha(enum.Enum):
                 return member
         return None
 
-    def get_choices(self):
+    @classmethod
+    def get_choices(cls: type["LUTAlpha"]) -> list[tuple[int, str]]:
         """Return the list of choices"""
         return [
             (LUTAlpha.NONE.value, _("None")),
@@ -118,7 +122,24 @@ class LUTAlpha(enum.Enum):
             (LUTAlpha.LINEAR.value, _("Linear")),
             (LUTAlpha.SIGMOID.value, _("Sigmoid")),
             (LUTAlpha.TANH.value, _("Hyperbolic tangent")),
+            (LUTAlpha.STEP.value, _("Step")),
         ]
+
+    @classmethod
+    def get_help(cls: type["LUTAlpha"]) -> str:
+        """Return tooltip help for all alpha functions"""
+        return _(
+            "Alpha function applied to the Look-Up Table (LUT)<br>"
+            "to control the transparency of the image:<br>"
+            "(maximum opacity is given by the <b>Global alpha</b> parameter)<br><br>"
+            "<b>None</b>: No alpha function<br>"
+            "<b>Constant</b>: Constant alpha function<br>"
+            "<b>Linear</b>: Linear alpha function<br>"
+            "<b>Sigmoid</b>: Sigmoid alpha function<br>"
+            "<b>Hyperbolic tangent</b>: Hyperbolic tangent alpha function<br>"
+            "<b>Step</b>: Lowest value of the LUT is 100% transparent, other "
+            "values are opaque"
+        )
 
 
 # Lookup table size

@@ -2,7 +2,18 @@
 
 ## Version 2.1.2 ##
 
-Compatibility with PythonQwt 0.12.
+New features:
+
+* Added `Echelon` alpha function to the image parameters:
+  * The `Echelon` alpha function is a step function, so that the alpha channel is
+    0 (full transparency) for the lowest value of the Lookup Table (LUT) and opaque
+    (transparency level set by the `Global alpha` parameter) for the other values
+  * This feature is added to the other existing alpha functions: `Constant`, `Linear`,
+    `Sigmoid`, and `Hyperbolic tangent`
+
+Bug fixes:
+
+* Compatibility with PythonQwt 0.12.
 
 ## Version 2.1.1 ##
 
