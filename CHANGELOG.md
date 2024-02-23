@@ -1,5 +1,19 @@
 # Changelog #
 
+## Version 2.2.0 ##
+
+New features:
+
+* Added `SIG_ITEM_PARAMETERS_CHANGED` signal to `BasePlot` class:
+  * This signal is emitted when the parameters of an item are changed using the
+    parameters dialog, or a specific tool (e.g. the colormap selection tool,
+    or the lock/unlock tool for image items)
+  * This signal is emitted with the item as argument
+  * It is often emitted before the `SIG_ITEMS_CHANGED` signal, which is global to all
+    items, but not necessarily. For example, when the colormap of an image is changed,
+    the `SIG_ITEM_PARAMETERS_CHANGED` signal is emitted for the image item, but the
+    `SIG_ITEMS_CHANGED` signal is not emitted.
+
 ## Version 2.1.2 ##
 
 New features:

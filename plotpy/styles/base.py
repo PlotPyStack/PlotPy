@@ -274,6 +274,7 @@ class ItemParameters:
         """
         for item in self.items:
             item.set_item_parameters(self)
+            plot.SIG_ITEM_PARAMETERS_CHANGED.emit(item)
         plot.replot()
         plot.SIG_ITEMS_CHANGED.emit(plot)
 

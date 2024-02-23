@@ -285,7 +285,7 @@ class ReverseYAxisTool(ToggleTool):
     def __init__(self, manager: PlotManager) -> None:
         super().__init__(manager, _("Reverse Y axis"))
 
-    def activate_command(self, plot: PlotManager, checked: bool) -> None:
+    def activate_command(self, plot: BasePlot, checked: bool) -> None:
         """Triggers tool action.
 
         Args:
@@ -295,7 +295,7 @@ class ReverseYAxisTool(ToggleTool):
         plot.set_axis_direction("left", checked)
         plot.replot()
 
-    def update_status(self, plot: PlotManager) -> None:
+    def update_status(self, plot: BasePlot) -> None:
         """Update tool status if the plot type is not PlotType.CURVE.
 
         Args:
@@ -346,7 +346,7 @@ class AspectRatioTool(CommandTool):
             plot.set_aspect_ratio(ratio=1)
             plot.replot()
 
-    def activate_command(self, plot: PlotManager, checked: bool) -> None:
+    def activate_command(self, plot: BasePlot, checked: bool) -> None:
         """Triggers tool action.
 
         Args:
@@ -499,16 +499,16 @@ class ColormapTool(CommandTool):
             self._active_colormap = get_cmap(cmap)
         else:
             self._active_colormap = cmap
-        plot = self.get_active_plot()
+        plot: BasePlot = self.get_active_plot()
         if self._active_colormap is not None and plot is not None:
             items = self.get_selected_images(plot)
             for item in items:
                 item.param.colormap = self._active_colormap.name
                 item.param.update_item(item)
+                plot.SIG_ITEM_PARAMETERS_CHANGED.emit(item)
             self.action.setText(_("Colormap: %s") % self._active_colormap.name)
             plot.invalidate()
             self.update_status(plot)
-            plot.SIG_ITEMS_CHANGED.emit(plot)
 
     def update_status(self, plot: BasePlot) -> None:
         """Update tool status if the plot type is not PlotType.CURVE.
@@ -825,7 +825,7 @@ class LockTrImageTool(ToggleTool):
             manager, title=_("Lock"), icon=get_icon("lock.png"), toolbar_id=None
         )
 
-    def activate_command(self, plot: PlotManager, checked: bool) -> None:
+    def activate_command(self, plot: BasePlot, checked: bool) -> None:
         """Trigger tool action.
 
         Args:
@@ -840,6 +840,7 @@ class LockTrImageTool(ToggleTool):
                     item.setIcon(get_icon("trimage_lock.png"))
                 else:
                     item.setIcon(get_icon("image.png"))
+                plot.SIG_ITEM_PARAMETERS_CHANGED.emit(item)
             plot.SIG_ITEMS_CHANGED.emit(plot)
 
     def get_supported_items(self, plot: BasePlot) -> list[IBasePlotItem | TrImageItem]:

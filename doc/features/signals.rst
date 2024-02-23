@@ -24,6 +24,7 @@ Signals emitted by :py:class:`.BasePlot` objects:
 - :py:attr:`.BasePlot.SIG_ANNOTATION_CHANGED`
 - :py:attr:`.BasePlot.SIG_RANGE_CHANGED`
 - :py:attr:`.BasePlot.SIG_ITEMS_CHANGED`
+- :py:attr:`.BasePlot.SIG_ITEM_PARAMETERS_CHANGED`
 - :py:attr:`.BasePlot.SIG_ACTIVE_ITEM_CHANGED`
 - :py:attr:`.BasePlot.SIG_ITEM_REMOVED`
 - :py:attr:`.BasePlot.SIG_ITEM_SELECTION_CHANGED`

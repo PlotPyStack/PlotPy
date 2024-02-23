@@ -229,6 +229,13 @@ class BasePlot(qwt.QwtPlot):
     #:     plot: the plot
     SIG_ITEMS_CHANGED = QC.Signal(object)
 
+    #: Signal emitted by plot when item parameters have changed (through the item's
+    #: parameters dialog, or when setting colormap using the dedicated tool)
+    #:
+    #: Args:
+    #:     item: the item
+    SIG_ITEM_PARAMETERS_CHANGED = QC.Signal(object)
+
     #: Signal emitted by plot when selected item has changed
     #:
     #: Args:
