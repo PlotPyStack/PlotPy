@@ -858,7 +858,6 @@ class EditPointTool(InteractiveTool):
                 0, QC.QPointF(*new_pos)  # type: ignore
             )
 
-
     def __get_plot(self, filter: StatefulEventFilter) -> BasePlot:
         """Get plot. Simple method to avoid type checking errors
 
@@ -953,7 +952,10 @@ class EditPointTool(InteractiveTool):
             self.__current_location_marker = self.__get_current_marker(filter)
             self.__current_location_marker.move_local_point_to(0, event.pos())
             x_value = self.__current_location_marker.xValue()
-            self.__dsampled_idx = int(np.searchsorted(self.downsampled_x, x_value))
+            self.__dsampled_idx = min(
+                int(np.searchsorted(self.downsampled_x, x_value)),
+                len(self.downsampled_x) - 1,
+            )
             self.__idx = self.__dsampled_idx * self.__dsampling  # type: ignore
             self.__lower_upper_x_bounds = self.__get_x_bounds(curve_x, self.__idx)
             self.__selection_threshold = self.__get_selection_threshold(filter)
