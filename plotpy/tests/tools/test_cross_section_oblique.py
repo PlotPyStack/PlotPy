@@ -7,6 +7,8 @@
 
 # guitest: show
 
+from __future__ import annotations
+
 from plotpy.panels.csection.csitem import ObliqueCrossSectionItem
 from plotpy.panels.csection.cswidget import ObliqueCrossSection
 from plotpy.tests.tools import test_cross_section_line

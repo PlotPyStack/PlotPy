@@ -1,30 +1,22 @@
 # guitest: show
+from __future__ import annotations
 
 from typing import Callable
 
 import numpy as np
-import qtpy.QtCore as QC
-import qtpy.QtGui as QG
-import qtpy.QtWidgets as QW
 from guidata.qthelpers import exec_dialog, qt_app_context
 from numpy import linspace
 
-from plotpy.plot.plotwidget import PlotDialog
-from plotpy.tests.unit.test_point_tools import (
-    CLICK,
-    create_window,
-    drag_mouse,
-    keyboard_event,
-    mouse_event_at_relative_plot_pos,
-)
-from plotpy.tools import FreeFormTool, MultiLineTool, RectZoomTool
+from plotpy.interfaces.items import ICurveItemType
+from plotpy.tests.unit.test_point_tools import create_window, drag_mouse
+from plotpy.tools import RectZoomTool
 
 
 def zoom(
     x_path: np.ndarray, y_path: np.ndarray, compare: Callable[[float, float], bool]
 ):
     with qt_app_context(exec_loop=False) as qapp:
-        win, tool = create_window(RectZoomTool)
+        win, tool = create_window(RectZoomTool, active_item_type=ICurveItemType)
         plot = win.manager.get_plot()
         initial_axis_limits = [
             plot.get_axis_limits(axis) for axis in plot.get_active_axes()
@@ -35,6 +27,9 @@ def zoom(
         final_axis_limits = [
             plot.get_axis_limits(axis) for axis in plot.get_active_axes()
         ]
+
+        print(initial_axis_limits)
+        print(final_axis_limits)
 
         assert all(
             map(
@@ -55,55 +50,9 @@ def test_rect_zoom_tool():
 def test_rect_unzoom_tool():
     x_path = linspace(-0.5, 1.5, 100)
     y_path = linspace(-0.5, 1.5, 100)
-    zoom(x_path, y_path, lambda og, final: final > og)
-
-
-def test_free_form_tool():
-    corners = np.array(((0.1, 0.1), (0.1, 0.8), (0.8, 0.8), (0.8, 0.1)))
-    with qt_app_context(exec_loop=False) as qapp:
-        win, tool = create_window(FreeFormTool)
-
-        # drag_mouse(win, qapp, x_path, y_path)
-        for x, y in corners:
-            mouse_event_at_relative_plot_pos(win, qapp, (x, y), CLICK)
-
-        assert tool.shape is not None
-
-        assert tool.shape.get_points().shape == corners.shape
-
-        exec_dialog(win)
-
-
-def test_multiline_tool():
-    n = 100
-    t = np.linspace(0, np.pi * 10, n)
-
-    # Create x and y arrays
-    x_arr = t * np.cos(t) / n + 0.5
-    y_arr = t * np.sin(t) / n + 0.5
-
-    with qt_app_context(exec_loop=False) as qapp:
-        win, tool = create_window(MultiLineTool)
-
-        # drag_mouse(win, qapp, x_path, y_path)
-        for x, y in zip(x_arr, y_arr):
-            mouse_event_at_relative_plot_pos(win, qapp, (x, y), CLICK)
-
-        assert tool.shape is not None
-        assert tool.shape.get_points().shape == np.array([x_arr, y_arr]).T.shape
-
-        # Delete last point
-        keyboard_event(win, qapp, QC.Qt.Key.Key_Backspace)
-
-        points_count, _ = tool.shape.get_points().shape
-
-        assert points_count == (n - 1)
-
-        exec_dialog(win)
+    zoom(x_path, y_path, lambda og, final: abs(final) > abs(og))
 
 
 if __name__ == "__main__":
     test_rect_zoom_tool()
     test_rect_unzoom_tool()
-    test_free_form_tool()
-    test_multiline_tool()

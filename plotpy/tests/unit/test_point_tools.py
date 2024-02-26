@@ -1,30 +1,35 @@
 # guitest: show
+from __future__ import annotations
 
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING, TypeVar, Union
 
 import numpy as np
 import qtpy.QtCore as QC
 import qtpy.QtGui as QG
 import qtpy.QtWidgets as QW
 from guidata.qthelpers import exec_dialog, qt_app_context
-from numpy import linspace, sin
 
-from plotpy.builder import make
-from plotpy.interfaces.items import ICurveItemType
+from plotpy.interfaces.items import ICurveItemType, IItemType
+from plotpy.panels.base import PanelWidget
 from plotpy.plot.plotwidget import PlotDialog, PlotWindow
 from plotpy.tests import vistools as ptv
+from plotpy.tests.features.test_auto_curve_image import make_curve_image_legend
 from plotpy.tools import (
+    CommandTool,
     EditPointTool,
     InteractiveTool,
     SelectPointsTool,
     SelectPointTool,
 )
+from plotpy.tools.curve import DownSamplingTool
 
 if TYPE_CHECKING:
+
     from plotpy.items.curve.base import CurveItem
+    from plotpy.items.image.base import BaseImageItem
 
 CLICK = (QC.QEvent.Type.MouseButtonPress, QC.QEvent.Type.MouseButtonRelease)
-ToolT = TypeVar("ToolT", bound=InteractiveTool)
+ToolT = TypeVar("ToolT", bound=Union[InteractiveTool, CommandTool])
 
 
 def keyboard_event(
@@ -77,7 +82,7 @@ def mouse_event_at_relative_plot_pos(
     size = canva.size()
     pos_x, pos_y = (
         relative_xy[0] * size.width(),
-        size.height() - relative_xy[1] * size.height(),
+        relative_xy[1] * size.height(),
     )
     # pos_x, pos_y = axes_to_canvas(plot.get_active_item(), x, y)
     canva_pos = QC.QPointF(pos_x, pos_y).toPoint()
@@ -97,11 +102,12 @@ def mouse_event_at_relative_plot_pos(
 
 
 def drag_mouse(
-    win: PlotDialog,
+    win: PlotWindow,
     qapp: QW.QApplication,
     x_path: np.ndarray,
     y_path: np.ndarray,
     mod=QC.Qt.KeyboardModifier.NoModifier,
+    click=True,
 ) -> None:
     x0, y0 = x_path[0], y_path[0]
     xn, yn = x_path[-1], y_path[-1]
@@ -109,25 +115,31 @@ def drag_mouse(
     move = (QC.QEvent.Type.MouseMove,)
     release = (QC.QEvent.Type.MouseButtonRelease,)
 
-    mouse_event_at_relative_plot_pos(win, qapp, (x0, y0), press, mod)
+    if click:
+        mouse_event_at_relative_plot_pos(win, qapp, (x0, y0), press, mod)
     for x, y in zip(x_path, y_path):
         mouse_event_at_relative_plot_pos(win, qapp, (x, y), move, mod)
-    mouse_event_at_relative_plot_pos(win, qapp, (xn, yn), release, mod)
+    if click:
+        mouse_event_at_relative_plot_pos(win, qapp, (xn, yn), release, mod)
 
 
-def create_window(tool_class: type[ToolT]) -> tuple[PlotWindow, ToolT]:
-    n = 100
-    x = linspace(
-        0,
-        n,
-    )
-    y = (sin(sin(sin(x / (n / 10)))) - 1) * -n
-    curve = make.curve(x, y, color="b")
-    win = ptv.show_items(
-        [curve], wintitle="Unit tests for Point tools", auto_tools=False
-    )
+def create_window(
+    tool_class: type[ToolT],
+    active_item_type: type[IItemType] = ICurveItemType,
+    panels: list[type[PanelWidget]] | None = None,
+) -> tuple[PlotWindow, ToolT]:
+
+    items: list[CurveItem | BaseImageItem] = make_curve_image_legend()
+    win = ptv.show_items(items, wintitle="Unit test plot", auto_tools=False)
     plot = win.manager.get_plot()
-    plot.set_active_item(curve)  # type: ignore
+    for item in win.manager.get_plot().get_items()[::-1]:
+        plot.set_active_item(item)
+    last_active_item = plot.get_last_active_item(active_item_type)
+    plot.set_active_item(last_active_item)
+
+    if panels is not None:
+        for panel in panels:
+            win.manager.add_panel(panel())
 
     tool = win.manager.add_tool(tool_class)
     tool.activate()
@@ -137,7 +149,6 @@ def create_window(tool_class: type[ToolT]) -> tuple[PlotWindow, ToolT]:
 def test_free_select_point_tool():
     with qt_app_context(exec_loop=False) as qapp:
         win, tool = create_window(SelectPointTool)
-
         mouse_event_at_relative_plot_pos(
             win,
             qapp,
@@ -189,7 +200,7 @@ def test_select_points_tool():
 def test_edit_point_tool():
     with qt_app_context(exec_loop=False) as qapp:
         win, tool = create_window(EditPointTool)
-        curve_item: CurveItem = win.manager.get_plot().get_last_active_item(ICurveItemType)  # type: ignore
+        curve_item: CurveItem = win.manager.get_plot().get_active_item()  # type: ignore
         orig_x, orig_y = curve_item.get_data()
 
         assert orig_x is not None and orig_y is not None
@@ -197,7 +208,14 @@ def test_edit_point_tool():
 
         assert tool is not None
 
-        n = 100
+        # must activate downsampling because the curve is too dense so the selection
+        # distance threshold is too small for the programmed drag to select the first
+        # point
+        curve_item.param.dsamp_factor = 20
+        win.manager.add_tool(DownSamplingTool).activate()
+        # The steps must be very small to ensure the mouse passes close
+        # enough to the first point of the curve to move it (distance < threshold)
+        n = 1000
         min_v, max_v = 0, 1
         x_path = np.full(n, min_v)
         y_path = np.linspace(max_v, min_v, n)
@@ -206,7 +224,6 @@ def test_edit_point_tool():
         x_path = np.full(n, max_v)
 
         drag_mouse(win, qapp, x_path, y_path)
-
         curve_changes = tool.get_changes()[curve_item]
         for i, (x, y) in curve_changes.items():
             x_arr, y_arr = curve_item.get_data()

@@ -6,6 +6,7 @@
 """Line cross section test"""
 
 # guitest: show
+from __future__ import annotations
 
 from guidata.qthelpers import qt_app_context
 
