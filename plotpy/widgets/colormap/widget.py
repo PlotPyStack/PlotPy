@@ -227,6 +227,14 @@ class EditableColormap(QwtLinearColorMap):
         index = min(index, len(self.stops))
         return QG.QColor(self.stops[index].rgb)
 
+    def stop_values(self) -> list[float]:
+        """Returns the color stops values as a list of floats.
+
+        Returns:
+            List of color stops values.
+        """
+        return [stop.pos for stop in self.stops]
+
 
 class ColorMapWidget(QW.QWidget):
     """Simple colormap widget containing a horizontal slider and a colorbar image.
@@ -293,7 +301,7 @@ class ColorMapWidget(QW.QWidget):
             self._colormap = EditableColormap(color1, color2)
         else:
             self._colormap = colormap
-            self.set_handles_values(colormap.colorStops())
+            self.set_handles_values(colormap.stop_values())
 
         self.colortable = self._colormap.colorTable(self.qwt_color_interval)
 
@@ -324,7 +332,7 @@ class ColorMapWidget(QW.QWidget):
         Args:
             colormap: replacement colormap
         """
-        new_values = colormap.colorStops()
+        new_values = colormap.stop_values()
         self._colormap = colormap
         self.set_handles_values(new_values)
         self.COLORMAP_CHANGED.emit()
@@ -426,7 +434,7 @@ class ColorMapWidget(QW.QWidget):
             new_color = QG.QColor(self.colortable[new_color])
 
         self._colormap.move_color_stop(index, new_pos, new_color)
-        self.set_handles_values(self._colormap.colorStops())
+        self.set_handles_values(self._colormap.stop_values())
         self.COLORMAP_CHANGED.emit()
 
     def _edit_color_map_on_slider_change(self, raw_values: tuple[float, ...]) -> None:
