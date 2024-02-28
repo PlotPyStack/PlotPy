@@ -10,6 +10,7 @@ from plotpy.tools import ObliqueCrossSectionTool
 
 
 def test_oblique_cross_section():
+    """Test the oblique cross section tool."""
     with qt_app_context(exec_loop=False) as qapp:
         win, tool = create_window(
             ObliqueCrossSectionTool,

@@ -102,6 +102,17 @@ def drag_mouse(
     mod=QC.Qt.KeyboardModifier.NoModifier,
     click=True,
 ) -> None:
+    """Simulates a mouse drag on the plot.
+
+    Args:
+        win: window containing the plot
+        qapp: QApplication instance
+        x_path: relative x plot coordinates of the path to simulate the mouse drag along
+        y_path: relative y plot coordinates of the path to simulate the mouse drag along
+        mod: keyboard modifier. Defaults to QC.Qt.KeyboardModifier.NoModifier.
+        click: Whether a click must be simulated (mouse hold -> drag -> mouse release).
+         Defaults to True.
+    """
     x0, y0 = x_path[0], y_path[0]
     xn, yn = x_path[-1], y_path[-1]
     press = (QC.QEvent.Type.MouseButtonPress,)
@@ -121,7 +132,18 @@ def create_window(
     active_item_type: type[IItemType] = ICurveItemType,
     panels: list[type[PanelWidget]] | None = None,
 ) -> tuple[PlotWindow, ToolT]:
+    """Create a window with the given tool. The plot contains a curve, an image and a
+     legend.
 
+    Args:
+        tool_class: tool class to add to the window.
+        active_item_type: Type of Item to set to active (curve or image).
+         Defaults to ICurveItemType.
+        panels: PanelWidget classes to add. Defaults to None.
+
+    Returns:
+        The window containing the activated tool and the tool instance itself.
+    """
     items: list[CurveItem | BaseImageItem] = make_curve_image_legend()
     win = ptv.show_items(items, wintitle="Unit test plot", auto_tools=False)
     plot = win.manager.get_plot()

@@ -22,6 +22,7 @@ if TYPE_CHECKING:
 
 
 def test_free_select_point_tool():
+    """Test the free select point tool."""
     with qt_app_context(exec_loop=False) as qapp:
         win, tool = create_window(SelectPointTool)
         mouse_event_at_relative_plot_pos(
@@ -35,20 +36,29 @@ def test_free_select_point_tool():
 
 
 def test_contrained_select_point_tool():
+    """Test the constrained select point tool contrained to a CurveItem."""
     with qt_app_context(exec_loop=False) as qapp:
         win, tool = create_window(SelectPointTool)
         tool.on_active_item = True
+
         mouse_event_at_relative_plot_pos(
             win,
             qapp,
             (0.5, 0.5),
             CLICK,
         )
-        assert tool.get_coordinates() is not None
+        coor = tool.get_coordinates()
+        curve_item: CurveItem = win.manager.get_plot().get_active_item()  # type: ignore
+        arr_x, arr_y = curve_item.get_data()
+        assert coor is not None
+
+        x, y = coor
+        assert np.where(arr_x == x)[0] == np.where(arr_y == y)[0]
         exec_dialog(win)
 
 
 def test_select_points_tool():
+    """Test the select points tool constrained to a CurveItem."""
     with qt_app_context(exec_loop=False) as qapp:
         win, tool = create_window(tool_class=SelectPointsTool)
         mod = QC.Qt.KeyboardModifier.ControlModifier
@@ -69,10 +79,18 @@ def test_select_points_tool():
         mouse_event_at_relative_plot_pos(win, qapp, (0.1, 0.1), CLICK)
         assert len(tool.get_coordinates() or ()) == 1
 
+        coor = tool.get_coordinates()
+        assert coor is not None
+        x, y = coor[0]
+        curve_item: CurveItem = win.manager.get_plot().get_active_item()  # type: ignore
+        arr_x, arr_y = curve_item.get_data()
+        assert np.where(arr_x == x)[0] == np.where(arr_y == y)[0]
+
         exec_dialog(win)
 
 
 def test_edit_point_tool():
+    """Test the edit point tool for a CurveItem."""
     with qt_app_context(exec_loop=False) as qapp:
         win, tool = create_window(EditPointTool)
         curve_item: CurveItem = win.manager.get_plot().get_active_item()  # type: ignore
@@ -105,9 +123,13 @@ def test_edit_point_tool():
             assert x == x_arr[i]
             assert y == y_arr[i]
 
-        tool.get_arrays()
-        tool.get_initial_arrays()
+        x_arr, y_arr = tool.get_arrays()
+        assert x_arr is not None and y_arr is not None
 
+        x_arr, y_arr = tool.get_initial_arrays()
+        assert x_arr is not None and y_arr is not None
+
+        # Reset the arrays and deletes the changes
         keyboard_event(
             win, qapp, QC.Qt.Key.Key_Z, QC.Qt.KeyboardModifier.ControlModifier
         )

@@ -14,6 +14,16 @@ from plotpy.tools import RectZoomTool
 def zoom(
     x_path: np.ndarray, y_path: np.ndarray, compare: Callable[[float, float], bool]
 ):
+    """Zoom in or out on a plot by sumilating a mouse drag along a defined path.
+
+    Args:
+        x_path: The x relative plot coordinates of the path to simulate the mouse
+         drag along.
+        y_path: The y relative plot coordinates of the path to simulate the mouse
+         drag along.
+        compare: Comparison function to compare the initial and final axis limits to
+         check if the zoom worked as expected.
+    """
     with qt_app_context(exec_loop=False) as qapp:
         win, tool = create_window(RectZoomTool, active_item_type=ICurveItemType)
         plot = win.manager.get_plot()
@@ -41,12 +51,14 @@ def zoom(
 
 
 def test_rect_zoom_tool():
+    """Test the rectangular zoom tool."""
     x_path = linspace(0, 0.5, 100)
     y_path = linspace(0, 0.5, 100)
     zoom(x_path, y_path, lambda og, final: final < og)
 
 
 def test_rect_unzoom_tool():
+    """Test the rectangular zoom tool to unzoom."""
     x_path = linspace(-0.5, 1.5, 100)
     y_path = linspace(-0.5, 1.5, 100)
     zoom(x_path, y_path, lambda og, final: abs(final) > abs(og))

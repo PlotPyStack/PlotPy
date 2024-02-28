@@ -14,6 +14,7 @@ from plotpy.tools import FreeFormTool, MultiLineTool
 
 
 def test_free_form_tool():
+    """Test the free form tool."""
     corners = np.array(((0.1, 0.1), (0.1, 0.8), (0.8, 0.8), (0.8, 0.1)))
     with qt_app_context(exec_loop=False) as qapp:
         win, tool = create_window(FreeFormTool)
@@ -30,6 +31,7 @@ def test_free_form_tool():
 
 
 def test_multiline_tool():
+    """Test the multi line tool."""
     n = 100
     t = np.linspace(0, np.pi * 10, n)
 

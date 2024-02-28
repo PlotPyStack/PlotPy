@@ -9,6 +9,7 @@ from plotpy.tools import AspectRatioTool
 
 
 def test_aspect_ratio_tool():
+    """Test the aspect ratio tool."""
     with qt_app_context(exec_loop=False):
         win, tool = create_window(AspectRatioTool, active_item_type=IImageItemType)
         plot = win.manager.get_plot()
