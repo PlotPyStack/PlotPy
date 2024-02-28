@@ -5,7 +5,7 @@ from guidata.qthelpers import exec_dialog, qt_app_context
 
 from plotpy.interfaces.items import IImageItemType
 from plotpy.panels.csection.cswidget import ObliqueCrossSection
-from plotpy.tests.unit.test_point_tools import create_window, drag_mouse
+from plotpy.tests.unit.utils import create_window, drag_mouse
 from plotpy.tools import ObliqueCrossSectionTool
 
 

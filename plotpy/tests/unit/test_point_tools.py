@@ -1,148 +1,24 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, TypeVar, Union
+from typing import TYPE_CHECKING
 
 import numpy as np
 import qtpy.QtCore as QC
-import qtpy.QtGui as QG
-import qtpy.QtWidgets as QW
 from guidata.qthelpers import exec_dialog, qt_app_context
 
-from plotpy.interfaces.items import ICurveItemType, IItemType
-from plotpy.panels.base import PanelWidget
-from plotpy.plot.plotwidget import PlotDialog, PlotWindow
-from plotpy.tests import vistools as ptv
-from plotpy.tests.features.test_auto_curve_image import make_curve_image_legend
-from plotpy.tools import (
-    CommandTool,
-    EditPointTool,
-    InteractiveTool,
-    SelectPointsTool,
-    SelectPointTool,
+from plotpy.tests.unit.utils import (
+    CLICK,
+    create_window,
+    drag_mouse,
+    keyboard_event,
+    mouse_event_at_relative_plot_pos,
 )
+from plotpy.tools import EditPointTool, SelectPointsTool, SelectPointTool
 from plotpy.tools.curve import DownSamplingTool
 
 if TYPE_CHECKING:
 
     from plotpy.items.curve.base import CurveItem
-    from plotpy.items.image.base import BaseImageItem
-
-CLICK = (QC.QEvent.Type.MouseButtonPress, QC.QEvent.Type.MouseButtonRelease)
-ToolT = TypeVar("ToolT", bound=Union[InteractiveTool, CommandTool])
-
-
-def keyboard_event(
-    win: PlotDialog,
-    qapp: QW.QApplication,
-    key: QC.Qt.Key,
-    mod=QC.Qt.KeyboardModifier.NoModifier,
-):
-    """Simulates a keyboard event on the plot.
-
-    Args:
-        win: window containing the plot
-        qapp: Main QApplication instance
-        key: Key to simulate
-        mod: Keyboard modifier. Defaults to QC.Qt.KeyboardModifier.NoModifier.
-
-    Returns:
-        None
-    """
-    plot = win.manager.get_plot()
-    canva: QW.QWidget = plot.canvas()  # type: ignore
-    key_event = QG.QKeyEvent(QC.QEvent.Type.KeyPress, key, mod)
-    qapp.sendEvent(canva, key_event)
-
-
-def mouse_event_at_relative_plot_pos(
-    win: PlotDialog,
-    qapp: QW.QApplication,
-    relative_xy: tuple[float, float],
-    click_types: tuple[QC.QEvent.Type, ...] = (QC.QEvent.Type.MouseButtonPress,),
-    mod=QC.Qt.KeyboardModifier.NoModifier,
-) -> None:
-    """Simulates a click on the plot at the given relative position.
-
-    Args:
-        win: window containing the plot
-        qapp: Main QApplication instance
-        relative_xy: Relative position of the click on the plot
-        click_types: Different mouse button event types to send.
-         Defaults to (QC.QEvent.Type.MouseButtonPress,).
-        mod: Keyboard modifier. Defaults to QC.Qt.KeyboardModifier.NoModifier.
-
-    Returns:
-        None
-    """
-    plot = win.manager.get_plot()
-
-    plot = win.manager.get_plot()
-    canva: QW.QWidget = plot.canvas()  # type: ignore
-    size = canva.size()
-    pos_x, pos_y = (
-        relative_xy[0] * size.width(),
-        relative_xy[1] * size.height(),
-    )
-    # pos_x, pos_y = axes_to_canvas(plot.get_active_item(), x, y)
-    canva_pos = QC.QPointF(pos_x, pos_y).toPoint()
-    glob_pos = canva.mapToGlobal(canva_pos)
-    # QTest.mouseClick(canva, QC.Qt.MouseButton.LeftButton, mod, canva_pos)
-
-    for type_ in click_types:
-        mouse_event_press = QG.QMouseEvent(
-            type_,
-            canva_pos,
-            glob_pos,
-            QC.Qt.MouseButton.LeftButton,
-            QC.Qt.MouseButton.LeftButton,
-            mod,
-        )
-        qapp.sendEvent(canva, mouse_event_press)
-
-
-def drag_mouse(
-    win: PlotWindow,
-    qapp: QW.QApplication,
-    x_path: np.ndarray,
-    y_path: np.ndarray,
-    mod=QC.Qt.KeyboardModifier.NoModifier,
-    click=True,
-) -> None:
-    x0, y0 = x_path[0], y_path[0]
-    xn, yn = x_path[-1], y_path[-1]
-    press = (QC.QEvent.Type.MouseButtonPress,)
-    move = (QC.QEvent.Type.MouseMove,)
-    release = (QC.QEvent.Type.MouseButtonRelease,)
-
-    if click:
-        mouse_event_at_relative_plot_pos(win, qapp, (x0, y0), press, mod)
-    for x, y in zip(x_path, y_path):
-        mouse_event_at_relative_plot_pos(win, qapp, (x, y), move, mod)
-    if click:
-        mouse_event_at_relative_plot_pos(win, qapp, (xn, yn), release, mod)
-
-
-def create_window(
-    tool_class: type[ToolT],
-    active_item_type: type[IItemType] = ICurveItemType,
-    panels: list[type[PanelWidget]] | None = None,
-) -> tuple[PlotWindow, ToolT]:
-
-    items: list[CurveItem | BaseImageItem] = make_curve_image_legend()
-    win = ptv.show_items(items, wintitle="Unit test plot", auto_tools=False)
-    plot = win.manager.get_plot()
-    for item in win.manager.get_plot().get_items()[::-1]:
-        plot.set_active_item(item)
-    last_active_item = plot.get_last_active_item(active_item_type)
-    plot.set_active_item(last_active_item)
-
-    if panels is not None:
-        for panel in panels:
-            win.manager.add_panel(panel())
-
-    tool = win.manager.add_tool(tool_class)
-    tool.activate()
-    return win, tool
 
 
 def test_free_select_point_tool():

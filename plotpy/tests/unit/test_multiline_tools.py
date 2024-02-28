@@ -4,7 +4,7 @@ import numpy as np
 import qtpy.QtCore as QC
 from guidata.qthelpers import exec_dialog, qt_app_context
 
-from plotpy.tests.unit.test_point_tools import (
+from plotpy.tests.unit.utils import (
     CLICK,
     create_window,
     keyboard_event,

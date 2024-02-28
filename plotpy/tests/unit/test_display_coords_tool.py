@@ -4,7 +4,7 @@ import numpy as np
 from guidata.qthelpers import qt_app_context
 
 from plotpy.interfaces.items import IImageItemType
-from plotpy.tests.unit.test_point_tools import create_window, drag_mouse
+from plotpy.tests.unit.utils import create_window, drag_mouse
 from plotpy.tools import DisplayCoordsTool
 
 

@@ -31,7 +31,7 @@ if TYPE_CHECKING:
     from plotpy.plot.plotwidget import PlotWindow
     from plotpy.tools.base import RectangularActionTool
 
-from plotpy.tests.unit.test_point_tools import drag_mouse
+from plotpy.tests.unit.utils import drag_mouse
 
 P0 = QC.QPointF(10, 10)
 P1 = QC.QPointF(100, 100)

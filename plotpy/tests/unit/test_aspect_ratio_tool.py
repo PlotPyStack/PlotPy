@@ -4,7 +4,7 @@ import qtpy.QtCore as QC
 from guidata.qthelpers import exec_dialog, qt_app_context
 
 from plotpy.interfaces.items import IImageItemType
-from plotpy.tests.unit.test_point_tools import create_window
+from plotpy.tests.unit.utils import create_window
 from plotpy.tools import AspectRatioTool
 
 
