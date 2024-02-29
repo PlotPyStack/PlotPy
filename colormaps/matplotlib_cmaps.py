@@ -1,4 +1,7 @@
-import os
+from __future__ import annotations
+
+import copy
+import sys
 from typing import Callable
 
 import matplotlib.colors as pltc
@@ -8,9 +11,108 @@ import numpy as np
 from plotpy.mathutils.colormap import (
     DEFAULT_COLORMAPS,
     DEFAULT_COLORMAPS_PATH,
+    CmapDictType,
     EditableColormap,
     save_colormaps,
 )
+
+PERCEPTUALLY_UNIFORM_CMAPS = ["viridis", "plasma", "inferno", "magma", "cividis"]
+SEQUENTIAL_CMAPS = [
+    "Greys",
+    "Purples",
+    "Blues",
+    "Greens",
+    "Oranges",
+    "Reds",
+    "YlOrBr",
+    "YlOrRd",
+    "OrRd",
+    "PuRd",
+    "RdPu",
+    "BuPu",
+    "GnBu",
+    "PuBu",
+    "YlGnBu",
+    "PuBuGn",
+    "BuGn",
+    "YlGn",
+]
+SEQUENTIAL_CMAPS2 = [
+    "binary",
+    "gist_yarg",
+    "gist_gray",
+    "gray",
+    "bone",
+    "pink",
+    "spring",
+    "summer",
+    "autumn",
+    "winter",
+    "cool",
+    "Wistia",
+    "hot",
+    "afmhot",
+    "gist_heat",
+    "copper",
+]
+DIVERGING_CMAPS = [
+    "PiYG",
+    "PRGn",
+    "BrBG",
+    "PuOr",
+    "RdGy",
+    "RdBu",
+    "RdYlBu",
+    "RdYlGn",
+    "Spectral",
+    "coolwarm",
+    "bwr",
+    "seismic",
+]
+CYCLIC_CMAPS = ["twilight", "twilight_shifted", "hsv"]
+QUALITATIVE_CMAPS = [
+    "Pastel1",
+    "Pastel2",
+    "Paired",
+    "Accent",
+    "Dark2",
+    "Set1",
+    "Set2",
+    "Set3",
+    "tab10",
+    "tab20",
+    "tab20b",
+    "tab20c",
+]
+MISCELLANEOUS_CMAPS = [
+    "flag",
+    "prism",
+    "ocean",
+    "gist_earth",
+    "terrain",
+    "gist_stern",
+    "gnuplot",
+    "gnuplot2",
+    "CMRmap",
+    "cubehelix",
+    "brg",
+    "gist_rainbow",
+    "rainbow",
+    "jet",
+    "turbo",
+    "nipy_spectral",
+    "gist_ncar",
+]
+
+SORTED_MATPLOTLIB_COLORMAPS: list[str] = [
+    *PERCEPTUALLY_UNIFORM_CMAPS,
+    *SEQUENTIAL_CMAPS,
+    *SEQUENTIAL_CMAPS2,
+    *DIVERGING_CMAPS,
+    *CYCLIC_CMAPS,
+    *QUALITATIVE_CMAPS,
+    *MISCELLANEOUS_CMAPS,
+]
 
 
 def rgb_colors_to_hex_list(
@@ -112,7 +214,6 @@ def continuous_to_descrete_cmap(cmap: EditableColormap) -> EditableColormap:
         prev_pos, prev_color = raw_cmap[i]
         curr_pos, curr_color = pos, color
         new_pos = curr_pos * coeff
-        print(curr_pos, new_pos, coeff)
         new_raw_cmap.append((new_pos, prev_color))
         new_raw_cmap.append((new_pos, curr_color))
     new_raw_cmap.append(raw_cmap[-1])
@@ -120,7 +221,46 @@ def continuous_to_descrete_cmap(cmap: EditableColormap) -> EditableColormap:
     return EditableColormap.from_iterable(new_raw_cmap, name=cmap.name)
 
 
-def main():
+def sort_mpl_colormaps(colormaps: CmapDictType) -> CmapDictType:
+    """Filter and sort input colormaps to follow the same order (by category) as in the
+     matplotlib colormaps documentation. Colormaps not found in the matplotlib
+     are filtered out.
+
+    Args:
+        colormaps: Dictionnary of colormaps to extract and order
+
+    Returns:
+        Filtered and sorted colormaps dictionnary
+    """
+    ordered_colormaps: CmapDictType = {}
+    lower_cmap_names = [cm.lower() for cm in SORTED_MATPLOTLIB_COLORMAPS]
+    for lower_name in lower_cmap_names:
+        cmap = colormaps.get(lower_name, None)
+        if lower_name.endswith("_r"):
+            continue
+        if cmap is None:
+            print(f"Colormap {lower_name} not found in input colormaps.")
+            continue
+        ordered_colormaps[lower_name] = cmap
+    return ordered_colormaps
+
+
+def append_non_mpl_colormaps(mpl_colormaps: CmapDictType, colormaps: CmapDictType):
+    """Append colormaps not found in the matplotlib colormaps to the input colormaps.
+     Mutate the input in place.
+
+    Args:
+        mpl_colormaps: dictionnary of matplotlib colormaps. Mutated in place.
+        colormaps: dictionnary of colormaps to append to the matplotlib colormaps
+    """
+    colormap_names = set(SORTED_MATPLOTLIB_COLORMAPS)
+    for colormap in colormaps.values():
+        if colormap.name not in colormap_names:
+            print(f"{colormap} not in matplotlib colormaps.")
+            mpl_colormaps[colormap.name.lower()] = colormap
+
+
+def main(cmaps: CmapDictType, out_json_path: str = DEFAULT_COLORMAPS_PATH):
 
     new_cmaps: dict[str, list[tuple[float, str]]] = {}
 
@@ -179,13 +319,14 @@ def main():
         new_cmaps[cm_name] = func_segmented_cmap_to_hex_list(n, cmap)
 
     for name, raw_cm in new_cmaps.items():
-        DEFAULT_COLORMAPS[name.lower()] = EditableColormap.from_iterable(
-            raw_cm, name=name
-        )
+        cmaps[name.lower()] = EditableColormap.from_iterable(raw_cm, name=name)
 
-    json_file = os.path.join(os.path.dirname(__file__), "new_colormaps.json")
-    save_colormaps(json_file, DEFAULT_COLORMAPS_PATH)
+    ordered_cmaps = sort_mpl_colormaps(cmaps)
+    append_non_mpl_colormaps(ordered_cmaps, cmaps)
+    save_colormaps(out_json_path, ordered_cmaps)
 
 
 if __name__ == "__main__":
-    main()
+    cmaps = copy.deepcopy(DEFAULT_COLORMAPS)
+    out_json = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_COLORMAPS_PATH
+    main(cmaps, out_json)
