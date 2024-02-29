@@ -940,7 +940,10 @@ class WheelZoomHandler(WheelHandler):
              and position
         """
         plot = filter.plot
-        zoom_factor = 1 + (event.angleDelta().y() / 360)
+        zoom_step = event.angleDelta().y() / 120
+        zoom_factor = np.log10(10 + abs(zoom_step * 8))
+        if zoom_step < 0:
+            zoom_factor = 1 / zoom_factor
 
         center_point = event.globalPos()
         center_point = filter.plot.canvas().mapFromGlobal(center_point)  # type: ignore
