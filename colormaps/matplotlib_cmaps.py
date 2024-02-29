@@ -13,21 +13,47 @@ from plotpy.mathutils.colormap import (
 )
 
 
-def rgb_colors_to_hex_list(colors: list[tuple[int, int, int]]):
+def rgb_colors_to_hex_list(
+    colors: list[tuple[int, int, int]]
+) -> list[tuple[float, str]]:
+    """Convert a list of RGB colors to a list of tuples with the position of the color
+    and the color in hex format. Positions evenly distributed between 0 and 1.
+
+    Args:
+        colors: list of RGB colors
+
+    Returns:
+        list of tuples with the position of the color and the color in hex format
+    """
     return [(i / len(colors), pltc.to_hex(color)) for i, color in enumerate(colors)]
 
 
-def _interpolate(val, vmin, vmax):
-    """Interpolate a color component between to values as provided
-    by matplotlib colormaps
+def _interpolate(
+    val: float, vmin: tuple[float, float, float], vmax: tuple[float, float, float]
+):
+    """Interpolate between two level of a color.
+
+    Args:
+        val: value to interpolate
+        vmin: R, G or B tuple from a matplotlib segmented colormap
+        vmax: R, G or B tuple from matplotlib segmented colormap
+
+    Returns:
+        The interpolated R, G or B component
     """
     interp = (val - vmin[0]) / (vmax[0] - vmin[0])
     return (1 - interp) * vmin[1] + interp * vmax[2]
 
 
 def std_segmented_cmap_to_hex_list(cmdata: dict[str, list[tuple[float, float, float]]]):
-    """Setup a CustomQwtLinearColorMap according to
-    matplotlib's data
+    """Convert a matplotlib segmented colormap to a list of tuples with the position of
+    the color and the color in hex format.
+
+    Args:
+        cmdata: segmented colormap data
+
+    Returns:
+        list of tuples with the position of the color and the color in hex format
     """
     colors: list[tuple[float, str]] = []
     red = np.array(cmdata["red"])
@@ -51,14 +77,33 @@ InterpFuncT = Callable[[np.ndarray], np.ndarray]
 def func_segmented_cmap_to_hex_list(
     n: int,
     cmap: pltc.LinearSegmentedColormap,
-):
+) -> list[tuple[float, str]]:
+    """Convert a matplotlib segmented colormap to a list of tuples with the position of
+    the color and the color in hex format. The input colormap contains function for each
+    color RGB component instead of a list of colors.
+
+    Args:
+        n: number of colors to generate
+        cmap: segmented colormap
+
+    Returns:
+        list of tuples with the position of the color and the color in hex format
+    """
     colors = []
     arr = np.linspace(0, 1, n, dtype=float)
     colors = [(i, pltc.to_hex(rgba)) for i, rgba in zip(arr, cmap(arr))]
     return colors
 
 
-def interp_to_descrete_cmap(cmap: EditableColormap) -> EditableColormap:
+def continuous_to_descrete_cmap(cmap: EditableColormap) -> EditableColormap:
+    """Convert a continuous colormap to a descrete one.
+
+    Args:
+        cmap: colormap to convert
+
+    Returns:
+        descrete colormap
+    """
     raw_cmap: tuple[tuple[float, str], ...] = cmap.to_tuples()
     new_raw_cmap: list[tuple[float, str]] = [raw_cmap[0]]
     n = len(raw_cmap)
@@ -79,6 +124,7 @@ def main():
 
     new_cmaps: dict[str, list[tuple[float, str]]] = {}
 
+    # Uniform colormaps with a .colors attribute that return a list of RGB colors
     cmaps_with_colors = [
         "magma",
         "viridis",
@@ -87,6 +133,8 @@ def main():
         "cividis",
     ]
 
+    # Discrete colormaps, same as uniform colormaps but the colormap must be post
+    # processed to become descrete
     descrete_cmaps = [
         "Pastel1",
         "Pastel2",
@@ -100,26 +148,31 @@ def main():
 
     cmaps_with_colors.extend(descrete_cmaps)
 
-    for cm_name in cmaps_with_colors:
-        cmap = plt.get_cmap(cm_name)
-        new_cmaps[cm_name] = rgb_colors_to_hex_list(cmap.colors)
-
-    for cm_name in descrete_cmaps:
-        cmap = EditableColormap.from_iterable(new_cmaps[cm_name], name=cm_name)
-        new_cmaps[cm_name] = list(interp_to_descrete_cmap(cmap).to_tuples())
-
+    # Colormaps with a _segmented_data attribute that contains the R, G and B components
+    # as lists of tuples
     segmented_cmaps = [
         "coolwarm",
         "bwr",
         "seismic",
     ]
 
+    # Colormaps with a _segmentdata attribute that contains the R, G and B components as
+    # functions that return the color for a given position
+    interp_cmaps = ["gnuplot2", "CMRmap", "rainbow", "turbo", "afmhot"]
+
+    for cm_name in cmaps_with_colors:
+        cmap = plt.get_cmap(cm_name)
+        new_cmaps[cm_name] = rgb_colors_to_hex_list(cmap.colors)
+
+    for cm_name in descrete_cmaps:
+        cmap = EditableColormap.from_iterable(new_cmaps[cm_name], name=cm_name)
+        new_cmaps[cm_name] = list(continuous_to_descrete_cmap(cmap).to_tuples())
+
     for cm_name in segmented_cmaps:
         cmap = plt.get_cmap(cm_name)
         new_cmaps[cm_name] = std_segmented_cmap_to_hex_list(cmap._segmentdata)
 
     n = 128
-    interp_cmaps = ["gnuplot2", "CMRmap", "rainbow", "turbo", "afmhot"]
 
     for cm_name in interp_cmaps:
         cmap = plt.get_cmap(cm_name)
