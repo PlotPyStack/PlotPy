@@ -943,15 +943,9 @@ class WheelZoomHandler(WheelHandler):
              and position
         """
         plot = filter.plot
-        zoom_step = event.angleDelta().y() / 120
-        zoom_factor = np.log10(10 + abs(zoom_step * 2))
-        if zoom_step < 0:
-            zoom_factor = 1 / zoom_factor
-        zoom_factor -= 1
-
         center_point = event.globalPos()
         center_point = filter.plot.canvas().mapFromGlobal(center_point)  # type: ignore
-
+        zoom_factor = (event.angleDelta().y() / 120) * 0.08
         dx, dy = self.get_zoom_param(plot, center_point, zoom_factor)
         plot.do_zoom_view(dx, dy, lock_aspect_ratio=True)
 
