@@ -150,12 +150,12 @@ class ColorMapManager(QW.QDialog):
         self._cmap_choice.setIconSize(QC.QSize(LARGE_ICON_WIDTH, LARGE_ICON_HEIGHT))
         self._cmap_choice.setCurrentText(active_colormap)
 
-        new_btn = QW.QPushButton(get_icon("edit_add.png"), _("Add") + "...")
-        new_btn.clicked.connect(self.new_colormap)
-        self._del_btn = QW.QPushButton(get_icon("delete.png"), _("Remove") + "...")
+        add_btn = QW.QPushButton(get_icon("edit_add.png"), _("Add") + "...")
+        add_btn.clicked.connect(self.add_colormap)
+        self._remove_btn = QW.QPushButton(get_icon("delete.png"), _("Remove") + "...")
         is_custom_cmap = cmap_exists(active_colormap, CUSTOM_COLORMAPS)
-        self._del_btn.setEnabled(is_custom_cmap)
-        self._del_btn.clicked.connect(self.delete_colormap)
+        self._remove_btn.setEnabled(is_custom_cmap)
+        self._remove_btn.clicked.connect(self.remove_colormap)
 
         select_gbox = QW.QGroupBox(_("Select or create a colormap"))
         select_label = QW.QLabel(_("Colormap presets:"))
@@ -163,8 +163,8 @@ class ColorMapManager(QW.QDialog):
         select_gbox_layout.addWidget(select_label)
         select_gbox_layout.addWidget(self._cmap_choice)
         select_gbox_layout.addSpacing(10)
-        select_gbox_layout.addWidget(new_btn)
-        select_gbox_layout.addWidget(self._del_btn)
+        select_gbox_layout.addWidget(add_btn)
+        select_gbox_layout.addWidget(self._remove_btn)
         select_gbox.setLayout(select_gbox_layout)
 
         # Edit the selected colormap
@@ -178,7 +178,7 @@ class ColorMapManager(QW.QDialog):
         edit_gbox.setLayout(edit_gbox_layout)
         edit_gbox.setCheckable(True)
         edit_gbox.setChecked(False)
-        new_btn.clicked.connect(lambda: edit_gbox.setChecked(True))
+        add_btn.clicked.connect(lambda: edit_gbox.setChecked(True))
         self.colormap_editor.colormap_widget.COLORMAP_CHANGED.connect(
             self._changes_not_saved
         )
@@ -244,7 +244,7 @@ class ColorMapManager(QW.QDialog):
         self.colormap_editor.set_colormap(cmap_copy)
 
         is_custom_cmap = cmap_exists(cmap_copy.name, CUSTOM_COLORMAPS)
-        self._del_btn.setEnabled(is_custom_cmap)
+        self._remove_btn.setEnabled(is_custom_cmap)
 
         self._changes_saved = True
         is_new_colormap = not cmap_exists(cmap_copy.name)
@@ -304,13 +304,13 @@ class ColorMapManager(QW.QDialog):
             break
         return new_name
 
-    def new_colormap(self) -> None:
+    def add_colormap(self) -> None:
         """Create a new colormap and set it as the current colormap."""
         cmap = EditableColormap(QG.QColor(0), QG.QColor(4294967295), name=_("New"))
         self.save_colormap(cmap)
 
-    def delete_colormap(self) -> None:
-        """Delete the current colormap."""
+    def remove_colormap(self) -> None:
+        """Remove the current colormap."""
         cmap = self.colormap_editor.get_colormap()
         if cmap is None:
             return
