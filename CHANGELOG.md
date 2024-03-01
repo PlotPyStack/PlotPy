@@ -2,6 +2,8 @@
 
 ## Version 2.2.0 ##
 
+In this release, test coverage is 74%.
+
 New features:
 
 * Added `SIG_ITEM_PARAMETERS_CHANGED` signal to `BasePlot` class:
