@@ -171,14 +171,13 @@ class ColorMapManager(QW.QDialog):
         self.colormap_editor = ColorMapEditor(
             self, colormap=deepcopy(self._cmap_choice.currentData())
         )
-        edit_gbox = QW.QGroupBox(_("Edit the selected colormap"))
+        self._edit_gbox = QW.QGroupBox(_("Edit the selected colormap"))
         edit_gbox_layout = QW.QVBoxLayout()
         edit_gbox_layout.setContentsMargins(0, 0, 0, 0)
         edit_gbox_layout.addWidget(self.colormap_editor)
-        edit_gbox.setLayout(edit_gbox_layout)
-        edit_gbox.setCheckable(True)
-        edit_gbox.setChecked(False)
-        add_btn.clicked.connect(lambda: edit_gbox.setChecked(True))
+        self._edit_gbox.setLayout(edit_gbox_layout)
+        self._edit_gbox.setCheckable(True)
+        self._edit_gbox.setChecked(False)
         self.colormap_editor.colormap_widget.COLORMAP_CHANGED.connect(
             self._changes_not_saved
         )
@@ -197,7 +196,7 @@ class ColorMapManager(QW.QDialog):
 
         dialog_layout = QW.QVBoxLayout()
         dialog_layout.addWidget(select_gbox)
-        dialog_layout.addWidget(edit_gbox)
+        dialog_layout.addWidget(self._edit_gbox)
         dialog_layout.addWidget(self.bbox)
         self.setLayout(dialog_layout)
 
@@ -307,7 +306,11 @@ class ColorMapManager(QW.QDialog):
     def add_colormap(self) -> None:
         """Create a new colormap and set it as the current colormap."""
         cmap = EditableColormap(QG.QColor(0), QG.QColor(4294967295), name=_("New"))
-        self.save_colormap(cmap)
+        if self.save_colormap(cmap):
+            # If the colormap save dialog was accepted, then we enable the colormap
+            # editor group box.
+            # Otherwise, we leave the colormap editor group box at its current state.
+            self._edit_gbox.setChecked(True)
 
     def remove_colormap(self) -> None:
         """Remove the current colormap."""
