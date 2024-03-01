@@ -758,7 +758,7 @@ class PinchPanGestureHandler(GestureHandler):
         Args:
             plot: instance of BasePlot to use as a reference.
             pos: position on the plot canvas of the current hotspot.
-            factor: factor by which to zoom.
+            factor: factor by which to zoom (centered around 0).
 
         Returns:
             Returns two tuples of four floats each, representing the parameters used
@@ -815,7 +815,7 @@ class PinchPanGestureHandler(GestureHandler):
 
         center_point = self.get_glob_position(event)
         center_point = filter.plot.canvas().mapFromGlobal(center_point.toPoint())
-        scale_factor = np.clip(gesture.scaleFactor(), 0.97, 1.03) - 1
+        scale_factor = np.clip(gesture.scaleFactor(), 0.95, 1.05) - 1
 
         pan_dx, pan_dy = self.get_pan_param(plot, center_point)
         zoom_dx, zoom_dy = self.get_zoom_param(plot, center_point, scale_factor)
