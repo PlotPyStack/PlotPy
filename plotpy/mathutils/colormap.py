@@ -159,7 +159,7 @@ def save_colormaps(json_filename: str, colormaps: CmapDictType):
         json_filename: json file name/path in which to save the colormaps
         colormaps: Dictionnary of colormpas names -> CustomQwtLinearColormap
     """
-    raw_colormaps = {name: cmap.to_tuples() for name, cmap in colormaps.items()}
+    raw_colormaps = {cmap.name: cmap.to_tuples() for cmap in colormaps.values()}
     json_abs_path = CONF.get_path(json_filename)
     with open(json_abs_path, "w", encoding="utf-8") as f:
         json.dump(raw_colormaps, f, indent=4)
