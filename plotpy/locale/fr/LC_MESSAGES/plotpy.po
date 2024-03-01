@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-03-01 09:20+0100\n"
+"POT-Creation-Date: 2024-03-01 09:45+0100\n"
 "PO-Revision-Date: 2019-02-20 14:42+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -401,9 +401,9 @@ msgstr "Déplacer vers le premier plan"
 
 #: plotpy\panels\itemlist.py:94 plotpy\panels\itemlist.py:236
 #: plotpy\tools\item.py:154 plotpy\tools\item.py:179
-#: plotpy\widgets\colormap\manager.py:155
-#: plotpy\widgets\colormap\manager.py:320
-#: plotpy\widgets\colormap\manager.py:329
+#: plotpy\widgets\colormap\manager.py:166
+#: plotpy\widgets\colormap\manager.py:338
+#: plotpy\widgets\colormap\manager.py:346
 msgid "Remove"
 msgstr "Supprimer"
 
@@ -2044,36 +2044,36 @@ msgstr ""
 "Un nom de colormap ne peut pas contenir de caractères spéciauxexcepté les "
 "tirets bas (_)."
 
-#: plotpy\widgets\colormap\manager.py:134
+#: plotpy\widgets\colormap\manager.py:143
 msgid "Colormap manager"
 msgstr "Gestionnaire de palettes de couleurs"
 
-#: plotpy\widgets\colormap\manager.py:153
+#: plotpy\widgets\colormap\manager.py:164
 msgid "Add"
 msgstr "Ajouter"
 
-#: plotpy\widgets\colormap\manager.py:160
+#: plotpy\widgets\colormap\manager.py:171
 msgid "Select or create a colormap"
 msgstr "Sélectionner ou créer une palette de couleurs"
 
-#: plotpy\widgets\colormap\manager.py:161
+#: plotpy\widgets\colormap\manager.py:172
 msgid "Colormap presets:"
 msgstr "Palettes de couleurs prédéfinies :"
 
-#: plotpy\widgets\colormap\manager.py:174
+#: plotpy\widgets\colormap\manager.py:185
 msgid "Edit the selected colormap"
 msgstr "Modifier la palette de couleurs sélectionnée"
 
-#: plotpy\widgets\colormap\manager.py:281
+#: plotpy\widgets\colormap\manager.py:291
 msgid ""
-"Name <b>%s</b> is already used by a default colormap, and cannot be used for "
-"a custom colormap.<br><br>Please choose another name."
+"Name <b>%s</b> is already used by a predefined colormap, and cannot be used "
+"for a custom colormap.<br><br>Please choose another name."
 msgstr ""
-"Le nom <b>%s</b> est déjà utilisé par une palette de couleurs par défaut, et "
-"ne peut pas être utilisé pour une palette de couleurs personnalisée."
-"<br><br>Veuillez choisir un autre nom."
+"Le nom <b>%s</b> est déjà utilisé par une palette de couleurs prédéfinie, et "
+"ne peut pas être utilisé pour une palette personnalisée.<br><br>Veuillez "
+"choisir un autre nom."
 
-#: plotpy\widgets\colormap\manager.py:293
+#: plotpy\widgets\colormap\manager.py:303
 msgid ""
 "Name <b>%s</b> is already used by a custom colormap.<br><br>Do you want to "
 "overwrite it?"
@@ -2081,25 +2081,31 @@ msgstr ""
 "Le nom <b>%s</b> est déjà utilisé par une palette de couleurs personnalisée."
 "<br><br>Voulez-vous l'écraser ?"
 
-#: plotpy\widgets\colormap\manager.py:309
+#: plotpy\widgets\colormap\manager.py:319
 msgid "New"
 msgstr "Nouveau"
 
-#: plotpy\widgets\colormap\manager.py:321
-msgid "Colormap <b>%s</b> is a default colormap and cannot be deleted."
-msgstr ""
-"La palette de couleurs <b>%s</b> est une palette par défaut et ne peut pas "
-"être supprimée."
+#: plotpy\widgets\colormap\manager.py:333
+msgid "Colormap <b>%s</b> is the active colormap."
+msgstr "La palette de couleurs <b>%s</b> est la palette active."
 
-#: plotpy\widgets\colormap\manager.py:330
+#: plotpy\widgets\colormap\manager.py:335
+msgid "Colormap <b>%s</b> is a predefined colormap."
+msgstr "La palette de couleurs <b>%s</b> est une palette prédéfinie."
+
+#: plotpy\widgets\colormap\manager.py:339
+msgid "Thus, this colormap cannot be removed."
+msgstr "Cette palette de couleurs ne peut donc pas être supprimée."
+
+#: plotpy\widgets\colormap\manager.py:347
 msgid "Do you want to delete colormap <b>%s</b>?"
 msgstr "Souhaitez-vous supprimer la palette de couleurs <b>%s</b> ?"
 
-#: plotpy\widgets\colormap\manager.py:356
+#: plotpy\widgets\colormap\manager.py:373
 msgid "Save colormap"
 msgstr "Enregistrer la palette de couleurs"
 
-#: plotpy\widgets\colormap\manager.py:358
+#: plotpy\widgets\colormap\manager.py:375
 msgid "Add colormap"
 msgstr "Ajouter une palette de couleurs"
 
@@ -2264,37 +2270,3 @@ msgstr "Rotation et rognage"
 #: plotpy\widgets\rotatecrop.py:219
 msgid "Show cropping rectangle"
 msgstr "Afficher le rectangle de rognage"
-
-#~ msgid "Save"
-#~ msgstr "Enregistrer"
-
-#~ msgid "Delete colormap"
-#~ msgstr "Supprimer la palette de couleurs"
-
-#~ msgid "Create new colormap"
-#~ msgstr "Créer une nouvelle palette de couleurs"
-
-#~ msgid "Custom colormap %s already exists, do you want to overwrite it?"
-#~ msgstr ""
-#~ "La palette de couleurs personnalisée %s existe déjà, voulez-vous "
-#~ "l'écraser ?"
-
-#~ msgid ""
-#~ "New colormap \"%s\" is a default colormap and cannot be overwritten. "
-#~ "Change its name to save it as a custom colormap."
-#~ msgstr ""
-#~ "La nouvelle table des couleurs \"%s\" est une table des couleurs par "
-#~ "défaut et ne peut pas être remplacée. Modifiez son nom pour l'enregistrer "
-#~ "en tant que carte de couleurs personnalisée."
-
-#~ msgid "Close"
-#~ msgstr "Fermer"
-
-#~ msgid ""
-#~ "Current changes not saved. The current colormap will be discarded when "
-#~ "the editor is closed.\n"
-#~ "Do you want to save the changes?"
-#~ msgstr ""
-#~ "Les modifications actuelles ne sont pas sauvegardées. La palette de "
-#~ "couleurs actuelle sera supprimée lorsque l'éditeur éditeur sera fermé.\n"
-#~ "Voulez-vous enregistrer les modifications ?"

@@ -120,8 +120,17 @@ class ColorMapManager(QW.QDialog):
 
     Args:
         parent: parent QWidget. Defaults to None.
-        active_colormap: name of the default colormap selected. If None or does not
-         *exists, will defaults to the first colormap in the list. Defaults to None
+        active_colormap: name of the active colormap.
+
+    .. note::
+
+        The active colormap is the colormap that will be selected by default when the
+        dialog box is opened. If the colormap does not exist (or if None is provided),
+        the first colormap in the list will be selected by default.
+
+        The active colormap cannot be removed. If the active colormap is a custom
+        colormap, the remove button will be enabled but a dialog box will warn the user
+        that the colormap cannot be removed.
     """
 
     def __init__(
@@ -133,10 +142,12 @@ class ColorMapManager(QW.QDialog):
         self.setWindowIcon(get_icon("cmap_edit.png"))
         self.setWindowTitle(_("Colormap manager"))
 
+        self.active_cmap_name = default_colormap = active_colormap
+
         self.__returned_colormap: EditableColormap | None = None
 
-        if active_colormap is None or not cmap_exists(active_colormap, ALL_COLORMAPS):
-            active_colormap = next(iter(ALL_COLORMAPS))
+        if default_colormap is None or not cmap_exists(default_colormap, ALL_COLORMAPS):
+            default_colormap = next(iter(ALL_COLORMAPS))
 
         # Select the active colormap
         self._cmap_choice = QW.QComboBox()
@@ -148,12 +159,12 @@ class ColorMapManager(QW.QDialog):
             self._cmap_choice.addItem(icon, cmap.name, cmap)
 
         self._cmap_choice.setIconSize(QC.QSize(LARGE_ICON_WIDTH, LARGE_ICON_HEIGHT))
-        self._cmap_choice.setCurrentText(active_colormap)
+        self._cmap_choice.setCurrentText(default_colormap)
 
         add_btn = QW.QPushButton(get_icon("edit_add.png"), _("Add") + "...")
         add_btn.clicked.connect(self.add_colormap)
         self._remove_btn = QW.QPushButton(get_icon("delete.png"), _("Remove") + "...")
-        is_custom_cmap = cmap_exists(active_colormap, CUSTOM_COLORMAPS)
+        is_custom_cmap = cmap_exists(default_colormap, CUSTOM_COLORMAPS)
         self._remove_btn.setEnabled(is_custom_cmap)
         self._remove_btn.clicked.connect(self.remove_colormap)
 
@@ -278,7 +289,7 @@ class ColorMapManager(QW.QDialog):
                     self,
                     title,
                     _(
-                        "Name <b>%s</b> is already used by a default colormap, and "
+                        "Name <b>%s</b> is already used by a predefined colormap, and "
                         "cannot be used for a custom colormap.<br><br>"
                         "Please choose another name."
                     )
@@ -317,12 +328,16 @@ class ColorMapManager(QW.QDialog):
         cmap = self.colormap_editor.get_colormap()
         if cmap is None:
             return
-        if cmap_exists(cmap.name, DEFAULT_COLORMAPS):
+        name = cmap.name
+        if name == self.active_cmap_name or cmap_exists(name, DEFAULT_COLORMAPS):
+            if name == self.active_cmap_name:
+                msg = _("Colormap <b>%s</b> is the active colormap.")
+            else:
+                msg = _("Colormap <b>%s</b> is a predefined colormap.")
             QW.QMessageBox.warning(
                 self,
                 _("Remove"),
-                _("Colormap <b>%s</b> is a default colormap and cannot be deleted.")
-                % cmap.name,
+                msg % name + "<br>" + _("Thus, this colormap cannot be removed."),
                 QW.QMessageBox.Ok,
             )
             return
@@ -330,7 +345,7 @@ class ColorMapManager(QW.QDialog):
             QW.QMessageBox.question(
                 self,
                 _("Remove"),
-                _("Do you want to delete colormap <b>%s</b>?") % cmap.name,
+                _("Do you want to delete colormap <b>%s</b>?") % name,
                 QW.QMessageBox.Yes | QW.QMessageBox.No,
                 QW.QMessageBox.No,
             )
