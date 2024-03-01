@@ -145,11 +145,10 @@ def create_window(
     items: list[CurveItem | BaseImageItem] = make_curve_image_legend()
     win = ptv.show_items(items, wintitle="Unit test plot", auto_tools=False)
     plot = win.manager.get_plot()
-    for item in win.manager.get_plot().get_items()[::-1]:
+    for item in items:
         plot.set_active_item(item)
     last_active_item = plot.get_last_active_item(active_item_type)
     plot.set_active_item(last_active_item)
-
     if panels is not None:
         for panel in panels:
             win.manager.add_panel(panel())
