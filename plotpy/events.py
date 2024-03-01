@@ -919,8 +919,6 @@ class WheelZoomHandler(WheelHandler):
         x, y = pos.x(), pos.y()
         rect = plot.contentsRect()
         w, h = rect.width(), rect.height()
-        print(f"x: {x} -> {x + w * factor}")
-        print(f"y: {y} -> {y + w * factor}")
         dx = (
             x + (w * factor),
             x,
