@@ -316,6 +316,20 @@ class GestureEventMatch(EventMatch):
         return "<GestureMatch: %s:%s>" % (type_str, state_str)
 
 
+class WheelEventMatch(EventMatch):
+    """A callable returning True if it matches a wheel event"""
+
+    def __init__(self, modifiers=QC.Qt.KeyboardModifier.NoModifier):
+        super().__init__()
+        self.modifiers = modifiers
+
+    def get_event_types(self):
+        return frozenset((QC.QEvent.Type.Wheel,))
+
+    def __call__(self, event: QC.QEvent):
+        return isinstance(event, QG.QWheelEvent) and event.modifiers() == self.modifiers
+
+
 # Finite state machine for event handling ----------
 class StatefulEventFilter(QC.QObject):
     """Gestion d'une machine d'état pour les événements
@@ -433,6 +447,13 @@ class StatefulEventFilter(QC.QObject):
         return self.events.setdefault(
             ("gesture", kind, state), GestureEventMatch(kind, state)
         )
+
+    def wheel(self, modifiers=QC.Qt.KeyboardModifier.NoModifier):
+        """Create a filter for wheel events
+
+        Args:
+            modifiers: keyboard modifiers to use with the wheel event"""
+        return self.events.setdefault(("wheel", modifiers), WheelEventMatch(modifiers))
 
     def nothing(self, filter, event):
         """A nothing filter, provided to help removing duplicate handlers"""
@@ -847,6 +868,88 @@ class MenuHandler(ClickHandler):
         menu = filter.plot.get_context_menu()
         if menu:
             menu.popup(event.globalPos())
+
+
+class WheelHandler(QC.QObject):
+    """Base class for handling mouse wheel events.
+
+    Args:
+        filter: event filter into which to add the handler instance.
+        mods: Keyboard modifier that can be used at the same time as the wheel to
+         trigger the event. Defaults to QC.Qt.KeyboardModifier.NoModifier.
+        start_state: start state to use in the event filter state machine.
+         Defaults to 0."""
+
+    def __init__(
+        self,
+        filter: StatefulEventFilter,
+        mods=QC.Qt.KeyboardModifier.NoModifier,
+        start_state=0,
+    ):
+        super().__init__()
+        self.state0 = filter.add_event(
+            start_state, filter.wheel(mods), self.wheel, start_state
+        )
+
+    def wheel(self, filter: StatefulEventFilter, event: QG.QWheelEvent):
+        """Handles the wheel event.
+
+        Args:
+            filter: event filter that contains the BasePlot instance
+            event: the wheel event that triggered the action."""
+        raise NotImplementedError()
+
+
+class WheelZoomHandler(WheelHandler):
+    """Class to handle zooming with the mouse wheel."""
+
+    def get_zoom_param(
+        self, plot: BasePlot, pos: QPoint, factor: float
+    ) -> tuple[tuple[float, float, float, float], tuple[float, float, float, float]]:
+        """Returns the parameters to use for zooming on the plot.
+
+        Args:
+            plot: instance of BasePlot to use as a reference.
+            pos: position on the plot canvas of the current hotspot.
+            factor: factor by which to zoom (zero-centered).
+
+        Returns:
+            Returns two tuples of four floats each, representing the parameters used
+            by BasePlot.do_zoom_view.
+        """
+
+        x, y = pos.x(), pos.y()
+        rect = plot.contentsRect()
+        w, h = rect.width(), rect.height()
+        dx = (
+            x + (w * factor),
+            x,
+            x,
+            w,
+        )
+        dy = (
+            y + (h * factor),
+            y,
+            y,
+            h,
+        )
+        return dx, dy
+
+    def wheel(self, filter: StatefulEventFilter, event: QG.QWheelEvent):
+        """Overrides the WheelHandler.wheel method to handle the zooming with the mouse
+        wheel.
+
+        Args:
+            filter: event filter that contains the BasePlot instance
+            event: the wheel event that triggered the zooming. Use to get zoom factor
+             and position
+        """
+        plot = filter.plot
+        center_point = event.globalPos()
+        center_point = filter.plot.canvas().mapFromGlobal(center_point)  # type: ignore
+        zoom_factor = (event.angleDelta().y() / 120) * 0.08
+        dx, dy = self.get_zoom_param(plot, center_point, zoom_factor)
+        plot.do_zoom_view(dx, dy, lock_aspect_ratio=True)
 
 
 class QtDragHandler(DragHandler):
@@ -1347,18 +1450,25 @@ class ZoomRectHandler(RectangularSelectionHandler):
 def setup_standard_tool_filter(filter: StatefulEventFilter, start_state):
     """Création des filtres standard (pan/zoom) sur boutons milieu/droit"""
     # Bouton du milieu
-    PanHandler(filter, QC.Qt.MidButton, start_state=start_state)
-    AutoZoomHandler(filter, QC.Qt.MidButton, start_state=start_state)
+    PanHandler(filter, QC.Qt.MouseButton.MidButton, start_state=start_state)
+    AutoZoomHandler(filter, QC.Qt.MouseButton.MidButton, start_state=start_state)
 
     # Bouton droit
-    ZoomHandler(filter, QC.Qt.RightButton, start_state=start_state)
-    MenuHandler(filter, QC.Qt.RightButton, start_state=start_state)
+    ZoomHandler(filter, QC.Qt.MouseButton.RightButton, start_state=start_state)
+    MenuHandler(filter, QC.Qt.MouseButton.RightButton, start_state=start_state)
 
     # Gestes
     PinchPanGestureHandler(filter, start_state=start_state)
 
     # Autres (touches, move)
     MoveHandler(filter, start_state=start_state)
-    MoveHandler(filter, start_state=start_state, mods=QC.Qt.ShiftModifier)
-    MoveHandler(filter, start_state=start_state, mods=QC.Qt.AltModifier)
+    MoveHandler(
+        filter, start_state=start_state, mods=QC.Qt.KeyboardModifier.ShiftModifier
+    )
+    MoveHandler(
+        filter, start_state=start_state, mods=QC.Qt.KeyboardModifier.AltModifier
+    )
+    WheelZoomHandler(
+        filter, start_state=start_state, mods=QC.Qt.KeyboardModifier.ControlModifier
+    )
     return start_state
