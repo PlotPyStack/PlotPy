@@ -758,24 +758,26 @@ class PinchPanGestureHandler(GestureHandler):
         Args:
             plot: instance of BasePlot to use as a reference.
             pos: position on the plot canvas of the current hotspot.
-            factor: factor by which to zoom.
+            factor: factor by which to zoom (zero-centered).
 
         Returns:
             Returns two tuples of four floats each, representing the parameters used
             by BasePlot.do_zoom_view.
         """
-        rect_width = plot.contentsRect().width()
+        rect = plot.contentsRect()
+        w, h = rect.width(), rect.height()
+        x, y = pos.x(), pos.y()
         dx = (
-            pos.x() * factor,
-            pos.x(),
-            pos.x(),
-            rect_width,
+            x + (w * factor),
+            x,
+            x,
+            w,
         )
         dy = (
-            pos.y() * factor,
-            pos.y(),
-            pos.y(),
-            rect_width,
+            y + (h * factor),
+            y,
+            y,
+            h,
         )
         return dx, dy
 
@@ -813,12 +815,12 @@ class PinchPanGestureHandler(GestureHandler):
 
         center_point = self.get_glob_position(event)
         center_point = filter.plot.canvas().mapFromGlobal(center_point.toPoint())
-        scale_factor = np.clip(gesture.scaleFactor(), 0.90, 1.1)
+        scale_factor = np.clip(gesture.scaleFactor(), 0.95, 1.05) - 1
 
         pan_dx, pan_dy = self.get_pan_param(plot, center_point)
         zoom_dx, zoom_dy = self.get_zoom_param(plot, center_point, scale_factor)
-        plot.do_zoom_view(zoom_dx, zoom_dy, replot=False)
-        plot.do_pan_view(pan_dx, pan_dy)
+        plot.do_pan_view(pan_dx, pan_dy, replot=True)
+        plot.do_zoom_view(zoom_dx, zoom_dy, lock_aspect_ratio=True)
 
     def stop_tracking(
         self, _filter: StatefulEventFilter, _event: QW.QGestureEvent
