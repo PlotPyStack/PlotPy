@@ -27,5 +27,5 @@ __VERSION__ = tuple([int(number) for number in __version__.split(".")])
 # ---                 to retrieve data and translation files paths
 #
 # Dear (Debian, RPM, ...) package makers, please feel free to customize the
-# following path to module's data (images) and translations:
+# following path to module's data (e.g. icons) and translations:
 DATAPATH = LOCALEPATH = ""
