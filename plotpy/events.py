@@ -758,7 +758,7 @@ class PinchPanGestureHandler(GestureHandler):
         Args:
             plot: instance of BasePlot to use as a reference.
             pos: position on the plot canvas of the current hotspot.
-            factor: factor by which to zoom (centered around 0).
+            factor: factor by which to zoom (zero-centered).
 
         Returns:
             Returns two tuples of four floats each, representing the parameters used
