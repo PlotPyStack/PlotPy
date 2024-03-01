@@ -109,7 +109,7 @@ def buttons_to_str(buttons: int) -> str:
     string = ""
     if buttons & QC.Qt.LeftButton:
         string += "L"
-    if buttons & QC.Qt.MidButton:
+    if buttons & QC.Qt.MidButton:  # Do not use QC.Qt.MouseButton.MidButton (Qt6!)
         string += "M"
     if buttons & QC.Qt.RightButton:
         string += "R"
@@ -1450,8 +1450,9 @@ class ZoomRectHandler(RectangularSelectionHandler):
 def setup_standard_tool_filter(filter: StatefulEventFilter, start_state):
     """Création des filtres standard (pan/zoom) sur boutons milieu/droit"""
     # Bouton du milieu
-    PanHandler(filter, QC.Qt.MouseButton.MidButton, start_state=start_state)
-    AutoZoomHandler(filter, QC.Qt.MouseButton.MidButton, start_state=start_state)
+    # Do not use QC.Qt.MouseButton.MidButton (Qt6!)
+    PanHandler(filter, QC.Qt.MidButton, start_state=start_state)
+    AutoZoomHandler(filter, QC.Qt.MidButton, start_state=start_state)
 
     # Bouton droit
     ZoomHandler(filter, QC.Qt.MouseButton.RightButton, start_state=start_state)
