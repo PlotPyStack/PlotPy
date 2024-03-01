@@ -9,8 +9,7 @@ import contextlib
 
 import numpy as np
 import pytest
-from guidata.qthelpers import exec_dialog
-from qtpy.QtCore import Qt
+from guidata.qthelpers import exec_dialog, qt_app_context
 
 from plotpy.builder import make
 from plotpy.plot import BasePlot
@@ -42,9 +41,10 @@ def plot_image(item):
 
 def test_plot_image():
     """Test plotting of an Image"""
-    item = make.image(compute_image())
-    with plot_image(item) as plot:
-        pass
+    with qt_app_context(exec_loop=False):
+        item = make.image(compute_image())
+        with plot_image(item):
+            pass
 
 
 def compute_image_xy():
@@ -62,9 +62,10 @@ def compute_image_xy():
 
 def test_plot_image_xy():
     """Test plotting of an Image with custom XY coordinates"""
-    item = make.xyimage(*compute_image_xy())
-    with plot_image(item) as plot:
-        ...
+    with qt_app_context(exec_loop=False):
+        item = make.xyimage(*compute_image_xy())
+        with plot_image(item):
+            pass
 
 
 def test_plot_quad_image():
@@ -74,31 +75,33 @@ def test_plot_quad_image():
     y = np.arange(-2.0, 2.0, delta)
     X, Y = np.meshgrid(x, y)
     Z = X * Y
-    item = make.quadgrid(X, Y, Z)
-    with plot_image(item) as plot:
-        ...
+    with qt_app_context(exec_loop=False):
+        item = make.quadgrid(X, Y, Z)
+        with plot_image(item):
+            pass
 
 
 def test_plot_tr_image():
     """Test plotting of a TrImageItem"""
-    img = compute_image()
-    item = make.trimage(img)
-    with plot_image(item) as plot:
-        # translate the image and check the new bounds
-        bounds1 = item.bounds
-        item.set_transform(50, 25, 0)
-        bounds2 = item.bounds
-        assert bounds1.width() == bounds2.width()
-        assert bounds1.height() == bounds2.height()
-        assert bounds2.left() == bounds1.left() + 50
-        assert bounds2.top() == bounds1.top() + 25
+    with qt_app_context(exec_loop=False):
+        img = compute_image()
+        item = make.trimage(img)
+        with plot_image(item) as plot:
+            # translate the image and check the new bounds
+            bounds1 = item.bounds
+            item.set_transform(50, 25, 0)
+            bounds2 = item.bounds
+            assert bounds1.width() == bounds2.width()
+            assert bounds1.height() == bounds2.height()
+            assert bounds2.left() == bounds1.left() + 50
+            assert bounds2.top() == bounds1.top() + 25
 
-        # rescale the image
-        item.set_transform(0, 0, 0, 2.0, 3.0)
-        plot.do_autoscale()
-        bounds3 = item.bounds
-        assert bounds3.width() == bounds2.width() * 2.0
-        assert bounds3.height() == bounds2.height() * 3.0
+            # rescale the image
+            item.set_transform(0, 0, 0, 2.0, 3.0)
+            plot.do_autoscale()
+            bounds3 = item.bounds
+            assert bounds3.width() == bounds2.width() * 2.0
+            assert bounds3.height() == bounds2.height() * 3.0
 
 
 @pytest.mark.parametrize("ratio", [1.0, 0.75, 1.5, 2.0, 3.0])
@@ -106,36 +109,38 @@ def test_set_aspect_ratio(ratio):
     """Test BasePlot.set_aspect_ratio method()
 
     It ensures that the new height is correctly set."""
-    win = make.dialog(type="image")
-    item = make.image(compute_image())
-    plot = win.manager.get_plot()
-    plot.add_item(item, autoscale=False)
-    win.show()
-    x0, x1, y0, y1 = plot.get_plot_limits()
-    plot.set_aspect_ratio(ratio, True)
-    assert plot.get_aspect_ratio() == ratio
-    exec_dialog(win)
+    with qt_app_context(exec_loop=False):
+        win = make.dialog(type="image")
+        item = make.image(compute_image())
+        plot = win.manager.get_plot()
+        plot.add_item(item, autoscale=False)
+        win.show()
+        x0, x1, y0, y1 = plot.get_plot_limits()
+        plot.set_aspect_ratio(ratio, True)
+        assert plot.get_aspect_ratio() == ratio
+        exec_dialog(win)
 
 
 def test_colormap_tool():
     """Test ColorMapTool on an image"""
-    win = make.dialog(type="image", toolbar=True)
-    item = make.image(compute_image())
-    plot = win.manager.get_plot()
-    plot.add_item(item)
-    win.show()
+    with qt_app_context(exec_loop=False):
+        win = make.dialog(type="image", toolbar=True)
+        item = make.image(compute_image())
+        plot = win.manager.get_plot()
+        plot.add_item(item)
+        win.show()
 
-    # default color map should be "jet"
-    color_map_tool = win.manager.get_tool(ColormapTool)
-    assert item.get_color_map_name() == "jet"
-    jet_img = plot.grab().toImage()
+        # default color map should be "jet"
+        color_map_tool = win.manager.get_tool(ColormapTool)
+        assert item.get_color_map_name() == "jet"
+        jet_img = plot.grab().toImage()
 
-    # change the colormap
-    plot.select_item(item)
-    cmap_name = "Accent"
-    color_map_tool.activate_cmap(cmap_name)
-    assert item.get_color_map_name() == cmap_name
-    accent_img = plot.grab().toImage()
-    assert jet_img != accent_img
+        # change the colormap
+        plot.select_item(item)
+        cmap_name = "accent"
+        color_map_tool.activate_cmap(cmap_name)
+        assert item.get_color_map_name() == cmap_name
+        accent_img = plot.grab().toImage()
+        assert jet_img != accent_img
 
-    exec_dialog(win)
+        exec_dialog(win)
