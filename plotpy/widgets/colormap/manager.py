@@ -53,12 +53,15 @@ class ColorMapNameEdit(QW.QDialog):
 
     Args:
         parent: parent QWidget. Defaults to None.
+        title: dialog box title. Defaults to "".
         name: default colormap name. Defaults to "".
     """
 
-    def __init__(self, parent: QW.QWidget | None = None, name: str = "") -> None:
+    def __init__(
+        self, parent: QW.QWidget | None = None, title: str = "", name: str = ""
+    ) -> None:
         super().__init__(parent)
-        self.setWindowTitle(_("Save"))
+        self.setWindowTitle(title)
 
         label = QW.QLabel(_("Enter a colormap name:"))
         self._edit = QW.QLineEdit()
@@ -93,17 +96,20 @@ class ColorMapNameEdit(QW.QDialog):
         return self._edit.text()
 
     @classmethod
-    def edit(cls, parent: QW.QWidget | None = None, name: str = "") -> str | None:
+    def edit(
+        cls, parent: QW.QWidget | None = None, title: str = "", name: str = ""
+    ) -> str | None:
         """Open the dialog box and return the colormap name entered in the QLineEdit.
 
         Args:
             parent: parent QWidget. Defaults to None.
+            title: dialog box title. Defaults to "".
             name: default colormap name. Defaults to "".
 
         Returns:
             colormap name, or None if the dialog box was canceled.
         """
-        dialog = cls(parent, name)
+        dialog = cls(parent, title, name)
         if exec_dialog(dialog):
             return dialog.get_colormap_name()
         return None
@@ -265,7 +271,7 @@ class ColorMapManager(QW.QDialog):
         """
         new_name = name
         while True:
-            new_name = ColorMapNameEdit.edit(self, new_name)
+            new_name = ColorMapNameEdit.edit(self, title, new_name)
             if new_name is None:
                 return None
             if cmap_exists(new_name, DEFAULT_COLORMAPS):
@@ -311,7 +317,7 @@ class ColorMapManager(QW.QDialog):
         if cmap_exists(cmap.name, DEFAULT_COLORMAPS):
             QW.QMessageBox.warning(
                 self,
-                _("Delete colormap"),
+                _("Remove"),
                 _("Colormap <b>%s</b> is a default colormap and cannot be deleted.")
                 % cmap.name,
                 QW.QMessageBox.Ok,
@@ -320,7 +326,7 @@ class ColorMapManager(QW.QDialog):
         if (
             QW.QMessageBox.question(
                 self,
-                _("Delete colormap"),
+                _("Remove"),
                 _("Do you want to delete colormap <b>%s</b>?") % cmap.name,
                 QW.QMessageBox.Yes | QW.QMessageBox.No,
                 QW.QMessageBox.No,
@@ -349,7 +355,7 @@ class ColorMapManager(QW.QDialog):
             cmap = self.colormap_editor.get_colormap()
             title = _("Save colormap")
         else:
-            title = _("New colormap")
+            title = _("Add colormap")
         new_name = self.__get_new_colormap_name(title, cmap.name)
         if new_name is None:
             return False

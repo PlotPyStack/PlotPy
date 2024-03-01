@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-03-01 09:05+0100\n"
+"POT-Creation-Date: 2024-03-01 09:20+0100\n"
 "PO-Revision-Date: 2019-02-20 14:42+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -401,7 +401,9 @@ msgstr "Déplacer vers le premier plan"
 
 #: plotpy\panels\itemlist.py:94 plotpy\panels\itemlist.py:236
 #: plotpy\tools\item.py:154 plotpy\tools\item.py:179
-#: plotpy\widgets\colormap\manager.py:149
+#: plotpy\widgets\colormap\manager.py:155
+#: plotpy\widgets\colormap\manager.py:320
+#: plotpy\widgets\colormap\manager.py:329
 msgid "Remove"
 msgstr "Supprimer"
 
@@ -2031,42 +2033,38 @@ msgstr "Relative position"
 msgid "Must be a value between 0.0 and 1.0."
 msgstr "Doit être une valeur entre 0.0 et 1.0"
 
-#: plotpy\widgets\colormap\manager.py:61
-msgid "Save"
-msgstr "Enregistrer"
-
-#: plotpy\widgets\colormap\manager.py:63
+#: plotpy\widgets\colormap\manager.py:66
 msgid "Enter a colormap name:"
 msgstr "Entrer un nom de palette de couleurs :"
 
-#: plotpy\widgets\colormap\manager.py:69
+#: plotpy\widgets\colormap\manager.py:72
 msgid ""
 "New colormap name cannot contain special characters except underscores (_)."
 msgstr ""
 "Un nom de colormap ne peut pas contenir de caractères spéciauxexcepté les "
 "tirets bas (_)."
 
-#: plotpy\widgets\colormap\manager.py:128
+#: plotpy\widgets\colormap\manager.py:134
 msgid "Colormap manager"
 msgstr "Gestionnaire de palettes de couleurs"
 
-#: plotpy\widgets\colormap\manager.py:147
+#: plotpy\widgets\colormap\manager.py:153
 msgid "Add"
 msgstr "Ajouter"
 
-#: plotpy\widgets\colormap\manager.py:154
+#: plotpy\widgets\colormap\manager.py:160
 msgid "Select or create a colormap"
 msgstr "Sélectionner ou créer une palette de couleurs"
 
-#: plotpy\widgets\colormap\manager.py:155
+#: plotpy\widgets\colormap\manager.py:161
 msgid "Colormap presets:"
 msgstr "Palettes de couleurs prédéfinies :"
 
-#: plotpy\widgets\colormap\manager.py:168
+#: plotpy\widgets\colormap\manager.py:174
 msgid "Edit the selected colormap"
 msgstr "Modifier la palette de couleurs sélectionnée"
 
-#: plotpy\widgets\colormap\manager.py:275
+#: plotpy\widgets\colormap\manager.py:281
 msgid ""
 "Name <b>%s</b> is already used by a default colormap, and cannot be used for "
 "a custom colormap.<br><br>Please choose another name."
@@ -2075,7 +2073,7 @@ msgstr ""
 "ne peut pas être utilisé pour une palette de couleurs personnalisée."
 "<br><br>Veuillez choisir un autre nom."
 
-#: plotpy\widgets\colormap\manager.py:287
+#: plotpy\widgets\colormap\manager.py:293
 msgid ""
 "Name <b>%s</b> is already used by a custom colormap.<br><br>Do you want to "
 "overwrite it?"
@@ -2083,32 +2081,27 @@ msgstr ""
 "Le nom <b>%s</b> est déjà utilisé par une palette de couleurs personnalisée."
 "<br><br>Voulez-vous l'écraser ?"
 
-#: plotpy\widgets\colormap\manager.py:303
+#: plotpy\widgets\colormap\manager.py:309
 msgid "New"
 msgstr "Nouveau"
 
-#: plotpy\widgets\colormap\manager.py:314
-#: plotpy\widgets\colormap\manager.py:323
-msgid "Delete colormap"
-msgstr "Supprimer la palette de couleurs"
-
-#: plotpy\widgets\colormap\manager.py:315
+#: plotpy\widgets\colormap\manager.py:321
 msgid "Colormap <b>%s</b> is a default colormap and cannot be deleted."
 msgstr ""
 "La palette de couleurs <b>%s</b> est une palette par défaut et ne peut pas "
 "être supprimée."
 
-#: plotpy\widgets\colormap\manager.py:324
+#: plotpy\widgets\colormap\manager.py:330
 msgid "Do you want to delete colormap <b>%s</b>?"
 msgstr "Souhaitez-vous supprimer la palette de couleurs <b>%s</b> ?"
 
-#: plotpy\widgets\colormap\manager.py:350
+#: plotpy\widgets\colormap\manager.py:356
 msgid "Save colormap"
 msgstr "Enregistrer la palette de couleurs"
 
-#: plotpy\widgets\colormap\manager.py:352
-msgid "New colormap"
-msgstr "Nouvelle palette de couleurs"
+#: plotpy\widgets\colormap\manager.py:358
+msgid "Add colormap"
+msgstr "Ajouter une palette de couleurs"
 
 #: plotpy\widgets\colormap\widget.py:311
 msgid "Right click to add/remove a color"
@@ -2271,6 +2264,12 @@ msgstr "Rotation et rognage"
 #: plotpy\widgets\rotatecrop.py:219
 msgid "Show cropping rectangle"
 msgstr "Afficher le rectangle de rognage"
+
+#~ msgid "Save"
+#~ msgstr "Enregistrer"
+
+#~ msgid "Delete colormap"
+#~ msgstr "Supprimer la palette de couleurs"
 
 #~ msgid "Create new colormap"
 #~ msgstr "Créer une nouvelle palette de couleurs"

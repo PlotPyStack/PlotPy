@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-03-01 09:05+0100\n"
+"POT-Creation-Date: 2024-03-01 09:20+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -378,7 +378,9 @@ msgstr ""
 
 #: plotpy\panels\itemlist.py:94 plotpy\panels\itemlist.py:236
 #: plotpy\tools\item.py:154 plotpy\tools\item.py:179
-#: plotpy\widgets\colormap\manager.py:149
+#: plotpy\widgets\colormap\manager.py:155
+#: plotpy\widgets\colormap\manager.py:320
+#: plotpy\widgets\colormap\manager.py:329
 msgid "Remove"
 msgstr ""
 
@@ -1971,69 +1973,60 @@ msgstr ""
 msgid "Must be a value between 0.0 and 1.0."
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:61
-msgid "Save"
-msgstr ""
-
-#: plotpy\widgets\colormap\manager.py:63
+#: plotpy\widgets\colormap\manager.py:66
 msgid "Enter a colormap name:"
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:69
+#: plotpy\widgets\colormap\manager.py:72
 msgid "New colormap name cannot contain special characters except underscores (_)."
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:128
+#: plotpy\widgets\colormap\manager.py:134
 msgid "Colormap manager"
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:147
+#: plotpy\widgets\colormap\manager.py:153
 msgid "Add"
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:154
+#: plotpy\widgets\colormap\manager.py:160
 msgid "Select or create a colormap"
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:155
+#: plotpy\widgets\colormap\manager.py:161
 msgid "Colormap presets:"
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:168
+#: plotpy\widgets\colormap\manager.py:174
 msgid "Edit the selected colormap"
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:275
+#: plotpy\widgets\colormap\manager.py:281
 msgid "Name <b>%s</b> is already used by a default colormap, and cannot be used for a custom colormap.<br><br>Please choose another name."
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:287
+#: plotpy\widgets\colormap\manager.py:293
 msgid "Name <b>%s</b> is already used by a custom colormap.<br><br>Do you want to overwrite it?"
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:303
+#: plotpy\widgets\colormap\manager.py:309
 msgid "New"
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:314
-#: plotpy\widgets\colormap\manager.py:323
-msgid "Delete colormap"
-msgstr ""
-
-#: plotpy\widgets\colormap\manager.py:315
+#: plotpy\widgets\colormap\manager.py:321
 msgid "Colormap <b>%s</b> is a default colormap and cannot be deleted."
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:324
+#: plotpy\widgets\colormap\manager.py:330
 msgid "Do you want to delete colormap <b>%s</b>?"
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:350
+#: plotpy\widgets\colormap\manager.py:356
 msgid "Save colormap"
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:352
-msgid "New colormap"
+#: plotpy\widgets\colormap\manager.py:358
+msgid "Add colormap"
 msgstr ""
 
 #: plotpy\widgets\colormap\widget.py:311
