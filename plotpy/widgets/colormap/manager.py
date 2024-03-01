@@ -144,13 +144,9 @@ class ColorMapManager(QW.QDialog):
         self._cmap_choice.setIconSize(QC.QSize(LARGE_ICON_WIDTH, LARGE_ICON_HEIGHT))
         self._cmap_choice.setCurrentText(active_colormap)
 
-        new_btn = QW.QPushButton(
-            get_icon("edit_add.png"), _("Create new colormap") + "..."
-        )
+        new_btn = QW.QPushButton(get_icon("edit_add.png"), _("Add") + "...")
         new_btn.clicked.connect(self.new_colormap)
-        self._del_btn = QW.QPushButton(
-            get_icon("delete.png"), _("Delete colormap") + "..."
-        )
+        self._del_btn = QW.QPushButton(get_icon("delete.png"), _("Remove") + "...")
         is_custom_cmap = cmap_exists(active_colormap, CUSTOM_COLORMAPS)
         self._del_btn.setEnabled(is_custom_cmap)
         self._del_btn.clicked.connect(self.delete_colormap)
@@ -318,7 +314,7 @@ class ColorMapManager(QW.QDialog):
                 _("Delete colormap"),
                 _("Colormap <b>%s</b> is a default colormap and cannot be deleted.")
                 % cmap.name,
-                QW.QMessageBox.StandardButton.Cancel,
+                QW.QMessageBox.Ok,
             )
             return
         if (
@@ -327,7 +323,7 @@ class ColorMapManager(QW.QDialog):
                 _("Delete colormap"),
                 _("Do you want to delete colormap <b>%s</b>?") % cmap.name,
                 QW.QMessageBox.Yes | QW.QMessageBox.No,
-                QW.QMessageBox.StandardButton.No,
+                QW.QMessageBox.No,
             )
             == QW.QMessageBox.No
         ):

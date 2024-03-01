@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-02-08 11:05+0100\n"
+"POT-Creation-Date: 2024-03-01 09:05+0100\n"
 "PO-Revision-Date: 2019-02-20 14:42+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -401,6 +401,7 @@ msgstr "Déplacer vers le premier plan"
 
 #: plotpy\panels\itemlist.py:94 plotpy\panels\itemlist.py:236
 #: plotpy\tools\item.py:154 plotpy\tools\item.py:179
+#: plotpy\widgets\colormap\manager.py:149
 msgid "Remove"
 msgstr "Supprimer"
 
@@ -982,7 +983,7 @@ msgid "Global alpha value"
 msgstr "Valeur globale du canal alpha"
 
 #: plotpy\styles\image.py:81 plotpy\styles\image.py:164
-#: plotpy\tools\image.py:449
+#: plotpy\tools\image.py:445
 msgid "Colormap"
 msgstr "Palette de couleurs"
 
@@ -1104,7 +1105,7 @@ msgid "y|max"
 msgstr "y|max"
 
 #: plotpy\styles\image.py:367 plotpy\styles\image.py:372
-#: plotpy\tools\image.py:553
+#: plotpy\tools\image.py:550
 msgid "Mask"
 msgstr "Masque"
 
@@ -1112,7 +1113,7 @@ msgstr "Masque"
 msgid "Filling value"
 msgstr "Valeur de remplissage"
 
-#: plotpy\styles\image.py:369 plotpy\tools\image.py:597
+#: plotpy\styles\image.py:369 plotpy\tools\image.py:594
 msgid "Show image mask"
 msgstr "Afficher le masque"
 
@@ -1696,116 +1697,116 @@ msgstr "Impossible d'exporter les données de l'objet sélectionné."
 msgid "Error message:"
 msgstr "Message d'erreur :"
 
-#: plotpy\tools\image.py:134 plotpy\tools\image.py:136
+#: plotpy\tools\image.py:130 plotpy\tools\image.py:132
 msgid "No available data"
 msgstr "Pas de données disponibles"
 
-#: plotpy\tools\image.py:162 plotpy\tools\image.py:230
+#: plotpy\tools\image.py:158 plotpy\tools\image.py:226
 msgid "Image statistics"
 msgstr "Statistiques de l'image"
 
-#: plotpy\tools\image.py:290
+#: plotpy\tools\image.py:286
 msgid "Reverse Y axis"
 msgstr "Inverser l'axe des ordonnées"
 
-#: plotpy\tools\image.py:315
+#: plotpy\tools\image.py:311
 msgid "Lock aspect ratio"
 msgstr "Verrouiller le rapport hauteur/largeur"
 
-#: plotpy\tools\image.py:316
+#: plotpy\tools\image.py:312
 msgid "Current value"
 msgstr "Valeur actuelle"
 
-#: plotpy\tools\image.py:317
+#: plotpy\tools\image.py:313
 msgid "Lock value"
 msgstr "Valeur imposée"
 
-#: plotpy\tools\image.py:327 plotpy\tools\image.py:332
+#: plotpy\tools\image.py:323 plotpy\tools\image.py:328
 msgid "Aspect ratio"
 msgstr "Rapport hauteur/largeur"
 
-#: plotpy\tools\image.py:335 plotpy\tools\image.py:828
-#: plotpy\tools\image.py:873
+#: plotpy\tools\image.py:331 plotpy\tools\image.py:825
+#: plotpy\tools\image.py:870
 msgid "Lock"
 msgstr "Verrouiller"
 
-#: plotpy\tools\image.py:338
+#: plotpy\tools\image.py:334
 msgid "1:1"
 msgstr "1:1"
 
-#: plotpy\tools\image.py:341
+#: plotpy\tools\image.py:337
 msgid "Edit..."
 msgstr "Modifier..."
 
-#: plotpy\tools\image.py:417
+#: plotpy\tools\image.py:413
 msgid "Contrast adjustment"
 msgstr "Réglage du contraste"
 
-#: plotpy\tools\image.py:450
+#: plotpy\tools\image.py:446
 msgid "Select colormap for active image"
 msgstr "Sélectionne la palette de couleurs de l'image active"
 
-#: plotpy\tools\image.py:512
+#: plotpy\tools\image.py:508
 msgid "Colormap: %s"
 msgstr "Palette de couleurs : %s"
 
-#: plotpy\tools\image.py:555
+#: plotpy\tools\image.py:552
 msgid "Manage image masking areas"
 msgstr "Gestion des zones de masquage"
 
-#: plotpy\tools\image.py:570
+#: plotpy\tools\image.py:567
 msgid "Mask rectangular area (inside)"
 msgstr "Masquer l'intérieur d'une zone rectangulaire"
 
-#: plotpy\tools\image.py:577
+#: plotpy\tools\image.py:574
 msgid "Mask rectangular area (outside)"
 msgstr "Masquer l'extérieur d'une zone rectangulaire"
 
-#: plotpy\tools\image.py:584
+#: plotpy\tools\image.py:581
 msgid "Mask circular area (inside)"
 msgstr "Masquer l'intérieur d'une zone circulaire"
 
-#: plotpy\tools\image.py:591
+#: plotpy\tools\image.py:588
 msgid "Mask circular area (outside)"
 msgstr "Masquer l'extérieur d'une zone circulaire"
 
-#: plotpy\tools\image.py:600
+#: plotpy\tools\image.py:597
 msgid "Show masking shapes"
 msgstr "Afficher les formes de masquage"
 
-#: plotpy\tools\image.py:604
+#: plotpy\tools\image.py:601
 msgid "Apply mask"
 msgstr "Appliquer le masque"
 
-#: plotpy\tools\image.py:607 plotpy\tools\image.py:804
+#: plotpy\tools\image.py:604 plotpy\tools\image.py:801
 msgid "Clear mask"
 msgstr "Supprimer le masque"
 
-#: plotpy\tools\image.py:610 plotpy\tools\image.py:683
+#: plotpy\tools\image.py:607 plotpy\tools\image.py:680
 msgid "Remove all masking shapes"
 msgstr "Supprimer toutes les formes de masquage"
 
-#: plotpy\tools\image.py:679
+#: plotpy\tools\image.py:676
 msgid "Do you really want to remove all masking shapes?"
 msgstr "Souhaitez-vous vraiment supprimer toutes les formes de masquages ?"
 
-#: plotpy\tools\image.py:801
+#: plotpy\tools\image.py:798
 msgid "Do you really want to clear the mask?"
 msgstr "Souhaitez-vous vraiment effacer le masque ?"
 
-#: plotpy\tools\image.py:879
+#: plotpy\tools\image.py:876
 msgid "Unlock"
 msgstr "Déverrouiller"
 
-#: plotpy\tools\image.py:903
+#: plotpy\tools\image.py:900
 msgid "Open image"
 msgstr "Ouvrir une image"
 
-#: plotpy\tools\image.py:928
+#: plotpy\tools\image.py:925
 msgid "Rotation Center"
 msgstr "Centre de rotation"
 
-#: plotpy\tools\image.py:1074
+#: plotpy\tools\image.py:1071
 msgid "Rotate and crop"
 msgstr "Rotation et rognage"
 
@@ -2030,42 +2031,42 @@ msgstr "Relative position"
 msgid "Must be a value between 0.0 and 1.0."
 msgstr "Doit être une valeur entre 0.0 et 1.0"
 
-#: plotpy\widgets\colormap\manager.py:60
+#: plotpy\widgets\colormap\manager.py:61
 msgid "Save"
 msgstr "Enregistrer"
 
-#: plotpy\widgets\colormap\manager.py:62
+#: plotpy\widgets\colormap\manager.py:63
 msgid "Enter a colormap name:"
 msgstr "Entrer un nom de palette de couleurs :"
 
-#: plotpy\widgets\colormap\manager.py:67
+#: plotpy\widgets\colormap\manager.py:69
 msgid ""
 "New colormap name cannot contain special characters except underscores (_)."
 msgstr ""
 "Un nom de colormap ne peut pas contenir de caractères spéciauxexcepté les "
 "tirets bas (_)."
 
-#: plotpy\widgets\colormap\manager.py:126
+#: plotpy\widgets\colormap\manager.py:128
 msgid "Colormap manager"
 msgstr "Gestionnaire de palettes de couleurs"
 
-#: plotpy\widgets\colormap\manager.py:144
+#: plotpy\widgets\colormap\manager.py:147
+msgid "Add"
+msgstr "Ajouter"
+
+#: plotpy\widgets\colormap\manager.py:154
 msgid "Select or create a colormap"
 msgstr "Sélectionner ou créer une palette de couleurs"
 
-#: plotpy\widgets\colormap\manager.py:145
+#: plotpy\widgets\colormap\manager.py:155
 msgid "Colormap presets:"
 msgstr "Palettes de couleurs prédéfinies :"
 
-#: plotpy\widgets\colormap\manager.py:146
-msgid "Create new colormap"
-msgstr "Créer une nouvelle palette de couleurs"
-
-#: plotpy\widgets\colormap\manager.py:160
+#: plotpy\widgets\colormap\manager.py:168
 msgid "Edit the selected colormap"
 msgstr "Modifier la palette de couleurs sélectionnée"
 
-#: plotpy\widgets\colormap\manager.py:263
+#: plotpy\widgets\colormap\manager.py:275
 msgid ""
 "Name <b>%s</b> is already used by a default colormap, and cannot be used for "
 "a custom colormap.<br><br>Please choose another name."
@@ -2074,7 +2075,7 @@ msgstr ""
 "ne peut pas être utilisé pour une palette de couleurs personnalisée."
 "<br><br>Veuillez choisir un autre nom."
 
-#: plotpy\widgets\colormap\manager.py:275
+#: plotpy\widgets\colormap\manager.py:287
 msgid ""
 "Name <b>%s</b> is already used by a custom colormap.<br><br>Do you want to "
 "overwrite it?"
@@ -2082,15 +2083,30 @@ msgstr ""
 "Le nom <b>%s</b> est déjà utilisé par une palette de couleurs personnalisée."
 "<br><br>Voulez-vous l'écraser ?"
 
-#: plotpy\widgets\colormap\manager.py:291
+#: plotpy\widgets\colormap\manager.py:303
 msgid "New"
 msgstr "Nouveau"
 
-#: plotpy\widgets\colormap\manager.py:306
+#: plotpy\widgets\colormap\manager.py:314
+#: plotpy\widgets\colormap\manager.py:323
+msgid "Delete colormap"
+msgstr "Supprimer la palette de couleurs"
+
+#: plotpy\widgets\colormap\manager.py:315
+msgid "Colormap <b>%s</b> is a default colormap and cannot be deleted."
+msgstr ""
+"La palette de couleurs <b>%s</b> est une palette par défaut et ne peut pas "
+"être supprimée."
+
+#: plotpy\widgets\colormap\manager.py:324
+msgid "Do you want to delete colormap <b>%s</b>?"
+msgstr "Souhaitez-vous supprimer la palette de couleurs <b>%s</b> ?"
+
+#: plotpy\widgets\colormap\manager.py:350
 msgid "Save colormap"
 msgstr "Enregistrer la palette de couleurs"
 
-#: plotpy\widgets\colormap\manager.py:308
+#: plotpy\widgets\colormap\manager.py:352
 msgid "New colormap"
 msgstr "Nouvelle palette de couleurs"
 
@@ -2255,6 +2271,9 @@ msgstr "Rotation et rognage"
 #: plotpy\widgets\rotatecrop.py:219
 msgid "Show cropping rectangle"
 msgstr "Afficher le rectangle de rognage"
+
+#~ msgid "Create new colormap"
+#~ msgstr "Créer une nouvelle palette de couleurs"
 
 #~ msgid "Custom colormap %s already exists, do you want to overwrite it?"
 #~ msgstr ""
