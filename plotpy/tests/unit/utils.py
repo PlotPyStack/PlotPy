@@ -77,13 +77,13 @@ def mouse_event_at_relative_plot_pos(
         relative_xy[0] * size.width(),
         relative_xy[1] * size.height(),
     )
-    canvas_pos = QC.QPointF(pos_x, pos_y)
-    glob_pos = QC.QPointF(canvas.mapToGlobal(canvas_pos))
+    canva_pos = QC.QPointF(pos_x, pos_y).toPoint()
+    glob_pos = QC.QPointF(canvas.mapToGlobal(canva_pos))
 
     for type_ in click_types:
         mouse_event_press = QG.QMouseEvent(
             type_,
-            canvas_pos,
+            canva_pos,
             glob_pos,
             QC.Qt.MouseButton.LeftButton,
             QC.Qt.MouseButton.LeftButton,
