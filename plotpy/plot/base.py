@@ -434,7 +434,7 @@ class BasePlot(qwt.QwtPlot):
                 # This happens when object has already been deleted
                 pass
 
-    def on_active_curve(self, x: float, y: float) -> None:
+    def on_active_curve(self, x: float, y: float) -> tuple[float, float]:
         """
         Callback called when the active curve is moved
 
@@ -442,7 +442,7 @@ class BasePlot(qwt.QwtPlot):
             x (float): the x position
             y (float): the y position
         """
-        curve: CurveItem = self.get_last_active_item(itf.ITrackableItemType)
+        curve: CurveItem = self.get_last_active_item(itf.ICurveItemType)
         if curve:
             x, y = curve.get_closest_coordinates(x, y)
         return x, y
@@ -542,7 +542,7 @@ class BasePlot(qwt.QwtPlot):
         self,
         dx: tuple[float, float, float, float],
         dy: tuple[float, float, float, float],
-        replot: bool = True
+        replot: bool = True,
     ) -> None:
         """
         Translate the active axes according to dx, dy axis 'state' tuples
@@ -1676,6 +1676,7 @@ class BasePlot(qwt.QwtPlot):
         self.active_item = item
         if self.active_item is not None:
             if not item.selected:
+                print(f"Selecting item {item}")
                 self.select_item(self.active_item)
             self._active_xaxis = item.xAxis()
             self._active_yaxis = item.yAxis()

@@ -1028,10 +1028,10 @@ class EditPointTool(InteractiveTool):
         if not (isinstance(self.__x, np.ndarray) and isinstance(self.__y, np.ndarray)):
             return
 
-        backup_x_arr, backup_y_arr = self.__curve_item_array_backup[curve_item]
-        if self.__idx < backup_x_arr.size and (
-            self.__x[self.__idx] != backup_x_arr[self.__idx]
-            or self.__y[self.__idx] != backup_y_arr[self.__idx]
+        self.__x_bkp, self.__y_bkp = self.__curve_item_array_backup[curve_item]
+        if self.__idx < self.__x_bkp.size and (
+            self.__x[self.__idx] != self.__x_bkp[self.__idx]
+            or self.__y[self.__idx] != self.__y_bkp[self.__idx]
         ):
             self.__indexed_changes.setdefault(curve_item, {})[self.__idx] = (
                 self.__x[self.__idx],

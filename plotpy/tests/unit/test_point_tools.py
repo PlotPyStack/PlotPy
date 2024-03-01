@@ -118,8 +118,9 @@ def test_edit_point_tool():
 
         drag_mouse(win, qapp, x_path, y_path)
         curve_changes = tool.get_changes()[curve_item]
+
+        x_arr, y_arr = curve_item.get_data()
         for i, (x, y) in curve_changes.items():
-            x_arr, y_arr = curve_item.get_data()
             assert x == x_arr[i]
             assert y == y_arr[i]
 
