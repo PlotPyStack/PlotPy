@@ -41,6 +41,7 @@ from plotpy.mathutils.colormap import (
     add_cmap,
     build_icon_from_cmap,
     cmap_exists,
+    delete_cmap,
     get_cmap,
 )
 from plotpy.widgets.colormap.editor import ColorMapEditor
@@ -52,12 +53,15 @@ class ColorMapNameEdit(QW.QDialog):
 
     Args:
         parent: parent QWidget. Defaults to None.
+        title: dialog box title. Defaults to "".
         name: default colormap name. Defaults to "".
     """
 
-    def __init__(self, parent: QW.QWidget | None = None, name: str = "") -> None:
+    def __init__(
+        self, parent: QW.QWidget | None = None, title: str = "", name: str = ""
+    ) -> None:
         super().__init__(parent)
-        self.setWindowTitle(_("Save"))
+        self.setWindowTitle(title)
 
         label = QW.QLabel(_("Enter a colormap name:"))
         self._edit = QW.QLineEdit()
@@ -92,17 +96,20 @@ class ColorMapNameEdit(QW.QDialog):
         return self._edit.text()
 
     @classmethod
-    def edit(cls, parent: QW.QWidget | None = None, name: str = "") -> str | None:
+    def edit(
+        cls, parent: QW.QWidget | None = None, title: str = "", name: str = ""
+    ) -> str | None:
         """Open the dialog box and return the colormap name entered in the QLineEdit.
 
         Args:
             parent: parent QWidget. Defaults to None.
+            title: dialog box title. Defaults to "".
             name: default colormap name. Defaults to "".
 
         Returns:
             colormap name, or None if the dialog box was canceled.
         """
-        dialog = cls(parent, name)
+        dialog = cls(parent, title, name)
         if exec_dialog(dialog):
             return dialog.get_colormap_name()
         return None
@@ -113,8 +120,17 @@ class ColorMapManager(QW.QDialog):
 
     Args:
         parent: parent QWidget. Defaults to None.
-        active_colormap: name of the default colormap selected. If None or does not
-         *exists, will defaults to the first colormap in the list. Defaults to None
+        active_colormap: name of the active colormap.
+
+    .. note::
+
+        The active colormap is the colormap that will be selected by default when the
+        dialog box is opened. If the colormap does not exist (or if None is provided),
+        the first colormap in the list will be selected by default.
+
+        The active colormap cannot be removed. If the active colormap is a custom
+        colormap, the remove button will be enabled but a dialog box will warn the user
+        that the colormap cannot be removed.
     """
 
     def __init__(
@@ -126,10 +142,12 @@ class ColorMapManager(QW.QDialog):
         self.setWindowIcon(get_icon("cmap_edit.png"))
         self.setWindowTitle(_("Colormap manager"))
 
+        self.active_cmap_name = default_colormap = active_colormap
+
         self.__returned_colormap: EditableColormap | None = None
 
-        if active_colormap is None or not cmap_exists(active_colormap, ALL_COLORMAPS):
-            active_colormap = next(iter(ALL_COLORMAPS))
+        if default_colormap is None or not cmap_exists(default_colormap, ALL_COLORMAPS):
+            default_colormap = next(iter(ALL_COLORMAPS))
 
         # Select the active colormap
         self._cmap_choice = QW.QComboBox()
@@ -141,31 +159,36 @@ class ColorMapManager(QW.QDialog):
             self._cmap_choice.addItem(icon, cmap.name, cmap)
 
         self._cmap_choice.setIconSize(QC.QSize(LARGE_ICON_WIDTH, LARGE_ICON_HEIGHT))
-        self._cmap_choice.setCurrentText(active_colormap)
+        self._cmap_choice.setCurrentText(default_colormap)
+
+        add_btn = QW.QPushButton(get_icon("edit_add.png"), _("Add") + "...")
+        add_btn.clicked.connect(self.add_colormap)
+        self._remove_btn = QW.QPushButton(get_icon("delete.png"), _("Remove") + "...")
+        is_custom_cmap = cmap_exists(default_colormap, CUSTOM_COLORMAPS)
+        self._remove_btn.setEnabled(is_custom_cmap)
+        self._remove_btn.clicked.connect(self.remove_colormap)
+
         select_gbox = QW.QGroupBox(_("Select or create a colormap"))
         select_label = QW.QLabel(_("Colormap presets:"))
-        new_btn = QW.QPushButton(_("Create new colormap") + "...")
-        new_btn.clicked.connect(self.new_colormap)
         select_gbox_layout = QW.QHBoxLayout()
         select_gbox_layout.addWidget(select_label)
         select_gbox_layout.addWidget(self._cmap_choice)
         select_gbox_layout.addSpacing(10)
-        select_gbox_layout.addWidget(new_btn)
-        select_gbox_layout.addStretch(1)
+        select_gbox_layout.addWidget(add_btn)
+        select_gbox_layout.addWidget(self._remove_btn)
         select_gbox.setLayout(select_gbox_layout)
 
         # Edit the selected colormap
         self.colormap_editor = ColorMapEditor(
             self, colormap=deepcopy(self._cmap_choice.currentData())
         )
-        edit_gbox = QW.QGroupBox(_("Edit the selected colormap"))
+        self._edit_gbox = QW.QGroupBox(_("Edit the selected colormap"))
         edit_gbox_layout = QW.QVBoxLayout()
         edit_gbox_layout.setContentsMargins(0, 0, 0, 0)
         edit_gbox_layout.addWidget(self.colormap_editor)
-        edit_gbox.setLayout(edit_gbox_layout)
-        edit_gbox.setCheckable(True)
-        edit_gbox.setChecked(False)
-        new_btn.clicked.connect(lambda: edit_gbox.setChecked(True))
+        self._edit_gbox.setLayout(edit_gbox_layout)
+        self._edit_gbox.setCheckable(True)
+        self._edit_gbox.setChecked(False)
         self.colormap_editor.colormap_widget.COLORMAP_CHANGED.connect(
             self._changes_not_saved
         )
@@ -184,7 +207,7 @@ class ColorMapManager(QW.QDialog):
 
         dialog_layout = QW.QVBoxLayout()
         dialog_layout.addWidget(select_gbox)
-        dialog_layout.addWidget(edit_gbox)
+        dialog_layout.addWidget(self._edit_gbox)
         dialog_layout.addWidget(self.bbox)
         self.setLayout(dialog_layout)
 
@@ -229,8 +252,12 @@ class ColorMapManager(QW.QDialog):
         """
         cmap_copy: EditableColormap = deepcopy(self._cmap_choice.itemData(index))
         self.colormap_editor.set_colormap(cmap_copy)
-        is_new_colormap = not cmap_exists(cmap_copy.name)
+
+        is_custom_cmap = cmap_exists(cmap_copy.name, CUSTOM_COLORMAPS)
+        self._remove_btn.setEnabled(is_custom_cmap)
+
         self._changes_saved = True
+        is_new_colormap = not cmap_exists(cmap_copy.name)
         self._save_btn.setEnabled(is_new_colormap)  # type: ignore
 
     def get_colormap(self) -> EditableColormap | None:
@@ -254,7 +281,7 @@ class ColorMapManager(QW.QDialog):
         """
         new_name = name
         while True:
-            new_name = ColorMapNameEdit.edit(self, new_name)
+            new_name = ColorMapNameEdit.edit(self, title, new_name)
             if new_name is None:
                 return None
             if cmap_exists(new_name, DEFAULT_COLORMAPS):
@@ -262,7 +289,7 @@ class ColorMapManager(QW.QDialog):
                     self,
                     title,
                     _(
-                        "Name <b>%s</b> is already used by a default colormap, and "
+                        "Name <b>%s</b> is already used by a predefined colormap, and "
                         "cannot be used for a custom colormap.<br><br>"
                         "Please choose another name."
                     )
@@ -287,10 +314,50 @@ class ColorMapManager(QW.QDialog):
             break
         return new_name
 
-    def new_colormap(self) -> None:
+    def add_colormap(self) -> None:
         """Create a new colormap and set it as the current colormap."""
         cmap = EditableColormap(QG.QColor(0), QG.QColor(4294967295), name=_("New"))
-        self.save_colormap(cmap)
+        if self.save_colormap(cmap):
+            # If the colormap save dialog was accepted, then we enable the colormap
+            # editor group box.
+            # Otherwise, we leave the colormap editor group box at its current state.
+            self._edit_gbox.setChecked(True)
+
+    def remove_colormap(self) -> None:
+        """Remove the current colormap."""
+        cmap = self.colormap_editor.get_colormap()
+        if cmap is None:
+            return
+        name = cmap.name
+        if name == self.active_cmap_name or cmap_exists(name, DEFAULT_COLORMAPS):
+            if name == self.active_cmap_name:
+                msg = _("Colormap <b>%s</b> is the active colormap.")
+            else:
+                msg = _("Colormap <b>%s</b> is a predefined colormap.")
+            QW.QMessageBox.warning(
+                self,
+                _("Remove"),
+                msg % name + "<br>" + _("Thus, this colormap cannot be removed."),
+                QW.QMessageBox.Ok,
+            )
+            return
+        if (
+            QW.QMessageBox.question(
+                self,
+                _("Remove"),
+                _("Do you want to delete colormap <b>%s</b>?") % name,
+                QW.QMessageBox.Yes | QW.QMessageBox.No,
+                QW.QMessageBox.No,
+            )
+            == QW.QMessageBox.No
+        ):
+            return
+        delete_cmap(cmap)
+        current_index = self._cmap_choice.currentIndex()
+        self._cmap_choice.removeItem(current_index)
+        self._changes_saved = True
+        self._save_btn.setEnabled(False)
+        self._cmap_choice.setCurrentIndex(max(current_index - 1, 0))
 
     def save_colormap(self, cmap: EditableColormap | None = None) -> bool:
         """Saves the current colormap and handles the validation process. The saved
@@ -306,7 +373,7 @@ class ColorMapManager(QW.QDialog):
             cmap = self.colormap_editor.get_colormap()
             title = _("Save colormap")
         else:
-            title = _("New colormap")
+            title = _("Add colormap")
         new_name = self.__get_new_colormap_name(title, cmap.name)
         if new_name is None:
             return False
@@ -323,7 +390,9 @@ class ColorMapManager(QW.QDialog):
         cmap.name = new_name
         add_cmap(cmap)
 
-        icon = build_icon_from_cmap(cmap)
+        icon = build_icon_from_cmap(
+            cmap, LARGE_ICON_WIDTH, LARGE_ICON_HEIGHT, LARGE_ICON_ORIENTATION, 1
+        )
         if is_existing_custom_cmap:
             self._cmap_choice.setCurrentText(new_name)
             current_index = self._cmap_choice.currentIndex()

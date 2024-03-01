@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-02-16 09:47+0100\n"
+"POT-Creation-Date: 2024-03-01 10:00+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -78,8 +78,8 @@ msgstr ""
 msgid "Computation"
 msgstr ""
 
-#: plotpy\builder\plot.py:362 plotpy\items\grid.py:43 plotpy\plot\base.py:408
-#: plotpy\plot\base.py:461
+#: plotpy\builder\plot.py:362 plotpy\items\grid.py:43 plotpy\plot\base.py:415
+#: plotpy\plot\base.py:468
 msgid "Grid"
 msgstr ""
 
@@ -243,7 +243,7 @@ msgid "PolygonMap"
 msgstr ""
 
 #: plotpy\items\shape\axis.py:59 plotpy\items\shape\axis.py:108
-#: plotpy\plot\base.py:1858 plotpy\tools\axes.py:95
+#: plotpy\plot\base.py:1865 plotpy\tools\axes.py:95
 msgid "Axes"
 msgstr ""
 
@@ -386,6 +386,9 @@ msgstr ""
 
 #: plotpy\panels\itemlist.py:94 plotpy\panels\itemlist.py:236
 #: plotpy\tools\item.py:154 plotpy\tools\item.py:179
+#: plotpy\widgets\colormap\manager.py:166
+#: plotpy\widgets\colormap\manager.py:339
+#: plotpy\widgets\colormap\manager.py:347
 msgid "Remove"
 msgstr ""
 
@@ -401,41 +404,41 @@ msgstr ""
 msgid "Item list"
 msgstr ""
 
-#: plotpy\plot\base.py:347 plotpy\styles\image.py:464
+#: plotpy\plot\base.py:354 plotpy\styles\image.py:464
 #: plotpy\styles\label.py:71 plotpy\styles\label.py:137
 msgid "Left"
 msgstr ""
 
-#: plotpy\plot\base.py:348 plotpy\styles\image.py:465
+#: plotpy\plot\base.py:355 plotpy\styles\image.py:465
 #: plotpy\styles\label.py:72 plotpy\styles\label.py:138
 msgid "Right"
 msgstr ""
 
-#: plotpy\plot\base.py:349 plotpy\styles\image.py:467
+#: plotpy\plot\base.py:356 plotpy\styles\image.py:467
 #: plotpy\styles\label.py:74 plotpy\styles\label.py:140
 msgid "Bottom"
 msgstr ""
 
-#: plotpy\plot\base.py:350 plotpy\styles\image.py:466
+#: plotpy\plot\base.py:357 plotpy\styles\image.py:466
 #: plotpy\styles\label.py:73 plotpy\styles\label.py:139
 msgid "Top"
 msgstr ""
 
-#: plotpy\plot\base.py:1187
+#: plotpy\plot\base.py:1194
 msgid "Unknown file extension"
 msgstr ""
 
-#: plotpy\plot\base.py:1860
+#: plotpy\plot\base.py:1867
 msgid "Axes associated to selected item"
 msgstr ""
 
-#: plotpy\plot\base.py:1908 plotpy\styles\axes.py:81 plotpy\styles\axes.py:112
-#: plotpy\styles\base.py:567 plotpy\styles\base.py:573
+#: plotpy\plot\base.py:1915 plotpy\styles\axes.py:81 plotpy\styles\axes.py:112
+#: plotpy\styles\base.py:568 plotpy\styles\base.py:574
 msgid "Y Axis"
 msgstr ""
 
-#: plotpy\plot\base.py:1910 plotpy\styles\axes.py:75 plotpy\styles\axes.py:108
-#: plotpy\styles\base.py:566 plotpy\styles\base.py:572
+#: plotpy\plot\base.py:1917 plotpy\styles\axes.py:75 plotpy\styles\axes.py:108
+#: plotpy\styles\base.py:567 plotpy\styles\base.py:573
 msgid "X Axis"
 msgstr ""
 
@@ -463,8 +466,8 @@ msgstr ""
 msgid "Unit"
 msgstr ""
 
-#: plotpy\styles\axes.py:23 plotpy\styles\base.py:421
-#: plotpy\styles\base.py:469 plotpy\styles\errorbar.py:20
+#: plotpy\styles\axes.py:23 plotpy\styles\base.py:422
+#: plotpy\styles\base.py:470 plotpy\styles\errorbar.py:20
 msgid "Color"
 msgstr ""
 
@@ -698,84 +701,84 @@ msgstr ""
 msgid "Vertical"
 msgstr ""
 
-#: plotpy\styles\base.py:311
+#: plotpy\styles\base.py:312
 msgid "Family"
 msgstr ""
 
-#: plotpy\styles\base.py:312
+#: plotpy\styles\base.py:313
 msgid "Choose font"
 msgstr ""
 
-#: plotpy\styles\base.py:313
+#: plotpy\styles\base.py:314
 msgid "Size in point"
 msgstr ""
 
-#: plotpy\styles\base.py:314
+#: plotpy\styles\base.py:315
 msgid "Bold"
 msgstr ""
 
-#: plotpy\styles\base.py:315
+#: plotpy\styles\base.py:316
 msgid "Italic"
 msgstr ""
 
-#: plotpy\styles\base.py:356 plotpy\styles\base.py:420
-#: plotpy\styles\base.py:468
+#: plotpy\styles\base.py:357 plotpy\styles\base.py:421
+#: plotpy\styles\base.py:469
 msgid "Style"
 msgstr ""
 
-#: plotpy\styles\base.py:357
+#: plotpy\styles\base.py:358
 msgid "Size"
 msgstr ""
 
-#: plotpy\styles\base.py:358 plotpy\styles\label.py:50
+#: plotpy\styles\base.py:359 plotpy\styles\label.py:50
 msgid "Border"
 msgstr ""
 
-#: plotpy\styles\base.py:359 plotpy\styles\base.py:526
-#: plotpy\styles\base.py:564 plotpy\styles\histogram.py:95
+#: plotpy\styles\base.py:360 plotpy\styles\base.py:527
+#: plotpy\styles\base.py:565 plotpy\styles\histogram.py:95
 #: plotpy\styles\image.py:229 plotpy\styles\label.py:56
 msgid "Background color"
 msgstr ""
 
-#: plotpy\styles\base.py:360 plotpy\styles\base.py:527
+#: plotpy\styles\base.py:361 plotpy\styles\base.py:528
 msgid "Background alpha"
 msgstr ""
 
-#: plotpy\styles\base.py:422 plotpy\styles\errorbar.py:24
+#: plotpy\styles\base.py:423 plotpy\styles\errorbar.py:24
 #: plotpy\tests\widgets\test_simple_dialog.py:26
 #: plotpy\tests\widgets\test_simple_window.py:48
 msgid "Width"
 msgstr ""
 
-#: plotpy\styles\base.py:470 plotpy\styles\errorbar.py:22
+#: plotpy\styles\base.py:471 plotpy\styles\errorbar.py:22
 msgid "Alpha"
 msgstr ""
 
-#: plotpy\styles\base.py:471
+#: plotpy\styles\base.py:472
 msgid "Angle"
 msgstr ""
 
-#: plotpy\styles\base.py:472
+#: plotpy\styles\base.py:473
 msgid "sx"
 msgstr ""
 
-#: plotpy\styles\base.py:473
+#: plotpy\styles\base.py:474
 msgid "sy"
 msgstr ""
 
-#: plotpy\styles\base.py:524
+#: plotpy\styles\base.py:525
 msgid "Font"
 msgstr ""
 
-#: plotpy\styles\base.py:525 plotpy\styles\label.py:55
+#: plotpy\styles\base.py:526 plotpy\styles\label.py:55
 msgid "Text color"
 msgstr ""
 
-#: plotpy\styles\base.py:565
+#: plotpy\styles\base.py:566
 msgid "Major grid"
 msgstr ""
 
-#: plotpy\styles\base.py:568 plotpy\styles\base.py:574
+#: plotpy\styles\base.py:569 plotpy\styles\base.py:575
 #: plotpy\styles\curve.py:39 plotpy\styles\shape.py:45
 #: plotpy\styles\shape.py:48 plotpy\styles\shape.py:116
 #: plotpy\styles\shape.py:119 plotpy\styles\shape.py:189
@@ -784,7 +787,7 @@ msgstr ""
 msgid "Line"
 msgstr ""
 
-#: plotpy\styles\base.py:571
+#: plotpy\styles\base.py:572
 msgid "Minor grid"
 msgstr ""
 
@@ -1688,7 +1691,7 @@ msgid "Aspect ratio"
 msgstr ""
 
 #: plotpy\tools\image.py:331 plotpy\tools\image.py:825
-#: plotpy\tools\image.py:870
+#: plotpy\tools\image.py:871
 msgid "Lock"
 msgstr ""
 
@@ -1708,7 +1711,7 @@ msgstr ""
 msgid "Select colormap for active image"
 msgstr ""
 
-#: plotpy\tools\image.py:508
+#: plotpy\tools\image.py:509
 msgid "Colormap: %s"
 msgstr ""
 
@@ -1756,19 +1759,19 @@ msgstr ""
 msgid "Do you really want to clear the mask?"
 msgstr ""
 
-#: plotpy\tools\image.py:876
+#: plotpy\tools\image.py:877
 msgid "Unlock"
 msgstr ""
 
-#: plotpy\tools\image.py:900
+#: plotpy\tools\image.py:901
 msgid "Open image"
 msgstr ""
 
-#: plotpy\tools\image.py:925
+#: plotpy\tools\image.py:926
 msgid "Rotation Center"
 msgstr ""
 
-#: plotpy\tools\image.py:1071
+#: plotpy\tools\image.py:1072
 msgid "Rotate and crop"
 msgstr ""
 
@@ -1974,56 +1977,68 @@ msgstr ""
 msgid "Must be a value between 0.0 and 1.0."
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:60
-msgid "Save"
-msgstr ""
-
-#: plotpy\widgets\colormap\manager.py:62
+#: plotpy\widgets\colormap\manager.py:66
 msgid "Enter a colormap name:"
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:68
+#: plotpy\widgets\colormap\manager.py:72
 msgid "New colormap name cannot contain special characters except underscores (_)."
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:127
+#: plotpy\widgets\colormap\manager.py:143
 msgid "Colormap manager"
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:145
+#: plotpy\widgets\colormap\manager.py:164
+msgid "Add"
+msgstr ""
+
+#: plotpy\widgets\colormap\manager.py:171
 msgid "Select or create a colormap"
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:146
+#: plotpy\widgets\colormap\manager.py:172
 msgid "Colormap presets:"
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:147
-msgid "Create new colormap"
-msgstr ""
-
-#: plotpy\widgets\colormap\manager.py:161
+#: plotpy\widgets\colormap\manager.py:185
 msgid "Edit the selected colormap"
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:264
-msgid "Name <b>%s</b> is already used by a default colormap, and cannot be used for a custom colormap.<br><br>Please choose another name."
+#: plotpy\widgets\colormap\manager.py:291
+msgid "Name <b>%s</b> is already used by a predefined colormap, and cannot be used for a custom colormap.<br><br>Please choose another name."
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:276
+#: plotpy\widgets\colormap\manager.py:303
 msgid "Name <b>%s</b> is already used by a custom colormap.<br><br>Do you want to overwrite it?"
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:292
+#: plotpy\widgets\colormap\manager.py:319
 msgid "New"
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:307
+#: plotpy\widgets\colormap\manager.py:334
+msgid "Colormap <b>%s</b> is the active colormap."
+msgstr ""
+
+#: plotpy\widgets\colormap\manager.py:336
+msgid "Colormap <b>%s</b> is a predefined colormap."
+msgstr ""
+
+#: plotpy\widgets\colormap\manager.py:340
+msgid "Thus, this colormap cannot be removed."
+msgstr ""
+
+#: plotpy\widgets\colormap\manager.py:348
+msgid "Do you want to delete colormap <b>%s</b>?"
+msgstr ""
+
+#: plotpy\widgets\colormap\manager.py:374
 msgid "Save colormap"
 msgstr ""
 
-#: plotpy\widgets\colormap\manager.py:309
-msgid "New colormap"
+#: plotpy\widgets\colormap\manager.py:376
+msgid "Add colormap"
 msgstr ""
 
 #: plotpy\widgets\colormap\widget.py:303

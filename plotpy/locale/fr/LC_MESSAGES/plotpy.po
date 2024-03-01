@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-02-16 09:47+0100\n"
+"POT-Creation-Date: 2024-03-01 10:00+0100\n"
 "PO-Revision-Date: 2019-02-20 14:42+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -83,8 +83,8 @@ msgstr "Légende"
 msgid "Computation"
 msgstr "Calcul"
 
-#: plotpy\builder\plot.py:362 plotpy\items\grid.py:43 plotpy\plot\base.py:408
-#: plotpy\plot\base.py:461
+#: plotpy\builder\plot.py:362 plotpy\items\grid.py:43 plotpy\plot\base.py:415
+#: plotpy\plot\base.py:468
 msgid "Grid"
 msgstr "Grille"
 
@@ -149,7 +149,15 @@ msgid ""
 "function<br><b>Sigmoid</b>: Sigmoid alpha function<br><b>Hyperbolic tangent</"
 "b>: Hyperbolic tangent alpha function<br><b>Step</b>: Lowest value of the "
 "LUT is 100% transparent, other values are opaque"
-msgstr "La fonction alpha appliquée à la LUT (Look-Up Table)<br>pour contrôler la transparence de l'image:<br>(l'opacité maximale est donnée par le paramètre <b>Alpha global</b>)<br><br><b>Aucun</b>: Pas de fonction alpha<br><b>Constante</b>: Fonction alpha constante<br><b>Linéaire</b>: Fonction alpha linéaire<br><b>Sigmoïde</b>: Fonction alpha sigmoïde<br><b>Tangente hyperbolique</b>: Fonction alpha tangente hyperbolique<br><b>Echelon</b>: La plus petite valeur de la LUT est 100% transparente, les autres valeurs sont opaques"
+msgstr ""
+"La fonction alpha appliquée à la LUT (Look-Up Table)<br>pour contrôler la "
+"transparence de l'image:<br>(l'opacité maximale est donnée par le paramètre "
+"<b>Alpha global</b>)<br><br><b>Aucun</b>: Pas de fonction "
+"alpha<br><b>Constante</b>: Fonction alpha constante<br><b>Linéaire</b>: "
+"Fonction alpha linéaire<br><b>Sigmoïde</b>: Fonction alpha "
+"sigmoïde<br><b>Tangente hyperbolique</b>: Fonction alpha tangente "
+"hyperbolique<br><b>Echelon</b>: La plus petite valeur de la LUT est 100% "
+"transparente, les autres valeurs sont opaques"
 
 #: plotpy\io.py:157
 msgid "All supported files"
@@ -255,7 +263,7 @@ msgid "PolygonMap"
 msgstr "Polygone"
 
 #: plotpy\items\shape\axis.py:59 plotpy\items\shape\axis.py:108
-#: plotpy\plot\base.py:1858 plotpy\tools\axes.py:95
+#: plotpy\plot\base.py:1865 plotpy\tools\axes.py:95
 msgid "Axes"
 msgstr "Axes"
 
@@ -416,6 +424,9 @@ msgstr "Déplacer vers le premier plan"
 
 #: plotpy\panels\itemlist.py:94 plotpy\panels\itemlist.py:236
 #: plotpy\tools\item.py:154 plotpy\tools\item.py:179
+#: plotpy\widgets\colormap\manager.py:166
+#: plotpy\widgets\colormap\manager.py:339
+#: plotpy\widgets\colormap\manager.py:347
 msgid "Remove"
 msgstr "Supprimer"
 
@@ -431,41 +442,41 @@ msgstr "Souhaitez-vous vraiment supprimer les objets sélectionnés ?"
 msgid "Item list"
 msgstr "Liste des objets"
 
-#: plotpy\plot\base.py:347 plotpy\styles\image.py:464 plotpy\styles\label.py:71
+#: plotpy\plot\base.py:354 plotpy\styles\image.py:464 plotpy\styles\label.py:71
 #: plotpy\styles\label.py:137
 msgid "Left"
 msgstr "Gauche"
 
-#: plotpy\plot\base.py:348 plotpy\styles\image.py:465 plotpy\styles\label.py:72
+#: plotpy\plot\base.py:355 plotpy\styles\image.py:465 plotpy\styles\label.py:72
 #: plotpy\styles\label.py:138
 msgid "Right"
 msgstr "Droite"
 
-#: plotpy\plot\base.py:349 plotpy\styles\image.py:467 plotpy\styles\label.py:74
+#: plotpy\plot\base.py:356 plotpy\styles\image.py:467 plotpy\styles\label.py:74
 #: plotpy\styles\label.py:140
 msgid "Bottom"
 msgstr "Bas"
 
-#: plotpy\plot\base.py:350 plotpy\styles\image.py:466 plotpy\styles\label.py:73
+#: plotpy\plot\base.py:357 plotpy\styles\image.py:466 plotpy\styles\label.py:73
 #: plotpy\styles\label.py:139
 msgid "Top"
 msgstr "Haut"
 
-#: plotpy\plot\base.py:1187
+#: plotpy\plot\base.py:1194
 msgid "Unknown file extension"
 msgstr "Extension de fichier inconnue"
 
-#: plotpy\plot\base.py:1860
+#: plotpy\plot\base.py:1867
 msgid "Axes associated to selected item"
 msgstr "Axes associés à l'objet sélectionné"
 
-#: plotpy\plot\base.py:1908 plotpy\styles\axes.py:81 plotpy\styles\axes.py:112
-#: plotpy\styles\base.py:567 plotpy\styles\base.py:573
+#: plotpy\plot\base.py:1915 plotpy\styles\axes.py:81 plotpy\styles\axes.py:112
+#: plotpy\styles\base.py:568 plotpy\styles\base.py:574
 msgid "Y Axis"
 msgstr "Ordonnées"
 
-#: plotpy\plot\base.py:1910 plotpy\styles\axes.py:75 plotpy\styles\axes.py:108
-#: plotpy\styles\base.py:566 plotpy\styles\base.py:572
+#: plotpy\plot\base.py:1917 plotpy\styles\axes.py:75 plotpy\styles\axes.py:108
+#: plotpy\styles\base.py:567 plotpy\styles\base.py:573
 msgid "X Axis"
 msgstr "Abscisses"
 
@@ -495,7 +506,7 @@ msgstr "Titre"
 msgid "Unit"
 msgstr "Unité"
 
-#: plotpy\styles\axes.py:23 plotpy\styles\base.py:421 plotpy\styles\base.py:469
+#: plotpy\styles\axes.py:23 plotpy\styles\base.py:422 plotpy\styles\base.py:470
 #: plotpy\styles\errorbar.py:20
 msgid "Color"
 msgstr "Couleur"
@@ -730,84 +741,84 @@ msgstr "Horizontal"
 msgid "Vertical"
 msgstr "Vertical"
 
-#: plotpy\styles\base.py:311
+#: plotpy\styles\base.py:312
 msgid "Family"
 msgstr "Famille"
 
-#: plotpy\styles\base.py:312
+#: plotpy\styles\base.py:313
 msgid "Choose font"
 msgstr "Choisir une police"
 
-#: plotpy\styles\base.py:313
+#: plotpy\styles\base.py:314
 msgid "Size in point"
 msgstr "Taille en point"
 
-#: plotpy\styles\base.py:314
+#: plotpy\styles\base.py:315
 msgid "Bold"
 msgstr "Gras"
 
-#: plotpy\styles\base.py:315
+#: plotpy\styles\base.py:316
 msgid "Italic"
 msgstr "Italique"
 
-#: plotpy\styles\base.py:356 plotpy\styles\base.py:420
-#: plotpy\styles\base.py:468
+#: plotpy\styles\base.py:357 plotpy\styles\base.py:421
+#: plotpy\styles\base.py:469
 msgid "Style"
 msgstr "Style"
 
-#: plotpy\styles\base.py:357
+#: plotpy\styles\base.py:358
 msgid "Size"
 msgstr "Taille"
 
-#: plotpy\styles\base.py:358 plotpy\styles\label.py:50
+#: plotpy\styles\base.py:359 plotpy\styles\label.py:50
 msgid "Border"
 msgstr "Bordure"
 
-#: plotpy\styles\base.py:359 plotpy\styles\base.py:526
-#: plotpy\styles\base.py:564 plotpy\styles\histogram.py:95
+#: plotpy\styles\base.py:360 plotpy\styles\base.py:527
+#: plotpy\styles\base.py:565 plotpy\styles\histogram.py:95
 #: plotpy\styles\image.py:229 plotpy\styles\label.py:56
 msgid "Background color"
 msgstr "Couleur du fond"
 
-#: plotpy\styles\base.py:360 plotpy\styles\base.py:527
+#: plotpy\styles\base.py:361 plotpy\styles\base.py:528
 msgid "Background alpha"
 msgstr "Opacité du fond"
 
-#: plotpy\styles\base.py:422 plotpy\styles\errorbar.py:24
+#: plotpy\styles\base.py:423 plotpy\styles\errorbar.py:24
 #: plotpy\tests\widgets\test_simple_dialog.py:26
 #: plotpy\tests\widgets\test_simple_window.py:48
 msgid "Width"
 msgstr "Largeur"
 
-#: plotpy\styles\base.py:470 plotpy\styles\errorbar.py:22
+#: plotpy\styles\base.py:471 plotpy\styles\errorbar.py:22
 msgid "Alpha"
 msgstr "Alpha"
 
-#: plotpy\styles\base.py:471
+#: plotpy\styles\base.py:472
 msgid "Angle"
 msgstr "Angle"
 
-#: plotpy\styles\base.py:472
+#: plotpy\styles\base.py:473
 msgid "sx"
 msgstr "sx"
 
-#: plotpy\styles\base.py:473
+#: plotpy\styles\base.py:474
 msgid "sy"
 msgstr "sy"
 
-#: plotpy\styles\base.py:524
+#: plotpy\styles\base.py:525
 msgid "Font"
 msgstr "Police"
 
-#: plotpy\styles\base.py:525 plotpy\styles\label.py:55
+#: plotpy\styles\base.py:526 plotpy\styles\label.py:55
 msgid "Text color"
 msgstr "Couleur du texte"
 
-#: plotpy\styles\base.py:565
+#: plotpy\styles\base.py:566
 msgid "Major grid"
 msgstr "Quadrillage primaire"
 
-#: plotpy\styles\base.py:568 plotpy\styles\base.py:574
+#: plotpy\styles\base.py:569 plotpy\styles\base.py:575
 #: plotpy\styles\curve.py:39 plotpy\styles\shape.py:45
 #: plotpy\styles\shape.py:48 plotpy\styles\shape.py:116
 #: plotpy\styles\shape.py:119 plotpy\styles\shape.py:189
@@ -816,7 +827,7 @@ msgstr "Quadrillage primaire"
 msgid "Line"
 msgstr "Trait"
 
-#: plotpy\styles\base.py:571
+#: plotpy\styles\base.py:572
 msgid "Minor grid"
 msgstr "Quadrillage secondaire"
 
@@ -1736,7 +1747,7 @@ msgid "Aspect ratio"
 msgstr "Rapport hauteur/largeur"
 
 #: plotpy\tools\image.py:331 plotpy\tools\image.py:825
-#: plotpy\tools\image.py:870
+#: plotpy\tools\image.py:871
 msgid "Lock"
 msgstr "Verrouiller"
 
@@ -1756,7 +1767,7 @@ msgstr "Réglage du contraste"
 msgid "Select colormap for active image"
 msgstr "Sélectionne la palette de couleurs de l'image active"
 
-#: plotpy\tools\image.py:508
+#: plotpy\tools\image.py:509
 msgid "Colormap: %s"
 msgstr "Palette de couleurs : %s"
 
@@ -1804,19 +1815,19 @@ msgstr "Souhaitez-vous vraiment supprimer toutes les formes de masquages ?"
 msgid "Do you really want to clear the mask?"
 msgstr "Souhaitez-vous vraiment effacer le masque ?"
 
-#: plotpy\tools\image.py:876
+#: plotpy\tools\image.py:877
 msgid "Unlock"
 msgstr "Déverrouiller"
 
-#: plotpy\tools\image.py:900
+#: plotpy\tools\image.py:901
 msgid "Open image"
 msgstr "Ouvrir une image"
 
-#: plotpy\tools\image.py:925
+#: plotpy\tools\image.py:926
 msgid "Rotation Center"
 msgstr "Centre de rotation"
 
-#: plotpy\tools\image.py:1071
+#: plotpy\tools\image.py:1072
 msgid "Rotate and crop"
 msgstr "Rotation et rognage"
 
@@ -2041,51 +2052,47 @@ msgstr "Relative position"
 msgid "Must be a value between 0.0 and 1.0."
 msgstr "Doit être une valeur entre 0.0 et 1.0"
 
-#: plotpy\widgets\colormap\manager.py:60
-msgid "Save"
-msgstr "Enregistrer"
-
-#: plotpy\widgets\colormap\manager.py:62
+#: plotpy\widgets\colormap\manager.py:66
 msgid "Enter a colormap name:"
 msgstr "Entrer un nom de palette de couleurs :"
 
-#: plotpy\widgets\colormap\manager.py:68
+#: plotpy\widgets\colormap\manager.py:72
 msgid ""
 "New colormap name cannot contain special characters except underscores (_)."
 msgstr ""
 "Un nom de colormap ne peut pas contenir de caractères spéciauxexcepté les "
 "tirets bas (_)."
 
-#: plotpy\widgets\colormap\manager.py:127
+#: plotpy\widgets\colormap\manager.py:143
 msgid "Colormap manager"
 msgstr "Gestionnaire de palettes de couleurs"
 
-#: plotpy\widgets\colormap\manager.py:145
+#: plotpy\widgets\colormap\manager.py:164
+msgid "Add"
+msgstr "Ajouter"
+
+#: plotpy\widgets\colormap\manager.py:171
 msgid "Select or create a colormap"
 msgstr "Sélectionner ou créer une palette de couleurs"
 
-#: plotpy\widgets\colormap\manager.py:146
+#: plotpy\widgets\colormap\manager.py:172
 msgid "Colormap presets:"
 msgstr "Palettes de couleurs prédéfinies :"
 
-#: plotpy\widgets\colormap\manager.py:147
-msgid "Create new colormap"
-msgstr "Créer une nouvelle palette de couleurs"
-
-#: plotpy\widgets\colormap\manager.py:161
+#: plotpy\widgets\colormap\manager.py:185
 msgid "Edit the selected colormap"
 msgstr "Modifier la palette de couleurs sélectionnée"
 
-#: plotpy\widgets\colormap\manager.py:264
+#: plotpy\widgets\colormap\manager.py:291
 msgid ""
-"Name <b>%s</b> is already used by a default colormap, and cannot be used for "
-"a custom colormap.<br><br>Please choose another name."
+"Name <b>%s</b> is already used by a predefined colormap, and cannot be used "
+"for a custom colormap.<br><br>Please choose another name."
 msgstr ""
-"Le nom <b>%s</b> est déjà utilisé par une palette de couleurs par défaut, et "
-"ne peut pas être utilisé pour une palette de couleurs personnalisée."
-"<br><br>Veuillez choisir un autre nom."
+"Le nom <b>%s</b> est déjà utilisé par une palette de couleurs prédéfinie, et "
+"ne peut pas être utilisé pour une palette personnalisée.<br><br>Veuillez "
+"choisir un autre nom."
 
-#: plotpy\widgets\colormap\manager.py:276
+#: plotpy\widgets\colormap\manager.py:303
 msgid ""
 "Name <b>%s</b> is already used by a custom colormap.<br><br>Do you want to "
 "overwrite it?"
@@ -2093,17 +2100,33 @@ msgstr ""
 "Le nom <b>%s</b> est déjà utilisé par une palette de couleurs personnalisée."
 "<br><br>Voulez-vous l'écraser ?"
 
-#: plotpy\widgets\colormap\manager.py:292
+#: plotpy\widgets\colormap\manager.py:319
 msgid "New"
 msgstr "Nouveau"
 
-#: plotpy\widgets\colormap\manager.py:307
+#: plotpy\widgets\colormap\manager.py:334
+msgid "Colormap <b>%s</b> is the active colormap."
+msgstr "La palette de couleurs <b>%s</b> est la palette active."
+
+#: plotpy\widgets\colormap\manager.py:336
+msgid "Colormap <b>%s</b> is a predefined colormap."
+msgstr "La palette de couleurs <b>%s</b> est une palette prédéfinie."
+
+#: plotpy\widgets\colormap\manager.py:340
+msgid "Thus, this colormap cannot be removed."
+msgstr "Cette palette de couleurs ne peut donc pas être supprimée."
+
+#: plotpy\widgets\colormap\manager.py:348
+msgid "Do you want to delete colormap <b>%s</b>?"
+msgstr "Souhaitez-vous supprimer la palette de couleurs <b>%s</b> ?"
+
+#: plotpy\widgets\colormap\manager.py:374
 msgid "Save colormap"
 msgstr "Enregistrer la palette de couleurs"
 
-#: plotpy\widgets\colormap\manager.py:309
-msgid "New colormap"
-msgstr "Nouvelle palette de couleurs"
+#: plotpy\widgets\colormap\manager.py:376
+msgid "Add colormap"
+msgstr "Ajouter une palette de couleurs"
 
 #: plotpy\widgets\colormap\widget.py:303
 msgid "Right click to add/remove a color"
@@ -2266,31 +2289,3 @@ msgstr "Rotation et rognage"
 #: plotpy\widgets\rotatecrop.py:219
 msgid "Show cropping rectangle"
 msgstr "Afficher le rectangle de rognage"
-
-#~ msgid "Alpha function applied to the Look-Up Table"
-#~ msgstr "Fonction alpha appliquée à la table de couleur (LUT)"
-
-#~ msgid "Custom colormap %s already exists, do you want to overwrite it?"
-#~ msgstr ""
-#~ "La palette de couleurs personnalisée %s existe déjà, voulez-vous "
-#~ "l'écraser ?"
-
-#~ msgid ""
-#~ "New colormap \"%s\" is a default colormap and cannot be overwritten. "
-#~ "Change its name to save it as a custom colormap."
-#~ msgstr ""
-#~ "La nouvelle table des couleurs \"%s\" est une table des couleurs par "
-#~ "défaut et ne peut pas être remplacée. Modifiez son nom pour l'enregistrer "
-#~ "en tant que carte de couleurs personnalisée."
-
-#~ msgid "Close"
-#~ msgstr "Fermer"
-
-#~ msgid ""
-#~ "Current changes not saved. The current colormap will be discarded when "
-#~ "the editor is closed.\n"
-#~ "Do you want to save the changes?"
-#~ msgstr ""
-#~ "Les modifications actuelles ne sont pas sauvegardées. La palette de "
-#~ "couleurs actuelle sera supprimée lorsque l'éditeur éditeur sera fermé.\n"
-#~ "Voulez-vous enregistrer les modifications ?"
