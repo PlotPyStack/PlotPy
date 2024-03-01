@@ -23,7 +23,7 @@ class SVGToolExample(RectangularShapeTool):
     """Tool to select a rectangular area and create a pattern from it"""
 
     TITLE = "Pattern selection tool"
-    ICON = "pattern.svg"
+    ICON = "your_icon.svg"
     AVOID_NULL_SHAPE = True
     SVG_FNAME = get_path("svg_tool.svg")
 

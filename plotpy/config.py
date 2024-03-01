@@ -28,7 +28,7 @@ def make_title(basename, count):
 
 
 APP_PATH = osp.dirname(__file__)
-add_image_module_path("plotpy", "images")
+add_image_module_path("plotpy", "data/icons")
 _ = get_translation("plotpy")
 
 DEFAULTS = {
