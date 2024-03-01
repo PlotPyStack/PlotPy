@@ -909,7 +909,7 @@ class WheelZoomHandler(WheelHandler):
         Args:
             plot: instance of BasePlot to use as a reference.
             pos: position on the plot canvas of the current hotspot.
-            factor: factor by which to zoom.
+            factor: factor by which to zoom (zero-centered).
 
         Returns:
             Returns two tuples of four floats each, representing the parameters used
