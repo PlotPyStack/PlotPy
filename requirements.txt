@@ -4,7 +4,7 @@ NumPy>=1.17
 Pillow
 tifffile
 PyQt5
-PythonQwt>=0.12
+PythonQwt>=0.12.1
 SciPy>=1.3
 black
 guidata>=3.1
