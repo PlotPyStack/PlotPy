@@ -26,7 +26,6 @@ def test_baseplot_api():
         plot = win.get_plot()
         plot.manager.add_tool(SelectPointsTool)
         plot.manager.add_tool(EditPointTool)
-        plot.manager.add_tool(DownSamplingTool)  # noqa: F821
         plot.get_default_item()
         title = "Test title"
         plot.set_title(title)

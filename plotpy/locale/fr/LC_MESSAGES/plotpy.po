@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-03-01 10:00+0100\n"
+"POT-Creation-Date: 2024-03-01 10:13+0100\n"
 "PO-Revision-Date: 2019-02-20 14:42+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -1468,7 +1468,7 @@ msgid "Right-click on the curve to enable/disable downsampling"
 msgstr ""
 "Clic droit sur la courbe pour activer/désactiver le sous-échantillonnage"
 
-#: plotpy\tests\tools\test_edit_point.py:47 plotpy\tools\curve.py:836
+#: plotpy\tests\tools\test_edit_point.py:47 plotpy\tools\curve.py:837
 msgid "Insert point"
 msgstr "Insérer un point"
 
@@ -1650,71 +1650,71 @@ msgstr "Curseur horizontal"
 msgid "Cross cursor"
 msgstr "Curseur croix"
 
-#: plotpy\tools\curve.py:50
+#: plotpy\tools\curve.py:51
 msgid "Signal statistics"
 msgstr "Statistiques du signal"
 
-#: plotpy\tools\curve.py:156
+#: plotpy\tools\curve.py:157
 msgid "Antialiasing (curves)"
 msgstr "Anticrénelage (courbes)"
 
-#: plotpy\tools\curve.py:190
+#: plotpy\tools\curve.py:191
 msgid "Point selection"
 msgstr "Sélection d'un point"
 
-#: plotpy\tools\curve.py:340
+#: plotpy\tools\curve.py:341
 msgid "Multi-point selection"
 msgstr "Sélection multi-points"
 
-#: plotpy\tools\curve.py:629
+#: plotpy\tools\curve.py:630
 msgid "Insertion index"
 msgstr "Index d'insertion"
 
-#: plotpy\tools\curve.py:631
+#: plotpy\tools\curve.py:632
 msgid "New value"
 msgstr "Nouvelle valeur"
 
-#: plotpy\tools\curve.py:633
+#: plotpy\tools\curve.py:634
 msgid "After"
 msgstr "Après"
 
-#: plotpy\tools\curve.py:633
+#: plotpy\tools\curve.py:634
 msgid "Before"
 msgstr "Avant"
 
-#: plotpy\tools\curve.py:633
+#: plotpy\tools\curve.py:634
 msgid "Location"
 msgstr "Position"
 
-#: plotpy\tools\curve.py:661
+#: plotpy\tools\curve.py:662
 msgid "Edit point"
 msgstr "Modifier le point"
 
-#: plotpy\tools\curve.py:837
+#: plotpy\tools\curve.py:838
 msgid "Before inserting a new point, please select an existing curve point."
 msgstr "Avant d'insérer un nouveau point, sélectionner un point existant."
 
-#: plotpy\tools\curve.py:844
+#: plotpy\tools\curve.py:845
 msgid "Insert new value"
 msgstr "Insérer une nouvelle valeur"
 
-#: plotpy\tools\curve.py:1091
+#: plotpy\tools\curve.py:1095
 msgid "Downsample"
 msgstr "Sous-échantillonner"
 
-#: plotpy\tools\curve.py:1138 plotpy\tools\curve.py:1150
+#: plotpy\tools\curve.py:1142 plotpy\tools\curve.py:1154
 msgid "Export"
 msgstr "Exporter"
 
-#: plotpy\tools\curve.py:1142
+#: plotpy\tools\curve.py:1146
 msgid "Text file"
 msgstr "Fichier texte"
 
-#: plotpy\tools\curve.py:1151
+#: plotpy\tools\curve.py:1155
 msgid "Unable to export item data."
 msgstr "Impossible d'exporter les données de l'objet sélectionné."
 
-#: plotpy\tools\curve.py:1153
+#: plotpy\tools\curve.py:1157
 msgid "Error message:"
 msgstr "Message d'erreur :"
 
@@ -2289,3 +2289,6 @@ msgstr "Rotation et rognage"
 #: plotpy\widgets\rotatecrop.py:219
 msgid "Show cropping rectangle"
 msgstr "Afficher le rectangle de rognage"
+
+#~ msgid "Save"
+#~ msgstr "Enregistrer"

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-03-01 10:00+0100\n"
+"POT-Creation-Date: 2024-03-01 10:13+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1416,7 +1416,7 @@ msgstr ""
 msgid "Right-click on the curve to enable/disable downsampling"
 msgstr ""
 
-#: plotpy\tests\tools\test_edit_point.py:47 plotpy\tools\curve.py:836
+#: plotpy\tests\tools\test_edit_point.py:47 plotpy\tools\curve.py:837
 msgid "Insert point"
 msgstr ""
 
@@ -1594,71 +1594,71 @@ msgstr ""
 msgid "Cross cursor"
 msgstr ""
 
-#: plotpy\tools\curve.py:50
+#: plotpy\tools\curve.py:51
 msgid "Signal statistics"
 msgstr ""
 
-#: plotpy\tools\curve.py:156
+#: plotpy\tools\curve.py:157
 msgid "Antialiasing (curves)"
 msgstr ""
 
-#: plotpy\tools\curve.py:190
+#: plotpy\tools\curve.py:191
 msgid "Point selection"
 msgstr ""
 
-#: plotpy\tools\curve.py:340
+#: plotpy\tools\curve.py:341
 msgid "Multi-point selection"
 msgstr ""
 
-#: plotpy\tools\curve.py:629
+#: plotpy\tools\curve.py:630
 msgid "Insertion index"
 msgstr ""
 
-#: plotpy\tools\curve.py:631
+#: plotpy\tools\curve.py:632
 msgid "New value"
 msgstr ""
 
-#: plotpy\tools\curve.py:633
+#: plotpy\tools\curve.py:634
 msgid "After"
 msgstr ""
 
-#: plotpy\tools\curve.py:633
+#: plotpy\tools\curve.py:634
 msgid "Before"
 msgstr ""
 
-#: plotpy\tools\curve.py:633
+#: plotpy\tools\curve.py:634
 msgid "Location"
 msgstr ""
 
-#: plotpy\tools\curve.py:661
+#: plotpy\tools\curve.py:662
 msgid "Edit point"
 msgstr ""
 
-#: plotpy\tools\curve.py:837
+#: plotpy\tools\curve.py:838
 msgid "Before inserting a new point, please select an existing curve point."
 msgstr ""
 
-#: plotpy\tools\curve.py:844
+#: plotpy\tools\curve.py:845
 msgid "Insert new value"
 msgstr ""
 
-#: plotpy\tools\curve.py:1091
+#: plotpy\tools\curve.py:1095
 msgid "Downsample"
 msgstr ""
 
-#: plotpy\tools\curve.py:1138 plotpy\tools\curve.py:1150
+#: plotpy\tools\curve.py:1142 plotpy\tools\curve.py:1154
 msgid "Export"
 msgstr ""
 
-#: plotpy\tools\curve.py:1142
+#: plotpy\tools\curve.py:1146
 msgid "Text file"
 msgstr ""
 
-#: plotpy\tools\curve.py:1151
+#: plotpy\tools\curve.py:1155
 msgid "Unable to export item data."
 msgstr ""
 
-#: plotpy\tools\curve.py:1153
+#: plotpy\tools\curve.py:1157
 msgid "Error message:"
 msgstr ""
 

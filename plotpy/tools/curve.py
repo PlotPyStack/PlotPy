@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Any, Callable
 
 import numpy as np
 from guidata.dataset import ChoiceItem, DataSet, FloatItem, IntItem
+from guidata.qthelpers import execenv
 from guidata.widgets.arrayeditor import ArrayEditor
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
@@ -26,11 +27,11 @@ from plotpy.events import (
 from plotpy.interfaces import ICurveItemType
 from plotpy.items import Marker, XRangeSelection
 from plotpy.items.curve.base import CurveItem
+from plotpy.plot.base import BasePlot
 from plotpy.tools.base import DefaultToolbarID, InteractiveTool, ToggleTool
 from plotpy.tools.cursor import BaseCursorTool
 
 if TYPE_CHECKING:
-    from plotpy.plot.base import BasePlot
     from plotpy.plot.manager import PlotManager
 
 
@@ -618,7 +619,7 @@ class SelectPointsTool(InteractiveTool):
 
         return label_cb
 
-    def get_coordinates(self) -> tuple[tuple[float, float], ...] | None:
+    def get_coordinates(self) -> tuple[tuple[float, float], ...]:
         """Get all selected coordinates"""
         return tuple(self.markers.keys())
 
@@ -845,17 +846,17 @@ class EditPointTool(InteractiveTool):
         param.set_max_index(self.__x.size - 1)
         param.index = self.__idx
         param.value = self.__y[self.__idx - 1 : self.__idx + 1].mean()
-        param.edit()
 
-        insertion_index: int = param.index + param.index_offset  # type: ignore
-        new_x: float = self.__x[insertion_index - 1 : insertion_index + 1].mean()
-        self.__x = np.insert(self.__x, insertion_index, new_x)  # type: ignore
-        self.__y = np.insert(self.__y, insertion_index, param.value)  # type: ignore
-        curve_item.set_data(self.__x, self.__y)
-        new_pos = axes_to_canvas(curve_item, new_x, param.value)  # type: ignore
-        self.__current_location_marker.move_local_point_to(
-            0, QC.QPointF(*new_pos)  # type: ignore
-        )
+        if param.edit() or execenv.unattended:
+            insertion_index: int = param.index + param.index_offset  # type: ignore
+            new_x: float = self.__x[insertion_index - 1 : insertion_index + 1].mean()
+            self.__x = np.insert(self.__x, insertion_index, new_x)  # type: ignore
+            self.__y = np.insert(self.__y, insertion_index, param.value)  # type: ignore
+            curve_item.set_data(self.__x, self.__y)
+            new_pos = axes_to_canvas(curve_item, new_x, param.value)  # type: ignore
+            self.__current_location_marker.move_local_point_to(
+                0, QC.QPointF(*new_pos)  # type: ignore
+            )
 
     def __get_plot(self, filter: StatefulEventFilter) -> BasePlot:
         """Get plot. Simple method to avoid type checking errors
@@ -951,7 +952,10 @@ class EditPointTool(InteractiveTool):
             self.__current_location_marker = self.__get_current_marker(filter)
             self.__current_location_marker.move_local_point_to(0, event.pos())
             x_value = self.__current_location_marker.xValue()
-            self.__dsampled_idx = int(np.searchsorted(self.downsampled_x, x_value))
+            self.__dsampled_idx = min(
+                int(np.searchsorted(self.downsampled_x, x_value)),
+                len(self.downsampled_x) - 1,
+            )
             self.__idx = self.__dsampled_idx * self.__dsampling  # type: ignore
             self.__lower_upper_x_bounds = self.__get_x_bounds(curve_x, self.__idx)
             self.__selection_threshold = self.__get_selection_threshold(filter)
