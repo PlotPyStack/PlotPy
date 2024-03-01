@@ -915,18 +915,23 @@ class WheelZoomHandler(WheelHandler):
             Returns two tuples of four floats each, representing the parameters used
             by BasePlot.do_zoom_view.
         """
-        rect_width = plot.contentsRect().width()
+
+        x, y = pos.x(), pos.y()
+        rect = plot.contentsRect()
+        w, h = rect.width(), rect.height()
+        print(f"x: {x} -> {x + w * factor}")
+        print(f"y: {y} -> {y + w * factor}")
         dx = (
-            pos.x() * factor,
-            pos.x(),
-            pos.x(),
-            rect_width,
+            x + (w * factor),
+            x,
+            x,
+            w,
         )
         dy = (
-            pos.y() * factor,
-            pos.y(),
-            pos.y(),
-            rect_width,
+            y + (h * factor),
+            y,
+            y,
+            h,
         )
         return dx, dy
 
@@ -941,15 +946,16 @@ class WheelZoomHandler(WheelHandler):
         """
         plot = filter.plot
         zoom_step = event.angleDelta().y() / 120
-        zoom_factor = np.log10(10 + abs(zoom_step * 8))
+        zoom_factor = np.log10(10 + abs(zoom_step * 2))
         if zoom_step < 0:
             zoom_factor = 1 / zoom_factor
+        zoom_factor -= 1
 
         center_point = event.globalPos()
         center_point = filter.plot.canvas().mapFromGlobal(center_point)  # type: ignore
 
         dx, dy = self.get_zoom_param(plot, center_point, zoom_factor)
-        plot.do_zoom_view(dx, dy)
+        plot.do_zoom_view(dx, dy, lock_aspect_ratio=True)
 
 
 class QtDragHandler(DragHandler):
