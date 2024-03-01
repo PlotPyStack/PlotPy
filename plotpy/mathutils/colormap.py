@@ -10,8 +10,8 @@ Colormap functions
 Overview
 ^^^^^^^^
 
-The :py:mod:`.colormap` module contains definition of common colormaps and tools
-to manipulate and create them.
+The :py:mod:`plotpy.mathutils.colormap` module contains definition of common colormaps
+and tools to manipulate and create them.
 
 The following functions are available:
 
