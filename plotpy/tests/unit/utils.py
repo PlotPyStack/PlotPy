@@ -71,16 +71,14 @@ def mouse_event_at_relative_plot_pos(
     plot = win.manager.get_plot()
 
     plot = win.manager.get_plot()
-    canva: QW.QWidget = plot.canvas()  # type: ignore
-    size = canva.size()
+    canvas: QW.QWidget = plot.canvas()  # type: ignore
+    size = canvas.size()
     pos_x, pos_y = (
         relative_xy[0] * size.width(),
         relative_xy[1] * size.height(),
     )
-    # pos_x, pos_y = axes_to_canvas(plot.get_active_item(), x, y)
     canva_pos = QC.QPointF(pos_x, pos_y).toPoint()
-    glob_pos = canva.mapToGlobal(canva_pos)
-    # QTest.mouseClick(canva, QC.Qt.MouseButton.LeftButton, mod, canva_pos)
+    glob_pos = QC.QPointF(canvas.mapToGlobal(canva_pos))
 
     for type_ in click_types:
         mouse_event_press = QG.QMouseEvent(
@@ -91,7 +89,7 @@ def mouse_event_at_relative_plot_pos(
             QC.Qt.MouseButton.LeftButton,
             mod,
         )
-        qapp.sendEvent(canva, mouse_event_press)
+        qapp.sendEvent(canvas, mouse_event_press)
 
 
 def drag_mouse(
