@@ -1683,7 +1683,6 @@ class BasePlot(qwt.QwtPlot):
         self.active_item = item
         if self.active_item is not None:
             if not item.selected:
-                print(f"Selecting item {item}")
                 self.select_item(self.active_item)
             self._active_xaxis = item.xAxis()
             self._active_yaxis = item.yAxis()
