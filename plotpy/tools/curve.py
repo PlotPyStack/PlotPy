@@ -27,11 +27,11 @@ from plotpy.events import (
 from plotpy.interfaces import ICurveItemType
 from plotpy.items import Marker, XRangeSelection
 from plotpy.items.curve.base import CurveItem
-from plotpy.plot.base import BasePlot
 from plotpy.tools.base import DefaultToolbarID, InteractiveTool, ToggleTool
 from plotpy.tools.cursor import BaseCursorTool
 
 if TYPE_CHECKING:
+    from plotpy.plot.base import BasePlot
     from plotpy.plot.manager import PlotManager
 
 
@@ -803,7 +803,7 @@ class EditPointTool(InteractiveTool):
         ):
             self.__x, self.__y = x_arr, y_arr
             curve_item.set_data(x_arr, y_arr)
-            self.__get_plot(filter).replot()
+            filter.plot.replot()
             self.__get_current_marker(filter).detach()
             self.__current_location_marker = None
             self.__x = self.__y = None
@@ -833,7 +833,7 @@ class EditPointTool(InteractiveTool):
             or self.__x is None
         ):
             QW.QMessageBox.warning(
-                self.__get_plot(filter),
+                filter.plot,
                 _("Insert point"),
                 _(
                     "Before inserting a new point, "
@@ -858,18 +858,6 @@ class EditPointTool(InteractiveTool):
                 0, QC.QPointF(*new_pos)  # type: ignore
             )
 
-    def __get_plot(self, filter: StatefulEventFilter) -> BasePlot:
-        """Get plot. Simple method to avoid type checking errors
-
-        Args:
-            filter: StatefulEventFilter instance
-
-        Returns:
-            BasePlot instance
-        """
-        assert isinstance(plot := filter.plot, BasePlot)
-        return plot
-
     def __get_active_curve_item(self, filter: StatefulEventFilter) -> CurveItem:
         """Get active curve item. Simple method to avoid type checking errors.
 
@@ -879,9 +867,8 @@ class EditPointTool(InteractiveTool):
         Returns:
             curve item
         """
-        plot = self.__get_plot(filter)
         assert isinstance(
-            curve_item := plot.get_last_active_item(ICurveItemType), CurveItem
+            curve_item := filter.plot.get_last_active_item(ICurveItemType), CurveItem
         )
         return curve_item
 
@@ -959,7 +946,7 @@ class EditPointTool(InteractiveTool):
             self.__idx = self.__dsampled_idx * self.__dsampling  # type: ignore
             self.__lower_upper_x_bounds = self.__get_x_bounds(curve_x, self.__idx)
             self.__selection_threshold = self.__get_selection_threshold(filter)
-            self.__get_plot(filter).replot()
+            filter.plot.replot()
 
     def move_point(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
         """Move point
@@ -1011,7 +998,7 @@ class EditPointTool(InteractiveTool):
             self.__current_location_marker.move_local_point_to(
                 0, QC.QPointF(marker_x, marker_y)
             )
-            self.__get_plot(filter).replot()
+            filter.plot.replot()
 
     def stop(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
         """Stop tool action and save new x and y coordinates.
@@ -1052,7 +1039,7 @@ class EditPointTool(InteractiveTool):
         Returns:
             Marker instance
         """
-        plot = self.__get_plot(filter)
+        plot = filter.plot
         marker = Marker(
             label_cb=lambda x, y: f"{x=:.4f}, {y=:.4f}",
             constraint_cb=plot.on_active_curve,
