@@ -17,7 +17,7 @@ from qtpy.QtGui import (
 )
 from qtpy.QtWidgets import QApplication, QSlider, QStyleOptionSlider
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ._generic_range_slider import _GenericRangeSlider
 
 

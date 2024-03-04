@@ -11,7 +11,7 @@ from plotpy.tests import vistools as ptv
 from plotpy.tests.features.test_auto_curve_image import make_curve_image_legend
 from plotpy.tools import CommandTool, InteractiveTool
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
 
     import numpy as np
 

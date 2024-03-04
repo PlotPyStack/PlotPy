@@ -25,7 +25,7 @@ from plotpy.styles.base import (
     SymbolItem,
 )
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from plotpy.items import CurveItem
 
 

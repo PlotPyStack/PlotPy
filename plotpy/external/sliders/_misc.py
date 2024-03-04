@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 from typing import TYPE_CHECKING, Iterator
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from qtpy.QtCore import QObject
 
 

@@ -30,7 +30,7 @@ from plotpy.items.curve.base import CurveItem
 from plotpy.tools.base import DefaultToolbarID, InteractiveTool, ToggleTool
 from plotpy.tools.cursor import BaseCursorTool
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from plotpy.plot.base import BasePlot
     from plotpy.plot.manager import PlotManager
 
