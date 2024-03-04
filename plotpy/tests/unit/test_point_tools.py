@@ -70,7 +70,7 @@ def test_select_points_tool():
         mouse_event_at_relative_plot_pos(win, qapp, (0.8, 0.8), CLICK, mod)
         assert len(tool.get_coordinates() or ()) == 3
 
-        mouse_event_at_relative_plot_pos(win, qapp, (0.6, 0.5), CLICK, mod)
+        mouse_event_at_relative_plot_pos(win, qapp, (0.8, 0.8), CLICK, mod)
         assert len(tool.get_coordinates() or ()) == 2
 
         mouse_event_at_relative_plot_pos(win, qapp, (0.7, 0.5), CLICK, mod)
