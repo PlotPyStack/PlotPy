@@ -2,7 +2,7 @@
 
 ## Version 2.2.0 ##
 
-In this release, test coverage is 74%.
+In this release, test coverage is 75%.
 
 New features:
 
