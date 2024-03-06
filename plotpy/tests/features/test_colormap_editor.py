@@ -22,7 +22,7 @@ from plotpy.widgets.colormap.editor import ColorMapEditor
 from plotpy.widgets.colormap.widget import EditableColormap
 
 
-def test_colormap_manager() -> None:
+def test_colormap_editor() -> None:
     """Test the colormap editor widget and the CustomQwtLinearColormap class
     by using multiple methods to initialize and export the colormap.
     """
@@ -82,4 +82,4 @@ def test_colormap_manager() -> None:
 
 
 if __name__ == "__main__":
-    test_colormap_manager()
+    test_colormap_editor()
