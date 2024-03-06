@@ -1264,7 +1264,6 @@ class RawImageItem(BaseImageItem):
         lut_range = reader.read(group_name="lut_range")
         if reader.read(group_name="load_from_fname"):
             name = reader.read(group_name="fname", func=reader.read_unicode)
-            name = io.iohandler.adapt_path(name)
             self.set_filename(name)
             self.load_data()
         else:

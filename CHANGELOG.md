@@ -1,5 +1,18 @@
 # Changelog #
 
+## Version 2.2.1 ##
+
+Changes:
+
+* Image plot items deserialization:
+  * When an image plot item is deserialized, and needs to be reloaded from a file,
+    the file path is adapted to the current working directory if file is not found
+    (this is the legacy behavior).
+  * An unnecessary call to `ImageIOHandler.adapt_path` method was removed from the
+    `RawImageItem.deserialize` method: this issue has to be handled by the host
+    application, not by the PlotPy library.
+  * `ImageIOHandler`: removed `add_change_path` and `adapt_path` methods
+
 ## Version 2.2.0 ##
 
 In this release, test coverage is 75%.

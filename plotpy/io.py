@@ -136,8 +136,6 @@ class ImageIOHandler:
 
     def __init__(self):
         self.filetypes = []
-        self.select_func = None
-        self.prec_path = None  # le précédent path proposé pour actualisation
 
     def allfilters(self, action, dtype, template):
         """
@@ -225,34 +223,6 @@ class ImageIOHandler:
             raise RuntimeError(f"Unsupported file type (write): '{ext}'")
         else:
             return ftype.write_func
-
-    def add_change_path(self, select_func):
-        self.select_func = select_func
-
-    def adapt_path(self, filename):
-        """Change le path du fichier si nécessaire avec l'aide de l'utilisateur"""
-        if not osp.exists(filename):
-            old_path = osp.dirname(filename)
-            basename = osp.basename(filename)
-            if self.prec_path is None:
-                # on demande à l'utilisateur
-                self.prec_path = self.select_func(old_path, basename)
-
-            # on essait avec le path proposé
-            filename = osp.join(self.prec_path, basename)
-            if not osp.exists(filename):
-                # on essait avec le path proposé et la fin du path précédent
-                # (cas de la double numérisation)
-                head, tail = osp.split(old_path)
-                filename = osp.join(self.prec_path, tail, basename)
-                if not osp.exists(filename):
-                    raise ImportError(
-                        "le fichier "
-                        + basename
-                        + " n'a pas été trouvé dans le répertoire"
-                        + self.prec_path
-                    )
-        return filename
 
 
 iohandler = ImageIOHandler()
@@ -689,9 +659,11 @@ def item_name_from_object(obj: Any) -> str | None:
 
 
 def save_item(
-    writer: guidata.dataset.io.HDF5Writer
-    | guidata.dataset.io.INIWriter
-    | guidata.dataset.io.JSONWriter,
+    writer: (
+        guidata.dataset.io.HDF5Writer
+        | guidata.dataset.io.INIWriter
+        | guidata.dataset.io.JSONWriter
+    ),
     group_name,
     item: Any,
 ) -> None:
@@ -712,9 +684,11 @@ def save_item(
 
 
 def load_item(
-    reader: guidata.dataset.io.HDF5Reader
-    | guidata.dataset.io.INIReader
-    | guidata.dataset.io.JSONReader,
+    reader: (
+        guidata.dataset.io.HDF5Reader
+        | guidata.dataset.io.INIReader
+        | guidata.dataset.io.JSONReader
+    ),
     group_name,
 ) -> Any | None:
     """Load plot item from HDF5, INI or JSON file
@@ -740,9 +714,11 @@ def load_item(
 
 
 def save_items(
-    writer: guidata.dataset.io.HDF5Writer
-    | guidata.dataset.io.INIWriter
-    | guidata.dataset.io.JSONWriter,
+    writer: (
+        guidata.dataset.io.HDF5Writer
+        | guidata.dataset.io.INIWriter
+        | guidata.dataset.io.JSONWriter
+    ),
     items: list[Any],
 ) -> None:
     """Save items to HDF5, INI or JSON file
@@ -769,9 +745,11 @@ def save_items(
 
 
 def load_items(
-    reader: guidata.dataset.io.HDF5Reader
-    | guidata.dataset.io.INIReader
-    | guidata.dataset.io.JSONReader,
+    reader: (
+        guidata.dataset.io.HDF5Reader
+        | guidata.dataset.io.INIReader
+        | guidata.dataset.io.JSONReader
+    ),
 ) -> list[Any]:
     """Load items from HDF5, INI or JSON file
 
