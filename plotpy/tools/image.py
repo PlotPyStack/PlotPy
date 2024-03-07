@@ -58,6 +58,7 @@ if TYPE_CHECKING:
     from plotpy.plot import BasePlot
     from plotpy.plot.manager import PlotManager
     from plotpy.plot.plotwidget import PlotOptions
+    from plotpy.styles.image import BaseImageParam
     from plotpy.styles.shape import AnnotationParam
 
 
@@ -361,9 +362,7 @@ class AspectRatioTool(CommandTool):
             checked: True if actions should be enabled, False otherwise
         """
         self.ar_param.lock = checked
-        #        self.lock_action.blockSignals(True)
         self.lock_action.setChecked(checked)
-        #        self.lock_action.blockSignals(False)
         plot = self.get_active_plot()
         if plot is not None:
             ratio = plot.get_aspect_ratio()
@@ -428,6 +427,24 @@ class ContrastPanelTool(PanelTool):
                 action.setEnabled(item is not None)
 
 
+def get_selected_images(plot: BasePlot, item_type: Any) -> list[BaseImageItem]:
+    """Returns the currently selected images in the given plot.
+
+    Args:
+        plot: Plot instance
+        item_type: Item type to filter (e.g. IColormapImageItemType)
+
+    Returns:
+        List of currently selected images in the given plot
+    """
+    items = plot.get_selected_items(item_type=item_type)
+    if not items:
+        active_image = plot.get_last_active_item(item_type)
+        if active_image:
+            items = [active_image]
+    return items
+
+
 class ColormapTool(CommandTool):
     """Tool used to select and manage colormaps (inculding visualization, edition
     and saving).
@@ -472,22 +489,6 @@ class ColormapTool(CommandTool):
         if exec_dialog(manager) and (cmap := manager.get_colormap()) is not None:
             self.activate_cmap(cmap)
 
-    def get_selected_images(self, plot: BasePlot) -> list[IBasePlotItem]:
-        """Returns the currently selected images in the given plot.
-
-        Args:
-            plot: Plot instance
-
-        Returns:
-            list of currently selected images in the given plot
-        """
-        items = plot.get_selected_items(item_type=IColormapImageItemType)
-        if not items:
-            active_image = plot.get_last_active_item(IColormapImageItemType)
-            if active_image:
-                items = [active_image]
-        return items
-
     def activate_cmap(self, cmap: str | EditableColormap) -> None:
         """Activate the given colormap. Supports mutliple input types.
 
@@ -501,10 +502,11 @@ class ColormapTool(CommandTool):
             self._active_colormap = cmap
         plot: BasePlot = self.get_active_plot()
         if self._active_colormap is not None and plot is not None:
-            items = self.get_selected_images(plot)
+            items = get_selected_images(plot, IColormapImageItemType)
             for item in items:
-                item.param.colormap = self._active_colormap.name
-                item.param.update_item(item)
+                param: BaseImageParam = item.param
+                param.colormap = self._active_colormap.name
+                param.update_item(item)
                 plot.SIG_ITEM_PARAMETERS_CHANGED.emit(item)
             self.action.setText(_("Colormap: %s") % self._active_colormap.name)
             plot.invalidate()
@@ -529,6 +531,56 @@ class ColormapTool(CommandTool):
                 self.action.setEnabled(False)
                 self._active_colormap = ALL_COLORMAPS["jet"]
             self.action.setIcon(icon)
+
+
+class ReverseColormapTool(ToggleTool):
+    """Togglable tool to reverse colormap
+
+    Args:
+        manager: PlotManager Instance
+    """
+
+    def __init__(self, manager: PlotManager) -> None:
+        super().__init__(manager, _("Invert colormap"))
+        self._active_colormap: EditableColormap = ALL_COLORMAPS["jet"]
+
+    def activate_command(self, plot: BasePlot, checked: bool) -> None:
+        """Triggers tool action.
+
+        Args:
+            plot: Plot instance
+            checked: True if tool is checked, False otherwise
+        """
+        plot: BasePlot = self.get_active_plot()
+        if self._active_colormap is not None and plot is not None:
+            items = get_selected_images(plot, IColormapImageItemType)
+            for item in items:
+                param: BaseImageParam = item.param
+                param.invert_colormap = checked
+                param.update_item(item)
+                plot.SIG_ITEM_PARAMETERS_CHANGED.emit(item)
+            plot.invalidate()
+            self.update_status(plot)
+
+    def update_status(self, plot: BasePlot) -> None:
+        """Update tool status if the plot type is not PlotType.CURVE.
+
+        Args:
+            plot: Plot instance
+        """
+        if update_image_tool_status(self, plot):
+            item: BaseImageItem = plot.get_last_active_item(IColormapImageItemType)
+            state = False
+            if item:
+                self.action.setEnabled(True)
+                cmap = item.get_color_map()
+                if cmap is not None:
+                    self._active_colormap = get_cmap(cmap.name)
+                    state = cmap.invert
+            else:
+                self.action.setEnabled(False)
+                self._active_colormap = ALL_COLORMAPS["jet"]
+            self.action.setChecked(state)
 
 
 class ImageMaskTool(CommandTool):

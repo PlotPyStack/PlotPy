@@ -45,6 +45,7 @@ if TYPE_CHECKING:
     from plotpy.interfaces import IItemType
     from plotpy.items import RawImageItem, XYImageItem
     from plotpy.styles import ImageFilterParam, ItemParameters
+    from plotpy.widgets.colormap.widget import EditableColormap
 
 
 # ==============================================================================
@@ -188,18 +189,20 @@ class ImageFilterItem(BaseImageItem):
         self.border_rect.move_with_selection(delta_x, delta_y)
 
     def set_color_map(
-        self, name_or_table: str | qwt.color_map.QwtLinearColorMap
+        self, name_or_table: str | EditableColormap, invert: bool | None = None
     ) -> None:
         """Set colormap
 
         Args:
             name_or_table: Colormap name or colormap
+            invert: True to invert colormap, False otherwise (Default value = None,
+             i.e. do not change the default behavior)
         """
         if self.use_source_cmap:
             if self.image is not None:
-                self.image.set_color_map(name_or_table)
+                self.image.set_color_map(name_or_table, invert)
         else:
-            BaseImageItem.set_color_map(self, name_or_table)
+            BaseImageItem.set_color_map(self, name_or_table, invert)
 
     def get_color_map(self) -> qwt.color_map.QwtLinearColorMap:
         """Get colormap"""

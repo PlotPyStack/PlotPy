@@ -416,11 +416,15 @@ class BaseImageItem(QwtPlotItem):
         else:
             self.lut = (a, b, np.uint32(QG.QColor(qcolor).rgb() & 0xFFFFFF), cmap)
 
-    def set_color_map(self, name_or_table: str | EditableColormap) -> None:
+    def set_color_map(
+        self, name_or_table: str | EditableColormap, invert: bool | None = None
+    ) -> None:
         """Set colormap
 
         Args:
             name_or_table: Colormap name or colormap
+            invert: True to invert colormap, False otherwise (Default value = None,
+             i.e. do not change the default behavior)
         """
         if name_or_table is self.cmap_table:
             # This avoids rebuilding the LUT all the time
@@ -429,6 +433,8 @@ class BaseImageItem(QwtPlotItem):
             table = get_cmap(name_or_table)
         else:
             table = name_or_table
+        if invert is not None:
+            table.invert = invert
         self.cmap_table = table
         self.cmap = table.colorTable(FULLRANGE)
         cmap_a = self.lut[3]

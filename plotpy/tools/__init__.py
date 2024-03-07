@@ -48,6 +48,7 @@ from .image import (
     ImageStatsTool,
     LockTrImageTool,
     OpenImageTool,
+    ReverseColormapTool,
     ReverseYAxisTool,
     RotateCropTool,
     RotationCenterTool,

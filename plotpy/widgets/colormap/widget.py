@@ -59,6 +59,25 @@ class EditableColormap(QwtLinearColorMap):
     def __init__(self, *args, name: str | None = None) -> None:
         super().__init__(*args)
         self.name = name or "temporary"
+        self.invert = False
+
+    def rgb(self, interval: QwtInterval, value: float) -> int:
+        """Returns the color of the colormap at the given value.
+        This overriden method is used to add the possibility to invert the colormap
+        colors.
+
+        Args:
+            interval: QwtInterval of the colormap
+            value: value to get the color from
+
+        Returns:
+            Color of the colormap at the given value.
+        """
+        if self.invert:
+            return super().rgb(
+                interval, interval.maxValue() - value + interval.minValue()
+            )
+        return super().rgb(interval, value)
 
     @property
     def color_stop_values(self) -> list[float]:

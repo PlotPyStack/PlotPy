@@ -60,6 +60,7 @@ The `tools` module provides the following tools:
 * :py:class:`.tools.ItemListPanelTool`
 * :py:class:`.tools.ContrastPanelTool`
 * :py:class:`.tools.ColormapTool`
+* :py:class:`.tools.ReverseColormapTool`
 * :py:class:`.tools.XCSPanelTool`
 * :py:class:`.tools.YCSPanelTool`
 * :py:class:`.tools.CrossSectionTool`

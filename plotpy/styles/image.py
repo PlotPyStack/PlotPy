@@ -85,6 +85,7 @@ class BaseImageParam(DataSet):
         .set_prop("display", hide=GetAttrProp("_hide_colormap"))
         .set_prop("display", size=(LARGE_ICON_WIDTH, LARGE_ICON_HEIGHT))
     )
+    invert_colormap = BoolItem(_("Invert colormap"), default=False)
 
     interpolation = ChoiceItem(
         _("Interpolation"),
@@ -115,6 +116,7 @@ class BaseImageParam(DataSet):
         cmap = image.get_color_map()
         if cmap is not None:
             self.colormap = cmap.name
+            self.invert_colormap = cmap.invert
         interpolation = image.get_interpolation()
         mode = interpolation[0]
 
@@ -139,7 +141,7 @@ class BaseImageParam(DataSet):
             plot.blockSignals(True)  # Avoid unwanted calls of update_param
             # triggered by the setter methods below
         image.setTitle(self.label)
-        image.set_color_map(self.colormap)
+        image.set_color_map(self.colormap, self.invert_colormap)
         size = self.interpolation
 
         if size == 0:
@@ -171,6 +173,7 @@ class QuadGridParam(DataSet):
     colormap = ImageChoiceItem(_("Colormap"), _create_choices, default="jet").set_prop(
         "display", hide=GetAttrProp("_hide_colormap")
     )
+    invert_colormap = BoolItem(_("Invert colormap"), default=False)
 
     interpolation = ChoiceItem(
         _("Interpolation"),
@@ -209,6 +212,7 @@ class QuadGridParam(DataSet):
         cmap = image.get_color_map()
         if cmap is not None:
             self.colormap = cmap.name
+            self.invert_colormap = cmap.invert
         interp, uflat, vflat = image.interpolate
         self.interpolation = interp
         self.uflat = uflat
@@ -228,7 +232,7 @@ class QuadGridParam(DataSet):
             plot.blockSignals(True)  # Avoid unwanted calls of update_param
             # triggered by the setter methods below
         image.setTitle(self.label)
-        image.set_color_map(self.colormap)
+        image.set_color_map(self.colormap, self.invert_colormap)
         image.interpolate = (self.interpolation, self.uflat, self.vflat)
         image.grid = self.grid
         if plot is not None:

@@ -46,6 +46,7 @@ from plotpy.tools import (
     PrintTool,
     RectangularSelectionTool,
     RectZoomTool,
+    ReverseColormapTool,
     ReverseYAxisTool,
     SaveAsTool,
     SelectTool,
@@ -599,6 +600,7 @@ class PlotManager:
             :py:meth:`.plot.manager.PlotManager.register_all_tools`
         """
         self.add_tool(ColormapTool)
+        self.add_tool(ReverseColormapTool)
         self.add_tool(ReverseYAxisTool)
         self.add_tool(AspectRatioTool)
         if self.get_contrast_panel():

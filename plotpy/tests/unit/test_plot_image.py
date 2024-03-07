@@ -13,7 +13,7 @@ from guidata.qthelpers import exec_dialog, qt_app_context
 
 from plotpy.builder import make
 from plotpy.plot import BasePlot
-from plotpy.tools import ColormapTool
+from plotpy.tools import ColormapTool, ReverseColormapTool
 
 
 def compute_image():
@@ -121,8 +121,8 @@ def test_set_aspect_ratio(ratio):
         exec_dialog(win)
 
 
-def test_colormap_tool():
-    """Test ColorMapTool on an image"""
+def test_colormap_tools():
+    """Test ColorMapTool and ReverseColormapTool on an image"""
     with qt_app_context(exec_loop=False):
         win = make.dialog(type="image", toolbar=True)
         item = make.image(compute_image())
@@ -144,5 +144,12 @@ def test_colormap_tool():
         assert cmap.name == cmap_name
         accent_img = plot.grab().toImage()
         assert jet_img != accent_img
+
+        # reverse the colormap
+        reverse_tool = win.manager.get_tool(ReverseColormapTool)
+        assert not cmap.invert, "Colormap should not be inverted"
+        reverse_tool.activate()
+        cmap = item.get_color_map()
+        assert cmap.invert, "Colormap should be inverted"
 
         exec_dialog(win)

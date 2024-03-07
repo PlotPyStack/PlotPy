@@ -1,8 +1,21 @@
 # Changelog #
 
-## Version 2.2.1 ##
+## Version 2.3.0 ##
 
-Changes:
+In this release, test coverage is 75%.
+
+New features:
+
+* Added support for colormap inversion:
+  * The user can now invert the colormap of an image item:
+    * From the image parameters dialog ("Invert colormap" checkbox)
+    * From the plot context menu (right-click on the image item)
+  * `BaseImageItem.set_color_map` method takes a new `invert` parameter (which
+    defaults to `None`, meaning that the behavior is unchanged)
+  * New `ReverseColormapTool`: registered by default in the plot widget, like the
+    `ColormapTool` (add the "Invert colormap" entry in the context menu of the image)
+
+Other changes:
 
 * Image plot items deserialization:
   * When an image plot item is deserialized, and needs to be reloaded from a file,

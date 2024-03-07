@@ -106,6 +106,8 @@ Image tools
    :members:
 .. autoclass:: plotpy.tools.ColormapTool
    :members:
+.. autoclass:: plotpy.tools.ReverseColormapTool
+   :members:
 .. autoclass:: plotpy.tools.XCSPanelTool
    :members:
 .. autoclass:: plotpy.tools.YCSPanelTool

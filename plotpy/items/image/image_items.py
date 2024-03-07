@@ -38,6 +38,7 @@ if TYPE_CHECKING:
     from qtpy.QtGui import QColor, QPainter
 
     from plotpy.interfaces import IItemType
+    from plotpy.widgets.colormap.widget import EditableColormap
 
 try:
     from plotpy._scaler import INTERP_NEAREST, _scale_rect, _scale_xy
@@ -806,16 +807,14 @@ class RGBImageItem(ImageItem):
         self.lut = None
 
     def set_color_map(
-        self, name_or_table: str | qwt.color_map.QwtLinearColorMap
+        self, name_or_table: str | EditableColormap, invert: bool | None = None
     ) -> None:
         """Set colormap
 
         Args:
             name_or_table: Colormap name or colormap
-
-        .. warning::
-
-            This method is not implemented for this item type.
+            invert: True to invert colormap, False otherwise (Default value = None,
+             i.e. do not change the default behavior)
         """
         self.lut = None
 
