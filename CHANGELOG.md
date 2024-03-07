@@ -14,6 +14,7 @@ Changes:
   * `ImageIOHandler`: removed `add_change_path` and `adapt_path` methods
 * Fix typo in `tests.features.test_colormap_editor` module: renamed function
   `test_colormap_manager` to `test_colormap_editor`
+* Removed unnecessary `BaseImageItem.get_color_map_name` method
 
 ## Version 2.2.0 ##
 

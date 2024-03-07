@@ -473,19 +473,6 @@ class BaseImageItem(QwtPlotItem):
         """
         return self.cmap_table
 
-    def get_color_map_name(self) -> str | None:
-        """Get the current colormap name if set. The output value should not directly
-        be used to retrieve a colormap object from one of the global colormap
-        dictionaries, as the colormap name may contain capital letters whereas the
-        colormap string keys of the dictionaries are all lowercase.
-
-        Returns:
-            Colormap name
-        """
-        if self.cmap_table is None:
-            return None
-        return self.cmap_table.name
-
     def set_interpolation(self, interp_mode: int, size: int | None = None) -> None:
         """Set interpolation mode
 

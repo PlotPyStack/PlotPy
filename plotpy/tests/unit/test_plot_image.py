@@ -132,14 +132,16 @@ def test_colormap_tool():
 
         # default color map should be "jet"
         color_map_tool = win.manager.get_tool(ColormapTool)
-        assert item.get_color_map_name() == "jet"
+        cmap = item.get_color_map()
+        assert cmap.name == "jet"
         jet_img = plot.grab().toImage()
 
         # change the colormap
         plot.select_item(item)
         cmap_name = "accent"
         color_map_tool.activate_cmap(cmap_name)
-        assert item.get_color_map_name() == cmap_name
+        cmap = item.get_color_map()
+        assert cmap.name == cmap_name
         accent_img = plot.grab().toImage()
         assert jet_img != accent_img
 

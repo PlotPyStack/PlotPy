@@ -35,6 +35,9 @@ from plotpy.styles.base import ItemParameters
 if TYPE_CHECKING:
     from guidata.dataset import DataSet
 
+    from plotpy.items import BaseImageItem
+    from plotpy.plot import BasePlot
+
 
 def _create_choices(
     dataset: DataSet, item: ImageChoiceItem, value: Any
@@ -102,13 +105,16 @@ class BaseImageParam(DataSet):
     zformat = StringItem(_("Z-Axis"), default=r"%.1f")
     _end_formats = EndGroup(_("Statistics string formatting"))
 
-    def update_param(self, image):
-        """
+    def update_param(self, image: BaseImageItem) -> None:
+        """Update the parameters from the given image item.
 
-        :param image:
+        Args:
+            image: The image item to update the parameters from.
         """
         self.label = str(image.title().text())
-        self.colormap = image.get_color_map_name()
+        cmap = image.get_color_map()
+        if cmap is not None:
+            self.colormap = cmap.name
         interpolation = image.get_interpolation()
         mode = interpolation[0]
 
@@ -120,14 +126,15 @@ class BaseImageParam(DataSet):
             size = interpolation[1].shape[0]
             self.interpolation = size
 
-    def update_item(self, image):
-        """
+    def update_item(self, image: BaseImageItem) -> None:
+        """Update the given image item from the parameters.
 
-        :param image:
+        Args:
+            image: The image item to update.
         """
         if isinstance(self.alpha_function, LUTAlpha):
             self.alpha_function = self.alpha_function.value
-        plot = image.plot()
+        plot: BasePlot = image.plot()
         if plot is not None:
             plot.blockSignals(True)  # Avoid unwanted calls of update_param
             # triggered by the setter methods below
@@ -192,23 +199,27 @@ class QuadGridParam(DataSet):
     grid = BoolItem(_("Show grid"), default=False)
     gridcolor = ColorItem(_("Grid lines color"), default="black")
 
-    def update_param(self, image):
-        """
+    def update_param(self, image: BaseImageItem) -> None:
+        """Update the parameters from the given image item.
 
-        :param image:
+        Args:
+            image: The image item to update the parameters from.
         """
         self.label = str(image.title().text())
-        self.colormap = image.get_color_map_name()
+        cmap = image.get_color_map()
+        if cmap is not None:
+            self.colormap = cmap.name
         interp, uflat, vflat = image.interpolate
         self.interpolation = interp
         self.uflat = uflat
         self.vflat = vflat
         self.grid = image.grid
 
-    def update_item(self, image):
-        """
+    def update_item(self, image: BaseImageItem) -> None:
+        """Update the given image item from the parameters.
 
-        :param image:
+        Args:
+            image: The image item to update.
         """
         if isinstance(self.alpha_function, LUTAlpha):
             self.alpha_function = self.alpha_function.value

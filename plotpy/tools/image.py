@@ -517,14 +517,14 @@ class ColormapTool(CommandTool):
             plot: Plot Instance
         """
         if update_image_tool_status(self, plot):
-            item = plot.get_last_active_item(IColormapImageItemType)
+            item: BaseImageItem = plot.get_last_active_item(IColormapImageItemType)
             icon = self.default_icon
             if item:
                 self.action.setEnabled(True)
-                cmap_name = item.get_color_map_name()
-                if cmap_name:
-                    icon = build_icon_from_cmap_name(cmap_name)
-                    self._active_colormap = get_cmap(cmap_name)
+                cmap = item.get_color_map()
+                if cmap is not None:
+                    icon = build_icon_from_cmap_name(cmap.name)
+                    self._active_colormap = get_cmap(cmap.name)
             else:
                 self.action.setEnabled(False)
                 self._active_colormap = ALL_COLORMAPS["jet"]
