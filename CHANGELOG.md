@@ -12,6 +12,8 @@ Changes:
     `RawImageItem.deserialize` method: this issue has to be handled by the host
     application, not by the PlotPy library.
   * `ImageIOHandler`: removed `add_change_path` and `adapt_path` methods
+* Fix typo in `tests.features.test_colormap_editor` module: renamed function
+  `test_colormap_manager` to `test_colormap_editor`
 
 ## Version 2.2.0 ##
 
