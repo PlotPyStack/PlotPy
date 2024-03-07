@@ -16,7 +16,7 @@ from plotpy.tests.unit.utils import (
 from plotpy.tools import EditPointTool, SelectPointsTool, SelectPointTool
 from plotpy.tools.curve import DownSamplingTool
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
 
     from plotpy.items.curve.base import CurveItem
 

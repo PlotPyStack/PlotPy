@@ -16,7 +16,7 @@ from plotpy.items.curve.errorbar import ErrorBarCurveItem
 from plotpy.items.image.misc import get_image_from_qrect
 from plotpy.mathutils.geometry import rotate, translate, vector_angle, vector_norm
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from plotpy.items import AnnotatedObliqueRectangle, AnnotatedSegment
 
 try:

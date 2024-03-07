@@ -96,7 +96,7 @@ from plotpy.config import CONF
 from plotpy.coords import axes_to_canvas, canvas_to_axes
 from plotpy.items.shape.marker import Marker
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from qtpy.QtCore import QPoint
 
     from plotpy.plot.base import BasePlot

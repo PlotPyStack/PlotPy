@@ -54,7 +54,7 @@ from plotpy.styles import (
     XYImageParam,
 )
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from plotpy.items.image.filter import ImageFilterItem
 
 IMAGE_COUNT = 0

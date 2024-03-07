@@ -21,7 +21,7 @@ from plotpy.interfaces import (
 from plotpy.items.image.image_items import ImageItem, XYImageItem
 from plotpy.styles.image import MaskedImageParam, MaskedXYImageParam
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import guidata.dataset.io
     import qwt.scale_map
     from qtpy.QtCore import QRectF
@@ -70,9 +70,11 @@ class MaskedArea:
 
     def serialize(
         self,
-        writer: guidata.dataset.io.HDF5Writer
-        | guidata.dataset.io.INIWriter
-        | guidata.dataset.io.JSONWriter,
+        writer: (
+            guidata.dataset.io.HDF5Writer
+            | guidata.dataset.io.INIWriter
+            | guidata.dataset.io.JSONWriter
+        ),
     ) -> None:
         """Serialize object to HDF5 writer
 
@@ -84,9 +86,11 @@ class MaskedArea:
 
     def deserialize(
         self,
-        reader: guidata.dataset.io.HDF5Reader
-        | guidata.dataset.io.INIReader
-        | guidata.dataset.io.JSONReader,
+        reader: (
+            guidata.dataset.io.HDF5Reader
+            | guidata.dataset.io.INIReader
+            | guidata.dataset.io.JSONReader
+        ),
     ) -> None:
         """Deserialize object from HDF5 reader
 
@@ -121,9 +125,11 @@ class MaskedImageMixin:
     # ---- Pickle methods -------------------------------------------------------
     def serialize(
         self,
-        writer: guidata.dataset.io.HDF5Writer
-        | guidata.dataset.io.INIWriter
-        | guidata.dataset.io.JSONWriter,
+        writer: (
+            guidata.dataset.io.HDF5Writer
+            | guidata.dataset.io.INIWriter
+            | guidata.dataset.io.JSONWriter
+        ),
     ) -> None:
         """Serialize object to HDF5 writer
 
@@ -135,9 +141,11 @@ class MaskedImageMixin:
 
     def deserialize(
         self,
-        reader: guidata.dataset.io.HDF5Reader
-        | guidata.dataset.io.INIReader
-        | guidata.dataset.io.JSONReader,
+        reader: (
+            guidata.dataset.io.HDF5Reader
+            | guidata.dataset.io.INIReader
+            | guidata.dataset.io.JSONReader
+        ),
     ) -> None:
         """Deserialize object from HDF5 reader
 
@@ -481,9 +489,11 @@ class MaskedImageItem(ImageItem, MaskedImageMixin):
 
     def serialize(
         self,
-        writer: guidata.dataset.io.HDF5Writer
-        | guidata.dataset.io.INIWriter
-        | guidata.dataset.io.JSONWriter,
+        writer: (
+            guidata.dataset.io.HDF5Writer
+            | guidata.dataset.io.INIWriter
+            | guidata.dataset.io.JSONWriter
+        ),
     ) -> None:
         """Serialize object to HDF5 writer
 
@@ -495,9 +505,11 @@ class MaskedImageItem(ImageItem, MaskedImageMixin):
 
     def deserialize(
         self,
-        reader: guidata.dataset.io.HDF5Reader
-        | guidata.dataset.io.INIReader
-        | guidata.dataset.io.JSONReader,
+        reader: (
+            guidata.dataset.io.HDF5Reader
+            | guidata.dataset.io.INIReader
+            | guidata.dataset.io.JSONReader
+        ),
     ) -> None:
         """Deserialize object from HDF5 reader
 
@@ -654,9 +666,11 @@ class MaskedXYImageItem(XYImageItem, MaskedImageMixin):
 
     def serialize(
         self,
-        writer: guidata.dataset.io.HDF5Writer
-        | guidata.dataset.io.INIWriter
-        | guidata.dataset.io.JSONWriter,
+        writer: (
+            guidata.dataset.io.HDF5Writer
+            | guidata.dataset.io.INIWriter
+            | guidata.dataset.io.JSONWriter
+        ),
     ) -> None:
         """Serialize object to HDF5 writer
 
@@ -668,9 +682,11 @@ class MaskedXYImageItem(XYImageItem, MaskedImageMixin):
 
     def deserialize(
         self,
-        reader: guidata.dataset.io.HDF5Reader
-        | guidata.dataset.io.INIReader
-        | guidata.dataset.io.JSONReader,
+        reader: (
+            guidata.dataset.io.HDF5Reader
+            | guidata.dataset.io.INIReader
+            | guidata.dataset.io.JSONReader
+        ),
     ) -> None:
         """Deserialize object from HDF5 reader
 

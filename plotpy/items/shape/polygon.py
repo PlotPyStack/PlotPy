@@ -20,7 +20,7 @@ from plotpy.interfaces import IBasePlotItem, ISerializableType, IShapeItemType
 from plotpy.items.shape.base import AbstractShape
 from plotpy.styles.shape import ShapeParam
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import guidata.dataset.io
     import qwt.scale_map
     import qwt.symbol
@@ -96,9 +96,11 @@ class PolygonShape(AbstractShape):
 
     def serialize(
         self,
-        writer: guidata.dataset.io.HDF5Writer
-        | guidata.dataset.io.INIWriter
-        | guidata.dataset.io.JSONWriter,
+        writer: (
+            guidata.dataset.io.HDF5Writer
+            | guidata.dataset.io.INIWriter
+            | guidata.dataset.io.JSONWriter
+        ),
     ) -> None:
         """Serialize object to HDF5 writer
 
@@ -113,9 +115,11 @@ class PolygonShape(AbstractShape):
 
     def deserialize(
         self,
-        reader: guidata.dataset.io.HDF5Reader
-        | guidata.dataset.io.INIReader
-        | guidata.dataset.io.JSONReader,
+        reader: (
+            guidata.dataset.io.HDF5Reader
+            | guidata.dataset.io.INIReader
+            | guidata.dataset.io.JSONReader
+        ),
     ) -> None:
         """Deserialize object from HDF5 reader
 

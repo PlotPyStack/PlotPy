@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING
 
 from plotpy.builder import make
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from plotpy.items import BaseImageItem, CurveItem
     from plotpy.plot import PlotWindow
 

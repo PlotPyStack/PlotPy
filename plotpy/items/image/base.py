@@ -49,7 +49,7 @@ from plotpy.mathutils.arrayfuncs import get_nan_range
 from plotpy.mathutils.colormap import FULLRANGE, get_cmap
 from plotpy.styles.image import RawImageParam
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import guidata.dataset.io
     import qwt.color_map
     import qwt.scale_map

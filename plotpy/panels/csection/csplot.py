@@ -23,7 +23,7 @@ from plotpy.styles.curve import CurveParam
 LUT_AXIS_TITLE = _("LUT scale") + (" (0-%d)" % LUT_MAX)
 
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from qtpy.QtWidgets import QWidget
 
     from plotpy.items import BaseImageItem
@@ -342,7 +342,7 @@ class BaseCrossSectionPlot(BasePlot):
             if obj is not None and obj.plot() is not None:
                 self.plot_labels_changed(obj.plot())
 
-    def toggle_lockscales(self, state: bool)-> None:
+    def toggle_lockscales(self, state: bool) -> None:
         """Toggle the lock scales mode
 
         Args:
@@ -479,7 +479,6 @@ class ObliqueCrossSectionPlot(HorizontalCrossSectionPlot):
     def create_cross_section_item(self) -> ObliqueCrossSectionItem:
         """Create cross section item"""
         return ObliqueCrossSectionItem(self.param)
-
 
 
 # Line cross section plot

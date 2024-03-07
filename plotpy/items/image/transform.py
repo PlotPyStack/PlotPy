@@ -31,7 +31,7 @@ except ImportError:
     )
     raise
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import qwt.scale_map
     from qtpy.QtCore import QRectF
     from qtpy.QtGui import QPainter

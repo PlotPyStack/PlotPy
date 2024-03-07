@@ -22,7 +22,7 @@ from plotpy.config import _
 from plotpy.interfaces import IBasePlotItem, ISerializableType, ITrackableItemType
 from plotpy.styles import PolygonMapParam
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import guidata.dataset.io
     from qtpy.QtCore import QPointF
     from qwt import QwtScaleMap

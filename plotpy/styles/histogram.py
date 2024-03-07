@@ -19,7 +19,7 @@ from plotpy.config import _
 from plotpy.styles.base import ItemParameters
 from plotpy.styles.image import BaseImageParam
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from plotpy.items import Histogram2DItem, HistogramItem
 
 

@@ -20,7 +20,7 @@ from plotpy.tools.base import PanelTool
 from plotpy.tools.image import update_image_tool_status
 from plotpy.tools.shape import RectangularShapeTool
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from plotpy.plot import BasePlot
 
 

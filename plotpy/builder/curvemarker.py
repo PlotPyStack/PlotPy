@@ -45,7 +45,7 @@ from plotpy.styles import (
     update_style_attr,
 )
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from typing import Callable
 
 CURVE_COUNT = 0

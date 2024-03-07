@@ -36,7 +36,7 @@ from qtpy.QtWidgets import QWidget  # Helping out python_qt_documentation
 from plotpy.config import _
 from plotpy.widgets import basetransform
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from plotpy.plot import PlotOptions
     from plotpy.plot.manager import PlotManager
 

@@ -25,7 +25,7 @@ from plotpy.config import _
 from plotpy.items import TrImageItem
 from plotpy.plot import PlotOptions, PlotWidget
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import numpy as np
 
     from plotpy.plot.base import BasePlot

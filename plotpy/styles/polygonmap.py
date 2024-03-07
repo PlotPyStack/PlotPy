@@ -9,7 +9,7 @@ from guidata.dataset import DataSet, GetAttrProp, StringItem
 from plotpy.config import _
 from plotpy.styles.base import ItemParameters
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from plotpy.items import PolygonMapItem
 
 

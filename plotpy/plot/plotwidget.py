@@ -19,7 +19,7 @@ from plotpy.constants import PlotType
 from plotpy.plot.base import BasePlot, BasePlotOptions
 from plotpy.plot.manager import PlotManager
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from plotpy.panels.base import PanelWidget
 
 

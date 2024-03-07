@@ -53,7 +53,7 @@ from plotpy.items import (
 from plotpy.styles.axes import AxesParam, AxeStyleParam, AxisParam, ImageAxesParam
 from plotpy.styles.base import GridParam, ItemParameters
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from typing import IO
 
     from qwt.scale_widget import QwtScaleWidget

@@ -32,7 +32,7 @@ from plotpy.mathutils.colormap import (
 )
 from plotpy.styles.base import ItemParameters
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from guidata.dataset import DataSet
 
 

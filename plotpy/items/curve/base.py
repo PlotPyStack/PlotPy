@@ -23,7 +23,7 @@ from plotpy.interfaces import (
 from plotpy.styles.base import SymbolParam
 from plotpy.styles.curve import CurveParam
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import guidata.dataset.io
 
     from plotpy.interfaces import IItemType

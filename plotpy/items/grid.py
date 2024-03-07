@@ -18,7 +18,7 @@ from plotpy.config import _
 from plotpy.interfaces import IBasePlotItem, IDecoratorItemType
 from plotpy.styles.base import GridParam
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from qtpy.QtCore import QPointF
 
     from plotpy.interfaces import IItemType

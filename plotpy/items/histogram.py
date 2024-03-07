@@ -23,7 +23,7 @@ from plotpy.items.curve.base import CurveItem
 from plotpy.styles.curve import CurveParam
 from plotpy.styles.histogram import HistogramParam
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from plotpy.items.image.base import BaseImageItem
     from plotpy.styles.base import ItemParameters
 

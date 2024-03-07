@@ -52,7 +52,7 @@ from plotpy.panels.base import PanelWidget
 from plotpy.plot import BasePlot, PlotDialog, PlotOptions
 from plotpy.tools import RectangularShapeTool, SelectTool
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from plotpy.panels.base import PanelWidget
 
 

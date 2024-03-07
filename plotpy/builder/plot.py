@@ -27,7 +27,7 @@ from plotpy.items import GridItem
 from plotpy.plot import PlotDialog, PlotOptions, PlotWidget, PlotWindow
 from plotpy.styles import COLORS, GridParam, LineStyleParam
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from qtpy.QtWidgets import QWidget
 
     from plotpy.constants import PlotType

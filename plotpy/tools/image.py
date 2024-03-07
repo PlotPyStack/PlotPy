@@ -46,7 +46,7 @@ from plotpy.widgets.colormap.manager import ColorMapManager
 from plotpy.widgets.colormap.widget import EditableColormap
 from plotpy.widgets.imagefile import exec_image_save_dialog
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from qtpy.QtCore import QEvent
     from qtpy.QtWidgets import QMenu
 

@@ -36,7 +36,7 @@ except ImportError:
     )
     raise
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     import qwt.color_map
     import qwt.scale_map
     from qtpy.QtCore import QPointF, QRectF

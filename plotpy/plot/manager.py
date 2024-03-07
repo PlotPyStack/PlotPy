@@ -54,7 +54,7 @@ from plotpy.tools import (
     YCSPanelTool,
 )
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from typing import Callable
 
     from qtpy.QtCore import Qt

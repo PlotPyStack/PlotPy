@@ -27,7 +27,7 @@ from plotpy.plot import PlotDialog, PlotOptions
 from plotpy.tests import get_path
 from plotpy.tools import ImageMaskTool, LoadItemsTool, SaveItemsTool
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from plotpy.plot import BasePlot
 
 

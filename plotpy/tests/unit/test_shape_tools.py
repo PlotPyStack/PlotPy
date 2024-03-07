@@ -27,7 +27,7 @@ from plotpy.tools import (
     SnapshotTool,
 )
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from plotpy.plot.plotwidget import PlotWindow
     from plotpy.tools.base import RectangularActionTool
 
