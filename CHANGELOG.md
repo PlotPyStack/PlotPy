@@ -28,6 +28,8 @@ Other changes:
 * Fix typo in `tests.features.test_colormap_editor` module: renamed function
   `test_colormap_manager` to `test_colormap_editor`
 * Removed unnecessary `BaseImageItem.get_color_map_name` method
+* `ErrorBarCurveItem`: handled NumPy deprecation warning
+  ("Conversion of an array with ndim > 0 to a scalar is deprecated [...]")
 
 ## Version 2.2.0 ##
 
