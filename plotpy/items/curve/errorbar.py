@@ -163,14 +163,18 @@ class ErrorBarCurveItem(CurveItem):
         self._dy = dy
         self.__minmaxarrays = {}
 
-    def get_minmax_arrays(self, all_values: bool = True) -> tuple[float, ...]:
+    def get_minmax_arrays(
+        self, all_values: bool = True
+    ) -> tuple[
+        np.ndarray[float], np.ndarray[float], np.ndarray[float], np.ndarray[float]
+    ]:
         """Get min/max arrays
 
         Args:
             all_values: If True, return all values, else return only finite values
 
         Returns:
-            tuple[float, ...]: Min/max arrays
+            Min/max arrays
         """
         if self.__minmaxarrays.get(all_values) is None:
             x = self.dsamp(self._x)
@@ -256,12 +260,6 @@ class ErrorBarCurveItem(CurveItem):
         else:
             xmin = xminf.min()
             ymin = yminf.min()
-
-        xmin = np.float64(xmin)
-        ymin = np.float64(ymin)
-        xmax = np.float64(xmax)
-        ymax = np.float64(ymax)
-
         return QC.QRectF(xmin, ymin, xmaxf.max() - xmin, ymaxf.max() - ymin)
 
     def draw(

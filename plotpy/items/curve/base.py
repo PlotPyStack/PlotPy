@@ -138,7 +138,7 @@ class CurveItem(QwtPlotCurve):
         """
         if self.plot().get_axis_scale(axis_id) == "log":
             if len(axis_data[axis_data > 0]) == 0:
-                return 0
+                return 0.0
             else:
                 return axis_data[axis_data > 0].min()
         else:
