@@ -30,7 +30,7 @@ The :mod:`plotpy` package requires the following Python modules:
       - Read and write TIFF files
     * - PyQt5
       - >=5.11
-      - Python bindings for the Qt cross platform application toolkit
+      - 
 
 Optional modules for development:
 
@@ -97,9 +97,6 @@ Optional modules for running test suite:
     * - pytest
       - 
       - pytest: simple powerful testing with Python
-    * - pytest-cov
-      - 
-      - Pytest plugin for measuring coverage.
     * - pytest-xvfb
       - 
       - A pytest plugin to run Xvfb (or Xephyr/Xvnc) for tests.

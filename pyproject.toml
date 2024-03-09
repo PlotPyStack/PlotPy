@@ -56,7 +56,7 @@ doc = [
     "sphinx_qt_documentation",
     "python-docs-theme",
 ]
-test = ["pytest", "pytest-cov", "pytest-xvfb"]
+test = ["pytest", "pytest-xvfb"]
 
 [tool.setuptools.packages.find]
 include = ["plotpy*"]
