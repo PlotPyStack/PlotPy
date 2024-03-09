@@ -20,7 +20,7 @@ from plotpy.styles.shape import MarkerParam
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    import guidata.dataset.io
+    import guidata.io
     import qwt.scale_map
     from qtpy.QtCore import QPointF, QRectF
     from qtpy.QtGui import QPainter
@@ -89,11 +89,7 @@ class Marker(QwtPlotMarker):
 
     def serialize(
         self,
-        writer: (
-            guidata.dataset.io.HDF5Writer
-            | guidata.dataset.io.INIWriter
-            | guidata.dataset.io.JSONWriter
-        ),
+        writer: guidata.io.HDF5Writer | guidata.io.INIWriter | guidata.io.JSONWriter,
     ) -> None:
         """Serialize object to HDF5 writer
 
@@ -108,11 +104,7 @@ class Marker(QwtPlotMarker):
 
     def deserialize(
         self,
-        reader: (
-            guidata.dataset.io.HDF5Reader
-            | guidata.dataset.io.INIReader
-            | guidata.dataset.io.JSONReader
-        ),
+        reader: guidata.io.HDF5Reader | guidata.io.INIReader | guidata.io.JSONReader,
     ) -> None:
         """Deserialize object from HDF5 reader
 

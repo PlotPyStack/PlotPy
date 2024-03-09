@@ -44,7 +44,7 @@ import PIL.TiffImagePlugin  # py2exe
 from plotpy.config import _
 
 if TYPE_CHECKING:
-    import guidata.dataset.io
+    import guidata.io
 
 
 def scale_data_to_dtype(data: np.ndarray, dtype: np.dtype) -> np.ndarray:
@@ -659,11 +659,7 @@ def item_name_from_object(obj: Any) -> str | None:
 
 
 def save_item(
-    writer: (
-        guidata.dataset.io.HDF5Writer
-        | guidata.dataset.io.INIWriter
-        | guidata.dataset.io.JSONWriter
-    ),
+    writer: guidata.io.HDF5Writer | guidata.io.INIWriter | guidata.io.JSONWriter,
     group_name,
     item: Any,
 ) -> None:
@@ -684,11 +680,7 @@ def save_item(
 
 
 def load_item(
-    reader: (
-        guidata.dataset.io.HDF5Reader
-        | guidata.dataset.io.INIReader
-        | guidata.dataset.io.JSONReader
-    ),
+    reader: guidata.io.HDF5Reader | guidata.io.INIReader | guidata.io.JSONReader,
     group_name,
 ) -> Any | None:
     """Load plot item from HDF5, INI or JSON file
@@ -714,11 +706,7 @@ def load_item(
 
 
 def save_items(
-    writer: (
-        guidata.dataset.io.HDF5Writer
-        | guidata.dataset.io.INIWriter
-        | guidata.dataset.io.JSONWriter
-    ),
+    writer: guidata.io.HDF5Writer | guidata.io.INIWriter | guidata.io.JSONWriter,
     items: list[Any],
 ) -> None:
     """Save items to HDF5, INI or JSON file
@@ -745,11 +733,7 @@ def save_items(
 
 
 def load_items(
-    reader: (
-        guidata.dataset.io.HDF5Reader
-        | guidata.dataset.io.INIReader
-        | guidata.dataset.io.JSONReader
-    ),
+    reader: guidata.io.HDF5Reader | guidata.io.INIReader | guidata.io.JSONReader,
 ) -> list[Any]:
     """Load items from HDF5, INI or JSON file
 

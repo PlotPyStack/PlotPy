@@ -30,7 +30,7 @@ classifiers = [
 ]
 requires-python = ">=3.8, <4"
 dependencies = [
-    "guidata>=3.1",
+    "guidata>=3.4",
     "PythonQwt>=0.12.1",
     "NumPy>=1.17",
     "SciPy>=1.3",

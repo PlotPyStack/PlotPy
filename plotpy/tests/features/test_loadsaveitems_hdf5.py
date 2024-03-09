@@ -12,7 +12,7 @@
 
 from __future__ import annotations
 
-from guidata.dataset.io import HDF5Reader, HDF5Writer
+from guidata.io import HDF5Reader, HDF5Writer
 
 from plotpy.tests.features.test_loadsaveitems_pickle import IOTest
 

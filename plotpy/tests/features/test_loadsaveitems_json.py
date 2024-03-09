@@ -28,7 +28,7 @@ How to save/restore items to/from a JSON string?
 
 from __future__ import annotations
 
-from guidata.dataset.io import JSONReader, JSONWriter
+from guidata.io import JSONReader, JSONWriter
 
 from plotpy.tests.features.test_loadsaveitems_pickle import IOTest
 

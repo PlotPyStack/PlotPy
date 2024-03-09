@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING
 import numpy as np
 
 if TYPE_CHECKING:
-    import guidata.dataset.io
+    import guidata.io
     from qtpy.QtCore import QPointF
 
     from plotpy.styles.base import ItemParameters
@@ -242,11 +242,7 @@ class ISerializableType(IItemType):
 
     def serialize(
         self,
-        writer: (
-            guidata.dataset.io.HDF5Writer
-            | guidata.dataset.io.INIWriter
-            | guidata.dataset.io.JSONWriter
-        ),
+        writer: guidata.io.HDF5Writer | guidata.io.INIWriter | guidata.io.JSONWriter,
     ) -> None:
         """Serialize object to HDF5 writer
 
@@ -256,11 +252,7 @@ class ISerializableType(IItemType):
 
     def deserialize(
         self,
-        reader: (
-            guidata.dataset.io.HDF5Reader
-            | guidata.dataset.io.INIReader
-            | guidata.dataset.io.JSONReader
-        ),
+        reader: guidata.io.HDF5Reader | guidata.io.INIReader | guidata.io.JSONReader,
     ) -> None:
         """Deserialize object from HDF5 reader
 

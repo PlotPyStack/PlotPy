@@ -31,7 +31,7 @@ from plotpy.styles.label import LabelParam
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    import guidata.dataset.io
+    import guidata.io
     import qwt.scale_map
     import qwt.symbol
     from qtpy.QtCore import QPointF, QRectF
@@ -104,11 +104,7 @@ class AbstractLabelItem(QwtPlotItem):
 
     def serialize(
         self,
-        writer: (
-            guidata.dataset.io.HDF5Writer
-            | guidata.dataset.io.INIWriter
-            | guidata.dataset.io.JSONWriter
-        ),
+        writer: guidata.io.HDF5Writer | guidata.io.INIWriter | guidata.io.JSONWriter,
     ) -> None:
         """Serialize object to HDF5 writer
 
@@ -120,11 +116,7 @@ class AbstractLabelItem(QwtPlotItem):
 
     def deserialize(
         self,
-        reader: (
-            guidata.dataset.io.HDF5Reader
-            | guidata.dataset.io.INIReader
-            | guidata.dataset.io.JSONReader
-        ),
+        reader: guidata.io.HDF5Reader | guidata.io.INIReader | guidata.io.JSONReader,
     ) -> None:
         """Deserialize object from HDF5 reader
 
@@ -518,11 +510,7 @@ class LabelItem(AbstractLabelItem):
 
     def serialize(
         self,
-        writer: (
-            guidata.dataset.io.HDF5Writer
-            | guidata.dataset.io.INIWriter
-            | guidata.dataset.io.JSONWriter
-        ),
+        writer: guidata.io.HDF5Writer | guidata.io.INIWriter | guidata.io.JSONWriter,
     ) -> None:
         """Serialize object to HDF5 writer
 
@@ -534,11 +522,7 @@ class LabelItem(AbstractLabelItem):
 
     def deserialize(
         self,
-        reader: (
-            guidata.dataset.io.HDF5Reader
-            | guidata.dataset.io.INIReader
-            | guidata.dataset.io.JSONReader
-        ),
+        reader: guidata.io.HDF5Reader | guidata.io.INIReader | guidata.io.JSONReader,
     ) -> None:
         """Deserialize object from HDF5 reader
 
