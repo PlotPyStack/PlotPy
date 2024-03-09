@@ -11,7 +11,7 @@ The :mod:`plotpy` package requires the following Python modules:
       - >=3.8, <4
       - 
     * - guidata
-      - >=3.1
+      - >=3.4
       - Automatic GUI generation for easy dataset editing and display
     * - PythonQwt
       - >=0.12.1
@@ -30,7 +30,7 @@ The :mod:`plotpy` package requires the following Python modules:
       - Read and write TIFF files
     * - PyQt5
       - >=5.11
-      - 
+      - Python bindings for the Qt cross platform application toolkit
 
 Optional modules for development:
 
