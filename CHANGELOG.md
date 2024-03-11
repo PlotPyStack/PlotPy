@@ -4,7 +4,7 @@
 
 In this release, test coverage is 75%.
 
-New features:
+💥 New features:
 
 * Added support for colormap inversion:
   * The user can now invert the colormap of an image item:
@@ -15,7 +15,12 @@ New features:
   * New `ReverseColormapTool`: registered by default in the plot widget, like the
     `ColormapTool` (add the "Invert colormap" entry in the context menu of the image)
 
-Other changes:
+🛠️ Bug fixes:
+
+* `ErrorBarCurveItem`: fixed NumPy deprecation warning
+  ("Conversion of an array with ndim > 0 to a scalar is deprecated [...]")
+
+ℹ️ Other changes:
 
 * Image plot items deserialization:
   * When an image plot item is deserialized, and needs to be reloaded from a file,
@@ -28,8 +33,6 @@ Other changes:
 * Fix typo in `tests.features.test_colormap_editor` module: renamed function
   `test_colormap_manager` to `test_colormap_editor`
 * Removed unnecessary `BaseImageItem.get_color_map_name` method
-* `ErrorBarCurveItem`: handled NumPy deprecation warning
-  ("Conversion of an array with ndim > 0 to a scalar is deprecated [...]")
 
 ## Version 2.2.0 ##
 
