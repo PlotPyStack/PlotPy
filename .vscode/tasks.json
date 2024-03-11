@@ -174,7 +174,35 @@
             }
         },
         {
-            "label": "Upgrade environment",
+            "label": "Upgrade PlotPyStack packages",
+            "type": "shell",
+            "command": "cmd",
+            "args": [
+                "/c",
+                "upgrade_stack.bat"
+            ],
+            "options": {
+                "cwd": "scripts",
+                "env": {
+                    "UNATTENDED": "1",
+                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
+                }
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            }
+        },
+        {
+            "label": "⚠️ Upgrade whole environment ⚠️",
             "type": "shell",
             "command": "cmd",
             "args": [
