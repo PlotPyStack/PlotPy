@@ -29,11 +29,11 @@ To run the unittests, you need:
 
 Then run the following command::
 
-    pytest plotpy
+    pytest
 
 To run test with coverage support, use the following command::
 
-    pytest -v --cov --cov-report=html plotpy
+    pytest -v --cov --cov-report=html
 
 
 Code formatting
