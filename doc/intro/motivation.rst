@@ -9,7 +9,7 @@ What are PlotPy V2 advantages over PlotPy V1?
 From a developer point of view, PlotPy V2 is a major overhaul of PlotPy V1:
 
 * Architecture has been redesigned to be more modular and extensible, and more simple.
-* Code quality has been improved introducing `black`, `isort` and typing annotations
+* Code quality has been improved introducing `ruff` and typing annotations
   all over the codebase
 
 .. note::

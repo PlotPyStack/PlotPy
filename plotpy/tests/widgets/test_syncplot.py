@@ -12,7 +12,6 @@ from guidata.qthelpers import qt_app_context
 from qtpy import QtGui as QG
 
 from plotpy.builder import make
-from plotpy.config import _
 from plotpy.plot import BasePlot, PlotOptions
 from plotpy.plot.plotwidget import SyncPlotWindow
 from plotpy.tests.data import gen_2d_gaussian

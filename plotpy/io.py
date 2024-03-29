@@ -374,7 +374,7 @@ def _import_dcm():
     # is to check if pydicom is installed:
     # pylint: disable=import-outside-toplevel
     # pylint: disable=import-error
-    from pydicom import dicomio  # type:ignore
+    from pydicom import dicomio  # type:ignore # noqa: F401
 
     logger.setLevel(logging.WARNING)
 

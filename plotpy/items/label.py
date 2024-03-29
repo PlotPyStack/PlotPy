@@ -706,7 +706,7 @@ class LegendBoxItem(AbstractLabelItem):
         """
         width = 0
         height = 0
-        for text, _, _, _ in legenditems:
+        for text, _, _, _ in legenditems:  # noqa
             sz = text.size()
             if sz.width() > width:
                 width = sz.width()

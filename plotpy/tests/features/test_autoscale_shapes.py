@@ -11,9 +11,7 @@ import numpy as np
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
-from plotpy.items import PolygonShape
 from plotpy.plot import PlotDialog
-from plotpy.styles import ShapeParam
 from plotpy.tools import (
     AnnotatedCircleTool,
     AnnotatedEllipseTool,

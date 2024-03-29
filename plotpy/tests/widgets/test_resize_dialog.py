@@ -8,7 +8,6 @@ ResizeDialog test
 import pytest
 from guidata.qthelpers import exec_dialog, qt_app_context
 from qtpy import QtCore as QC
-from qtpy.QtCore import Qt
 
 from plotpy.widgets.resizedialog import ResizeDialog
 

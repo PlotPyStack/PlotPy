@@ -14,7 +14,7 @@ from guidata.configtools import get_icon
 from guidata.qthelpers import qt_app_context
 from qtpy import QtWidgets as QW
 
-import plotpy.config  # Loading icons
+import plotpy.config  # Loading icons  # noqa: F401
 from plotpy.builder import make
 
 

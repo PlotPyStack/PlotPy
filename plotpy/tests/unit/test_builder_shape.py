@@ -56,8 +56,6 @@ def test_builder_svgshape():
     svg_path = get_path("svg_target.svg")
     with open(svg_path, "rb") as f:
         svg_data = f.read()
-    x = np.linspace(0, 1, 10)
-    y = x**2
     for shape_str in ("circle", "rectangle", "square"):
         for data_or_path in (svg_data, svg_path):
             items.append(

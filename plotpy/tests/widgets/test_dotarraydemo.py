@@ -29,8 +29,7 @@ from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
 
-import plotpy.config  # Loading icons
-import plotpy.widgets
+import plotpy.config  # Loading icons  # noqa: F401
 from plotpy.interfaces import IImageItemType
 from plotpy.items import RawImageItem
 from plotpy.items.curve.errorbar import vmap

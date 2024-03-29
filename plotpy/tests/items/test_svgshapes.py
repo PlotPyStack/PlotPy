@@ -7,8 +7,6 @@
 
 # guitest: show
 
-import os.path as osp
-
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make

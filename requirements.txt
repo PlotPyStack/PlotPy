@@ -6,10 +6,9 @@ tifffile
 PyQt5
 PythonQwt>=0.12.1
 SciPy>=1.3
-black
 guidata>=3.4
-isort
 pylint
+ruff
 pytest
 pytest-xvfb
 python-docs-theme

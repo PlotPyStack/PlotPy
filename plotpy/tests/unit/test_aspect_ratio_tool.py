@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import qtpy.QtCore as QC
 from guidata.qthelpers import exec_dialog, qt_app_context
 
 from plotpy.interfaces.items import IImageItemType

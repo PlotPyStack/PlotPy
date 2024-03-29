@@ -32,7 +32,11 @@ def imshow(x, y, data, filter_area, yreverse=True):
         plot = win.manager.get_plot()
         plot.add_item(image)
         xmin, xmax, ymin, ymax = filter_area
-        ifilter = lambda x, y, data: gaussian_filter(data, 5)
+
+        def ifilter(x, y, data):
+            """Image filter function"""
+            return gaussian_filter(data, 5)
+
         flt = make.imagefilter(xmin, xmax, ymin, ymax, image, filter=ifilter)
         plot.add_item(flt, z=1)
         plot.replot()

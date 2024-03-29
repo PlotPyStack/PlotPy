@@ -59,8 +59,8 @@ def test_colormap_editor() -> None:
         cmap_tuples = tuple((int(val * 255 + 1), color) for val, color in cmap_tuples)
         print(
             "Initialization of a new default colormap editor, "
-            "modified post-initialization with the previous colormap with stops scaled by "
-            "255 + 1: ",
+            "modified post-initialization with the previous colormap "
+            "with stops scaled by 255 + 1: ",
             cmap_tuples,
         )
         new_cmap = EditableColormap.from_iterable(cmap_tuples)
@@ -70,8 +70,8 @@ def test_colormap_editor() -> None:
 
         print(
             "Initialization of a new default colormap editor, "
-            "modified post-initialization with the previous colormap where the red stop is "
-            "replaced with a green stop: ",
+            "modified post-initialization with the previous colormap "
+            "where the red stop is replaced with a green stop: ",
             cmap_tuples,
         )
 

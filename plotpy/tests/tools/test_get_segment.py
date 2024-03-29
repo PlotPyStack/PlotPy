@@ -17,7 +17,6 @@ from guidata.env import execenv
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
-from plotpy.config import _
 from plotpy.coords import axes_to_canvas
 from plotpy.tools import AnnotatedSegmentTool
 from plotpy.widgets.selectdialog import SelectDialog, select_with_shape_tool

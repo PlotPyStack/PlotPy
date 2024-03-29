@@ -15,7 +15,7 @@ from guidata.configtools import get_icon
 from guidata.qthelpers import qt_app_context, win32_fix_title_bar_background
 from qtpy import QtWidgets as QW
 
-import plotpy.config  # Loading icons
+import plotpy.config  # Loading icons # noqa: F401
 from plotpy.builder import make
 from plotpy.plot import BasePlot, BasePlotOptions
 from plotpy.plot.manager import PlotManager

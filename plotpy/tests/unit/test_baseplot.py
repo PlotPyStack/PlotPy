@@ -15,7 +15,7 @@ from qtpy import QtWidgets as QW
 
 from plotpy.tests import vistools as ptv
 from plotpy.tests.features.test_auto_curve_image import make_curve_image_legend
-from plotpy.tools.curve import DownSamplingTool, EditPointTool, SelectPointsTool
+from plotpy.tools.curve import EditPointTool, SelectPointsTool
 
 
 def test_baseplot_api():

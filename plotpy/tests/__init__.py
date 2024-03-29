@@ -12,7 +12,7 @@ import os.path as osp
 
 from guidata.configtools import get_module_data_path
 
-import plotpy
+import plotpy  # noqa: F401
 
 TESTDATAPATH = get_module_data_path("plotpy", osp.join("tests", "data"))
 

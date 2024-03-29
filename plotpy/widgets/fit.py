@@ -63,7 +63,9 @@ from guidata.dataset import (
     update_dataset,
 )
 from guidata.qthelpers import create_groupbox, exec_dialog
-from numpy import inf  # Do not remove this import (used by optimization funcs)
+
+# Do not remove this import (used by optimization funcs)
+from numpy import inf  # noqa: F401
 from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 from qtpy.QtWidgets import QWidget  # only to help intersphinx find QWidget
