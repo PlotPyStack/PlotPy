@@ -196,6 +196,10 @@ def compute_oblique_section(item, obj, debug=False):
     """Return oblique averaged cross section"""
     global TEMP_ITEM
 
+    if obj.plot() is None:
+        # Item has not yet been added to the plot
+        return np.array([]), np.array([])
+
     xa, ya, xb, yb = obj.get_bounding_rect_coords()
     x0, y0, x1, y1, x2, y2, x3, y3 = obj.get_rect()
 
