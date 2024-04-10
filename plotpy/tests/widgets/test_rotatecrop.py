@@ -65,7 +65,7 @@ def imshow(data, title=None, hold=False):
 def dialog_test(fname="brain.png"):
     """Test the rotate/crop dialog"""
     array0, item = create_test_data(fname)
-    dlg = RotateCropDialog(None)
+    dlg = RotateCropDialog(None, toolbar=True)
     dlg.transform.set_item(item)
     if exec_dialog(dlg) == QW.QDialog.Accepted:
         array1 = dlg.transform.get_result()
