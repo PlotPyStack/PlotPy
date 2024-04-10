@@ -123,6 +123,7 @@ class FlipRotateDialog(QW.QDialog):
         self.add_buttons_to_layout(buttonhlayout, edit)
 
         dialogvlayout = QW.QVBoxLayout()
+        dialogvlayout.addWidget(self.widget.plot_widget.toolbar)
         dialogvlayout.addWidget(self.widget)
         dialogvlayout.addLayout(buttonhlayout)
         self.setLayout(dialogvlayout)
