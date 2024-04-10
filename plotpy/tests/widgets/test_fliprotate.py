@@ -7,13 +7,7 @@
 
 # guitest: show
 
-from guidata.configtools import get_icon
-from guidata.qthelpers import (
-    add_actions,
-    create_toolbutton,
-    exec_dialog,
-    qt_app_context,
-)
+from guidata.qthelpers import exec_dialog, qt_app_context
 from qtpy import QtWidgets as QW
 
 from plotpy.tests.widgets.test_rotatecrop import create_test_data, imshow
@@ -35,24 +29,12 @@ def dialog_test(fname):
     """Test the flip/rotate dialog with rotation point changeable"""
     array0, item = create_test_data(fname)
     dlg = FlipRotateDialog(None, toolbar=True)
-    tool = dlg.manager.add_tool(
+    dlg.manager.add_tool(
         RotationCenterTool,
         rotation_center=False,
         rotation_point_move_with_shape=True,
         on_all_items=True,
-        toolbar_id=None,
     )
-    action = tool.action
-
-    rot_point_btn = create_toolbutton(
-        dlg.plot_widget, icon=get_icon("rotationcenter.jpg")
-    )
-    rot_point_btn.setPopupMode(QW.QToolButton.InstantPopup)
-    rotation_tool_menu = QW.QMenu(dlg.plot_widget)
-    add_actions(rotation_tool_menu, (action,))
-    rot_point_btn.setMenu(rotation_tool_menu)
-    dlg.toolbar.addWidget(rot_point_btn)
-
     dlg.transform.set_item(item)
     if exec_dialog(dlg) == QW.QDialog.Accepted:
         array1 = dlg.transform.get_result()
