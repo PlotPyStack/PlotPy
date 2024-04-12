@@ -1,5 +1,23 @@
 # Changelog #
 
+## Version 2.3.1 ##
+
+In this release, test coverage is 75%.
+
+💥 New features:
+
+* Colormap: added "Apply" button to the colormap manager
+
+🛠️ Bug fixes:
+
+* Colormap: fixed context menu entry update (colormap icon was updated as expected, but
+  the colormap name was not)
+* Rotate/crop dialog: added missing toolbar on plot widget
+* Flip/rotate dialog: added missing toolbar on plot widget
+* Fixed issue with oblique averaged cross section computation (`AttributeError` when
+  clicking on the empty cross section plot)
+
+
 ## Version 2.3.0 ##
 
 In this release, test coverage is 75%.
