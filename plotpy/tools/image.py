@@ -484,6 +484,7 @@ class ColormapTool(CommandTool):
         manager = ColorMapManager(
             plot.parent(), active_colormap=self._active_colormap.name
         )
+        manager.SIG_APPLY_COLORMAP.connect(self.update_plot)
         if exec_dialog(manager) and (cmap := manager.get_colormap()) is not None:
             self.activate_cmap(cmap)
 
@@ -500,14 +501,23 @@ class ColormapTool(CommandTool):
             self._active_colormap = cmap
         plot: BasePlot = self.get_active_plot()
         if self._active_colormap is not None and plot is not None:
-            items = get_selected_images(plot, IColormapImageItemType)
-            for item in items:
-                param: BaseImageParam = item.param
-                param.colormap = self._active_colormap.name
-                param.update_item(item)
-                plot.SIG_ITEM_PARAMETERS_CHANGED.emit(item)
-            plot.invalidate()
+            self.update_plot(self._active_colormap.name)
             self.update_status(plot)
+
+    def update_plot(self, cmap: str) -> None:
+        """Update the plot with the given colormap.
+
+        Args:
+            cmap: Colormap name
+        """
+        plot: BasePlot = self.get_active_plot()
+        items = get_selected_images(plot, IColormapImageItemType)
+        for item in items:
+            param: BaseImageParam = item.param
+            param.colormap = cmap
+            param.update_item(item)
+            plot.SIG_ITEM_PARAMETERS_CHANGED.emit(item)
+        plot.invalidate()
 
     def update_status(self, plot: BasePlot) -> None:
         """Update tool status if the plot type is not PlotType.CURVE.

@@ -133,6 +133,8 @@ class ColorMapManager(QW.QDialog):
         that the colormap cannot be removed.
     """
 
+    SIG_APPLY_COLORMAP = QC.Signal(str)
+
     def __init__(
         self,
         parent: QW.QWidget | None = None,
@@ -196,13 +198,16 @@ class ColorMapManager(QW.QDialog):
         self._cmap_choice.currentIndexChanged.connect(self.set_colormap)
 
         self.bbox = QW.QDialogButtonBox(
-            QW.QDialogButtonBox.Save
+            QW.QDialogButtonBox.Apply
+            | QW.QDialogButtonBox.Save
             | QW.QDialogButtonBox.Ok
             | QW.QDialogButtonBox.Cancel
         )
         self._changes_saved = True
         self._save_btn = self.bbox.button(QW.QDialogButtonBox.Save)
         self._save_btn.setEnabled(False)  # type: ignore
+        self._apply_btn = self.bbox.button(QW.QDialogButtonBox.Apply)
+        self._apply_btn.setEnabled(False)  # type: ignore
         self.bbox.clicked.connect(self.button_clicked)
 
         dialog_layout = QW.QVBoxLayout()
@@ -220,7 +225,12 @@ class ColorMapManager(QW.QDialog):
         Args:
             button: button clicked
         """
-        if button is self._save_btn:
+        if button is self._apply_btn:
+            if not self.current_changes_saved and not self.save_colormap():
+                return
+            self._apply_btn.setEnabled(False)
+            self.SIG_APPLY_COLORMAP.emit(self.colormap_editor.get_colormap().name)
+        elif button is self._save_btn:
             self.save_colormap()
         elif self.bbox.buttonRole(button) == QW.QDialogButtonBox.AcceptRole:
             self.accept()
@@ -231,6 +241,7 @@ class ColorMapManager(QW.QDialog):
         """Callback function to be called when the colormap is modified. Enables the
         save button and sets the current_changes_saved attribute to False."""
         self._save_btn.setEnabled(True)  # type: ignore
+        self._apply_btn.setEnabled(True)  # type: ignore
         self._changes_saved = False
 
     @property
