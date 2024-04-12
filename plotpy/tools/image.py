@@ -454,9 +454,7 @@ class ColormapTool(CommandTool):
         toolbar_id: Toolbar Id to use. Defaults to DefaultToolbarID.
     """
 
-    def __init__(
-        self, manager: PlotManager, toolbar_id=DefaultToolbarID
-    ) -> None:  # noqa: F821
+    def __init__(self, manager: PlotManager, toolbar_id=DefaultToolbarID) -> None:  # noqa: F821
         super().__init__(
             manager,
             _("Colormap"),
@@ -508,7 +506,6 @@ class ColormapTool(CommandTool):
                 param.colormap = self._active_colormap.name
                 param.update_item(item)
                 plot.SIG_ITEM_PARAMETERS_CHANGED.emit(item)
-            self.action.setText(_("Colormap: %s") % self._active_colormap.name)
             plot.invalidate()
             self.update_status(plot)
 
@@ -521,15 +518,18 @@ class ColormapTool(CommandTool):
         if update_image_tool_status(self, plot):
             item: BaseImageItem = plot.get_last_active_item(IColormapImageItemType)
             icon = self.default_icon
+            cmap_name = "jet"
             if item:
                 self.action.setEnabled(True)
                 cmap = item.get_color_map()
                 if cmap is not None:
                     icon = build_icon_from_cmap_name(cmap.name)
                     self._active_colormap = get_cmap(cmap.name)
+                    cmap_name = cmap.name
             else:
                 self.action.setEnabled(False)
                 self._active_colormap = ALL_COLORMAPS["jet"]
+            self.action.setText(_("Colormap: %s") % cmap_name)
             self.action.setIcon(icon)
 
 
