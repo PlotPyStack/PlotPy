@@ -3,9 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import numpy as np
+import pytest
 import qtpy.QtCore as QC
 from guidata.qthelpers import exec_dialog, qt_app_context
 
+from plotpy.interfaces.items import IBasePlotItem, IShapeItemType
 from plotpy.tests import vistools as ptv
 from plotpy.tests.features.test_auto_curve_image import make_curve_image_legend
 from plotpy.tools import (
@@ -24,6 +26,7 @@ from plotpy.tools import (
     PointTool,
     RectangleTool,
     SegmentTool,
+    SelectTool,
     SnapshotTool,
 )
 
@@ -55,6 +58,8 @@ TOOLS = (
     SegmentTool,
 )
 
+# guitest: show
+
 
 def create_window(tool_classes: tuple[type[RectangularActionTool], ...]) -> PlotWindow:
     """Create a window with the given tools. The plot contains a curve, an image and a
@@ -84,98 +89,35 @@ def _test_annotation_tools(tool_classes: tuple[type[RectangularActionTool], ...]
     that the tool is activated and deactivated correctly."""
     with qt_app_context(exec_loop=False) as qapp:
         win = create_window(tool_classes)
+        plot = win.manager.get_plot()
         default_tool = win.manager.get_default_tool()
         for tool_class in tool_classes:
-
-            win.manager.get_tool(tool_class).activate()
+            tool = win.manager.get_tool(tool_class)
+            assert tool is not None
+            tool.activate()
             x_path = np.linspace(0, 0.5, 100)
             y_path = np.linspace(0, 0.5, 100)
             drag_mouse(win, qapp, x_path, y_path)
             if getattr(tool_class, "SWITCH_TO_DEFAULT_TOOL", False):
                 assert win.manager.get_default_tool() == default_tool
-
+        plot.select_some_items(plot.get_items(item_type=IShapeItemType))
+        select_tool = win.manager.get_tool(SelectTool)
+        assert select_tool is not None
+        select_tool.activate()
+        drag_mouse(win, qapp, np.linspace(0.2, 0.5, 10), np.linspace(0.2, 0.5, 10))
         exec_dialog(win)
 
 
-def test_annotated_circle_tool():
-    """Test the annotated circle tool."""
-    _test_annotation_tools((AnnotatedCircleTool,))
+@pytest.mark.parametrize("tool", TOOLS)
+def test_tool(tool: type[RectangularActionTool]) -> None:
+    """Test a single tool."""
+    _test_annotation_tools((tool,))
 
 
-def test_annotated_ellipse_tool():
-    """Test the annotated ellipse tool."""
-    _test_annotation_tools((AnnotatedEllipseTool,))
-
-
-def test_annotated_oblique_rectangle_tool():
-    """Test the annotated oblique rectangle tool."""
-    _test_annotation_tools((AnnotatedObliqueRectangleTool,))
-
-
-def test_annotated_point_tool():
-    """Test the annotated point tool."""
-    _test_annotation_tools((AnnotatedPointTool,))
-
-
-def test_annotated_rectangle_tool():
-    """Test the annotated rectangle tool."""
-    _test_annotation_tools((AnnotatedRectangleTool,))
-
-
-def test_annotated_segment_tool():
-    """Test the annotated segment tool."""
-    _test_annotation_tools((AnnotatedSegmentTool,))
-
-
-def test_avg_cross_section_tool():
-    """Test the average cross section tool."""
-    _test_annotation_tools((AverageCrossSectionTool,))
-
-
-def test_cross_section_tool():
-    """Test the cross section tool."""
-    _test_annotation_tools((CrossSectionTool,))
-
-
-def test_snapshot_tool():
-    """Test the snapshot tool."""
-    _test_annotation_tools((SnapshotTool,))
-
-
-def test_image_stats_tool():
-    """Test the image stats tool."""
-    _test_annotation_tools((ImageStatsTool,))
-
-
-def test_circle_tool():
-    """Test the circle tool."""
-    _test_annotation_tools((CircleTool,))
-
-
-def test_ellipse_tool():
-    """Test the ellipse tool."""
-    _test_annotation_tools((EllipseTool,))
-
-
-def test_oblique_rectangle_tool():
-    """Test the oblique rectangle tool."""
-    _test_annotation_tools((ObliqueRectangleTool,))
-
-
-def test_point_tool():
-    """Test the point tool."""
-    _test_annotation_tools((PointTool,))
-
-
-def test_rectangle_tool():
-    """Test the rectangle tool."""
-    _test_annotation_tools((RectangleTool,))
-
-
-def test_segment_tool():
-    """Test the segment tool."""
-    _test_annotation_tools((SegmentTool,))
+def test_all_tools():
+    """Test all tools."""
+    _test_annotation_tools(TOOLS)
 
 
 if __name__ == "__main__":
-    _test_annotation_tools(TOOLS)
+    test_all_tools()

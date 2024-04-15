@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import numpy as np
+import qtpy.QtCore as QC
 from guidata.qthelpers import qt_app_context
 
 from plotpy.interfaces.items import IImageItemType
@@ -14,6 +15,22 @@ def test_display_coords_on_curve():
         win, tool = create_window(DisplayCoordsTool)
         drag_mouse(win, qapp, np.array([0.5]), np.array([0.5]), click=False)
         drag_mouse(win, qapp, np.array([0.5]), np.array([0.5]), click=True)
+        drag_mouse(
+            win,
+            qapp,
+            np.array([0.5]),
+            np.array([0.5]),
+            click=True,
+            mod=QC.Qt.KeyboardModifier.AltModifier,
+        )
+        drag_mouse(
+            win,
+            qapp,
+            np.array([0.5]),
+            np.array([0.5]),
+            click=True,
+            mod=QC.Qt.KeyboardModifier.ControlModifier,
+        )
 
 
 def test_display_coords_on_image():
@@ -22,6 +39,22 @@ def test_display_coords_on_image():
         win, tool = create_window(DisplayCoordsTool, active_item_type=IImageItemType)
         drag_mouse(win, qapp, np.array([0.5]), np.array([0.5]), click=False)
         drag_mouse(win, qapp, np.array([0.5]), np.array([0.5]), click=True)
+        drag_mouse(
+            win,
+            qapp,
+            np.array([0.5]),
+            np.array([0.5]),
+            click=True,
+            mod=QC.Qt.KeyboardModifier.AltModifier,
+        )
+        drag_mouse(
+            win,
+            qapp,
+            np.array([0.5]),
+            np.array([0.5]),
+            click=True,
+            mod=QC.Qt.KeyboardModifier.ControlModifier,
+        )
 
 
 if __name__ == "__main__":

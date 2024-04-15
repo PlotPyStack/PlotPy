@@ -36,6 +36,8 @@ class MaskedImageTest(PickleTest):
             xdata=[0, 20],
             ydata=[0, 25],
         )
+        image.add_masked_area("rectangular", 0, 0, 10, 10, True)
+        image.apply_masked_areas()
         return [image]
 
 

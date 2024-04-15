@@ -7,10 +7,13 @@ from guidata.qthelpers import exec_dialog, qt_app_context
 from plotpy.tests.unit.utils import (
     CLICK,
     create_window,
+    drag_mouse,
     keyboard_event,
     mouse_event_at_relative_plot_pos,
 )
 from plotpy.tools import FreeFormTool, MultiLineTool
+
+# guitest: show
 
 
 def test_free_form_tool():
@@ -24,8 +27,24 @@ def test_free_form_tool():
             mouse_event_at_relative_plot_pos(win, qapp, (x, y), CLICK)
 
         assert tool.shape is not None
-
         assert tool.shape.get_points().shape == corners.shape
+
+        # Delete last point
+        keyboard_event(win, qapp, QC.Qt.Key.Key_Backspace)
+
+        points_count, _ = tool.shape.get_points().shape
+
+        assert points_count == (len(corners) - 1)
+
+        # add last point by dragging mouse
+        drag_mouse(win, qapp, corners[-2:, 0], corners[-2:, 1])
+
+        points_count, _ = tool.shape.get_points().shape
+        assert points_count == len(corners)
+
+        keyboard_event(win, qapp, QC.Qt.Key.Key_Enter)
+
+        assert tool.shape is None
 
         exec_dialog(win)
 
@@ -55,6 +74,16 @@ def test_multiline_tool():
         points_count, _ = tool.shape.get_points().shape
 
         assert points_count == (n - 1)
+
+        # add last point by dragging mouse
+        drag_mouse(win, qapp, x_arr[-2:], y_arr[-2:])
+
+        points_count, _ = tool.shape.get_points().shape
+        assert points_count == n
+
+        keyboard_event(win, qapp, QC.Qt.Key.Key_Enter)
+
+        assert tool.shape is None
 
         exec_dialog(win)
 

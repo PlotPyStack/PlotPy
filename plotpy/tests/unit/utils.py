@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+import time
 from typing import TYPE_CHECKING, TypeVar, Union
 
 import qtpy.QtCore as QC
 import qtpy.QtGui as QG
 import qtpy.QtWidgets as QW
+from qwt import QwtPlotItem
 
 from plotpy.interfaces.items import ICurveItemType, IItemType
 from plotpy.tests import vistools as ptv
@@ -12,7 +14,6 @@ from plotpy.tests.features.test_auto_curve_image import make_curve_image_legend
 from plotpy.tools import CommandTool, InteractiveTool
 
 if TYPE_CHECKING:
-
     import numpy as np
 
     from plotpy.items.curve.base import CurveItem
@@ -26,7 +27,7 @@ ToolT = TypeVar("ToolT", bound=Union[InteractiveTool, CommandTool])
 
 
 def keyboard_event(
-    win: PlotDialog,
+    win: PlotDialog | PlotWindow,
     qapp: QW.QApplication,
     key: QC.Qt.Key,
     mod=QC.Qt.KeyboardModifier.NoModifier,
@@ -49,7 +50,7 @@ def keyboard_event(
 
 
 def mouse_event_at_relative_plot_pos(
-    win: PlotDialog,
+    win: PlotDialog | PlotWindow,
     qapp: QW.QApplication,
     relative_xy: tuple[float, float],
     click_types: tuple[QC.QEvent.Type, ...] = (QC.QEvent.Type.MouseButtonPress,),
@@ -81,7 +82,7 @@ def mouse_event_at_relative_plot_pos(
     glob_pos = QC.QPointF(canvas.mapToGlobal(canvas_pos.toPoint()))
 
     for type_ in click_types:
-        mouse_event_press = QG.QMouseEvent(
+        mouse_event = QG.QMouseEvent(
             type_,
             canvas_pos,
             glob_pos,
@@ -89,7 +90,7 @@ def mouse_event_at_relative_plot_pos(
             QC.Qt.MouseButton.LeftButton,
             mod,
         )
-        qapp.sendEvent(canvas, mouse_event_press)
+        qapp.sendEvent(canvas, mouse_event)
 
 
 def drag_mouse(
@@ -129,6 +130,7 @@ def create_window(
     tool_class: type[ToolT],
     active_item_type: type[IItemType] = ICurveItemType,
     panels: list[type[PanelWidget]] | None = None,
+    items: list[QwtPlotItem] | None = None,
 ) -> tuple[PlotWindow, ToolT]:
     """Create a window with the given tool. The plot contains a curve, an image and a
      legend.
@@ -142,7 +144,8 @@ def create_window(
     Returns:
         The window containing the activated tool and the tool instance itself.
     """
-    items: list[CurveItem | BaseImageItem] = make_curve_image_legend()
+    if items is None:
+        items = make_curve_image_legend()
     win = ptv.show_items(items, wintitle="Unit test plot", auto_tools=False)
     plot = win.manager.get_plot()
     for item in items:
