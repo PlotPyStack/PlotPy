@@ -17,6 +17,7 @@ from plotpy.items.image.transform import TrImageItem
 from plotpy.plot.base import BasePlot
 from plotpy.plot.plotwidget import PlotWindow
 from plotpy.tests.data import gen_image4
+from plotpy.tests.items.test_transform import make_items
 from plotpy.tests.unit.utils import (
     create_window,
     drag_mouse,
@@ -25,6 +26,28 @@ from plotpy.tests.unit.utils import (
 from plotpy.tools import RectangularSelectionTool, SelectTool
 
 # guitest: show
+
+
+def _assert_images_angle(
+    images: list[TrImageItem], ref_angle: float, target_angle: float | None = None
+) -> None:
+    angle = images[0].param.pos_angle
+    assert angle > ref_angle
+    if target_angle is not None:
+        assert np.isclose(angle, target_angle, 0.5)
+    for img in images:
+        assert np.isclose(angle, img.param.pos_angle)
+
+
+def _assert_images_pos(images: list[TrImageItem], x0: float, y0: float) -> None:
+    x = images[0].param.pos_x0
+    y = images[0].param.pos_y0
+    assert x > x0
+    assert y > y0
+    for img in images:
+        assert img.param.pos_angle == 0
+        assert np.isclose(x, img.param.pos_x0)
+        assert np.isclose(y, img.param.pos_y0)
 
 
 def _get_xy_coords(tr_img: TrImageItem) -> tuple[float, float, float, float]:
@@ -39,6 +62,7 @@ def _get_xy_coords(tr_img: TrImageItem) -> tuple[float, float, float, float]:
 def _setup_plot() -> tuple[PlotWindow, SelectTool, BasePlot, TrImageItem]:
     tr_img = make.trimage(gen_image4(100, 100), x0=100, y0=100)
     win, tool = create_window(SelectTool, IImageItemType, None, [tr_img])
+    win.show()
 
     assert isinstance(tool, SelectTool)
 
@@ -164,6 +188,7 @@ def test_select_all_items():
             make.legend(),
         ]
         win, tool = create_window(SelectTool, items=items)
+        win.show()
 
         # The item list should contain none selectable items like the plot grid
         selectable_items = [item for item in items if item.can_select()]
@@ -185,10 +210,10 @@ def test_rotate_with_mouse():
         assert init_angle == 0
         assert plot.get_selected_items() == [tr_img]
 
-        drag_mouse(win, qapp, np.linspace(0, 1, 100), np.linspace(0, 1, 100))
+        drag_mouse(win, qapp, np.linspace(0, 0.5, 100), np.linspace(0, 0.0, 100))
 
         assert plot.get_selected_items() == [tr_img]
-        assert 179 < abs(tr_img.param.pos_angle) < 181  # type: ignore
+        assert np.isclose(abs(tr_img.param.pos_angle), 45, 0.5)  # type: ignore
 
         exec_dialog(win)
 
@@ -212,6 +237,7 @@ def test_rectangular_selection():
             for item in items
         ]
         win, tool = create_window(RectangularSelectionTool, items=items)
+        win.show()
         plot = win.manager.get_plot()
 
         drag_mouse(
@@ -228,6 +254,88 @@ def test_rectangular_selection():
                 assert item in selected_items
 
 
+@pytest.mark.parametrize(
+    "mouse_path, rotation",
+    [
+        ((np.linspace(0.0, 0.5, 100), np.zeros(100)), True),
+        ((np.linspace(0.5, 0.8, 100), np.linspace(0.5, 0.8, 100)), False),
+    ],
+)
+def test_multi_rotate_move_with_mouse(
+    mouse_path: tuple[np.ndarray, np.ndarray], rotation: bool
+):
+    n = 100
+    x0 = n
+    y0 = 0
+
+    with qt_app_context() as qapp:
+        # All images are superimposed so that it is easy to select the corners for
+        # rotations
+        images = [make.trimage(gen_image4(n, n), x0=x0, y0=y0) for i in range(3)]
+        initial_angle = 0
+
+        win, tool = create_window(
+            SelectTool, active_item_type=IImageItemType, items=images
+        )
+        win.show()
+        keyboard_event(
+            win, qapp, QC.Qt.Key.Key_A, mod=QC.Qt.KeyboardModifier.ControlModifier
+        )
+        drag_mouse(win, qapp, mouse_path[0], mouse_path[1])
+
+        if rotation:
+            _assert_images_angle(images, ref_angle=initial_angle)
+        else:
+            _assert_images_pos(images, x0, y0)
+
+        exec_dialog(win)
+
+
+@pytest.mark.parametrize(
+    "keymod, rotation",
+    [
+        (QC.Qt.KeyboardModifier.ControlModifier, False),
+        (QC.Qt.KeyboardModifier.ShiftModifier, True),
+        (
+            QC.Qt.KeyboardModifier.ControlModifier
+            | QC.Qt.KeyboardModifier.ShiftModifier,
+            True,
+        ),
+    ],
+)
+def test_multi_rotate_move_with_keyboard(
+    keymod: QC.Qt.KeyboardModifier, rotation: bool
+):
+    n = 100
+    x0 = n
+    y0 = 0
+
+    with qt_app_context() as qapp:
+        # All images are superimposed so that it is easy to select the corners for
+        # rotations
+        images = [make.trimage(gen_image4(n, n), x0=x0, y0=y0) for i in range(3)]
+
+        win, tool = create_window(
+            SelectTool, active_item_type=IImageItemType, items=images
+        )
+        win.show()
+        keyboard_event(
+            win, qapp, QC.Qt.Key.Key_A, mod=QC.Qt.KeyboardModifier.ControlModifier
+        )
+        for _ in range(10):
+            # Should rotate/move left depending on modifier
+            keyboard_event(win, qapp, QC.Qt.Key.Key_Right, mod=keymod)
+            # Should never rotate
+            keyboard_event(win, qapp, QC.Qt.Key.Key_Down, mod=keymod)
+
+        if rotation:
+            _assert_images_angle(images, ref_angle=0)
+        else:
+            _assert_images_pos(images, x0, y0)
+
+        exec_dialog(win)
+
+
 if __name__ == "__main__":
     test_move_with_mouse()
     test_move_with_arrows(QC.Qt.KeyboardModifier.NoModifier)
@@ -235,3 +343,8 @@ if __name__ == "__main__":
     test_select_all_items()
     test_rotate_with_mouse()
     test_rectangular_selection()
+    test_multi_rotate_move_with_mouse((np.linspace(0.0, 0.5, 100), np.zeros(100)), True)
+    test_multi_rotate_move_with_mouse((np.linspace(0.0, 0.5, 100), np.zeros(100)), True)
+    test_multi_rotate_move_with_keyboard(
+        QC.Qt.KeyboardModifier.ShiftModifier, rotation=True
+    )
