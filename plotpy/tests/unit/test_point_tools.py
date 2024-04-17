@@ -17,7 +17,6 @@ from plotpy.tools import EditPointTool, SelectPointsTool, SelectPointTool
 from plotpy.tools.curve import DownSamplingTool
 
 if TYPE_CHECKING:
-
     from plotpy.items.curve.base import CurveItem
 
 
@@ -25,6 +24,7 @@ def test_free_select_point_tool():
     """Test the free select point tool."""
     with qt_app_context(exec_loop=False) as qapp:
         win, tool = create_window(SelectPointTool)
+        win.show()
         mouse_event_at_relative_plot_pos(
             win,
             qapp,
@@ -39,6 +39,7 @@ def test_contrained_select_point_tool():
     """Test the constrained select point tool contrained to a CurveItem."""
     with qt_app_context(exec_loop=False) as qapp:
         win, tool = create_window(SelectPointTool)
+        win.show()
         tool.on_active_item = True
 
         mouse_event_at_relative_plot_pos(
@@ -61,6 +62,7 @@ def test_select_points_tool():
     """Test the select points tool constrained to a CurveItem."""
     with qt_app_context(exec_loop=False) as qapp:
         win, tool = create_window(tool_class=SelectPointsTool)
+        win.show()
         mod = QC.Qt.KeyboardModifier.ControlModifier
 
         mouse_event_at_relative_plot_pos(win, qapp, (0.4, 0.5), CLICK, mod)
@@ -93,6 +95,7 @@ def test_edit_point_tool():
     """Test the edit point tool for a CurveItem."""
     with qt_app_context(exec_loop=False) as qapp:
         win, tool = create_window(EditPointTool)
+        win.show()
         curve_item: CurveItem = win.manager.get_plot().get_active_item()  # type: ignore
         orig_x, orig_y = curve_item.get_data()
 
