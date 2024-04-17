@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Licensed under the terms of the BSD 3-Clause
 # (see plotpy/LICENSE for details)
@@ -14,6 +13,7 @@ from guidata.qthelpers import exec_dialog, qt_app_context
 from plotpy.builder import make
 from plotpy.plot import BasePlot
 from plotpy.tools import ColormapTool, ReverseColormapTool
+from plotpy.tools.image import LockTrImageTool
 
 
 def compute_image():
@@ -102,6 +102,24 @@ def test_plot_tr_image():
             bounds3 = item.bounds
             assert bounds3.width() == bounds2.width() * 2.0
             assert bounds3.height() == bounds2.height() * 3.0
+
+
+def test_lock_tr_image():
+    """Test LockTrImageTool"""
+    with qt_app_context(exec_loop=True):
+        win = make.dialog(type="image", toolbar=True)
+        win.show()
+        item = make.trimage(compute_image())
+        # with plot_image(item) as plot:
+        plot = win.manager.get_plot()
+        plot.add_item(item)
+        plot.select_item(item)
+        tool = win.manager.add_tool(LockTrImageTool)
+        tool.activate()
+        assert item.is_locked()
+        tool.activate(False)
+        assert not item.is_locked()
+        exec_dialog(win)
 
 
 @pytest.mark.parametrize("ratio", [1.0, 0.75, 1.5, 2.0, 3.0])
