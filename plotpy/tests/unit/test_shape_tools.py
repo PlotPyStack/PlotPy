@@ -7,7 +7,7 @@ import pytest
 import qtpy.QtCore as QC
 from guidata.qthelpers import exec_dialog, qt_app_context
 
-from plotpy.interfaces.items import IBasePlotItem, IShapeItemType
+from plotpy.interfaces.items import IShapeItemType
 from plotpy.tests import vistools as ptv
 from plotpy.tests.features.test_auto_curve_image import make_curve_image_legend
 from plotpy.tools import (
@@ -89,6 +89,7 @@ def _test_annotation_tools(tool_classes: tuple[type[RectangularActionTool], ...]
     that the tool is activated and deactivated correctly."""
     with qt_app_context(exec_loop=False) as qapp:
         win = create_window(tool_classes)
+        win.show()
         plot = win.manager.get_plot()
         default_tool = win.manager.get_default_tool()
         for tool_class in tool_classes:
@@ -98,7 +99,7 @@ def _test_annotation_tools(tool_classes: tuple[type[RectangularActionTool], ...]
             x_path = np.linspace(0, 0.5, 100)
             y_path = np.linspace(0, 0.5, 100)
             drag_mouse(win, qapp, x_path, y_path)
-            if getattr(tool_class, "SWITCH_TO_DEFAULT_TOOL", False):
+            if hasattr(tool_class, "SWITCH_TO_DEFAULT_TOOL"):
                 assert win.manager.get_default_tool() == default_tool
         plot.select_some_items(plot.get_items(item_type=IShapeItemType))
         select_tool = win.manager.get_tool(SelectTool)
