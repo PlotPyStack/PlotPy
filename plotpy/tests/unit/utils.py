@@ -9,6 +9,7 @@ import qtpy.QtWidgets as QW
 from qwt import QwtPlotItem
 
 from plotpy.interfaces.items import ICurveItemType, IItemType
+from plotpy.plot.base import BasePlot
 from plotpy.tests import vistools as ptv
 from plotpy.tests.features.test_auto_curve_image import make_curve_image_legend
 from plotpy.tools import CommandTool, InteractiveTool
@@ -24,6 +25,29 @@ if TYPE_CHECKING:
 
 CLICK = (QC.QEvent.Type.MouseButtonPress, QC.QEvent.Type.MouseButtonRelease)
 ToolT = TypeVar("ToolT", bound=Union[InteractiveTool, CommandTool])
+
+
+def rel_pos_to_canvas_pos(
+    canvas: BasePlot, relative_xy: tuple[float, float]
+) -> tuple[QC.QPointF, QC.QPointF]:
+    """Computes and return the relative position on the canvas and the corresponding
+    abolute position in the window.
+
+    Args:
+        canvas: Plot canvas
+        relative_xy: Relative position on the canvas (0 < xy <1)
+
+    Returns:
+        Tuple of the relative position on the canvas and the corresponding absolute
+         position in the window.
+    """
+    size = canvas.size()
+    pos_x, pos_y = (
+        relative_xy[0] * size.width(),
+        relative_xy[1] * size.height(),
+    )
+    canvas_pos = QC.QPointF(pos_x, pos_y)
+    return canvas_pos, QC.QPointF(canvas.mapToGlobal(canvas_pos.toPoint()))
 
 
 def keyboard_event(
@@ -70,22 +94,14 @@ def mouse_event_at_relative_plot_pos(
         None
     """
     plot = win.manager.get_plot()
-
-    plot = win.manager.get_plot()
-    canvas: QW.QWidget = plot.canvas()  # type: ignore
-    size = canvas.size()
-    pos_x, pos_y = (
-        relative_xy[0] * size.width(),
-        relative_xy[1] * size.height(),
-    )
-    canvas_pos = QC.QPointF(pos_x, pos_y)
-    glob_pos = QC.QPointF(canvas.mapToGlobal(canvas_pos.toPoint()))
+    canvas = plot.canvas()
+    canvas_pos, glob_pos = rel_pos_to_canvas_pos(plot, relative_xy)
 
     for type_ in click_types:
         mouse_event = QG.QMouseEvent(
             type_,
             canvas_pos,
-            glob_pos,
+            # glob_pos,
             QC.Qt.MouseButton.LeftButton,
             QC.Qt.MouseButton.LeftButton,
             mod,
