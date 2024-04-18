@@ -5,9 +5,10 @@ from typing import TYPE_CHECKING
 import numpy as np
 import pytest
 import qtpy.QtCore as QC
-from guidata.qthelpers import exec_dialog, qt_app_context
+from guidata.qthelpers import exec_dialog, execenv, qt_app_context
 
-from plotpy.interfaces.items import IShapeItemType
+from plotpy.interfaces.items import IBasePlotItem, IShapeItemType
+from plotpy.items.image.base import BaseImageItem
 from plotpy.tests import vistools as ptv
 from plotpy.tests.features.test_auto_curve_image import make_curve_image_legend
 from plotpy.tools import (
@@ -22,6 +23,8 @@ from plotpy.tools import (
     CrossSectionTool,
     EllipseTool,
     ImageStatsTool,
+    InteractiveTool,
+    LabelTool,
     ObliqueRectangleTool,
     PointTool,
     RectangleTool,
@@ -29,17 +32,18 @@ from plotpy.tools import (
     SelectTool,
     SnapshotTool,
 )
+from plotpy.tools.label import LabelTool
 
 if TYPE_CHECKING:
     from plotpy.plot.plotwidget import PlotWindow
     from plotpy.tools.base import RectangularActionTool
 
-from plotpy.tests.unit.utils import drag_mouse
+from plotpy.tests.unit.utils import drag_mouse, keyboard_event, undo_redo
 
 P0 = QC.QPointF(10, 10)
 P1 = QC.QPointF(100, 100)
 
-TOOLS = (
+TOOLS: tuple[type[InteractiveTool], ...] = (
     AnnotatedCircleTool,
     AnnotatedEllipseTool,
     AnnotatedObliqueRectangleTool,
@@ -56,12 +60,13 @@ TOOLS = (
     PointTool,
     RectangleTool,
     SegmentTool,
+    LabelTool,
 )
 
 # guitest: show
 
 
-def create_window(tool_classes: tuple[type[RectangularActionTool], ...]) -> PlotWindow:
+def create_window(tool_classes: tuple[type[InteractiveTool], ...]) -> PlotWindow:
     """Create a window with the given tools. The plot contains a curve, an image and a
      legend.
 
@@ -72,6 +77,9 @@ def create_window(tool_classes: tuple[type[RectangularActionTool], ...]) -> Plot
         PlotWindow: The window containing the tools.
     """
     items = make_curve_image_legend()
+    img: BaseImageItem = items[0]
+    img.set_rotatable(True)
+    img.set_movable(True)
     win = ptv.show_items(
         items, wintitle="Unit tests for RectangularActionTools", auto_tools=True
     )
@@ -84,7 +92,7 @@ def create_window(tool_classes: tuple[type[RectangularActionTool], ...]) -> Plot
     return win
 
 
-def _test_annotation_tools(tool_classes: tuple[type[RectangularActionTool], ...]):
+def _test_annotation_tools(tool_classes: tuple[type[InteractiveTool], ...]):
     """Generic test for annotation tool. Simulates a mouse drag on the plot and checks
     that the tool is activated and deactivated correctly."""
     with qt_app_context(exec_loop=False) as qapp:
@@ -98,27 +106,34 @@ def _test_annotation_tools(tool_classes: tuple[type[RectangularActionTool], ...]
             tool.activate()
             x_path = np.linspace(0, 0.5, 100)
             y_path = np.linspace(0, 0.5, 100)
-            drag_mouse(win, qapp, x_path, y_path)
+            with execenv.context(accept_dialogs=True):
+                drag_mouse(win, qapp, x_path, y_path)
             if hasattr(tool_class, "SWITCH_TO_DEFAULT_TOOL"):
                 assert win.manager.get_default_tool() == default_tool
-        plot.select_some_items(plot.get_items(item_type=IShapeItemType))
+        plot.unselect_all()
+        shape_items: list[IBasePlotItem] = plot.get_items(item_type=IShapeItemType)
+        plot.select_some_items(shape_items)
         select_tool = win.manager.get_tool(SelectTool)
         assert select_tool is not None
         select_tool.activate()
+
         drag_mouse(win, qapp, np.linspace(0.2, 0.5, 10), np.linspace(0.2, 0.5, 10))
+
+        undo_redo(win, qapp)
+
         exec_dialog(win)
 
 
 @pytest.mark.parametrize("tool", TOOLS)
-def test_tool(tool: type[RectangularActionTool]) -> None:
+def test_tool(tool: type[InteractiveTool]) -> None:
     """Test a single tool."""
     _test_annotation_tools((tool,))
 
 
-def test_all_tools():
+def _test_all_tools():
     """Test all tools."""
     _test_annotation_tools(TOOLS)
 
 
 if __name__ == "__main__":
-    test_all_tools()
+    _test_all_tools()
