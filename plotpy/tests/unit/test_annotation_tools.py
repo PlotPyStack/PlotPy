@@ -36,9 +36,8 @@ from plotpy.tools.label import LabelTool
 
 if TYPE_CHECKING:
     from plotpy.plot.plotwidget import PlotWindow
-    from plotpy.tools.base import RectangularActionTool
 
-from plotpy.tests.unit.utils import drag_mouse, keyboard_event, undo_redo
+from plotpy.tests.unit.utils import drag_mouse, undo_redo
 
 P0 = QC.QPointF(10, 10)
 P1 = QC.QPointF(100, 100)
@@ -119,7 +118,7 @@ def _test_annotation_tools(tool_classes: tuple[type[InteractiveTool], ...]):
 
         drag_mouse(win, qapp, np.linspace(0.2, 0.5, 10), np.linspace(0.2, 0.5, 10))
 
-        undo_redo(win, qapp)
+        undo_redo(qapp, win)
 
         exec_dialog(win)
 
