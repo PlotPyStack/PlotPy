@@ -95,13 +95,12 @@ def mouse_event_at_relative_plot_pos(
     """
     plot = win.manager.get_plot()
     canvas = plot.canvas()
-    canvas_pos, glob_pos = rel_pos_to_canvas_pos(plot, relative_xy)
+    canvas_pos, _ = rel_pos_to_canvas_pos(canvas, relative_xy)
 
     for type_ in click_types:
         mouse_event = QG.QMouseEvent(
             type_,
             canvas_pos,
-            # glob_pos,
             QC.Qt.MouseButton.LeftButton,
             QC.Qt.MouseButton.LeftButton,
             mod,
