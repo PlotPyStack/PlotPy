@@ -73,12 +73,82 @@ def keyboard_event(
     qapp.sendEvent(canva, key_event)
 
 
+def undo(qapp: QW.QApplication, win: PlotWindow):
+    keyboard_event(
+        win, qapp, QC.Qt.Key.Key_Z, mod=QC.Qt.KeyboardModifier.ControlModifier
+    )
+
+
+def redo(qapp: QW.QApplication, win: PlotWindow):
+    keyboard_event(
+        win, qapp, QC.Qt.Key.Key_Y, mod=QC.Qt.KeyboardModifier.ControlModifier
+    )
+
+
+def undo_redo(qapp: QW.QApplication, win: PlotWindow):
+    undo(qapp, win)
+    time.sleep(0.1)
+    redo(qapp, win)
+
+
+def new_wheel_event(
+    canvas: BasePlot,
+    pos_xy: tuple[float, float],
+    angle_delta: int,
+    pix_delta: int,
+    btns: QC.Qt.MouseButton = QC.Qt.MouseButton.NoButton,
+    mods=QC.Qt.KeyboardModifier.NoModifier,
+) -> QG.QWheelEvent:
+    canva_pos, glob_pos = rel_pos_to_canvas_pos(canvas, pos_xy)
+    angle_delta = QC.QPoint(0, angle_delta)  # Scroll distance in eighths of a degree
+    pix_delta = QC.QPoint(0, pix_delta)  # Scroll distance in pixels
+    qt4_delta = 0  # You may need to adjust this value
+    orientation = QC.Qt.Orientation.Vertical  # You may need to adjust this value
+
+    # Create QWheelEvent
+    return QG.QWheelEvent(
+        canva_pos, glob_pos, pix_delta, angle_delta, qt4_delta, orientation, btns, mods
+    )
+
+
+def scroll_wheel(
+    win: PlotDialog | PlotWindow,
+    qapp: QW.QApplication,
+    relative_xy: tuple[float, float],
+    angle_delta: int,
+    pix_delta: int = 0,
+    btns: QC.Qt.MouseButton = QC.Qt.MouseButton.NoButton,
+    mods=QC.Qt.KeyboardModifier.NoModifier,
+) -> None:
+    """Simulates a scroll wheel event on the plot at the given relative position.
+
+    Args:
+        win: window containing the plot
+        qapp: Main QApplication instance
+        relative_xy: Relative position of the click on the plot
+        angle_delta: Scroll distance in eighths of a degree
+        pix_delta: Scroll distance in pixels. Defaults to 0.
+        btns: Mouse buttons. Defaults to QC.Qt.MouseButton.NoButton.
+        mod: Keyboard modifier. Defaults to QC.Qt.KeyboardModifier.NoModifier.
+
+    Returns:
+        None
+    """
+    plot = win.manager.get_plot()
+    canvas: BasePlot = plot.canvas()  # type: ignore
+    wheel_event = new_wheel_event(
+        canvas, relative_xy, angle_delta, pix_delta, btns, mods
+    )
+    qapp.sendEvent(canvas, wheel_event)
+
+
 def mouse_event_at_relative_plot_pos(
     win: PlotDialog | PlotWindow,
     qapp: QW.QApplication,
     relative_xy: tuple[float, float],
     click_types: tuple[QC.QEvent.Type, ...] = (QC.QEvent.Type.MouseButtonPress,),
     mod=QC.Qt.KeyboardModifier.NoModifier,
+    btn=QC.Qt.MouseButton.LeftButton,
 ) -> None:
     """Simulates a click on the plot at the given relative position.
 
@@ -101,11 +171,20 @@ def mouse_event_at_relative_plot_pos(
         mouse_event = QG.QMouseEvent(
             type_,
             canvas_pos,
-            QC.Qt.MouseButton.LeftButton,
-            QC.Qt.MouseButton.LeftButton,
+            btn,
+            btn,
             mod,
         )
         qapp.sendEvent(canvas, mouse_event)
+
+
+# def mouse_wheel_event_at_relative_pos(
+#     win: PlotDialog | PlotWindow,
+#     qapp: QW.QApplication,
+#     relative_xy: tuple[float, float],
+#     click_types: tuple[QC.QEvent.Type, ...] = (QC.QEvent.Type.MouseButtonPress,),
+#     mod=QC.Qt.KeyboardModifier.NoModifier,
+# ) -> None:
 
 
 def drag_mouse(
@@ -114,6 +193,7 @@ def drag_mouse(
     x_path: np.ndarray,
     y_path: np.ndarray,
     mod=QC.Qt.KeyboardModifier.NoModifier,
+    btn=QC.Qt.MouseButton.LeftButton,
     click=True,
 ) -> None:
     """Simulates a mouse drag on the plot.
@@ -134,11 +214,11 @@ def drag_mouse(
     release = (QC.QEvent.Type.MouseButtonRelease,)
 
     if click:
-        mouse_event_at_relative_plot_pos(win, qapp, (x0, y0), press, mod)
+        mouse_event_at_relative_plot_pos(win, qapp, (x0, y0), press, mod, btn)
     for x, y in zip(x_path, y_path):
-        mouse_event_at_relative_plot_pos(win, qapp, (x, y), move, mod)
+        mouse_event_at_relative_plot_pos(win, qapp, (x, y), move, mod, btn)
     if click:
-        mouse_event_at_relative_plot_pos(win, qapp, (xn, yn), release, mod)
+        mouse_event_at_relative_plot_pos(win, qapp, (xn, yn), release, mod, btn)
 
 
 def create_window(
