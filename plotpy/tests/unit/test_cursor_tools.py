@@ -1,27 +1,12 @@
 import numpy as np
 import pytest
-import qtpy.QtCore as QC
 from guidata.qthelpers import exec_dialog, qt_app_context
-from qwt import QwtPlotItem
 
-from plotpy.builder import make
-from plotpy.interfaces.items import (
-    ICurveItemType,
-    IDecoratorItemType,
-    IShapeItemType,
-    ITrackableItemType,
-)
-from plotpy.items import CurveItem, DataInfoLabel, Marker, TrImageItem, XRangeSelection
-from plotpy.plot.base import BasePlot
-from plotpy.plot.plotwidget import PlotWindow
-from plotpy.tests.data import gen_image4
 from plotpy.tests.unit.utils import (
     create_window,
     drag_mouse,
-    keyboard_event,
 )
 from plotpy.tools import (
-    CurveStatsTool,
     HCursorTool,
     HRangeTool,
     VCursorTool,
@@ -32,41 +17,13 @@ from plotpy.tools.cursor import BaseCursorTool
 # guitest: show
 
 
-def test_curve_stat_tool():
-    with qt_app_context(exec_loop=False) as qapp:
-        win, tool = create_window(CurveStatsTool)
-        plot = win.manager.get_plot()
-
-        active_tool = win.manager.get_active_tool()
-        assert isinstance(active_tool, CurveStatsTool)
-
-        og_stat_items = [
-            item
-            for item in plot.get_items()
-            if isinstance(item, (DataInfoLabel, XRangeSelection))
-        ]
-
-        drag_mouse(win, qapp, np.array([0.5, 0.6, 0.7]), np.array([0.5, 0.6, 0.7]))
-
-        new_stat_items = [
-            item
-            for item in plot.get_items()
-            if isinstance(item, (DataInfoLabel, XRangeSelection))
-        ]
-
-        # There should be one more new DataInfoLabel and one new XRangeSelection
-        # compared to the original plot items (before mouse drag)
-        assert len(new_stat_items) == len(og_stat_items) + 2
-
-        exec_dialog(win)
-
-
 @pytest.mark.parametrize(
     "cursor_tool", [HCursorTool, VCursorTool, XCursorTool, HRangeTool]
 )
 def test_cursor_tool(cursor_tool: type[BaseCursorTool]):
-    with qt_app_context(exec_loop=False) as qapp:
+    with qt_app_context(exec_loop=True) as qapp:
         win, tool = create_window(cursor_tool)
+        win.show()
         plot = win.manager.get_plot()
 
         active_tool = win.manager.get_active_tool()
@@ -75,14 +32,12 @@ def test_cursor_tool(cursor_tool: type[BaseCursorTool]):
         assert tool_shape_type not in (type(item) for item in plot.get_items())
 
         drag_mouse(win, qapp, np.array([0.5, 0.6, 0.7]), np.array([0.5, 0.6, 0.7]))
-
         assert tool_shape_type in (type(item) for item in plot.get_items())
 
         exec_dialog(win)
 
 
 if __name__ == "__main__":
-    test_curve_stat_tool()
     test_cursor_tool(HCursorTool)
     test_cursor_tool(VCursorTool)
     test_cursor_tool(XCursorTool)

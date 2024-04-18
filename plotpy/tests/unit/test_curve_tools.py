@@ -6,6 +6,8 @@ import numpy as np
 import qtpy.QtCore as QC
 from guidata.qthelpers import exec_dialog, qt_app_context
 
+from plotpy.coords import canvas_to_axes
+from plotpy.interfaces.items import ICurveItemType
 from plotpy.tests.unit.utils import (
     CLICK,
     create_window,
@@ -18,6 +20,67 @@ from plotpy.tools.curve import DownSamplingTool
 
 if TYPE_CHECKING:
     from plotpy.items.curve.base import CurveItem
+
+
+from plotpy.items import DataInfoLabel, XRangeSelection
+from plotpy.tools import (
+    CurveStatsTool,
+)
+from plotpy.tools.selection import SelectTool
+
+# guitest: show
+
+
+def test_curve_stat_tool():
+    with qt_app_context(exec_loop=False) as qapp:
+        win, tool = create_window(CurveStatsTool)
+        win.show()
+        plot = win.manager.get_plot()
+
+        original_stat_items = [
+            item
+            for item in plot.get_items()
+            if isinstance(item, (DataInfoLabel, XRangeSelection))
+        ]
+
+        drag_mouse(win, qapp, np.array([0.4, 0.6]), np.array([0.5, 0.5]))
+
+        new_stat_items = [
+            item
+            for item in plot.get_items()
+            if isinstance(item, (DataInfoLabel, XRangeSelection))
+        ]
+
+        assert len(new_stat_items) == len(original_stat_items) + 2
+
+        # There should be one more new DataInfoLabel and one new XRangeSelection
+        # compared to the original plot items (before mouse drag)
+
+        win.manager.add_tool(SelectTool).activate()
+        plot.unselect_all()
+
+        mouse_event_at_relative_plot_pos(win, qapp, (0.5, 0.5), CLICK)
+        selected_items = plot.get_selected_items()
+        assert len(selected_items) == 1 and isinstance(
+            selected_items[0], XRangeSelection
+        )
+        range_item: XRangeSelection = selected_items[0]
+
+        x00, x01, y0 = range_item.get_handles_pos()
+        drag_mouse(win, qapp, np.linspace(0.5, 0.9, 100), np.full(100, 0.5))
+        x10, x11, y1 = range_item.get_handles_pos()
+
+        assert x00 < x10 and x01 < x11 and y0 == y1
+
+        curve_item: CurveItem = plot.get_items(item_type=ICurveItemType)[0]  # type: ignore
+        current_pos = canvas_to_axes(curve_item, QC.QPointF(x10, y1))
+        x_min, _ = plot.get_axis_limits(curve_item.xAxis())
+
+        assert current_pos is not None
+        range_item.move_shape(current_pos, (x_min, 0))
+        assert np.isclose(range_item.get_range()[0], x_min)
+
+        exec_dialog(win)
 
 
 def test_free_select_point_tool():
@@ -62,7 +125,6 @@ def test_select_points_tool():
     """Test the select points tool constrained to a CurveItem."""
     with qt_app_context(exec_loop=False) as qapp:
         win, tool = create_window(tool_class=SelectPointsTool)
-        win.show()
         mod = QC.Qt.KeyboardModifier.ControlModifier
 
         mouse_event_at_relative_plot_pos(win, qapp, (0.4, 0.5), CLICK, mod)
@@ -70,6 +132,7 @@ def test_select_points_tool():
 
         mouse_event_at_relative_plot_pos(win, qapp, (0.5, 0.5), CLICK, mod)
         mouse_event_at_relative_plot_pos(win, qapp, (0.8, 0.8), CLICK, mod)
+        print(tool.get_coordinates())
         assert len(tool.get_coordinates() or ()) == 3
 
         mouse_event_at_relative_plot_pos(win, qapp, (0.8, 0.8), CLICK, mod)
@@ -160,7 +223,8 @@ def test_edit_point_tool():
 
 
 if __name__ == "__main__":
-    test_free_select_point_tool()
-    test_contrained_select_point_tool()
-    test_select_points_tool()
-    test_edit_point_tool()
+    test_curve_stat_tool()
+    # test_free_select_point_tool()
+    # test_contrained_select_point_tool()
+    # test_select_points_tool()
+    # test_edit_point_tool()
