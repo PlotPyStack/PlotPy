@@ -1,10 +1,12 @@
-from typing import Protocol
+from typing import Callable, Protocol
 
 import numpy as np
 import pytest
 import qtpy.QtCore as QC
+import qtpy.QtWidgets as QW
 from guidata.qthelpers import exec_dialog, qt_app_context
 from qwt import QwtPlotItem
+from typing_extensions import TypeVar
 
 from plotpy.builder import make
 from plotpy.interfaces.items import (
@@ -13,6 +15,7 @@ from plotpy.interfaces.items import (
     IItemType,
     IShapeItemType,
 )
+from plotpy.items.image.base import BaseImageItem
 from plotpy.items.image.transform import TrImageItem
 from plotpy.plot.base import BasePlot
 from plotpy.plot.plotwidget import PlotWindow
@@ -22,10 +25,13 @@ from plotpy.tests.unit.utils import (
     create_window,
     drag_mouse,
     keyboard_event,
+    undo_redo,
 )
 from plotpy.tools import RectangularSelectionTool, SelectTool
 
 # guitest: show
+
+BaseImageItemT = TypeVar("BaseImageItemT", bound=BaseImageItem)
 
 
 def _assert_images_angle(
@@ -50,7 +56,7 @@ def _assert_images_pos(images: list[TrImageItem], x0: float, y0: float) -> None:
         assert np.isclose(y, img.param.pos_y0)
 
 
-def _get_xy_coords(tr_img: TrImageItem) -> tuple[float, float, float, float]:
+def _get_xy_coords(tr_img: BaseImageItem) -> tuple[float, float, float, float]:
     x1, y1, x2, y2 = tr_img.boundingRect().getCoords()
     assert isinstance(x1, float)
     assert isinstance(y1, float)
@@ -59,37 +65,56 @@ def _get_xy_coords(tr_img: TrImageItem) -> tuple[float, float, float, float]:
     return x1, y1, x2, y2
 
 
-def _setup_plot() -> tuple[PlotWindow, SelectTool, BasePlot, TrImageItem]:
-    tr_img = make.trimage(gen_image4(100, 100), x0=100, y0=100)
-    win, tool = create_window(SelectTool, IImageItemType, None, [tr_img])
+def _setup_plot(
+    img_item: BaseImageItem | None = None,
+) -> tuple[PlotWindow, SelectTool, BasePlot, BaseImageItem]:
+    if img_item is None:
+        img_item = make.trimage(gen_image4(100, 100), x0=100, y0=100)
+    win, tool = create_window(SelectTool, IImageItemType, None, [img_item])
     win.show()
 
     assert isinstance(tool, SelectTool)
 
     plot = win.manager.get_plot()
-    assert plot.get_selected_items() == [tr_img]
+    assert plot.get_selected_items() == [img_item]
 
-    return win, tool, plot, tr_img
+    return win, tool, plot, img_item
 
 
-def test_move_with_mouse():
+@pytest.mark.parametrize(
+    "img_item_builder",
+    [
+        lambda: make.trimage(gen_image4(100, 100), x0=100, y0=100),
+        lambda: make.image(
+            gen_image4(100, 100),
+            center_on=(100, 100),
+            pixel_size=1,
+            lock_position=False,
+        ),
+    ],
+)
+def test_move_with_mouse(img_item_builder: Callable[[], BaseImageItem] | None):
     """Test the select tool."""
 
     with qt_app_context(exec_loop=False) as qapp:
-        win, tool, plot, tr_img = _setup_plot()
-        x1, y1, *_ = _get_xy_coords(tr_img)
-        initial_angle = tr_img.param.pos_angle  # type: ignore
+        img_item = None if img_item_builder is None else img_item_builder()
+        win, tool, plot, img_item = _setup_plot(img_item)
+        x1, y1, *_ = _get_xy_coords(img_item)
 
-        assert initial_angle == 0
-        assert plot.get_selected_items() == [tr_img]
+        if img_item.can_rotate():
+            initial_angle = img_item.param.pos_angle  # type: ignore
+            assert initial_angle == 0
+        assert plot.get_selected_items() == [img_item]
 
         drag_mouse(win, qapp, np.array([0.5, 0.6, 0.7]), np.array([0.5, 0.6, 0.7]))
 
-        assert plot.get_selected_items() == [tr_img]
-        x2, y2, *_ = _get_xy_coords(tr_img)
+        assert plot.get_selected_items() == [img_item]
+        x2, y2, *_ = _get_xy_coords(img_item)
         assert x2 > x1 and y2 > y1
-        assert tr_img.param.pos_angle == initial_angle  # type: ignore
+        if img_item.can_rotate():
+            assert img_item.param.pos_angle == initial_angle  # type: ignore
 
+        undo_redo(qapp, win)
         exec_dialog(win)
 
 
@@ -133,6 +158,8 @@ def test_move_with_arrows(
         assert tr_img.param.pos_angle == initial_angle  # type: ignore
 
         keyboard_event(win, qapp, QC.Qt.Key.Key_Enter)
+
+        undo_redo(qapp, win)
         exec_dialog(win)
 
 
@@ -174,6 +201,7 @@ def test_rotate_with_arrow(
         )
         assert np.isclose(tr_img.param.pos_angle, initial_angle)  # type: ignore
 
+        undo_redo(qapp, win)
         exec_dialog(win)
 
 
@@ -215,6 +243,7 @@ def test_rotate_with_mouse():
         assert plot.get_selected_items() == [tr_img]
         assert np.isclose(abs(tr_img.param.pos_angle), 45, 0.5)  # type: ignore
 
+        undo_redo(qapp, win)
         exec_dialog(win)
 
 
@@ -238,7 +267,6 @@ def test_rectangular_selection():
         ]
         win, tool = create_window(RectangularSelectionTool, items=items)
         win.show()
-        plot = win.manager.get_plot()
 
         drag_mouse(
             win,
@@ -252,6 +280,8 @@ def test_rectangular_selection():
         for item, selectable in zip(items, is_rect_selectable):
             if selectable:
                 assert item in selected_items
+
+        exec_dialog(win)
 
 
 @pytest.mark.parametrize(
@@ -288,6 +318,7 @@ def test_multi_rotate_move_with_mouse(
         else:
             _assert_images_pos(images, x0, y0)
 
+        undo_redo(qapp, win)
         exec_dialog(win)
 
 
@@ -333,11 +364,12 @@ def test_multi_rotate_move_with_keyboard(
         else:
             _assert_images_pos(images, x0, y0)
 
+        undo_redo(qapp, win)
         exec_dialog(win)
 
 
 if __name__ == "__main__":
-    test_move_with_mouse()
+    test_move_with_mouse(None)
     test_move_with_arrows(QC.Qt.KeyboardModifier.NoModifier)
     test_rotate_with_arrow(QC.Qt.KeyboardModifier.ShiftModifier)
     test_select_all_items()
