@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Callable, TypeVar
+from typing import TYPE_CHECKING, Callable, TypeVar
 
 import numpy as np
 import pytest
@@ -13,9 +13,6 @@ from plotpy.interfaces.items import (
     IShapeItemType,
 )
 from plotpy.items.image.base import BaseImageItem
-from plotpy.items.image.transform import TrImageItem
-from plotpy.plot.base import BasePlot
-from plotpy.plot.plotwidget import PlotWindow
 from plotpy.tests.data import gen_image4
 from plotpy.tests.unit.utils import (
     create_window,
@@ -25,7 +22,10 @@ from plotpy.tests.unit.utils import (
 )
 from plotpy.tools import RectangularSelectionTool, SelectTool
 
-# guitest: show
+if TYPE_CHECKING:
+    from plotpy.items.image.transform import TrImageItem
+    from plotpy.plot.base import BasePlot
+    from plotpy.plot.plotwidget import PlotWindow
 
 BaseImageItemT = TypeVar("BaseImageItemT", bound=BaseImageItem)
 
@@ -33,26 +33,48 @@ BaseImageItemT = TypeVar("BaseImageItemT", bound=BaseImageItem)
 def _assert_images_angle(
     images: list[TrImageItem], ref_angle: float, target_angle: float | None = None
 ) -> None:
-    angle = images[0].param.pos_angle
+    """Used to assert the angle of a list of images (factorization).
+
+    Args:
+        images: list of transformable image items
+        ref_angle: reference angle
+        target_angle: Expected angle. Defaults to None.
+    """
+    angle = images[0].param.pos_angle  # type: ignore
     assert angle > ref_angle
     if target_angle is not None:
         assert np.isclose(angle, target_angle, 0.5)
     for img in images:
-        assert np.isclose(angle, img.param.pos_angle)
+        assert np.isclose(angle, img.param.pos_angle)  # type: ignore
 
 
 def _assert_images_pos(images: list[TrImageItem], x0: float, y0: float) -> None:
-    x = images[0].param.pos_x0
-    y = images[0].param.pos_y0
+    """Used to assert the position of a list of images (factorization).
+
+    Args:
+        images: lst of transformable image items
+        x0: reference x position
+        y0: reference y position
+    """
+    x = images[0].param.pos_x0  # type: ignore
+    y = images[0].param.pos_y0  # type: ignore
     assert x > x0
     assert y > y0
     for img in images:
-        assert img.param.pos_angle == 0
-        assert np.isclose(x, img.param.pos_x0)
-        assert np.isclose(y, img.param.pos_y0)
+        assert img.param.pos_angle == 0  # type: ignore
+        assert np.isclose(x, img.param.pos_x0)  # type: ignore
+        assert np.isclose(y, img.param.pos_y0)  # type: ignore
 
 
 def _get_xy_coords(tr_img: BaseImageItem) -> tuple[float, float, float, float]:
+    """Asserts and returns the coordinates of a transformable image item.
+
+    Args:
+        tr_img: transformable image item
+
+    Returns:
+        coordinates of the image item from its bounding rectangle.
+    """
     x1, y1, x2, y2 = tr_img.boundingRect().getCoords()
     assert isinstance(x1, float)
     assert isinstance(y1, float)
@@ -64,6 +86,12 @@ def _get_xy_coords(tr_img: BaseImageItem) -> tuple[float, float, float, float]:
 def _setup_plot(
     img_item: BaseImageItem | None = None,
 ) -> tuple[PlotWindow, SelectTool, BasePlot, BaseImageItem]:
+    """Setup the plot for the tests with the given image item.
+
+    Args:
+        img_item: image item to use. If None, will create a default image item.
+         Defaults to None.
+    """
     if img_item is None:
         img_item = make.trimage(gen_image4(100, 100), x0=100, y0=100)
     win, tool = create_window(SelectTool, IImageItemType, None, [img_item])
@@ -89,11 +117,15 @@ def _setup_plot(
         ),
     ],
 )
-def test_move_with_mouse(img_item_builder: Callable[[], BaseImageItem] | None):
-    """Test the select tool."""
+def test_move_with_mouse(img_item_factory: Callable[[], BaseImageItem] | None):
+    """Test the select tool.
+
+    Arg:
+        img_item_factory: image item factory function. Defaults to None.
+    """
 
     with qt_app_context(exec_loop=False) as qapp:
-        img_item = None if img_item_builder is None else img_item_builder()
+        img_item = None if img_item_factory is None else img_item_factory()
         win, tool, plot, img_item = _setup_plot(img_item)
         x1, y1, *_ = _get_xy_coords(img_item)
 
@@ -120,6 +152,11 @@ def test_move_with_mouse(img_item_builder: Callable[[], BaseImageItem] | None):
 def test_move_with_arrows(
     mod: QC.Qt.KeyboardModifier,
 ):
+    """Test moving an image item with the arrow keys.
+
+    Args:
+        mod: keyboard modifier to use.
+    """
     with qt_app_context(exec_loop=False) as qapp:
         win, tool, plot, tr_img = _setup_plot()
         x1, y1, *_ = _get_xy_coords(tr_img)
@@ -169,6 +206,11 @@ def test_move_with_arrows(
 def test_rotate_with_arrow(
     mod: QC.Qt.KeyboardModifier,
 ):
+    """Test rotating an image item with the arrow keys.
+
+    Args:
+        mod: keyboard modifier to use.
+    """
     with qt_app_context(exec_loop=False) as qapp:
         win, tool, plot, tr_img = _setup_plot()
         x1_a, y1_a, x1_b, y1_b = _get_xy_coords(tr_img)
@@ -202,6 +244,7 @@ def test_rotate_with_arrow(
 
 
 def test_select_all_items():
+    """Test selecting all items in the plot using the keyboard."""
     with qt_app_context() as qapp:
         n = 100
         x = np.arange(n)
@@ -228,6 +271,7 @@ def test_select_all_items():
 
 
 def test_rotate_with_mouse():
+    """Test rotating an image item with the mouse."""
     with qt_app_context(exec_loop=False) as qapp:
         win, tool, plot, tr_img = _setup_plot()
         init_angle = tr_img.param.pos_angle  # type: ignore
@@ -244,6 +288,7 @@ def test_rotate_with_mouse():
 
 
 def test_rectangular_selection():
+    """Test selecting items with the rectangular selection tool."""
     with qt_app_context(exec_loop=False) as qapp:
         items = [
             make.image(gen_image4(100, 100)),
@@ -290,6 +335,12 @@ def test_rectangular_selection():
 def test_multi_rotate_move_with_mouse(
     mouse_path: tuple[np.ndarray, np.ndarray], rotation: bool
 ):
+    """Test rotating and moving multiple images with the mouse.
+
+    Args:
+        mouse_path: path of the mouse (drag).
+        rotation: whether the image should rotate or not.
+    """
     n = 100
     x0 = n
     y0 = 0
@@ -333,6 +384,12 @@ def test_multi_rotate_move_with_mouse(
 def test_multi_rotate_move_with_keyboard(
     keymod: QC.Qt.KeyboardModifier, rotation: bool
 ):
+    """Test rotating and moving multiple images with the keyboard.
+
+    Args:
+        keymod: keyboard modifier to use.
+        rotation: whether the image should rotate or not.
+    """
     n = 100
     x0 = n
     y0 = 0
