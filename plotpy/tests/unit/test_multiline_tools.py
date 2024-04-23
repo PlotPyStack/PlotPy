@@ -13,8 +13,6 @@ from plotpy.tests.unit.utils import (
 )
 from plotpy.tools import FreeFormTool, MultiLineTool
 
-# guitest: show
-
 
 def test_free_form_tool():
     """Test the free form tool."""
