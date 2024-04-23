@@ -4,11 +4,9 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 import pytest
-import qtpy.QtCore as QC
 from guidata.qthelpers import exec_dialog, execenv, qt_app_context
 
 from plotpy.interfaces.items import IBasePlotItem, IShapeItemType
-from plotpy.items.image.base import BaseImageItem
 from plotpy.tests import vistools as ptv
 from plotpy.tests.features.test_auto_curve_image import make_curve_image_legend
 from plotpy.tools import (
@@ -32,15 +30,12 @@ from plotpy.tools import (
     SelectTool,
     SnapshotTool,
 )
-from plotpy.tools.label import LabelTool
 
 if TYPE_CHECKING:
+    from plotpy.items.image.base import BaseImageItem
     from plotpy.plot.plotwidget import PlotWindow
 
 from plotpy.tests.unit.utils import drag_mouse, undo_redo
-
-P0 = QC.QPointF(10, 10)
-P1 = QC.QPointF(100, 100)
 
 TOOLS: tuple[type[InteractiveTool], ...] = (
     AnnotatedCircleTool,
