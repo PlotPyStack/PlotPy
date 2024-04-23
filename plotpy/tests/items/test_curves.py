@@ -44,8 +44,6 @@ def test_plot():
         _win = ptv.show_items(
             items, wintitle=test_plot.__doc__, title="Curves", plot_type="curve"
         )
-        stats_tool = _win.get_plot().manager.get_tool(CurveStatsTool)
-        _win.get_plot().manager.set_active_tool(stats_tool)
 
 
 if __name__ == "__main__":
