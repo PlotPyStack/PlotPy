@@ -16,7 +16,12 @@ from plotpy.tools.shape import CircleTool, RectangleTool, RectangularShapeTool
 @pytest.mark.parametrize("shape_tool_cls", [RectangleTool, CircleTool])
 @pytest.mark.parametrize("inside", [True, False])
 def test_image_mask_tool(shape_tool_cls: type[RectangularShapeTool], inside: bool):
-    """Test ImageMaskTool"""
+    """Test the ImageMaskTool with a shape tool.
+
+    Args:
+        shape_tool_cls: The shape tool class to use.
+        inside: If the mask should be inside or outside the shape.
+    """
     with qt_app_context(exec_loop=False):
         win = make.dialog(type="image", toolbar=True)
         item = make.maskedimage(gen_image4(100, 100))
