@@ -1,21 +1,15 @@
-import contextlib
+from __future__ import annotations
 
-import numpy as np
 import pytest
 from guidata.env import execenv
 from guidata.qthelpers import exec_dialog, qt_app_context
 
 from plotpy.builder import make
-from plotpy.interfaces.items import IImageItemType
-from plotpy.plot import BasePlot
 from plotpy.tests.data import gen_image4
 from plotpy.tests.unit.utils import (
-    drag_mouse,
-    mouse_event_at_relative_plot_pos,
     rel_pos_to_canvas_pos,
 )
-from plotpy.tools import ColormapTool, ReverseColormapTool
-from plotpy.tools.image import ImageMaskTool, LockTrImageTool
+from plotpy.tools.image import ImageMaskTool
 from plotpy.tools.shape import CircleTool, RectangleTool, RectangularShapeTool
 
 

@@ -2,6 +2,8 @@
 This files tests the vent handlers not covered by other tests.
 """
 
+from __future__ import annotations
+
 from typing import Callable
 
 import numpy as np

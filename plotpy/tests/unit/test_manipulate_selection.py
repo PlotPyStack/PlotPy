@@ -1,18 +1,15 @@
-from typing import Callable, Protocol
+from __future__ import annotations
+
+from typing import Callable, TypeVar
 
 import numpy as np
 import pytest
 import qtpy.QtCore as QC
-import qtpy.QtWidgets as QW
 from guidata.qthelpers import exec_dialog, qt_app_context
-from qwt import QwtPlotItem
-from typing_extensions import TypeVar
 
 from plotpy.builder import make
 from plotpy.interfaces.items import (
-    IBasePlotItem,
     IImageItemType,
-    IItemType,
     IShapeItemType,
 )
 from plotpy.items.image.base import BaseImageItem
@@ -20,7 +17,6 @@ from plotpy.items.image.transform import TrImageItem
 from plotpy.plot.base import BasePlot
 from plotpy.plot.plotwidget import PlotWindow
 from plotpy.tests.data import gen_image4
-from plotpy.tests.items.test_transform import make_items
 from plotpy.tests.unit.utils import (
     create_window,
     drag_mouse,
