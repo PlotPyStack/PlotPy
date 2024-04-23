@@ -28,10 +28,9 @@ from plotpy.tools import (
 )
 from plotpy.tools.selection import SelectTool
 
-# guitest: show
-
 
 def test_curve_stat_tool():
+    """Test the curve stats tool."""
     with qt_app_context(exec_loop=False) as qapp:
         win, tool = create_window(CurveStatsTool)
         win.show()
@@ -224,7 +223,7 @@ def test_edit_point_tool():
 
 if __name__ == "__main__":
     test_curve_stat_tool()
-    # test_free_select_point_tool()
-    # test_contrained_select_point_tool()
-    # test_select_points_tool()
-    # test_edit_point_tool()
+    test_free_select_point_tool()
+    test_contrained_select_point_tool()
+    test_select_points_tool()
+    test_edit_point_tool()
