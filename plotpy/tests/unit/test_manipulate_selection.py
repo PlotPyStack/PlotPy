@@ -106,7 +106,7 @@ def _setup_plot(
 
 
 @pytest.mark.parametrize(
-    "img_item_builder",
+    "img_item_factory",
     [
         lambda: make.trimage(gen_image4(100, 100), x0=100, y0=100),
         lambda: make.image(
