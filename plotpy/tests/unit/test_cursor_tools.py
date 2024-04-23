@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 import numpy as np
 import pytest
 from guidata.qthelpers import exec_dialog, qt_app_context
@@ -14,15 +16,21 @@ from plotpy.tools import (
     VCursorTool,
     XCursorTool,
 )
-from plotpy.tools.cursor import BaseCursorTool
 
-# guitest: show
+if TYPE_CHECKING:
+    from plotpy.tools.cursor import BaseCursorTool
 
 
 @pytest.mark.parametrize(
     "cursor_tool", [HCursorTool, VCursorTool, XCursorTool, HRangeTool]
 )
 def test_cursor_tool(cursor_tool: type[BaseCursorTool]):
+    """Test the cursor tools. by simulating a mouse drag and checking if the tool
+    shape is created.
+
+    Args:
+        cursor_tool: Cursor tool class to test.
+    """
     with qt_app_context(exec_loop=True) as qapp:
         win, tool = create_window(cursor_tool)
         win.show()
@@ -40,7 +48,5 @@ def test_cursor_tool(cursor_tool: type[BaseCursorTool]):
 
 
 if __name__ == "__main__":
-    test_cursor_tool(HCursorTool)
-    test_cursor_tool(VCursorTool)
-    test_cursor_tool(XCursorTool)
-    test_cursor_tool(HRangeTool)
+    for tool in (HCursorTool, VCursorTool, XCursorTool, HRangeTool):
+        test_cursor_tool(tool)
