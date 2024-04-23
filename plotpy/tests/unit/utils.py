@@ -223,7 +223,7 @@ def drag_mouse(
 
 def create_window(
     tool_class: type[ToolT],
-    active_item_type: type[IItemType] = ICurveItemType,
+    active_item_type: type[IItemType] | None = ICurveItemType,
     panels: list[type[PanelWidget]] | None = None,
     items: list[QwtPlotItem] | None = None,
 ) -> tuple[PlotWindow, ToolT]:
@@ -245,8 +245,14 @@ def create_window(
     plot = win.manager.get_plot()
     for item in items:
         plot.set_active_item(item)
-    last_active_item = plot.get_last_active_item(active_item_type)
-    plot.set_active_item(last_active_item)
+    if active_item_type is None:
+        plot.unselect_all()
+        last_active_item = None
+    else:
+        last_active_item = plot.get_last_active_item(active_item_type)
+    if last_active_item is not None:
+        plot.set_active_item(last_active_item)
+
     if panels is not None:
         for panel in panels:
             win.manager.add_panel(panel())
