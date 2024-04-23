@@ -17,8 +17,6 @@ from plotpy.tools import CommandTool, InteractiveTool
 if TYPE_CHECKING:
     import numpy as np
 
-    from plotpy.items.curve.base import CurveItem
-    from plotpy.items.image.base import BaseImageItem
     from plotpy.panels.base import PanelWidget
     from plotpy.plot.plotwidget import PlotDialog, PlotWindow
 
@@ -176,15 +174,6 @@ def mouse_event_at_relative_plot_pos(
             mod,
         )
         qapp.sendEvent(canvas, mouse_event)
-
-
-# def mouse_wheel_event_at_relative_pos(
-#     win: PlotDialog | PlotWindow,
-#     qapp: QW.QApplication,
-#     relative_xy: tuple[float, float],
-#     click_types: tuple[QC.QEvent.Type, ...] = (QC.QEvent.Type.MouseButtonPress,),
-#     mod=QC.Qt.KeyboardModifier.NoModifier,
-# ) -> None:
 
 
 def drag_mouse(
