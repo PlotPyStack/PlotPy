@@ -57,8 +57,6 @@ TOOLS: tuple[type[InteractiveTool], ...] = (
     LabelTool,
 )
 
-# guitest: show
-
 
 def create_window(tool_classes: tuple[type[InteractiveTool], ...]) -> PlotWindow:
     """Create a window with the given tools. The plot contains a curve, an image and a
