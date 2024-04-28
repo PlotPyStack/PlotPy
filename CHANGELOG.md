@@ -10,6 +10,8 @@ In this release, test coverage is 75%.
 
 🛠️ Bug fixes:
 
+* Image statistics tool: fixed "No available data" message when the tool rectangular
+  region top Y coordinate is above the image top Y coordinate
 * Label items (`LabelItem`, `LegendBoxItem`, `DataInfoLabel`, ...) were not emitting
   the `SIG_ITEM_MOVED` signal when moved interactively (with the mouse) if the item
   anchor was attached to the canvas

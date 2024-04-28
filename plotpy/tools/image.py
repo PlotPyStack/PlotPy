@@ -16,6 +16,7 @@ from qtpy import QtWidgets as QW
 from plotpy import io
 from plotpy.config import _
 from plotpy.constants import ID_CONTRAST, PlotType
+from plotpy.coords import axes_to_canvas
 from plotpy.events import QtDragHandler, setup_standard_tool_filter
 from plotpy.interfaces import (
     IColormapImageItemType,
@@ -114,13 +115,10 @@ class ImageStatsRectangle(AnnotatedRectangle):
         plot = self.image_item.plot()
         if plot is None:
             return None
-        p0y = plot.transform(0, self.shape.get_points()[0][1])
-        p0x = plot.transform(2, self.shape.get_points()[0][0])
-        p1y = plot.transform(0, self.shape.get_points()[1][1])
-        p1x = plot.transform(2, self.shape.get_points()[1][0])
-        p0 = QC.QPointF(p0x, p0y)
-        p1 = QC.QPointF(p1x, p1y)
-        items = get_items_in_rectangle(plot, p0, p1)
+        x0, y0, x1, y1 = self.shape.get_rect()
+        p0x, p0y = axes_to_canvas(self, x0, y0)
+        p1x, p1y = axes_to_canvas(self, x1, y1)
+        items = get_items_in_rectangle(plot, QC.QPointF(p0x, p0y), QC.QPointF(p1x, p1y))
         if len(items) >= 1:
             sorted_items = [
                 it for it in sorted(items, key=lambda obj: obj.z()) if it.isVisible()
