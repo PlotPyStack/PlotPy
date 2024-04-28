@@ -24,6 +24,7 @@ from qtpy import QtGui as QG
 from qwt import QwtPlotItem
 
 from plotpy.config import CONF, _
+from plotpy.coords import canvas_to_axes
 from plotpy.interfaces import IBasePlotItem, ISerializableType, IShapeItemType
 from plotpy.items.curve.base import CurveItem
 from plotpy.styles.label import LabelParam
@@ -428,6 +429,9 @@ class AbstractLabelItem(QwtPlotItem):
             old_pos: Old position
             new_pos: New position
         """
+        plot = self.plot()
+        if plot is None:
+            return
         if self.G in ANCHORS or not self.labelparam.move_anchor:
             # Move canvas offset
             lx, ly = self.C
@@ -435,11 +439,10 @@ class AbstractLabelItem(QwtPlotItem):
             ly += new_pos.y() - old_pos.y()
             self.C = lx, ly
             self.labelparam.xc, self.labelparam.yc = lx, ly
+            lx0, ly0 = canvas_to_axes(self, old_pos)
+            lx1, ly1 = canvas_to_axes(self, new_pos)
         else:
             # Move anchor
-            plot = self.plot()
-            if plot is None:
-                return
             lx0, ly0 = self.G
             cx = plot.transform(self.xAxis(), lx0)
             cy = plot.transform(self.yAxis(), ly0)
@@ -449,7 +452,7 @@ class AbstractLabelItem(QwtPlotItem):
             ly1 = plot.invTransform(self.yAxis(), cy)
             self.G = lx1, ly1
             self.labelparam.xg, self.labelparam.yg = lx1, ly1
-            plot.SIG_ITEM_MOVED.emit(self, lx0, ly0, lx1, ly1)
+        plot.SIG_ITEM_MOVED.emit(self, lx0, ly0, lx1, ly1)
 
     def move_with_selection(self, delta_x: float, delta_y: float) -> None:
         """Translate the item together with other selected items

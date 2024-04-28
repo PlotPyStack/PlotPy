@@ -10,6 +10,9 @@ In this release, test coverage is 75%.
 
 🛠️ Bug fixes:
 
+* Label items (`LabelItem`, `LegendBoxItem`, `DataInfoLabel`, ...) were not emitting
+  the `SIG_ITEM_MOVED` signal when moved interactively (with the mouse) if the item
+  anchor was attached to the canvas
 * Colormap: fixed context menu entry update (colormap icon was updated as expected, but
   the colormap name was not)
 * Rotate/crop dialog: added missing toolbar on plot widget
