@@ -246,7 +246,9 @@ class XRangeSelection(AbstractShape):
         if dosignal:
             self.plot().SIG_RANGE_CHANGED.emit(self, self._min, self._max)
 
-    def move_shape(self, old_pos: QC.QPointF, new_pos: QC.QPointF) -> None:
+    def move_shape(
+        self, old_pos: tuple[float, float], new_pos: tuple[float, float]
+    ) -> None:
         """Translate the shape such that old_pos becomes new_pos in axis coordinates
 
         Args:

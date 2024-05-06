@@ -1107,7 +1107,9 @@ class BasePlot(qwt.QwtPlot):
             self.enableAxis(self.colormap_axis)
 
     def get_items(
-        self, z_sorted: bool = False, item_type: itf.IBasePlotItem | None = None
+        self,
+        z_sorted: bool = False,
+        item_type: type[itf.IItemType | itf.IBasePlotItem] | None = None,
     ) -> list[itf.IBasePlotItem]:
         """Return widget's item list
         (items are based on IBasePlotItem's interface)

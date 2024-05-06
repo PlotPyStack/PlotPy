@@ -731,8 +731,9 @@ class EditPointTool(InteractiveTool):
 
             # Create empty array where axes coordinates will be converted to canvas
             # coordinates
-            canva_x_points, canva_y_points = np.zeros(axes_x_points.size), np.zeros(
-                axes_x_points.size
+            canva_x_points, canva_y_points = (
+                np.zeros(axes_x_points.size),
+                np.zeros(axes_x_points.size),
             )
 
             # Convert axes coordinates to canvas coordinates
@@ -855,7 +856,8 @@ class EditPointTool(InteractiveTool):
             curve_item.set_data(self.__x, self.__y)
             new_pos = axes_to_canvas(curve_item, new_x, param.value)  # type: ignore
             self.__current_location_marker.move_local_point_to(
-                0, QC.QPointF(*new_pos)  # type: ignore
+                0,
+                QC.QPointF(*new_pos),  # type: ignore
             )
 
     def __get_active_curve_item(self, filter: StatefulEventFilter) -> CurveItem:

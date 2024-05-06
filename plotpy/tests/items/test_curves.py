@@ -12,6 +12,7 @@ from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
 from plotpy.tests import vistools as ptv
+from plotpy.tools import CurveStatsTool
 
 
 def test_plot():
