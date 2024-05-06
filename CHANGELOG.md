@@ -2,11 +2,24 @@
 
 ## Version 2.3.1 ##
 
-In this release, test coverage is 75%.
+In this release, test coverage is 79%.
 
-💥 New features:
+💥 New features / Enhancements:
 
 * Colormap: added "Apply" button to the colormap manager
+* Automated test suite:
+  * Test coverage has been improved from 75% to 79%
+  * The following features are now covered by unit tests:
+    * Panning with the mouse move events
+    * Zooming with the mouse wheel/move events
+    * Curve statistics tool
+    * Image rotation and translations via `SelectTool` (simulating mouse events)
+    * Masked areas in images and `ImageMaskTool`
+    * `LockTrImageTool`
+    * Cursor tools (`HCursorTool`, `VCursorTool`, `XCursorTool` and `HRangeTool`)
+    * `DisplayCoordsTool`: simulation of 'Alt' and 'Ctrl' keys
+    * Complete coverage for `MultiLineTool` and `FreeFormTool`
+    * Selection tools (`RectangularSelectionTool` and `SelectTool`)
 
 🛠️ Bug fixes:
 
