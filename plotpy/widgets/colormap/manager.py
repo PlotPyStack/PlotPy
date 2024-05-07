@@ -28,6 +28,7 @@ import qtpy.QtCore as QC
 import qtpy.QtGui as QG
 import qtpy.QtWidgets as QW
 from guidata.configtools import get_icon
+from guidata.env import execenv
 from guidata.qthelpers import exec_dialog
 
 from plotpy.config import _
@@ -352,7 +353,10 @@ class ColorMapManager(QW.QDialog):
                 QW.QMessageBox.Ok,
             )
             return
-        if (
+        if execenv.unattended:  # For testing purposes only
+            if not execenv.accept_dialogs:
+                return
+        elif (
             QW.QMessageBox.question(
                 self,
                 _("Remove"),

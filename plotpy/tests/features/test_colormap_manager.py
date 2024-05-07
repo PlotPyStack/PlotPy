@@ -17,7 +17,7 @@ import qtpy.QtGui as QG
 from guidata.env import execenv
 from guidata.qthelpers import exec_dialog, qt_app_context
 
-from plotpy.mathutils.colormap import ALL_COLORMAPS, delete_cmap, get_cmap
+from plotpy.mathutils.colormap import delete_cmap, get_cmap
 from plotpy.widgets.colormap.manager import ColorMapManager
 from plotpy.widgets.colormap.widget import EditableColormap
 
@@ -50,8 +50,8 @@ def test_colormap_manager(test_cmap: EditableColormap) -> None:
         # set the colormap to last one
         with execenv.context(accept_dialogs=True):
             cmap_editor.remove_colormap()
+            result = exec_dialog(cmap_editor)
 
-        result = exec_dialog(cmap_editor)
         execenv.print("Dialog result:", result)
         cmap = cmap_editor.get_colormap()
         execenv.print("Selected colormap:", None if cmap is None else cmap.name)
