@@ -1,8 +1,11 @@
 # Changelog #
 
-## Version 2.3.1 ##
+## Version 2.3.2 ##
 
 In this release, test coverage is 79%.
+
+Version 2.3.2 fixes a blocking issue with the colormap editor unit test introduced
+in version 2.3.1. The latter is a fugitive release that was not announced.
 
 💥 New features / Enhancements:
 

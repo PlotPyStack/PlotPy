@@ -20,7 +20,7 @@ External resources:
 .. _GitHub: https://github.com/PierreRaybaut/plotpy
 """
 
-__version__ = "2.3.1"
+__version__ = "2.3.2"
 __VERSION__ = tuple([int(number) for number in __version__.split(".")])
 
 # --- Important note: DATAPATH and LOCALEPATH are used by guidata.configtools
