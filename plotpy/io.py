@@ -728,6 +728,7 @@ def save_items(
     for item in items:
         with writer.group(_get_name(item)):
             item.serialize(writer)
+            writer.write(item.isVisible(), group_name="visible")
     with writer.group("plot_items"):
         writer.write_sequence(names)
 
@@ -756,6 +757,7 @@ def load_items(
         item = klass()
         with reader.group(name):
             item.deserialize(reader)
+            item.setVisible(reader.read("visible", default=True))
         items.append(item)
     return items
 

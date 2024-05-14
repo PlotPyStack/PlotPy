@@ -1,5 +1,17 @@
 # Changelog #
 
+## Version 2.3.3 ##
+
+In this release, test coverage is 79%.
+
+🛠️ Bug fixes:
+
+* Unexpected behavior regarding `io.load_items` and `io.save_items` functions:
+  * Those functions were serializing and deserializing most of the parameters of the
+    plot items, but not their visibility state
+  * This is now fixed: the visibility state of the plot items is now saved and restored
+    as expected
+
 ## Version 2.3.2 ##
 
 In this release, test coverage is 79%.
