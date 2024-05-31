@@ -5,5 +5,10 @@
 
 from .base import PanelWidget
 from .contrastadjustment import ContrastAdjustment
-from .csection import ObliqueCrossSection, XCrossSection, YCrossSection
+from .csection import (
+    ObliqueCrossSection,
+    XCrossSection,
+    YCrossSection,
+    LineCrossSection,
+)
 from .itemlist import PlotItemList

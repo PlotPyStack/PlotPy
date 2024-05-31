@@ -11,9 +11,15 @@ an oblique rectangle).
 .. autoclass:: XCrossSection
 .. autoclass:: YCrossSection
 .. autoclass:: ObliqueCrossSection
+.. autoclass:: LineCrossSection
 """
 
 # pylint: disable=unused-import
 # flake8: noqa
 
-from .cswidget import ObliqueCrossSection, XCrossSection, YCrossSection
+from .cswidget import (
+    ObliqueCrossSection,
+    XCrossSection,
+    YCrossSection,
+    LineCrossSection,
+)
