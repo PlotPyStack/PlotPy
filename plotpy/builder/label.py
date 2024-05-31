@@ -234,7 +234,7 @@ class LabelBuilder:
             title: label name. Default is None
 
         Returns:
-            :py:class:`.DataInfoLabel` object
+            Data info label object
         """
         comps = []
         same_curve = True
@@ -257,7 +257,7 @@ class LabelBuilder:
         image: ImageItem,
         function: Callable,
         title: str | None = None,
-    ) -> RangeComputation2d:
+    ) -> DataInfoLabel:
         """Make a 2D computation label `plot item`
 
         Args:
@@ -270,7 +270,7 @@ class LabelBuilder:
             title: label name. Default is None
 
         Returns:
-            :py:class:`.RangeComputation2d` object
+            Data info label object
         """
         return self.computations2d(
             rect, anchor, [(image, label, function)], title=title
@@ -288,7 +288,7 @@ class LabelBuilder:
             title: label name. Default is None
 
         Returns:
-            :py:class:`.DataInfoLabel` object
+            Data info label object
         """
         comps = []
         same_image = True
