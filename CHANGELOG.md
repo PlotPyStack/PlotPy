@@ -6,11 +6,16 @@ In this release, test coverage is 79%.
 
 🛠️ Bug fixes:
 
+* Moved up `LineCrossSection` import for consistency with other cross-section panels
 * Unexpected behavior regarding `io.load_items` and `io.save_items` functions:
   * Those functions were serializing and deserializing most of the parameters of the
     plot items, but not their visibility state
   * This is now fixed: the visibility state of the plot items is now saved and restored
     as expected
+
+ℹ️ Other changes:
+
+* Explicitely exclude NumPy V2 from the dependencies (not compatible yet)
 
 ## Version 2.3.2 ##
 
