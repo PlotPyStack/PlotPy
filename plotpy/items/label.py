@@ -983,7 +983,7 @@ class RangeComputation(ObjectInfo):
             if vector is None:
                 vectors.append(None)
             elif i0 == i1:
-                vectors.append(np.array([np.NaN]))
+                vectors.append(np.array([np.nan]))
             else:
                 vectors.append(vector[i0:i1])
         return self.label % self.func(*vectors)
