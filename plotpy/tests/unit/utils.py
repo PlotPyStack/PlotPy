@@ -100,12 +100,12 @@ def new_wheel_event(
     canva_pos, glob_pos = rel_pos_to_canvas_pos(canvas, pos_xy)
     angle_delta = QC.QPoint(0, angle_delta)  # Scroll distance in eighths of a degree
     pix_delta = QC.QPoint(0, pix_delta)  # Scroll distance in pixels
-    qt4_delta = 0  # You may need to adjust this value
-    orientation = QC.Qt.Orientation.Vertical  # You may need to adjust this value
+    phase = QC.Qt.ScrollPhase.NoScrollPhase
+    inverted = False
 
     # Create QWheelEvent
     return QG.QWheelEvent(
-        canva_pos, glob_pos, pix_delta, angle_delta, qt4_delta, orientation, btns, mods
+        canva_pos, glob_pos, pix_delta, angle_delta, btns, mods, phase, inverted
     )
 
 
