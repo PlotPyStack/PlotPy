@@ -1798,7 +1798,7 @@ msgstr "Masquer l'extérieur d'une zone circulaire"
 
 #: plotpy\tools\image.py:649
 msgid "Show masking shapes"
-msgstr "Afficher les formes de masquage"
+msgstr "Afficher les masques"
 
 #: plotpy\tools\image.py:653
 msgid "Apply mask"
@@ -1810,11 +1810,11 @@ msgstr "Supprimer le masque"
 
 #: plotpy\tools\image.py:659 plotpy\tools\image.py:732
 msgid "Remove all masking shapes"
-msgstr "Supprimer toutes les formes de masquage"
+msgstr "Supprimer toutes les masques"
 
 #: plotpy\tools\image.py:728
 msgid "Do you really want to remove all masking shapes?"
-msgstr "Souhaitez-vous vraiment supprimer toutes les formes de masquages ?"
+msgstr "Souhaitez-vous vraiment supprimer toutes les masques ?"
 
 #: plotpy\tools\image.py:850
 msgid "Do you really want to clear the mask?"
