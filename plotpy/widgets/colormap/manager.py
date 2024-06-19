@@ -182,9 +182,16 @@ class ColorMapManager(QW.QDialog):
         select_gbox.setLayout(select_gbox_layout)
 
         # Edit the selected colormap
-        self.colormap_editor = ColorMapEditor(
-            self, colormap=deepcopy(self._cmap_choice.currentData())
-        )
+        current_cmap = self._cmap_choice.currentData()
+        # This test is necessary because the currentData method returns a QVariant
+        # object, which may be handled differently by PyQt5, PySide2 and PySide6.
+        # This is an attempt to fix an issue with PySide6 (segfault).
+        if isinstance(current_cmap, EditableColormap):
+            current_cmap = deepcopy(current_cmap)
+        else:
+            current_cmap = None
+        self.colormap_editor = ColorMapEditor(self, colormap=current_cmap)
+
         self._edit_gbox = QW.QGroupBox(_("Edit the selected colormap"))
         edit_gbox_layout = QW.QVBoxLayout()
         edit_gbox_layout.setContentsMargins(0, 0, 0, 0)
