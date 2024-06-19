@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from typing import TYPE_CHECKING, Callable, TypeVar
 
 import numpy as np
@@ -270,6 +271,7 @@ def test_select_all_items():
         exec_dialog(win)
 
 
+@pytest.mark.skipif(os.name != "nt", reason="Only tested on Windows.")
 def test_rotate_with_mouse():
     """Test rotating an image item with the mouse."""
     with qt_app_context(exec_loop=False) as qapp:
@@ -325,6 +327,7 @@ def test_rectangular_selection():
         exec_dialog(win)
 
 
+@pytest.mark.skipif(os.name != "nt", reason="Only tested on Windows.")
 @pytest.mark.parametrize(
     "mouse_path, rotation",
     [
