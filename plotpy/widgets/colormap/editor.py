@@ -219,9 +219,7 @@ class ColorMapEditor(QW.QWidget):
             index: index of the insertion/appending.
             handle_pos: relative value to set in the tab (new handle current position)
         """
-        title = ""
-
-        dw = DataSetEditGroupBox(QW.QLabel(title, self), ColorPickDataSet)
+        dw = DataSetEditGroupBox("", ColorPickDataSet)
         dw.dataset.set_position(handle_pos)
 
         hex_color = self.colormap_widget.get_hex_color(index)
@@ -231,10 +229,10 @@ class ColorMapEditor(QW.QWidget):
 
         if index == self.tabs.count():
             self.datasets.append(dw)
-            self.tabs.addTab(dw, title)
+            self.tabs.addTab(dw, "")
         else:
             self.datasets.insert(index, dw)
-            self.tabs.insertTab(index, dw, title)
+            self.tabs.insertTab(index, dw, "")
             dw.updateGeometry()
 
         self.tabs.setCurrentIndex(index)
