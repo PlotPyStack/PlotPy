@@ -1,5 +1,19 @@
 # Changelog #
 
+## Version 2.3.4 ##
+
+In this release, test coverage is 79%.
+
+🛠️ Bug fixes:
+
+* Add support for NumPy 2.0:
+  * Updated build system to use NumPy 2.0 on Python > 3.8 and NumPy 1 on Python 3.8
+  * Use `numpy.asarray` instead of `numpy.array(..., copy=False)`
+  * Use `numpy.isin` instead of `numpy.in1d`
+  * Use `scipy.integrate.trapezoid` instead of `numpy.trapz`
+
+* `ColorMapManager`: fix segmentation fault with PySide6 on Linux
+
 ## Version 2.3.3 ##
 
 In this release, test coverage is 79%.
