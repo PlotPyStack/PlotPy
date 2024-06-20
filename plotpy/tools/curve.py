@@ -7,6 +7,7 @@ import weakref
 from typing import TYPE_CHECKING, Any, Callable
 
 import numpy as np
+import scipy.integrate as spt
 from guidata.dataset import ChoiceItem, DataSet, FloatItem, IntItem
 from guidata.qthelpers import execenv
 from guidata.widgets.arrayeditor import ArrayEditor
@@ -102,8 +103,12 @@ class CurveStatsTool(BaseCursorTool):
                     ),
                     (curve, "&lt;y&gt;=%g", lambda *args: args[1].mean()),
                     (curve, "σ(y)=%g", lambda *args: args[1].std()),
-                    (curve, "∑(y)=%g", lambda *args: np.trapz(args[1])),
-                    (curve, "∫ydx=%g", lambda *args: np.trapz(args[1], args[0])),
+                    (curve, "∑(y)=%g", lambda *args: spt.trapezoid(args[1])),
+                    (
+                        curve,
+                        "∫ydx=%g",
+                        lambda *args: spt.trapezoid(args[1], args[0]),
+                    ),
                 ],
             )
             self.label.attach(plot)

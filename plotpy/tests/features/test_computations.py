@@ -7,8 +7,9 @@
 
 # guitest: show
 
+import numpy as np
+import scipy.integrate as spt
 from guidata.qthelpers import qt_app_context
-from numpy import linspace, sin, trapz
 
 from plotpy.builder import make
 from plotpy.tests import vistools as ptv
@@ -16,8 +17,8 @@ from plotpy.tests import vistools as ptv
 
 def test_computations():
     """Test computations"""
-    x = linspace(-10, 10, 1000)
-    y = sin(sin(sin(x)))
+    x = np.linspace(-10, 10, 1000)
+    y = np.sin(np.sin(np.sin(x)))
     with qt_app_context(exec_loop=True):
         curve = make.curve(x, y, "ab", "b")
         range = make.range(-2, 2)
@@ -26,7 +27,7 @@ def test_computations():
         )
 
         disp1 = make.computation(
-            range, "BL", "trapz=%g", curve, lambda x, y: trapz(y, x)
+            range, "BL", "trapz=%g", curve, lambda x, y: spt.trapezoid(y, x)
         )
 
         disp2 = make.computations(
