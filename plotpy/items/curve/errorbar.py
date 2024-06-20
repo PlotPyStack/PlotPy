@@ -144,11 +144,11 @@ class ErrorBarCurveItem(CurveItem):
         """
         CurveItem.set_data(self, x, y)
         if dx is not None:
-            dx = np.array(dx, copy=False)
+            dx = np.asarray(dx)
             if dx.size == 0:
                 dx = None
         if dy is not None:
-            dy = np.array(dy, copy=False)
+            dy = np.asarray(dy)
             if dy.size == 0:
                 dy = None
         self._dx = dx

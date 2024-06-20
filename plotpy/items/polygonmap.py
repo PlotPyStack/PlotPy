@@ -264,9 +264,9 @@ class PolygonMapItem(QwtPlotItem):
             * x: NumPy array
             * y: NumPy array
         """
-        self._pts = np.array(pts, copy=False)
-        self._n = np.array(n, copy=False)
-        self._c = np.array(c, copy=False)
+        self._pts = np.asarray(pts)
+        self._n = np.asarray(n)
+        self._c = np.asarray(c)
         xmin, ymin = self._pts.min(axis=0)
         xmax, ymax = self._pts.max(axis=0)
         self.bounds = QC.QRectF(xmin, ymin, xmax - xmin, ymax - ymin)

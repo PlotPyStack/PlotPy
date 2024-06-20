@@ -388,8 +388,8 @@ class CurveItem(QwtPlotCurve):
              this method is called to update decimated data (i.e. only update 1/N value
              with N set in CurveItem.param.decimation).
         """
-        self._x = np.array(x, copy=False)
-        self._y = np.array(y, copy=False)
+        self._x = np.asarray(x)
+        self._y = np.asarray(y)
         self._setData(self._x, self._y)
 
     def is_empty(self) -> bool:
