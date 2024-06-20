@@ -49,7 +49,10 @@ def test_image_mask_tool(shape_tool_cls: type[RectangularShapeTool], inside: boo
         with execenv.context(accept_dialogs=True):
             shape_tool.add_shape_to_plot(plot, pos0, pos1)
             mask_tool.apply_mask()
-            mask_tool.clear_mask()
+
+            # Clear mask
+            item.unmask_all()
+            plot.replot()
 
             shape_tool.add_shape_to_plot(plot, pos0, pos1)
             mask_tool.remove_shapes()
