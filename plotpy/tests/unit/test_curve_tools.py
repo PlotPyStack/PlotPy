@@ -216,7 +216,7 @@ def test_edit_point_tool():
         tool.reset_arrays()
         assert tool.get_changes() == {}
         x_arr, y_arr = curve_item.get_data()
-        assert np.in1d(x_arr, orig_x).all() and np.in1d(y_arr, orig_y).all()
+        assert np.isin(x_arr, orig_x).all() and np.isin(y_arr, orig_y).all()
 
         exec_dialog(win)
 
