@@ -7,6 +7,7 @@
 
 import numpy as np
 import pytest
+from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
 from plotpy.tests.unit.test_builder_curve import show_items_qtbot
@@ -61,28 +62,30 @@ def _make_annotation(
     ],
 )
 def test_builder_annotation_params(method):
-    items = []
-    for show_label in [True, False]:
-        items.append(
-            _make_annotation(
-                method,
-                title="title",
-                subtitle="subtitle",
-                show_label=show_label,
+    """Test PlotBuilder annotation factory method parameters"""
+    with qt_app_context(exec_loop=False):
+        items = []
+        for show_label in [True, False]:
+            items.append(
+                _make_annotation(
+                    method,
+                    title="title",
+                    subtitle="subtitle",
+                    show_label=show_label,
+                )
             )
-        )
-    for show_computations in [True, False]:
-        items.append(_make_annotation(method, show_computations=show_computations))
-    for show_subtitle in [True, False]:
-        items.append(_make_annotation(method, show_subtitle=show_subtitle))
-    for format in ["%f", "%e"]:
-        items.append(_make_annotation(method, format=format))
-    for uncertainty in [0.0, 1.0]:
-        items.append(_make_annotation(method, uncertainty=uncertainty))
-    for transform_matrix in [None, np.identity(3)]:
-        items.append(_make_annotation(method, transform_matrix=transform_matrix))
-    for readonly in [True, False]:
-        items.append(_make_annotation(method, readonly=readonly))
-    for private in [True, False]:
-        items.append(_make_annotation(method, private=private))
-    show_items_qtbot(items)
+        for show_computations in [True, False]:
+            items.append(_make_annotation(method, show_computations=show_computations))
+        for show_subtitle in [True, False]:
+            items.append(_make_annotation(method, show_subtitle=show_subtitle))
+        for format in ["%f", "%e"]:
+            items.append(_make_annotation(method, format=format))
+        for uncertainty in [0.0, 1.0]:
+            items.append(_make_annotation(method, uncertainty=uncertainty))
+        for transform_matrix in [None, np.identity(3)]:
+            items.append(_make_annotation(method, transform_matrix=transform_matrix))
+        for readonly in [True, False]:
+            items.append(_make_annotation(method, readonly=readonly))
+        for private in [True, False]:
+            items.append(_make_annotation(method, private=private))
+        show_items_qtbot(items)

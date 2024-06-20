@@ -7,7 +7,7 @@
 
 import numpy as np
 import pytest
-from guidata.qthelpers import exec_dialog
+from guidata.qthelpers import exec_dialog, qt_app_context
 from qtpy.QtCore import Qt
 from qwt import QwtPlotCurve
 
@@ -43,8 +43,9 @@ def _make_curve_style(shade, curvestyle, baseline):
 @pytest.mark.parametrize("baseline", [0.0])
 def test_builder_curve_curve_style(shade, curvestyle, baseline):
     """Test curve parameters of curve() method"""
-    curve = _make_curve_style(shade, curvestyle, baseline)
-    show_items_qtbot([curve], "curve")
+    with qt_app_context(exec_loop=False):
+        curve = _make_curve_style(shade, curvestyle, baseline)
+        show_items_qtbot([curve], "curve")
 
 
 @pytest.mark.parametrize("shade", [0, 0.4, 1.0])
@@ -52,8 +53,9 @@ def test_builder_curve_curve_style(shade, curvestyle, baseline):
 @pytest.mark.parametrize("baseline", [0.0, 1.0])
 def test_builder_curve_curve_shade_baseline(shade, curvestyle, baseline):
     """Test curve parameters of curve() method"""
-    curve = _make_curve_style(shade, curvestyle, baseline)
-    show_items_qtbot([curve], "curve")
+    with qt_app_context(exec_loop=False):
+        curve = _make_curve_style(shade, curvestyle, baseline)
+        show_items_qtbot([curve], "curve")
 
 
 def _make_curve_dsamp(dsamp_factor, use_dsamp):
@@ -70,16 +72,18 @@ def _make_curve_dsamp(dsamp_factor, use_dsamp):
 @pytest.mark.parametrize("use_dsamp", [True])
 def test_builder_curve_dsamp_on(dsamp_factor, use_dsamp):
     """Test downsampling parameters of curve() method: use_dsamp=True"""
-    curve = _make_curve_dsamp(dsamp_factor, use_dsamp)
-    show_items_qtbot([curve], "curve")
+    with qt_app_context(exec_loop=False):
+        curve = _make_curve_dsamp(dsamp_factor, use_dsamp)
+        show_items_qtbot([curve], "curve")
 
 
 @pytest.mark.parametrize("dsamp_factor", [1, 2])
 @pytest.mark.parametrize("use_dsamp", [False])
 def test_builder_curve_dsamp_off(dsamp_factor, use_dsamp):
     """Test downsampling parameters of curve() method: use_dsamp=False"""
-    curve = _make_curve_dsamp(dsamp_factor, use_dsamp)
-    show_items_qtbot([curve], "curve")
+    with qt_app_context(exec_loop=False):
+        curve = _make_curve_dsamp(dsamp_factor, use_dsamp)
+        show_items_qtbot([curve], "curve")
 
 
 def _make_curve_linestyle(color, linestyle, linewidth):
@@ -102,8 +106,9 @@ def _make_curve_linestyle(color, linestyle, linewidth):
 @pytest.mark.parametrize("linewidth", [1, 2])
 def test_builder_curve_line_style(color, linestyle, linewidth):
     """Test line parameters of curve() method"""
-    curve = _make_curve_linestyle(color, linestyle, linewidth)
-    show_items_qtbot([curve], "curve")
+    with qt_app_context(exec_loop=False):
+        curve = _make_curve_linestyle(color, linestyle, linewidth)
+        show_items_qtbot([curve], "curve")
 
 
 @pytest.mark.parametrize("color", ["red", "blue"])
@@ -111,8 +116,9 @@ def test_builder_curve_line_style(color, linestyle, linewidth):
 @pytest.mark.parametrize("linewidth", [1, 2])
 def test_builder_curve_line_color(color, linestyle, linewidth):
     """Test line parameters of curve() method"""
-    curve = _make_curve_linestyle(color, linestyle, linewidth)
-    show_items_qtbot([curve], "curve")
+    with qt_app_context(exec_loop=False):
+        curve = _make_curve_linestyle(color, linestyle, linewidth)
+        show_items_qtbot([curve], "curve")
 
 
 def _make_curve_marker(marker, markersize, markerfacecolor, markeredgecolor):
@@ -160,8 +166,9 @@ def test_builder_curve_marker_params_symbol(
     marker, markersize, markerfacecolor, markeredgecolor
 ):
     """Test marker parameters of curve() methodg"""
-    curve = _make_curve_marker(marker, markersize, markerfacecolor, markeredgecolor)
-    show_items_qtbot([curve], "curve")
+    with qt_app_context(exec_loop=False):
+        curve = _make_curve_marker(marker, markersize, markerfacecolor, markeredgecolor)
+        show_items_qtbot([curve], "curve")
 
 
 @pytest.mark.parametrize("marker", ["Cross"])
@@ -172,5 +179,6 @@ def test_builder_curve_marker_size_color(
     marker, markersize, markerfacecolor, markeredgecolor
 ):
     """Test marker parameters of curve() methodg"""
-    curve = _make_curve_marker(marker, markersize, markerfacecolor, markeredgecolor)
-    show_items_qtbot([curve], "curve")
+    with qt_app_context(exec_loop=False):
+        curve = _make_curve_marker(marker, markersize, markerfacecolor, markeredgecolor)
+        show_items_qtbot([curve], "curve")
