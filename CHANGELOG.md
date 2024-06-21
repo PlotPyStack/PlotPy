@@ -1,5 +1,10 @@
 # Changelog #
 
+## Version 2.3.5 ##
+
+This release is only intended to fix the Windows binary distribution, which was not
+supporting NumPy 2.0. The source distribution was not affected.
+
 ## Version 2.3.4 ##
 
 In this release, test coverage is 79%.
