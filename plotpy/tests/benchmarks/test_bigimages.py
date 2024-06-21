@@ -8,6 +8,7 @@
 # guitest: show
 
 import numpy as np
+import pytest
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
@@ -28,6 +29,7 @@ def compute_image(i, N=7500, M=1750):
     return (np.random.rand(N, M) * 65536).astype(np.int16)
 
 
+@pytest.mark.skip(reason="Not relevant in automated test suite")
 def test_bigimages():
     """Test Bigimages"""
     with qt_app_context(exec_loop=True):

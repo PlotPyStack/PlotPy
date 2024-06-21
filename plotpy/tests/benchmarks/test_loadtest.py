@@ -8,6 +8,7 @@
 # guitest: show
 
 import numpy as np
+import pytest
 from guidata.qthelpers import qt_app_context
 
 # import cProfile
@@ -72,9 +73,10 @@ class LoadTest(QW.QMainWindow):
         QW.QApplication.processEvents()
 
 
-if __name__ == "__main__":
+@pytest.mark.skip(reason="Not relevant in automated test suite")
+def test_loadtest():
+    """Run load test"""
     with qt_app_context(exec_loop=True):
-        app = QW.QApplication([])
         # import time
         # t0 = time.time()
         # with cProfile.Profile() as pr:
@@ -87,3 +89,7 @@ if __name__ == "__main__":
         #     stats.sort_stats('cumulative')
         #     stats.dump_stats('.prof_stats')
         #     stats.print_stats()
+
+
+if __name__ == "__main__":
+    test_loadtest()

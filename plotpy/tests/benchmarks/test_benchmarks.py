@@ -3,12 +3,37 @@
 # Licensed under the terms of the BSD 3-Clause
 # (see plotpy/LICENSE for details)
 
-"""plotpy plot benchmarking"""
+"""
+PlotPy plot benchmark
+---------------------
+
+This script benchmarks PlotPy plotting features.
+
+
+Results obtained with PlotPy v2.3.5 on Windows 11 with a i5-1335U CPU @ 1.30 GHz:
+
+.. code-block:: none
+
+    PlotPy plot benchmark [Python 3.12.3 64 bits, Qt 5.15.2, PyQt 5.15.10 on Windows]
+
+            N | ∆t (ms) | Description
+    --------------------------------------------------------------------------------
+        5e+06 |     215 | Simple curve
+        2e+05 |     774 | Curve with markers
+        1e+06 |    2411 | Curve with sticks
+        1e+04 |    2025 | Error bar curve (vertical bars only)
+        1e+04 |     198 | Error bar curve (horizontal and vertical bars)
+        1e+06 |     105 | Simple histogram
+        1e+03 |     722 | Polar pcolor
+        7e+03 |     902 | Simple image
+"""
 
 import time
 
 import guidata
 import numpy as np
+import pytest
+from guidata.env import execenv
 from guidata.qthelpers import qt_app_context
 from guidata.widgets import about
 from qtpy import QtWidgets as QW
@@ -22,6 +47,17 @@ class BaseBM:
 
     MAKE_FUNC = make.curve  # to be overriden in subclasses
     WIN_TYPE = "auto"
+
+    @classmethod
+    def print_header(cls):
+        """Print header for benchmark results"""
+        execenv.print(f"PlotPy plot benchmark [{about.get_python_libs_infos()}]")
+        execenv.print()
+        table_header = (
+            "N".rjust(10) + " | " + "∆t (ms)".rjust(7) + " | " + "Description"
+        ).ljust(80)
+        execenv.print(table_header)
+        execenv.print("-" * len(table_header))
 
     def __init__(self, name, nsamples, **options):
         self.name = name
@@ -49,16 +85,19 @@ class BaseBM:
         QW.QApplication.processEvents()
         plot = win.manager.get_plot()
 
-        # Create item (ignore this step in benchmark result!)
+        # Create item
         self.make_item()
 
         # Benchmarking
         t0 = time.time()
         self.add_to_plot(plot)
-        print(self.name + ":")
-        print("    N  = {}".format(self.nsamples))
         plot.replot()  # Force replot
-        print("    dt = {} ms".format((time.time() - t0) * 1e3))
+        QW.QApplication.processEvents()
+        dt = (time.time() - t0) * 1e3
+
+        row = f"{self.nsamples:10.0e} | {int(dt):7} | {self.name}"
+        execenv.print(row)
+
         return win
 
 
@@ -122,13 +161,11 @@ class PColorBM(BaseBM):
         return x, y, z
 
 
+@pytest.mark.skip(reason="Not relevant in automated test suite")
 def test_benchmarks():
     """Run benchmark"""
     # Print(informations banner)
-    title = f"PlotPy plot benchmark [{about.get_python_libs_infos()}]"
-    print(title)
-    print("-" * len(title))
-    print()
+    BaseBM.print_header()
 
     _app = guidata.qapplication()
 
@@ -141,7 +178,7 @@ def test_benchmarks():
             CurveBM("Curve with sticks", 1e6, curvestyle="Sticks"),
             ErrorBarBM("Error bar curve (vertical bars only)", 1e4),
             ErrorBarBM("Error bar curve (horizontal and vertical bars)", 1e4, dx=True),
-            HistogramBM("Simple histogram", 1e6, bins=int(1e5)),
+            HistogramBM("Simple histogram", 1e6, bins=10000),
             PColorBM("Polar pcolor", 1e3),
             ImageBM("Simple image", 7e3, interpolation="antialiasing"),
         ):

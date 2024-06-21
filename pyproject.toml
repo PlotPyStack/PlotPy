@@ -59,6 +59,7 @@ Documentation = "https://plotpy.readthedocs.io/en/latest/"
 
 [project.gui-scripts]
 plotpy-tests = "plotpy.tests:run"
+plotpy-benchmarks = "plotpy.tests.benchmarks:run"
 
 [project.optional-dependencies]
 dev = ["ruff", "pylint", "Coverage", "Cython"]
