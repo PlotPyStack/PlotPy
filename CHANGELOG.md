@@ -2,8 +2,17 @@
 
 ## Version 2.3.5 ##
 
-This release is only intended to fix the Windows binary distribution, which was not
-supporting NumPy 2.0. The source distribution was not affected.
+This release is mainly intended to fix the Windows binary distribution, which was not
+supporting NumPy 2.0.
+
+🛠️ Bug fixes:
+
+* Moved back `conftest.py` to the `tests` folder (was in the root folder), so that
+  `pytest` can be executed with proper configuration when running the test suite
+  from the installed package
+
+* Removed benchmarks from automated test suite (not relevant for the end user):
+  added `plotpy-benchmarks` script to run the benchmarks
 
 ## Version 2.3.4 ##
 
