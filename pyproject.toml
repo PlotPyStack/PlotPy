@@ -82,6 +82,9 @@ include = ["plotpy*"]
 [tool.setuptools.dynamic]
 version = { attr = "plotpy.__version__" }
 
+[tool.pytest.ini_options]
+addopts = "plotpy"
+
 [tool.ruff]
 exclude = [".git", ".vscode", "build", "dist"]
 line-length = 88                               # Same as Black.
