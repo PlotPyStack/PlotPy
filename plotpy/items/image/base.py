@@ -37,7 +37,6 @@ from plotpy.interfaces import (
     IHistDataSource,
     IImageItemType,
     ISerializableType,
-    IStatsImageItemType,
     ITrackableItemType,
     IVoiImageItemType,
 )
@@ -75,7 +74,6 @@ class BaseImageItem(QwtPlotItem):
         IHistDataSource,
         IVoiImageItemType,
         ICSImageItemType,
-        IStatsImageItemType,
         IExportROIImageItemType,
     )
     _can_select = True
@@ -720,8 +718,6 @@ class BaseImageItem(QwtPlotItem):
             ITrackableItemType,
             ICSImageItemType,
             IExportROIImageItemType,
-            IStatsImageItemType,
-            IStatsImageItemType,
         )
 
     def set_readonly(self, state: bool) -> None:
@@ -998,85 +994,6 @@ class BaseImageItem(QwtPlotItem):
         else:
             return ydata
 
-    def get_stats(
-        self,
-        x0: float,
-        y0: float,
-        x1: float,
-        y1: float,
-        show_surface: bool = False,
-        show_integral: bool = False,
-    ) -> str:
-        """Return formatted string with stats on image rectangular area
-        (output should be compatible with AnnotatedShape.get_infos)
-
-        Args:
-            x0: X0
-            y0: Y0
-            x1: X1
-            y1: Y1
-            show_surface: Show surface (Default value = False)
-            show_integral: Show integral (Default value = False)
-        """
-        ix0, iy0, ix1, iy1 = self.get_closest_index_rect(x0, y0, x1, y1)
-        data = self.data[iy0:iy1, ix0:ix1]
-        xfmt = self.param.xformat
-        yfmt = self.param.yformat
-        zfmt = self.param.zformat
-        try:
-            xunit = xfmt.split()[1]
-        except IndexError:
-            xunit = ""
-        try:
-            yunit = yfmt.split()[1]
-        except IndexError:
-            yunit = ""
-        try:
-            zunit = zfmt.split()[1]
-        except IndexError:
-            zunit = ""
-        if show_integral:
-            integral = data.sum()
-        infos = "<br>".join(
-            [
-                "<b>%s</b>" % self.param.label,
-                "%sx%s %s"
-                % (self.data.shape[1], self.data.shape[0], str(self.data.dtype)),
-                "",
-                "%s ≤ x ≤ %s" % (xfmt % x0, xfmt % x1),
-                "%s ≤ y ≤ %s" % (yfmt % y0, yfmt % y1),
-                "%s ≤ z ≤ %s" % (zfmt % data.min(), zfmt % data.max()),
-                "‹z› = " + zfmt % data.mean(),
-                "σ(z) = " + zfmt % data.std(),
-            ]
-        )
-        if show_surface and xunit == yunit:
-            surfacefmt = xfmt.split()[0] + " " + xunit
-            if xunit != "":
-                surfacefmt = surfacefmt + "²"
-            surface = abs((x1 - x0) * (y1 - y0))
-            infos = infos + "<br>" + _("surface = %s") % (surfacefmt % surface)
-        if show_integral:
-            integral = data.sum()
-            integral_fmt = r"%.3e " + zunit
-            infos = infos + "<br>" + _("sum = %s") % (integral_fmt % integral)
-        if (
-            show_surface
-            and xunit == yunit
-            and xunit is not None
-            and show_integral
-            and zunit is not None
-        ):
-            if surface != 0:
-                density = integral / surface
-                densityfmt = r"%.3e " + zunit + "/" + xunit
-                if xunit != "":
-                    densityfmt = densityfmt + "²"
-                infos = infos + "<br>" + _("density = %s") % (densityfmt % density)
-            else:
-                infos = infos + "<br>" + _("density not computed : surface is null !")
-        return infos
-
     def get_xsection(self, y0: float | int, apply_lut: bool = False) -> np.ndarray:
         """Return cross section along x-axis at y=y0
 
@@ -1287,7 +1204,6 @@ class RawImageItem(BaseImageItem):
             ICSImageItemType,
             ISerializableType,
             IExportROIImageItemType,
-            IStatsImageItemType,
         )
 
     def update_item_parameters(self) -> None:

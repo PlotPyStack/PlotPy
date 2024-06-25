@@ -20,7 +20,7 @@ from plotpy.coords import axes_to_canvas
 from plotpy.events import QtDragHandler, setup_standard_tool_filter
 from plotpy.interfaces import (
     IColormapImageItemType,
-    IStatsImageItemType,
+    IImageItemType,
     IVoiImageItemType,
 )
 from plotpy.items import (
@@ -61,6 +61,86 @@ if TYPE_CHECKING:
     from plotpy.plot.plotwidget import PlotOptions
     from plotpy.styles.image import BaseImageParam
     from plotpy.styles.shape import AnnotationParam
+
+
+def get_stats(
+    item: BaseImageItem,
+    x0: float,
+    y0: float,
+    x1: float,
+    y1: float,
+    show_surface: bool = False,
+    show_integral: bool = False,
+) -> str:
+    """Return formatted string with stats on image rectangular area
+    (output should be compatible with AnnotatedShape.get_infos)
+
+    Args:
+        x0: X0
+        y0: Y0
+        x1: X1
+        y1: Y1
+        show_surface: Show surface (Default value = False)
+        show_integral: Show integral (Default value = False)
+    """
+    ix0, iy0, ix1, iy1 = item.get_closest_index_rect(x0, y0, x1, y1)
+    data = item.data[iy0:iy1, ix0:ix1]
+    param: BaseImageParam = item.param
+    xfmt = param.xformat
+    yfmt = param.yformat
+    zfmt = param.zformat
+    try:
+        xunit = xfmt.split()[1]
+    except IndexError:
+        xunit = ""
+    try:
+        yunit = yfmt.split()[1]
+    except IndexError:
+        yunit = ""
+    try:
+        zunit = zfmt.split()[1]
+    except IndexError:
+        zunit = ""
+    if show_integral:
+        integral = data.sum()
+    infos = "<br>".join(
+        [
+            "<b>%s</b>" % param.label,
+            "%sx%s %s" % (item.data.shape[1], item.data.shape[0], str(item.data.dtype)),
+            "",
+            "%s ≤ x ≤ %s" % (xfmt % x0, xfmt % x1),
+            "%s ≤ y ≤ %s" % (yfmt % y0, yfmt % y1),
+            "%s ≤ z ≤ %s" % (zfmt % data.min(), zfmt % data.max()),
+            "‹z› = " + zfmt % data.mean(),
+            "σ(z) = " + zfmt % data.std(),
+        ]
+    )
+    if show_surface and xunit == yunit:
+        surfacefmt = xfmt.split()[0] + " " + xunit
+        if xunit != "":
+            surfacefmt = surfacefmt + "²"
+        surface = abs((x1 - x0) * (y1 - y0))
+        infos = infos + "<br>" + _("surface = %s") % (surfacefmt % surface)
+    if show_integral:
+        integral = data.sum()
+        integral_fmt = r"%.3e " + zunit
+        infos = infos + "<br>" + _("sum = %s") % (integral_fmt % integral)
+    if (
+        show_surface
+        and xunit == yunit
+        and xunit is not None
+        and show_integral
+        and zunit is not None
+    ):
+        if surface != 0:
+            density = integral / surface
+            densityfmt = r"%.3e " + zunit + "/" + xunit
+            if xunit != "":
+                densityfmt = densityfmt + "²"
+            infos = infos + "<br>" + _("density = %s") % (densityfmt % density)
+        else:
+            infos = infos + "<br>" + _("density not computed : surface is null !")
+    return infos
 
 
 class ImageStatsRectangle(AnnotatedRectangle):
@@ -129,8 +209,8 @@ class ImageStatsRectangle(AnnotatedRectangle):
                 return _("No available data")
         else:
             return _("No available data")
-        return self.image_item.get_stats(
-            *self.get_rect(), self.show_surface, self.show_integral
+        return get_stats(
+            self.image_item, *self.get_rect(), self.show_surface, self.show_integral
         )
 
 
@@ -258,7 +338,7 @@ class ImageStatsTool(RectangularShapeTool):
         Returns:
             Reference to the last image item associated with the tool
         """
-        items = plot.get_selected_items(item_type=IStatsImageItemType)
+        items = plot.get_selected_items(item_type=IImageItemType)
         if len(items) == 1:
             self._last_item = weakref.ref(items[0])
         return self.get_last_item()

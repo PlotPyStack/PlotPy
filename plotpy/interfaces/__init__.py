@@ -16,7 +16,6 @@ from .items import (
     IItemType,
     ISerializableType,
     IShapeItemType,
-    IStatsImageItemType,
     ITrackableItemType,
     IVoiImageItemType,
 )

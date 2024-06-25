@@ -148,31 +148,6 @@ class IExportROIImageItemType(IItemType):
         pass
 
 
-class IStatsImageItemType(IItemType):
-    """An image supporting stats computations"""
-
-    def get_stats(
-        self,
-        x0: float,
-        y0: float,
-        x1: float,
-        y1: float,
-        show_surface: bool = False,
-        show_integral: bool = False,
-    ) -> str:
-        """Return formatted string with stats on image rectangular area
-        (output should be compatible with AnnotatedShape.get_infos)
-
-        Args:
-            x0: X0
-            y0: Y0
-            x1: X1
-            y1: Y1
-            show_surface: Show surface (Default value = False)
-            show_integral: Show integral (Default value = False)
-        """
-
-
 class ICSImageItemType(IItemType):
     """An image supporting X/Y cross sections"""
 
