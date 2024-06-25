@@ -1,5 +1,24 @@
 # Changelog #
 
+## Version 2.4.0 ##
+
+In this release, test coverage is 79%.
+
+💥 New features / Enhancements:
+
+* Curve statistics tool `CurveStatsTool` is now customizable:
+  * When adding the tool: `plot_widget.manager.add_tool(CurveStatsTool, labelfuncs=(...))`
+  * Or after: `plot_widget.manager.get_tool(CurveStatsTool).set_labelfuncs(...)`
+  * The `labelfuncs` parameter is a list of tuples `(label, func)` where `label` is the
+    label displayed in the statistics table, and `func` is a function that takes the
+    curve data and returns the corresponding statistic value (see the documentation for
+    more details)
+* Image statistics tool `ImageStatsTool` is now customizable:
+  * When adding the tool: `plot_widget.manager.add_tool(ImageStatsTool, stats_func=...)`
+  * Or after: `plot_widget.manager.get_tool(ImageStatsTool).set_stats_func(...)`
+  * The `stats_func` parameter is a function that takes the image item and selected
+    rectangle coordinates, and returns a string with the statistics to display
+
 ## Version 2.3.5 ##
 
 This release is mainly intended to fix the Windows binary distribution, which was not

@@ -69,78 +69,31 @@ def get_stats(
     y0: float,
     x1: float,
     y1: float,
-    show_surface: bool = False,
-    show_integral: bool = False,
 ) -> str:
     """Return formatted string with stats on image rectangular area
     (output should be compatible with AnnotatedShape.get_infos)
 
     Args:
+        item: image item
         x0: X0
         y0: Y0
         x1: X1
         y1: Y1
-        show_surface: Show surface (Default value = False)
-        show_integral: Show integral (Default value = False)
     """
     ix0, iy0, ix1, iy1 = item.get_closest_index_rect(x0, y0, x1, y1)
     data = item.data[iy0:iy1, ix0:ix1]
-    param: BaseImageParam = item.param
-    xfmt = param.xformat
-    yfmt = param.yformat
-    zfmt = param.zformat
-    try:
-        xunit = xfmt.split()[1]
-    except IndexError:
-        xunit = ""
-    try:
-        yunit = yfmt.split()[1]
-    except IndexError:
-        yunit = ""
-    try:
-        zunit = zfmt.split()[1]
-    except IndexError:
-        zunit = ""
-    if show_integral:
-        integral = data.sum()
-    infos = "<br>".join(
+    p: BaseImageParam = item.param
+    return "<br>".join(
         [
-            "<b>%s</b>" % param.label,
             "%sx%s %s" % (item.data.shape[1], item.data.shape[0], str(item.data.dtype)),
             "",
-            "%s ≤ x ≤ %s" % (xfmt % x0, xfmt % x1),
-            "%s ≤ y ≤ %s" % (yfmt % y0, yfmt % y1),
-            "%s ≤ z ≤ %s" % (zfmt % data.min(), zfmt % data.max()),
-            "‹z› = " + zfmt % data.mean(),
-            "σ(z) = " + zfmt % data.std(),
+            "%s ≤ x ≤ %s" % (p.xformat % x0, p.xformat % x1),
+            "%s ≤ y ≤ %s" % (p.yformat % y0, p.yformat % y1),
+            "%s ≤ z ≤ %s" % (p.zformat % data.min(), p.zformat % data.max()),
+            "‹z› = " + p.zformat % data.mean(),
+            "σ(z) = " + p.zformat % data.std(),
         ]
     )
-    if show_surface and xunit == yunit:
-        surfacefmt = xfmt.split()[0] + " " + xunit
-        if xunit != "":
-            surfacefmt = surfacefmt + "²"
-        surface = abs((x1 - x0) * (y1 - y0))
-        infos = infos + "<br>" + _("surface = %s") % (surfacefmt % surface)
-    if show_integral:
-        integral = data.sum()
-        integral_fmt = r"%.3e " + zunit
-        infos = infos + "<br>" + _("sum = %s") % (integral_fmt % integral)
-    if (
-        show_surface
-        and xunit == yunit
-        and xunit is not None
-        and show_integral
-        and zunit is not None
-    ):
-        if surface != 0:
-            density = integral / surface
-            densityfmt = r"%.3e " + zunit + "/" + xunit
-            if xunit != "":
-                densityfmt = densityfmt + "²"
-            infos = infos + "<br>" + _("density = %s") % (densityfmt % density)
-        else:
-            infos = infos + "<br>" + _("density not computed : surface is null !")
-    return infos
 
 
 class ImageStatsRectangle(AnnotatedRectangle):
@@ -152,8 +105,10 @@ class ImageStatsRectangle(AnnotatedRectangle):
         x2: X position of the second rectangle corner. Defaults to 0.
         y2: Y position of the second rectangle corner. Defaults to 0.
         annotationparam: _description_. Defaults to None.
-        show_surface: _description_. Defaults to False.
-        show_integral: _description_. Defaults to False.
+        stats_func: function to get statistics. Defaults to None.
+         (see :py:func:`get_stats` for signature and default implementation)
+        replace: True to replace stats (statistics are not added to the
+         base infos but replace them). Defaults to False.
     """
 
     shape: PolygonShape
@@ -165,15 +120,15 @@ class ImageStatsRectangle(AnnotatedRectangle):
         x2: float = 0.0,
         y2: float = 0.0,
         annotationparam: AnnotationParam | None = None,
-        show_surface=False,
-        show_integral=False,
+        stats_func: Callable[[BaseImageItem, float, float, float, float]] | None = None,
+        replace: bool = False,
     ):
         """_summary_"""
         super().__init__(x1, y1, x2, y2, annotationparam)
         self.image_item: BaseImageItem | None = None
         self.setIcon(get_icon("imagestats.png"))
-        self.show_surface = show_surface
-        self.show_integral = show_integral
+        self.stats_func = stats_func
+        self.replace_stats = replace
 
     def set_image_item(self, image_item: BaseImageItem) -> None:
         """Set image item to be used for statistics
@@ -182,6 +137,7 @@ class ImageStatsRectangle(AnnotatedRectangle):
             image_item: image item to be used for statistics
         """
         self.image_item = image_item
+        self.setTitle(self.image_item.title())
 
     # ----AnnotatedShape API-----------------------------------------------------
     def get_infos(self) -> str | None:
@@ -209,9 +165,16 @@ class ImageStatsRectangle(AnnotatedRectangle):
                 return _("No available data")
         else:
             return _("No available data")
-        return get_stats(
-            self.image_item, *self.get_rect(), self.show_surface, self.show_integral
-        )
+        x0, y0, x1, y1 = self.get_rect()
+        if self.replace_stats:
+            base_infos = ""
+        else:
+            base_infos = get_stats(self.image_item, x0, y0, x1, y1)
+        if self.stats_func is not None:
+            if base_infos:
+                base_infos += "<br>"
+            base_infos += self.stats_func(self.image_item, x0, y0, x1, y1)
+        return base_infos
 
 
 class ImageStatsTool(RectangularShapeTool):
@@ -228,8 +191,26 @@ class ImageStatsTool(RectangularShapeTool):
         title: tool title. Defaults to None.
         icon: tool icon filename. Defaults to None.
         tip: user tip to be displayed. Defaults to None.
-        show_surface: Flag to show surface. Defaults to False.
-        show_integral: Flag to show integral. Defaults to False.
+        stats_func: function to get statistics. Defaults to None.
+         (see :py:func:`get_stats` for signature and default implementation)
+        replace: True to replace stats (statistics are not added to the
+         base infos but replace them). Defaults to False.
+
+    .. note:: The stats_func function should return a formatted string with
+        statistics on the image rectangular area. The function signature should
+        be::
+
+            def stats_func(item, x0, y0, x1, y1):
+                return formatted_string
+
+        where item is the image item, x0, y0, x1, y1 are the rectangle coordinates
+        and formatted_string is the formatted string with statistics on the image
+        rectangular area.
+
+        Default implementation is the following:
+
+        .. literalinclude:: ../../../plotpy/tools/image.py
+           :pyobject: get_stats
 
     """
 
@@ -248,8 +229,8 @@ class ImageStatsTool(RectangularShapeTool):
         title: str | None = None,
         icon: str | None = None,
         tip: str | None = None,
-        show_surface: bool = False,
-        show_integral: bool = False,
+        stats_func: Callable[[BaseImageItem, float, float, float, float]] | None = None,
+        replace: bool = False,
     ) -> None:
         super().__init__(
             manager,
@@ -262,8 +243,24 @@ class ImageStatsTool(RectangularShapeTool):
             tip,
         )
         self._last_item = None
-        self.show_surface = show_surface
-        self.show_integral = show_integral
+        self.stats_func = stats_func
+        self.replace_stats = replace
+
+    def set_stats_func(
+        self,
+        stats_func: Callable[[BaseImageItem, float, float, float, float]],
+        replace: bool = False,
+    ) -> None:
+        """Set the function to get statistics
+
+        Args:
+            stats_func: function to get statistics
+             (see :py:func:`get_stats` for signature and default implementation)
+            replace: True to replace stats (statistics are not added to the base infos
+             but replace them). Defaults to False.
+        """
+        self.stats_func = stats_func
+        self.replace_stats = replace
 
     def get_last_item(self) -> BaseImageItem | None:
         """Last image item getter
@@ -276,8 +273,8 @@ class ImageStatsTool(RectangularShapeTool):
         return None
 
     def create_shape(self) -> tuple[ImageStatsRectangle, Literal[0], Literal[2]]:
-        """Returns a new ImageStatsRectangle instance with default x1, y1, x2, y2values
-        and current show_surface and show_integral values.
+        """Returns a new ImageStatsRectangle instance and the index of handles to
+        display.
 
         Returns:
             New ImageStatsRectangle instance
@@ -288,8 +285,8 @@ class ImageStatsTool(RectangularShapeTool):
                 0,
                 1,
                 1,
-                show_surface=self.show_surface,
-                show_integral=self.show_integral,
+                stats_func=self.stats_func,
+                replace=self.replace_stats,
             ),
             0,
             2,
@@ -302,7 +299,6 @@ class ImageStatsTool(RectangularShapeTool):
             shape: Shape to setup
         """
         super().setup_shape(shape)
-        shape.setTitle(_("Image statistics"))
         self.set_shape_style(shape)
         self.register_shape(shape, final=False)
 

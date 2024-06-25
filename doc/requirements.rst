@@ -9,7 +9,7 @@ The :mod:`plotpy` package requires the following Python modules:
       - Summary
     * - Python
       - >=3.8, <4
-      - 
+      - Python programming language
     * - guidata
       - >=3.4
       - Automatic GUI generation for easy dataset editing and display
@@ -41,12 +41,9 @@ Optional modules for development:
     * - Name
       - Version
       - Summary
-    * - black
+    * - ruff
       - 
-      - The uncompromising code formatter.
-    * - isort
-      - 
-      - A Python utility / library to sort Python imports.
+      - An extremely fast Python linter and code formatter, written in Rust.
     * - pylint
       - 
       - python code static checker

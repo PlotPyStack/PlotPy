@@ -19,14 +19,6 @@ Base classes
 .. autoclass:: plotpy.tools.PanelTool
    :members:
 
-Selection tools
-^^^^^^^^^^^^^^^
-
-.. autoclass:: plotpy.tools.SelectTool
-   :members:
-.. autoclass:: plotpy.tools.SelectPointTool
-   :members:
-
 Plot tools
 ^^^^^^^^^^
 
@@ -44,6 +36,8 @@ Plot tools
 Item tools
 ^^^^^^^^^^
 
+.. autoclass:: plotpy.tools.SelectTool
+   :members:
 .. autoclass:: plotpy.tools.ItemListPanelTool
    :members:
 .. autoclass:: plotpy.tools.SaveItemsTool
@@ -93,9 +87,23 @@ Shape tools
 .. autoclass:: plotpy.tools.HRangeTool
    :members:
 
+Curve tools
+^^^^^^^^^^^
+
+.. autoclass:: plotpy.tools.CurveStatsTool
+   :members:
+.. autoclass:: plotpy.tools.SelectPointTool
+   :members:
+.. autoclass:: plotpy.tools.SelectPointsTool
+   :members:
+.. autoclass:: plotpy.tools.EditPointTool
+   :members:
+
 Image tools
 ^^^^^^^^^^^
 
+.. autoclass:: plotpy.tools.ImageStatsTool
+   :members:
 .. autoclass:: plotpy.tools.RotationCenterTool
    :members:
 .. autoclass:: plotpy.tools.ReverseYAxisTool

@@ -32,6 +32,9 @@ from plotpy.tools.base import DefaultToolbarID, InteractiveTool, ToggleTool
 from plotpy.tools.cursor import BaseCursorTool
 
 if TYPE_CHECKING:
+    from qwt import QwtText
+
+    from plotpy.items.label import DataInfoLabel
     from plotpy.plot.base import BasePlot
     from plotpy.plot.manager import PlotManager
 
@@ -54,11 +57,50 @@ class CurveStatsTool(BaseCursorTool):
     SWITCH_TO_DEFAULT_TOOL = True
 
     def __init__(
-        self, manager, toolbar_id=DefaultToolbarID, title=None, icon=None, tip=None
+        self,
+        manager: PlotManager,
+        labelfuncs: tuple[tuple[str, Callable[..., Any]], ...] | None = None,
+        toolbar_id: Any = DefaultToolbarID,
+        title: str | None = None,
+        icon: str | None = None,
+        tip: str | None = None,
     ) -> None:
         super().__init__(manager, toolbar_id, title=title, icon=icon, tip=tip)
-        self._last_item = None
-        self.label = None
+        self._last_item: weakref.ReferenceType[CurveItem] | None = None
+        self.label: DataInfoLabel | None = None
+        if labelfuncs is None:
+            labelfuncs: tuple[tuple[str, Callable[..., Any]], ...] = (
+                ("%g &lt; x &lt; %g", lambda *args: (args[0].min(), args[0].max())),
+                ("%g &lt; y &lt; %g", lambda *args: (args[1].min(), args[1].max())),
+                ("&lt;y&gt;=%g", lambda *args: args[1].mean()),
+                ("σ(y)=%g", lambda *args: args[1].std()),
+                ("∑(y)=%g", lambda *args: spt.trapezoid(args[1])),
+                ("∫ydx=%g", lambda *args: spt.trapezoid(args[1], args[0])),
+            )
+        self.labelfuncs = labelfuncs
+
+    def set_labelfuncs(
+        self, labelfuncs: tuple[tuple[str, Callable[..., Any]], ...]
+    ) -> None:
+        """Set label functions
+
+        Args:
+            labelfuncs: Label functions
+
+        Example:
+
+            .. code-block:: python
+
+                labelfuncs = (
+                    ("%g &lt; x &lt; %g", lambda *args: (args[0].min(), args[0].max())),
+                    ("%g &lt; y &lt; %g", lambda *args: (args[1].min(), args[1].max())),
+                    ("&lt;y&gt;=%g", lambda *args: args[1].mean()),
+                    ("σ(y)=%g", lambda *args: args[1].std()),
+                    ("∑(y)=%g", lambda *args: spt.trapezoid(args[1])),
+                    ("∫ydx=%g", lambda *args: spt.trapezoid(args[1], args[0])),
+                )
+        """
+        self.labelfuncs = labelfuncs
 
     def get_last_item(self) -> CurveItem | None:
         """Get last item on which the tool was used"""
@@ -70,6 +112,22 @@ class CurveStatsTool(BaseCursorTool):
         """Create shape associated with the tool"""
         return XRangeSelection(0, 0)
 
+    def create_label(self) -> DataInfoLabel:
+        """Create label associated with the tool"""
+        # The following import is here to avoid circular imports
+        # pylint: disable=import-outside-toplevel
+        from plotpy.builder import make
+
+        plot = self.manager.get_plot()
+        curve = self.get_associated_item(plot)
+        specs = [(curve, label, func) for label, func in self.labelfuncs]
+        title: QwtText = curve.title()
+        label = make.computations(self.shape, "TL", specs, title.text())
+        label.attach(plot)
+        label.setZ(plot.get_max_z() + 1)
+        label.setVisible(True)
+        return label
+
     def move(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
         """Move tool action
 
@@ -78,42 +136,8 @@ class CurveStatsTool(BaseCursorTool):
             event: Qt mouse event
         """
         super().move(filter, event)
-
-        # The following import is here to avoid circular imports
-        # pylint: disable=import-outside-toplevel
-        from plotpy.builder import make
-
         if self.label is None:
-            plot = filter.plot
-            curve = self.get_associated_item(plot)
-
-            self.label = make.computations(
-                self.shape,
-                "TL",
-                [
-                    (
-                        curve,
-                        "%g &lt; x &lt; %g",
-                        lambda *args: (args[0].min(), args[0].max()),
-                    ),
-                    (
-                        curve,
-                        "%g &lt; y &lt; %g",
-                        lambda *args: (args[1].min(), args[1].max()),
-                    ),
-                    (curve, "&lt;y&gt;=%g", lambda *args: args[1].mean()),
-                    (curve, "σ(y)=%g", lambda *args: args[1].std()),
-                    (curve, "∑(y)=%g", lambda *args: spt.trapezoid(args[1])),
-                    (
-                        curve,
-                        "∫ydx=%g",
-                        lambda *args: spt.trapezoid(args[1], args[0]),
-                    ),
-                ],
-            )
-            self.label.attach(plot)
-            self.label.setZ(plot.get_max_z() + 1)
-            self.label.setVisible(True)
+            self.label = self.create_label()
 
     def end_move(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
         """End shape move

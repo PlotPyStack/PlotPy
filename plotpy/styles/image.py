@@ -106,6 +106,26 @@ class BaseImageParam(DataSet):
     zformat = StringItem(_("Z-Axis"), default=r"%.1f")
     _end_formats = EndGroup(_("Statistics string formatting"))
 
+    def get_units(self) -> tuple[str, str, str]:
+        """Get the units for the x, y and z axes.
+
+        Returns:
+            The units for the x, y and z axes.
+        """
+        try:
+            xunit = self.xformat.split()[1]
+        except IndexError:
+            xunit = ""
+        try:
+            yunit = self.yformat.split()[1]
+        except IndexError:
+            yunit = ""
+        try:
+            zunit = self.zformat.split()[1]
+        except IndexError:
+            zunit = ""
+        return xunit, yunit, zunit
+
     def update_param(self, image: BaseImageItem) -> None:
         """Update the parameters from the given image item.
 
