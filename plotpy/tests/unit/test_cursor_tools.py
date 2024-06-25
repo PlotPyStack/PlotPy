@@ -31,8 +31,8 @@ def test_cursor_tool(cursor_tool: type[BaseCursorTool]):
     Args:
         cursor_tool: Cursor tool class to test.
     """
-    with qt_app_context(exec_loop=True) as qapp:
-        win, tool = create_window(cursor_tool)
+    with qt_app_context(exec_loop=True):
+        win, _tool = create_window(cursor_tool)
         win.show()
         plot = win.manager.get_plot()
 
@@ -41,7 +41,7 @@ def test_cursor_tool(cursor_tool: type[BaseCursorTool]):
         tool_shape_type = type(active_tool.create_shape())
         assert tool_shape_type not in (type(item) for item in plot.get_items())
 
-        drag_mouse(win, qapp, np.array([0.5, 0.6, 0.7]), np.array([0.5, 0.6, 0.7]))
+        drag_mouse(win, np.array([0.5, 0.6, 0.7]), np.array([0.5, 0.6, 0.7]))
         assert tool_shape_type in (type(item) for item in plot.get_items())
 
         exec_dialog(win)

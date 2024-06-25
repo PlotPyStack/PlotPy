@@ -87,7 +87,7 @@ def create_window(tool_classes: tuple[type[InteractiveTool], ...]) -> PlotWindow
 def _test_annotation_tools(tool_classes: tuple[type[InteractiveTool], ...]):
     """Generic test for annotation tool. Simulates a mouse drag on the plot and checks
     that the tool is activated and deactivated correctly."""
-    with qt_app_context(exec_loop=False) as qapp:
+    with qt_app_context(exec_loop=False):
         win = create_window(tool_classes)
         win.show()
         plot = win.manager.get_plot()
@@ -99,7 +99,7 @@ def _test_annotation_tools(tool_classes: tuple[type[InteractiveTool], ...]):
             x_path = np.linspace(0, 0.5, 100)
             y_path = np.linspace(0, 0.5, 100)
             with execenv.context(accept_dialogs=True):
-                drag_mouse(win, qapp, x_path, y_path)
+                drag_mouse(win, x_path, y_path)
             if hasattr(tool_class, "SWITCH_TO_DEFAULT_TOOL"):
                 assert win.manager.get_default_tool() == default_tool
         plot.unselect_all()
@@ -109,9 +109,9 @@ def _test_annotation_tools(tool_classes: tuple[type[InteractiveTool], ...]):
         assert select_tool is not None
         select_tool.activate()
 
-        drag_mouse(win, qapp, np.linspace(0.2, 0.5, 10), np.linspace(0.2, 0.5, 10))
+        drag_mouse(win, np.linspace(0.2, 0.5, 10), np.linspace(0.2, 0.5, 10))
 
-        undo_redo(qapp, win)
+        undo_redo(win)
 
         exec_dialog(win)
 

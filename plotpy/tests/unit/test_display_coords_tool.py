@@ -18,20 +18,19 @@ if TYPE_CHECKING:
 @pytest.mark.parametrize("active_item", [ICurveItemType, IImageItemType, None])
 def test_display_coords(active_item: type[IItemType] | None):
     """Test display coordinates tool on a curve and on an image."""
-    with qt_app_context(exec_loop=False) as qapp:
-        win, tool = create_window(DisplayCoordsTool, active_item_type=active_item)
+    with qt_app_context(exec_loop=False):
+        win, _tool = create_window(DisplayCoordsTool, active_item_type=active_item)
         plot = win.manager.get_plot()
 
         # The is no way to test a condition while the mouse is moving so it is
         # not possible to test the display of the coordinates while the mouse is moving.
         assert plot.curve_pointer is False and plot.canvas_pointer is False
-        drag_mouse(win, qapp, np.array([0.5]), np.array([0.5]), click=False)
+        drag_mouse(win, np.array([0.5]), np.array([0.5]), click=False)
         assert plot.curve_pointer is False and plot.canvas_pointer is False
-        drag_mouse(win, qapp, np.array([0.5]), np.array([0.5]), click=True)
+        drag_mouse(win, np.array([0.5]), np.array([0.5]), click=True)
         assert plot.curve_pointer is False and plot.canvas_pointer is False
         drag_mouse(
             win,
-            qapp,
             np.array([0.5]),
             np.array([0.5]),
             click=False,
@@ -40,7 +39,6 @@ def test_display_coords(active_item: type[IItemType] | None):
         assert plot.curve_pointer is False and plot.canvas_pointer is False
         drag_mouse(
             win,
-            qapp,
             np.array([0.5]),
             np.array([0.5]),
             click=False,

@@ -24,14 +24,14 @@ def zoom(
         compare: Comparison function to compare the initial and final axis limits to
          check if the zoom worked as expected.
     """
-    with qt_app_context(exec_loop=False) as qapp:
-        win, tool = create_window(RectZoomTool, active_item_type=ICurveItemType)
+    with qt_app_context(exec_loop=False):
+        win, _tool = create_window(RectZoomTool, active_item_type=ICurveItemType)
         plot = win.manager.get_plot()
         initial_axis_limits = [
             plot.get_axis_limits(axis) for axis in plot.get_active_axes()
         ]
 
-        drag_mouse(win, qapp, x_path, y_path)
+        drag_mouse(win, x_path, y_path)
 
         final_axis_limits = [
             plot.get_axis_limits(axis) for axis in plot.get_active_axes()

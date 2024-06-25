@@ -125,7 +125,7 @@ def test_move_with_mouse(img_item_factory: Callable[[], BaseImageItem] | None):
         img_item_factory: image item factory function. Defaults to None.
     """
 
-    with qt_app_context(exec_loop=False) as qapp:
+    with qt_app_context(exec_loop=False):
         img_item = None if img_item_factory is None else img_item_factory()
         win, tool, plot, img_item = _setup_plot(img_item)
         x1, y1, *_ = _get_xy_coords(img_item)
@@ -135,7 +135,7 @@ def test_move_with_mouse(img_item_factory: Callable[[], BaseImageItem] | None):
             assert initial_angle == 0
         assert plot.get_selected_items() == [img_item]
 
-        drag_mouse(win, qapp, np.array([0.5, 0.6, 0.7]), np.array([0.5, 0.6, 0.7]))
+        drag_mouse(win, np.array([0.5, 0.6, 0.7]), np.array([0.5, 0.6, 0.7]))
 
         assert plot.get_selected_items() == [img_item]
         x2, y2, *_ = _get_xy_coords(img_item)
@@ -143,7 +143,7 @@ def test_move_with_mouse(img_item_factory: Callable[[], BaseImageItem] | None):
         if img_item.can_rotate():
             assert img_item.param.pos_angle == initial_angle  # type: ignore
 
-        undo_redo(qapp, win)
+        undo_redo(win)
         exec_dialog(win)
 
 
@@ -158,7 +158,7 @@ def test_move_with_arrows(
     Args:
         mod: keyboard modifier to use.
     """
-    with qt_app_context(exec_loop=False) as qapp:
+    with qt_app_context(exec_loop=False):
         win, tool, plot, tr_img = _setup_plot()
         x1, y1, *_ = _get_xy_coords(tr_img)
         plot.select_item(tr_img)  # type: ignore
@@ -167,33 +167,33 @@ def test_move_with_arrows(
         assert initial_angle == 0
         assert plot.get_selected_items() == [tr_img]
 
-        keyboard_event(win, qapp, QC.Qt.Key.Key_Right, mod=mod)
+        keyboard_event(win, QC.Qt.Key.Key_Right, mod=mod)
         assert plot.get_selected_items() == [tr_img]
         x2, y2, *_ = _get_xy_coords(tr_img)
         assert x2 > x1 and y2 == y1
         assert tr_img.param.pos_angle == initial_angle  # type: ignore
 
-        keyboard_event(win, qapp, QC.Qt.Key.Key_Down, mod=mod)
+        keyboard_event(win, QC.Qt.Key.Key_Down, mod=mod)
         assert plot.get_selected_items() == [tr_img]
         x3, y3, *_ = _get_xy_coords(tr_img)
         assert x3 == x2 and y3 > y2
         assert tr_img.param.pos_angle == initial_angle  # type: ignore
 
-        keyboard_event(win, qapp, QC.Qt.Key.Key_Left, mod=mod)
+        keyboard_event(win, QC.Qt.Key.Key_Left, mod=mod)
         assert plot.get_selected_items() == [tr_img]
         x4, y4, *_ = _get_xy_coords(tr_img)
         assert x4 < x3 and y4 == y3
         assert tr_img.param.pos_angle == initial_angle  # type: ignore
 
-        keyboard_event(win, qapp, QC.Qt.Key.Key_Up, mod=mod)
+        keyboard_event(win, QC.Qt.Key.Key_Up, mod=mod)
         assert plot.get_selected_items() == [tr_img]
         x5, y5, *_ = _get_xy_coords(tr_img)
         assert x5 == x4 and y5 < y4 and np.isclose(x5, x1) and np.isclose(y5, y1)
         assert tr_img.param.pos_angle == initial_angle  # type: ignore
 
-        keyboard_event(win, qapp, QC.Qt.Key.Key_Enter)
+        keyboard_event(win, QC.Qt.Key.Key_Enter)
 
-        undo_redo(qapp, win)
+        undo_redo(win)
         exec_dialog(win)
 
 
@@ -212,7 +212,7 @@ def test_rotate_with_arrow(
     Args:
         mod: keyboard modifier to use.
     """
-    with qt_app_context(exec_loop=False) as qapp:
+    with qt_app_context(exec_loop=False):
         win, tool, plot, tr_img = _setup_plot()
         x1_a, y1_a, x1_b, y1_b = _get_xy_coords(tr_img)
         plot.select_item(tr_img)  # type: ignore
@@ -222,12 +222,12 @@ def test_rotate_with_arrow(
         assert plot.get_selected_items() == [tr_img]
 
         for _ in range(3):
-            keyboard_event(win, qapp, QC.Qt.Key.Key_Right, mod=mod)
+            keyboard_event(win, QC.Qt.Key.Key_Right, mod=mod)
         assert plot.get_selected_items() == [tr_img]
         assert tr_img.param.pos_angle > initial_angle  # type: ignore
 
         for _ in range(3):
-            keyboard_event(win, qapp, QC.Qt.Key.Key_Left, mod=mod)
+            keyboard_event(win, QC.Qt.Key.Key_Left, mod=mod)
 
         assert plot.get_selected_items() == [tr_img]
 
@@ -240,13 +240,13 @@ def test_rotate_with_arrow(
         )
         assert np.isclose(tr_img.param.pos_angle, initial_angle)  # type: ignore
 
-        undo_redo(qapp, win)
+        undo_redo(win)
         exec_dialog(win)
 
 
 def test_select_all_items():
     """Test selecting all items in the plot using the keyboard."""
-    with qt_app_context() as qapp:
+    with qt_app_context():
         n = 100
         x = np.arange(n)
         items = [
@@ -255,16 +255,14 @@ def test_select_all_items():
             make.annotated_rectangle(0, 0, 10, 10),
             make.legend(),
         ]
-        win, tool = create_window(SelectTool, items=items)
+        win, _tool = create_window(SelectTool, items=items)
         win.show()
 
         # The item list should contain none selectable items like the plot grid
         selectable_items = [item for item in items if item.can_select()]
         assert len(selectable_items) < len(win.manager.get_plot().get_items())
 
-        keyboard_event(
-            win, qapp, QC.Qt.Key.Key_A, mod=QC.Qt.KeyboardModifier.ControlModifier
-        )
+        keyboard_event(win, QC.Qt.Key.Key_A, mod=QC.Qt.KeyboardModifier.ControlModifier)
         selected_items = win.manager.get_plot().get_selected_items()
         assert selectable_items == selected_items
 
@@ -274,24 +272,24 @@ def test_select_all_items():
 @pytest.mark.skipif(os.name != "nt", reason="Only tested on Windows.")
 def test_rotate_with_mouse():
     """Test rotating an image item with the mouse."""
-    with qt_app_context(exec_loop=False) as qapp:
+    with qt_app_context(exec_loop=False):
         win, tool, plot, tr_img = _setup_plot()
         init_angle = tr_img.param.pos_angle  # type: ignore
         assert init_angle == 0
         assert plot.get_selected_items() == [tr_img]
 
-        drag_mouse(win, qapp, np.linspace(0, 0.5, 100), np.linspace(0, 0.0, 100))
+        drag_mouse(win, np.linspace(0, 0.5, 100), np.linspace(0, 0.0, 100))
 
         assert plot.get_selected_items() == [tr_img]
         assert np.isclose(abs(tr_img.param.pos_angle), 45, 0.5)  # type: ignore
 
-        undo_redo(qapp, win)
+        undo_redo(win)
         exec_dialog(win)
 
 
 def test_rectangular_selection():
     """Test selecting items with the rectangular selection tool."""
-    with qt_app_context(exec_loop=False) as qapp:
+    with qt_app_context(exec_loop=False):
         items = [
             make.image(gen_image4(100, 100)),
             make.trimage(gen_image4(100, 100), x0=100, y0=100),
@@ -308,15 +306,10 @@ def test_rectangular_selection():
             )
             for item in items
         ]
-        win, tool = create_window(RectangularSelectionTool, items=items)
+        win, _tool = create_window(RectangularSelectionTool, items=items)
         win.show()
 
-        drag_mouse(
-            win,
-            qapp,
-            np.linspace(-0.1, 1.1, 52),
-            np.linspace(-0.1, 1.1, 52),
-        )
+        drag_mouse(win, np.linspace(-0.1, 1.1, 52), np.linspace(-0.1, 1.1, 52))
 
         selected_items = win.manager.get_plot().get_selected_items()
 
@@ -348,27 +341,25 @@ def test_multi_rotate_move_with_mouse(
     x0 = n
     y0 = 0
 
-    with qt_app_context() as qapp:
+    with qt_app_context():
         # All images are superimposed so that it is easy to select the corners for
         # rotations
         images = [make.trimage(gen_image4(n, n), x0=x0, y0=y0) for i in range(3)]
         initial_angle = 0
 
-        win, tool = create_window(
+        win, _tool = create_window(
             SelectTool, active_item_type=IImageItemType, items=images
         )
         win.show()
-        keyboard_event(
-            win, qapp, QC.Qt.Key.Key_A, mod=QC.Qt.KeyboardModifier.ControlModifier
-        )
-        drag_mouse(win, qapp, mouse_path[0], mouse_path[1])
+        keyboard_event(win, QC.Qt.Key.Key_A, mod=QC.Qt.KeyboardModifier.ControlModifier)
+        drag_mouse(win, mouse_path[0], mouse_path[1])
 
         if rotation:
             _assert_images_angle(images, ref_angle=initial_angle)
         else:
             _assert_images_pos(images, x0, y0)
 
-        undo_redo(qapp, win)
+        undo_redo(win)
         exec_dialog(win)
 
 
@@ -397,30 +388,28 @@ def test_multi_rotate_move_with_keyboard(
     x0 = n
     y0 = 0
 
-    with qt_app_context() as qapp:
+    with qt_app_context():
         # All images are superimposed so that it is easy to select the corners for
         # rotations
         images = [make.trimage(gen_image4(n, n), x0=x0, y0=y0) for i in range(3)]
 
-        win, tool = create_window(
+        win, _tool = create_window(
             SelectTool, active_item_type=IImageItemType, items=images
         )
         win.show()
-        keyboard_event(
-            win, qapp, QC.Qt.Key.Key_A, mod=QC.Qt.KeyboardModifier.ControlModifier
-        )
+        keyboard_event(win, QC.Qt.Key.Key_A, mod=QC.Qt.KeyboardModifier.ControlModifier)
         for _ in range(10):
             # Should rotate/move left depending on modifier
-            keyboard_event(win, qapp, QC.Qt.Key.Key_Right, mod=keymod)
+            keyboard_event(win, QC.Qt.Key.Key_Right, mod=keymod)
             # Should never rotate
-            keyboard_event(win, qapp, QC.Qt.Key.Key_Down, mod=keymod)
+            keyboard_event(win, QC.Qt.Key.Key_Down, mod=keymod)
 
         if rotation:
             _assert_images_angle(images, ref_angle=0)
         else:
             _assert_images_pos(images, x0, y0)
 
-        undo_redo(qapp, win)
+        undo_redo(win)
         exec_dialog(win)
 
 

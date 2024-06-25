@@ -11,16 +11,14 @@ from plotpy.tools import ObliqueCrossSectionTool
 
 def test_oblique_cross_section():
     """Test the oblique cross section tool."""
-    with qt_app_context(exec_loop=False) as qapp:
-        win, tool = create_window(
+    with qt_app_context(exec_loop=False):
+        win, _tool = create_window(
             ObliqueCrossSectionTool,
             active_item_type=IImageItemType,
             panels=[ObliqueCrossSection],
         )
         n = 100
-        x_path = np.linspace(0.25, 0.75, n)
-        y_path = np.linspace(0.25, 0.75, n)
-        drag_mouse(win, qapp, x_path, y_path)
+        drag_mouse(win, np.linspace(0.25, 0.75, n), np.linspace(0.25, 0.75, n))
 
         exec_dialog(win)
 

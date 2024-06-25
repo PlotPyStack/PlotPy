@@ -57,20 +57,13 @@ def result_zoom(zoom_type: ZoomType, event_type: ZoomEvent):
             btn = QC.Qt.MouseButton.RightButton
             x_path = np.array([0.5, 0.2])
 
-        def _zoom_with_mouse(qapp: QW.QApplication, win: PlotWindow | PlotDialog):
+        def _zoom_with_mouse(win: PlotWindow | PlotDialog):
             """Zoom in the plot by dragging the mouse while holding right click.
 
             Args:
-                qapp: QApplication instance.
                 win: PlotWindow or PlotDialog instance.
             """
-            drag_mouse(
-                win,
-                qapp,
-                x_path,
-                np.array([0.5, 0.5]),
-                btn=btn,
-            )
+            drag_mouse(win, x_path, np.array([0.5, 0.5]), btn=btn)
 
         return _zoom_with_mouse, zoom_type
 
@@ -84,21 +77,13 @@ def result_zoom(zoom_type: ZoomType, event_type: ZoomEvent):
         angle_delta = -360
         mod = QC.Qt.KeyboardModifier.ControlModifier
 
-    def _zoom_with_wheel(qapp: QW.QApplication, win: PlotWindow | PlotDialog):
+    def _zoom_with_wheel(win: PlotWindow | PlotDialog):
         """Zoom in the plot by scrolling the mouse wheel while holding control.
 
         Args:
-            qapp: QApplication instance.
             win: PlotWindow or PlotDialog instance.
         """
-        scroll_wheel(
-            win,
-            qapp,
-            (0.5, 0.5),
-            angle_delta,
-            0,
-            mods=mod,
-        )
+        scroll_wheel(win, (0.5, 0.5), angle_delta, 0, mods=mod)
 
     return _zoom_with_wheel, zoom_type
 
@@ -123,7 +108,7 @@ def test_zoom(
     Args:
         zoom_func: _description_
     """
-    with qt_app_context(exec_loop=False) as qapp:
+    with qt_app_context(exec_loop=False):
         win, _ = create_window(SelectTool)
         win.show()
 
@@ -135,7 +120,7 @@ def test_zoom(
         x_min0, x_max0 = plot.get_axis_limits(axis_x)
         y_min0, y_max0 = plot.get_axis_limits(axis_y)
 
-        zoom_func(qapp, win)
+        zoom_func(win)
 
         x_min1, x_max1 = plot.get_axis_limits(axis_x)
         y_min1, y_max1 = plot.get_axis_limits(axis_y)
@@ -151,7 +136,7 @@ def test_zoom(
 
 def test_pan():
     """Test panning the plot by dragging the mouse while holding middle click."""
-    with qt_app_context(exec_loop=False) as qapp:
+    with qt_app_context(exec_loop=False):
         win, _ = create_window(SelectTool)
         win.show()
 
@@ -163,13 +148,8 @@ def test_pan():
         x_min0, x_max0 = plot.get_axis_limits(axis_x)
         y_min0, y_max0 = plot.get_axis_limits(axis_y)
 
-        drag_mouse(
-            win,
-            qapp,
-            np.linspace(0.5, 0, 100),
-            np.linspace(0.5, 0, 100),
-            btn=QC.Qt.MouseButton.MiddleButton,
-        )
+        x_path, y_path = np.linspace(0.5, 0, 100), np.linspace(0.5, 0, 100)
+        drag_mouse(win, x_path, y_path, btn=QC.Qt.MouseButton.MiddleButton)
 
         x_min1, x_max1 = plot.get_axis_limits(axis_x)
         y_min1, y_max1 = plot.get_axis_limits(axis_y)

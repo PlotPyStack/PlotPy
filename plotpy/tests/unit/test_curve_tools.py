@@ -31,8 +31,8 @@ from plotpy.tools.selection import SelectTool
 
 def test_curve_stat_tool():
     """Test the curve stats tool."""
-    with qt_app_context(exec_loop=False) as qapp:
-        win, tool = create_window(CurveStatsTool)
+    with qt_app_context(exec_loop=False):
+        win, _tool = create_window(CurveStatsTool)
         win.show()
         plot = win.manager.get_plot()
 
@@ -42,7 +42,7 @@ def test_curve_stat_tool():
             if isinstance(item, (DataInfoLabel, XRangeSelection))
         ]
 
-        drag_mouse(win, qapp, np.array([0.4, 0.6]), np.array([0.5, 0.5]))
+        drag_mouse(win, np.array([0.4, 0.6]), np.array([0.5, 0.5]))
 
         new_stat_items = [
             item
@@ -58,7 +58,7 @@ def test_curve_stat_tool():
         win.manager.add_tool(SelectTool).activate()
         plot.unselect_all()
 
-        mouse_event_at_relative_plot_pos(win, qapp, (0.5, 0.5), CLICK)
+        mouse_event_at_relative_plot_pos(win, (0.5, 0.5), CLICK)
         selected_items = plot.get_selected_items()
         assert len(selected_items) == 1 and isinstance(
             selected_items[0], XRangeSelection
@@ -66,7 +66,7 @@ def test_curve_stat_tool():
         range_item: XRangeSelection = selected_items[0]
 
         x00, x01, y0 = range_item.get_handles_pos()
-        drag_mouse(win, qapp, np.linspace(0.5, 0.9, 100), np.full(100, 0.5))
+        drag_mouse(win, np.linspace(0.5, 0.9, 100), np.full(100, 0.5))
         x10, x11, y1 = range_item.get_handles_pos()
 
         assert x00 < x10 and x01 < x11 and y0 == y1
@@ -84,32 +84,22 @@ def test_curve_stat_tool():
 
 def test_free_select_point_tool():
     """Test the free select point tool."""
-    with qt_app_context(exec_loop=False) as qapp:
+    with qt_app_context(exec_loop=False):
         win, tool = create_window(SelectPointTool)
         win.show()
-        mouse_event_at_relative_plot_pos(
-            win,
-            qapp,
-            (0.5, 0.5),
-            CLICK,
-        )
+        mouse_event_at_relative_plot_pos(win, (0.5, 0.5), CLICK)
         assert tool.get_coordinates() is not None
         exec_dialog(win)
 
 
 def test_contrained_select_point_tool():
     """Test the constrained select point tool contrained to a CurveItem."""
-    with qt_app_context(exec_loop=False) as qapp:
+    with qt_app_context(exec_loop=False):
         win, tool = create_window(SelectPointTool)
         win.show()
         tool.on_active_item = True
 
-        mouse_event_at_relative_plot_pos(
-            win,
-            qapp,
-            (0.5, 0.5),
-            CLICK,
-        )
+        mouse_event_at_relative_plot_pos(win, (0.5, 0.5), CLICK)
         coor = tool.get_coordinates()
         curve_item: CurveItem = win.manager.get_plot().get_active_item()  # type: ignore
         arr_x, arr_y = curve_item.get_data()
@@ -122,25 +112,25 @@ def test_contrained_select_point_tool():
 
 def test_select_points_tool():
     """Test the select points tool constrained to a CurveItem."""
-    with qt_app_context(exec_loop=False) as qapp:
+    with qt_app_context(exec_loop=False):
         win, tool = create_window(tool_class=SelectPointsTool)
         mod = QC.Qt.KeyboardModifier.ControlModifier
 
-        mouse_event_at_relative_plot_pos(win, qapp, (0.4, 0.5), CLICK, mod)
+        mouse_event_at_relative_plot_pos(win, (0.4, 0.5), CLICK, mod)
         assert len(tool.get_coordinates() or ()) == 1
 
-        mouse_event_at_relative_plot_pos(win, qapp, (0.5, 0.5), CLICK, mod)
-        mouse_event_at_relative_plot_pos(win, qapp, (0.8, 0.8), CLICK, mod)
+        mouse_event_at_relative_plot_pos(win, (0.5, 0.5), CLICK, mod)
+        mouse_event_at_relative_plot_pos(win, (0.8, 0.8), CLICK, mod)
         print(tool.get_coordinates())
         assert len(tool.get_coordinates() or ()) == 3
 
-        mouse_event_at_relative_plot_pos(win, qapp, (0.8, 0.8), CLICK, mod)
+        mouse_event_at_relative_plot_pos(win, (0.8, 0.8), CLICK, mod)
         assert len(tool.get_coordinates() or ()) == 2
 
-        mouse_event_at_relative_plot_pos(win, qapp, (0.7, 0.5), CLICK, mod)
+        mouse_event_at_relative_plot_pos(win, (0.7, 0.5), CLICK, mod)
         assert len(tool.get_coordinates() or ()) == 3
 
-        mouse_event_at_relative_plot_pos(win, qapp, (0.1, 0.1), CLICK)
+        mouse_event_at_relative_plot_pos(win, (0.1, 0.1), CLICK)
         assert len(tool.get_coordinates() or ()) == 1
 
         coor = tool.get_coordinates()
@@ -155,7 +145,7 @@ def test_select_points_tool():
 
 def test_edit_point_tool():
     """Test the edit point tool for a CurveItem."""
-    with qt_app_context(exec_loop=False) as qapp:
+    with qt_app_context(exec_loop=False):
         win, tool = create_window(EditPointTool)
         win.show()
         curve_item: CurveItem = win.manager.get_plot().get_active_item()  # type: ignore
@@ -177,11 +167,11 @@ def test_edit_point_tool():
         min_v, max_v = 0, 1
         x_path = np.full(n, min_v)
         y_path = np.linspace(max_v, min_v, n)
-        drag_mouse(win, qapp, x_path, y_path)
+        drag_mouse(win, x_path, y_path)
 
         x_path = np.full(n, max_v)
 
-        drag_mouse(win, qapp, x_path, y_path)
+        drag_mouse(win, x_path, y_path)
         curve_changes = tool.get_changes()[curve_item]
 
         x_arr, y_arr = curve_item.get_data()
@@ -196,9 +186,7 @@ def test_edit_point_tool():
         assert x_arr is not None and y_arr is not None
 
         # Reset the arrays and deletes the changes
-        keyboard_event(
-            win, qapp, QC.Qt.Key.Key_Z, QC.Qt.KeyboardModifier.ControlModifier
-        )
+        keyboard_event(win, QC.Qt.Key.Key_Z, QC.Qt.KeyboardModifier.ControlModifier)
 
         assert len(curve_changes) == 0
 
@@ -207,7 +195,7 @@ def test_edit_point_tool():
         assert np.allclose(orig_x, restored_x)
         assert np.allclose(orig_y, restored_y)
 
-        mouse_event_at_relative_plot_pos(win, qapp, (0.5, 0.5), CLICK)
+        mouse_event_at_relative_plot_pos(win, (0.5, 0.5), CLICK)
         tool.trigger_insert_point_at_selection()
 
         new_x, new_y = curve_item.get_data()
