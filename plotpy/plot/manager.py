@@ -53,6 +53,7 @@ from plotpy.tools import (
     SnapshotTool,
     XCSPanelTool,
     YCSPanelTool,
+    ZAxisLogTool,
 )
 
 if TYPE_CHECKING:
@@ -602,6 +603,7 @@ class PlotManager:
         self.add_tool(ColormapTool)
         self.add_tool(ReverseColormapTool)
         self.add_tool(ReverseYAxisTool)
+        self.add_tool(ZAxisLogTool)
         self.add_tool(AspectRatioTool)
         if self.get_contrast_panel():
             self.add_tool(ContrastPanelTool)

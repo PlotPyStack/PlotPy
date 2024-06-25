@@ -46,6 +46,7 @@ from .image import (
     ContrastPanelTool,
     ImageMaskTool,
     ImageStatsTool,
+    ZAxisLogTool,
     LockTrImageTool,
     OpenImageTool,
     ReverseColormapTool,

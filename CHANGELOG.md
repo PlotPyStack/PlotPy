@@ -6,6 +6,11 @@ In this release, test coverage is 79%.
 
 💥 New features / Enhancements:
 
+* New Z-axis logarithmic scale feature:
+  * Added new tool `ZAxisLogTool` to toggle the Z-axis logarithmic scale
+  * The tool is registered by default in the plot widget, like the `ColormapTool`
+  * When enabled, the active image item is displayed after applying a base-10
+    logarithm to its pixel values
 * Curve statistics tool `CurveStatsTool` is now customizable:
   * When adding the tool: `plot_widget.manager.add_tool(CurveStatsTool, labelfuncs=(...))`
   * Or after: `plot_widget.manager.get_tool(CurveStatsTool).set_labelfuncs(...)`

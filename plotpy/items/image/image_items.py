@@ -28,6 +28,7 @@ from plotpy.interfaces import (
 )
 from plotpy.items.image.base import RawImageItem
 from plotpy.items.image.filter import XYImageFilterItem, to_bins
+from plotpy.mathutils.arrayfuncs import get_nan_range
 from plotpy.styles.image import ImageParam, RGBImageParam, XYImageParam
 
 if TYPE_CHECKING:
@@ -83,6 +84,9 @@ class ImageItem(RawImageItem):
         self.xmax = None
         self.ymin = None
         self.ymax = None
+        self._log_data = None
+        self._lin_lut_range = None
+        self._is_zaxis_log = False
         super().__init__(data=data, param=param)
 
     # ---- BaseImageItem API ---------------------------------------------------
@@ -224,6 +228,24 @@ class ImageItem(RawImageItem):
         (xmin, xmax), (ymin, ymax) = self.get_xdata(), self.get_ydata()
         self.bounds = QC.QRectF(QC.QPointF(xmin, ymin), QC.QPointF(xmax, ymax))
 
+    def get_zaxis_log_state(self):
+        """Reimplement image.ImageItem method"""
+        return self._is_zaxis_log
+
+    def set_zaxis_log_state(self, state):
+        """Reimplement image.ImageItem method"""
+        self._is_zaxis_log = state
+        plot = self.plot()
+        if state:
+            self._lin_lut_range = self.get_lut_range()
+            if self._log_data is None:
+                self._log_data = np.array(np.log10(self.data.clip(1)), dtype=np.float64)
+            self.set_lut_range(get_nan_range(self._log_data))
+        else:
+            self._log_data = None
+            self.set_lut_range(self._lin_lut_range)
+        plot.update_colormap_axis(self)
+
     # ---- BaseImageItem API ---------------------------------------------------
     def get_pixel_coordinates(self, xplot: float, yplot: float) -> tuple[float, float]:
         """Get pixel coordinates from plot coordinates
@@ -356,9 +378,18 @@ class ImageItem(RawImageItem):
             return
         src2 = self._rescale_src_rect(src_rect)
         dst_rect = tuple([int(i) for i in dst_rect])
+
+        # Not the most efficient way to do it, but it works...
+        # --------------------------------------------------------------------------
+        if self.get_zaxis_log_state():
+            data = self._log_data
+        else:
+            data = self.data
+        # --------------------------------------------------------------------------
+
         try:
             dest = _scale_rect(
-                self.data, src2, self._offscreen, dst_rect, self.lut, self.interpolate
+                data, src2, self._offscreen, dst_rect, self.lut, self.interpolate
             )
         except ValueError:
             # This exception is raised when zooming unreasonably inside a pixel

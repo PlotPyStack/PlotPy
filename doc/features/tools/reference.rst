@@ -108,6 +108,8 @@ Image tools
    :members:
 .. autoclass:: plotpy.tools.ReverseYAxisTool
    :members:
+.. autoclass:: plotpy.tools.ZAxisLogTool
+   :members:
 .. autoclass:: plotpy.tools.AspectRatioTool
    :members:
 .. autoclass:: plotpy.tools.ContrastPanelTool

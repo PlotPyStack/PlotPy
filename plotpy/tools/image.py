@@ -26,6 +26,7 @@ from plotpy.interfaces import (
 from plotpy.items import (
     AnnotatedRectangle,
     EllipseShape,
+    ImageItem,
     MaskedImageItem,
     MaskedXYImageItem,
     RectangleShape,
@@ -378,6 +379,45 @@ class ReverseYAxisTool(ToggleTool):
         """
         if update_image_tool_status(self, plot):
             self.action.setChecked(plot.get_axis_direction("left"))
+
+
+class ZAxisLogTool(ToggleTool):
+    """Patched tools.ToggleTool"""
+
+    def __init__(self, manager: PlotManager) -> None:
+        title = _("Base-10 logarithmic Z axis")
+        super().__init__(
+            manager,
+            title=title,
+            toolbar_id=DefaultToolbarID,
+            icon="zlog.svg",
+        )
+
+    def activate_command(self, plot: BasePlot, checked: bool) -> None:
+        """Reimplement tools.ToggleTool method"""
+        for item in self.get_supported_items(plot):
+            item.set_zaxis_log_state(not item.get_zaxis_log_state())
+        plot.replot()
+        self.update_status(plot)
+
+    def get_supported_items(self, plot: BasePlot) -> list[BaseImageItem]:
+        """Reimplement tools.ToggleTool method"""
+        items = [
+            item
+            for item in plot.get_items()
+            if isinstance(item, ImageItem)
+            and not item.is_empty()
+            and hasattr(item, "get_zaxis_log_state")
+        ]
+        if len(items) > 1:
+            items = [item for item in items if item in plot.get_selected_items()]
+        if items:
+            self.action.setChecked(items[0].get_zaxis_log_state())
+        return items
+
+    def update_status(self, plot: BasePlot) -> None:
+        """Reimplement tools.ToggleTool method"""
+        self.action.setEnabled(len(self.get_supported_items(plot)) > 0)
 
 
 class AspectRatioParam(DataSet):
