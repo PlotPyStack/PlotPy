@@ -34,6 +34,7 @@ from plotpy.items import (
     get_items_in_rectangle,
 )
 from plotpy.mathutils.colormap import ALL_COLORMAPS, build_icon_from_cmap_name, get_cmap
+from plotpy.plot import BasePlot
 from plotpy.tools.base import (
     CommandTool,
     DefaultToolbarID,
@@ -57,7 +58,6 @@ if TYPE_CHECKING:
     from plotpy.items.image.base import BaseImageItem
     from plotpy.items.shape.base import AbstractShape
     from plotpy.items.shape.polygon import PolygonShape
-    from plotpy.plot import BasePlot
     from plotpy.plot.manager import PlotManager
     from plotpy.plot.plotwidget import PlotOptions
     from plotpy.styles.image import BaseImageParam
@@ -370,6 +370,7 @@ class ReverseYAxisTool(ToggleTool):
         """
         plot.set_axis_direction("left", checked)
         plot.replot()
+        plot.SIG_AXIS_PARAMETERS_CHANGED.emit(BasePlot.Y_LEFT)
 
     def update_status(self, plot: BasePlot) -> None:
         """Update tool status if the plot type is not PlotType.CURVE.

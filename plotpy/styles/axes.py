@@ -73,6 +73,7 @@ class AxisParam(DataSet):
         plot.set_axis_scale(axis_id, self.scale, autoscale=False)
         plot.setAxisScale(axis_id, self.vmin, self.vmax)
         plot.disable_unused_axes()
+        plot.SIG_AXIS_PARAMETERS_CHANGED.emit(axis_id)
 
 
 class AxisItemWidget(DataSetWidget):

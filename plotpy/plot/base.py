@@ -236,6 +236,13 @@ class BasePlot(qwt.QwtPlot):
     #:     item: the item
     SIG_ITEM_PARAMETERS_CHANGED = QC.Signal(object)
 
+    #: Signal emitted by plot when axis parameters have changed (through the axis
+    #: parameters dialog)
+    #:
+    #: Args:
+    #:     axis_id: the axis id (0: left, 1: right, 2: bottom, 3: top)
+    SIG_AXIS_PARAMETERS_CHANGED = QC.Signal(int)
+
     #: Signal emitted by plot when selected item has changed
     #:
     #: Args:

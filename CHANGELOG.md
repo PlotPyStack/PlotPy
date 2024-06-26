@@ -23,6 +23,8 @@ In this release, test coverage is 79%.
   * Or after: `plot_widget.manager.get_tool(ImageStatsTool).set_stats_func(...)`
   * The `stats_func` parameter is a function that takes the image item and selected
     rectangle coordinates, and returns a string with the statistics to display
+* New `SIG_AXIS_PARAMETERS_CHANGED` signal emitted by `BasePlot` when the axes parameters
+  are changed (e.g. when the axes are inverted, or the scale is changed)
 
 🧹 API cleanup:
 
