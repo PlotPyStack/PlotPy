@@ -30,7 +30,6 @@ from plotpy.styles.base import FontItem, ItemParameters, LineStyleItem, SymbolIt
 
 if TYPE_CHECKING:
     from plotpy.items import LabelItem, LegendBoxItem
-    from plotpy.plot import BasePlot
 
 
 class LabelParam(DataSet):
