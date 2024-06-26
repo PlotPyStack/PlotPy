@@ -75,7 +75,7 @@ class AnnotatedShape(AbstractShape):
             )
         else:
             self.annotationparam = annotationparam
-            self.annotationparam.update_annotation(self)
+            self.annotationparam.update_item(self)
         self.setIcon(get_icon("annotation.png"))
 
     def types(self) -> tuple[type[IItemType], ...]:
@@ -98,8 +98,8 @@ class AnnotatedShape(AbstractShape):
         shape, label, param = state
         self.shape = shape
         self.label = label
-        self.annotationparam = param
-        self.annotationparam.update_annotation(self)
+        self.annotationparam: AnnotationParam = param
+        self.annotationparam.update_item(self)
 
     def serialize(
         self,
@@ -125,7 +125,7 @@ class AnnotatedShape(AbstractShape):
         """
         self.annotationparam = AnnotationParam(_("Annotation"), icon="annotation.png")
         reader.read("annotationparam", instance=self.annotationparam)
-        self.annotationparam.update_annotation(self)
+        self.annotationparam.update_item(self)
         self.shape.deserialize(reader)
         self.label.deserialize(reader)
 
@@ -434,7 +434,7 @@ class AnnotatedShape(AbstractShape):
         update_dataset(
             self.annotationparam, itemparams.get("AnnotationParam"), visible_only=True
         )
-        self.annotationparam.update_annotation(self)
+        self.annotationparam.update_item(self)
         self.plot().SIG_ANNOTATION_CHANGED.emit(self)
 
     # Autoscalable types API
@@ -471,6 +471,7 @@ class AnnotatedPoint(AnnotatedShape):
 
     def __init__(self, x=0, y=0, annotationparam=None):
         AnnotatedShape.__init__(self, annotationparam)
+        self.shape: PointShape
         self.set_pos(x, y)
         self.setIcon(get_icon("point_shape.png"))
 
@@ -526,6 +527,7 @@ class AnnotatedSegment(AnnotatedShape):
 
     def __init__(self, x1=0, y1=0, x2=0, y2=0, annotationparam=None):
         AnnotatedShape.__init__(self, annotationparam)
+        self.shape: SegmentShape
         self.set_rect(x1, y1, x2, y2)
         self.setIcon(get_icon("segment.png"))
 
@@ -585,6 +587,7 @@ class AnnotatedRectangle(AnnotatedShape):
 
     def __init__(self, x1=0, y1=0, x2=0, y2=0, annotationparam=None):
         AnnotatedShape.__init__(self, annotationparam)
+        self.shape: RectangleShape
         self.set_rect(x1, y1, x2, y2)
         self.setIcon(get_icon("rectangle.png"))
 
@@ -645,6 +648,7 @@ class AnnotatedObliqueRectangle(AnnotatedRectangle):
         self, x0=0, y0=0, x1=0, y1=0, x2=0, y2=0, x3=0, y3=0, annotationparam=None
     ):
         AnnotatedShape.__init__(self, annotationparam)
+        self.shape: ObliqueRectangleShape
         self.set_rect(x0, y0, x1, y1, x2, y2, x3, y3)
         self.setIcon(get_icon("oblique_rectangle.png"))
 
@@ -740,6 +744,7 @@ class AnnotatedEllipse(AnnotatedShape):
 
     def __init__(self, x1=0, y1=0, x2=0, y2=0, annotationparam=None):
         AnnotatedShape.__init__(self, annotationparam)
+        self.shape: EllipseShape
         self.set_xdiameter(x1, y1, x2, y2)
         self.setIcon(get_icon("ellipse_shape.png"))
         self.switch_to_ellipse()

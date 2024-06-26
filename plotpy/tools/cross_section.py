@@ -54,7 +54,7 @@ class CrossSectionTool(RectangularShapeTool):
         param = shape.annotationparam
         param.title = self.SHAPE_TITLE
         #        param.show_computations = False
-        param.update_annotation(shape)
+        param.update_item(shape)
 
     def register_shape(self, shape: AnnotatedPoint) -> None:
         """Register shape"""

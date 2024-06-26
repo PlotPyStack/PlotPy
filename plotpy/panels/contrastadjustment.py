@@ -247,7 +247,7 @@ class LevelsHistogram(BasePlot):
             self.range.shapeparam.sel_line.color = self.range_multi_color
         else:
             self.range.shapeparam.sel_line.color = self.range_mono_color
-        self.range.shapeparam.update_range(self.range)
+        self.range.shapeparam.update_item(self.range)
 
     def set_range(self, _min: float, _max: float) -> bool:
         """Set range

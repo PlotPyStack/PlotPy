@@ -70,7 +70,7 @@ class Marker(QwtPlotMarker):
             self.markerparam.read_config(CONF, "plot", "marker/cursor")
         else:
             self.markerparam = markerparam
-        self.markerparam.update_marker(self)
+        self.markerparam.update_item(self)
         self.setIcon(get_icon("marker.png"))
 
     def __reduce__(self) -> tuple[type, tuple, tuple]:
@@ -85,7 +85,7 @@ class Marker(QwtPlotMarker):
         self.setXValue(xvalue)
         self.setYValue(yvalue)
         self.setZ(z)
-        self.markerparam.update_marker(self)
+        self.markerparam.update_item(self)
 
     def serialize(
         self,
@@ -113,7 +113,7 @@ class Marker(QwtPlotMarker):
         """
         self.markerparam = MarkerParam(_("Marker"), icon="marker.png")
         reader.read("markerparam", instance=self.markerparam)
-        self.markerparam.update_marker(self)
+        self.markerparam.update_item(self)
         self.setXValue(reader.read("x"))
         self.setYValue(reader.read("y"))
         self.setZ(reader.read("z"))
@@ -260,7 +260,7 @@ class Marker(QwtPlotMarker):
             # Already selected
             return
         self.selected = True
-        self.markerparam.update_marker(self)
+        self.markerparam.update_item(self)
         self.invalidate_plot()
 
     def unselect(self) -> None:
@@ -269,7 +269,7 @@ class Marker(QwtPlotMarker):
         highlight the fact that it's not selected anymore
         """
         self.selected = False
-        self.markerparam.update_marker(self)
+        self.markerparam.update_item(self)
         self.invalidate_plot()
 
     def hit_test(self, pos: QPointF) -> tuple[float, float, bool, None]:
@@ -335,7 +335,7 @@ class Marker(QwtPlotMarker):
         update_dataset(
             self.markerparam, itemparams.get("MarkerParam"), visible_only=True
         )
-        self.markerparam.update_marker(self)
+        self.markerparam.update_item(self)
         if self.selected:
             self.select()
 
@@ -377,7 +377,7 @@ class Marker(QwtPlotMarker):
             option: Option
         """
         self.markerparam.read_config(CONF, section, option)
-        self.markerparam.update_marker(self)
+        self.markerparam.update_item(self)
 
     def set_pos(self, x: float | None = None, y: float | None = None) -> None:
         """Set marker position
@@ -412,7 +412,7 @@ class Marker(QwtPlotMarker):
         """
         param = self.markerparam
         param.set_markerstyle(style)
-        param.update_marker(self)
+        param.update_item(self)
 
     def is_vertical(self) -> bool:
         """Is it a vertical cursor?

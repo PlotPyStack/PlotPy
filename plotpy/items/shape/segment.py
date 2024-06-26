@@ -126,7 +126,7 @@ class SegmentShape(PolygonShape):
         self.points = points
         self.setZ(z)
         self.shapeparam = param
-        self.shapeparam.update_shape(self)
+        self.shapeparam.update_item(self)
 
 
 assert_interfaces_valid(SegmentShape)

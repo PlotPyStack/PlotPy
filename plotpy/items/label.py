@@ -83,7 +83,7 @@ class AbstractLabelItem(QwtPlotItem):
             self.labelparam = LabelParam(_("Label"), icon="label.png")
         else:
             self.labelparam = labelparam
-            self.labelparam.update_label(self)
+            self.labelparam.update_item(self)
         self._can_select = True
         self._can_resize = False
         self._can_move = True
@@ -97,7 +97,7 @@ class AbstractLabelItem(QwtPlotItem):
             option: Option
         """
         self.labelparam.read_config(CONF, section, option)
-        self.labelparam.update_label(self)
+        self.labelparam.update_item(self)
 
     def __reduce__(self) -> tuple[type, tuple]:
         """Return a tuple containing the constructor and its arguments"""
@@ -126,7 +126,7 @@ class AbstractLabelItem(QwtPlotItem):
         """
         self.labelparam = LabelParam(_("Label"), icon="label.png")
         reader.read("labelparam", instance=self.labelparam)
-        self.labelparam.update_label(self)
+        self.labelparam.update_item(self)
         if isinstance(self.G, np.ndarray):
             self.G = tuple(self.G)
 
@@ -333,7 +333,7 @@ class AbstractLabelItem(QwtPlotItem):
         highlight the fact that it's not selected anymore
         """
         self.selected = False
-        self.labelparam.update_label(self)
+        self.labelparam.update_item(self)
         self.invalidate_plot()
 
     def hit_test(self, pos: QPointF) -> tuple[float, float, bool, None]:
@@ -407,7 +407,7 @@ class AbstractLabelItem(QwtPlotItem):
             itemparams: Item parameters
         """
         update_dataset(self.labelparam, itemparams.get("LabelParam"), visible_only=True)
-        self.labelparam.update_label(self)
+        self.labelparam.update_item(self)
         if self.selected:
             self.select()
 
@@ -837,7 +837,7 @@ class LegendBoxItem(AbstractLabelItem):
         update_dataset(
             self.labelparam, itemparams.get("LegendParam"), visible_only=True
         )
-        self.labelparam.update_label(self)
+        self.labelparam.update_item(self)
         if self.selected:
             self.select()
 

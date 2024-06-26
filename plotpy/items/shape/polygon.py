@@ -60,7 +60,7 @@ class PolygonShape(AbstractShape):
             self.shapeparam = ShapeParam(_("Shape"), icon="rectangle.png")
         else:
             self.shapeparam = shapeparam
-            self.shapeparam.update_shape(self)
+            self.shapeparam.update_item(self)
 
         self.pen = QG.QPen()
         self.brush = QG.QBrush()
@@ -92,7 +92,7 @@ class PolygonShape(AbstractShape):
         """Set state information for unpickling"""
         self.shapeparam, self.points, self.closed, z = state
         self.setZ(z)
-        self.shapeparam.update_shape(self)
+        self.shapeparam.update_item(self)
 
     def serialize(
         self,
@@ -121,7 +121,7 @@ class PolygonShape(AbstractShape):
         self.closed = reader.read("closed")
         self.shapeparam = ShapeParam(_("Shape"), icon="rectangle.png")
         reader.read("shapeparam", instance=self.shapeparam)
-        self.shapeparam.update_shape(self)
+        self.shapeparam.update_item(self)
         self.points = reader.read(group_name="points", func=reader.read_array)
         self.setZ(reader.read("z"))
 
@@ -135,7 +135,7 @@ class PolygonShape(AbstractShape):
             option: Option
         """
         self.shapeparam.read_config(CONF, section, option)
-        self.shapeparam.update_shape(self)
+        self.shapeparam.update_item(self)
 
     def set_points(self, points: list[tuple[float, float]]) -> None:
         """Set polygon points
@@ -435,7 +435,7 @@ class PolygonShape(AbstractShape):
             itemparams: Item parameters
         """
         update_dataset(self.shapeparam, itemparams.get("ShapeParam"), visible_only=True)
-        self.shapeparam.update_shape(self)
+        self.shapeparam.update_item(self)
 
 
 assert_interfaces_valid(PolygonShape)

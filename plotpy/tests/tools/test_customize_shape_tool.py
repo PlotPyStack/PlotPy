@@ -29,7 +29,7 @@ def customize_shape(shape):
     param = shape.shapeparam
     style = next(STYLE)
     update_style_attr(style, param)
-    param.update_shape(shape)
+    param.update_item(shape)
     shape.plot().replot()
 
 

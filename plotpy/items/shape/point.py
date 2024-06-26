@@ -72,7 +72,7 @@ class PointShape(PolygonShape):
         """Set object state from pickled state"""
         self.shapeparam, self.points, z = state
         self.setZ(z)
-        self.shapeparam.update_shape(self)
+        self.shapeparam.update_item(self)
 
     def boundingRect(self) -> QC.QRectF:
         """Return the bounding rectangle of the shape

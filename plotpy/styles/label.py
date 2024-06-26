@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import annotations
+
+import warnings
+from typing import TYPE_CHECKING
+
 from guidata.dataset import (
     BeginGroup,
     BeginTabGroup,
@@ -23,8 +28,14 @@ from qtpy import QtGui as QG
 from plotpy.config import _
 from plotpy.styles.base import FontItem, ItemParameters, LineStyleItem, SymbolItem
 
+if TYPE_CHECKING:
+    from plotpy.items import LabelItem, LegendBoxItem
+    from plotpy.plot import BasePlot
+
 
 class LabelParam(DataSet):
+    """Parameters for a label item."""
+
     _multiselection = False
     _legend = False
     _no_contents = True
@@ -153,45 +164,63 @@ class LabelParam(DataSet):
     # ----------------------------------------------------------------------- End
     _endstyles = EndTabGroup("Styles")
 
-    def update_param(self, obj):
-        """
+    def update_param(self, item: LabelItem) -> None:
+        """Update the parameters associated with the label item.
 
-        :param obj:
+        Args:
+            item: The label item from which to update the parameters.
         """
         # The following is necessary only for shape labels:
         # when shape is just created (and not yet moved), we need to update
         # these attributes
-        update_dataset(self, obj.labelparam)
+        update_dataset(self, item.labelparam)
         if self.abspos:
-            self.absg = obj.G
+            self.absg = item.G
         else:
-            self.xg, self.yg = obj.G
-        self.xc, self.yc = obj.C
-        self.label = obj.title().text()
+            self.xg, self.yg = item.G
+        self.xc, self.yc = item.C
+        self.label = item.title().text()
 
-    def update_label(self, obj):
-        """
+    def update_item(self, item: LabelItem) -> None:
+        """Update the label item with the parameters.
 
-        :param obj:
+        Args:
+            item: The label item to update.
         """
         if not self._multiselection:
             if self.abspos:
-                obj.G = self.absg
+                item.G = self.absg
             else:
-                obj.G = (self.xg, self.yg)
-            obj.C = self.xc, self.yc
-            obj.anchor = self.anchor
-            obj.move_anchor = self.move_anchor
-            obj.setTitle(self.label)
-        obj.marker = self.symbol.build_symbol()
-        obj.border_pen = self.border.build_pen()
-        obj.set_text_style(self.font.build_font(), self.color)
+                item.G = (self.xg, self.yg)
+            item.C = self.xc, self.yc
+            item.anchor = self.anchor
+            item.setTitle(self.label)
+        item.marker = self.symbol.build_symbol()
+        item.border_pen = self.border.build_pen()
+        item.set_text_style(self.font.build_font(), self.color)
         color = QG.QColor(self.bgcolor)
         color.setAlphaF(self.bgalpha)
-        obj.bg_brush = QG.QBrush(color)
+        item.bg_brush = QG.QBrush(color)
+
+    # TODO: remove this method in a future release
+    def update_label(self, obj: LabelItem) -> None:
+        """Update the label item with the parameters. This method is deprecated.
+
+        Args:
+            obj: The label item to update.
+        """
+        warnings.warn(
+            "`LabelParam.update_label` method is deprecated and will be removed "
+            "in a future release. Please use `update_item` instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self.update_item(obj)
 
 
 class LabelParam_MS(LabelParam):
+    """Parameters for a label item in multiselection mode."""
+
     _multiselection = True
 
 
@@ -199,20 +228,25 @@ ItemParameters.register_multiselection(LabelParam, LabelParam_MS)
 
 
 class LegendParam(LabelParam):
+    """Parameters for a legend box item."""
+
     _legend = True
     label = StringItem(_("Title"), default="").set_prop("display", hide=True)
 
-    def update_label(self, obj):
-        """
+    def update_item(self, item: LegendBoxItem) -> None:
+        """Update the legend item with the parameters.
 
-        :param obj:
+        Args:
+            item: The legend item to update.
         """
-        super().update_label(obj)
+        super().update_item(item)
         if not self._multiselection:
-            obj.setTitle(self.get_title())
+            item.setTitle(self.get_title())
 
 
 class LegendParam_MS(LegendParam):
+    """Parameters for a legend box item in multiselection mode."""
+
     _multiselection = True
 
 
@@ -220,34 +254,46 @@ ItemParameters.register_multiselection(LegendParam, LegendParam_MS)
 
 
 class LabelParamWithContents(LabelParam):
-    """ """
+    """Parameters for a label item with contents.
+
+    Args:
+        title: The title of the label item.
+        comment: The comment associated with the label item.
+        icon: The icon associated with the label item.
+    """
 
     _no_contents = False
 
-    def __init__(self, title=None, comment=None, icon=""):
+    def __init__(
+        self, title: str | None = None, comment: str | None = None, icon: str = ""
+    ) -> None:
         self.plain_text = None
         super().__init__(title, comment, icon)
 
-    def update_param(self, obj):
-        """
+    def update_param(self, item: LabelItem) -> None:
+        """Update the parameters associated with the label item.
 
-        :param obj:
+        Args:
+            item: The label item from which to update the parameters.
         """
-        super().update_param(obj)
-        self.contents = self.plain_text = obj.get_plain_text()
+        super().update_param(item)
+        self.contents = self.plain_text = item.get_plain_text()
 
-    def update_label(self, obj):
-        """
+    def update_item(self, item: LabelItem) -> None:
+        """Update the label item with the parameters.
 
-        :param obj:
+        Args:
+            item: The label item to update.
         """
-        super().update_label(obj)
+        super().update_item(item)
         if self.plain_text is not None and self.contents != self.plain_text:
             text = self.contents.replace("\n", "<br>")
-            obj.set_text(text)
+            item.set_text(text)
 
 
 class LabelParamWithContents_MS(LabelParamWithContents):
+    """Parameters for a label item with contents in multiselection mode."""
+
     _multiselection = True
 
 

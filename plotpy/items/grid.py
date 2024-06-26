@@ -248,7 +248,7 @@ class GridItem(QwtPlotGrid):
         Args:
             itemparams: Item parameters
         """
-        self.gridparam = itemparams.get("GridParam")
+        self.gridparam: GridParam = itemparams.get("GridParam")
         self.gridparam.update_grid(self)
 
 

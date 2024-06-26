@@ -116,7 +116,7 @@ class RectangleShape(PolygonShape):
         """Set the state of the object from pickling"""
         self.shapeparam, self.points, z = state
         self.setZ(z)
-        self.shapeparam.update_shape(self)
+        self.shapeparam.update_item(self)
 
 
 assert_interfaces_valid(RectangleShape)
@@ -320,7 +320,7 @@ class ObliqueRectangleShape(PolygonShape):
         """Set the state of the object from pickling"""
         self.shapeparam, self.points, z = state
         self.setZ(z)
-        self.shapeparam.update_shape(self)
+        self.shapeparam.update_item(self)
 
 
 assert_interfaces_valid(ObliqueRectangleShape)

@@ -24,6 +24,17 @@ In this release, test coverage is 79%.
   * The `stats_func` parameter is a function that takes the image item and selected
     rectangle coordinates, and returns a string with the statistics to display
 
+🧹 API cleanup:
+
+* Deprecated `AnnotationParam.update_annotation` method: use `update_item` instead
+* Deprecated `AxesShapeParam.update_axes` method: use `update_item` instead
+* Deprecated `AxesParam.update_axes` method: use `update_item` instead
+* Deprecated `ImageAxesParam.update_axes` method: use `update_item` instead
+* Deprecated `LabelParam.update_label` method: use `update_item` instead
+* Deprecated `MarkerParam.update_marker` method: use `update_item` instead
+* Deprecated `RangeShapeParam.update_range` method: use `update_item` instead
+* Deprecated `ShapeParam.update_shape` method: use `update_item` instead
+
 ## Version 2.3.5 ##
 
 This release is mainly intended to fix the Windows binary distribution, which was not
@@ -106,7 +117,6 @@ in version 2.3.1. The latter is a fugitive release that was not announced.
 * Flip/rotate dialog: added missing toolbar on plot widget
 * Fixed issue with oblique averaged cross section computation (`AttributeError` when
   clicking on the empty cross section plot)
-
 
 ## Version 2.3.0 ##
 

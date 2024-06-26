@@ -56,7 +56,7 @@ class XRangeSelection(AbstractShape):
         self.symbol = None
         self.sel_symbol = None
         if self._min is not None and self._max is not None:
-            self.shapeparam.update_range(self)  # creates all the above QObjects
+            self.shapeparam.update_item(self)  # creates all the above QObjects
         self.setIcon(get_icon("xrange.png"))
 
     def __reduce__(self) -> tuple[type, tuple, tuple]:
@@ -97,7 +97,7 @@ class XRangeSelection(AbstractShape):
         self._max = reader.read("max")
         self.shapeparam = RangeShapeParam(_("Range"), icon="xrange.png")
         reader.read("shapeparam", instance=self.shapeparam)
-        self.shapeparam.update_range(self)
+        self.shapeparam.update_item(self)
 
     def get_handles_pos(self) -> tuple[float, float, float]:
         """Return the handles position
@@ -285,7 +285,7 @@ class XRangeSelection(AbstractShape):
             itemparams: Item parameters
         """
         update_dataset(self.shapeparam, itemparams.get("ShapeParam"), visible_only=True)
-        self.shapeparam.update_range(self)
+        self.shapeparam.update_item(self)
         self.sel_brush = QG.QBrush(self.brush)
 
     def boundingRect(self) -> QC.QRectF:

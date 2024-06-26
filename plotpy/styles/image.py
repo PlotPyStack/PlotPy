@@ -35,7 +35,16 @@ from plotpy.styles.base import ItemParameters
 if TYPE_CHECKING:
     from guidata.dataset import DataSet
 
-    from plotpy.items import BaseImageItem
+    from plotpy.items import (
+        BaseImageItem,
+        ImageFilterItem,
+        ImageItem,
+        MaskedImageItem,
+        MaskedXYImageItem,
+        RawImageItem,
+        RGBImageItem,
+        TrImageItem,
+    )
     from plotpy.plot import BasePlot
 
 
@@ -66,6 +75,8 @@ def _create_choices(
 
 
 class BaseImageParam(DataSet):
+    """Base class for image parameters."""
+
     _multiselection = False
     label = StringItem(_("Image title"), default=_("Image")).set_prop(
         "display", hide=GetAttrProp("_multiselection")
@@ -126,18 +137,18 @@ class BaseImageParam(DataSet):
             zunit = ""
         return xunit, yunit, zunit
 
-    def update_param(self, image: BaseImageItem) -> None:
+    def update_param(self, item: BaseImageItem) -> None:
         """Update the parameters from the given image item.
 
         Args:
-            image: The image item to update the parameters from.
+            item: The image item to update the parameters from.
         """
-        self.label = str(image.title().text())
-        cmap = image.get_color_map()
+        self.label = str(item.title().text())
+        cmap = item.get_color_map()
         if cmap is not None:
             self.colormap = cmap.name
             self.invert_colormap = cmap.invert
-        interpolation = image.get_interpolation()
+        interpolation = item.get_interpolation()
         mode = interpolation[0]
 
         if mode == INTERP_NEAREST:
@@ -148,20 +159,20 @@ class BaseImageParam(DataSet):
             size = interpolation[1].shape[0]
             self.interpolation = size
 
-    def update_item(self, image: BaseImageItem) -> None:
+    def update_item(self, item: BaseImageItem) -> None:
         """Update the given image item from the parameters.
 
         Args:
-            image: The image item to update.
+            item: The image item to update.
         """
         if isinstance(self.alpha_function, LUTAlpha):
             self.alpha_function = self.alpha_function.value
-        plot: BasePlot = image.plot()
+        plot: BasePlot = item.plot()
         if plot is not None:
             plot.blockSignals(True)  # Avoid unwanted calls of update_param
             # triggered by the setter methods below
-        image.setTitle(self.label)
-        image.set_color_map(self.colormap, self.invert_colormap)
+        item.setTitle(self.label)
+        item.set_color_map(self.colormap, self.invert_colormap)
         size = self.interpolation
 
         if size == 0:
@@ -170,12 +181,14 @@ class BaseImageParam(DataSet):
             mode = INTERP_LINEAR
         else:
             mode = INTERP_AA
-        image.set_interpolation(mode, size)
+        item.set_interpolation(mode, size)
         if plot is not None:
             plot.blockSignals(False)
 
 
 class QuadGridParam(DataSet):
+    """Parameters for the grid of a quad item."""
+
     _multiselection = False
     label = StringItem(_("Image title"), default=_("Image")).set_prop(
         "display", hide=GetAttrProp("_multiselection")
@@ -222,73 +235,79 @@ class QuadGridParam(DataSet):
     grid = BoolItem(_("Show grid"), default=False)
     gridcolor = ColorItem(_("Grid lines color"), default="black")
 
-    def update_param(self, image: BaseImageItem) -> None:
+    def update_param(self, item: BaseImageItem) -> None:
         """Update the parameters from the given image item.
 
         Args:
-            image: The image item to update the parameters from.
+            item: The image item to update the parameters from.
         """
-        self.label = str(image.title().text())
-        cmap = image.get_color_map()
+        self.label = str(item.title().text())
+        cmap = item.get_color_map()
         if cmap is not None:
             self.colormap = cmap.name
             self.invert_colormap = cmap.invert
-        interp, uflat, vflat = image.interpolate
+        interp, uflat, vflat = item.interpolate
         self.interpolation = interp
         self.uflat = uflat
         self.vflat = vflat
-        self.grid = image.grid
+        self.grid = item.grid
 
-    def update_item(self, image: BaseImageItem) -> None:
+    def update_item(self, item: BaseImageItem) -> None:
         """Update the given image item from the parameters.
 
         Args:
-            image: The image item to update.
+            item: The image item to update.
         """
         if isinstance(self.alpha_function, LUTAlpha):
             self.alpha_function = self.alpha_function.value
-        plot = image.plot()
+        plot = item.plot()
         if plot is not None:
             plot.blockSignals(True)  # Avoid unwanted calls of update_param
             # triggered by the setter methods below
-        image.setTitle(self.label)
-        image.set_color_map(self.colormap, self.invert_colormap)
-        image.interpolate = (self.interpolation, self.uflat, self.vflat)
-        image.grid = self.grid
+        item.setTitle(self.label)
+        item.set_color_map(self.colormap, self.invert_colormap)
+        item.interpolate = (self.interpolation, self.uflat, self.vflat)
+        item.grid = self.grid
         if plot is not None:
             plot.blockSignals(False)
 
 
 class RawImageParam(BaseImageParam):
+    """Parameters for a raw image."""
+
     _hide_background = False
     background = ColorItem(_("Background color"), default="#000000").set_prop(
         "display", hide=GetAttrProp("_hide_background")
     )
 
-    def update_param(self, image):
-        """
+    def update_param(self, item: RawImageItem) -> None:
+        """Update the parameters from the given image item.
 
-        :param image:
+        Args:
+            item: The image item from which to update the parameters.
         """
-        super().update_param(image)
-        self.background = str(QG.QColor(image.bg_qcolor).name())
+        super().update_param(item)
+        self.background = str(QG.QColor(item.bg_qcolor).name())
 
-    def update_item(self, image):
-        """
+    def update_item(self, item: RawImageItem) -> None:
+        """Update the given image item from the parameters.
 
-        :param image:
+        Args:
+            item: The image item to update.
         """
-        super().update_item(image)
-        plot = image.plot()
+        super().update_item(item)
+        plot: BasePlot = item.plot()
         if plot is not None:
             plot.blockSignals(True)  # Avoid unwanted calls of update_param
             # triggered by the setter methods below
-        image.set_background_color(self.background)
+        item.set_background_color(self.background)
         if plot is not None:
             plot.blockSignals(False)
 
 
 class RawImageParam_MS(RawImageParam):
+    """Parameters for a raw image (multiselection)."""
+
     _multiselection = True
 
 
@@ -296,10 +315,14 @@ ItemParameters.register_multiselection(RawImageParam, RawImageParam_MS)
 
 
 class XYImageParam(RawImageParam):
+    """Parameters for an XY image."""
+
     pass
 
 
 class XYImageParam_MS(XYImageParam):
+    """Parameters for an XY image (multiselection)."""
+
     _multiselection = True
 
 
@@ -307,6 +330,8 @@ ItemParameters.register_multiselection(XYImageParam, XYImageParam_MS)
 
 
 class ImageParam(RawImageParam):
+    """Parameters for an image."""
+
     lock_position = BoolItem(
         _("Lock position"),
         _("Position"),
@@ -322,50 +347,54 @@ class ImageParam(RawImageParam):
     ymax = FloatItem(_("y|max"), default=None)
     _end_ydata = EndGroup(_("Image placement along Y-axis"))
 
-    def update_param(self, image):
-        """
+    def update_param(self, item: ImageItem) -> None:
+        """Update the parameters from the given image item.
 
-        :param image:
+        Args:
+            item: The image item from which to update the parameters.
         """
-        super().update_param(image)
-        self.xmin = image.xmin
+        super().update_param(item)
+        self.xmin = item.xmin
         if self.xmin is None:
             self.xmin = 0.0
-        self.ymin = image.ymin
+        self.ymin = item.ymin
         if self.ymin is None:
             self.ymin = 0.0
-        if image.is_empty():
+        if item.is_empty():
             shape = (0, 0)
         else:
-            shape = image.data.shape
-        self.xmax = image.xmax
+            shape = item.data.shape
+        self.xmax = item.xmax
         if self.xmax is None:
             self.xmax = float(shape[1])
-        self.ymax = image.ymax
+        self.ymax = item.ymax
         if self.ymax is None:
             self.ymax = float(shape[0])
 
-    def update_item(self, image):
-        """
+    def update_item(self, item: ImageItem) -> None:
+        """Update the given image item from the parameters.
 
-        :param image:
+        Args:
+            item: The image item to update.
         """
-        super().update_item(image)
-        plot = image.plot()
+        super().update_item(item)
+        plot: BasePlot = item.plot()
         if plot is not None:
             plot.blockSignals(True)  # Avoid unwanted calls of update_param
             # triggered by the setter methods below
-        image.xmin = self.xmin
-        image.xmax = self.xmax
-        image.ymin = self.ymin
-        image.ymax = self.ymax
-        image.update_bounds()
-        image.update_border()
+        item.xmin = self.xmin
+        item.xmax = self.xmax
+        item.ymin = self.ymin
+        item.ymax = self.ymax
+        item.update_bounds()
+        item.update_border()
         if plot is not None:
             plot.blockSignals(False)
 
 
 class ImageParam_MS(ImageParam):
+    """Parameters for an image (multiselection)."""
+
     _multiselection = True
 
 
@@ -373,25 +402,30 @@ ItemParameters.register_multiselection(ImageParam, ImageParam_MS)
 
 
 class RGBImageParam(ImageParam):
+    """Parameters for an RGB image."""
+
     _hide_background = True
     _hide_colormap = True
 
-    def update_item(self, image):
-        """
+    def update_item(self, item: RGBImageItem) -> None:
+        """Update the given image item from the parameters.
 
-        :param image:
+        Args:
+            item: The image item to update.
         """
-        super().update_item(image)
-        plot = image.plot()
+        super().update_item(item)
+        plot = item.plot()
         if plot is not None:
             plot.blockSignals(True)  # Avoid unwanted calls of update_param
             # triggered by the setter methods below
-        image.recompute_alpha_channel()
+        item.recompute_alpha_channel()
         if plot is not None:
             plot.blockSignals(False)
 
 
 class RGBImageParam_MS(RGBImageParam):
+    """Parameters for an RGB image (multiselection)."""
+
     _multiselection = True
 
 
@@ -399,6 +433,8 @@ ItemParameters.register_multiselection(RGBImageParam, RGBImageParam_MS)
 
 
 class MaskedImageParamMixin(DataSet):
+    """Mixin for masked image parameters."""
+
     g_mask = BeginGroup(_("Mask"))
     filling_value = FloatItem(_("Filling value"))
     show_mask = BoolItem(_("Show image mask"), default=False)
@@ -406,41 +442,56 @@ class MaskedImageParamMixin(DataSet):
     alpha_unmasked = FloatItem(_("Unmasked area alpha"), default=0.0, min=0, max=1)
     _g_mask = EndGroup(_("Mask"))
 
-    def _update_item(self, image):
-        plot = image.plot()
+    def _update_item(self, item: MaskedImageItem) -> None:
+        """Update the given masked image item from the parameters.
+
+        Args:
+            item: The masked image item to update.
+        """
+        plot: BasePlot = item.plot()
         if plot is not None:
             plot.blockSignals(True)  # Avoid unwanted calls of update_param
             # triggered by the setter methods below
-        image.update_mask()
+        item.update_mask()
         if plot is not None:
             plot.blockSignals(False)
 
 
 class MaskedImageParam(ImageParam, MaskedImageParamMixin):
-    def update_item(self, image):
-        """
+    """Parameters for a masked image."""
 
-        :param image:
+    def update_item(self, item: MaskedImageItem) -> None:
+        """Update the given image item from the parameters.
+
+        Args:
+            item: The image item to update.
         """
-        super().update_item(image)
-        self._update_item(image)
+        super().update_item(item)
+        self._update_item(item)
 
 
 class MaskedXYImageParam(XYImageParam, MaskedImageParamMixin):
-    def update_item(self, image):
-        """
+    """Parameters for a masked XY image."""
 
-        :param image:
+    def update_item(self, item: MaskedXYImageItem) -> None:
+        """Update the given image item from the parameters.
+
+        Args:
+            item: The image item to update.
         """
-        super().update_item(image)
-        self._update_item(image)
+        super().update_item(item)
+        self._update_item(item)
 
 
 class MaskedImageParam_MS(MaskedImageParam):
+    """Parameters for a masked image (multiselection)."""
+
     _multiselection = True
 
 
 class MaskedXYImageParam_MS(MaskedXYImageParam):
+    """Parameters for a masked XY image (multiselection)."""
+
     _multiselection = True
 
 
@@ -449,6 +500,8 @@ ItemParameters.register_multiselection(MaskedXYImageParam, MaskedXYImageParam_MS
 
 
 class ImageFilterParam(BaseImageParam):
+    """Parameters for an image filter."""
+
     label = StringItem(_("Title"), default=_("Filter"))
     g1 = BeginGroup(_("Bounds"))
     xmin = FloatItem(_("x|min"))
@@ -460,32 +513,36 @@ class ImageFilterParam(BaseImageParam):
         _("Use image colormap and level"), _("Color map"), default=True
     )
 
-    def update_param(self, obj):
-        """
+    def update_param(self, item: ImageFilterItem) -> None:
+        """Update the parameters from the given image filter item.
 
-        :param obj:
+        Args:
+            item: The image filter item from which to update the parameters.
         """
-        self.xmin, self.ymin, self.xmax, self.ymax = obj.border_rect.get_rect()
-        self.use_source_cmap = obj.use_source_cmap
-        super().update_param(obj)
+        self.xmin, self.ymin, self.xmax, self.ymax = item.border_rect.get_rect()
+        self.use_source_cmap = item.use_source_cmap
+        super().update_param(item)
 
-    def update_imagefilter(self, imagefilter):
-        """
+    def update_imagefilter(self, item: ImageFilterItem) -> None:
+        """Update the given image filter item from the parameters.
 
-        :param imagefilter:
+        Args:
+            item: The image filter item to update.
         """
-        m, M = imagefilter.get_lut_range()
+        m, M = item.get_lut_range()
         set_range = False
-        if not self.use_source_cmap and imagefilter.use_source_cmap:
+        if not self.use_source_cmap and item.use_source_cmap:
             set_range = True
-        imagefilter.use_source_cmap = self.use_source_cmap
+        item.use_source_cmap = self.use_source_cmap
         if set_range:
-            imagefilter.set_lut_range([m, M])
-        self.update_item(imagefilter)
-        imagefilter.border_rect.set_rect(self.xmin, self.ymin, self.xmax, self.ymax)
+            item.set_lut_range([m, M])
+        self.update_item(item)
+        item.border_rect.set_rect(self.xmin, self.ymin, self.xmax, self.ymax)
 
 
 class TrImageParam(RawImageParam):
+    """Parameters for a transformed image."""
+
     lock_position = BoolItem(
         _("Lock position"),
         _("Position"),
@@ -523,35 +580,38 @@ class TrImageParam(RawImageParam):
     pos_angle = FloatItem(_("θ (°)"), default=0.0).set_prop("display", col=0)
     _end_pos = EndGroup(_("Translate, rotate and flip"))
 
-    def update_param(self, image):
-        """
+    def update_param(self, item: TrImageItem) -> None:
+        """Update the parameters from the given image item.
 
-        :param image:
+        Args:
+            item: The image item from which to update the parameters.
         """
-        super().update_param(image)
+        super().update_param(item)
         # we don't get crop info from the image because
         # its not easy to extract from the transform
         # and TrImageItem keeps it's crop information
         # directly in this DataSet
 
-    def update_item(self, image):
-        """
+    def update_item(self, item: TrImageItem) -> None:
+        """Update the given image item from the parameters.
 
-        :param image:
+        Args:
+            item: The image item to update.
         """
-        RawImageParam.update_item(self, image)
-        plot = image.plot()
+        RawImageParam.update_item(self, item)
+        plot: BasePlot = item.plot()
         if plot is not None:
             plot.blockSignals(True)  # Avoid unwanted calls of update_param
             # triggered by the setter methods below
-        image.set_transform(*self.get_transform())
+        item.set_transform(*self.get_transform())
         if plot is not None:
             plot.blockSignals(False)
 
-    def get_transform(self):
-        """
+    def get_transform(self) -> tuple[float, float, float, float, float, bool, bool]:
+        """Get the transformation parameters.
 
-        :return:
+        Returns:
+            The transformation parameters: x0, y0, angle, dx, dy, hflip, vflip.
         """
         return (
             self.pos_x0,
@@ -563,16 +623,26 @@ class TrImageParam(RawImageParam):
             self.vflip,
         )
 
-    def set_transform(self, x0, y0, angle, dx=1.0, dy=1.0, hflip=False, vflip=False):
-        """
+    def set_transform(
+        self,
+        x0: float,
+        y0: float,
+        angle: float,
+        dx: float = 1.0,
+        dy: float = 1.0,
+        hflip: bool = False,
+        vflip: bool = False,
+    ) -> None:
+        """Set the transformation parameters.
 
-        :param x0:
-        :param y0:
-        :param angle:
-        :param dx:
-        :param dy:
-        :param hflip:
-        :param vflip:
+        Args:
+            x0: The x-coordinate of the center of the image.
+            y0: The y-coordinate of the center of the image.
+            angle: The rotation angle in degrees.
+            dx: The width of the image.
+            dy: The height of the image.
+            hflip: Flip the image horizontally.
+            vflip: Flip the image vertically.
         """
         self.pos_x0 = x0
         self.pos_y0 = y0
@@ -582,28 +652,32 @@ class TrImageParam(RawImageParam):
         self.hflip = hflip
         self.vflip = vflip
 
-    def set_crop(self, left, top, right, bottom):
-        """
+    def set_crop(self, left: int, top: int, right: int, bottom: int) -> None:
+        """Set the crop parameters.
 
-        :param left:
-        :param top:
-        :param right:
-        :param bottom:
+        Args:
+            left: The left crop.
+            top: The top crop.
+            right: The right crop.
+            bottom: The bottom crop.
         """
         self.crop_left = left
         self.crop_right = right
         self.crop_top = top
         self.crop_bottom = bottom
 
-    def get_crop(self):
-        """
+    def get_crop(self) -> tuple[int, int, int, int]:
+        """Get the crop parameters.
 
-        :return:
+        Returns:
+            The crop parameters: left, top, right, bottom.
         """
         return (self.crop_left, self.crop_top, self.crop_right, self.crop_bottom)
 
 
 class TrImageParam_MS(TrImageParam):
+    """Parameters for a transformed image (multiselection)."""
+
     _multiselection = True
 
 

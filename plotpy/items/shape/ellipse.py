@@ -339,7 +339,7 @@ class EllipseShape(PolygonShape):
         """Set the state of the object from a tuple"""
         self.shapeparam, self.points, z = state
         self.setZ(z)
-        self.shapeparam.update_shape(self)
+        self.shapeparam.update_item(self)
 
 
 assert_interfaces_valid(EllipseShape)

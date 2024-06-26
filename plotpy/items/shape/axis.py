@@ -73,10 +73,10 @@ class Axes(PolygonShape):
         shapeparam, axesparam, points, z = state
         self.points = points
         self.setZ(z)
-        self.shapeparam = shapeparam
-        self.shapeparam.update_shape(self)
-        self.axesparam = axesparam
-        self.axesparam.update_axes(self)
+        self.shapeparam: ShapeParam = shapeparam
+        self.shapeparam.update_item(self)
+        self.axesparam: AxesShapeParam = axesparam
+        self.axesparam.update_item(self)
 
     def serialize(
         self,
@@ -103,7 +103,7 @@ class Axes(PolygonShape):
         super().deserialize(reader)
         self.axesparam = AxesShapeParam(_("Axes"), icon="gtaxes.png")
         reader.read("axesparam", instance=self.axesparam)
-        self.axesparam.update_axes(self)
+        self.axesparam.update_item(self)
 
     def get_transform_matrix(self, dx: float = 1.0, dy: float = 1.0) -> np.ndarray:
         """Return the transformation matrix
@@ -143,7 +143,7 @@ class Axes(PolygonShape):
         """
         PolygonShape.set_style(self, section, option + "/border")
         self.axesparam.read_config(CONF, section, option)
-        self.axesparam.update_axes(self)
+        self.axesparam.update_item(self)
 
     def move_point_to(
         self, handle: int, pos: tuple[float, float], ctrl: bool = False
@@ -304,7 +304,7 @@ class Axes(PolygonShape):
         update_dataset(
             self.axesparam, itemparams.get("AxesShapeParam"), visible_only=True
         )
-        self.axesparam.update_axes(self)
+        self.axesparam.update_item(self)
 
 
 assert_interfaces_valid(Axes)
