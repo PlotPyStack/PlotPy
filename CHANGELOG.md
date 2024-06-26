@@ -6,6 +6,12 @@ In this release, test coverage is 79%.
 
 💥 New features / Enhancements:
 
+* Contrast adjustment panel:
+  * New layout: the vertical toolbar (which was constrained in a small area on the
+    right side of the panel) is now a horizontal toolbar at the top of the panel,
+    beside the title
+  * New "Set range" button: allows the user to set manually the minimum and maximum
+    values of the histogram range
 * New Z-axis logarithmic scale feature:
   * Added new tool `ZAxisLogTool` to toggle the Z-axis logarithmic scale
   * The tool is registered by default in the plot widget, like the `ColormapTool`
@@ -28,6 +34,16 @@ In this release, test coverage is 79%.
 * New "Reverse X axis" feature:
   * Added new tool `ReverseXAxisTool` to toggle the X-axis direction
   * The tool is registered by default in the plot widget, like its Y-axis counterpart
+
+🛠️ Bug fixes:
+
+* Contrast adjustment panel:
+  * Fixed histogram update issues when no image was currently selected (even if the
+    an image was displayed and was selected before)
+  * Histogram range was not updated when either the minimum or maximum value was set
+    using the "Minimum value" or "Maximum value" buttons (which have been renamed to
+    "Min." and "Max." in this release)
+  * Histogram range was not updated when the "Set full range" button was clicked
 
 🧹 API cleanup:
 

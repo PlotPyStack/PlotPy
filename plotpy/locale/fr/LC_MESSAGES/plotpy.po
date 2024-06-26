@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-06-26 11:11+0200\n"
+"POT-Creation-Date: 2024-06-26 14:54+0200\n"
 "PO-Revision-Date: 2019-02-20 14:42+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -29,7 +29,7 @@ msgstr "Annotation"
 #: plotpy\builder\curvemarker.py:446 plotpy\builder\curvemarker.py:568
 #: plotpy\builder\curvemarker.py:628 plotpy\items\curve\base.py:118
 #: plotpy\items\curve\base.py:282 plotpy\items\curve\errorbar.py:102
-#: plotpy\items\histogram.py:87 plotpy\panels\contrastadjustment.py:70
+#: plotpy\items\histogram.py:87 plotpy\panels\contrastadjustment.py:73
 #: plotpy\panels\csection\csplot.py:65
 msgid "Curve"
 msgstr "Courbe"
@@ -40,7 +40,7 @@ msgid "Error bars"
 msgstr "Barres d'erreur"
 
 #: plotpy\builder\curvemarker.py:626 plotpy\items\histogram.py:90
-#: plotpy\panels\contrastadjustment.py:157 plotpy\styles\histogram.py:61
+#: plotpy\panels\contrastadjustment.py:160 plotpy\styles\histogram.py:61
 msgid "Histogram"
 msgstr "Histogramme"
 
@@ -259,46 +259,65 @@ msgstr "Forme"
 msgid "Range"
 msgstr "Intervalle"
 
-#: plotpy\panels\contrastadjustment.py:388
-#: plotpy\panels\contrastadjustment.py:515
+#: plotpy\panels\contrastadjustment.py:404
 msgid "Eliminate outliers"
 msgstr "Éliminer les bords"
 
-#: plotpy\panels\contrastadjustment.py:401
-msgid "Contrast adjustment tool"
-msgstr "Outil de réglage du contraste"
+#: plotpy\panels\contrastadjustment.py:417
+msgid "Contrast"
+msgstr "Contraste"
 
-#: plotpy\panels\contrastadjustment.py:472
-msgid "Minimum level"
-msgstr "Niveau minimum"
+#: plotpy\panels\contrastadjustment.py:490
+msgid "Min."
+msgstr "Min."
 
-#: plotpy\panels\contrastadjustment.py:475
+#: plotpy\panels\contrastadjustment.py:493
 msgid "Select minimum level on image"
 msgstr "Sélectionne le niveau minimum de l'image"
 
-#: plotpy\panels\contrastadjustment.py:482
-msgid "Maximum level"
-msgstr "Niveau maximum"
+#: plotpy\panels\contrastadjustment.py:500
+msgid "Max."
+msgstr "Max."
 
-#: plotpy\panels\contrastadjustment.py:485
+#: plotpy\panels\contrastadjustment.py:503
 msgid "Select maximum level on image"
 msgstr "Sélectionne le niveau maximum de l'image"
 
-#: plotpy\panels\contrastadjustment.py:508
+#: plotpy\panels\contrastadjustment.py:526
 msgid "Full range"
 msgstr "Pleine échelle"
 
-#: plotpy\panels\contrastadjustment.py:511
+#: plotpy\panels\contrastadjustment.py:529
 msgid "Scale the image's display range according to data range"
 msgstr "Adapte l'échelle d'affichage des niveaux de l'image aux données"
 
-#: plotpy\panels\contrastadjustment.py:518
+#: plotpy\panels\contrastadjustment.py:533
+msgid "Eliminate %"
+msgstr "Éliminer %"
+
+#: plotpy\panels\contrastadjustment.py:536
 msgid ""
-"Eliminate levels histogram outliers and scale the image's display range "
-"accordingly"
+"Eliminate outliers from the image's display range, based on a percentage of "
+"the data range"
 msgstr ""
-"Supprime les bords (pourcentage choisi) de l'histogramme des niveaux de "
-"l'image, puis affiche l'image résultante"
+"Elimine les bords de l'histogramme des niveaux de l'image, en fonction d'un "
+"pourcentage de la dynamique"
+
+#: plotpy\panels\contrastadjustment.py:543
+msgid "Set range"
+msgstr "Définir l'échelle"
+
+#: plotpy\panels\contrastadjustment.py:546
+msgid "Set the image's display range manually"
+msgstr "Définit manuellement l'échelle d'affichage des niveaux de l'image"
+
+#: plotpy\panels\contrastadjustment.py:569
+msgid "Min. level"
+msgstr "Niveau min."
+
+#: plotpy\panels\contrastadjustment.py:570
+msgid "Max. level"
+msgstr "Niveau max."
 
 #: plotpy\panels\csection\csitem.py:386 plotpy\panels\csection\csitem.py:418
 #: plotpy\panels\csection\csplot.py:40 plotpy\tools\cross_section.py:29
@@ -426,23 +445,23 @@ msgstr "Souhaitez-vous vraiment supprimer les objets sélectionnés ?"
 msgid "Item list"
 msgstr "Liste des objets"
 
-#: plotpy\plot\base.py:361 plotpy\styles\image.py:556 plotpy\styles\label.py:82
-#: plotpy\styles\label.py:148
+#: plotpy\plot\base.py:361 plotpy\styles\image.py:556 plotpy\styles\label.py:81
+#: plotpy\styles\label.py:147
 msgid "Left"
 msgstr "Gauche"
 
-#: plotpy\plot\base.py:362 plotpy\styles\image.py:557 plotpy\styles\label.py:83
-#: plotpy\styles\label.py:149
+#: plotpy\plot\base.py:362 plotpy\styles\image.py:557 plotpy\styles\label.py:82
+#: plotpy\styles\label.py:148
 msgid "Right"
 msgstr "Droite"
 
-#: plotpy\plot\base.py:363 plotpy\styles\image.py:559 plotpy\styles\label.py:85
-#: plotpy\styles\label.py:151
+#: plotpy\plot\base.py:363 plotpy\styles\image.py:559 plotpy\styles\label.py:84
+#: plotpy\styles\label.py:150
 msgid "Bottom"
 msgstr "Bas"
 
-#: plotpy\plot\base.py:364 plotpy\styles\image.py:558 plotpy\styles\label.py:84
-#: plotpy\styles\label.py:150
+#: plotpy\plot\base.py:364 plotpy\styles\image.py:558 plotpy\styles\label.py:83
+#: plotpy\styles\label.py:149
 msgid "Top"
 msgstr "Haut"
 
@@ -479,7 +498,7 @@ msgstr ""
 
 #: plotpy\styles\axes.py:35 plotpy\styles\curve.py:37
 #: plotpy\styles\histogram.py:61 plotpy\styles\image.py:505
-#: plotpy\styles\label.py:42 plotpy\styles\label.py:234
+#: plotpy\styles\label.py:41 plotpy\styles\label.py:233
 #: plotpy\styles\polygonmap.py:20 plotpy\styles\shape.py:143
 #: plotpy\styles\shape.py:311 plotpy\tests\widgets\test_simple_dialog.py:25
 #: plotpy\tests\widgets\test_simple_window.py:45
@@ -754,13 +773,13 @@ msgstr "Style"
 msgid "Size"
 msgstr "Taille"
 
-#: plotpy\styles\base.py:359 plotpy\styles\label.py:61
+#: plotpy\styles\base.py:359 plotpy\styles\label.py:60
 msgid "Border"
 msgstr "Bordure"
 
 #: plotpy\styles\base.py:360 plotpy\styles\base.py:527
 #: plotpy\styles\base.py:565 plotpy\styles\histogram.py:95
-#: plotpy\styles\image.py:279 plotpy\styles\label.py:67
+#: plotpy\styles\image.py:279 plotpy\styles\label.py:66
 msgid "Background color"
 msgstr "Couleur du fond"
 
@@ -794,7 +813,7 @@ msgstr "sy"
 msgid "Font"
 msgstr "Police"
 
-#: plotpy\styles\base.py:526 plotpy\styles\label.py:66
+#: plotpy\styles\base.py:526 plotpy\styles\label.py:65
 msgid "Text color"
 msgstr "Couleur du texte"
 
@@ -815,7 +834,7 @@ msgstr "Trait"
 msgid "Minor grid"
 msgstr "Quadrillage secondaire"
 
-#: plotpy\styles\curve.py:41 plotpy\styles\label.py:56
+#: plotpy\styles\curve.py:41 plotpy\styles\label.py:55
 #: plotpy\styles\shape.py:60 plotpy\styles\shape.py:63
 #: plotpy\styles\shape.py:151 plotpy\styles\shape.py:154
 #: plotpy\styles\shape.py:407 plotpy\styles\shape.py:410
@@ -1081,8 +1100,8 @@ msgid "Lock position"
 msgstr "Verrouiller la position"
 
 #: plotpy\styles\image.py:337 plotpy\styles\image.py:548
-#: plotpy\styles\label.py:71 plotpy\styles\label.py:142
-#: plotpy\styles\label.py:163
+#: plotpy\styles\label.py:70 plotpy\styles\label.py:141
+#: plotpy\styles\label.py:162
 msgid "Position"
 msgstr "Position"
 
@@ -1191,116 +1210,116 @@ msgstr "Symétrie verticale"
 msgid "θ (°)"
 msgstr "θ (°)"
 
-#: plotpy\styles\label.py:48 plotpy\styles\label.py:52
+#: plotpy\styles\label.py:47 plotpy\styles\label.py:51
 msgid "Contents"
 msgstr "Contenu"
 
-#: plotpy\styles\label.py:61
+#: plotpy\styles\label.py:60
 msgid "set width to 0 to disable"
 msgstr "entrer 0 pour désactiver"
 
-#: plotpy\styles\label.py:64 plotpy\styles\label.py:69
+#: plotpy\styles\label.py:63 plotpy\styles\label.py:68
 #: plotpy\styles\shape.py:65 plotpy\styles\shape.py:68
 msgid "Text"
 msgstr "Texte"
 
-#: plotpy\styles\label.py:65
+#: plotpy\styles\label.py:64
 msgid "Text font"
 msgstr "Police du texte"
 
-#: plotpy\styles\label.py:68
+#: plotpy\styles\label.py:67
 msgid "Background transparency"
 msgstr "Opacité du fond"
 
-#: plotpy\styles\label.py:72
+#: plotpy\styles\label.py:71
 msgid "Position relative to anchor"
 msgstr "Position de l'étiquette par rapport au point d'ancrage"
 
-#: plotpy\styles\label.py:76
+#: plotpy\styles\label.py:75
 msgid "Corner"
 msgstr "Coin"
 
-#: plotpy\styles\label.py:78 plotpy\styles\label.py:144
+#: plotpy\styles\label.py:77 plotpy\styles\label.py:143
 msgid "Top left"
 msgstr "En haut à gauche"
 
-#: plotpy\styles\label.py:79 plotpy\styles\label.py:145
+#: plotpy\styles\label.py:78 plotpy\styles\label.py:144
 msgid "Top right"
 msgstr "En haut à droite"
 
-#: plotpy\styles\label.py:80 plotpy\styles\label.py:146
+#: plotpy\styles\label.py:79 plotpy\styles\label.py:145
 msgid "Bottom left"
 msgstr "En bas à gauche"
 
-#: plotpy\styles\label.py:81 plotpy\styles\label.py:147
+#: plotpy\styles\label.py:80 plotpy\styles\label.py:146
 msgid "Bottom right"
 msgstr "En bas à droite"
 
-#: plotpy\styles\label.py:86 plotpy\styles\label.py:152
+#: plotpy\styles\label.py:85 plotpy\styles\label.py:151
 msgid "Center"
 msgstr "Centre"
 
-#: plotpy\styles\label.py:89
+#: plotpy\styles\label.py:88
 msgid "Label position relative to anchor point"
 msgstr "Position de l'étiquette par rapport au point d'ancrage"
 
-#: plotpy\styles\label.py:92
+#: plotpy\styles\label.py:91
 msgid "ΔX"
 msgstr "ΔX"
 
-#: plotpy\styles\label.py:94
+#: plotpy\styles\label.py:93
 msgid "Horizontal offset (pixels) relative to anchor point"
 msgstr "Décalage horizontal (pixels) par rapport au point d'ancrage"
 
-#: plotpy\styles\label.py:98
+#: plotpy\styles\label.py:97
 msgid "ΔY"
 msgstr "ΔY"
 
-#: plotpy\styles\label.py:100
+#: plotpy\styles\label.py:99
 msgid "Vertical offset (pixels) relative to anchor point"
 msgstr "Décalage vertical (pixels) par rapport au point d'ancrage"
 
-#: plotpy\styles\label.py:105 plotpy\styles\label.py:113
+#: plotpy\styles\label.py:104 plotpy\styles\label.py:112
 msgid "Anchor"
 msgstr "Ancre"
 
-#: plotpy\styles\label.py:108 plotpy\styles\label.py:160
+#: plotpy\styles\label.py:107 plotpy\styles\label.py:159
 msgid "Anchor position"
 msgstr "Position du point d'ancrage"
 
-#: plotpy\styles\label.py:113
+#: plotpy\styles\label.py:112
 msgid "Attach to canvas"
 msgstr "Attacher au canevas"
 
-#: plotpy\styles\label.py:118
+#: plotpy\styles\label.py:117
 msgid "X"
 msgstr "X"
 
-#: plotpy\styles\label.py:118
+#: plotpy\styles\label.py:117
 msgid "X-axis position in canvas coordinates"
 msgstr "Abscisse en coordonnées du canevas"
 
-#: plotpy\styles\label.py:123
+#: plotpy\styles\label.py:122
 msgid "Y"
 msgstr "Y"
 
-#: plotpy\styles\label.py:123
+#: plotpy\styles\label.py:122
 msgid "Y-axis position in canvas coordinates"
 msgstr "Ordonnée en coordonnées du canevas"
 
-#: plotpy\styles\label.py:130
+#: plotpy\styles\label.py:129
 msgid "Interact"
 msgstr "Interaction"
 
-#: plotpy\styles\label.py:132
+#: plotpy\styles\label.py:131
 msgid "moving object changes anchor position"
 msgstr "déplacer l'objet modifie le point d'ancrage"
 
-#: plotpy\styles\label.py:133
+#: plotpy\styles\label.py:132
 msgid "moving object changes label position"
 msgstr "déplacer l'objet modifie la position de l'étiquette"
 
-#: plotpy\styles\label.py:155
+#: plotpy\styles\label.py:154
 msgid "Absolute position on canvas"
 msgstr "Position absolue sur le canevas"
 
@@ -2304,3 +2323,13 @@ msgstr "Rotation et rognage"
 #: plotpy\widgets\rotatecrop.py:220
 msgid "Show cropping rectangle"
 msgstr "Afficher le rectangle de rognage"
+
+#~ msgid "Contrast adjustment tool"
+#~ msgstr "Outil de réglage du contraste"
+
+#~ msgid ""
+#~ "Eliminate levels histogram outliers and scale the image's display range "
+#~ "accordingly"
+#~ msgstr ""
+#~ "Supprime les bords (pourcentage choisi) de l'histogramme des niveaux de "
+#~ "l'image, puis affiche l'image résultante"

@@ -27,7 +27,7 @@ from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
-from plotpy.config import CONF, _
+from plotpy.config import CONF, IS_DARK, _
 from plotpy.constants import ID_CONTRAST, PlotType
 from plotpy.interfaces import IPanel, IVoiImageItemType
 from plotpy.items import HistogramItem, XRangeSelection
@@ -40,9 +40,10 @@ from plotpy.tools import AntiAliasingTool, BasePlotMenuTool, SelectPointTool, Se
 if TYPE_CHECKING:
     from collections.abc import Callable, Generator
 
+    from qtpy.QtGui import QCloseEvent
     from qtpy.QtWidgets import QWidget
 
-    from plotpy.items import BaseImageItem, CurveItem
+    from plotpy.items import BaseImageItem
     from plotpy.plot.manager import PlotManager
 
 
@@ -52,6 +53,8 @@ class LevelsHistogram(BasePlot):
     Args:
         parent: parent widget
     """
+
+    DEFAULT_NBINS = 256  # Default number of bins for histogram
 
     #: Signal emitted by LevelsHistogram when LUT range of some items was changed.
     #: For now, this signal is private. The public counterpart is emitted by
@@ -156,7 +159,7 @@ class LevelsHistogram(BasePlot):
             if item not in known_items:
                 histparam = HistogramParam(_("Histogram"), icon="histogram.png")
                 histparam.logscale = False
-                histparam.n_bins = 256
+                histparam.n_bins = self.DEFAULT_NBINS
                 curve = HistogramItem(self.param, histparam, keep_weakref=True)
                 curve.set_hist_source(item)
                 self.add_item(curve, z=0)
@@ -173,11 +176,13 @@ class LevelsHistogram(BasePlot):
                 info = np.iinfo(item.data.dtype)
                 curve.histparam.bin_min = info.min
                 curve.histparam.bin_max = info.max
-                curve.histparam.n_bins = min(info.max - info.min + 1, 256)
+                curve.histparam.n_bins = min(
+                    info.max - info.min + 1, self.DEFAULT_NBINS
+                )
             else:
                 curve.histparam.bin_min = None
                 curve.histparam.bin_max = None
-                curve.histparam.n_bins = 256
+                curve.histparam.n_bins = self.DEFAULT_NBINS
             self.param.update_item(curve)
             curve.histparam.update_hist(curve)
 
@@ -249,19 +254,19 @@ class LevelsHistogram(BasePlot):
             self.range.shapeparam.sel_line.color = self.range_mono_color
         self.range.shapeparam.update_item(self.range)
 
-    def set_range(self, _min: float, _max: float) -> bool:
+    def set_range(self, zmin: float, zmax: float) -> bool:
         """Set range
 
         Args:
-            _min: minimum value
-            _max: maximum value
+            zmin: minimum value
+            zmax: maximum value
 
         Returns:
             True if range was changed, False otherwise
         """
-        if _min < _max:
+        if zmin < zmax:
             self.set_range_style(False)
-            self.range.set_range(_min, _max)
+            self.range.set_range(zmin, zmax)
             self.replot()
             return True
         else:
@@ -269,71 +274,77 @@ class LevelsHistogram(BasePlot):
             return False
 
     def range_changed(
-        self, _rangesel: XRangeSelection, _min: float, _max: float
+        self, _rangesel: XRangeSelection, zmin: float, zmax: float
     ) -> None:
         """Range changed callback
 
         Args:
             _rangesel: range selection
-            _min: minimum value
-            _max: maximum value
+            zmin: minimum value
+            zmax: maximum value
         """
-        for item, curve in self.tracked_items_gen():
-            item.set_lut_range([_min, _max])
+        for item, _curve in self.tracked_items_gen():
+            item.set_lut_range([zmin, zmax])
         self.SIG_VOI_CHANGED.emit()
 
-    def set_full_range(self) -> None:
-        """Set range bounds to image min/max levels"""
-        _min = _max = None
-        for item, curve in self.tracked_items_gen():
-            imin, imax = item.get_lut_range_full()
-            if _min is None or _min > imin:
-                _min = imin
-            if _max is None or _max < imax:
-                _max = imax
-        if _min is not None:
-            self.set_range(_min, _max)
+    @staticmethod
+    def apply_full_range_func(
+        item: BaseImageItem, _curve: HistogramItem
+    ) -> tuple[float, float]:
+        """Apply full range function
 
+        Args:
+            item: item to apply full range to
+            _curve: histogram curve associated with item
+
+        Returns:
+            tuple of minimum and maximum values
+        """
+        return item.get_lut_range_full()
+
+    @staticmethod
     def apply_min_func(
-        self, item: BaseImageItem, curve: CurveItem, min: float
+        item: BaseImageItem, _curve: HistogramItem, zmin: float
     ) -> tuple[float, float]:
         """Apply minimum function
 
         Args:
             item: item to apply minimum to
-            curve: curve to apply minimum to
-            min: minimum value
+            _curve: histogram curve associated with item
+            zmin: minimum value
 
         Returns:
             tuple of minimum and maximum values
         """
-        _min, _max = item.get_lut_range()
-        return min, _max
+        _zmin, zmax = item.get_lut_range()
+        return zmin, zmax
 
+    @staticmethod
     def apply_max_func(
-        self, item: BaseImageItem, curve: CurveItem, max: float
+        item: BaseImageItem, _curve: HistogramItem, zmax: float
     ) -> tuple[float, float]:
         """Apply maximum function
 
         Args:
             item: item to apply maximum to
-            curve: curve to apply maximum to
-            max: maximum value
+            _curve: histogram curve associated with item
+            zmax: maximum value
 
         Returns:
             tuple of minimum and maximum values
         """
-        _min, _max = item.get_lut_range()
-        return _min, max
+        zmin, _zmax = item.get_lut_range()
+        return zmin, zmax
 
+    @staticmethod
     def reduce_range_func(
-        self, item: BaseImageItem, curve: CurveItem, percent: float
+        item: BaseImageItem, curve: HistogramItem, percent: float
     ) -> tuple[float, float]:
         """Reduce range function
 
         Args:
             item: item to reduce range of
-            curve: curve to reduce range of
+            curve: histogram curve associated with item
             percent: percentage of range to reduce
 
         Returns:
@@ -350,12 +361,17 @@ class LevelsHistogram(BasePlot):
             **kwargs: keyword arguments to pass to function
         """
         item = None
+        zmin, zmax = np.inf, -np.inf
         for item, curve in self.tracked_items_gen():
-            _min, _max = func(item, curve, *args, **kwargs)
-            item.set_lut_range([_min, _max])
-        self.SIG_VOI_CHANGED.emit()
-        if item is not None:
-            self.active_item_changed(item.plot())
+            zmin_i, zmax_i = func(item, curve, *args, **kwargs)
+            zmin = min(zmin, zmin_i)
+            zmax = max(zmax, zmax_i)
+        if zmin != np.inf and zmax != -np.inf:
+            self.set_range(zmin, zmax)
+
+    def set_full_range(self) -> None:
+        """Set range bounds to image min/max levels"""
+        self.apply_range_function(self.apply_full_range_func)
 
     def eliminate_outliers(self, percent: float) -> None:
         """Eliminate outliers
@@ -366,21 +382,21 @@ class LevelsHistogram(BasePlot):
         """
         self.apply_range_function(self.reduce_range_func, percent)
 
-    def set_min(self, _min: float) -> None:
+    def set_min(self, zmin: float) -> None:
         """Set minimum value
 
         Args:
-            _min: minimum value
+            zmin: minimum value
         """
-        self.apply_range_function(self.apply_min_func, _min)
+        self.apply_range_function(self.apply_min_func, zmin)
 
-    def set_max(self, _max: float) -> None:
+    def set_max(self, zmax: float) -> None:
         """Set maximum value
 
         Args:
-            _max: maximum value
+            zmax: maximum value
         """
-        self.apply_range_function(self.apply_max_func, _max)
+        self.apply_range_function(self.apply_max_func, zmax)
 
 
 class EliminateOutliersParam(DataSet):
@@ -398,7 +414,7 @@ class ContrastAdjustment(PanelWidget):
 
     __implements__ = (IPanel,)
     PANEL_ID = ID_CONTRAST
-    PANEL_TITLE = _("Contrast adjustment tool")
+    PANEL_TITLE = _("Contrast")
     PANEL_ICON = "contrast.png"
 
     def __init__(self, parent: QWidget | None = None) -> None:
@@ -415,9 +431,10 @@ class ContrastAdjustment(PanelWidget):
         self.min_select_tool = None
         self.max_select_tool = None
 
-        style = "<span style='color: #444444'><b>{}</b></span>"
+        color = "#444444" if not IS_DARK else "#bbbbbb"
+        style = "<span style='color: %s'><b>{}</b></span>" % color
         layout, _label = get_image_layout(
-            self.PANEL_ICON, style.format(self.PANEL_TITLE), alignment=QC.Qt.AlignCenter
+            self.PANEL_ICON, style.format(self.PANEL_TITLE), alignment=QC.Qt.AlignLeft
         )
         layout.setAlignment(QC.Qt.AlignCenter)
         vlayout = QW.QVBoxLayout()
@@ -436,9 +453,10 @@ class ContrastAdjustment(PanelWidget):
         hlayout.addLayout(vlayout)
 
         self.toolbar = toolbar = QW.QToolBar(self)
-        toolbar.setOrientation(QC.Qt.Vertical)
-        #        toolbar.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-        hlayout.addWidget(toolbar)
+        toolbar.setIconSize(QC.QSize(12, 12))
+        toolbar.setOrientation(QC.Qt.Horizontal)
+        toolbar.setToolButtonStyle(QC.Qt.ToolButtonTextBesideIcon)
+        layout.addWidget(toolbar)
 
         # Add standard plot-related tools to the local manager
         lman = self.local_manager
@@ -469,7 +487,7 @@ class ContrastAdjustment(PanelWidget):
         """Configure panel"""
         self.min_select_tool = self.manager.add_tool(
             SelectPointTool,
-            title=_("Minimum level"),
+            title=_("Min."),
             on_active_item=True,
             mode="create",
             tip=_("Select minimum level on image"),
@@ -479,7 +497,7 @@ class ContrastAdjustment(PanelWidget):
         )
         self.max_select_tool = self.manager.add_tool(
             SelectPointTool,
-            title=_("Maximum level"),
+            title=_("Max."),
             on_active_item=True,
             mode="create",
             tip=_("Select maximum level on image"),
@@ -496,7 +514,7 @@ class ContrastAdjustment(PanelWidget):
         """
         return self.manager.get_active_plot()
 
-    def closeEvent(self, event):
+    def closeEvent(self, event: QCloseEvent) -> None:
         """Reimplement Qt method"""
         self.hide()
         event.ignore()
@@ -510,31 +528,57 @@ class ContrastAdjustment(PanelWidget):
             triggered=self.histogram.set_full_range,
             tip=_("Scale the image's display range " "according to data range"),
         )
-        autorange_ac = create_action(
+        outliers_ac = create_action(
             self,
-            _("Eliminate outliers"),
+            _("Eliminate %"),
             icon=get_icon("eliminate_outliers.png"),
             triggered=self.eliminate_outliers,
             tip=_(
-                "Eliminate levels histogram "
-                "outliers and scale the image's "
-                "display range accordingly"
+                "Eliminate outliers from the image's display range, "
+                "based on a percentage of the data range"
             ),
         )
-        add_actions(self.toolbar, [fullrange_ac, autorange_ac])
+        setrange_ac = create_action(
+            self,
+            _("Set range"),
+            icon=get_icon("xrange.png"),
+            triggered=self.set_range_manually,
+            tip=_("Set the image's display range manually"),
+        )
+        add_actions(self.toolbar, [fullrange_ac, outliers_ac, setrange_ac])
 
     def eliminate_outliers(self) -> None:
         """Eliminate outliers"""
 
-        def apply(param):
-            """
-
-            :param param:
-            """
+        def apply_callback(param: EliminateOutliersParam) -> None:
+            """Apply callback"""
             self.histogram.eliminate_outliers(param.percent)
 
-        if self.outliers_param.edit(self, apply=apply):
-            apply(self.outliers_param)
+        zmin_0, zmax_0 = self.histogram.range.get_range()
+        if self.outliers_param.edit(self, apply=apply_callback):
+            apply_callback(self.outliers_param)
+        else:
+            self.histogram.set_range(zmin_0, zmax_0)
+
+    def set_range_manually(self) -> None:
+        """Set range manually"""
+
+        class RangeParam(DataSet):
+            """Range parameters"""
+
+            zmin = FloatItem(_("Min. level"))
+            zmax = FloatItem(_("Max. level"))
+
+        def apply_callback(param: RangeParam) -> None:
+            """Apply callback"""
+            self.histogram.set_range(param.zmin, param.zmax)
+
+        param = RangeParam()
+        zmin_0, zmax_0 = param.zmin, param.zmax = self.histogram.range.get_range()
+        if param.edit(self, apply=apply_callback):
+            apply_callback(param)
+        else:
+            self.histogram.set_range(zmin_0, zmax_0)
 
     def apply_min_selection(self, tool: SelectPointTool) -> None:
         """Apply minimum selection
@@ -542,7 +586,7 @@ class ContrastAdjustment(PanelWidget):
         Args:
             tool: select point tool
         """
-        item = self.get_plot().get_last_active_item(IVoiImageItemType)
+        item: BaseImageItem = self.get_plot().get_last_active_item(IVoiImageItemType)
         point = self.min_select_tool.get_coordinates()
         z = item.get_data(*point)
         self.histogram.set_min(z)
@@ -554,20 +598,20 @@ class ContrastAdjustment(PanelWidget):
         Args:
             tool: select point tool
         """
-        item = self.get_plot().get_last_active_item(IVoiImageItemType)
+        item: BaseImageItem = self.get_plot().get_last_active_item(IVoiImageItemType)
         point = self.max_select_tool.get_coordinates()
         z = item.get_data(*point)
         self.histogram.set_max(z)
         tool.SIG_TOOL_JOB_FINISHED.emit()
 
-    def set_range(self, _min: float, _max: float) -> None:
+    def set_range(self, zmin: float, zmax: float) -> None:
         """Set contrast panel's histogram range
 
         Args:
-            _min: minimum value
-            _max: maximum value
+            zmin: minimum value
+            zmax: maximum value
         """
-        self.histogram.set_range(_min, _max)
+        self.histogram.set_range(zmin, zmax)
         # Update the levels histogram in case active item data has changed:
         self.histogram.selection_changed(self.get_plot())
 
