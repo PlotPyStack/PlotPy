@@ -50,6 +50,7 @@ from .image import (
     LockTrImageTool,
     OpenImageTool,
     ReverseColormapTool,
+    ReverseXAxisTool,
     ReverseYAxisTool,
     RotateCropTool,
     RotationCenterTool,

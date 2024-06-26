@@ -25,6 +25,9 @@ In this release, test coverage is 79%.
     rectangle coordinates, and returns a string with the statistics to display
 * New `SIG_AXIS_PARAMETERS_CHANGED` signal emitted by `BasePlot` when the axes parameters
   are changed (e.g. when the axes are inverted, or the scale is changed)
+* New "Reverse X axis" feature:
+  * Added new tool `ReverseXAxisTool` to toggle the X-axis direction
+  * The tool is registered by default in the plot widget, like its Y-axis counterpart
 
 🧹 API cleanup:
 

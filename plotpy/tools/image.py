@@ -351,15 +351,16 @@ class ImageStatsTool(RectangularShapeTool):
             self.action.setEnabled(item is not None)
 
 
-class ReverseYAxisTool(ToggleTool):
-    """Togglable tool to reverse y axis
+class BaseReverseAxisTool(ToggleTool):
+    """Base class for tools to reverse axes"""
 
-    Args:
-        manager: PlotManager Instance
-    """
+    TITLE = ""  # To be defined in subclasses
+    AXIS_ID = -1  # To be defined in subclasses
 
     def __init__(self, manager: PlotManager) -> None:
-        super().__init__(manager, _("Reverse Y axis"))
+        assert self.TITLE, "TITLE must be defined in subclasses"
+        assert self.AXIS_ID in BasePlot.AXIS_IDS, "Invalid AXIS_ID"
+        super().__init__(manager, self.TITLE)
 
     def activate_command(self, plot: BasePlot, checked: bool) -> None:
         """Triggers tool action.
@@ -368,9 +369,9 @@ class ReverseYAxisTool(ToggleTool):
             plot: Plot instance
             checked: True if tool is checked, False otherwise
         """
-        plot.set_axis_direction("left", checked)
+        plot.set_axis_direction(self.AXIS_ID, checked)
         plot.replot()
-        plot.SIG_AXIS_PARAMETERS_CHANGED.emit(BasePlot.Y_LEFT)
+        plot.SIG_AXIS_PARAMETERS_CHANGED.emit(self.AXIS_ID)
 
     def update_status(self, plot: BasePlot) -> None:
         """Update tool status if the plot type is not PlotType.CURVE.
@@ -379,7 +380,29 @@ class ReverseYAxisTool(ToggleTool):
             plot: Plot instance
         """
         if update_image_tool_status(self, plot):
-            self.action.setChecked(plot.get_axis_direction("left"))
+            self.action.setChecked(plot.get_axis_direction(self.AXIS_ID))
+
+
+class ReverseXAxisTool(BaseReverseAxisTool):
+    """Togglable tool to reverse X axis
+
+    Args:
+        manager: PlotManager Instance
+    """
+
+    TITLE = _("Reverse X axis")
+    AXIS_ID = BasePlot.X_BOTTOM
+
+
+class ReverseYAxisTool(BaseReverseAxisTool):
+    """Togglable tool to reverse Y axis
+
+    Args:
+        manager: PlotManager Instance
+    """
+
+    TITLE = _("Reverse Y axis")
+    AXIS_ID = BasePlot.Y_LEFT
 
 
 class ZAxisLogTool(ToggleTool):

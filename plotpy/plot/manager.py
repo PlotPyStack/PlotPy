@@ -47,6 +47,7 @@ from plotpy.tools import (
     RectangularSelectionTool,
     RectZoomTool,
     ReverseColormapTool,
+    ReverseXAxisTool,
     ReverseYAxisTool,
     SaveAsTool,
     SelectTool,
@@ -602,6 +603,7 @@ class PlotManager:
         """
         self.add_tool(ColormapTool)
         self.add_tool(ReverseColormapTool)
+        self.add_tool(ReverseXAxisTool)
         self.add_tool(ReverseYAxisTool)
         self.add_tool(ZAxisLogTool)
         self.add_tool(AspectRatioTool)
