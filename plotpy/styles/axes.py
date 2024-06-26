@@ -197,6 +197,8 @@ class ImageAxesParam(DataSet):
         plot.set_plot_limits(self.xmin, self.xmax, self.ymin, self.ymax)
         item.set_lut_range([self.zmin, self.zmax])
         plot.update_colormap_axis(item)
+        for axis_id in (plot.X_BOTTOM, plot.Y_LEFT, plot.Y_RIGHT):
+            plot.SIG_AXIS_PARAMETERS_CHANGED.emit(axis_id)
 
     # TODO: remove this method in a future release
     def update_axes(self, obj: BaseImageItem) -> None:

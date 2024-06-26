@@ -102,6 +102,9 @@ class LevelsHistogram(BasePlot):
         plot.SIG_ITEM_SELECTION_CHANGED.connect(self.selection_changed)
         plot.SIG_ITEM_REMOVED.connect(self.item_removed)
         plot.SIG_ACTIVE_ITEM_CHANGED.connect(self.active_item_changed)
+        plot.SIG_AXIS_PARAMETERS_CHANGED.connect(
+            lambda axis_id: self.axis_parameters_changed(plot=plot, axis_id=axis_id)
+        )
 
     def tracked_items_gen(
         self,
@@ -241,6 +244,16 @@ class LevelsHistogram(BasePlot):
             self.set_range_style(multiple_ranges)
             self.range.set_range(_m, _M, dosignal=False)
         self.replot()
+
+    def axis_parameters_changed(self, plot: BasePlot, axis_id: int) -> None:
+        """Plot axis parameters changed callback
+
+        Args:
+            axis_id: axis ID
+        """
+        if axis_id == BasePlot.Y_RIGHT:
+            # Colormap bounds changed, we need to update the range accordingly:
+            self.active_item_changed(plot)
 
     def set_range_style(self, multiple_ranges: bool) -> None:
         """Set range style

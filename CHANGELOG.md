@@ -44,6 +44,8 @@ In this release, test coverage is 79%.
     using the "Minimum value" or "Maximum value" buttons (which have been renamed to
     "Min." and "Max." in this release)
   * Histogram range was not updated when the "Set full range" button was clicked
+* Image parameters: contrast range was not updated when the image Z axis bounds were
+  changed using the "Parameters" dialog
 
 🧹 API cleanup:
 
