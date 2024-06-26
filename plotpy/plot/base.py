@@ -1890,7 +1890,7 @@ class BasePlot(qwt.QwtPlot):
         dataset = itemparams.get("AxesParam")
         if dataset is not None:
             active_item = self.get_active_item()
-            dataset.update_axes(active_item)
+            dataset.update_item(active_item)
 
     def edit_plot_parameters(self, key: str) -> None:
         """
