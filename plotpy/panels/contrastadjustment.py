@@ -586,7 +586,7 @@ class ContrastAdjustment(PanelWidget):
             """Apply callback"""
             self.histogram.set_range(param.zmin, param.zmax)
 
-        param = RangeParam()
+        param = RangeParam(_("Set range"))
         zmin_0, zmax_0 = param.zmin, param.zmax = self.histogram.range.get_range()
         if param.edit(self, apply=apply_callback):
             apply_callback(param)
