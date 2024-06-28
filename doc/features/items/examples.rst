@@ -66,7 +66,7 @@ using :py:class:`.PlotWidget` and :py:class:`.PlotOptions`::
 
     >>> import guidata
     >>> app = guidata.qapplication()
-    >>> from plotpy.widgets.baseplot import PlotWidget, PlotOptions
+    >>> from plotpy.plot import PlotWidget, PlotOptions
     >>> plot = PlotWidget(options=PlotOptions(title="Example", type="image"))
 
 ...or using the :py:class:`.PlotBuilder` (see :py:attr:`plotpy.builder.make`)::
