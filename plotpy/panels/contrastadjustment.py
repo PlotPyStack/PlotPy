@@ -210,14 +210,18 @@ class LevelsHistogram(BasePlot):
         Args:
             item: item which was removed
         """
-        for _plot, items in list(self._tracked_items.items()):
-            if item in items:
+        replot = False
+        for _plot, items_dict in list(self._tracked_items.items()):
+            if item in items_dict:
                 try:
-                    self.del_item(item)
+                    self.del_item(items_dict[item])
+                    replot = True
                 except ValueError:
                     pass  # Histogram has not yet been created
-                items.pop(item)
+                items_dict.pop(item)
                 break
+        if replot:
+            self.replot()
 
     def active_item_changed(self, plot: BasePlot) -> None:
         """Active item changed callback

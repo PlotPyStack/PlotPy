@@ -1,5 +1,17 @@
 # Changelog #
 
+## Version 2.4.1 ##
+
+In this release, test coverage is 79%.
+
+🛠️ Bug fixes:
+
+* Contrast adjustment panel:
+  * A regression was introduced in V2.0.0: levels histogram was no longer removed from
+    contrast adjustment panel when the associated image was removed from the plot
+  * This is now fixed: when an image is removed, the histogram is removed as well and
+    the contrast panel is refreshed (which was not the case even before the regression)
+
 ## Version 2.4.0 ##
 
 In this release, test coverage is 79%.
