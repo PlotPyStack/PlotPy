@@ -31,7 +31,7 @@ def test_cursor_tool(cursor_tool: type[BaseCursorTool]):
     Args:
         cursor_tool: Cursor tool class to test.
     """
-    with qt_app_context(exec_loop=True):
+    with qt_app_context():
         win, _tool = create_window(cursor_tool)
         win.show()
         plot = win.manager.get_plot()
