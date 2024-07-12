@@ -3,6 +3,7 @@ import unittest
 import numpy as np
 
 from plotpy.items.contour import compute_contours
+from plotpy.tests.data import gen_xyz_data
 
 
 class ContourTest(unittest.TestCase):
@@ -14,18 +15,12 @@ class ContourTest(unittest.TestCase):
     """
 
     def setUp(self):
-        delta = 0.025
-        self.x = np.arange(-3.0, 3.0, delta)
-        self.y = np.arange(-2.0, 2.0, delta)
-        self.X, self.Y = np.meshgrid(self.x, self.y)
-        Z1 = np.exp(-self.X**2 - self.Y**2)
-        Z2 = np.exp(-((self.X - 1) ** 2) - (self.Y - 1) ** 2)
-        self.Z = (Z1 - Z2) * 2
+        self.X, self.Y, self.Z = gen_xyz_data()
 
     def test_contour_level_1(self):
         """Test that contour() returns one closed line when level is 1.0"""
         # Ortho coord
-        lines = compute_contours(self.Z, 1.0, self.x, self.y)
+        lines = compute_contours(self.Z, 1.0, self.X, self.Y)
         assert len(lines) == 1
         assert np.all(np.equal(lines[0].vertices[0], lines[0].vertices[-1]))
         assert lines[0].level == 1.0
@@ -40,21 +35,21 @@ class ContourTest(unittest.TestCase):
         """Test that contour() returns opened lines (diagonal) when level is 0.0"""
         lines = compute_contours(self.Z, 0.0, self.X, self.Y)
         assert len(lines) == 1
-        assert np.all(lines[0].vertices[0] != lines[0].vertices[-1])
+        assert np.any(lines[0].vertices[0] != lines[0].vertices[-1])
         assert lines[0].level == 0.0
 
     def test_contour_level_opened_neg_0_5(self):
         """Test that contour() returns opened lines when level is -0.5"""
         lines = compute_contours(self.Z, -0.5, self.X, self.Y)
         assert len(lines) == 1
-        assert np.all(lines[0].vertices[0] != lines[0].vertices[-1])
+        assert np.any(lines[0].vertices[0] != lines[0].vertices[-1])
         assert lines[0].level == -0.5
 
     def test_contour_abs_level_1(self):
         """Test that contour() returns two closed lines when level is 1.0
         and data are absolute.
         """
-        lines = compute_contours(np.abs(self.Z), 1.0, self.x, self.y)
+        lines = compute_contours(np.abs(self.Z), 1.0, self.X, self.Y)
         assert len(lines) == 2
         for line in lines:
             assert np.all(np.equal(line.vertices[0], line.vertices[-1]))

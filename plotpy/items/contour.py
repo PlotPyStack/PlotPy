@@ -26,9 +26,9 @@ import guidata.dataset as gds
 import numpy as np
 from guidata.configtools import get_icon
 from guidata.utils.misc import assert_interfaces_valid
+from skimage import measure
 
 from plotpy.config import _
-from plotpy.contour2d import contour_2d_grid, contour_2d_ortho
 from plotpy.items.shape.polygon import PolygonShape
 from plotpy.styles import ShapeParam
 
@@ -73,64 +73,33 @@ def compute_contours(
         raise TypeError("Input z must be a 2D array.")
     elif z.shape[0] < 2 or z.shape[1] < 2:
         raise TypeError("Input z must be at least a 2x2 array.")
-    else:
-        Ny, Nx = z.shape
-
-    if X is None:
-        X = np.arange(Nx)
-    if Y is None:
-        Y = np.arange(Ny)
-
-    x = np.asarray(X, dtype=np.float64)
-    y = np.asarray(Y, dtype=np.float64)
-
-    if x.ndim != y.ndim:
-        raise TypeError("Number of dimensions of x and y should match.")
-    if x.ndim == 1:
-        (nx,) = x.shape
-        (ny,) = y.shape
-        if nx != Nx:
-            raise TypeError("Length of x must be number of columns in z.")
-        if ny != Ny:
-            raise TypeError("Length of y must be number of rows in z.")
-    elif x.ndim == 2:
-        if x.shape != z.shape:
-            raise TypeError(
-                "Shape of x does not match that of z: found "
-                "{0} instead of {1}.".format(x.shape, z.shape)
-            )
-        if y.shape != z.shape:
-            raise TypeError(
-                "Shape of y does not match that of z: found "
-                "{0} instead of {1}.".format(y.shape, z.shape)
-            )
-    else:
-        raise TypeError("Inputs x and y must be 1D or 2D.")
 
     if isinstance(levels, np.ndarray):
         levels = np.asarray(levels, dtype=np.float64)
     else:
         levels = np.asarray([levels], dtype=np.float64)
 
-    if x.ndim == 2:
-        func = contour_2d_grid
+    if X is None:
+        delta_x, x_origin = 1.0, 0.0
     else:
-        func = contour_2d_ortho
+        delta_x, x_origin = X[0, 1] - X[0, 0], X[0, 0]
+    if Y is None:
+        delta_y, y_origin = 1.0, 0.0
+    else:
+        delta_y, y_origin = Y[1, 0] - Y[0, 0], Y[0, 0]
 
-    lines = []
-    points, offsets = func(z, x, y, levels)
-    start = 0
-    v = 0
-    for v, index in offsets:
-        if index - start >= 2:
-            cline = ContourLine.create(vertices=points[start:index], level=levels[v])
-            lines.append(cline)
-        start = index
-    last_points = points[start:]
-    if len(last_points) >= 2:
-        cline = ContourLine.create(vertices=last_points, level=levels[v])
-        lines.append(cline)
-    return lines
+    # Find contours in the binary image for each level
+    clines = []
+    for level in levels:
+        for contour in measure.find_contours(Z, level):
+            contour = contour.squeeze()
+            if len(contour) > 1:  # Avoid single points
+                line = np.zeros_like(contour, dtype=np.float32)
+                line[:, 0] = contour[:, 1] * delta_x + x_origin
+                line[:, 1] = contour[:, 0] * delta_y + y_origin
+                cline = ContourLine.create(vertices=line, level=level)
+                clines.append(cline)
+    return clines
 
 
 class ContourItem(PolygonShape):
@@ -179,11 +148,12 @@ def create_contour_items(
         A list of :py:class:`.ContourItem` instances.
     """
     items = []
-    lines = compute_contours(Z, levels, X, Y)
-    for line in lines:
+
+    contours = compute_contours(Z, levels, X, Y)
+    for cline in contours:
         param = ShapeParam("Contour", icon="contour.png")
-        item = ContourItem(points=line.vertices, shapeparam=param)
+        item = ContourItem(points=cline.vertices, shapeparam=param)
         item.set_style("plot", "shape/contour")
-        item.setTitle(_("Contour") + f"[Z={line.level}]")
+        item.setTitle(_("Contour") + f"[Z={cline.level}]")
         items.append(item)
     return items

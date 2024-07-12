@@ -72,13 +72,6 @@ setup(
             define_macros=MACROS_CYTHON,
         ),
         Extension(
-            name=f"{LIBNAME}.contour2d",
-            sources=[osp.join(SRCPATH, "contour2d.c")],
-            include_dirs=INCLUDE_DIRS,
-            extra_compile_args=CFLAGS_CYTHON,
-            define_macros=MACROS_CYTHON,
-        ),
-        Extension(
             name=f"{LIBNAME}._scaler",
             sources=[osp.join(SRCPATH, "scaler.cpp"), osp.join(SRCPATH, "pcolor.cpp")],
             extra_compile_args=CFLAGS_CPP,

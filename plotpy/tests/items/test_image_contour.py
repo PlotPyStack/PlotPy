@@ -12,22 +12,15 @@ from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
 from plotpy.tests import vistools as ptv
+from plotpy.tests.data import gen_xyz_data
 
 
 def test_contour():
     """Contour plotting test"""
     with qt_app_context(exec_loop=True):
-        # compute the image
-        delta = 0.025
-        x, y = np.arange(-3.0, 3.0, delta), np.arange(-2.0, 2.0, delta)
-        X, Y = np.meshgrid(x, y)
-        Z1 = np.exp(-(X**2) - Y**2)
-        Z2 = np.exp(-((X - 1) ** 2) - (Y - 1) ** 2)
-        Z = (Z1 - Z2) * 2
-
-        # show the image
+        _x, _y, z = gen_xyz_data()
         _win = ptv.show_items(
-            [make.image(Z)] + make.contours(Z, np.arange(-2, 2, 0.5)),
+            [make.image(z)] + make.contours(z, np.arange(-2, 2, 0.5)),
             wintitle=test_contour.__doc__,
             curve_antialiasing=False,
             lock_aspect_ratio=True,

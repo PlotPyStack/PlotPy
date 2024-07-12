@@ -43,7 +43,6 @@ pylint_report.txt
 docs/build/
 
 # Generated cython c file
-src/contour2d.c
 src/histogram2d.c
 src/mandelbrot.c
 

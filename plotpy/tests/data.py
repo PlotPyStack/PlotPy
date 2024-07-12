@@ -164,3 +164,14 @@ def gen_2d_gaussian(size, dtype, x0=0, y0=0, mu=0.0, sigma=2.0, amp=None):
         amp = np.iinfo(dtype).max * 0.5
     t = (np.sqrt((x - x0) ** 2 + (y - y0) ** 2) - mu) ** 2
     return np.array(amp * np.exp(-t / (2.0 * sigma**2)), dtype=dtype)
+
+
+def gen_xyz_data():
+    """Create a X, Y, Z data set for contour detection features"""
+    delta = 0.025
+    x, y = np.arange(-3.0, 3.0, delta), np.arange(-2.0, 2.0, delta)
+    X, Y = np.meshgrid(x, y)
+    Z1 = np.exp(-(X**2) - Y**2)
+    Z2 = np.exp(-((X - 1) ** 2) - (Y - 1) ** 2)
+    Z = (Z1 - Z2) * 2
+    return X, Y, Z

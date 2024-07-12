@@ -1,5 +1,22 @@
 # Changelog #
 
+## Version 2.4.2 ##
+
+In this release, test coverage is 79%.
+
+🛠️ Bug fixes:
+
+* [Issue #17](https://github.com/PlotPyStack/PlotPy/issues/17):
+  * Debian's Python team has reported that the contour unit test was failing on `arm64`
+    architecture
+  * This is the opportunity to replace the `contour2d` Cython extension by scikit-image's
+    `find_contours` function, thus avoiding to reinvent the wheel by relying on a more
+    robust and tested implementation
+  * The `contour2d` Cython extension is removed from the source code
+  * The contour related features remain the same, but the implementation is now based on
+    scikit-image's `find_contours` function
+  * The scikit-image dependency is added to the package requirements
+
 ## Version 2.4.1 ##
 
 In this release, test coverage is 79%.
