@@ -1,6 +1,7 @@
 Coverage
 Cython
 NumPy>=1.17
+scikit-image>=0.18
 Pillow
 tifffile
 PyQt5
