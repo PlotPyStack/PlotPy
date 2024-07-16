@@ -5,9 +5,6 @@
 
 """Test showing an image"""
 
-# FIXME: unexpected behavior when changing the xmin/xmax/ymin/ymax values in
-#       the image parameters (2nd tab: "Axes")
-
 # guitest: show
 
 from guidata.qthelpers import qt_app_context
