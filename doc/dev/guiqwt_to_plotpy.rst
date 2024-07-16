@@ -141,9 +141,11 @@ See demo script `tests/items/test_annotations.py`.
 New contour features
 ~~~~~~~~~~~~~~~~~~~~
 
-plotpy integrates now a contour detection algorithm, so that plotpy based
-applications depending on matplotlib only for this function can drop this
-additional dependency.
+PlotPy integrates contour detection plot items, based on the contour detection
+algorithm provided by the `scikit-image` library.
+
+As a consequence, the applications that previously depended on `matplotlib` only for
+contour detection can now drop this dependency.
 
 See demo script `tests/items/test_contour.py`.
 
