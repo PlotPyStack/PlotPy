@@ -333,16 +333,16 @@ class BaseImageItem(QwtPlotItem):
             data: 2D NumPy array
             lut_range: LUT range -- tuple (levelmin, levelmax) (Default value = None)
         """
-        if lut_range is not None:
-            _min, _max = lut_range
-        else:
-            _min, _max = get_nan_range(data)
-
         self.data = data
         self.histogram_cache = None
         self.update_bounds()
         self.update_border()
-        self.set_lut_range((_min, _max))
+        if not self.param.keep_lut_range:
+            if lut_range is not None:
+                _min, _max = lut_range
+            else:
+                _min, _max = get_nan_range(data)
+            self.set_lut_range((_min, _max))
 
     def get_data(
         self, x0: float, y0: float, x1: float | None = None, y1: float | None = None

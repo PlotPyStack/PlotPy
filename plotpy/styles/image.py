@@ -98,6 +98,17 @@ class BaseImageParam(DataSet):
     )
     invert_colormap = BoolItem(_("Invert colormap"), default=False)
 
+    keep_lut_range = BoolItem(
+        _("Lock LUT range when updating data"),
+        default=False,
+        help=_(
+            "If enabled, the LUT range is not updated when the image data changes."
+            "<br>This allows to keep the same color scale for different successive "
+            "images. <br><br>"
+            "<u>Note:</u> It has no effect when a new image is added to the plot."
+        ),
+    )
+
     interpolation = ChoiceItem(
         _("Interpolation"),
         [

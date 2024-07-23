@@ -27,6 +27,8 @@ def show_items(
     lock_aspect_ratio: bool | None = None,
     curve_antialiasing: bool | None = None,
     show_itemlist: bool = True,
+    show_contrast: bool = False,
+    winsize: tuple[int, int] | None = None,
 ) -> PlotWindow:
     """Show plot items in a dialog box"""
     win = make.dialog(
@@ -41,7 +43,10 @@ def show_items(
         lock_aspect_ratio=lock_aspect_ratio,
         curve_antialiasing=curve_antialiasing,
         show_itemlist=show_itemlist,
+        show_contrast=show_contrast,
     )
+    if winsize is not None:
+        win.resize(*winsize)
     plot = win.manager.get_plot()
     for item in items:
         plot.add_item(item)

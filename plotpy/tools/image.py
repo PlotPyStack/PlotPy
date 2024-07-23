@@ -664,7 +664,9 @@ class ColormapTool(CommandTool):
             plot: Plot Instance
         """
         if update_image_tool_status(self, plot):
-            item: BaseImageItem = plot.get_last_active_item(IColormapImageItemType)
+            item: BaseImageItem | None = plot.get_last_active_item(
+                IColormapImageItemType
+            )
             icon = self.default_icon
             cmap_name = "jet"
             if item:
@@ -717,7 +719,9 @@ class ReverseColormapTool(ToggleTool):
             plot: Plot instance
         """
         if update_image_tool_status(self, plot):
-            item: BaseImageItem = plot.get_last_active_item(IColormapImageItemType)
+            item: BaseImageItem | None = plot.get_last_active_item(
+                IColormapImageItemType
+            )
             state = False
             if item:
                 self.action.setEnabled(True)
@@ -728,6 +732,58 @@ class ReverseColormapTool(ToggleTool):
             else:
                 self.action.setEnabled(False)
                 self._active_colormap = ALL_COLORMAPS["jet"]
+            self.action.setChecked(state)
+
+
+class LockLUTRangeTool(ToggleTool):
+    """Togglable tool to keep LUT range when updating image data
+
+    Args:
+        manager: PlotManager Instance
+    """
+
+    def __init__(self, manager: PlotManager) -> None:
+        super().__init__(
+            manager,
+            _("Lock LUT range (update)"),
+            tip=_(
+                "If enabled, the LUT range is not updated when the image data changes."
+                "<br>This allows to keep the same color scale for different successive "
+                "images. <br><br>"
+                "<u>Note:</u> It has no effect when a new image is added to the plot."
+            ),
+        )
+
+    def activate_command(self, plot: BasePlot, checked: bool) -> None:
+        """Triggers tool action.
+
+        Args:
+            plot: Plot instance
+            checked: True if tool is checked, False otherwise
+        """
+        plot: BasePlot = self.get_active_plot()
+        if plot is not None:
+            items = get_selected_images(plot, IColormapImageItemType)
+            for item in items:
+                param: BaseImageParam = item.param
+                param.keep_lut_range = checked
+            self.update_status(plot)
+
+    def update_status(self, plot: BasePlot) -> None:
+        """Update tool status if the plot type is not PlotType.CURVE.
+
+        Args:
+            plot: Plot instance
+        """
+        if update_image_tool_status(self, plot):
+            item: BaseImageItem | None = plot.get_last_active_item(
+                IColormapImageItemType
+            )
+            self.action.setEnabled(item is not None)
+            state = False
+            if item is not None:
+                param: BaseImageParam = item.param
+                state = param.keep_lut_range
             self.action.setChecked(state)
 
 

@@ -1,5 +1,25 @@
 # Changelog #
 
+## Version 2.5.0 ##
+
+In this release, test coverage is 79%.
+
+💥 New features / Enhancements:
+
+* Added "Lock LUT range" option for image items:
+  * This new option is disabled by default, which matches the previous behavior:
+    when updating an image item data, the LUT range is automatically adjusted to
+    the new data range (if not passed as an argument to the `BaseImageItem.set_data`
+    method)
+  * When enabled, the LUT range is locked and the LUT range is not adjusted when
+    updating the image item data
+  * The option is available in image parameters dialog
+  * A new tool `LockLUTRangeTool` has been implemented to toggle the option from the
+    plot context menu: the tool is not registered by default in the plot widget, but
+    can be added by the host application if needed
+  * See test script `tests.features.test_image_data_update` for an example of usage
+    of the new option and tool
+
 ## Version 2.4.2 ##
 
 In this release, test coverage is 79%.

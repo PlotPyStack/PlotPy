@@ -1673,12 +1673,13 @@ class BasePlot(qwt.QwtPlot):
             self.SIG_ACTIVE_ITEM_CHANGED.emit(self)
         self.SIG_ITEM_SELECTION_CHANGED.emit(self)
 
-    def set_active_item(self, item: itf.IBasePlotItem) -> None:
+    def set_active_item(self, item: itf.IBasePlotItem, select: bool = True) -> None:
         """Set active item, and unselect the old active item. For CurveItems,
         the grid axes are changed according to the selected item
 
         Args:
-            item (IBasePlotItem): the item
+            item: the item
+            select: select item after setting it as active (optional, default=True)
         """
         old_active = self.active_item
         self.active_item = item
@@ -1695,6 +1696,9 @@ class BasePlot(qwt.QwtPlot):
                 self.grid.setAxes(item.xAxis(), item.yAxis())
             elif isinstance(item, BaseImageItem):
                 self.update_colormap_axis(item)
+
+        if not select and item is not None:
+            self.unselect_item(item)
 
     def get_active_axes(self) -> tuple[int, int]:
         """Return active axes

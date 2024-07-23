@@ -118,6 +118,8 @@ Image tools
    :members:
 .. autoclass:: plotpy.tools.ReverseColormapTool
    :members:
+.. autoclass:: plotpy.tools.LockLUTRangeTool
+   :members:
 .. autoclass:: plotpy.tools.XCSPanelTool
    :members:
 .. autoclass:: plotpy.tools.YCSPanelTool
