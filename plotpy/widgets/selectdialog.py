@@ -39,7 +39,7 @@ Reference
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from guidata.configtools import get_icon
 from guidata.qthelpers import exec_dialog
@@ -75,7 +75,7 @@ class SelectDialog(PlotDialog):
         self,
         parent: QWidget | None = None,
         toolbar: bool = False,
-        options: PlotOptions | None = None,
+        options: PlotOptions | dict[str, Any] | None = None,
         panels: list[PanelWidget] | None = None,
         auto_tools: bool = True,
         title: str = "PlotPy",
@@ -142,7 +142,7 @@ def select_with_shape_tool(
     other_items: list[QwtPlotItem] = [],
     tooldialogclass: SelectDialog = SelectDialog,
     toolbar: bool = False,
-    options: PlotOptions | None = None,
+    options: PlotOptions | dict[str, Any] | None = None,
     icon=None,
     **kwargs,
 ) -> AbstractShape:

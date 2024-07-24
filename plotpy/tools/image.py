@@ -1265,7 +1265,7 @@ class RotateCropTool(CommandTool):
         self,
         manager: PlotManager,
         toolbar_id=DefaultToolbarID,
-        options: PlotOptions | None = None,
+        options: PlotOptions | dict[str, Any] | None = None,
     ) -> None:
         super().__init__(
             manager,

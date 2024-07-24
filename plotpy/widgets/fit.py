@@ -47,7 +47,7 @@ Reference
 from __future__ import annotations
 
 from collections.abc import Callable
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import guidata
 import numpy as np
@@ -857,7 +857,7 @@ class FitDialog(PlotDialog):
         edit: bool = True,
         toolbar: bool = False,
         auto_tools: bool = True,
-        options: PlotOptions | None = None,
+        options: PlotOptions | dict[str, Any] | None = None,
         parent: QWidget | None = None,
         panels: list[PanelWidget] | None = None,
         param_cols: int = 1,

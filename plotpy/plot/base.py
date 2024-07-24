@@ -298,9 +298,11 @@ class BasePlot(qwt.QwtPlot):
     def __init__(
         self,
         parent: QW.QWidget | None = None,
-        options: BasePlotOptions | None = None,
+        options: BasePlotOptions | dict[str, Any] | None = None,
     ) -> None:
         super().__init__(parent)
+        if isinstance(options, dict):
+            options = BasePlotOptions(**options)
         self.options = options = options if options is not None else BasePlotOptions()
 
         self.__autoscale_excluded_items: list[itf.IBasePlotItem] = []

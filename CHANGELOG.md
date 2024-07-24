@@ -13,6 +13,30 @@ In this release, test coverage is 79%.
     `plotpy.constants` module, and using them everywhere in the code, thus avoiding
     to import the `plotpy.plot` module just to get the axis IDs
 
+💥 New features / Enhancements:
+
+* Alternative dictionary argument for plot options:
+  * This new feature was introduced in the context of the cyclic import bug fix,
+    to avoid importing the `plotpy.plot` module just to get the `PlotOptions` or
+    `BasePlotOptions` classes
+  * All classes (and a few functions) that used to take an `options` argument as
+    a `BasePlotOptions` or `PlotOptions` instance now also accept a dictionary
+    argument with the same keys as the `BasePlotOptions` or `PlotOptions` class
+    attributes, and the same values as the corresponding attributes
+  * This concerns the following classes and functions:
+    * `plotpy.plot.BasePlot`
+    * `plotpy.plot.PlotWidget`
+    * `plotpy.plot.PlotDialog`
+    * `plotpy.plot.PlotWindow`
+    * `plotpy.plot.SubPlotWidget`
+    * `plotpy.plot.SyncPlotWindow`
+    * `plotpy.tools.RotateCropTool`
+    * `plotpy.widgets.fit.FitDialog`
+    * `plotpy.widgets.fliprotate.FlipRotateDialog`
+    * `plotpy.widgets.rotatecrop.RotateCropDialog`
+    * `plotpy.widgets.selectdialog.SelectDialog`
+    * `plotpy.widgets.selectdialog.select_with_shape_tool`
+
 ## Version 2.4.2 ##
 
 In this release, test coverage is 79%.
