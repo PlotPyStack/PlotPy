@@ -32,6 +32,43 @@ In this release, test coverage is 79%.
   * This is now fixed by introducing new constants for axis IDs in the
     `plotpy.constants` module, and using them everywhere in the code, thus avoiding
     to import the `plotpy.plot` module just to get the axis IDs
+* Fix empty label in X/Y cross section plots:
+  * This is a regression introduced in V2.1.0
+  * When showing the X/Y cross section plots (using the plot context menu), an empty
+    label was displayed at the center of each of those plots
+  * The label now shows "Enable a marker" as previously
+* Fix historic unexpected behavior of interactive tools:
+  * When triggering an interactive tool (e.g. by clicking on the corresponding toolbar
+    button), the tool `activate` method was called twice, which was not expected, but
+    was not causing any issue given the current implementation
+  * However, when defining custom interactive tools, this behavior could lead to
+    unexpected results (i.e. really executing activation actions twice)
+  * This is now fixed: the `activate` method is called only once when triggering an
+    interactive tool
+
+💥 New features / Enhancements:
+
+* Alternative dictionary argument for plot options:
+  * This new feature was introduced in the context of the cyclic import bug fix,
+    to avoid importing the `plotpy.plot` module just to get the `PlotOptions` or
+    `BasePlotOptions` classes
+  * All classes (and a few functions) that used to take an `options` argument as
+    a `BasePlotOptions` or `PlotOptions` instance now also accept a dictionary
+    argument with the same keys as the `BasePlotOptions` or `PlotOptions` class
+    attributes, and the same values as the corresponding attributes
+  * This concerns the following classes and functions:
+    * `plotpy.plot.BasePlot`
+    * `plotpy.plot.PlotWidget`
+    * `plotpy.plot.PlotDialog`
+    * `plotpy.plot.PlotWindow`
+    * `plotpy.plot.SubPlotWidget`
+    * `plotpy.plot.SyncPlotWindow`
+    * `plotpy.tools.RotateCropTool`
+    * `plotpy.widgets.fit.FitDialog`
+    * `plotpy.widgets.fliprotate.FlipRotateDialog`
+    * `plotpy.widgets.rotatecrop.RotateCropDialog`
+    * `plotpy.widgets.selectdialog.SelectDialog`
+    * `plotpy.widgets.selectdialog.select_with_shape_tool`
 
 ## Version 2.4.2 ##
 

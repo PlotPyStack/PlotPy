@@ -5,7 +5,7 @@ from __future__ import annotations
 import abc
 import warnings
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from guidata.configtools import get_icon
 from guidata.qthelpers import win32_fix_title_bar_background
@@ -115,10 +115,12 @@ class BasePlotWidget(QW.QSplitter):
     def __init__(
         self,
         parent: QWidget = None,
-        options: PlotOptions | None = None,
+        options: PlotOptions | dict[str, Any] | None = None,
     ) -> None:
         super().__init__(parent)
         self.manager: PlotManager | None = None
+        if isinstance(options, dict):
+            options = PlotOptions(**options)
         self.options = options = options if options is not None else PlotOptions()
         self.setSizePolicy(QW.QSizePolicy.Expanding, QW.QSizePolicy.Expanding)
         self.plot = self.create_plot()
@@ -304,7 +306,7 @@ class PlotWidget(BasePlotWidget):
         self,
         parent: QWidget | None = None,
         toolbar: bool = False,
-        options: PlotOptions | None = None,
+        options: PlotOptions | dict[str, Any] | None = None,
         panels: tuple[PanelWidget] | None = None,
         auto_tools: bool = True,
     ) -> None:
@@ -456,7 +458,7 @@ class AbstractPlotDialogWindow(abc.ABC):
     def setup_widget(
         self,
         toolbar: bool = False,
-        options: dict | None = None,
+        options: PlotOptions | dict[str, Any] | None = None,
         panels: list[PanelWidget] | None = None,
         auto_tools: bool = False,
     ) -> None:
@@ -539,7 +541,7 @@ class PlotDialog(QW.QDialog, AbstractPlotDialogWindow, metaclass=PlotDialogMeta)
         self,
         parent: QWidget | None = None,
         toolbar: bool = False,
-        options: PlotOptions | None = None,
+        options: PlotOptions | dict[str, Any] | None = None,
         panels: list[PanelWidget] | None = None,
         auto_tools: bool = True,
         title: str = "PlotPy",
@@ -590,7 +592,7 @@ class PlotDialog(QW.QDialog, AbstractPlotDialogWindow, metaclass=PlotDialogMeta)
     def setup_widget(
         self,
         toolbar: bool = False,
-        options: PlotOptions | None = None,
+        options: PlotOptions | dict[str, Any] | None = None,
         panels: list[PanelWidget] | None = None,
         auto_tools: bool = False,
     ) -> None:
@@ -696,7 +698,7 @@ class PlotWindow(QW.QMainWindow, AbstractPlotDialogWindow, metaclass=PlotWindowM
         self,
         parent: QWidget | None = None,
         toolbar: bool = False,
-        options: PlotOptions | None = None,
+        options: PlotOptions | dict[str, Any] | None = None,
         panels: list[PanelWidget] | None = None,
         auto_tools: bool = True,
         title: str = "PlotPy",
@@ -742,7 +744,7 @@ class PlotWindow(QW.QMainWindow, AbstractPlotDialogWindow, metaclass=PlotWindowM
     def setup_widget(
         self,
         toolbar: bool = False,
-        options: PlotOptions | None = None,
+        options: PlotOptions | dict[str, Any] | None = None,
         panels: list[PanelWidget] | None = None,
         auto_tools: bool = False,
     ) -> None:
@@ -843,7 +845,7 @@ class SubplotWidget(BasePlotWidget):
         self,
         manager: PlotManager,
         parent: QWidget | None = None,
-        options: PlotOptions | None = None,
+        options: PlotOptions | dict[str, Any] | None = None,
     ) -> None:
         self.plotlayout: QW.QGridLayout | None = None
         super().__init__(parent, options=options)
@@ -914,7 +916,7 @@ class SyncPlotWindow(QW.QMainWindow):
         self,
         parent: QWidget | None = None,
         toolbar: bool = True,
-        options: PlotOptions | None = None,
+        options: PlotOptions | dict[str, Any] | None = None,
         auto_tools: bool = True,
         title: str = "PlotPy",
         icon: str = "plotpy.svg",

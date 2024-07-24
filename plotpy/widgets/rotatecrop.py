@@ -24,7 +24,7 @@ Reference
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from guidata.qthelpers import win32_fix_title_bar_background
 from qtpy import QtCore as QC
@@ -138,7 +138,7 @@ class RotateCropDialog(QW.QDialog):
         self,
         parent: QWidget,
         title: str | None = None,
-        options: PlotOptions | None = None,
+        options: PlotOptions | dict[str, Any] | None = None,
         resize_to: tuple[int, int] | None = None,
         edit: bool = True,
         toolbar: bool = False,
@@ -204,7 +204,7 @@ class RotateCropWidget(basetransform.BaseTransformWidget):
         self,
         parent: QWidget,
         toolbar: bool = False,
-        options: PlotOptions | None = None,
+        options: PlotOptions | dict[str, Any] | None = None,
     ) -> None:
         super().__init__(parent, toolbar=toolbar, options=options)
         self.transform = RotateCropTransform(self, self.plot_widget.manager)

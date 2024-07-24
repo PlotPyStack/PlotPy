@@ -24,7 +24,7 @@ Reference
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from guidata.configtools import get_icon
@@ -99,7 +99,7 @@ class FlipRotateDialog(QW.QDialog):
         self,
         parent: QWidget,
         title: str | None = None,
-        options: dict | None = None,
+        options: PlotOptions | dict[str, Any] | None = None,
         resize_to: tuple[int, int] | None = None,
         edit: bool = True,
         toolbar: bool = False,
@@ -169,7 +169,7 @@ class FlipRotateWidget(basetransform.BaseTransformWidget):
         self,
         parent: QWidget,
         toolbar: bool = False,
-        options: PlotOptions | None = None,
+        options: PlotOptions | dict[str, Any] | None = None,
     ):
         self.angle_combo = None
         self.hflip_btn = None

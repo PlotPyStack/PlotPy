@@ -236,14 +236,16 @@ class InteractiveTool(GuiTool):
             filter.set_cursor(curs, start_state)
 
     def interactive_triggered(self, action: QW.QAction) -> None:
-        """Slot called when the tool action is triggered
+        """Slot called when the interactive tool action group is triggered.
+        The purpose is to deactivate all other tools in the group.
+
+        Note that the tool itself has already been activated because the action
+        triggered the `activate` method.
 
         Args:
             action: tool action
         """
-        if action is self.action:
-            self.activate()
-        else:
+        if action is not self.action:
             self.deactivate()
 
     def activate(self) -> None:

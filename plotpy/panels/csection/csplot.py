@@ -17,6 +17,7 @@ from plotpy.panels.csection.csitem import (
     XCrossSectionItem,
     YCrossSectionItem,
 )
+from plotpy.plot.base import BasePlot
 from plotpy.styles.curve import CurveParam
 
 LUT_AXIS_TITLE = _("LUT scale") + (" (0-%d)" % LUT_MAX)
@@ -27,7 +28,6 @@ if TYPE_CHECKING:
 
     from plotpy.items import BaseImageItem
     from plotpy.panels.csection.csitem import CrossSectionItem
-    from plotpy.plot.base import BasePlot
 
 
 class BaseCrossSectionPlot(BasePlot):
@@ -364,6 +364,7 @@ class BaseCrossSectionPlot(BasePlot):
 
 
 class HorizontalCrossSectionPlot(BaseCrossSectionPlot):
+    LABEL_TEXT = _("Enable a marker")
     CS_AXIS = X_BOTTOM
     Z_AXIS = Y_LEFT
 
@@ -391,6 +392,7 @@ class HorizontalCrossSectionPlot(BaseCrossSectionPlot):
 
 
 class VerticalCrossSectionPlot(BaseCrossSectionPlot):
+    LABEL_TEXT = _("Enable a marker")
     CS_AXIS = Y_LEFT
     Z_AXIS = X_BOTTOM
     Z_MAX_MAJOR = 3
@@ -419,8 +421,6 @@ class VerticalCrossSectionPlot(BaseCrossSectionPlot):
 
 
 class XYCrossSectionMixin:
-    LABEL_TEXT = _("Enable a marker")
-
     def connect_plot(self, plot: BasePlot) -> None:
         """Connect plot to cross section plot
 

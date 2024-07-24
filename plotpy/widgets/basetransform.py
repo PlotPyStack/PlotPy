@@ -14,7 +14,7 @@ The `base` module provides base objects for internal use of the
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Any, Union
 
 from guidata.configtools import get_icon
 from guidata.qthelpers import create_toolbutton
@@ -166,9 +166,11 @@ class BaseTransformWidget(QW.QWidget):
         self,
         parent: QW.QWidget,
         toolbar: bool = False,
-        options: PlotOptions | None = None,
+        options: PlotOptions | dict[str, Any] | None = None,
     ) -> None:
         super().__init__(parent)
+        if isinstance(options, dict):
+            options = PlotOptions(**options)
         options = options if options is not None else PlotOptions()
         options.type = "image"
         self.plot_widget = PlotWidget(self, options=options, toolbar=toolbar)
