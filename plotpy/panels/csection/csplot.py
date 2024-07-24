@@ -17,6 +17,7 @@ from plotpy.panels.csection.csitem import (
     XCrossSectionItem,
     YCrossSectionItem,
 )
+from plotpy.plot.base import BasePlot
 from plotpy.styles.curve import CurveParam
 
 LUT_AXIS_TITLE = _("LUT scale") + (" (0-%d)" % LUT_MAX)
@@ -27,7 +28,6 @@ if TYPE_CHECKING:
 
     from plotpy.items import BaseImageItem
     from plotpy.panels.csection.csitem import CrossSectionItem
-    from plotpy.plot.base import BasePlot
 
 
 class BaseCrossSectionPlot(BasePlot):
