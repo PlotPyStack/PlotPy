@@ -28,7 +28,7 @@ from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
 from plotpy.config import CONF, IS_DARK, _
-from plotpy.constants import ID_CONTRAST, PlotType
+from plotpy.constants import ID_CONTRAST, Y_LEFT, Y_RIGHT, PlotType
 from plotpy.interfaces import IPanel, IVoiImageItemType
 from plotpy.items import HistogramItem, XRangeSelection
 from plotpy.lutrange import lut_range_threshold
@@ -61,7 +61,7 @@ class LevelsHistogram(BasePlot):
     #: the base plot class (see :py:attr:`.BasePlot.SIG_LUT_CHANGED`).
     SIG_VOI_CHANGED = QC.Signal()
 
-    def __init__(self, parent: QWidget = None) -> None:
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(
             parent=parent,
             options=BasePlotOptions(title="", section="histogram", type="curve"),
@@ -82,8 +82,8 @@ class LevelsHistogram(BasePlot):
         self.set_active_item(self.range)
 
         self.setMinimumHeight(80)
-        self.setAxisMaxMajor(self.Y_LEFT, 5)
-        self.setAxisMaxMinor(self.Y_LEFT, 0)
+        self.setAxisMaxMajor(Y_LEFT, 5)
+        self.setAxisMaxMinor(Y_LEFT, 0)
 
         if parent is None:
             self.set_axis_title("bottom", "Levels")
@@ -255,7 +255,7 @@ class LevelsHistogram(BasePlot):
         Args:
             axis_id: axis ID
         """
-        if axis_id == BasePlot.Y_RIGHT:
+        if axis_id == Y_RIGHT:
             # Colormap bounds changed, we need to update the range accordingly:
             self.active_item_changed(plot)
 

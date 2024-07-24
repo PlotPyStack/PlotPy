@@ -10,6 +10,7 @@ import numpy as np
 from qtpy import QtCore as QC
 
 from plotpy.config import _
+from plotpy.constants import X_BOTTOM, Y_LEFT
 from plotpy.coords import axes_to_canvas, canvas_to_axes
 from plotpy.interfaces import IBasePlotItem
 from plotpy.items.curve.errorbar import ErrorBarCurveItem
@@ -96,7 +97,7 @@ def get_plot_y_section(obj, apply_lut=False):
     """
     x0, _y0 = get_object_coordinates(obj)
     plot = obj.plot()
-    ymap = plot.canvasMap(plot.Y_LEFT)
+    ymap = plot.canvasMap(Y_LEFT)
     yc0, yc1 = ymap.p1(), ymap.p2()
     if plot.get_axis_direction("left"):
         yc1, yc0 = yc0, yc1
@@ -361,9 +362,9 @@ class CrossSectionItem(ErrorBarCurveItem):
         """ """
         plot = self.plot()
         if self.orientation() == QC.Qt.Orientation.Vertical:
-            axis_id = plot.Y_LEFT
+            axis_id = Y_LEFT
         else:
-            axis_id = plot.X_BOTTOM
+            axis_id = X_BOTTOM
         source = self.get_source_image()
         sdiv = source.plot().axisScaleDiv(axis_id)
         plot.setAxisScale(axis_id, sdiv.lowerBound(), sdiv.upperBound())

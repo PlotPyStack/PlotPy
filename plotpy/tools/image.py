@@ -15,7 +15,7 @@ from qtpy import QtWidgets as QW
 
 from plotpy import io
 from plotpy.config import _
-from plotpy.constants import ID_CONTRAST, PlotType
+from plotpy.constants import AXIS_IDS, ID_CONTRAST, X_BOTTOM, Y_LEFT, PlotType
 from plotpy.coords import axes_to_canvas
 from plotpy.events import QtDragHandler, setup_standard_tool_filter
 from plotpy.interfaces import (
@@ -34,7 +34,6 @@ from plotpy.items import (
     get_items_in_rectangle,
 )
 from plotpy.mathutils.colormap import ALL_COLORMAPS, build_icon_from_cmap_name, get_cmap
-from plotpy.plot import BasePlot
 from plotpy.tools.base import (
     CommandTool,
     DefaultToolbarID,
@@ -58,6 +57,7 @@ if TYPE_CHECKING:
     from plotpy.items.image.base import BaseImageItem
     from plotpy.items.shape.base import AbstractShape
     from plotpy.items.shape.polygon import PolygonShape
+    from plotpy.plot import BasePlot
     from plotpy.plot.manager import PlotManager
     from plotpy.plot.plotwidget import PlotOptions
     from plotpy.styles.image import BaseImageParam
@@ -359,7 +359,7 @@ class BaseReverseAxisTool(ToggleTool):
 
     def __init__(self, manager: PlotManager) -> None:
         assert self.TITLE, "TITLE must be defined in subclasses"
-        assert self.AXIS_ID in BasePlot.AXIS_IDS, "Invalid AXIS_ID"
+        assert self.AXIS_ID in AXIS_IDS, "Invalid AXIS_ID"
         super().__init__(manager, self.TITLE)
 
     def activate_command(self, plot: BasePlot, checked: bool) -> None:
@@ -391,7 +391,7 @@ class ReverseXAxisTool(BaseReverseAxisTool):
     """
 
     TITLE = _("Reverse X axis")
-    AXIS_ID = BasePlot.X_BOTTOM
+    AXIS_ID = X_BOTTOM
 
 
 class ReverseYAxisTool(BaseReverseAxisTool):
@@ -402,7 +402,7 @@ class ReverseYAxisTool(BaseReverseAxisTool):
     """
 
     TITLE = _("Reverse Y axis")
-    AXIS_ID = BasePlot.Y_LEFT
+    AXIS_ID = Y_LEFT
 
 
 class ZAxisLogTool(ToggleTool):

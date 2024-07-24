@@ -15,7 +15,7 @@ from qtpy import QtWidgets as QW
 from qtpy.QtWidgets import QWidget  # only to help intersphinx find QWidget
 
 from plotpy.config import _
-from plotpy.constants import PlotType
+from plotpy.constants import X_BOTTOM, Y_LEFT, PlotType
 from plotpy.plot.base import BasePlot, BasePlotOptions
 from plotpy.plot.manager import PlotManager
 
@@ -989,8 +989,8 @@ class SyncPlotWindow(QW.QMainWindow):
         if sync and len(self.subplotwidget.plots) > 1:
             syncaxis = self.manager.synchronize_axis
             for i_plot in range(len(self.subplotwidget.plots) - 1):
-                syncaxis(BasePlot.X_BOTTOM, [plot_id, f"{i_plot + 1}"])
-                syncaxis(BasePlot.Y_LEFT, [plot_id, f"{i_plot + 1}"])
+                syncaxis(X_BOTTOM, [plot_id, f"{i_plot + 1}"])
+                syncaxis(Y_LEFT, [plot_id, f"{i_plot + 1}"])
 
     def get_plots(self) -> list[BasePlot]:
         """Return the plots

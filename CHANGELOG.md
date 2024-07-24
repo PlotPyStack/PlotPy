@@ -1,5 +1,18 @@
 # Changelog #
 
+## Version 2.4.3 ##
+
+In this release, test coverage is 79%.
+
+🛠️ Bug fixes:
+
+* Fix cyclic import in `plotpy.tools` module:
+  * Some tools in `plotpy.tools` subpackage were importing the `plotpy.plot` module,
+    which was importing the `plotpy.tools` module, causing a cyclic import issue
+  * This is now fixed by introducing new constants for axis IDs in the
+    `plotpy.constants` module, and using them everywhere in the code, thus avoiding
+    to import the `plotpy.plot` module just to get the axis IDs
+
 ## Version 2.4.2 ##
 
 In this release, test coverage is 79%.

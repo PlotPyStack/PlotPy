@@ -31,6 +31,7 @@ from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
 from qtpy.QtPrintSupport import QPrinter
 
+from plotpy import constants as cst
 from plotpy import io
 from plotpy.config import CONF, _
 from plotpy.constants import PARAMETERS_TITLE_ICON, PlotType
@@ -149,14 +150,7 @@ class BasePlot(qwt.QwtPlot):
         options: plot options
     """
 
-    Y_LEFT, Y_RIGHT, X_BOTTOM, X_TOP = (
-        qwt.QwtPlot.yLeft,
-        qwt.QwtPlot.yRight,
-        qwt.QwtPlot.xBottom,
-        qwt.QwtPlot.xTop,
-    )
-    #    # To be replaced by (in the near future):
-    #    Y_LEFT, Y_RIGHT, X_BOTTOM, X_TOP = range(4)
+    Y_LEFT, Y_RIGHT, X_BOTTOM, X_TOP = cst.Y_LEFT, cst.Y_RIGHT, cst.X_BOTTOM, cst.X_TOP
     AXIS_IDS = (Y_LEFT, Y_RIGHT, X_BOTTOM, X_TOP)
     AXIS_NAMES = {"left": Y_LEFT, "right": Y_RIGHT, "bottom": X_BOTTOM, "top": X_TOP}
     AXIS_TYPES = {"lin": qwt.QwtLinearScaleEngine, "log": qwt.QwtLogScaleEngine}
@@ -331,7 +325,7 @@ class BasePlot(qwt.QwtPlot):
                 options.yreverse = False
                 self.__autoYReverse = True
 
-        self.colormap_axis = self.Y_RIGHT
+        self.colormap_axis = cst.Y_RIGHT
 
         self.__autoColorBarEnabled = False
         if options.force_colorbar_enabled or self.options.type == PlotType.IMAGE:
@@ -1912,7 +1906,7 @@ class BasePlot(qwt.QwtPlot):
             axis_id (int): the axis ID
         """
         if axis_id != self.colormap_axis:
-            if axis_id in (self.Y_LEFT, self.Y_RIGHT):
+            if axis_id in (cst.Y_LEFT, cst.Y_RIGHT):
                 title = _("Y Axis")
             else:
                 title = _("X Axis")
@@ -2044,11 +2038,11 @@ class BasePlot(qwt.QwtPlot):
         Return axis direction of increasing values
 
         Args:
-            axis_id (int | str): axis id (BasePlot.Y_LEFT, BasePlot.X_BOTTOM, ...)
+            axis_id: axis id (constants.Y_LEFT, constants.X_BOTTOM, ...)
              or string: 'bottom', 'left', 'top' or 'right'
 
         Returns:
-            bool: False (default)
+            False (default)
         """
         axis_id = self.get_axis_id(axis_id)
         return self.axes_reverse[axis_id]
@@ -2058,8 +2052,8 @@ class BasePlot(qwt.QwtPlot):
         Set axis direction of increasing values
 
         Args:
-            axis_id (int | str): axis id (BasePlot.Y_LEFT, BasePlot.X_BOTTOM, ...)
-                or string: 'bottom', 'left', 'top' or 'right'
+            axis_id: axis id (constants.Y_LEFT, constants.X_BOTTOM, ...)
+             or string: 'bottom', 'left', 'top' or 'right'
             reverse (bool): False (default)
 
         If reverse is False:
@@ -2211,10 +2205,10 @@ class BasePlot(qwt.QwtPlot):
             (this happens when the plot has been shrunk to a size so that the
             width is zero)
         """
-        dx = self.axisScaleDiv(self.X_BOTTOM).range()
-        dy = self.axisScaleDiv(self.Y_LEFT).range()
-        h = self.canvasMap(self.Y_LEFT).pDist()
-        w = self.canvasMap(self.X_BOTTOM).pDist()
+        dx = self.axisScaleDiv(cst.X_BOTTOM).range()
+        dy = self.axisScaleDiv(cst.Y_LEFT).range()
+        h = self.canvasMap(cst.Y_LEFT).pDist()
+        w = self.canvasMap(cst.X_BOTTOM).pDist()
         try:
             return fabs((h * dx) / (w * dy))
         except ZeroDivisionError:
@@ -2260,8 +2254,8 @@ class BasePlot(qwt.QwtPlot):
             abs(current_aspect - self.__aspect_ratio) < self.EPSILON_ASPECT_RATIO
         ):
             return
-        ymap = self.canvasMap(self.Y_LEFT)
-        xmap = self.canvasMap(self.X_BOTTOM)
+        ymap = self.canvasMap(cst.Y_LEFT)
+        xmap = self.canvasMap(cst.X_BOTTOM)
         h = ymap.pDist()
         w = xmap.pDist()
         dx1, dy1 = xmap.sDist(), fabs(ymap.sDist())

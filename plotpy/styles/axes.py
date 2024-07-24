@@ -20,6 +20,7 @@ from guidata.dataset.qtwidgets import DataSetEditLayout
 from qwt import QwtPlot
 
 from plotpy.config import _
+from plotpy.constants import X_BOTTOM, Y_LEFT, Y_RIGHT
 from plotpy.styles.base import FontItem
 
 if TYPE_CHECKING:
@@ -197,7 +198,7 @@ class ImageAxesParam(DataSet):
         plot.set_plot_limits(self.xmin, self.xmax, self.ymin, self.ymax)
         item.set_lut_range([self.zmin, self.zmax])
         plot.update_colormap_axis(item)
-        for axis_id in (plot.X_BOTTOM, plot.Y_LEFT, plot.Y_RIGHT):
+        for axis_id in (X_BOTTOM, Y_LEFT, Y_RIGHT):
             plot.SIG_AXIS_PARAMETERS_CHANGED.emit(axis_id)
 
     # TODO: remove this method in a future release
