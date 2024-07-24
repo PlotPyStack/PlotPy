@@ -12,6 +12,11 @@ In this release, test coverage is 79%.
   * This is now fixed by introducing new constants for axis IDs in the
     `plotpy.constants` module, and using them everywhere in the code, thus avoiding
     to import the `plotpy.plot` module just to get the axis IDs
+* Fix empty label in X/Y cross section plots:
+  * This is a regression introduced in V2.1.0
+  * When showing the X/Y cross section plots (using the plot context menu), an empty
+    label was displayed at the center of each of those plots
+  * The label now shows "Enable a marker" as previously
 
 💥 New features / Enhancements:
 
