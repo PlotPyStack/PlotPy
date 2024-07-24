@@ -9,7 +9,7 @@ from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
 from plotpy.config import CONF, _
-from plotpy.constants import LUT_MAX, PlotType
+from plotpy.constants import AXIS_IDS, LUT_MAX, X_BOTTOM, Y_LEFT, PlotType
 from plotpy.interfaces import ICSImageItemType
 from plotpy.panels.csection.csitem import (
     LineCrossSectionItem,
@@ -17,7 +17,6 @@ from plotpy.panels.csection.csitem import (
     XCrossSectionItem,
     YCrossSectionItem,
 )
-from plotpy.plot.base import BasePlot, BasePlotOptions
 from plotpy.styles.curve import CurveParam
 
 LUT_AXIS_TITLE = _("LUT scale") + (" (0-%d)" % LUT_MAX)
@@ -28,6 +27,7 @@ if TYPE_CHECKING:
 
     from plotpy.items import BaseImageItem
     from plotpy.panels.csection.csitem import CrossSectionItem
+    from plotpy.plot.base import BasePlot
 
 
 class BaseCrossSectionPlot(BasePlot):
@@ -49,7 +49,7 @@ class BaseCrossSectionPlot(BasePlot):
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(
             parent=parent,
-            options=BasePlotOptions(title="", section="cross_section", type="curve"),
+            options=dict(title="", section="cross_section", type="curve"),
         )
         self.perimage_mode = True
         self.autoscale_mode = True
@@ -110,7 +110,7 @@ class BaseCrossSectionPlot(BasePlot):
         plot.SIG_AXIS_DIRECTION_CHANGED.connect(self.axis_dir_changed)
         plot.SIG_PLOT_AXIS_CHANGED.connect(self.plot_axis_changed)
         self.plot_labels_changed(plot)
-        for axis_id in plot.AXIS_IDS:
+        for axis_id in AXIS_IDS:
             self.axis_dir_changed(plot, axis_id)
         self.items_changed(plot)
 
@@ -364,8 +364,8 @@ class BaseCrossSectionPlot(BasePlot):
 
 
 class HorizontalCrossSectionPlot(BaseCrossSectionPlot):
-    CS_AXIS = BasePlot.X_BOTTOM
-    Z_AXIS = BasePlot.Y_LEFT
+    CS_AXIS = X_BOTTOM
+    Z_AXIS = Y_LEFT
 
     def plot_labels_changed(self, plot: BasePlot) -> None:
         """Plot labels have changed
@@ -391,8 +391,8 @@ class HorizontalCrossSectionPlot(BaseCrossSectionPlot):
 
 
 class VerticalCrossSectionPlot(BaseCrossSectionPlot):
-    CS_AXIS = BasePlot.Y_LEFT
-    Z_AXIS = BasePlot.X_BOTTOM
+    CS_AXIS = Y_LEFT
+    Z_AXIS = X_BOTTOM
     Z_MAX_MAJOR = 3
 
     def plot_labels_changed(self, plot: BasePlot) -> None:
@@ -419,7 +419,6 @@ class VerticalCrossSectionPlot(BaseCrossSectionPlot):
 
 
 class XYCrossSectionMixin:
-
     LABEL_TEXT = _("Enable a marker")
 
     def connect_plot(self, plot: BasePlot) -> None:

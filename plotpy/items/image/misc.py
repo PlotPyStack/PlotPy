@@ -13,6 +13,7 @@ from qtpy import QtCore as QC
 
 from plotpy import io
 from plotpy.config import _
+from plotpy.constants import X_BOTTOM, Y_LEFT
 from plotpy.coords import axes_to_canvas
 from plotpy.interfaces import (
     IBaseImageItem,
@@ -538,7 +539,7 @@ def get_plot_qrect(plot: qwt.plot.QwtPlot, p0: QPointF, p1: QPointF) -> QRectF:
     Returns:
         Plot rectangle
     """
-    ax, ay = plot.X_BOTTOM, plot.Y_LEFT
+    ax, ay = X_BOTTOM, Y_LEFT
     p0x, p0y = plot.invTransform(ax, p0.x()), plot.invTransform(ay, p0.y())
     p1x, p1y = plot.invTransform(ax, p1.x() + 1), plot.invTransform(ay, p1.y() + 1)
     return QC.QRectF(p0x, p0y, p1x - p0x, p1y - p0y)
