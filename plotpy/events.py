@@ -300,13 +300,8 @@ class GestureEventMatch(EventMatch):
         return frozenset((self.evt_type,))
 
     def __call__(self, event):
-        # print(event)
         if event.type() == QC.QEvent.Gesture:
-            # print(event.gestures()[0].gestureType())
             gesture = event.gesture(self.gesture_type)
-            # print(gesture)
-            if gesture:
-                print(gesture.hotSpot(), self.__get_state_str(gesture.state()))
             return gesture and gesture.state() == self.gesture_state
         return False
 
