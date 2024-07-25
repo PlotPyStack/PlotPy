@@ -2,7 +2,7 @@
 set -e -u -x
 
 ARCH=$(uname -m)
-export PLAT=manylinux_2_17_$ARCH
+export PLAT=manylinux_2_24_$ARCH
 
 # Accurately check if Python version is 3.8 or greater
 function is_python_version_ge_38 {
@@ -37,8 +37,7 @@ done
 for PYDIR in /opt/python/*; do
     if is_python_version_ge_38 "$PYDIR"; then
         PYBIN="$PYDIR/bin"
-        "${PYBIN}/pip" install plotpy --no-index -f /io/wheelhouse        
+        "${PYBIN}/pip" install plotpy --no-index -f /io/wheelhouse
         (cd "$HOME"; INSTDIR=$("${PYBIN}/python" -c "import plotpy, os.path as osp; print(osp.dirname(plotpy.__file__))"); export QT_QPA_PLATFORM=offscreen; "${PYBIN}/pytest" "$INSTDIR")
     fi
 done
-
