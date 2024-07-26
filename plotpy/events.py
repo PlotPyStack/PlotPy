@@ -306,7 +306,6 @@ class GestureEventMatch(EventMatch):
 
     def __init__(self, gesture_type: int, gesture_state: int) -> None:
         super().__init__()
-        self.evt_type = QC.QEvent.Gesture
         self.gesture_type = gesture_type
         self.gesture_state = gesture_state
 
@@ -338,7 +337,7 @@ class GestureEventMatch(EventMatch):
 
     def get_event_types(self) -> frozenset[int]:
         """Return the set of event types handled by this event match"""
-        return frozenset((self.evt_type,))
+        return frozenset((QC.QEvent.Gesture,))
 
     def __call__(self, event: QC.QEvent) -> bool:
         """Returns True if the event matches the event match
@@ -814,25 +813,25 @@ class GestureHandler(QC.QObject):
         filter.add_event(
             self.state0,
             filter.gesture(self.kind, QC.Qt.GestureState.GestureFinished),
-            self.stop_notmoving,
+            self.stop_tracking,
             start_state,
         )
         filter.add_event(
             self.state1,
             filter.gesture(self.kind, QC.Qt.GestureState.GestureFinished),
-            self.stop_moving,
+            self.stop_tracking,
             start_state,
         )
         filter.add_event(
             self.state0,
             filter.gesture(self.kind, QC.Qt.GestureState.GestureCanceled),
-            self.stop_notmoving,
+            self.stop_tracking,
             start_state,
         )
         filter.add_event(
             self.state1,
             filter.gesture(self.kind, QC.Qt.GestureState.GestureCanceled),
-            self.stop_notmoving,
+            self.stop_tracking,
             start_state,
         )
         self.start = QC.QPoint()  # first gesture position
@@ -895,26 +894,6 @@ class GestureHandler(QC.QObject):
             _event: event that triggered the stop of the tracking
         """
         pass
-
-    def stop_notmoving(
-        self, filter: StatefulEventFilter, event: QW.QGestureEvent
-    ) -> None:
-        """Handles the stop of the gesture tracking when the gesture is not moving.
-
-        Args:
-            filter: event filter that contains the BasePlot instance
-            event: event that triggered the stop of the tracking
-        """
-        self.stop_tracking(filter, event)
-
-    def stop_moving(self, filter: StatefulEventFilter, event: QW.QGestureEvent) -> None:
-        """Handles the stop of the gesture moving.
-
-        Args:
-            filter: event filter that contains the BasePlot instance
-            event: event that triggered the stop of the moving
-        """
-        self.stop_tracking(filter, event)
 
     def move(self, filter: StatefulEventFilter, event: QW.QGestureEvent) -> None:
         """Handles the movement of the gesture.
@@ -1166,31 +1145,31 @@ class QtDragHandler(DragHandler):
     SIG_MOVE = QC.Signal(object, "QEvent")
 
     def start_tracking(self, filter: StatefulEventFilter, event: QC.QEvent) -> None:
-        """Starts tracking the gesture.
+        """Starts tracking the drag event.
 
         Args:
             filter: The StatefulEventFilter instance.
-            event: The QGestureEvent instance.
+            event: The QC.QEvent instance.
         """
         DragHandler.start_tracking(self, filter, event)
         self.SIG_START_TRACKING.emit(filter, event)
 
     def stop_notmoving(self, filter: StatefulEventFilter, event: QC.QEvent) -> None:
-        """Stops tracking when the gesture is not moving.
+        """Stops tracking when the drag event is not moving.
 
         Args:
             filter: The StatefulEventFilter instance.
-            event: The QGestureEvent instance.
+            event: The QC.QEvent instance.
         """
         self.SIG_STOP_NOT_MOVING.emit(filter, event)
 
     def stop_moving(self, filter: StatefulEventFilter, event: QC.QEvent) -> None:
         """
-        Stops the movement of the gesture.
+        Stops the movement of the drag event.
 
         Args:
             filter: The StatefulEventFilter instance.
-            event: The QGestureEvent instance.
+            event: The QC.QEvent instance
         """
         self.SIG_STOP_MOVING.emit(filter, event)
 
@@ -1199,7 +1178,7 @@ class QtDragHandler(DragHandler):
 
         Args:
             filter: The StatefulEventFilter instance.
-            event: The QGestureEvent instance.
+            event: The QC.QEvent instance.
         """
         self.SIG_MOVE.emit(filter, event)
 
