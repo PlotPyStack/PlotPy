@@ -28,6 +28,9 @@ In this release, test coverage is 79%.
     * `plotpy.widgets.selectdialog.SelectDialog`
     * `plotpy.widgets.selectdialog.select_with_shape_tool`
 
+* Added missing `set_style` method to `XRangeSelection` class: this method is used
+  to set the style of the range selection item from configuration options
+
 🛠️ Bug fixes:
 
 * Fix cyclic import in `plotpy.tools` module:
