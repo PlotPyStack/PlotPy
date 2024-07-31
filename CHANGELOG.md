@@ -1,30 +1,8 @@
 # Changelog #
 
-## Version 2.4.3 ##
+## Version 2.5.0 ##
 
 In this release, test coverage is 79%.
-
-🛠️ Bug fixes:
-
-* Fix cyclic import in `plotpy.tools` module:
-  * Some tools in `plotpy.tools` subpackage were importing the `plotpy.plot` module,
-    which was importing the `plotpy.tools` module, causing a cyclic import issue
-  * This is now fixed by introducing new constants for axis IDs in the
-    `plotpy.constants` module, and using them everywhere in the code, thus avoiding
-    to import the `plotpy.plot` module just to get the axis IDs
-* Fix empty label in X/Y cross section plots:
-  * This is a regression introduced in V2.1.0
-  * When showing the X/Y cross section plots (using the plot context menu), an empty
-    label was displayed at the center of each of those plots
-  * The label now shows "Enable a marker" as previously
-* Fix historic unexpected behavior of interactive tools:
-  * When triggering an interactive tool (e.g. by clicking on the corresponding toolbar
-    button), the tool `activate` method was called twice, which was not expected, but
-    was not causing any issue given the current implementation
-  * However, when defining custom interactive tools, this behavior could lead to
-    unexpected results (i.e. really executing activation actions twice)
-  * This is now fixed: the `activate` method is called only once when triggering an
-    interactive tool
 
 💥 New features / Enhancements:
 
@@ -49,6 +27,28 @@ In this release, test coverage is 79%.
     * `plotpy.widgets.rotatecrop.RotateCropDialog`
     * `plotpy.widgets.selectdialog.SelectDialog`
     * `plotpy.widgets.selectdialog.select_with_shape_tool`
+
+🛠️ Bug fixes:
+
+* Fix cyclic import in `plotpy.tools` module:
+  * Some tools in `plotpy.tools` subpackage were importing the `plotpy.plot` module,
+    which was importing the `plotpy.tools` module, causing a cyclic import issue
+  * This is now fixed by introducing new constants for axis IDs in the
+    `plotpy.constants` module, and using them everywhere in the code, thus avoiding
+    to import the `plotpy.plot` module just to get the axis IDs
+* Fix empty label in X/Y cross section plots:
+  * This is a regression introduced in V2.1.0
+  * When showing the X/Y cross section plots (using the plot context menu), an empty
+    label was displayed at the center of each of those plots
+  * The label now shows "Enable a marker" as previously
+* Fix historic unexpected behavior of interactive tools:
+  * When triggering an interactive tool (e.g. by clicking on the corresponding toolbar
+    button), the tool `activate` method was called twice, which was not expected, but
+    was not causing any issue given the current implementation
+  * However, when defining custom interactive tools, this behavior could lead to
+    unexpected results (i.e. really executing activation actions twice)
+  * This is now fixed: the `activate` method is called only once when triggering an
+    interactive tool
 
 ## Version 2.4.2 ##
 
