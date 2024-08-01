@@ -33,6 +33,11 @@ In this release, test coverage is 79%.
 
 🛠️ Bug fixes:
 
+* [Issue #19](https://github.com/PlotPyStack/PlotPy/issues/19) - Fix `distutils`
+  deprecation in setup.py: replaced `distutils.core` by `setuptools` in the setup.py
+  script to avoid the deprecation warning when building the package with Python 3.10
+  and 3.11, and to ensure compatibility with earlier Python versions (PlotPy is already
+  compatible with the most recent Python versions: this only concerns the build system)
 * Fix cyclic import in `plotpy.tools` module:
   * Some tools in `plotpy.tools` subpackage were importing the `plotpy.plot` module,
     which was importing the `plotpy.tools` module, causing a cyclic import issue
