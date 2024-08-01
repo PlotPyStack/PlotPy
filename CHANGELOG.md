@@ -1,8 +1,10 @@
 # Changelog #
 
-## Version 2.5.0 ##
+## Version 2.5.1 ##
 
 In this release, test coverage is 79%.
+
+ℹ️ Release V2.5.0 was a fugitive release that was replaced by V2.5.1 due to packaging issues.
 
 💥 New features / Enhancements:
 
