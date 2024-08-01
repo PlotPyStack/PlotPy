@@ -34,6 +34,7 @@ from plotpy.interfaces import IImageItemType
 from plotpy.items import RawImageItem
 from plotpy.items.curve.errorbar import vmap
 from plotpy.plot import PlotDialog, PlotOptions
+from plotpy.styles import RawImageParam
 from plotpy.tools import CopyToClipboardTool, HelpTool, PrintTool, SaveAsTool
 
 if TYPE_CHECKING:
@@ -66,6 +67,10 @@ class DotArrayParam(gds.DataSet):
     def update_param(self, obj):
         """Update parameters from object"""
         pass
+
+
+class DotArrayRawImageParam(RawImageParam, DotArrayParam):
+    pass
 
 
 class DotArrayItem(RawImageItem):
@@ -180,10 +185,13 @@ class DotArrayDialog(PlotDialog):
         """Show data"""
         plot = self.plot_widget.plot
         if self.item is None:
+            itemparam = DotArrayRawImageParam()
+            gds.update_dataset(itemparam, param)
             param._update_cb = lambda: self.stamp_gbox.get()
-            self.item = DotArrayItem(param)
+            self.item = DotArrayItem(itemparam)
             plot.add_item(self.item)
         else:
+            gds.update_dataset(self.item.param, param)
             self.item.update_border()
         plot.do_autoscale()
 
