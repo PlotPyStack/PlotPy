@@ -1,16 +1,14 @@
 # Changelog #
 
-## Version 2.5.1 ##
+## Version 2.5.0 ##
 
 In this release, test coverage is 79%.
-
-ℹ️ Release V2.5.0 was a fugitive release that was replaced by V2.5.1 due to packaging issues.
 
 💥 New features / Enhancements:
 
 * Alternative dictionary argument for plot options:
-  * This new feature was introduced in the context of the cyclic import bug fix,to avoid importing the `plotpy.plot` module just to get the `PlotOptions` or `BasePlotOptions` classes
-  * All classes (and a few functions) that used to take an `options` argument asa `BasePlotOptions` or `PlotOptions` instance now also accept a dictionary argument with the same keys as the `BasePlotOptions` or `PlotOptions` class attributes, and the same values as the corresponding attributes
+  * This new feature was introduced in the context of the cyclic import bug fix, to avoid importing the `plotpy.plot` module just to get the `PlotOptions` or `BasePlotOptions` classes
+  * All classes (and a few functions) that used to take an `options` argument as a `BasePlotOptions` or `PlotOptions` instance now also accept a dictionary argument with the same keys as the `BasePlotOptions` or `PlotOptions` class attributes, and the same values as the corresponding attributes
   * This concerns the following classes and functions:
     * `plotpy.plot.BasePlot`
     * `plotpy.plot.PlotWidget`
@@ -26,28 +24,28 @@ In this release, test coverage is 79%.
     * `plotpy.widgets.selectdialog.select_with_shape_tool`
 
 * Added "Lock LUT range" option for image items:
-  * This new option is disabled by default, which matches the previous behavior:when updating an image item data, the LUT range is automatically adjusted to the new data range (if not passed as an argument to the `BaseImageItem.set_data` method)
-  * When enabled, the LUT range is locked and the LUT range is not adjusted whenupdating the image item data
+  * This new option is disabled by default, which matches the previous behavior: when updating an image item data, the LUT range is automatically adjusted to the new data range (if not passed as an argument to the `BaseImageItem.set_data` method)
+  * When enabled, the LUT range is locked and the LUT range is not adjusted when updating the image item data
   * The option is available in image parameters dialog
-  * A new tool `LockLUTRangeTool` has been implemented to toggle the option from theplot context menu: the tool is not registered by default in the plot widget, but can be added by the host application if needed
-  * See test script `tests.features.test_image_data_update` for an example of usageof the new option and tool
+  * A new tool `LockLUTRangeTool` has been implemented to toggle the option from the plot context menu: the tool is not registered by default in the plot widget, but can be added by the host application if needed
+  * See test script `tests.features.test_image_data_update` for an example of usage of the new option and tool
 
-* Added missing `set_style` method to `XRangeSelection` class: this method is usedto set the style of the range selection item from configuration options
+* Added missing `set_style` method to `XRangeSelection` class: this method is used to set the style of the range selection item from configuration options
 
 🛠️ Bug fixes:
 
-* [Issue #19](https://github.com/PlotPyStack/PlotPy/issues/19) - Fix `distutils`deprecation in setup.py: replaced `distutils.core` by `setuptools` in the setup.py script to avoid the deprecation warning when building the package with Python 3.10 and 3.11, and to ensure compatibility with earlier Python versions (PlotPy is already compatible with the most recent Python versions: this only concerns the build system)
+* [Issue #19](https://github.com/PlotPyStack/PlotPy/issues/19) - Fix `distutils` deprecation in setup.py: replaced `distutils.core` by `setuptools` in the setup.py script to avoid the deprecation warning when building the package with Python 3.10 and 3.11, and to ensure compatibility with earlier Python versions (PlotPy is already compatible with the most recent Python versions: this only concerns the build system)
 * Fix cyclic import in `plotpy.tools` module:
-  * Some tools in `plotpy.tools` subpackage were importing the `plotpy.plot` module,which was importing the `plotpy.tools` module, causing a cyclic import issue
-  * This is now fixed by introducing new constants for axis IDs in the`plotpy.constants` module, and using them everywhere in the code, thus avoiding to import the `plotpy.plot` module just to get the axis IDs
+  * Some tools in `plotpy.tools` subpackage were importing the `plotpy.plot` module, which was importing the `plotpy.tools` module, causing a cyclic import issue
+  * This is now fixed by introducing new constants for axis IDs in the `plotpy.constants` module, and using them everywhere in the code, thus avoiding to import the `plotpy.plot` module just to get the axis IDs
 * Fix empty label in X/Y cross section plots:
   * This is a regression introduced in V2.1.0
-  * When showing the X/Y cross section plots (using the plot context menu), an emptylabel was displayed at the center of each of those plots
+  * When showing the X/Y cross section plots (using the plot context menu), an empty label was displayed at the center of each of those plots
   * The label now shows "Enable a marker" as previously
 * Fix historic unexpected behavior of interactive tools:
-  * When triggering an interactive tool (e.g. by clicking on the corresponding toolbarbutton), the tool `activate` method was called twice, which was not expected, but was not causing any issue given the current implementation
-  * However, when defining custom interactive tools, this behavior could lead tounexpected results (i.e. really executing activation actions twice)
-  * This is now fixed: the `activate` method is called only once when triggering aninteractive tool
+  * When triggering an interactive tool (e.g. by clicking on the corresponding toolbar button), the tool `activate` method was called twice, which was not expected, but was not causing any issue given the current implementation
+  * However, when defining custom interactive tools, this behavior could lead to unexpected results (i.e. really executing activation actions twice)
+  * This is now fixed: the `activate` method is called only once when triggering an interactive tool
 
 ## Version 2.4.2 ##
 
@@ -56,10 +54,10 @@ In this release, test coverage is 79%.
 🛠️ Bug fixes:
 
 * [Issue #17](https://github.com/PlotPyStack/PlotPy/issues/17):
-  * Debian's Python team has reported that the contour unit test was failing on `arm64`architecture
-  * This is the opportunity to replace the `contour2d` Cython extension by scikit-image's`find_contours` function, thus avoiding to reinvent the wheel by relying on a more robust and tested implementation
+  * Debian's Python team has reported that the contour unit test was failing on `arm64` architecture
+  * This is the opportunity to replace the `contour2d` Cython extension by scikit-image's `find_contours` function, thus avoiding to reinvent the wheel by relying on a more robust and tested implementation
   * The `contour2d` Cython extension is removed from the source code
-  * The contour related features remain the same, but the implementation is now based onscikit-image's `find_contours` function
+  * The contour related features remain the same, but the implementation is now based on scikit-image's `find_contours` function
   * The scikit-image dependency is added to the package requirements
 
 ## Version 2.4.1 ##
@@ -69,8 +67,8 @@ In this release, test coverage is 79%.
 🛠️ Bug fixes:
 
 * Contrast adjustment panel:
-  * A regression was introduced in V2.0.0: levels histogram was no longer removed fromcontrast adjustment panel when the associated image was removed from the plot
-  * This is now fixed: when an image is removed, the histogram is removed as well andthe contrast panel is refreshed (which was not the case even before the regression)
+  * A regression was introduced in V2.0.0: levels histogram was no longer removed from contrast adjustment panel when the associated image was removed from the plot
+  * This is now fixed: when an image is removed, the histogram is removed as well and the contrast panel is refreshed (which was not the case even before the regression)
 
 ## Version 2.4.0 ##
 
@@ -79,21 +77,21 @@ In this release, test coverage is 79%.
 💥 New features / Enhancements:
 
 * Contrast adjustment panel:
-  * New layout: the vertical toolbar (which was constrained in a small area on theright side of the panel) is now a horizontal toolbar at the top of the panel, beside the title
-  * New "Set range" button: allows the user to set manually the minimum and maximumvalues of the histogram range
+  * New layout: the vertical toolbar (which was constrained in a small area on the right side of the panel) is now a horizontal toolbar at the top of the panel, beside the title
+  * New "Set range" button: allows the user to set manually the minimum and maximum values of the histogram range
 * New Z-axis logarithmic scale feature:
   * Added new tool `ZAxisLogTool` to toggle the Z-axis logarithmic scale
   * The tool is registered by default in the plot widget, like the `ColormapTool`
-  * When enabled, the active image item is displayed after applying a base-10logarithm to its pixel values
+  * When enabled, the active image item is displayed after applying a base-10 logarithm to its pixel values
 * Curve statistics tool `CurveStatsTool` is now customizable:
   * When adding the tool: `plot_widget.manager.add_tool(CurveStatsTool, labelfuncs=(...))`
   * Or after: `plot_widget.manager.get_tool(CurveStatsTool).set_labelfuncs(...)`
-  * The `labelfuncs` parameter is a list of tuples `(label, func)` where `label` is thelabel displayed in the statistics table, and `func` is a function that takes the curve data and returns the corresponding statistic value (see the documentation for more details)
+  * The `labelfuncs` parameter is a list of tuples `(label, func)` where `label` is the label displayed in the statistics table, and `func` is a function that takes the curve data and returns the corresponding statistic value (see the documentation for more details)
 * Image statistics tool `ImageStatsTool` is now customizable:
   * When adding the tool: `plot_widget.manager.add_tool(ImageStatsTool, stats_func=...)`
   * Or after: `plot_widget.manager.get_tool(ImageStatsTool).set_stats_func(...)`
-  * The `stats_func` parameter is a function that takes the image item and selectedrectangle coordinates, and returns a string with the statistics to display
-* New `SIG_AXIS_PARAMETERS_CHANGED` signal emitted by `BasePlot` when the axes parametersare changed (e.g. when the axes are inverted, or the scale is changed)
+  * The `stats_func` parameter is a function that takes the image item and selected rectangle coordinates, and returns a string with the statistics to display
+* New `SIG_AXIS_PARAMETERS_CHANGED` signal emitted by `BasePlot` when the axes parameters are changed (e.g. when the axes are inverted, or the scale is changed)
 * New "Reverse X axis" feature:
   * Added new tool `ReverseXAxisTool` to toggle the X-axis direction
   * The tool is registered by default in the plot widget, like its Y-axis counterpart
@@ -101,10 +99,10 @@ In this release, test coverage is 79%.
 🛠️ Bug fixes:
 
 * Contrast adjustment panel:
-  * Fixed histogram update issues when no image was currently selected (even if thean image was displayed and was selected before)
-  * Histogram range was not updated when either the minimum or maximum value was setusing the "Minimum value" or "Maximum value" buttons (which have been renamed to "Min." and "Max." in this release)
+  * Fixed histogram update issues when no image was currently selected (even if the an image was displayed and was selected before)
+  * Histogram range was not updated when either the minimum or maximum value was set using the "Minimum value" or "Maximum value" buttons (which have been renamed to "Min." and "Max." in this release)
   * Histogram range was not updated when the "Set full range" button was clicked
-* Image parameters: contrast range was not updated when the image Z axis bounds werechanged using the "Parameters" dialog
+* Image parameters: contrast range was not updated when the image Z axis bounds were changed using the "Parameters" dialog
 
 🧹 API cleanup:
 
@@ -123,9 +121,9 @@ This release is mainly intended to fix the Windows binary distribution, which wa
 
 🛠️ Bug fixes:
 
-* Moved back `conftest.py` to the `tests` folder (was in the root folder), so that`pytest` can be executed with proper configuration when running the test suite from the installed package
+* Moved back `conftest.py` to the `tests` folder (was in the root folder), so that `pytest` can be executed with proper configuration when running the test suite from the installed package
 
-* Removed benchmarks from automated test suite (not relevant for the end user):added `plotpy-benchmarks` script to run the benchmarks
+* Removed benchmarks from automated test suite (not relevant for the end user): added `plotpy-benchmarks` script to run the benchmarks
 
 ## Version 2.3.4 ##
 
@@ -149,8 +147,8 @@ In this release, test coverage is 79%.
 
 * Moved up `LineCrossSection` import for consistency with other cross-section panels
 * Unexpected behavior regarding `io.load_items` and `io.save_items` functions:
-  * Those functions were serializing and deserializing most of the parameters of theplot items, but not their visibility state
-  * This is now fixed: the visibility state of the plot items is now saved and restoredas expected
+  * Those functions were serializing and deserializing most of the parameters of the plot items, but not their visibility state
+  * This is now fixed: the visibility state of the plot items is now saved and restored as expected
 
 ℹ️ Other changes:
 
@@ -181,12 +179,12 @@ Version 2.3.2 fixes a blocking issue with the colormap editor unit test introduc
 
 🛠️ Bug fixes:
 
-* Image statistics tool: fixed "No available data" message when the tool rectangularregion top Y coordinate is above the image top Y coordinate
-* Label items (`LabelItem`, `LegendBoxItem`, `DataInfoLabel`, ...) were not emittingthe `SIG_ITEM_MOVED` signal when moved interactively (with the mouse) if the item anchor was attached to the canvas
-* Colormap: fixed context menu entry update (colormap icon was updated as expected, butthe colormap name was not)
+* Image statistics tool: fixed "No available data" message when the tool rectangular region top Y coordinate is above the image top Y coordinate
+* Label items (`LabelItem`, `LegendBoxItem`, `DataInfoLabel`, ...) were not emitting the `SIG_ITEM_MOVED` signal when moved interactively (with the mouse) if the item anchor was attached to the canvas
+* Colormap: fixed context menu entry update (colormap icon was updated as expected, but the colormap name was not)
 * Rotate/crop dialog: added missing toolbar on plot widget
 * Flip/rotate dialog: added missing toolbar on plot widget
-* Fixed issue with oblique averaged cross section computation (`AttributeError` whenclicking on the empty cross section plot)
+* Fixed issue with oblique averaged cross section computation (`AttributeError` when clicking on the empty cross section plot)
 
 ## Version 2.3.0 ##
 
@@ -198,20 +196,20 @@ In this release, test coverage is 75%.
   * The user can now invert the colormap of an image item:
     * From the image parameters dialog ("Invert colormap" checkbox)
     * From the plot context menu (right-click on the image item)
-  * `BaseImageItem.set_color_map` method takes a new `invert` parameter (whichdefaults to `None`, meaning that the behavior is unchanged)
-  * New `ReverseColormapTool`: registered by default in the plot widget, like the`ColormapTool` (add the "Invert colormap" entry in the context menu of the image)
+  * `BaseImageItem.set_color_map` method takes a new `invert` parameter (which defaults to `None`, meaning that the behavior is unchanged)
+  * New `ReverseColormapTool`: registered by default in the plot widget, like the `ColormapTool` (add the "Invert colormap" entry in the context menu of the image)
 
 🛠️ Bug fixes:
 
-* `ErrorBarCurveItem`: fixed NumPy deprecation warning("Conversion of an array with ndim > 0 to a scalar is deprecated [...]")
+* `ErrorBarCurveItem`: fixed NumPy deprecation warning ("Conversion of an array with ndim > 0 to a scalar is deprecated [...]")
 
 ℹ️ Other changes:
 
 * Image plot items deserialization:
-  * When an image plot item is deserialized, and needs to be reloaded from a file,the file path is adapted to the current working directory if file is not found (this is the legacy behavior).
-  * An unnecessary call to `ImageIOHandler.adapt_path` method was removed from the`RawImageItem.deserialize` method: this issue has to be handled by the host application, not by the PlotPy library.
+  * When an image plot item is deserialized, and needs to be reloaded from a file, the file path is adapted to the current working directory if file is not found (this is the legacy behavior).
+  * An unnecessary call to `ImageIOHandler.adapt_path` method was removed from the `RawImageItem.deserialize` method: this issue has to be handled by the host application, not by the PlotPy library.
   * `ImageIOHandler`: removed `add_change_path` and `adapt_path` methods
-* Fix typo in `tests.features.test_colormap_editor` module: renamed function`test_colormap_manager` to `test_colormap_editor`
+* Fix typo in `tests.features.test_colormap_editor` module: renamed function `test_colormap_manager` to `test_colormap_editor`
 * Removed unnecessary `BaseImageItem.get_color_map_name` method
 
 ## Version 2.2.0 ##
@@ -221,27 +219,27 @@ In this release, test coverage is 75%.
 New features:
 
 * Added `SIG_ITEM_PARAMETERS_CHANGED` signal to `BasePlot` class:
-  * This signal is emitted when the parameters of an item are changed using theparameters dialog, or a specific tool (e.g. the colormap selection tool, or the lock/unlock tool for image items)
+  * This signal is emitted when the parameters of an item are changed using the parameters dialog, or a specific tool (e.g. the colormap selection tool, or the lock/unlock tool for image items)
   * This signal is emitted with the item as argument
-  * It is often emitted before the `SIG_ITEMS_CHANGED` signal, which is global to allitems, but not necessarily. For example, when the colormap of an image is changed, the `SIG_ITEM_PARAMETERS_CHANGED` signal is emitted for the image item, but the `SIG_ITEMS_CHANGED` signal is not emitted.
+  * It is often emitted before the `SIG_ITEMS_CHANGED` signal, which is global to all items, but not necessarily. For example, when the colormap of an image is changed, the `SIG_ITEM_PARAMETERS_CHANGED` signal is emitted for the image item, but the `SIG_ITEMS_CHANGED` signal is not emitted.
 * Added new colormap presets:
   * `viridis`, `plasma`, `inferno`, `magma`, `cividis`
   * `afmhot`
   * `coolwarm`, `bwr`, `seismic`
   * `gnuplot2`, `CMRmap`, `rainbow`, `turbo`
 * Fixed all qualitative colormaps:
-  * All qualitative colormaps have been re-computed because they are not supposed to beinterpolated, which was the case and made them unusable
+  * All qualitative colormaps have been re-computed because they are not supposed to be interpolated, which was the case and made them unusable
   * The qualitative colormaps are now usable and look like the ones from Matplotlib
 * Colormap manager:
   * Added a button to remove a custom colormap
   * The preset colormaps *and* the currently selected colormap are read-only
 * Added automatic unit tests for interactive tools:
-  * `AnnotatedCircleTool`, `AnnotatedEllipseTool`, `AnnotatedObliqueRectangleTool`,`AnnotatedPointTool`, `AnnotatedRectangleTool`, `AnnotatedSegmentTool`
-  * `AverageCrossSectionTool`, `CrossSectionTool`, `ObliqueCrossSectionTool`,`LineCrossSectionTool`
+  * `AnnotatedCircleTool`, `AnnotatedEllipseTool`, `AnnotatedObliqueRectangleTool`, `AnnotatedPointTool`, `AnnotatedRectangleTool`, `AnnotatedSegmentTool`
+  * `AverageCrossSectionTool`, `CrossSectionTool`, `ObliqueCrossSectionTool`, `LineCrossSectionTool`
   * `EditPointTool`, `SelectPointsTool`, `SelectPointTool`
   * `AspectRatioTool`, `ImageStatsTool`, `SnapshotTool`
   * `DisplayCoordsTool`, `RectZoomTool`
-  * `CircleTool`, `EllipseTool`, `FreeFormTool`, `MultiLineTool`,`ObliqueRectangleTool`, `PointTool`, `RectangleTool`, `SegmentTool`
+  * `CircleTool`, `EllipseTool`, `FreeFormTool`, `MultiLineTool`, `ObliqueRectangleTool`, `PointTool`, `RectangleTool`, `SegmentTool`
 * Internal package reorganization: moved icons to `plotpy/data/icons` folder
 
 ## Version 2.1.2 ##
@@ -249,8 +247,8 @@ New features:
 New features:
 
 * Added `Echelon` alpha function to the image parameters:
-  * The `Echelon` alpha function is a step function, so that the alpha channel is0 (full transparency) for the lowest value of the Lookup Table (LUT) and opaque (transparency level set by the `Global alpha` parameter) for the other values
-  * This feature is added to the other existing alpha functions: `Constant`, `Linear`,`Sigmoid`, and `Hyperbolic tangent`
+  * The `Echelon` alpha function is a step function, so that the alpha channel is 0 (full transparency) for the lowest value of the Lookup Table (LUT) and opaque (transparency level set by the `Global alpha` parameter) for the other values
+  * This feature is added to the other existing alpha functions: `Constant`, `Linear`, `Sigmoid`, and `Hyperbolic tangent`
 
 Bug fixes:
 
@@ -263,7 +261,7 @@ Bug fixes:
 * API breakage (unintentional) in V2.1.0:
   * In V2.1.0, `mathutils.colormap` module was renamed to `mathutils.colormaps`
   * Original `mathutils.colormap` module naming is restored in this release
-* Colormap selection from the toolbar was not triggering the `SIG_ITEMS_CHANGED` signal(every time an item parameter is changed, the `SIG_ITEMS_CHANGED` signal has to be emitted by the `BasePlot` instance to notify the application that the plot has been modified)
+* Colormap selection from the toolbar was not triggering the `SIG_ITEMS_CHANGED` signal (every time an item parameter is changed, the `SIG_ITEMS_CHANGED` signal has to be emitted by the `BasePlot` instance to notify the application that the plot has been modified)
 
 ## Version 2.1.0 ##
 
@@ -275,16 +273,16 @@ New features:
   * New `tools.SelectPointsTool` to select graphically multiple points on a plot
   * New `tools.EditPointTool` to edit graphically the position of a point on a plot
   * New downsampling feature:
-    * The user may enable it to reduce the number of points displayed on a curve(e.g. when the curve is too dense)
-    * The downsampling factor is adjustable(default to 10, i.e. 1 point out of 10 is displayed)
+    * The user may enable it to reduce the number of points displayed on a curve (e.g. when the curve is too dense)
+    * The downsampling factor is adjustable (default to 10, i.e. 1 point out of 10 is displayed)
     * The feature is disabled by default
 * Image-related features:
   * New "Colormap Manager":
-    * Before this release, the colormap selection was limited to presets (e.g. "gray","jet", etc.)
-    * Now, the user can select a preset, edit it, or create a new one from scratchthanks to the new "Colormap Manager" dialog
+    * Before this release, the colormap selection was limited to presets (e.g. "gray", "jet", etc.)
+    * Now, the user can select a preset, edit it, or create a new one from scratch thanks to the new "Colormap Manager" dialog
   * New line cross section feature:
-    * Before this release, the cross section feature was limited to either horizontalor vertical lines, or an average cross section withing a rectangle (aligned with the axes, or oblique)
-    * Now, the user can draw a line cross section with the new "Line Cross Section"tool: the intensity profile associated to the drawn segment is displayed in a dedicated plot
+    * Before this release, the cross section feature was limited to either horizontal or vertical lines, or an average cross section withing a rectangle (aligned with the axes, or oblique)
+    * Now, the user can draw a line cross section with the new "Line Cross Section" tool: the intensity profile associated to the drawn segment is displayed in a dedicated plot
 * Added support for gestures:
   * Zooming in/out with the a two-finger pinch gesture
   * Panning with a two-finger drag gesture
@@ -338,8 +336,8 @@ PlotPy 2.0 is a major release that brings a lot of new features and bug fixes.
 
 When initiated in 2016, PlotPy 1.0 was the result of the merge of two projects (as well as some other changes, e.g. a redesign of the API):
 
-* [guidata](https://pypi.org/project/guidata/), a Python library generating graphicaluser interfaces for easy dataset editing and display
-* [guiqwt](https://pypi.org/project/guiqwt/), a Python library providing efficient 2Ddata-plotting features (curve/image visualization and related tools) for interactive computing and signal/image processing application development
+* [guidata](https://pypi.org/project/guidata/), a Python library generating graphical user interfaces for easy dataset editing and display
+* [guiqwt](https://pypi.org/project/guiqwt/), a Python library providing efficient 2D data-plotting features (curve/image visualization and related tools) for interactive computing and signal/image processing application development
 
 With PlotPy 2.0, the [guidata](https://pypi.org/project/guidata/) code base has been reextracted: PlotPy now relies on [guidata](https://pypi.org/project/guidata/) as a dependency, like before the merge.
 
@@ -347,21 +345,21 @@ PlotPy 2.0 also integrates all the bug fixes (>30) and new features that were ad
 
 Supported versions of Python and Qt bindings have been updated:
 
-* Python: 3.8, 3.9, and 3.10 (3.11 should work too, but will be officially supportedwhen dropping support for Python 3.8, to keep a 3-year support period)
-* Qt bindings: PyQt5 (even if PyQt6 and PySide6 are not officially supported, effortshave been made and will continue to be made to support them)
+* Python: 3.8, 3.9, and 3.10 (3.11 should work too, but will be officially supported when dropping support for Python 3.8, to keep a 3-year support period)
+* Qt bindings: PyQt5 (even if PyQt6 and PySide6 are not officially supported, efforts have been made and will continue to be made to support them)
 
 PlotPy 2.0 is a major release because it also brings a lot of new features:
 
-* `plot.PlotWidget`, `plot.PlotDialog`, and `plot.PlotWindow`: API overhaul(simple, more consistent, more flexible, more extensible - see documentation for details)
-* `plot.SyncPlotWindow`: new class to show multiple plots in a single window,in a synchronized way (zoom, pan, etc.)
-* `widgets.selectdialog.SelectDialog`: a dialog box to select items using ashape tool (segment, rectangle or custom)
+* `plot.PlotWidget`, `plot.PlotDialog`, and `plot.PlotWindow`: API overhaul (simple, more consistent, more flexible, more extensible - see documentation for details)
+* `plot.SyncPlotWindow`: new class to show multiple plots in a single window, in a synchronized way (zoom, pan, etc.)
+* `widgets.selectdialog.SelectDialog`: a dialog box to select items using a shape tool (segment, rectangle or custom)
 * Image lookup table (LUT):
-  * Initially, the LUT alpha channel was either constant (input parameter`alpha` was a float between 0 and 1) or linearly dependent on the image pixel values (when the `alpha_mask` parameter was enabled)
-  * Now, the LUT may be either constant (same as before) or dependent onthe image pixel values but not only linearly: the LUT alpha channel may follow a linear, a sigmoid or an hyperbolic tangent function (see the new `alpha_function` parameter). The old `alpha_mask` parameter was removed
+  * Initially, the LUT alpha channel was either constant (input parameter `alpha` was a float between 0 and 1) or linearly dependent on the image pixel values (when the `alpha_mask` parameter was enabled)
+  * Now, the LUT may be either constant (same as before) or dependent on the image pixel values but not only linearly: the LUT alpha channel may follow a linear, a sigmoid or an hyperbolic tangent function (see the new `alpha_function` parameter). The old `alpha_mask` parameter was removed
 * Image pixels are now centered on their coordinates:
-  * This means that the pixel at row `i` and column `j` is centered on the point`(j, i)` (before, the top-left corner of the pixel at row `i` and column `j` was centered on the point `(j, i)`)
-  * This convention is more consistent with the way images are displayed in otherscientific image processing tools
-  * This is one of the benefits of porting back [guiqwt](https://pypi.org/project/guiqwt/)changes since the merge (i.e. between 2016 and 2023)
+  * This means that the pixel at row `i` and column `j` is centered on the point `(j, i)` (before, the top-left corner of the pixel at row `i` and column `j` was centered on the point `(j, i)`)
+  * This convention is more consistent with the way images are displayed in other scientific image processing tools
+  * This is one of the benefits of porting back [guiqwt](https://pypi.org/project/guiqwt/) changes since the merge (i.e. between 2016 and 2023)
 * New SVG-based shapes:
   * `items.RectangleSVGShape`: rectangle shape based on SVG data or file
   * `items.SquareSVGShape`: square shape based on SVG data or file
@@ -377,17 +375,17 @@ PlotPy 2.0 is a major release because it also brings a lot of new features:
     * `make.contours()` for generating a list of `items.ContourItem` objects
     * `make.annotated_point()` for `items.AnnotatedPoint`
     * `make.polygon()` for `items.PolygonShape`
-    * `make.svg()` for `items.RectangleSVGShape`, `items.SquareSVGShape`,and `items.CircleSVGShape`
+    * `make.svg()` for `items.RectangleSVGShape`, `items.SquareSVGShape`, and `items.CircleSVGShape`
 * Added JSON serialization support for all plot items (curve, image, etc.)
 
-* Brand new documentation, based on Sphinx with links to other projects API, examplesand tutorials (e.g. on development related topics).
+* Brand new documentation, based on Sphinx with links to other projects API, examples and tutorials (e.g. on development related topics).
 * Black code formatting on all Python files
 * New automated test suite:
   * Automatic execution: `--unattended` command line option (Qt loop is bypassed)
-  * Test suite based on `pytest`, supporting `pytest-cov` for coverage testing,`pytest-xvfb` for headless testing, and `pytest-qt` for Qt testing
+  * Test suite based on `pytest`, supporting `pytest-cov` for coverage testing, `pytest-xvfb` for headless testing, and `pytest-qt` for Qt testing
   * Added support for Coverage: test coverage improved up to 70%
 * Added typing annotations on (almost) all Python files
-* Distribution: switched to `pyproject.toml` (still relying on `setuptools` and`setup.py` for building Cython/C++ extensions)
+* Distribution: switched to `pyproject.toml` (still relying on `setuptools` and `setup.py` for building Cython/C++ extensions)
 * Added code quality configuration files:
   * `.pylintrc`: pylint configuration file
   * `.isort.cfg`: isort configuration file
@@ -411,7 +409,7 @@ PlotPy 2.0 also brings a lot of bug fixes and improvements:
   * `TrImageItem` rotation algorithm
   * Oblique cross-section test
   * About dialog, version informations
-* Ported all [guiqwt](https://pypi.org/project/guiqwt/) bug fixes since the merge(i.e. between 2016 and 2023):
+* Ported all [guiqwt](https://pypi.org/project/guiqwt/) bug fixes since the merge (i.e. between 2016 and 2023):
   * Added support for Visual Studio 2015 and earlier
   * Speeding-up image alpha channel calculation
   * Optimized colormap icon caching
@@ -419,5 +417,5 @@ PlotPy 2.0 also brings a lot of bug fixes and improvements:
   * Added load test (with a very large number of plot widgets)
   * Coordinates inversion in `EllipseShape`
   * ValueError with levels histogram
-  * Various fixes regarding plot item creation, cross-section features,PyQt5 support, DICOM support, TIFF support, etc.
+  * Various fixes regarding plot item creation, cross-section features, PyQt5 support, DICOM support, TIFF support, etc.
   * Etc.
