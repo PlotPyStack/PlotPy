@@ -61,6 +61,21 @@ class EditableColormap(QwtLinearColorMap):
         self.name = name or "temporary"
         self.invert = False
 
+    def __deepcopy__(self, memo: dict[int, object]) -> EditableColormap:
+        """Deepcopy method to copy the colormap object.
+
+        Args:
+            memo: dict to store the copied objects
+
+        Returns:
+            New EditableColormap instance.
+        """
+        new_instance = EditableColormap(self.color1(), self.color2(), name=self.name)
+        for stop in self.colorStops():
+            stop: ColorStop
+            new_instance.addColorStop(stop.pos, stop.rgb)
+        return new_instance
+
     def rgb(self, interval: QwtInterval, value: float) -> int:
         """Returns the color of the colormap at the given value.
         This overriden method is used to add the possibility to invert the colormap

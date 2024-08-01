@@ -4,12 +4,11 @@ import os
 import os.path as osp
 import platform
 import sys
-from distutils.core import setup
 
 import numpy
 from Cython import __version__ as __cython_version__
 from Cython.Compiler import Main
-from setuptools import Distribution, Extension
+from setuptools import Distribution, Extension, setup
 
 LIBNAME = "plotpy"
 SRCPATH = osp.join(".", "src")

@@ -59,6 +59,16 @@ class XRangeSelection(AbstractShape):
             self.shapeparam.update_item(self)  # creates all the above QObjects
         self.setIcon(get_icon("xrange.png"))
 
+    def set_style(self, section: str, option: str) -> None:
+        """Set style for this item
+
+        Args:
+            section: Section
+            option: Option
+        """
+        self.shapeparam.read_config(CONF, section, option)
+        self.shapeparam.update_item(self)
+
     def __reduce__(self) -> tuple[type, tuple, tuple]:
         """Return state information for pickling"""
         self.shapeparam.update_param(self)

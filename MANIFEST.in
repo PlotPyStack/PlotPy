@@ -3,6 +3,5 @@ graft qtdesigner
 graft src
 graft colormaps
 include *.desktop
-include conftest.py
 include CHANGELOG.md
 include requirements.txt
