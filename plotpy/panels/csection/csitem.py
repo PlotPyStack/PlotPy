@@ -477,11 +477,11 @@ def compute_line_section(
     row0, row1 = min(row0, row1), max(row0, row1)
     col0, col1 = min(col0, col1), max(col0, col1)
     # Extract the line
-    line = np.zeros((2, max(abs(row1 - row0), abs(col1 - col0)) + 1), dtype=np.float64)
-    line[0, :] = np.linspace(row0, row1, line.shape[1])
-    line[1, :] = np.linspace(col0, col1, line.shape[1])
+    line = np.zeros((2, max(abs(row1 - row0), abs(col1 - col0)) + 1), dtype=int)
+    line[0, :] = np.linspace(row0, row1, line.shape[1]).astype(int)
+    line[1, :] = np.linspace(col0, col1, line.shape[1]).astype(int)
     # Interpolate the line
-    y = np.array([data[int(r), int(c)] for r, c in line.T])
+    y = np.ma.array(data[line[0], line[1]]).filled(np.nan)
     x = np.arange(y.size)
     return x, y
 

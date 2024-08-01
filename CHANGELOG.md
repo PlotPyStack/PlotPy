@@ -1,5 +1,13 @@
 # Changelog #
 
+## Version 2.5.2 ##
+
+🛠️ Bug fixes:
+
+* Fixed segment line cross section computation for masked images:
+  * Avoided warning message when encountering masked values in the image data
+  * Replacing masked values by NaNs when computing the segment line cross section (as before, but explicitely, to avoid the warning message)
+
 ## Version 2.5.1 ##
 
 ℹ️ Release V2.5.0 was a fugitive release that was replaced by V2.5.1 due to packaging issues.
