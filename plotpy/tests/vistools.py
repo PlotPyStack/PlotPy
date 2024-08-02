@@ -31,7 +31,7 @@ def show_items(
     winsize: tuple[int, int] | None = None,
 ) -> PlotDialog:
     """Show plot items in a dialog box"""
-    winsize = (800, 600) if winsize is None else winsize
+    winsize = (640, 480) if winsize is None else winsize
     win = make.dialog(
         edit=False,
         toolbar=True,
