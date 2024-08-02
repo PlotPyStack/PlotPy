@@ -1,6 +1,6 @@
 # Changelog #
 
-## Version 2.5.2 ##
+## Version 2.6.0 ##
 
 💥 New features / Enhancements:
 
