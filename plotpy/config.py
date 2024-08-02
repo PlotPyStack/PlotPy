@@ -11,6 +11,8 @@ Handle *plotpy* module configuration
 (options, images and icons)
 """
 
+from __future__ import annotations
+
 import os.path as osp
 
 from guidata import qthelpers
