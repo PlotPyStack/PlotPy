@@ -30,6 +30,7 @@ def test_dicom_image():
             wintitle="DICOM I/O test",
             show_contrast=True,
             type="image",
+            size=(600, 700),
         )
         filename = get_path("mr-brain.dcm")
         image = make.image(filename=filename, title="DICOM img", colormap="gray")
@@ -38,7 +39,6 @@ def test_dicom_image():
         plot.select_item(image)
         contrast = win.manager.get_contrast_panel()
         contrast.histogram.eliminate_outliers(54.0)
-        win.resize(600, 700)
 
 
 if __name__ == "__main__":

@@ -15,7 +15,9 @@ from plotpy.builder import make
 
 
 def imshow():
-    win = make.dialog(toolbar=True, title="Displaying 10 big images test")
+    win = make.dialog(
+        toolbar=True, title="Displaying 10 big images test", size=(800, 600)
+    )
     plot = win.manager.get_plot()
     for i in range(10):
         plot.add_item(make.image(compute_image(i)))

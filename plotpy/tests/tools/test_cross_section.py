@@ -22,8 +22,8 @@ def create_window():
         show_xsection=True,
         show_ysection=True,
         type="image",
+        size=(640, 600),
     )
-    win.resize(640, 600)
     return win
 
 

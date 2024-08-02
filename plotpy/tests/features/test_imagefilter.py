@@ -27,6 +27,7 @@ def imshow(x, y, data, filter_area, yreverse=True):
             ylabel="y (cm)",
             yreverse=yreverse,
             type="image",
+            size=(800, 600),
         )
         image = make.xyimage(x, y, data)
         plot = win.manager.get_plot()

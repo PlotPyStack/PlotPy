@@ -53,7 +53,7 @@ def multiple_widget_test(fname="brain.png"):
 
 def imshow(data, title=None, hold=False):
     """Show image"""
-    dlg = make.dialog(wintitle=title, type="image")
+    dlg = make.dialog(wintitle=title, type="image", size=(800, 600))
     dlg.manager.get_plot().add_item(make.image(data))
     if hold:
         dlg.show()

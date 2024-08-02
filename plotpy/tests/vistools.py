@@ -13,7 +13,7 @@ from plotpy.builder import make
 
 if TYPE_CHECKING:
     from plotpy.items import BaseImageItem, CurveItem
-    from plotpy.plot import PlotWindow
+    from plotpy.plot import PlotDialog
 
 
 def show_items(
@@ -29,8 +29,9 @@ def show_items(
     show_itemlist: bool = True,
     show_contrast: bool = False,
     winsize: tuple[int, int] | None = None,
-) -> PlotWindow:
+) -> PlotDialog:
     """Show plot items in a dialog box"""
+    winsize = (800, 600) if winsize is None else winsize
     win = make.dialog(
         edit=False,
         toolbar=True,
@@ -44,9 +45,8 @@ def show_items(
         curve_antialiasing=curve_antialiasing,
         show_itemlist=show_itemlist,
         show_contrast=show_contrast,
+        size=winsize,
     )
-    if winsize is not None:
-        win.resize(*winsize)
     plot = win.manager.get_plot()
     for item in items:
         plot.add_item(item)

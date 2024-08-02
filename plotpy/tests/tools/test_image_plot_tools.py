@@ -41,6 +41,7 @@ def create_window():
         toolbar=True,
         wintitle="All image and plot tools test",
         type="image",
+        size=(800, 600),
     )
     for toolklass in (
         LabelTool,

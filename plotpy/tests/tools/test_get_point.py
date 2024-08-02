@@ -36,6 +36,7 @@ def get_point(cdata: tuple[tuple[float, float], ...]) -> None:
         wintitle=_("Select one point then press OK to accept"),
         edit=True,
         type="curve",
+        size=(800, 600),
     )
     default = win.manager.add_tool(
         SelectPointTool,

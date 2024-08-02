@@ -143,6 +143,7 @@ class WidgetBuilder:
         wintitle: str = "PlotPy",
         icon: str = "plotpy.svg",
         edit: bool = False,
+        size: tuple[int, int] | None = None,
         title: str | None = None,
         xlabel: str | tuple[str, str] | None = None,
         ylabel: str | tuple[str, str] | None = None,
@@ -178,6 +179,7 @@ class WidgetBuilder:
             wintitle: The window title
             icon: The window icon
             edit: If True, the plot is editable
+            size: The window size
             title: The plot title
             xlabel: (bottom axis title, top axis title) or bottom axis title only
             ylabel: (left axis title, right axis title) or left axis title only
@@ -236,6 +238,7 @@ class WidgetBuilder:
             title=wintitle,
             icon=icon,
             edit=edit,
+            size=size,
         )
 
     def window(
@@ -246,6 +249,7 @@ class WidgetBuilder:
         auto_tools: bool = True,
         wintitle: str = "PlotPy",
         icon: str = "plotpy.svg",
+        size: tuple[int, int] | None = None,
         title: str | None = None,
         xlabel: str | tuple[str, str] | None = None,
         ylabel: str | tuple[str, str] | None = None,
@@ -280,6 +284,7 @@ class WidgetBuilder:
              If False, the user must register the tools manually.
             wintitle: The window title
             icon: The window icon
+            size: The window size
             title: The plot title
             xlabel: (bottom axis title, top axis title) or bottom axis title only
             ylabel: (left axis title, right axis title) or left axis title only
@@ -337,6 +342,7 @@ class WidgetBuilder:
             auto_tools=auto_tools,
             title=wintitle,
             icon=icon,
+            size=size,
         )
 
     def gridparam(

@@ -30,12 +30,12 @@ def __create_dialog_with_contrast(item):
         wintitle="Contrast test",
         show_contrast=True,
         type="image",
+        size=(600, 600),
     )
     plot = win.get_plot()
     plot.add_item(item)
     plot.set_active_item(item)
     item.unselect()
-    win.resize(600, 600)
     win.show()
     return win
 

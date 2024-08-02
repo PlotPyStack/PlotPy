@@ -24,6 +24,7 @@ def create_window():
         wintitle="Image superposition test",
         gridparam=gridparam,
         type="image",
+        size=(800, 600),
     )
     for toolklass in (RectangleTool, EllipseTool, FreeFormTool, PlaceAxesTool):
         win.manager.add_tool(toolklass)

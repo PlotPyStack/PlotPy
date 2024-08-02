@@ -34,6 +34,7 @@ def edit_downsampled_curve(
         wintitle=_("Right-click on the curve to enable/disable downsampling"),
         edit=True,
         type="curve",
+        size=(800, 600),
     )
     plot = win.manager.get_plot()
     for cx, cy in cdata[:-1]:

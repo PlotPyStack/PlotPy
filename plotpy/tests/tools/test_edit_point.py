@@ -50,7 +50,7 @@ def make_new_bbox(dialog: PlotDialog):
 
 
 def edit_curve(
-    cdata: tuple[tuple[float, float], ...]
+    cdata: tuple[tuple[float, float], ...],
 ) -> tuple[tuple[float, float], ...]:
     """
     Plot curves and return selected point(s) coordinates
@@ -65,6 +65,7 @@ def edit_curve(
         wintitle=_("Select one point then press OK to accept"),
         edit=True,
         type="curve",
+        size=(800, 600),
     )
     default = win.manager.add_tool(
         EditPointTool,

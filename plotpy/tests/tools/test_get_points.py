@@ -47,6 +47,7 @@ def get_points(cdata: tuple[tuple[float, float], ...], max_select: int) -> None:
         edit=True,
         type="curve",
         curve_antialiasing=True,
+        size=(800, 600),
     )
     default = win.manager.add_tool(
         SelectPointsTool,

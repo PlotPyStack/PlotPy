@@ -5,6 +5,9 @@
 💥 New features / Enhancements:
 
 * Added support for color theme change at execution (relies on guidata V3.6)
+* Changed strategy for default plot widget size:
+  * No default size is applied to the plot widget anymore (before, the default size was 800x600 pixels)
+  * Added parameter `size` to `PlotDialog`, `PlotWindow` classes, and `make.dialog`, `make.window` functions to set the initial size of the plot widget
 
 🛠️ Bug fixes:
 

@@ -366,14 +366,14 @@ class PlotWidget(BasePlotWidget):
 
 
 def set_widget_title_icon(
-    widget: QWidget, title: str, icon: QG.QIcon, resize: tuple[int, int] | None = None
+    widget: QWidget, title: str, icon: QG.QIcon, size: tuple[int, int] | None = None
 ) -> None:
     """Setups the widget title and icon
 
     Args:
         title: The window title
         icon: The window icon
-        resize: The window size (width, height). Defaults to None (no resize)
+        size: The window size (width, height). Defaults to None (no resize)
     """
     win32_fix_title_bar_background(widget)
     widget.setWindowTitle(title)
@@ -382,8 +382,8 @@ def set_widget_title_icon(
     if icon is not None:
         widget.setWindowIcon(icon)
     widget.setMinimumSize(320, 240)
-    if resize is not None:
-        widget.resize(*resize)
+    if size is not None:
+        widget.resize(*size)
 
 
 def add_widget_to_grid_layout(
@@ -535,6 +535,7 @@ class PlotDialog(QW.QDialog, AbstractPlotDialogWindow, metaclass=PlotDialogMeta)
         title: The window title
         icon: The window icon
         edit: If True, the plot is editable
+        size: The window size (width, height). Defaults to None (no resize)
     """
 
     def __init__(
@@ -547,9 +548,10 @@ class PlotDialog(QW.QDialog, AbstractPlotDialogWindow, metaclass=PlotDialogMeta)
         title: str = "PlotPy",
         icon: str = "plotpy.svg",
         edit: bool = False,
+        size: tuple[int, int] | None = None,
     ) -> None:
         super().__init__(parent)
-        set_widget_title_icon(self, title, icon, resize=(640, 480))
+        set_widget_title_icon(self, title, icon, size)
         self.edit = edit
         self.button_box = None
         self.button_layout = None
@@ -692,6 +694,7 @@ class PlotWindow(QW.QMainWindow, AbstractPlotDialogWindow, metaclass=PlotWindowM
          If False, the user must register the tools manually.
         title: The window title
         icon: The window icon
+        size: The window size (width, height). Defaults to None (no resize)
     """
 
     def __init__(
@@ -703,9 +706,10 @@ class PlotWindow(QW.QMainWindow, AbstractPlotDialogWindow, metaclass=PlotWindowM
         auto_tools: bool = True,
         title: str = "PlotPy",
         icon: str = "plotpy.svg",
+        size: tuple[int, int] | None = None,
     ) -> None:
         super().__init__(parent)
-        set_widget_title_icon(self, title, icon, resize=(640, 480))
+        set_widget_title_icon(self, title, icon, size)
         self.plot_layout = QW.QGridLayout()
         self.plot_widget: PlotWidget = None
         self.manager: PlotManager = None
@@ -897,6 +901,7 @@ class SyncPlotWindow(QW.QMainWindow):
          If False, the user must register the tools manually.
         title: The window title
         icon: The window icon
+        size: The window size (width, height). Defaults to None (no resize)
 
     Usage: first, create a window, then add plots to it, then call the
     :py:meth:`.SyncPlotWindow.finalize_configuration` method to add panels and
@@ -920,9 +925,10 @@ class SyncPlotWindow(QW.QMainWindow):
         auto_tools: bool = True,
         title: str = "PlotPy",
         icon: str = "plotpy.svg",
+        size: tuple[int, int] | None = None,
     ) -> None:
         super().__init__(parent)
-        set_widget_title_icon(self, title, icon)
+        set_widget_title_icon(self, title, icon, size)
         self.manager = PlotManager(None)
         self.manager.set_main(self)
         self.subplotwidget = SubplotWidget(self.manager, parent=self, options=options)
