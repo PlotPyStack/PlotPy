@@ -2,6 +2,10 @@
 
 ## Version 2.5.2 ##
 
+💥 New features / Enhancements:
+
+* Added support for color theme change at execution (relies on guidata V3.6)
+
 🛠️ Bug fixes:
 
 * Fixed segment line cross section computation for masked images:

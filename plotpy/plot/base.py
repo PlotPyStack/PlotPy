@@ -444,6 +444,12 @@ class BasePlot(qwt.QwtPlot):
                 # This happens when object has already been deleted
                 pass
 
+    def update_color_mode(self) -> None:
+        """Color mode was updated, update plot widget accordingly"""
+        self.grid.gridparam.read_config(CONF, self.options.section, "grid")
+        self.grid.gridparam.update_grid(self.grid)
+        self.replot()
+
     def on_active_curve(self, x: float, y: float) -> tuple[float, float]:
         """
         Callback called when the active curve is moved
