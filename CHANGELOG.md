@@ -1,6 +1,8 @@
 # Changelog #
 
-## Version 2.6.0 ##
+## Version 2.6.1 ##
+
+ℹ️ Release V2.6.0 was a fugitive release that was replaced by V2.6.1 due to a critical bug in the segment line cross section computation for masked images.
 
 💥 New features / Enhancements:
 

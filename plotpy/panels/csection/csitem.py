@@ -481,7 +481,7 @@ def compute_line_section(
     line[0, :] = np.linspace(row0, row1, line.shape[1]).astype(int)
     line[1, :] = np.linspace(col0, col1, line.shape[1]).astype(int)
     # Interpolate the line
-    y = np.ma.array(data[line[0], line[1]]).filled(np.nan)
+    y = np.ma.array(data[line[0], line[1]], float).filled(np.nan)
     x = np.arange(y.size)
     return x, y
 
