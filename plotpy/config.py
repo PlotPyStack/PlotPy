@@ -14,6 +14,8 @@ Handle *plotpy* module configuration
 from __future__ import annotations
 
 import os.path as osp
+import warnings
+from typing import Literal
 
 from guidata import qthelpers
 from guidata.configtools import add_image_module_path, get_translation
@@ -777,13 +779,8 @@ def update_plotpy_defaults() -> None:
     CONF.update_defaults(DEFAULTS)
 
 
-def set_plotpy_dark_mode(state: bool) -> None:
-    """Set dark mode for Qt application
-
-    Args:
-        state (bool): True to enable dark mode
-    """
-    qthelpers.set_dark_mode(state)
+def update_plotpy_color_mode() -> None:
+    """Update the color mode for Plotpy"""
     update_plotpy_defaults()
 
     # Iterate over all `BasePlot` widgets by browsing the QApplication:
@@ -797,3 +794,30 @@ def set_plotpy_dark_mode(state: bool) -> None:
         for widget in app.topLevelWidgets():
             for child in widget.findChildren(BasePlot):
                 child.update_color_mode()
+
+
+def set_plotpy_dark_mode(state: bool) -> None:
+    """Set dark mode for Qt application
+
+    Args:
+        state (bool): True to enable dark mode
+    """
+    mode = "dark" if state else "light"
+    warnings.warn(
+        f"`set_plotpy_dark_mode` is deprecated and will be removed in a future "
+        f"version. Use `set_plotpy_color_mode('{mode}')` instead.",
+        DeprecationWarning,
+    )
+    qthelpers.set_dark_mode(state)  # guidata 3.6.0
+    update_plotpy_color_mode()
+
+
+def set_plotpy_color_mode(mode: Literal["light", "dark", "auto"] | None = None):
+    """Set the color mode for Plotpy
+
+    Args:
+        mode: Color mode ('light', 'dark' or 'auto'). If 'auto', the system color mode
+        is used. If None, the `QT_COLOR_MODE` environment variable is used.
+    """
+    qthelpers.set_color_mode(mode)  # guidata >= 3.6.1
+    update_plotpy_color_mode()
