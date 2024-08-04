@@ -22,12 +22,12 @@ from typing import TYPE_CHECKING
 import numpy as np
 from guidata.configtools import get_icon, get_image_layout
 from guidata.dataset import DataSet, FloatItem
-from guidata.qthelpers import add_actions, create_action
+from guidata.qthelpers import add_actions, create_action, is_dark_theme
 from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
-from plotpy.config import CONF, IS_DARK, _
+from plotpy.config import CONF, _
 from plotpy.constants import ID_CONTRAST, Y_LEFT, Y_RIGHT, PlotType
 from plotpy.interfaces import IPanel, IVoiImageItemType
 from plotpy.items import HistogramItem, XRangeSelection
@@ -448,7 +448,7 @@ class ContrastAdjustment(PanelWidget):
         self.min_select_tool = None
         self.max_select_tool = None
 
-        color = "#444444" if not IS_DARK else "#bbbbbb"
+        color = "#bbbbbb" if is_dark_theme() else "#444444"
         style = "<span style='color: %s'><b>{}</b></span>" % color
         layout, _label = get_image_layout(
             self.PANEL_ICON, style.format(self.PANEL_TITLE), alignment=QC.Qt.AlignLeft

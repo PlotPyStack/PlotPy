@@ -17,17 +17,15 @@ import os.path as osp
 import warnings
 from typing import Literal
 
-from guidata import qthelpers
+from guidata import qthelpers as qth
 from guidata.configtools import add_image_module_path, get_translation
 from guidata.userconfig import UserConfig
-
-IS_DARK = qthelpers.is_dark_mode()
 
 
 def get_main_colors() -> tuple[str, str]:
     """Return main foreground and background colors depending on dark mode"""
-    global IS_DARK
-    return "white" if IS_DARK else "black", "#222222" if IS_DARK else "white"
+    is_dark = qth.is_dark_theme()
+    return "white" if is_dark else "black", "#222222" if is_dark else "white"
 
 
 MAIN_FG_COLOR, MAIN_BG_COLOR = get_main_colors()
@@ -45,7 +43,7 @@ _ = get_translation("plotpy")
 
 def get_plotpy_defaults() -> dict[str, int | float | str | bool]:
     """Return default configuration values"""
-    global IS_DARK, MAIN_FG_COLOR, MAIN_BG_COLOR
+    global MAIN_FG_COLOR, MAIN_BG_COLOR
     return {
         "plot": {
             "selection/distance": 6,
@@ -101,7 +99,7 @@ def get_plotpy_defaults() -> dict[str, int | float | str | bool]:
             "grid/maj_line/style": "DotLine",
             "grid/min_xenabled": True,
             "grid/min_yenabled": True,
-            "grid/min_line/color": "#454545" if IS_DARK else "#eaeaea",
+            "grid/min_line/color": "#454545" if qth.is_dark_theme() else "#eaeaea",
             "grid/min_line/width": 1,
             "grid/min_line/style": "DotLine",
             "marker/curve/symbol/marker": "Rect",
@@ -304,7 +302,7 @@ def get_plotpy_defaults() -> dict[str, int | float | str | bool]:
             "shape/imagefilter/sel_symbol/edgecolor": "#0000ff",
             "shape/imagefilter/sel_symbol/facecolor": "#00ffff",
             "shape/imagefilter/sel_symbol/alpha": 0.8,
-            # Contour ----------------------------------------------------------------------
+            # Contour ------------------------------------------------------------------
             "shape/contour/line/style": "SolidLine",
             "shape/contour/line/color": "#000000",
             "shape/contour/line/width": 1,
@@ -317,7 +315,7 @@ def get_plotpy_defaults() -> dict[str, int | float | str | bool]:
             "shape/contour/sel_fill/color": MAIN_BG_COLOR,
             "shape/contour/sel_fill/alpha": 0.1,
             "shape/contour/sel_symbol/marker": "NoSymbol",
-            # RectZoom ---------------------------------------------------------------------
+            # RectZoom -----------------------------------------------------------------
             "shape/rectzoom/line/style": "SolidLine",
             "shape/rectzoom/line/color": "#bbbbbb",
             "shape/rectzoom/line/width": 2,
@@ -772,8 +770,7 @@ CONF = UserConfig(DEFAULTS)
 
 def update_plotpy_defaults() -> None:
     """Update the defaults with the current configuration"""
-    global DEFAULTS, IS_DARK, MAIN_BG_COLOR, MAIN_FG_COLOR
-    IS_DARK = qthelpers.is_dark_mode()
+    global DEFAULTS, MAIN_BG_COLOR, MAIN_FG_COLOR
     MAIN_FG_COLOR, MAIN_BG_COLOR = get_main_colors()
     DEFAULTS = get_plotpy_defaults()
     CONF.update_defaults(DEFAULTS)
@@ -808,7 +805,7 @@ def set_plotpy_dark_mode(state: bool) -> None:
         f"version. Use `set_plotpy_color_mode('{mode}')` instead.",
         DeprecationWarning,
     )
-    qthelpers.set_dark_mode(state)  # guidata 3.6.0
+    qth.set_dark_mode(state)  # guidata 3.6.0
     update_plotpy_color_mode()
 
 
@@ -819,5 +816,5 @@ def set_plotpy_color_mode(mode: Literal["light", "dark", "auto"] | None = None):
         mode: Color mode ('light', 'dark' or 'auto'). If 'auto', the system color mode
         is used. If None, the `QT_COLOR_MODE` environment variable is used.
     """
-    qthelpers.set_color_mode(mode)  # guidata >= 3.6.1
+    qth.set_color_mode(mode)  # guidata >= 3.6.1
     update_plotpy_color_mode()
