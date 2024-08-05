@@ -29,7 +29,7 @@ for /D %%d in ("%DIR0%*") do (
             echo ******************************************************************************
             echo Building %MODNAME% from "%%d"
             echo ******************************************************************************
-            python setup.py build bdist_wheel
+            python -m build
             echo ----
             set PATH=!OLD_PATH!
         )
