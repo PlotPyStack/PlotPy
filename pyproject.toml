@@ -42,7 +42,7 @@ classifiers = [
     "Topic :: Software Development :: Widget Sets",
     "Topic :: Utilities",
 ]
-requires-python = ">=3.8, <4"
+requires-python = ">=3.8, <=3.12"  # Upper limit will be removed when dropping Python 3.8 support
 dependencies = [
     "guidata>=3.6.1",
     "PythonQwt>=0.12.1",
