@@ -1,5 +1,17 @@
 # Changelog #
 
+## Version 2.6.2 ##
+
+💥 New features / Enhancements:
+
+* Added Wheel packages for all major platforms on PyPI:
+  * Windows (32/64bits), MacOS, Linux
+  * Python 3.8 to 3.12
+
+🛠️ Bug fixes:
+
+* Fixed color theme support (dark/light mode), leveraging the new `guidata` V3.6 feature
+
 ## Version 2.6.1 ##
 
 ℹ️ Release V2.6.0 was a fugitive release that was replaced by V2.6.1 due to a critical bug in the segment line cross section computation for masked images.
