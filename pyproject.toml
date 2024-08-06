@@ -110,3 +110,4 @@ line-ending = "auto"              # Like Black, automatically detect the appropr
 
 [tool.cibuildwheel]
 build = ["cp38-*", "cp39-*", "cp310-*", "cp311-*", "cp312-*"]
+skip = ["*-manylinux_i686", "*-muslinux*"]
