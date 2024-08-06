@@ -14,7 +14,15 @@ from typing import Literal
 
 import pytest
 from guidata import qthelpers as qth
-from guidata.tests.widgets.test_theme import TestWidget as GuidataTestWidget
+
+try:
+    # guidata > V2.6.2
+    from guidata.tests.widgets.test_theme import ColorModeWidget as GuidataWidget
+except ImportError:
+    # guidata V2.6.2
+    from guidata.tests.widgets.test_theme import (
+        TestWidget as GuidataWidget,  # noqa: F401
+    )
 from qtpy import QtWidgets as QW
 
 from plotpy.builder import make
@@ -23,7 +31,7 @@ from plotpy.plot import PlotOptions, PlotWidget
 from plotpy.tests import data as ptd
 
 
-class TestWidget(GuidataTestWidget):
+class ColorModeWidget(GuidataWidget):
     """Testing color mode switching for PlotPy and guidata widgets"""
 
     SIZE = (1400, 600)
@@ -56,7 +64,7 @@ def test_dark_light_themes(
 ) -> None:
     """Test dark/light theme switching"""
     with qth.qt_app_context(exec_loop=True):
-        widget = TestWidget(default=qth.AUTO if default is None else default)
+        widget = ColorModeWidget(default=qth.AUTO if default is None else default)
         widget.show()
 
 
