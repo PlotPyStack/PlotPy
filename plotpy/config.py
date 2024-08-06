@@ -805,8 +805,7 @@ def set_plotpy_dark_mode(state: bool) -> None:
         f"version. Use `set_plotpy_color_mode('{mode}')` instead.",
         DeprecationWarning,
     )
-    qth.set_dark_mode(state)  # guidata 3.6.0
-    update_plotpy_color_mode()
+    set_plotpy_color_mode(mode)
 
 
 def set_plotpy_color_mode(mode: Literal["light", "dark", "auto"] | None = None):
@@ -816,5 +815,5 @@ def set_plotpy_color_mode(mode: Literal["light", "dark", "auto"] | None = None):
         mode: Color mode ('light', 'dark' or 'auto'). If 'auto', the system color mode
         is used. If None, the `QT_COLOR_MODE` environment variable is used.
     """
-    qth.set_color_mode(mode)  # guidata >= 3.6.1
+    qth.set_color_mode(mode)
     update_plotpy_color_mode()
