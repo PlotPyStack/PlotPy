@@ -47,170 +47,162 @@ class Array1D
 {
 public:
     typedef T value_type; // The type of pixel data from the image
-
-    class iterator
+    class iterator : public std::iterator<std::random_access_iterator_tag, T>
     {
     public:
-        using iterator_category = std::random_access_iterator_tag;
-        using value_type = T;
-        using difference_type = std::ptrdiff_t;
-        using pointer = T *;
-        using reference = T &;
+        iterator() : pos(0L), stride(0) {}
+        iterator(const Array1D &arr) : pos(arr.base), stride(arr.si) {}
+        iterator(const iterator &it, int n = 0) : pos(it.pos), stride(it.stride) { *this += n; }
+        T &operator*() { return *pos; }
+        const T &operator*() const { return *pos; }
+        T &operator[](int n) { return *(pos + n * stride); }
+        const T &operator[](int n) const { return *(pos + n * stride); }
+        iterator &operator+=(int n)
         {
-        public:
-            iterator() : pos(0L), stride(0) {}
-            iterator(const Array1D &arr) : pos(arr.base), stride(arr.si) {}
-            iterator(const iterator &it, int n = 0) : pos(it.pos), stride(it.stride) { *this += n; }
-            T &operator*() { return *pos; }
-            const T &operator*() const { return *pos; }
-            T &operator[](int n) { return *(pos + n * stride); }
-            const T &operator[](int n) const { return *(pos + n * stride); }
-            iterator &operator+=(int n)
-            {
-                pos += stride * n;
-                return *this;
-            }
-            int operator-(const iterator &it) { return (pos - it.pos) / stride; }
-            iterator operator+(int n) { return iterator(*this, n); }
-            iterator operator-(int n) { return iterator(*this, -n); }
-            iterator &operator=(const iterator &it)
-            {
-                pos = it.pos;
-                stride = it.stride;
-                return *this;
-            }
-            iterator &operator++()
-            {
-                pos += stride;
-                return *this;
-            }
-            iterator &operator--()
-            {
-                pos += stride;
-                return *this;
-            }
-            iterator operator++(int)
-            {
-                iterator it(*this);
-                pos += stride;
-                return it;
-            }
-            iterator operator--(int)
-            {
-                iterator it(*this);
-                pos += stride;
-                return it;
-            }
-            bool operator<(const iterator &it) { return pos < it.pos; }
-            bool operator==(const iterator &it) { return pos == it.pos; }
-            bool operator!=(const iterator &it) { return pos != it.pos; }
-
-        protected:
-            T *pos;
-            int stride;
-        };
-        Array1D() {}
-        Array1D(PyArrayObject *arr)
-        {
-            base = (value_type *)PyArray_DATA(arr);
-            ni = PyArray_DIM(arr, 0);
-            si = PyArray_STRIDE(arr, 0) / sizeof(value_type);
+            pos += stride * n;
+            return *this;
         }
-
-        Array1D(value_type *_base, int _ni, int _si) : base(_base), ni(_ni),
-                                                       si(_si / sizeof(value_type))
+        int operator-(const iterator &it) { return (pos - it.pos) / stride; }
+        iterator operator+(int n) { return iterator(*this, n); }
+        iterator operator-(int n) { return iterator(*this, -n); }
+        iterator &operator=(const iterator &it)
         {
+            pos = it.pos;
+            stride = it.stride;
+            return *this;
         }
-        iterator begin() { return iterator(*this); }
-        iterator end()
+        iterator &operator++()
+        {
+            pos += stride;
+            return *this;
+        }
+        iterator &operator--()
+        {
+            pos += stride;
+            return *this;
+        }
+        iterator operator++(int)
         {
             iterator it(*this);
-            it += ni;
+            pos += stride;
             return it;
         }
-        void init(value_type *_base, int _ni, int _si)
+        iterator operator--(int)
         {
-            base = _base;
-            ni = _ni;
-            si = _si;
+            iterator it(*this);
+            pos += stride;
+            return it;
         }
+        bool operator<(const iterator &it) { return pos < it.pos; }
+        bool operator==(const iterator &it) { return pos == it.pos; }
+        bool operator!=(const iterator &it) { return pos != it.pos; }
 
-        // Pixel accessors
-        value_type &value(int x)
-        {
-            check("array1d:", x, ni, outside);
-            return *(base + x * si);
-        }
-        const value_type &value(int x) const
-        {
-            check("array1d:", x, ni, outside);
-            return *(base + x * si);
-        }
-
-    public:
-        value_type outside;
-        value_type *base;
-        int ni; // dimensions
-        int si; // strides in sizeof(value_type)
+    protected:
+        T *pos;
+        int stride;
     };
-
-    template <class T>
-    class Array2D
+    Array1D() {}
+    Array1D(PyArrayObject *arr)
     {
-    public:
-        typedef T value_type; // The type of pixel data from the image
-
-        Array2D() {}
-        Array2D(PyArrayObject *arr)
-        {
-            base = (value_type *)PyArray_DATA(arr);
-            ni = PyArray_DIM(arr, 0);
-            nj = PyArray_DIM(arr, 1);
-            si = PyArray_STRIDE(arr, 0) / sizeof(value_type);
-            sj = PyArray_STRIDE(arr, 1) / sizeof(value_type);
-        }
-
-        Array2D(value_type *_base, int _ni, int _nj, int _si, int _sj) : base(_base), ni(_ni), nj(_nj),
-                                                                         si(_si / sizeof(value_type)), sj(_sj / sizeof(value_type))
-        {
-        }
-        void init(value_type *_base, int _ni, int _nj, int _si, int _sj)
-        {
-            base = _base;
-            ni = _ni;
-            nj = _nj;
-            si = _si;
-            sj = _sj;
-        }
-
-        // Pixel accessors
-        value_type &value(int x, int y)
-        {
-            check("array2d x:", x, nj, outside);
-            check("array2d y:", y, ni, outside);
-            return *(base + x * sj + y * si);
-        }
-        const value_type &value(int x, int y) const
-        {
-            check("array2d x:", x, nj, outside);
-            check("array2d y:", y, ni, outside);
-            return *(base + x * sj + y * si);
-        }
-
-    public:
-        value_type outside;
-        value_type *base;
-        int ni, nj; // dimensions
-        int si, sj; // strides in sizeof(value_type)
-    };
-
-    template <class Image>
-    void set_array(Image &img, PyArrayObject *arr)
-    {
-        img.init((typename Image::value_type *)PyArray_DATA(arr),
-                 PyArray_DIM(arr, 0), PyArray_DIM(arr, 1),
-                 PyArray_STRIDE(arr, 0) / sizeof(typename Image::value_type),
-                 PyArray_STRIDE(arr, 1) / sizeof(typename Image::value_type));
+        base = (value_type *)PyArray_DATA(arr);
+        ni = PyArray_DIM(arr, 0);
+        si = PyArray_STRIDE(arr, 0) / sizeof(value_type);
     }
+
+    Array1D(value_type *_base, int _ni, int _si) : base(_base), ni(_ni),
+                                                   si(_si / sizeof(value_type))
+    {
+    }
+    iterator begin() { return iterator(*this); }
+    iterator end()
+    {
+        iterator it(*this);
+        it += ni;
+        return it;
+    }
+    void init(value_type *_base, int _ni, int _si)
+    {
+        base = _base;
+        ni = _ni;
+        si = _si;
+    }
+
+    // Pixel accessors
+    value_type &value(int x)
+    {
+        check("array1d:", x, ni, outside);
+        return *(base + x * si);
+    }
+    const value_type &value(int x) const
+    {
+        check("array1d:", x, ni, outside);
+        return *(base + x * si);
+    }
+
+public:
+    value_type outside;
+    value_type *base;
+    int ni; // dimensions
+    int si; // strides in sizeof(value_type)
+};
+
+template <class T>
+class Array2D
+{
+public:
+    typedef T value_type; // The type of pixel data from the image
+
+    Array2D() {}
+    Array2D(PyArrayObject *arr)
+    {
+        base = (value_type *)PyArray_DATA(arr);
+        ni = PyArray_DIM(arr, 0);
+        nj = PyArray_DIM(arr, 1);
+        si = PyArray_STRIDE(arr, 0) / sizeof(value_type);
+        sj = PyArray_STRIDE(arr, 1) / sizeof(value_type);
+    }
+
+    Array2D(value_type *_base, int _ni, int _nj, int _si, int _sj) : base(_base), ni(_ni), nj(_nj),
+                                                                     si(_si / sizeof(value_type)), sj(_sj / sizeof(value_type))
+    {
+    }
+    void init(value_type *_base, int _ni, int _nj, int _si, int _sj)
+    {
+        base = _base;
+        ni = _ni;
+        nj = _nj;
+        si = _si;
+        sj = _sj;
+    }
+
+    // Pixel accessors
+    value_type &value(int x, int y)
+    {
+        check("array2d x:", x, nj, outside);
+        check("array2d y:", y, ni, outside);
+        return *(base + x * sj + y * si);
+    }
+    const value_type &value(int x, int y) const
+    {
+        check("array2d x:", x, nj, outside);
+        check("array2d y:", y, ni, outside);
+        return *(base + x * sj + y * si);
+    }
+
+public:
+    value_type outside;
+    value_type *base;
+    int ni, nj; // dimensions
+    int si, sj; // strides in sizeof(value_type)
+};
+
+template <class Image>
+void set_array(Image &img, PyArrayObject *arr)
+{
+    img.init((typename Image::value_type *)PyArray_DATA(arr),
+             PyArray_DIM(arr, 0), PyArray_DIM(arr, 1),
+             PyArray_STRIDE(arr, 0) / sizeof(typename Image::value_type),
+             PyArray_STRIDE(arr, 1) / sizeof(typename Image::value_type));
+}
 
 #endif
