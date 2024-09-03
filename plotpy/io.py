@@ -620,6 +620,7 @@ register_serializable_items(
         "AnnotatedObliqueRectangle",
         "AnnotatedEllipse",
         "AnnotatedCircle",
+        "AnnotatedPolygon",
         "LabelItem",
         "LegendBoxItem",
         "SelectedLegendBoxItem",

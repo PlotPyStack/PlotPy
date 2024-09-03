@@ -28,6 +28,7 @@ from plotpy.items.label import DataInfoLabel
 from plotpy.items.shape.base import AbstractShape
 from plotpy.items.shape.ellipse import EllipseShape
 from plotpy.items.shape.point import PointShape
+from plotpy.items.shape.polygon import PolygonShape
 from plotpy.items.shape.rectangle import ObliqueRectangleShape, RectangleShape
 from plotpy.items.shape.segment import SegmentShape
 from plotpy.mathutils.geometry import (
@@ -461,9 +462,8 @@ assert_interfaces_valid(AnnotatedShape)
 
 class AnnotatedPoint(AnnotatedShape):
     """
-    Construct an annotated point at coordinates (x, y)
-    with properties set with *annotationparam*
-    (see :py:class:`.styles.AnnotationParam`)
+    Construct an annotated point at coordinates (x, y) with properties set with
+    *annotationparam* (see :py:class:`.styles.AnnotationParam`)
     """
 
     SHAPE_CLASS = PointShape
@@ -571,6 +571,92 @@ class AnnotatedSegment(AnnotatedShape):
             [
                 _("Center:") + " " + self.get_tr_center_str(),
                 _("Distance:") + " " + self.x_to_str(self.get_tr_length()),
+            ]
+        )
+
+
+class AnnotatedPolygon(AnnotatedShape):
+    """
+    Construct an annotated polygon with properties set with *annotationparam*
+    (see :py:class:`.styles.AnnotationParam`)
+
+    Args:
+        points: List of points
+        closed: True if polygon is closed
+        annotationparam: Annotation parameters
+    """
+
+    SHAPE_CLASS = PolygonShape
+    LABEL_ANCHOR = "C"
+
+    def __init__(
+        self,
+        points: list[tuple[float, float]] | None = None,
+        closed: bool | None = None,
+        annotationparam: AnnotationParam | None = None,
+    ) -> None:
+        super().__init__(annotationparam)
+        self.shape: PolygonShape
+        if points is not None:
+            self.set_points(points)
+        if closed is not None:
+            self.set_closed(closed)
+        self.setIcon(get_icon("polygon.png"))
+
+    # ----Public API-------------------------------------------------------------
+    def set_points(self, points: list[tuple[float, float]] | None) -> None:
+        """Set the polygon points
+
+        Args:
+            points: List of point coordinates
+        """
+        self.shape.set_points(points)
+        self.set_label_position()
+
+    def get_points(self) -> list[tuple[float, float]]:
+        """Return the polygon points"""
+        return self.shape.get_points()
+
+    def set_closed(self, state: bool) -> None:
+        """Set the polygon closed state
+
+        Args:
+            state: True if polygon is closed
+        """
+        self.shape.set_closed(state)
+
+    def is_closed(self) -> bool:
+        """Return True if polygon is closed
+
+        Returns:
+            True if polygon is closed
+        """
+        return self.shape.is_closed()
+
+    # ----AnnotatedShape API-----------------------------------------------------
+    def create_shape(self):
+        """Return the shape object associated to this annotated shape object"""
+        shape = self.SHAPE_CLASS()  # pylint: disable=not-callable
+        return shape
+
+    def set_label_position(self) -> None:
+        """Set label position, for instance based on shape position"""
+        x, y = self.shape.get_center()
+        self.label.set_pos(x, y)
+
+    def get_tr_center(self) -> tuple[float, float]:
+        """Return shape center coordinates after applying transform matrix"""
+        return self.shape.get_center()
+
+    def get_infos(self) -> str:
+        """Get informations on current shape
+
+        Returns:
+            str: Formatted string with informations on current shape
+        """
+        return "<br>".join(
+            [
+                _("Center:") + " " + self.get_tr_center_str(),
             ]
         )
 

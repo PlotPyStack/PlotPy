@@ -27,6 +27,7 @@ from plotpy.items import (
     AnnotatedCircle,
     AnnotatedEllipse,
     AnnotatedPoint,
+    AnnotatedPolygon,
     AnnotatedRectangle,
     AnnotatedSegment,
 )
@@ -126,10 +127,7 @@ class AnnotationBuilder:
     def __annotated_shape(
         self,
         shapeclass,
-        x0,
-        y0,
-        x1,
-        y1,
+        points,
         title,
         subtitle,
         show_label,
@@ -153,7 +151,10 @@ class AnnotationBuilder:
             readonly=readonly,
             private=private,
         )
-        shape = shapeclass(x0, y0, x1, y1, param)
+        if isinstance(points, np.ndarray):
+            shape = shapeclass(points, annotationparam=param)
+        else:
+            shape = shapeclass(*points, annotationparam=param)
         shape.set_style("plot", "shape/drag")
         return shape
 
@@ -195,12 +196,10 @@ class AnnotationBuilder:
         Returns:
             :py:class:`.AnnotatedRectangle` object
         """
+        points = x0, y0, x1, y1
         return self.__annotated_shape(
             AnnotatedRectangle,
-            x0,
-            y0,
-            x1,
-            y1,
+            points,
             title,
             subtitle,
             show_label,
@@ -259,12 +258,10 @@ class AnnotationBuilder:
         Returns:
             :py:class:`.AnnotatedEllipse` object
         """
+        points = x0, y0, x1, y1
         item = self.__annotated_shape(
             AnnotatedEllipse,
-            x0,
-            y0,
-            x1,
-            y1,
+            points,
             title,
             subtitle,
             show_label,
@@ -318,12 +315,10 @@ class AnnotationBuilder:
         Returns:
             :py:class:`.AnnotatedCircle` object
         """
+        points = x0, y0, x1, y1
         return self.__annotated_shape(
             AnnotatedCircle,
-            x0,
-            y0,
-            x1,
-            y1,
+            points,
             title,
             subtitle,
             show_label,
@@ -374,12 +369,57 @@ class AnnotationBuilder:
         Returns:
             :py:class:`.AnnotatedSegment` object
         """
+        points = x0, y0, x1, y1
         return self.__annotated_shape(
             AnnotatedSegment,
-            x0,
-            y0,
-            x1,
-            y1,
+            points,
+            title,
+            subtitle,
+            show_label,
+            show_computations,
+            show_subtitle,
+            format,
+            uncertainty,
+            transform_matrix,
+            readonly,
+            private,
+        )
+
+    def annotated_polygon(
+        self,
+        points: np.ndarray,
+        title: str | None = None,
+        subtitle: str | None = None,
+        show_label: bool | None = None,
+        show_computations: bool | None = None,
+        show_subtitle: bool | None = None,
+        format: str | None = None,
+        uncertainty: float | None = None,
+        transform_matrix: np.ndarray | None = None,
+        readonly: bool | None = None,
+        private: bool | None = None,
+    ) -> AnnotatedPolygon:
+        """Make an annotated polygon `plot item`
+
+        Args:
+            points: polygon points
+            title: label name. Default is None
+            subtitle: label subtitle. Default is None
+            show_label: show label. Default is None
+            show_computations: show computations. Default is None
+            show_subtitle: show subtitle. Default is None
+            format: string formatting. Default is None
+            uncertainty: measurement relative uncertainty. Default is None
+            transform_matrix: transform matrix. Default is None
+            readonly: readonly. Default is None
+            private: private. Default is None
+
+        Returns:
+            :py:class:`.AnnotatedPolygon` object
+        """
+        return self.__annotated_shape(
+            AnnotatedPolygon,
+            points,
             title,
             subtitle,
             show_label,

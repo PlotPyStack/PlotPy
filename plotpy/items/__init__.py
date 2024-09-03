@@ -9,6 +9,7 @@ from .annotation import (
     AnnotatedObliqueRectangle,
     AnnotatedPoint,
     AnnotatedRectangle,
+    AnnotatedPolygon,
     AnnotatedSegment,
     AnnotatedShape,
 )

@@ -1,5 +1,12 @@
 # Changelog #
 
+## Version 2.6.3 ##
+
+💥 New features / Enhancements:
+
+* Added `AnnotatedPolygon` annotation to items
+* Added `make.annotated_polygon` function to `plotpy.builder` module
+
 ## Version 2.6.2 ##
 
 💥 New features / Enhancements:

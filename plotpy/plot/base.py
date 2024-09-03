@@ -42,6 +42,7 @@ from plotpy.items import (
     AnnotatedEllipse,
     AnnotatedObliqueRectangle,
     AnnotatedPoint,
+    AnnotatedPolygon,
     AnnotatedRectangle,
     AnnotatedSegment,
     BaseImageItem,
@@ -2369,3 +2370,4 @@ BasePlot.register_autoscale_type(AnnotatedEllipse)
 BasePlot.register_autoscale_type(AnnotatedObliqueRectangle)
 BasePlot.register_autoscale_type(AnnotatedSegment)
 BasePlot.register_autoscale_type(AnnotatedPoint)
+BasePlot.register_autoscale_type(AnnotatedPolygon)

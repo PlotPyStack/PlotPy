@@ -124,6 +124,8 @@ Annotations
    :members:
 .. autoclass:: plotpy.items.AnnotatedCircle
    :members:
+.. autoclass:: plotpy.items.AnnotatedPolygon
+   :members:
 
 Labels
 ^^^^^^

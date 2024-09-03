@@ -154,6 +154,32 @@ class PolygonShape(AbstractShape):
         """
         return self.points
 
+    def set_closed(self, state: bool) -> None:
+        """Set closed state
+
+        Args:
+            state: True if the polygon is closed, False otherwise
+        """
+        self.closed = state
+
+    def is_closed(self) -> bool:
+        """Return True if the polygon is closed, False otherwise
+
+        Returns:
+            True if the polygon is closed, False otherwise
+        """
+        return self.closed
+
+    def get_center(self) -> tuple[float, float]:
+        """Return the center of the polygon
+
+        Returns:
+            Center of the polygon
+        """
+        if self.points is not None and self.points.size > 0:
+            return self.points.mean(axis=0)
+        return 0.0, 0.0
+
     def boundingRect(self) -> QC.QRectF:
         """Return the bounding rectangle of the data
 

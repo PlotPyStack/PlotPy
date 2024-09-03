@@ -9,6 +9,7 @@ from plotpy.items import (
     AnnotatedCircle,
     AnnotatedEllipse,
     AnnotatedObliqueRectangle,
+    AnnotatedPolygon,
     AnnotatedRectangle,
     EllipseShape,
     ObliqueRectangleShape,
@@ -123,6 +124,7 @@ class ItemCenterTool(CommandTool):
             AnnotatedEllipse,
             AnnotatedObliqueRectangle,
             AnnotatedCircle,
+            AnnotatedPolygon,
         )
         return [
             item
