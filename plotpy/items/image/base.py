@@ -398,7 +398,8 @@ class BaseImageItem(QwtPlotItem):
         """
         title = self.title().text()
         z = self.get_data(x, y)
-        return f"{title}:<br>x = {int(x):d}<br>y = {int(y):d}<br>z = {z:g}"
+        zstr = "--" if z is np.ma.masked else f"{z:g}"
+        return f"{title}:<br>x = {int(x):d}<br>y = {int(y):d}<br>z = {zstr}"
 
     def set_background_color(self, qcolor: QColor | str) -> None:
         """Set background color
