@@ -162,7 +162,7 @@ def mouse_event_at_relative_plot_pos(
         mouse_event = QG.QMouseEvent(
             type_,
             canvas_pos,
-            canvas.mapToGlobal(canvas_pos.toPoint()),
+            canvas.mapToGlobal(QC.QPointF(canvas_pos.toPoint())),
             btn,
             btn,
             mod,
