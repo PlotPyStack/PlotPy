@@ -48,7 +48,7 @@ class XRangeSelection(AbstractShape):
             self.shapeparam = RangeShapeParam(_("Range"), icon="xrange.png")
             self.shapeparam.read_config(CONF, "histogram", "range")
         else:
-            self.shapeparam = shapeparam
+            self.shapeparam: RangeShapeParam = shapeparam
         self.pen = None
         self.sel_pen = None
         self.brush = None
@@ -78,7 +78,7 @@ class XRangeSelection(AbstractShape):
     def __setstate__(self, state: tuple) -> None:
         """Restore state information from pickling"""
         self.shapeparam, self._min, self._max = state
-        self.shapeparam.update_range(self)
+        self.shapeparam.update_item(self)
 
     def serialize(
         self,
