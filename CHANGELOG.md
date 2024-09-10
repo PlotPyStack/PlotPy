@@ -7,6 +7,7 @@
 * Fixed typing issues in `plotpy.events` module:
   * Event objects were not properly typed (`QtCore.QEvent` instead of `QtGui.QMouseEvent`)
   * Event position arguments were not properly typed (`QtCore.QPoint` instead of `QtCore.QPointF`)
+* Fix NumPy `FutureWarning: Format strings passed to MaskedConstant are ignored [...]` when displaying masked pixel coordinates
 
 ## Version 2.6.2 ##
 
