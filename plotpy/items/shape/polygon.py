@@ -278,8 +278,8 @@ class PolygonShape(AbstractShape):
         if self.ADDITIONNAL_POINTS:
             # Slice indexing is not supported by PySide6, so we convert the `QPolygonF`
             # object to a list before converting it back to a `QPolygonF` object:
-            shape_points = QG.QPolygonF(list(points[: -self.ADDITIONNAL_POINTS]))
-            other_points = QG.QPolygonF(list(points[-self.ADDITIONNAL_POINTS :]))
+            shape_points = QG.QPolygonF(list(points)[: -self.ADDITIONNAL_POINTS])
+            other_points = QG.QPolygonF(list(points)[-self.ADDITIONNAL_POINTS :])
         else:
             shape_points = points
             other_points = []
