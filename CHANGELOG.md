@@ -7,6 +7,12 @@
 * Added `AnnotatedPolygon` annotation to items
 * Added `make.annotated_polygon` function to `plotpy.builder` module
 
+🛠️ Bug fixes:
+
+* Fixed typing issues in `plotpy.events` module:
+  * Event objects were not properly typed (`QtCore.QEvent` instead of `QtGui.QMouseEvent`)
+  * Event position arguments were not properly typed (`QtCore.QPoint` instead of `QtCore.QPointF`)
+
 ## Version 2.6.2 ##
 
 💥 New features / Enhancements:
