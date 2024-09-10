@@ -98,6 +98,7 @@ from plotpy.items.shape.marker import Marker
 
 if TYPE_CHECKING:
     from qtpy.QtCore import QPoint
+    from qtpy.QtGui import QMouseEvent
 
     from plotpy.plot.base import BasePlot
 
@@ -259,7 +260,7 @@ class MouseEventMatch(EventMatch):
         """Return the set of event types handled by this event match"""
         return frozenset((self.evt_type,))
 
-    def __call__(self, event: QG.QMouseEvent) -> bool:
+    def __call__(self, event: QMouseEvent) -> bool:
         """Returns True if the event matches the event match
 
         Args:
@@ -282,7 +283,7 @@ class MouseEventMatch(EventMatch):
 
 
 class MouseMoveMatch(MouseEventMatch):
-    def __call__(self, event: QG.QMouseEvent) -> bool:
+    def __call__(self, event: QMouseEvent) -> bool:
         """Returns True if the event matches the event match
 
         Args:
@@ -655,7 +656,7 @@ class DragHandler(QC.QObject):
         self.last = QC.QPointF(pos)
         return dx, dy
 
-    def start_tracking(self, _filter: StatefulEventFilter, event: QC.QEvent) -> None:
+    def start_tracking(self, _filter: StatefulEventFilter, event: QMouseEvent) -> None:
         """Start tracking the mouse movement
 
         Args:
@@ -664,7 +665,7 @@ class DragHandler(QC.QObject):
         """
         self.start = self.last = QC.QPointF(event.pos())
 
-    def start_moving(self, filter: StatefulEventFilter, event: QC.QEvent) -> None:
+    def start_moving(self, filter: StatefulEventFilter, event: QMouseEvent) -> None:
         """Start moving the mouse
 
         Args:
@@ -673,7 +674,7 @@ class DragHandler(QC.QObject):
         """
         return self.move(filter, event)
 
-    def stop_tracking(self, _filter: StatefulEventFilter, _event: QC.QEvent) -> None:
+    def stop_tracking(self, _filter: StatefulEventFilter, _event: QMouseEvent) -> None:
         """Stop tracking the mouse movement
 
         Args:
@@ -683,7 +684,7 @@ class DragHandler(QC.QObject):
         pass
         # filter.plot.canvas().setMouseTracking(self.parent_tracking)
 
-    def stop_notmoving(self, filter: StatefulEventFilter, event: QC.QEvent) -> None:
+    def stop_notmoving(self, filter: StatefulEventFilter, event: QMouseEvent) -> None:
         """Stop tracking the mouse movement when the mouse is not moving.
 
         Args:
@@ -692,7 +693,7 @@ class DragHandler(QC.QObject):
         """
         self.stop_tracking(filter, event)
 
-    def stop_moving(self, filter: StatefulEventFilter, event: QC.QEvent) -> None:
+    def stop_moving(self, filter: StatefulEventFilter, event: QMouseEvent) -> None:
         """Stop moving the mouse
 
         Args:
@@ -701,7 +702,7 @@ class DragHandler(QC.QObject):
         """
         self.stop_tracking(filter, event)
 
-    def move(self, filter: StatefulEventFilter, event: QC.QEvent) -> None:
+    def move(self, filter: StatefulEventFilter, event: QMouseEvent) -> None:
         """Move the mouse
 
         Args:
@@ -755,28 +756,28 @@ class ClickHandler(QC.QObject):
 class PanHandler(DragHandler):
     cursor = QC.Qt.ClosedHandCursor
 
-    def move(self, filter: StatefulEventFilter, event: QC.QEvent) -> None:
+    def move(self, filter: StatefulEventFilter, event: QMouseEvent) -> None:
         """Move the mouse.
 
         Args:
             filter: The StatefulEventFilter instance.
             event: The mouse event.
         """
-        x_state, y_state = self.get_move_state(filter, event.pos())
+        x_state, y_state = self.get_move_state(filter, QC.QPointF(event.pos()))
         filter.plot.do_pan_view(x_state, y_state)
 
 
 class ZoomHandler(DragHandler):
     cursor = QC.Qt.SizeAllCursor
 
-    def move(self, filter: StatefulEventFilter, event: QC.QEvent) -> None:
+    def move(self, filter: StatefulEventFilter, event: QMouseEvent) -> None:
         """Move the mouse.
 
         Args:
             filter: The StatefulEventFilter instance.
             event: The mouse event.
         """
-        x_state, y_state = self.get_move_state(filter, event.pos())
+        x_state, y_state = self.get_move_state(filter, QC.QPointF(event.pos()))
         filter.plot.do_zoom_view(x_state, y_state)
 
 
@@ -1144,7 +1145,7 @@ class QtDragHandler(DragHandler):
     #: Signal emitted by QtDragHandler when moving
     SIG_MOVE = QC.Signal(object, "QEvent")
 
-    def start_tracking(self, filter: StatefulEventFilter, event: QC.QEvent) -> None:
+    def start_tracking(self, filter: StatefulEventFilter, event: QMouseEvent) -> None:
         """Starts tracking the drag event.
 
         Args:
@@ -1154,7 +1155,7 @@ class QtDragHandler(DragHandler):
         DragHandler.start_tracking(self, filter, event)
         self.SIG_START_TRACKING.emit(filter, event)
 
-    def stop_notmoving(self, filter: StatefulEventFilter, event: QC.QEvent) -> None:
+    def stop_notmoving(self, filter: StatefulEventFilter, event: QMouseEvent) -> None:
         """Stops tracking when the drag event is not moving.
 
         Args:
@@ -1163,7 +1164,7 @@ class QtDragHandler(DragHandler):
         """
         self.SIG_STOP_NOT_MOVING.emit(filter, event)
 
-    def stop_moving(self, filter: StatefulEventFilter, event: QC.QEvent) -> None:
+    def stop_moving(self, filter: StatefulEventFilter, event: QMouseEvent) -> None:
         """
         Stops the movement of the drag event.
 
@@ -1173,7 +1174,7 @@ class QtDragHandler(DragHandler):
         """
         self.SIG_STOP_MOVING.emit(filter, event)
 
-    def move(self, filter: StatefulEventFilter, event: QC.QEvent) -> None:
+    def move(self, filter: StatefulEventFilter, event: QMouseEvent) -> None:
         """Handles the move event.
 
         Args:
@@ -1655,7 +1656,7 @@ class RectangularSelectionHandler(DragHandler):
         self.setup_shape_cb = setup_shape_cb
         self.avoid_null_shape = avoid_null_shape
 
-    def start_tracking(self, filter: StatefulEventFilter, event: QC.QEvent) -> None:
+    def start_tracking(self, filter: StatefulEventFilter, event: QMouseEvent) -> None:
         """Start tracking the mouse movement for selection and interaction.
 
         Args:
@@ -1664,7 +1665,7 @@ class RectangularSelectionHandler(DragHandler):
         """
         self.start = self.last = QC.QPointF(event.pos())
 
-    def start_moving(self, filter: StatefulEventFilter, event: QC.QEvent) -> None:
+    def start_moving(self, filter: StatefulEventFilter, event: QMouseEvent) -> None:
         """Start moving the object.
 
         Args:
@@ -1676,7 +1677,7 @@ class RectangularSelectionHandler(DragHandler):
         if self.avoid_null_shape:
             self.start -= QC.QPointF(1, 1)
         self.shape.move_local_point_to(self.shape_h0, self.start)
-        self.shape.move_local_point_to(self.shape_h1, event.pos())
+        self.shape.move_local_point_to(self.shape_h1, QC.QPointF(event.pos()))
         self.start_moving_action(filter, event)
         if self.setup_shape_cb is not None:
             self.setup_shape_cb(self.shape)
@@ -1684,7 +1685,7 @@ class RectangularSelectionHandler(DragHandler):
         filter.plot.replot()
 
     def start_moving_action(
-        self, filter: StatefulEventFilter, event: QC.QEvent
+        self, filter: StatefulEventFilter, event: QMouseEvent
     ) -> None:
         """Start moving the object.
 
@@ -1694,18 +1695,18 @@ class RectangularSelectionHandler(DragHandler):
         """
         pass
 
-    def move(self, filter: StatefulEventFilter, event: QC.QEvent) -> None:
+    def move(self, filter: StatefulEventFilter, event: QMouseEvent) -> None:
         """Move the object.
 
         Args:
             filter: The StatefulEventFilter instance.
             event: The mouse event.
         """
-        self.shape.move_local_point_to(self.shape_h1, event.pos())
+        self.shape.move_local_point_to(self.shape_h1, QC.QPointF(event.pos()))
         self.move_action(filter, event)
         filter.plot.replot()
 
-    def move_action(self, filter: StatefulEventFilter, event: QC.QEvent) -> None:
+    def move_action(self, filter: StatefulEventFilter, event: QMouseEvent) -> None:
         """Move the object.
 
         Args:
@@ -1714,7 +1715,7 @@ class RectangularSelectionHandler(DragHandler):
         """
         pass
 
-    def stop_moving(self, filter: StatefulEventFilter, event: QC.QEvent) -> None:
+    def stop_moving(self, filter: StatefulEventFilter, event: QMouseEvent) -> None:
         """Stop moving the object.
 
         Args:
@@ -1725,20 +1726,22 @@ class RectangularSelectionHandler(DragHandler):
         self.stop_moving_action(filter, event)
         filter.plot.replot()
 
-    def stop_moving_action(self, filter: StatefulEventFilter, event: QC.QEvent) -> None:
+    def stop_moving_action(
+        self, filter: StatefulEventFilter, event: QMouseEvent
+    ) -> None:
         """Stop moving the object.
 
         Args:
             filter: The StatefulEventFilter instance.
             event: The mouse event.
         """
-        self.SIG_END_RECT.emit(filter, self.start, event.pos())
+        self.SIG_END_RECT.emit(filter, self.start, QC.QPointF(event.pos()))
 
 
 class PointSelectionHandler(RectangularSelectionHandler):
     """Class to handle point selections."""
 
-    def stop_notmoving(self, filter: StatefulEventFilter, event: QC.QEvent) -> None:
+    def stop_notmoving(self, filter: StatefulEventFilter, event: QMouseEvent) -> None:
         """Stop the point selection when the point is not moving.
 
         Args:
@@ -1751,14 +1754,16 @@ class PointSelectionHandler(RectangularSelectionHandler):
 class ZoomRectHandler(RectangularSelectionHandler):
     """Class to handle zoom rectangles."""
 
-    def stop_moving_action(self, filter: StatefulEventFilter, event: QC.QEvent) -> None:
+    def stop_moving_action(
+        self, filter: StatefulEventFilter, event: QMouseEvent
+    ) -> None:
         """Stop moving the object.
 
         Args:
             filter: The StatefulEventFilter instance.
             event: The mouse event.
         """
-        filter.plot.do_zoom_rect_view(self.start, event.pos())
+        filter.plot.do_zoom_rect_view(self.start, QC.QPointF(event.pos()))
 
 
 def setup_standard_tool_filter(filter: StatefulEventFilter, start_state: int) -> int:
