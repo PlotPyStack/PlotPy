@@ -4,6 +4,12 @@
 
 🛠️ Bug fixes:
 
+* PySide6 compatibility issues:
+  * Fixed deprecated call to `QMouseEvent` in `tests/unit/utils.py`
+  * Added workaround for `QPolygonF` shape point slicing
+* [Issue #21](https://github.com/PlotPyStack/PlotPy/issues/21) - PySide6 on Linux: segfault in test_colormap_editor.py
+* Fixed `sliderMoved` signal connection in `ColorMapEditor`
+* Fixed `AssertionError` in test_rect_zoom.py (Linux, Python 3.12, PyQt6)
 * Fixed typing issues in `plotpy.events` module:
   * Event objects were not properly typed (`QtCore.QEvent` instead of `QtGui.QMouseEvent`)
   * Event position arguments were not properly typed (`QtCore.QPoint` instead of `QtCore.QPointF`)
