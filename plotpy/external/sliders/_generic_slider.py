@@ -19,6 +19,7 @@ So that's what `_GenericSlider` is below.
 scalar (with one handle per item), and it forms the basis of
 QRangeSlider.
 """
+
 import os
 import platform
 from typing import TypeVar
@@ -59,9 +60,19 @@ USE_MAC_SLIDER_PATCH = (
 
 
 class _GenericSlider(QSlider):
-    _fvalueChanged = Signal(int)
-    _fsliderMoved = Signal(int)
-    _frangeChanged = Signal(int, int)
+    # -- BEGIN -- Original implementation, causing segfault on Linux with PySide6
+    # https://github.com/PlotPyStack/PlotPy/issues/21
+    # _fvalueChanged = Signal(int)
+    # _fsliderMoved = Signal(int)
+    # _frangeChanged = Signal(int, int)
+    # -- END --
+
+    # -- BEGIN -- New implementation: avoid segfault by overriding the class attributes
+    # instead of overriding them through instance attributes in `__init__`
+    valueChanged = Signal(int)
+    sliderMoved = Signal(int)
+    rangeChanged = Signal(int, int)
+    # -- END --
 
     MAX_DISPLAY = 5000
 
@@ -88,9 +99,13 @@ class _GenericSlider(QSlider):
         self._control_fraction = 0.04
 
         super().__init__(*args, **kwargs)
-        self.valueChanged = self._fvalueChanged
-        self.sliderMoved = self._fsliderMoved
-        self.rangeChanged = self._frangeChanged
+
+        # -- BEGIN -- Original implementation, causing segfault on Linux with PySide6
+        # https://github.com/PlotPyStack/PlotPy/issues/21
+        # self.valueChanged = self._fvalueChanged
+        # self.sliderMoved = self._fsliderMoved
+        # self.rangeChanged = self._frangeChanged
+        # -- END --
 
         self.setAttribute(Qt.WidgetAttribute.WA_Hover)
         self.setStyleSheet("")

@@ -53,7 +53,7 @@ def zoom(
 def test_rect_zoom_tool():
     """Test the rectangular zoom tool."""
     x_path = linspace(0, 0.5, 100)
-    y_path = linspace(0, 0.5, 100)
+    y_path = linspace(0, 0.4, 100)
     zoom(x_path, y_path, lambda og, final: final < og)
 
 

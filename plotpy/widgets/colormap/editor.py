@@ -155,7 +155,7 @@ class ColorMapEditor(QW.QWidget):
         self.colormap_widget.HANDLE_ADDED.connect(self.new_tab)
         self.colormap_widget.HANDLE_DELETED.connect(self.delete_tab)
         self.colormap_widget.multi_range_hslider.sliderMoved.connect(
-            self.update_current_dataset
+            lambda *args: self.update_current_dataset()
         )
 
     def set_colormap(self, colormap: EditableColormap) -> None:
