@@ -27,20 +27,29 @@ class _GenericRangeSlider(_GenericSlider):
     integers.
     """
 
-    # Emitted when the slider value has changed, with the new slider values
-    _valuesChanged = Signal(tuple)
+    # -- BEGIN -- Original implementation, causing segfault on Linux with PySide6
+    # https://github.com/PlotPyStack/PlotPy/issues/21
+    # _valuesChanged = Signal(tuple)
+    # _slidersMoved = Signal(tuple)
+    # -- END --
 
-    # Emitted when sliderDown is true and the slider moves
-    # This usually happens when the user is dragging the slider
-    # The value is the positions of *all* handles.
-    _slidersMoved = Signal(tuple)
+    # -- BEGIN -- New implementation: avoid segfault by overriding the class attributes
+    # instead of overriding them through instance attributes in `__init__`
+    valueChanged = Signal(tuple)
+    sliderMoved = Signal(tuple)
+    # -- END --
 
     def __init__(self, *args, **kwargs):
         self._style = RangeSliderStyle()
 
         super().__init__(*args, **kwargs)
-        self.valueChanged = self._valuesChanged
-        self.sliderMoved = self._slidersMoved
+
+        # -- BEGIN -- Original implementation, causing segfault on Linux with PySide6
+        # https://github.com/PlotPyStack/PlotPy/issues/21
+        # self.valueChanged = self._valuesChanged
+        # self.sliderMoved = self._slidersMoved
+        # -- END --
+
         # list of values
         self._value: List[_T] = [20, 80]
 
