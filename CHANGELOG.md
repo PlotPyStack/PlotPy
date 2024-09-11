@@ -6,6 +6,11 @@
 
 * Added `AnnotatedPolygon` annotation to items
 * Added `make.annotated_polygon` function to `plotpy.builder` module
+* Customization of annotation information:
+  * Added `info_callback` argument to all annotation class constructors
+  * Added `set_info_callback` method to all annotation classes
+  * The `info_callback` is a function that takes the annotation object and returns a string with the information to display
+  * Default `info_callback` is redirected to the `get_infos` method of the annotation object (this makes the feature backward compatible)
 
 ## Version 2.6.3 ##
 
