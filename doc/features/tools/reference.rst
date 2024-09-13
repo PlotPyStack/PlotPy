@@ -58,7 +58,7 @@ Shape tools
 
 .. autoclass:: plotpy.tools.MultiLineTool
    :members:
-.. autoclass:: plotpy.tools.FreeFormTool
+.. autoclass:: plotpy.tools.PolygonTool
    :members:
 .. autoclass:: plotpy.tools.LabelTool
    :members:

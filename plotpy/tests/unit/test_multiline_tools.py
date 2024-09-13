@@ -11,14 +11,14 @@ from plotpy.tests.unit.utils import (
     keyboard_event,
     mouse_event_at_relative_plot_pos,
 )
-from plotpy.tools import FreeFormTool, MultiLineTool
+from plotpy.tools import MultiLineTool, PolygonTool
 
 
 def test_free_form_tool():
     """Test the free form tool."""
     corners = np.array(((0.1, 0.1), (0.1, 0.8), (0.8, 0.8), (0.8, 0.1)))
     with qt_app_context(exec_loop=False):
-        win, tool = create_window(FreeFormTool)
+        win, tool = create_window(PolygonTool)
 
         # drag_mouse(win, x_path, y_path)
         for x, y in corners:

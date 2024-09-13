@@ -8,6 +8,7 @@
 # guitest: show
 
 from guidata.qthelpers import qt_app_context
+from qtpy import QtWidgets as QW
 
 from plotpy.builder import make
 from plotpy.items import Marker
@@ -21,18 +22,20 @@ from plotpy.tools import (
     AnnotatedSegmentTool,
     CircleTool,
     EllipseTool,
-    FreeFormTool,
     HCursorTool,
     HRangeTool,
     LabelTool,
     MultiLineTool,
     ObliqueRectangleTool,
     PlaceAxesTool,
+    PolygonTool,
     RectangleTool,
     SegmentTool,
     VCursorTool,
     XCursorTool,
 )
+
+TOOLBAR_ID = "toolbar2"
 
 
 def create_window():
@@ -43,6 +46,10 @@ def create_window():
         type="image",
         size=(800, 600),
     )
+    toolbar2 = QW.QToolBar()
+    win.layout().addWidget(toolbar2)
+    win.manager.add_toolbar(toolbar2, TOOLBAR_ID)
+
     for toolklass in (
         LabelTool,
         HRangeTool,
@@ -55,7 +62,7 @@ def create_window():
         CircleTool,
         EllipseTool,
         MultiLineTool,
-        FreeFormTool,
+        PolygonTool,
         PlaceAxesTool,
         AnnotatedRectangleTool,
         AnnotatedObliqueRectangleTool,
@@ -64,7 +71,7 @@ def create_window():
         AnnotatedSegmentTool,
         AnnotatedPointTool,
     ):
-        win.manager.add_tool(toolklass)
+        win.manager.add_tool(toolklass, toolbar_id=TOOLBAR_ID)
     return win
 
 

@@ -88,7 +88,7 @@ from .selection import SelectTool
 from .shape import (
     CircleTool,
     EllipseTool,
-    FreeFormTool,
+    PolygonTool,
     MultiLineTool,
     ObliqueRectangleTool,
     PointTool,

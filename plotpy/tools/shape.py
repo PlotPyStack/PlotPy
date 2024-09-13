@@ -7,9 +7,11 @@
 
 from __future__ import annotations
 
+import warnings
 from typing import Callable
 
 from qtpy import QtCore as QC
+from qtpy import QtGui as QG
 
 from plotpy.config import _
 from plotpy.constants import SHAPE_Z_OFFSET
@@ -17,6 +19,7 @@ from plotpy.events import (
     KeyEventMatch,
     PointSelectionHandler,
     QtDragHandler,
+    StatefulEventFilter,
     setup_standard_tool_filter,
 )
 from plotpy.items import (
@@ -26,6 +29,7 @@ from plotpy.items import (
     PolygonShape,
     SegmentShape,
 )
+from plotpy.plot import BasePlot
 from plotpy.tools.base import DefaultToolbarID, InteractiveTool, RectangularActionTool
 
 
@@ -54,6 +58,7 @@ class MultiLineTool(InteractiveTool):
     def __init__(
         self,
         manager,
+        setup_shape_cb: Callable | None = None,
         handle_final_shape_cb: Callable | None = None,
         shape_style: tuple[str, str] | None = None,
         toolbar_id: str = DefaultToolbarID,
@@ -70,6 +75,7 @@ class MultiLineTool(InteractiveTool):
             tip=tip,
             switch_to_default_tool=switch_to_default_tool,
         )
+        self.setup_shape_cb = setup_shape_cb
         self.handle_final_shape_cb = handle_final_shape_cb
         self.shape: PolygonShape | None = None
         self.current_handle: int | None = None
@@ -79,31 +85,48 @@ class MultiLineTool(InteractiveTool):
         else:
             self.shape_style_sect = "plot"
             self.shape_style_key = "shape/drag"
+        self.last_final_shape: PolygonShape | None = None
+
+    def get_last_final_shape(self) -> PolygonShape | None:
+        """Get last final shape"""
+        if self.last_final_shape is not None:
+            return self.last_final_shape()
+
+    def set_shape_style(self, shape: PolygonShape) -> None:
+        """Set shape style
+
+        Args:
+            shape: shape
+        """
+        shape.set_style(self.shape_style_sect, self.shape_style_key)
 
     def reset(self) -> None:
         """Reset the tool's state."""
         self.shape = None
         self.current_handle = None
 
-    def create_shape(self, filter, pt: QC.QPointF) -> int:
-        """
-        Create a new PolygonShape and add it to the plot.
+    def create_shape(self) -> PolygonShape:
+        """Create shape"""
+        shape = PolygonShape(closed=False)
+        self.set_shape_style(shape)
+        return shape
 
-        Args:
-            filter: The plot filter.
-            pt: The initial point of the shape.
+    def setup_shape(self, shape: PolygonShape) -> None:
+        """Setup shape"""
+        pass
+
+    def get_shape(self) -> PolygonShape:
+        """
+        Get shape
 
         Returns:
-            The handle of the second point added to the shape.
+            shape
         """
-        self.shape = PolygonShape(closed=False)
-        filter.plot.add_item_with_z_offset(self.shape, SHAPE_Z_OFFSET)
-        self.shape.setVisible(True)
-        self.shape.set_style(self.shape_style_sect, self.shape_style_key)
-        self.shape.add_local_point(pt)
-        return self.shape.add_local_point(pt)
+        shape = self.create_shape()
+        self.setup_shape(shape)
+        return shape
 
-    def setup_filter(self, baseplot):
+    def setup_filter(self, baseplot: BasePlot) -> StatefulEventFilter:
         """
         Set up the event filter for the tool.
 
@@ -134,7 +157,7 @@ class MultiLineTool(InteractiveTool):
         handler.SIG_STOP_MOVING.connect(self.mouse_release)
         return setup_standard_tool_filter(filter, start_state)
 
-    def validate(self, filter, event) -> None:
+    def validate(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
         """
         Validate the current shape and reset the tool.
 
@@ -147,7 +170,7 @@ class MultiLineTool(InteractiveTool):
             self.handle_final_shape_cb(self.shape)
         self.reset()
 
-    def cancel_point(self, filter, event) -> None:
+    def cancel_point(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
         """
         Cancel the last point or remove the shape if it has less than 3 points.
 
@@ -160,7 +183,7 @@ class MultiLineTool(InteractiveTool):
         points = self.shape.get_points()
         if points is None:
             return
-        elif len(points) <= 2:
+        if len(points) <= 2:
             filter.plot.del_item(self.shape)
             self.reset()
         else:
@@ -171,7 +194,7 @@ class MultiLineTool(InteractiveTool):
             self.current_handle = newh
         filter.plot.replot()
 
-    def mouse_press(self, filter, event) -> None:
+    def mouse_press(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
         """
         Handle mouse press event to create a new shape or add a new point.
 
@@ -181,12 +204,16 @@ class MultiLineTool(InteractiveTool):
         """
         if self.shape is None:
             self.init_pos = event.pos()
-            self.current_handle = self.create_shape(filter, event.pos())
+            self.shape = self.get_shape()
+            filter.plot.add_item_with_z_offset(self.shape, SHAPE_Z_OFFSET)
+            self.shape.setVisible(True)
+            self.shape.add_local_point(event.pos())
+            self.current_handle = self.shape.add_local_point(event.pos())
             filter.plot.replot()
         else:
             self.current_handle = self.shape.add_local_point(event.pos())
 
-    def move(self, filter, event) -> None:
+    def move(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
         """
         Handle mouse move event to update the position of the last point.
 
@@ -199,7 +226,7 @@ class MultiLineTool(InteractiveTool):
         self.shape.move_local_point_to(self.current_handle, event.pos())
         filter.plot.replot()
 
-    def mouse_release(self, filter, event) -> None:
+    def mouse_release(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
         """
         Handle mouse release event to finalize the position of the last point.
 
@@ -218,7 +245,7 @@ class MultiLineTool(InteractiveTool):
         filter.plot.replot()
 
 
-class FreeFormTool(MultiLineTool):
+class PolygonTool(MultiLineTool):
     """
     A tool for drawing free-form shapes on a plot.
 
@@ -226,10 +253,10 @@ class FreeFormTool(MultiLineTool):
     there are more than 2 points.
     """
 
-    TITLE: str = _("Free form")
-    ICON: str = "freeform.png"
+    TITLE: str = _("Polygon")
+    ICON: str = "polygon.png"
 
-    def cancel_point(self, filter, event) -> None:
+    def cancel_point(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
         """
         Cancel the last point and update the shape's closed status.
 
@@ -241,7 +268,7 @@ class FreeFormTool(MultiLineTool):
         if self.shape is not None:
             self.shape.closed = len(self.shape.points) > 2
 
-    def mouse_press(self, filter, event) -> None:
+    def mouse_press(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
         """
         Handle mouse press event and update the shape's closed status.
 
@@ -251,6 +278,19 @@ class FreeFormTool(MultiLineTool):
         """
         super().mouse_press(filter, event)
         self.shape.closed = len(self.shape.points) > 2
+
+
+# The old name of the class was FreeFormTool, but the class is now PolygonTool
+# The old name is kept for backward compatibility, but a warning is issued when
+# the class is instantiated using the old name.
+class FreeFormTool(PolygonTool):
+    def __init__(self, *args, **kwargs):
+        warnings.warn(
+            "FreeFormTool is deprecated, use PolygonTool instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        super().__init__(*args, **kwargs)
 
 
 class RectangularShapeTool(RectangularActionTool):

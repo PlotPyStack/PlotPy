@@ -71,7 +71,7 @@ class PolygonShape(AbstractShape):
         self.points = np.zeros((0, 2), float)
         if points is not None:
             self.set_points(points)
-        self.setIcon(get_icon("freeform.png"))
+        self.setIcon(get_icon("polygon.png"))
 
     def types(self) -> tuple[type[IItemType], ...]:
         """Returns a group or category for this item.

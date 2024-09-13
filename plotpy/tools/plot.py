@@ -7,6 +7,8 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from guidata.configtools import get_icon
 from guidata.qthelpers import add_actions, add_separator
 from qtpy import QtCore as QC
@@ -17,7 +19,6 @@ from plotpy.constants import PARAMETERS_TITLE_ICON
 from plotpy.events import ZoomRectHandler, setup_standard_tool_filter
 from plotpy.interfaces import IImageItemType, IShapeItemType
 from plotpy.items import RectangleShape, get_items_in_rectangle
-from plotpy.plot import BasePlot, PlotManager
 from plotpy.tools.base import (
     CommandTool,
     DefaultToolbarID,
@@ -25,6 +26,9 @@ from plotpy.tools.base import (
     InteractiveTool,
     RectangularActionTool,
 )
+
+if TYPE_CHECKING:
+    from plotpy.plot import BasePlot, PlotManager
 
 
 class DoAutoscaleTool(CommandTool):
