@@ -238,7 +238,8 @@ class FreeFormTool(MultiLineTool):
             event: The triggering event.
         """
         super().cancel_point(filter, event)
-        self.shape.closed = len(self.shape.points) > 2
+        if self.shape is not None:
+            self.shape.closed = len(self.shape.points) > 2
 
     def mouse_press(self, filter, event) -> None:
         """
