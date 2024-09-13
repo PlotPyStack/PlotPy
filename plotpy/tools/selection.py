@@ -5,6 +5,9 @@
 
 # pylint: disable=C0103
 
+"""Selection tools"""
+
+from __future__ import annotations
 
 import numpy as np
 from qtpy import QtCore as QC
@@ -15,9 +18,11 @@ from plotpy.events import (
     KeyEventMatch,
     ObjectHandler,
     StandardKeyMatch,
+    StatefulEventFilter,
     setup_standard_tool_filter,
 )
 from plotpy.items import TrImageItem
+from plotpy.plot import BasePlot
 from plotpy.tools.base import InteractiveTool
 
 
@@ -30,11 +35,15 @@ class SelectTool(InteractiveTool):
     ICON = "selection.png"
     CURSOR = QC.Qt.CursorShape.ArrowCursor
 
-    def setup_filter(self, baseplot):
+    def setup_filter(self, baseplot: BasePlot) -> int:
         """
+        Set up the event filter for the tool.
 
-        :param baseplot:
-        :return:
+        Args:
+            baseplot: Base plot instance
+
+        Returns:
+            Start state of the filter
         """
         filter = baseplot.filter
         # Initialisation du filtre
@@ -111,16 +120,25 @@ class SelectTool(InteractiveTool):
         )
         return setup_standard_tool_filter(filter, start_state)
 
-    def select_all_items(self, filter, event):
+    def select_all_items(self, filter: StatefulEventFilter, event: QC.QEvent) -> None:
         """
+        Select all items in the plot.
 
-        :param filter:
-        :param event:
+        Args:
+            filter: Event filter
+            event: Event that triggered the selection
         """
         filter.plot.select_all()
         filter.plot.replot()
 
-    def move_with_arrow(self, filter, event):
+    def move_with_arrow(self, filter: StatefulEventFilter, event: QG.QKeyEvent) -> None:
+        """
+        Move selected items with arrow keys.
+
+        Args:
+            filter: Event filter
+            event: Key event
+        """
         dx, dy = 0, 0
         if event.modifiers() == QC.Qt.KeyboardModifier.NoModifier:
             if event.key() == QC.Qt.Key.Key_Left:
@@ -146,7 +164,16 @@ class SelectTool(InteractiveTool):
                 item.move_with_arrows(dx, dy)
         filter.plot.replot()
 
-    def rotate_with_arrow(self, filter, event):
+    def rotate_with_arrow(
+        self, filter: StatefulEventFilter, event: QG.QKeyEvent
+    ) -> None:
+        """
+        Rotate selected items with arrow keys.
+
+        Args:
+            filter: Event filter
+            event: Key event
+        """
         dangle = 0
         if event.modifiers() == QC.Qt.KeyboardModifier.ShiftModifier:
             if event.key() == QC.Qt.Key.Key_Left:

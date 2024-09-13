@@ -1,4 +1,11 @@
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-# -*- coding: utf-8 -*-
+#
+# Licensed under the terms of the BSD 3-Clause
+# (see plotpy/LICENSE for details)
+
+"""Axes tools"""
+
+from __future__ import annotations
 
 from guidata.configtools import get_icon
 from guidata.qthelpers import add_actions
@@ -11,16 +18,35 @@ from plotpy.tools.shape import RectangularShapeTool
 
 
 class AxisScaleTool(CommandTool):
-    """ """
+    """
+    A tool for changing the scale of plot axes.
+
+    This tool provides options to switch between linear and logarithmic scales
+    for both x and y axes.
+    """
 
     def __init__(self, manager):
+        """
+        Initialize the AxisScaleTool.
+
+        Args:
+            manager: The plot manager.
+        """
         super().__init__(
             manager, _("Scale"), icon=get_icon("log_log.png"), tip=None, toolbar_id=None
         )
         self.action.setEnabled(True)
 
-    def create_action_menu(self, manager):
-        """Create and return menu for the tool's action"""
+    def create_action_menu(self, manager) -> QW.QMenu:
+        """
+        Create and return menu for the tool's action.
+
+        Args:
+            manager: The plot manager.
+
+        Returns:
+            A QMenu object containing scale options.
+        """
         menu = QW.QMenu()
         group = QW.QActionGroup(manager.get_main())
         lin_lin = manager.create_action(
@@ -53,10 +79,12 @@ class AxisScaleTool(CommandTool):
             add_actions(obj, (lin_lin, lin_log, log_lin, log_log))
         return menu
 
-    def update_status(self, plot):
+    def update_status(self, plot) -> None:
         """
+        Update the status of scale actions based on the current plot scales.
 
-        :param plot:
+        Args:
+            plot: The current plot object.
         """
         item = plot.get_active_item()
         active_scale = ("lin", "lin")
@@ -74,13 +102,14 @@ class AxisScaleTool(CommandTool):
                 else:
                     scale_action.setChecked(False)
 
-    def set_scale(self, checked, xscale, yscale):
+    def set_scale(self, checked: bool, xscale: str, yscale: str) -> None:
         """
+        Set the scale of the active plot.
 
-        :param checked:
-        :param xscale:
-        :param yscale:
-        :return:
+        Args:
+            checked: Whether the action is checked.
+            xscale: The scale for the x-axis ('lin' or 'log').
+            yscale: The scale for the y-axis ('lin' or 'log').
         """
         if not checked:
             return
@@ -92,14 +121,23 @@ class AxisScaleTool(CommandTool):
 
 
 class PlaceAxesTool(RectangularShapeTool):
-    TITLE = _("Axes")
-    ICON = "gtaxes.png"
-    SHAPE_STYLE_KEY = "shape/axes"
+    """
+    A tool for placing axes on the plot.
 
-    def create_shape(self):
+    This tool allows users to draw a rectangular shape to define
+    the position and size of the axes on the plot.
+    """
+
+    TITLE: str = _("Axes")
+    ICON: str = "gtaxes.png"
+    SHAPE_STYLE_KEY: str = "shape/axes"
+
+    def create_shape(self) -> tuple[Axes, int, int]:
         """
+        Create an Axes shape.
 
-        :return:
+        Returns:
+            A tuple containing the Axes object and its handle indices.
         """
         shape = Axes((0, 1), (1, 1), (0, 0))
         self.set_shape_style(shape)

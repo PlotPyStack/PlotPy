@@ -1,4 +1,11 @@
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-# -*- coding: utf-8 -*-
+#
+# Licensed under the terms of the BSD 3-Clause
+# (see plotpy/LICENSE for details)
+
+"""Plot tools"""
+
+from __future__ import annotations
 
 from guidata.configtools import get_icon
 from guidata.qthelpers import add_actions, add_separator
@@ -10,6 +17,7 @@ from plotpy.constants import PARAMETERS_TITLE_ICON
 from plotpy.events import ZoomRectHandler, setup_standard_tool_filter
 from plotpy.interfaces import IImageItemType, IShapeItemType
 from plotpy.items import RectangleShape, get_items_in_rectangle
+from plotpy.plot import BasePlot, PlotManager
 from plotpy.tools.base import (
     CommandTool,
     DefaultToolbarID,
@@ -20,9 +28,7 @@ from plotpy.tools.base import (
 
 
 class DoAutoscaleTool(CommandTool):
-    """
-    A tool to perfrom autoscale for associated plot
-    """
+    """A tool to perform autoscale for associated plot."""
 
     def __init__(
         self,
@@ -36,12 +42,24 @@ class DoAutoscaleTool(CommandTool):
             manager, title=title, icon=icon, tip=tip, toolbar_id=toolbar_id
         )
 
-    def setup_context_menu(self, menu, plot):
-        """re-implement"""
+    def setup_context_menu(self, menu: QW.QMenu, plot: BasePlot) -> None:
+        """
+        Set up the context menu for the tool.
+
+        Args:
+            menu: Context menu
+            plot: Plot instance
+        """
         pass
 
-    def activate_command(self, plot, checked):
-        """Activate tool"""
+    def activate_command(self, plot: BasePlot, checked: bool) -> None:
+        """
+        Activate tool.
+
+        Args:
+            plot: Plot instance
+            checked: Whether the tool is checked
+        """
         if checked:
             plot.do_autoscale()
 
@@ -64,21 +82,29 @@ class BasePlotMenuTool(CommandTool):
         # Warning: icon (str) --(Base class constructor)--> self.icon (QIcon)
         self.key = key
 
-    def activate_command(self, plot, checked):
-        """Activate tool"""
+    def activate_command(self, plot: BasePlot, checked: bool) -> None:
+        """
+        Activate tool.
+
+        Args:
+            plot: Plot instance
+            checked: Whether the tool is checked
+        """
         plot.edit_plot_parameters(self.key)
 
-    def update_status(self, plot):
+    def update_status(self, plot: BasePlot) -> None:
         """
+        Update the status of the tool.
 
-        :param plot:
+        Args:
+            plot: Plot instance
         """
         status = plot.get_plot_parameters_status(self.key)
         self.action.setEnabled(status)
 
 
 class DisplayCoordsTool(CommandTool):
-    """ """
+    """Tool for displaying coordinates."""
 
     def __init__(self, manager):
         super().__init__(
@@ -90,8 +116,16 @@ class DisplayCoordsTool(CommandTool):
         )
         self.action.setEnabled(True)
 
-    def create_action_menu(self, manager):
-        """Create and return menu for the tool's action"""
+    def create_action_menu(self, manager: PlotManager) -> QW.QMenu:
+        """
+        Create and return menu for the tool's action.
+
+        Args:
+            manager: Plot manager
+
+        Returns:
+            Menu for the tool's action
+        """
         menu = QW.QMenu()
         self.canvas_act = manager.create_action(
             _("Free"), toggled=self.activate_canvas_pointer
@@ -102,28 +136,34 @@ class DisplayCoordsTool(CommandTool):
         add_actions(menu, (self.canvas_act, self.curve_act))
         return menu
 
-    def activate_canvas_pointer(self, enable):
+    def activate_canvas_pointer(self, enable: bool) -> None:
         """
+        Activate canvas pointer.
 
-        :param enable:
+        Args:
+            enable: Whether to enable the canvas pointer
         """
         plot = self.get_active_plot()
         if plot is not None:
             plot.set_pointer("canvas" if enable else None)
 
-    def activate_curve_pointer(self, enable):
+    def activate_curve_pointer(self, enable: bool) -> None:
         """
+        Activate curve pointer.
 
-        :param enable:
+        Args:
+            enable: Whether to enable the curve pointer
         """
         plot = self.get_active_plot()
         if plot is not None:
             plot.set_pointer("curve" if enable else None)
 
-    def update_status(self, plot):
+    def update_status(self, plot: BasePlot) -> None:
         """
+        Update the status of the tool.
 
-        :param plot:
+        Args:
+            plot: Plot instance
         """
         self.canvas_act.setChecked(plot.canvas_pointer)
         self.curve_act.setChecked(plot.curve_pointer)
