@@ -75,6 +75,7 @@ class MultiLineTool(InteractiveTool):
             tip=tip,
             switch_to_default_tool=switch_to_default_tool,
         )
+        self.handler: MultilineSelectionHandler | None = None
         self.switch_to_default_tool = switch_to_default_tool
         self.setup_shape_cb = setup_shape_cb
         self.handle_final_shape_cb = handle_final_shape_cb
@@ -127,12 +128,12 @@ class MultiLineTool(InteractiveTool):
         """
         filter = baseplot.filter
         start_state = filter.new_state()
-        handler = MultilineSelectionHandler(
+        self.handler = MultilineSelectionHandler(
             filter, QC.Qt.LeftButton, start_state=start_state, closed=self.CLOSED
         )
-        handler.SIG_END_POLYLINE.connect(self.end_polyline)
+        self.handler.SIG_END_POLYLINE.connect(self.end_polyline)
         shape = self.get_shape()
-        handler.set_shape(shape, self.setup_shape)
+        self.handler.set_shape(shape, self.setup_shape)
         return setup_standard_tool_filter(filter, start_state)
 
     def end_polyline(self, filter: StatefulEventFilter, points: np.ndarray) -> None:
