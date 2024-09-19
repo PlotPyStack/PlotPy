@@ -18,6 +18,7 @@ from plotpy.tools import (
     AnnotatedEllipseTool,
     AnnotatedObliqueRectangleTool,
     AnnotatedPointTool,
+    AnnotatedPolygonTool,
     AnnotatedRectangleTool,
     AnnotatedSegmentTool,
     CircleTool,
@@ -70,6 +71,7 @@ def create_window():
         AnnotatedEllipseTool,
         AnnotatedSegmentTool,
         AnnotatedPointTool,
+        AnnotatedPolygonTool,
     ):
         win.manager.add_tool(toolklass, toolbar_id=TOOLBAR_ID)
     return win

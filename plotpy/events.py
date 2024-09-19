@@ -93,8 +93,9 @@ from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
 
 from plotpy.config import CONF
+from plotpy.constants import SHAPE_Z_OFFSET
 from plotpy.coords import axes_to_canvas, canvas_to_axes
-from plotpy.items.shape.marker import Marker
+from plotpy.items import AnnotatedPolygon, Marker, PolygonShape
 
 if TYPE_CHECKING:
     from qtpy.QtCore import QPoint
@@ -1134,16 +1135,16 @@ class QtDragHandler(DragHandler):
     """Class to handle drag events using Qt signals."""
 
     #: Signal emitted by QtDragHandler when starting tracking
-    SIG_START_TRACKING = QC.Signal(object, "QEvent")
+    SIG_START_TRACKING = QC.Signal(object, "QMouseEvent")
 
     #: Signal emitted by QtDragHandler when stopping tracking and not moving
-    SIG_STOP_NOT_MOVING = QC.Signal(object, "QEvent")
+    SIG_STOP_NOT_MOVING = QC.Signal(object, "QMouseEvent")
 
     #: Signal emitted by QtDragHandler when stopping tracking and moving
-    SIG_STOP_MOVING = QC.Signal(object, "QEvent")
+    SIG_STOP_MOVING = QC.Signal(object, "QMouseEvent")
 
     #: Signal emitted by QtDragHandler when moving
-    SIG_MOVE = QC.Signal(object, "QEvent")
+    SIG_MOVE = QC.Signal(object, "QMouseEvent")
 
     def start_tracking(self, filter: StatefulEventFilter, event: QMouseEvent) -> None:
         """Starts tracking the drag event.
@@ -1165,8 +1166,7 @@ class QtDragHandler(DragHandler):
         self.SIG_STOP_NOT_MOVING.emit(filter, event)
 
     def stop_moving(self, filter: StatefulEventFilter, event: QMouseEvent) -> None:
-        """
-        Stops the movement of the drag event.
+        """Stops the movement of the drag event.
 
         Args:
             filter: The StatefulEventFilter instance.
@@ -1632,6 +1632,10 @@ class RectangularSelectionHandler(DragHandler):
     ) -> None:
         super().__init__(filter, btn, mods, start_state)
         self.avoid_null_shape = False
+        self.setup_shape_cb = None
+        self.shape = None
+        self.shape_h0 = None
+        self.shape_h1 = None
 
     def set_shape(
         self,
@@ -1764,6 +1768,171 @@ class ZoomRectHandler(RectangularSelectionHandler):
             event: The mouse event.
         """
         filter.plot.do_zoom_rect_view(self.start, QC.QPointF(event.pos()))
+
+
+class MultilineSelectionHandler(DragHandler):
+    """
+    A handler for handling multi-line selections.
+
+    This handler extends the DragHandler to handle multi-line selections.
+
+    Args:
+        filter: The StatefulEventFilter instance.
+        btn: The mouse button to match.
+        mods: The keyboard modifiers to match. (default: QC.Qt.NoModifier)
+        start_state: The starting state. (default: 0)
+        closed: Whether the polygon should be closed. (default: False)
+    """
+
+    SIG_END_POLYLINE = QC.Signal(object, np.ndarray)
+
+    def __init__(
+        self,
+        filter: StatefulEventFilter,
+        btn: int,
+        mods: QC.Qt.KeyboardModifiers = QC.Qt.NoModifier,
+        start_state: int = 0,
+        closed: bool = False,
+    ) -> None:
+        super().__init__(filter, btn, mods, start_state)
+        self.closed = closed
+        filter.add_event(
+            start_state,
+            KeyEventMatch((QC.Qt.Key_Enter, QC.Qt.Key_Return, QC.Qt.Key_Space)),
+            self.accept_polygonshape,
+            start_state,
+        )
+        filter.add_event(
+            start_state,
+            KeyEventMatch((QC.Qt.Key_Backspace, QC.Qt.Key_Escape)),
+            self.cancel_point,
+            start_state,
+        )
+        self.init_pos: QC.QPointF | None = None
+        self.shape: PolygonShape | AnnotatedPolygon | None = None
+        self.current_handle: int | None = None
+        self.setup_shape_cb: Callable | None = None
+
+    def set_shape(
+        self,
+        shape: PolygonShape | AnnotatedPolygon,
+        setup_shape_cb: Callable | None = None,
+    ) -> None:
+        """Set the shape.
+
+        Args:
+            shape: The shape.
+            setup_shape_cb: The setup shape callback.
+        """
+        self.shape = shape
+        self.setup_shape_cb = setup_shape_cb
+
+    def start_tracking(self, filter: StatefulEventFilter, event: QMouseEvent) -> None:
+        """Starts tracking the drag event.
+
+        Args:
+            filter: The StatefulEventFilter instance.
+            event: The QC.QEvent instance.
+        """
+        if self.init_pos is None:
+            self.init_pos = QC.QPointF(event.pos())
+
+    def start_moving(self, filter: StatefulEventFilter, event: QMouseEvent) -> None:
+        """Start moving the object.
+
+        Args:
+            filter: The StatefulEventFilter instance.
+            event: The mouse event.
+        """
+        if self.init_pos is None:
+            return
+        if self.shape.plot() is None:
+            self.shape.set_points(None)
+            filter.plot.add_item_with_z_offset(self.shape, SHAPE_Z_OFFSET)
+            self.shape.setZ(filter.plot.get_max_z() + 1)
+            if self.setup_shape_cb is not None:
+                self.setup_shape_cb(self.shape)
+            self.shape.add_local_point(self.init_pos)
+        self.current_handle = self.shape.add_local_point(QC.QPointF(event.pos()))
+        self.shape.set_closed(self.closed and len(self.shape.get_points()) > 2)
+        self.shape.show()
+        filter.plot.replot()
+
+    def move(self, filter: StatefulEventFilter, event: QMouseEvent) -> None:
+        """
+        Handle mouse move event to update the position of the last point.
+
+        Args:
+            filter: The plot filter.
+            event: The mouse event.
+        """
+        self.shape.move_local_point_to(self.current_handle, QC.QPointF(event.pos()))
+        filter.plot.replot()
+
+    def stop_notmoving(self, filter: StatefulEventFilter, event: QMouseEvent) -> None:
+        """Stops tracking when the drag event is not moving.
+
+        Args:
+            filter: The StatefulEventFilter instance.
+            event: The QC.QEvent instance.
+        """
+        points = self.shape.get_points()
+        if len(points) > 1:
+            self.accept_polygonshape(filter, event)
+
+    def stop_moving(self, filter: StatefulEventFilter, event: QMouseEvent) -> None:
+        """Stops the movement of the drag event.
+
+        Args:
+            filter: The StatefulEventFilter instance.
+            event: The QC.QEvent instance
+        """
+        pos = QC.QPointF(event.pos())
+        if self.init_pos == pos:
+            self.shape.del_point(-1)
+        else:
+            self.shape.move_local_point_to(self.current_handle, pos)
+        filter.plot.replot()
+
+    def accept_polygonshape(
+        self, filter: StatefulEventFilter, event: QMouseEvent
+    ) -> None:
+        """Accept the polygon shape.
+
+        Args:
+            filter: The StatefulEventFilter instance.
+            event: The mouse event.
+        """
+        if self.shape.plot() is None:
+            return
+        filter.plot.del_item(self.shape)
+        self.init_pos = None
+        self.current_handle = None
+        self.SIG_END_POLYLINE.emit(filter, self.shape.get_points())
+
+    def cancel_point(self, filter: StatefulEventFilter, event: QMouseEvent) -> None:
+        """
+        Cancel the last point or remove the shape if it has less than 3 points.
+
+        Args:
+            filter: The plot filter.
+            event: The triggering event.
+        """
+        points = self.shape.get_points()
+        if points is None or self.shape.plot() is None:
+            return
+        if len(points) <= 2:
+            filter.plot.del_item(self.shape)
+            self.init_pos = None
+            self.shape.closed = False
+        else:
+            if self.current_handle:
+                newh = self.shape.del_point(self.current_handle)
+            else:
+                newh = self.shape.del_point(-1)
+            self.current_handle = newh
+            self.shape.set_closed(self.closed and len(self.shape.get_points()) > 2)
+        filter.plot.replot()
 
 
 def setup_standard_tool_filter(filter: StatefulEventFilter, start_state: int) -> int:

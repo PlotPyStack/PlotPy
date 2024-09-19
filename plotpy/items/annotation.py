@@ -47,6 +47,7 @@ if TYPE_CHECKING:
     from qtpy.QtGui import QPainter
 
     from plotpy.interfaces import IItemType
+    from plotpy.plot import BasePlot
     from plotpy.styles.base import ItemParameters
 
 
@@ -638,7 +639,7 @@ class AnnotatedPolygon(AnnotatedShape):
         self.setIcon(get_icon("polygon.png"))
 
     # ----Public API-------------------------------------------------------------
-    def set_points(self, points: list[tuple[float, float]] | None) -> None:
+    def set_points(self, points: list[tuple[float, float]] | np.ndarray | None) -> None:
         """Set the polygon points
 
         Args:
@@ -647,25 +648,98 @@ class AnnotatedPolygon(AnnotatedShape):
         self.shape.set_points(points)
         self.set_label_position()
 
-    def get_points(self) -> list[tuple[float, float]]:
-        """Return the polygon points"""
+    def get_points(self) -> np.ndarray:
+        """Return polygon points
+
+        Returns:
+            Polygon points (array of shape (N, 2))
+        """
         return self.shape.get_points()
 
     def set_closed(self, state: bool) -> None:
-        """Set the polygon closed state
+        """Set closed state
 
         Args:
-            state: True if polygon is closed
+            state: True if the polygon is closed, False otherwise
         """
         self.shape.set_closed(state)
 
     def is_closed(self) -> bool:
-        """Return True if polygon is closed
+        """Return True if the polygon is closed, False otherwise
 
         Returns:
-            True if polygon is closed
+            True if the polygon is closed, False otherwise
         """
         return self.shape.is_closed()
+
+    def is_empty(self) -> bool:
+        """Return True if the item is empty
+
+        Returns:
+            True if the item is empty, False otherwise
+        """
+        return self.shape.is_empty()
+
+    def add_local_point(self, pos: tuple[float, float]) -> int:
+        """Add a point in canvas coordinates (local coordinates)
+
+        Args:
+            pos: Position
+
+        Returns:
+            Handle of the added point
+        """
+        pt = canvas_to_axes(self, pos)
+        return self.add_point(pt)
+
+    def add_point(self, pt: tuple[float, float]) -> int:
+        """Add a point in axis coordinates
+
+        Args:
+            pt: Position
+
+        Returns:
+            Handle of the added point
+        """
+        handle = self.shape.add_point(pt)
+        self.set_label_position()
+        return handle
+
+    def del_point(self, handle: int) -> int:
+        """Delete a point
+
+        Args:
+            handle: Handle
+
+        Returns:
+            Handle of the deleted point
+        """
+        handle = self.shape.del_point(handle)
+        self.set_label_position()
+        return handle
+
+    def move_local_point_to(self, handle: int, pos: QPointF, ctrl: bool = None) -> None:
+        """Move a handle as returned by hit_test to the new position
+
+        Args:
+            handle: Handle
+            pos: Position
+            ctrl: True if <Ctrl> button is being pressed, False otherwise
+        """
+        pt = canvas_to_axes(self, pos)
+        self.move_point_to(handle, pt)
+
+    def move_shape(
+        self, old_pos: tuple[float, float], new_pos: tuple[float, float]
+    ) -> None:
+        """Translate the shape such that old_pos becomes new_pos in axis coordinates
+
+        Args:
+            old_pos: Old position
+            new_pos: New position
+        """
+        self.shape.move_shape(old_pos, new_pos)
+        self.set_label_position()
 
     # ----AnnotatedShape API-----------------------------------------------------
     def create_shape(self):

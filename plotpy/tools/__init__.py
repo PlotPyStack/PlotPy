@@ -10,6 +10,7 @@ from .annotation import (
     AnnotatedPointTool,
     AnnotatedRectangleTool,
     AnnotatedSegmentTool,
+    AnnotatedPolygonTool,
 )
 from .axes import AxisScaleTool, PlaceAxesTool
 from .base import (

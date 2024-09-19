@@ -10,15 +10,14 @@ from __future__ import annotations
 import warnings
 from typing import Callable
 
+import numpy as np
 from qtpy import QtCore as QC
-from qtpy import QtGui as QG
 
 from plotpy.config import _
 from plotpy.constants import SHAPE_Z_OFFSET
 from plotpy.events import (
-    KeyEventMatch,
+    MultilineSelectionHandler,
     PointSelectionHandler,
-    QtDragHandler,
     StatefulEventFilter,
     setup_standard_tool_filter,
 )
@@ -53,7 +52,8 @@ class MultiLineTool(InteractiveTool):
 
     TITLE: str = _("Polyline")
     ICON: str = "polyline.png"
-    CURSOR: QC.Qt.CursorShape = QC.Qt.CursorShape.ArrowCursor
+    CLOSED: bool = False
+    CURSOR: QC.Qt.CursorShape = QC.Qt.CursorShape.PointingHandCursor
 
     def __init__(
         self,
@@ -75,22 +75,14 @@ class MultiLineTool(InteractiveTool):
             tip=tip,
             switch_to_default_tool=switch_to_default_tool,
         )
+        self.switch_to_default_tool = switch_to_default_tool
         self.setup_shape_cb = setup_shape_cb
         self.handle_final_shape_cb = handle_final_shape_cb
-        self.shape: PolygonShape | None = None
-        self.current_handle: int | None = None
-        self.init_pos: QC.QPointF | None = None
         if shape_style is not None:
             self.shape_style_sect, self.shape_style_key = shape_style
         else:
             self.shape_style_sect = "plot"
             self.shape_style_key = "shape/drag"
-        self.last_final_shape: PolygonShape | None = None
-
-    def get_last_final_shape(self) -> PolygonShape | None:
-        """Get last final shape"""
-        if self.last_final_shape is not None:
-            return self.last_final_shape()
 
     def set_shape_style(self, shape: PolygonShape) -> None:
         """Set shape style
@@ -100,11 +92,6 @@ class MultiLineTool(InteractiveTool):
         """
         shape.set_style(self.shape_style_sect, self.shape_style_key)
 
-    def reset(self) -> None:
-        """Reset the tool's state."""
-        self.shape = None
-        self.current_handle = None
-
     def create_shape(self) -> PolygonShape:
         """Create shape"""
         shape = PolygonShape(closed=False)
@@ -113,7 +100,9 @@ class MultiLineTool(InteractiveTool):
 
     def setup_shape(self, shape: PolygonShape) -> None:
         """Setup shape"""
-        pass
+        shape.setTitle(self.TITLE)
+        if self.setup_shape_cb is not None:
+            self.setup_shape_cb(shape)
 
     def get_shape(self) -> PolygonShape:
         """
@@ -138,111 +127,30 @@ class MultiLineTool(InteractiveTool):
         """
         filter = baseplot.filter
         start_state = filter.new_state()
-        handler = QtDragHandler(filter, QC.Qt.LeftButton, start_state=start_state)
-        filter.add_event(
-            start_state,
-            KeyEventMatch((QC.Qt.Key_Enter, QC.Qt.Key_Return, QC.Qt.Key_Space)),
-            self.validate,
-            start_state,
+        handler = MultilineSelectionHandler(
+            filter, QC.Qt.LeftButton, start_state=start_state, closed=self.CLOSED
         )
-        filter.add_event(
-            start_state,
-            KeyEventMatch((QC.Qt.Key_Backspace, QC.Qt.Key_Escape)),
-            self.cancel_point,
-            start_state,
-        )
-        handler.SIG_START_TRACKING.connect(self.mouse_press)
-        handler.SIG_MOVE.connect(self.move)
-        handler.SIG_STOP_NOT_MOVING.connect(self.mouse_release)
-        handler.SIG_STOP_MOVING.connect(self.mouse_release)
+        handler.SIG_END_POLYLINE.connect(self.end_polyline)
+        shape = self.get_shape()
+        handler.set_shape(shape, self.setup_shape)
         return setup_standard_tool_filter(filter, start_state)
 
-    def validate(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
+    def end_polyline(self, filter: StatefulEventFilter, points: np.ndarray) -> None:
         """
-        Validate the current shape and reset the tool.
+        End the polyline and reset the tool.
 
         Args:
             filter: The plot filter.
-            event: The triggering event.
+            points: The points of the polyline.
         """
-        super().validate(filter, event)
-        if self.handle_final_shape_cb is not None:
-            self.handle_final_shape_cb(self.shape)
-        self.reset()
-
-    def cancel_point(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
-        """
-        Cancel the last point or remove the shape if it has less than 3 points.
-
-        Args:
-            filter: The plot filter.
-            event: The triggering event.
-        """
-        if self.shape is None:
-            return
-        points = self.shape.get_points()
-        if points is None:
-            return
-        if len(points) <= 2:
-            filter.plot.del_item(self.shape)
-            self.reset()
-        else:
-            if self.current_handle:
-                newh = self.shape.del_point(self.current_handle)
-            else:
-                newh = self.shape.del_point(-1)
-            self.current_handle = newh
-        filter.plot.replot()
-
-    def mouse_press(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
-        """
-        Handle mouse press event to create a new shape or add a new point.
-
-        Args:
-            filter: The plot filter.
-            event: The mouse event.
-        """
-        if self.shape is None:
-            self.init_pos = event.pos()
-            self.shape = self.get_shape()
-            filter.plot.add_item_with_z_offset(self.shape, SHAPE_Z_OFFSET)
-            self.shape.setVisible(True)
-            self.shape.add_local_point(event.pos())
-            self.current_handle = self.shape.add_local_point(event.pos())
-            filter.plot.replot()
-        else:
-            self.current_handle = self.shape.add_local_point(event.pos())
-
-    def move(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
-        """
-        Handle mouse move event to update the position of the last point.
-
-        Args:
-            filter: The plot filter.
-            event: The mouse event.
-        """
-        if self.shape is None or self.current_handle is None:
-            return
-        self.shape.move_local_point_to(self.current_handle, event.pos())
-        filter.plot.replot()
-
-    def mouse_release(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
-        """
-        Handle mouse release event to finalize the position of the last point.
-
-        Args:
-            filter: The plot filter.
-            event: The mouse event.
-        """
-        if self.current_handle is None:
-            return
-        if self.init_pos is not None and self.init_pos == event.pos():
-            self.shape.del_point(-1)
-        else:
-            self.shape.move_local_point_to(self.current_handle, event.pos())
-        self.init_pos = None
-        self.current_handle = None
-        filter.plot.replot()
+        plot = filter.plot
+        shape = self.get_shape()
+        shape.set_points(points)
+        shape.set_closed(self.CLOSED)
+        plot.add_item_with_z_offset(shape, SHAPE_Z_OFFSET)
+        self.SIG_TOOL_JOB_FINISHED.emit()
+        if self.switch_to_default_tool:
+            plot.set_active_item(shape)
 
 
 class PolygonTool(MultiLineTool):
@@ -255,29 +163,7 @@ class PolygonTool(MultiLineTool):
 
     TITLE: str = _("Polygon")
     ICON: str = "polygon.png"
-
-    def cancel_point(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
-        """
-        Cancel the last point and update the shape's closed status.
-
-        Args:
-            filter: The plot filter.
-            event: The triggering event.
-        """
-        super().cancel_point(filter, event)
-        if self.shape is not None:
-            self.shape.closed = len(self.shape.points) > 2
-
-    def mouse_press(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
-        """
-        Handle mouse press event and update the shape's closed status.
-
-        Args:
-            filter: The plot filter.
-            event: The mouse event.
-        """
-        super().mouse_press(filter, event)
-        self.shape.closed = len(self.shape.points) > 2
+    CLOSED: bool = True
 
 
 # The old name of the class was FreeFormTool, but the class is now PolygonTool

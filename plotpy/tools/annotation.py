@@ -10,6 +10,7 @@ from plotpy.items import (
     AnnotatedEllipse,
     AnnotatedObliqueRectangle,
     AnnotatedPoint,
+    AnnotatedPolygon,
     AnnotatedRectangle,
     AnnotatedSegment,
 )
@@ -18,9 +19,29 @@ from plotpy.tools.shape import (
     EllipseTool,
     ObliqueRectangleTool,
     PointTool,
+    PolygonTool,
     RectangleTool,
     SegmentTool,
 )
+
+
+class AnnotatedPolygonTool(PolygonTool):
+    """
+    Tool for creating annotated polygon shapes.
+
+    This tool extends the PolygonTool to create AnnotatedPolygon objects.
+    """
+
+    def create_shape(self) -> AnnotatedPolygon:
+        """
+        Create an annotated polygon shape.
+
+        Returns:
+            A tuple containing the AnnotatedPolygon object and its handle indices.
+        """
+        annotation = AnnotatedPolygon()
+        self.set_shape_style(annotation)
+        return annotation
 
 
 class AnnotatedRectangleTool(RectangleTool):

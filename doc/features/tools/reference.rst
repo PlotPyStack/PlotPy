@@ -84,6 +84,8 @@ Shape tools
    :members:
 .. autoclass:: plotpy.tools.AnnotatedSegmentTool
    :members:
+.. autoclass:: plotpy.tools.AnnotatedPolygonTool
+   :members:
 .. autoclass:: plotpy.tools.HRangeTool
    :members:
 
