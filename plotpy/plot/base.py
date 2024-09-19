@@ -1322,7 +1322,7 @@ class BasePlot(qwt.QwtPlot):
         zlist = sorted(
             [_it.z() for _it in self.items if _it.z() >= zoffset] + [zoffset - 1]
         )
-        dzlist = np.argwhere(np.diff(zlist) > 1)
+        dzlist = np.argwhere(np.diff(zlist) > 1).flatten()
         if len(dzlist) == 0:
             z = max(zlist) + 1
         else:
