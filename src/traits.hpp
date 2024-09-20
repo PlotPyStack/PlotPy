@@ -119,6 +119,28 @@ struct num_trait<fixed>
     static const bool is_integer = false;
 };
 
+template <>
+struct num_trait<npy_int64>
+{
+    typedef npy_int64 value_type;
+    typedef signed __int64 large_type;
+    static int toint(value_type v) { return (int)v; }
+    static value_type fromdouble(double v) { return (value_type)v; }
+
+    static const bool is_integer = true;
+};
+
+template <>
+struct num_trait<npy_uint64>
+{
+    typedef npy_uint64 value_type;
+    typedef unsigned __int64 large_type;
+    static int toint(value_type v) { return static_cast<int>(v); }
+    static value_type fromdouble(double v) { return static_cast<value_type>(v); }
+
+    static const bool is_integer = true;
+};
+
 template <class A>
 static void dispatch_array(int npy_type, A &algo)
 {

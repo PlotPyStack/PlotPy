@@ -23,7 +23,7 @@ struct Scaler
 template <class T>
 struct Scaler<T, true>
 {
-    typedef num_trait<fixed> trait;
+    typedef num_trait<T> trait;
 
     Scaler(double _a, double _b) : a(trait::fromdouble(_a)), b(trait::fromdouble(_b)) {}
     int scale(T x) const { return trait::toint(a * x + b); }
