@@ -47,7 +47,6 @@ if TYPE_CHECKING:
     from qtpy.QtGui import QPainter
 
     from plotpy.interfaces import IItemType
-    from plotpy.plot import BasePlot
     from plotpy.styles.base import ItemParameters
 
 
