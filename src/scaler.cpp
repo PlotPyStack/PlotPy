@@ -86,8 +86,8 @@ struct NearestInterpolation
 {
     T operator()(const Array2D<T> &src, const TR &tr, const typename TR::point &p)
     {
-        int nx = p.ix();
-        int ny = p.iy();
+        npy_intp nx = p.ix();
+        npy_intp ny = p.iy();
         return src.value(nx, ny);
     }
 };
@@ -97,8 +97,8 @@ struct LinearInterpolation
 {
     T operator()(const Array2D<T> &src, const TR &tr, const typename TR::point &p)
     {
-        int nx = p.ix();
-        int ny = p.iy();
+        npy_intp nx = p.ix();
+        npy_intp ny = p.iy();
         double v = src.value(nx, ny);
         double a = 0;
 
@@ -132,8 +132,8 @@ struct LinearInterpolation<npy_uint32, TR>
     npy_uint32 operator()(const Array2D<npy_uint32> &src, const TR &tr, const typename TR::point &p)
     {
         int k;
-        int nx = p.ix();
-        int ny = p.iy();
+        npy_intp nx = p.ix();
+        npy_intp ny = p.iy();
         rgba_t p1, p2, p3, p4, r;
         p1.v = src.value(nx, ny);
         float v[4], v2[4];
@@ -224,8 +224,8 @@ struct LinearInterpolation<T, XYScale>
 {
     T operator()(const Array2D<T> &src, const XYScale &tr, const typename XYScale::point &p)
     {
-        int nx = p.ix();
-        int ny = p.iy();
+        npy_intp nx = p.ix();
+        npy_intp ny = p.iy();
         double v = src.value(nx, ny);
         double a = 0;
 
@@ -274,7 +274,7 @@ struct SubSampleInterpolation
     }
     T operator()(const Array2D<T> &src, const TR &tr, const typename TR::point &p0)
     {
-        int i, j;
+        npy_intp i, j;
         typename TR::point p, p1;
         typename num_trait<T>::large_type value = 0;
         typename num_trait<T>::large_type count = 0, msk, val;
@@ -314,7 +314,7 @@ void _scale_rgb(DEST &dest,
                 int dx1, int dy1, int dx2, int dy2,
                 Interpolation &interpolate)
 {
-    int i, j;
+    npy_intp i, j;
     ST val;
     int round = fegetround();
     PixelIterator<DEST> it(dest);
@@ -453,8 +453,8 @@ static bool check_transform(PyArrayObject *p_tr)
         PyErr_SetString(PyExc_TypeError, "transform data type must be float");
         return false;
     }
-    int ni = PyArray_DIM(p_tr, 0);
-    int nj = PyArray_DIM(p_tr, 1);
+    npy_intp ni = PyArray_DIM(p_tr, 0);
+    npy_intp nj = PyArray_DIM(p_tr, 1);
 
     if (ni != 3 || nj != 3)
     {
@@ -620,8 +620,8 @@ template <class Params>
 static PyObject *dispatch_source(Params &p)
 {
     bool ok;
-    int dni = PyArray_DIM(p.p_dst, 0);
-    int dnj = PyArray_DIM(p.p_dst, 1);
+    npy_intp dni = PyArray_DIM(p.p_dst, 0);
+    npy_intp dnj = PyArray_DIM(p.p_dst, 1);
 
     if (!PyArg_ParseTuple(p.p_dst_data, "iiii",
                           &p.dx1, &p.dy1, &p.dx2, &p.dy2))
@@ -633,8 +633,8 @@ static PyObject *dispatch_source(Params &p)
         swap(p.dx1, p.dx2);
     if (p.dy2 < p.dy1)
         swap(p.dy1, p.dy2);
-    check_image_bounds(dni, dnj, p.dx1, p.dy1);
-    check_image_bounds(dni, dnj, p.dx2, p.dy2);
+    check_image_bounds(static_cast<int>(dni), static_cast<int>(dnj), p.dx1, p.dy1);
+    check_image_bounds(static_cast<int>(dni), static_cast<int>(dnj), p.dx2, p.dy2);
 
     switch (PyArray_TYPE(p.p_src))
     {
@@ -717,10 +717,10 @@ static PyObject *py_scale_xy(PyObject *self, PyObject *args)
     {
         return NULL;
     }
-    int ni = PyArray_DIM(p_src, 0);
-    int nj = PyArray_DIM(p_src, 1);
-    int dni = PyArray_DIM(p_dst, 0);
-    int dnj = PyArray_DIM(p_dst, 1);
+    npy_intp ni = PyArray_DIM(p_src, 0);
+    npy_intp nj = PyArray_DIM(p_src, 1);
+    npy_intp dni = PyArray_DIM(p_dst, 0);
+    npy_intp dnj = PyArray_DIM(p_dst, 1);
     double dx = (x2 - x1) / dnj;
     double dy = (y2 - y1) / dni;
     Array1D<double> ax(p_ax), ay(p_ay);
@@ -754,8 +754,8 @@ static PyObject *py_scale_tr(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    int ni = PyArray_DIM(p_src, 0);
-    int nj = PyArray_DIM(p_src, 1);
+    npy_intp ni = PyArray_DIM(p_src, 0);
+    npy_intp nj = PyArray_DIM(p_src, 1);
     Array2D<double> tr(p_tr);
     LinearTransform trans(nj, ni,
                           tr.value(2, 0), tr.value(2, 1), // x0, y0
@@ -793,10 +793,10 @@ static PyObject *py_scale_rect(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    int ni = PyArray_DIM(p_src, 0);
-    int nj = PyArray_DIM(p_src, 1);
-    int dni = PyArray_DIM(p_dst, 0);
-    int dnj = PyArray_DIM(p_dst, 1);
+    npy_intp ni = PyArray_DIM(p_src, 0);
+    npy_intp nj = PyArray_DIM(p_src, 1);
+    npy_intp dni = PyArray_DIM(p_dst, 0);
+    npy_intp dnj = PyArray_DIM(p_dst, 1);
     double dx = (x2 - x1) / dnj;
     double dy = (y2 - y1) / dni;
     ScaleTransform trans(nj, ni, x1, y1, dx, dy);

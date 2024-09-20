@@ -50,19 +50,19 @@ using std::vector;
 }
 #endif
 
-static bool vert_line(double _x0, double _y0, double _x1, double _y1, int NX,
-                      vector<int> &imin, vector<int> &imax,
-                      bool draw, npy_uint32 col, Array2D<npy_uint32> &D)
+static bool vert_line(double _x0, double _y0, double _x1, double _y1, npy_intp NX,
+                      vector<npy_intp> &imin, vector<npy_intp> &imax,
+                      bool draw, npy_intp col, Array2D<npy_intp> &D)
 {
-    int x0 = lrint(_x0);
-    int y0 = lrint(_y0);
-    int x1 = lrint(_x1);
-    int y1 = lrint(_y1);
-    int dx = abs(x1 - x0);
-    int dy = abs(y1 - y0);
-    int sx, sy;
-    int NY = imin.size() - 1;
-    int err, e2;
+    npy_intp x0 = lrint(_x0);
+    npy_intp y0 = lrint(_y0);
+    npy_intp x1 = lrint(_x1);
+    npy_intp y1 = lrint(_y1);
+    npy_intp dx = abs(x1 - x0);
+    npy_intp dy = abs(y1 - y0);
+    npy_intp sx, sy;
+    npy_intp NY = imin.size() - 1;
+    npy_intp err, e2;
     bool visible = false;
     NX = NX - 1;
     if (x0 < x1)
@@ -79,8 +79,8 @@ static bool vert_line(double _x0, double _y0, double _x1, double _y1, int NX,
     {
         if (y0 >= 0 && y0 <= NY)
         {
-            int _min = min(imin[y0], x0);
-            int _max = max(imax[y0], x0);
+            npy_intp _min = min(imin[y0], x0);
+            npy_intp _max = max(imax[y0], x0);
             if (draw)
             {
                 if (x0 >= 0 && x0 <= NX)
@@ -88,8 +88,8 @@ static bool vert_line(double _x0, double _y0, double _x1, double _y1, int NX,
                     D.value(x0, y0) = col;
                 }
             }
-            imin[y0] = max(0, _min);
-            imax[y0] = min(NX, _max);
+            imin[y0] = max<npy_intp>(0, _min);
+            imax[y0] = min<npy_intp>(NX, _max);
             if (_min <= NX && _max >= 0)
             {
                 visible = true;
@@ -118,19 +118,19 @@ struct QuadHelper
     const Array2D<T> &X;
     const Array2D<T> &Y;
     const Array2D<T> &Z;
-    Array2D<npy_uint32> &D;
+    Array2D<npy_intp> &D;
     LutScale<T, npy_uint32> &scale;
     double x1, x2, y1, y2, m_dx, m_dy;
     npy_uint32 bgcolor;
     bool border;
     bool flat;
     double uflat, vflat;
-    int ixmin, ixmax, iymin, iymax;
+    npy_intp ixmin, ixmax, iymin, iymax;
 
     QuadHelper(const Array2D<T> &X_,
                const Array2D<T> &Y_,
                const Array2D<T> &Z_,
-               Array2D<npy_uint32> &D_,
+               Array2D<npy_intp> &D_,
                LutScale<T, npy_uint32> &scale_,
                double x1_, double x2_, double y1_, double y2_,
                bool _border, bool _flat,
@@ -146,8 +146,8 @@ struct QuadHelper
 
     void draw_triangles()
     {
-        int i, j;
-        vector<int> imin, imax;
+        npy_intp i, j;
+        vector<npy_intp> imin, imax;
         imin.resize(D.ni);
         imax.resize(D.ni);
         ixmin = D.nj;
@@ -163,10 +163,10 @@ struct QuadHelper
         }
     }
 
-    void draw_quad(int qi, int qj,
-                   vector<int> &imin, vector<int> &imax)
+    void draw_quad(npy_intp qi, npy_intp qj,
+                   vector<npy_intp> &imin, vector<npy_intp> &imax)
     {
-        int i, j;
+        npy_intp i, j;
         double u, v;
         double v0, v1, v2, v3, v4;
 
@@ -181,8 +181,8 @@ struct QuadHelper
         double ymin = min(ay, min(by, min(cy, dy)));
         double ymax = max(ay, max(by, max(cy, dy)));
 
-        int i0 = int(ymin + .5);
-        int i1 = int(ymax + .5);
+        npy_intp i0 = int(ymin + .5);
+        npy_intp i1 = int(ymax + .5);
         //	printf("Quads: i=%d->%d\n", i0, i1);
 
         if (i0 < 0)
@@ -237,7 +237,7 @@ struct QuadHelper
             // XXX Color = Alpha
             return;
         }
-        int dm = 0, dM = 0;
+        npy_intp dm = 0, dM = 0;
         if (border)
         {
             dm = 1;
@@ -251,8 +251,8 @@ struct QuadHelper
         {
             ixmin = min(ixmin, imin[i]);
             ixmax = max(ixmax, imax[i]);
-            int jmin = max(0, imin[i]) + dm;
-            int jmax = min(imax[i], D.nj - 1) + dM;
+            npy_intp jmin = max<npy_intp>(0, imin[i]) + dm;
+            npy_intp jmax = min<npy_intp>(imax[i], D.nj - 1) + dM;
             for (j = jmin; j <= jmax; ++j)
             {
                 if (!flat)
@@ -436,7 +436,7 @@ PyObject *py_scale_quads(PyObject *self, PyObject *args)
     Array2D<double> X(p_src_x), Y(p_src_y), Z(p_src_z);
     /* Destination is RGB */
     unsigned long bg = 0;
-    Array2D<npy_uint32> dest(p_dst);
+    Array2D<npy_intp> dest(p_dst);
     if (apply_bg)
     {
 #if PY_MAJOR_VERSION >= 3
@@ -483,9 +483,9 @@ PyObject *py_vert_line(PyObject *self, PyObject *args)
         PyErr_SetString(PyExc_TypeError, "imin, imax must be int ndarray");
         return NULL;
     }
-    Array1D<int> pmin(p_min), pmax(p_max);
-    vector<int> imin, imax;
-    int nx = int(max(y0, y1)) + 1;
+    Array1D<npy_intp> pmin(p_min), pmax(p_max);
+    vector<npy_intp> imin, imax;
+    npy_intp nx = int(max(y0, y1)) + 1;
     if (pmin.ni < nx || pmax.ni < nx)
     {
         PyErr_SetString(PyExc_TypeError, "imin, imax not large enough");
@@ -497,14 +497,14 @@ PyObject *py_vert_line(PyObject *self, PyObject *args)
     }
     imin.resize(nx);
     imax.resize(nx);
-    for (int i = 0; i < nx; ++i)
+    for (npy_intp i = 0; i < nx; ++i)
     {
         imin[i] = pmin.value(i);
         imax[i] = pmax.value(i);
     }
-    Array2D<npy_uint32> dummy;
+    Array2D<npy_intp> dummy;
     vert_line(x0, y0, x1, y1, xmax, imin, imax, false, 0, dummy);
-    for (int i = 0; i < nx; ++i)
+    for (npy_intp i = 0; i < nx; ++i)
     {
         pmin.value(i) = imin[i];
         pmax.value(i) = imax[i];

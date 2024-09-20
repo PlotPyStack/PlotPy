@@ -23,15 +23,15 @@ public:
         check_img_ptr("pixeliter:", cur, out, img);
         return *cur;
     }
-    value_type &operator()(int dx, int dy)
+    value_type &operator()(npy_intp dx, npy_intp dy)
     {
         return *(cur + dy * img.si + dx * img.sj);
     }
-    void move(int dx, int dy)
+    void move(npy_intp dx, npy_intp dy)
     {
         cur += dy * img.si + dx * img.sj;
     }
-    void moveto(int x, int y)
+    void moveto(npy_intp x, npy_intp y)
     {
         cur = img.base + y * img.si + x * img.sj;
     }
@@ -52,19 +52,19 @@ public:
     public:
         iterator() : pos(0L), stride(0) {}
         iterator(const Array1D &arr) : pos(arr.base), stride(arr.si) {}
-        iterator(const iterator &it, int n = 0) : pos(it.pos), stride(it.stride) { *this += n; }
+        iterator(const iterator &it, npy_intp n = 0) : pos(it.pos), stride(it.stride) { *this += n; }
         T &operator*() { return *pos; }
         const T &operator*() const { return *pos; }
-        T &operator[](int n) { return *(pos + n * stride); }
-        const T &operator[](int n) const { return *(pos + n * stride); }
-        iterator &operator+=(int n)
+        T &operator[](npy_intp n) { return *(pos + n * stride); }
+        const T &operator[](npy_intp n) const { return *(pos + n * stride); }
+        iterator &operator+=(npy_intp n)
         {
             pos += stride * n;
             return *this;
         }
-        int operator-(const iterator &it) { return (pos - it.pos) / stride; }
-        iterator operator+(int n) { return iterator(*this, n); }
-        iterator operator-(int n) { return iterator(*this, -n); }
+        npy_intp operator-(const iterator &it) { return (pos - it.pos) / stride; }
+        iterator operator+(npy_intp n) { return iterator(*this, n); }
+        iterator operator-(npy_intp n) { return iterator(*this, -n); }
         iterator &operator=(const iterator &it)
         {
             pos = it.pos;
@@ -99,7 +99,7 @@ public:
 
     protected:
         T *pos;
-        int stride;
+        npy_intp stride;
     };
     Array1D() {}
     Array1D(PyArrayObject *arr)
@@ -109,8 +109,8 @@ public:
         si = PyArray_STRIDE(arr, 0) / sizeof(value_type);
     }
 
-    Array1D(value_type *_base, int _ni, int _si) : base(_base), ni(_ni),
-                                                   si(_si / sizeof(value_type))
+    Array1D(value_type *_base, npy_intp _ni, npy_intp _si) : base(_base), ni(_ni),
+                                                             si(_si / sizeof(value_type))
     {
     }
     iterator begin() { return iterator(*this); }
@@ -120,7 +120,7 @@ public:
         it += ni;
         return it;
     }
-    void init(value_type *_base, int _ni, int _si)
+    void init(value_type *_base, npy_intp _ni, npy_intp _si)
     {
         base = _base;
         ni = _ni;
@@ -128,12 +128,12 @@ public:
     }
 
     // Pixel accessors
-    value_type &value(int x)
+    value_type &value(npy_intp x)
     {
         check("array1d:", x, ni, outside);
         return *(base + x * si);
     }
-    const value_type &value(int x) const
+    const value_type &value(npy_intp x) const
     {
         check("array1d:", x, ni, outside);
         return *(base + x * si);
@@ -142,8 +142,8 @@ public:
 public:
     value_type outside;
     value_type *base;
-    int ni; // dimensions
-    int si; // strides in sizeof(value_type)
+    npy_intp ni; // dimensions
+    npy_intp si; // strides in sizeof(value_type)
 };
 
 template <class T>
@@ -162,11 +162,11 @@ public:
         sj = PyArray_STRIDE(arr, 1) / sizeof(value_type);
     }
 
-    Array2D(value_type *_base, int _ni, int _nj, int _si, int _sj) : base(_base), ni(_ni), nj(_nj),
-                                                                     si(_si / sizeof(value_type)), sj(_sj / sizeof(value_type))
+    Array2D(value_type *_base, npy_intp _ni, npy_intp _nj, npy_intp _si, npy_intp _sj) : base(_base), ni(_ni), nj(_nj),
+                                                                                         si(_si / sizeof(value_type)), sj(_sj / sizeof(value_type))
     {
     }
-    void init(value_type *_base, int _ni, int _nj, int _si, int _sj)
+    void init(value_type *_base, npy_intp _ni, npy_intp _nj, npy_intp _si, npy_intp _sj)
     {
         base = _base;
         ni = _ni;
@@ -176,13 +176,13 @@ public:
     }
 
     // Pixel accessors
-    value_type &value(int x, int y)
+    value_type &value(npy_intp x, npy_intp y)
     {
         check("array2d x:", x, nj, outside);
         check("array2d y:", y, ni, outside);
         return *(base + x * sj + y * si);
     }
-    const value_type &value(int x, int y) const
+    const value_type &value(npy_intp x, npy_intp y) const
     {
         check("array2d x:", x, nj, outside);
         check("array2d y:", y, ni, outside);
@@ -192,8 +192,8 @@ public:
 public:
     value_type outside;
     value_type *base;
-    int ni, nj; // dimensions
-    int si, sj; // strides in sizeof(value_type)
+    npy_intp ni, nj; // dimensions
+    npy_intp si, sj; // strides in sizeof(value_type)
 };
 
 template <class Image>

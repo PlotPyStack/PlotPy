@@ -21,8 +21,8 @@ public:
     Point() : _ix(0), _iy(0), _x(0.0), _y(0.0) {}
     real x() const { return _x; }
     real y() const { return _y; }
-    int ix() const { return _ix; }
-    int iy() const { return _iy; }
+    npy_intp ix() const { return _ix; }
+    npy_intp iy() const { return _iy; }
 
     void setx(real x)
     {
@@ -53,7 +53,7 @@ public:
     }
 
 protected:
-    int _ix, _iy;
+    npy_intp _ix, _iy;
     real _x, _y;
 };
 
@@ -65,7 +65,7 @@ class Point2DRectilinear : public Point
 public:
     Point2DRectilinear() : _insidex(true), _insidey(true) {}
     bool inside() const { return _insidex && _insidey; }
-    void testx(int _m, int _M)
+    void testx(npy_intp _m, npy_intp _M)
     {
         if (_ix < _m || _ix >= _M)
         {
@@ -76,7 +76,7 @@ public:
             _insidex = true;
         }
     }
-    void testy(int _m, int _M)
+    void testy(npy_intp _m, npy_intp _M)
     {
         if (_iy < _m || _iy >= _M)
         {
@@ -104,7 +104,7 @@ protected:
 };
 
 /* A special transformation operation that transforms
-   i,j (int) coordinates with a translation and scale
+   i,j (npy_intp) coordinates with a translation and scale
 */
 class ScaleTransform
 {
@@ -112,11 +112,11 @@ public:
     typedef Point2DRectilinear point;
     typedef point::real real;
 
-    ScaleTransform(int _nx, int _ny,
+    ScaleTransform(npy_intp _nx, npy_intp _ny,
                    real _x0, real _y0,
                    real _dx, real _dy) : nx(_nx), ny(_ny), x0(_x0), y0(_y0), dx(_dx), dy(_dy) {}
 
-    void set(point &p, int x, int y) const
+    void set(point &p, npy_intp x, npy_intp y) const
     {
         p.set(x0 + x * dx, y0 + y * dy);
         p.testx(0, nx);
@@ -134,7 +134,7 @@ public:
     }
 
 public:
-    int nx, ny;
+    npy_intp nx, ny;
     real x0, y0;
     real dx, dy;
 };
@@ -155,7 +155,7 @@ public:
         return *this;
     }
 
-    void test(int _xm, int _xM, int _ym, int _yM)
+    void test(npy_intp _xm, npy_intp _xM, npy_intp _ym, npy_intp _yM)
     {
         if ((_ix < _xm) || (_ix >= _xM) || (_iy < _ym) || (_iy >= _yM))
         {
@@ -175,7 +175,7 @@ public:
     typedef Point2D point;
     typedef point::real real;
 
-    LinearTransform(int _nx, int _ny,
+    LinearTransform(npy_intp _nx, npy_intp _ny,
                     real _x0, real _y0,
                     real _xx, real _xy,
                     real _yx, real _yy) : nx(_nx), ny(_ny),
@@ -184,7 +184,7 @@ public:
                                           yx(_yx), yy(_yy)
     {
     }
-    void set(point &p, int x, int y) const
+    void set(point &p, npy_intp x, npy_intp y) const
     {
         p.set(x0 + x * xx + y * xy,
               y0 + x * yx + y * yy);
@@ -202,7 +202,7 @@ public:
     }
 
 public:
-    int nx, ny;
+    npy_intp nx, ny;
     real x0, y0;
     real xx, xy, yx, yy;
 };
@@ -296,7 +296,7 @@ public:
     typedef Point2DAxis<axis_type> point;
     typedef typename point::real real;
 
-    XYTransform(int _nx, int _ny,
+    XYTransform(npy_intp _nx, npy_intp _ny,
                 const axis_type &_ax,
                 const axis_type &_ay,
                 real _x0, real _y0,
@@ -327,7 +327,7 @@ public:
             p._insidey = true;
         }
     }
-    void set(point &p, int x, int y) const
+    void set(point &p, npy_intp x, npy_intp y) const
     {
         p.set(ax, x0 + x * dx, ay, y0 + y * dy);
         testx(p);
@@ -345,7 +345,7 @@ public:
     }
 
 public:
-    int nx, ny;
+    npy_intp nx, ny;
     const axis_type &ax;
     const axis_type &ay;
     real x0, y0;
