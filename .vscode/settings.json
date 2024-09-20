@@ -31,4 +31,21 @@
     "editor.codeActionsOnSave": {
         "source.organizeImports": "explicit",
     },
+    "files.associations": {
+        "vector": "cpp",
+        "utility": "cpp",
+        "algorithm": "cpp",
+        "complex": "cpp",
+        "memory": "cpp",
+        "optional": "cpp",
+        "ostream": "cpp",
+        "sstream": "cpp",
+        "system_error": "cpp",
+        "type_traits": "cpp",
+        "xlocmon": "cpp",
+        "xmemory": "cpp",
+        "xstring": "cpp",
+        "xtr1common": "cpp",
+        "xutility": "cpp"
+    },
 }
