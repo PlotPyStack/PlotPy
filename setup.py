@@ -50,7 +50,7 @@ if tuple(map(int, __cython_version__.split(".")[:2])) < (3, 0):
 # -------------------------------------------------------------------------------------
 
 MACROS_CPP = [("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")]
-CFLAGS_CPP = ["/EHsc"] if is_msvc() else ["-Wall"]
+CFLAGS_CPP = ["/EHsc", "/fp:fast"] if is_msvc() else ["-Wall"]
 if platform.system() == "Darwin":
     CFLAGS_CPP += ["-std=c++11"]
 
