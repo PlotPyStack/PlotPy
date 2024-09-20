@@ -9,7 +9,6 @@
 #include <numpy/arrayobject.h>
 #ifdef _MSC_VER
 #include <float.h>
-#pragma fenv_access(on)
 #else
 #include <fenv.h>
 #endif

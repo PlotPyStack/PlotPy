@@ -9,7 +9,6 @@
 #include <numpy/arrayobject.h>
 #ifdef _MSC_VER
 #include <float.h>
-#pragma fenv_access(on)
 #define FE_TOWARDZERO _RC_CHOP
 #define fegetround() (_controlfp(0, 0) & _MCW_RC)
 int fesetround(int r)
