@@ -300,9 +300,9 @@ struct SubSampleInterpolation
         }
         // printf("%d/%d\n", (int)value, (int)count);
         if (count)
-            return value / count;
+            return static_cast<T>(value / count);
         else
-            return value;
+            return static_cast<T>(value);
     }
     typename TR::real ki, kj;
     const Array2D<T> &mask;
