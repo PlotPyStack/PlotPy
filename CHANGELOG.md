@@ -4,6 +4,7 @@
 
 🛠️ Bug fixes:
 
+* [Issue #24](https://github.com/PlotPyStack/PlotPy/issues/24) - Colormap: side effect on image axes when changing the colormap
 * [Issue #23](https://github.com/PlotPyStack/PlotPy/issues/23) - Windows: Image `_scaler` engine performance regression
 * PySide6 compatibility issues:
   * Fixed deprecated call to `QMouseEvent` in `tests/unit/utils.py`

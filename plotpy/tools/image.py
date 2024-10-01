@@ -642,18 +642,17 @@ class ColormapTool(CommandTool):
             self.update_plot(self._active_colormap.name)
             self.update_status(plot)
 
-    def update_plot(self, cmap: str) -> None:
+    def update_plot(self, cmap_name: str) -> None:
         """Update the plot with the given colormap.
 
         Args:
-            cmap: Colormap name
+            cmap_name: Colormap name
         """
         plot: BasePlot = self.get_active_plot()
         items = get_selected_images(plot, IColormapImageItemType)
         for item in items:
-            param: BaseImageParam = item.param
-            param.colormap = cmap
-            param.update_item(item)
+            cmap = item.get_color_map()
+            item.set_color_map(cmap_name, cmap.invert)
             plot.SIG_ITEM_PARAMETERS_CHANGED.emit(item)
         plot.invalidate()
 
@@ -705,10 +704,9 @@ class ReverseColormapTool(ToggleTool):
         if self._active_colormap is not None and plot is not None:
             items = get_selected_images(plot, IColormapImageItemType)
             for item in items:
-                param: BaseImageParam = item.param
-                param.invert_colormap = checked
-                param.update_item(item)
-                plot.SIG_ITEM_PARAMETERS_CHANGED.emit(item)
+                cmap = item.get_color_map()
+                item.set_color_map(cmap.name, invert=checked)
+            plot.SIG_ITEM_PARAMETERS_CHANGED.emit(item)
             plot.invalidate()
             self.update_status(plot)
 
