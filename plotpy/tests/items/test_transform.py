@@ -119,7 +119,7 @@ def make_items(N: int) -> list[TrImageItem]:
         s = float((info.max - info.min))
         a1 = s * (data - m) / (M - m)
         img = np.array(a1 + info.min, dtype)
-        write_text_on_array(img, 0, 0, int(N / 15.0), str(dtype))
+        write_text_on_array(img, 0, 0, int(N / 15.0), dtype.__name__)
         items.append(make.trimage(img, colormap="jet"))
     nc = int(np.sqrt(len(items)) + 1.0)
     maxy, x, y = 0, 0, 0
