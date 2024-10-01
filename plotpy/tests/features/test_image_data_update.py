@@ -23,6 +23,7 @@ import numpy as np
 import pytest
 from guidata.qthelpers import exec_dialog, qt_app_context
 from qtpy import QtCore as QC
+from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
 
 from plotpy.builder import make
@@ -31,31 +32,33 @@ from plotpy.tests import data as ptd
 from plotpy.tools import LockLUTRangeTool
 
 
-def get_data() -> np.ndarray:
+def get_data(variable_size: bool) -> np.ndarray:
     """Compute 2D Gaussian data and add a narrower Gaussian on top with a random
     position and amplitude."""
+    size = np.random.randint(50, 200) if variable_size else 100
     dtype = np.uint16
     amp = np.iinfo(dtype).max * 0.3
-    data = ptd.gen_2d_gaussian(100, dtype, sigma=10.0, x0=0.0, y0=0.0, amp=amp)
+    data = ptd.gen_2d_gaussian(size, dtype, sigma=10.0, x0=0.0, y0=0.0, amp=amp)
     # Choose a random position: x0, y0 have to be in the range [-10.0, 10.0]
     x0 = np.random.uniform(-10.0, 10.0)
     y0 = np.random.uniform(-10.0, 10.0)
     # Choose a random amplitude: a has to be in the range [0.1, 0.5]
     a = np.random.uniform(0.1, 0.7) * np.iinfo(dtype).max
     # Add the narrower Gaussian on top
-    data += ptd.gen_2d_gaussian(100, dtype, sigma=4.0, x0=x0, y0=y0, amp=a)
+    data += ptd.gen_2d_gaussian(size, dtype, sigma=4.0, x0=x0, y0=y0, amp=a)
     return data
 
 
 class ImageUpdateDialog(PlotDialog):
     """Dialog box for image update"""
 
-    def __init__(self, title):
+    def __init__(self, title: str, variable_size: bool = False) -> None:
+        self.variable_size = variable_size
         options = PlotOptions(title="-", show_contrast=True, type="image")
         super().__init__(title=title, toolbar=True, edit=False, options=options)
         self.resize(600, 600)
         self.timer = QC.QTimer()
-        self.item = make.image(get_data(), interpolation="nearest")
+        self.item = make.image(get_data(self.variable_size), interpolation="nearest")
         self.item.set_lut_range((15000, 28000))
         plot = self.get_plot()
         plot.add_item(self.item)
@@ -63,7 +66,7 @@ class ImageUpdateDialog(PlotDialog):
         self.counter = 0
         self.keep_lut_cb: QW.QCheckBox | None = None
 
-    def populate_plot_layout(self):
+    def populate_plot_layout(self) -> None:
         """Populate the plot layout"""
         start_btn = QW.QPushButton("Start image update")
         start_btn.clicked.connect(self.start_image_update)
@@ -74,9 +77,17 @@ class ImageUpdateDialog(PlotDialog):
         self.keep_lut_cb = QW.QCheckBox()
         self.keep_lut_cb.setChecked(False)
         self.add_widget(self.keep_lut_cb, 0, 2)
+        variable_size_cb = QW.QCheckBox("Variable size")
+        variable_size_cb.setChecked(self.variable_size)
+        variable_size_cb.stateChanged.connect(self.toggle_variable_size)
+        self.add_widget(variable_size_cb, 0, 3)
         self.add_widget(self.plot_widget, 1, 0, 1, 0)
 
-    def register_tools(self):
+    def toggle_variable_size(self, state: int) -> None:
+        """Toggle the variable size of the image"""
+        self.variable_size = state == QC.Qt.Checked
+
+    def register_tools(self) -> None:
         """Reimplement to connect the Keep LUT range checkbox to the item"""
         mgr = self.get_manager()
         keep_lut_tool = mgr.add_tool(LockLUTRangeTool)
@@ -87,18 +98,18 @@ class ImageUpdateDialog(PlotDialog):
         self.keep_lut_cb.setToolTip(keep_lut_tool.action.toolTip())
         self.keep_lut_cb.stateChanged.connect(keep_lut_tool.activate)
 
-    def start_image_update(self):
+    def start_image_update(self) -> None:
         """Start updating the image"""
         self.timer.timeout.connect(self.update_image)
         self.timer.start(500)
 
-    def stop_image_update(self):
+    def stop_image_update(self) -> None:
         """Stop updating the image"""
         self.timer.stop()
 
-    def update_image(self):
+    def update_image(self) -> None:
         """Update the image"""
-        data = get_data()
+        data = get_data(self.variable_size)
         self.counter += 1
         plot = self.get_plot()
 
@@ -111,7 +122,7 @@ class ImageUpdateDialog(PlotDialog):
         plot.set_title(f"Image update {self.counter:03d}")
         plot.replot()
 
-    def closeEvent(self, event):
+    def closeEvent(self, event: QG.QCloseEvent) -> None:
         """Reimplement closeEvent to stop the timer before closing the dialog"""
         self.timer.stop()
         super().closeEvent(event)

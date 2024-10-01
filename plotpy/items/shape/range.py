@@ -22,7 +22,9 @@ if TYPE_CHECKING:
     import qwt.scale_map
     from qtpy.QtCore import QPointF, QRectF
     from qtpy.QtGui import QPainter
+    from qwt import QwtSymbol
 
+    from plotpy.plot import BasePlot
     from plotpy.styles.base import ItemParameters
 
 
@@ -137,34 +139,31 @@ class XRangeSelection(AbstractShape):
             yMap: Y axis scale map
             canvasRect: Canvas rectangle
         """
-        plot = self.plot()
+        plot: BasePlot = self.plot()
         if not plot:
             return
         if self.selected:
-            pen = self.sel_pen
-            sym = self.sel_symbol
+            pen: QG.QPen = self.sel_pen
+            sym: QwtSymbol = self.sel_symbol
         else:
-            pen = self.pen
-            sym = self.symbol
+            pen: QG.QPen = self.pen
+            sym: QwtSymbol = self.symbol
 
-        rct = plot.canvas().contentsRect()
-        rct2 = QC.QRectF(rct)
-        rct2.setLeft(xMap.transform(self._min))
-        rct2.setRight(xMap.transform(self._max))
+        rct = QC.QRectF(plot.canvas().contentsRect())
+        rct.setLeft(xMap.transform(self._min))
+        rct.setRight(xMap.transform(self._max))
 
-        painter.fillRect(rct2, self.brush)
+        painter.fillRect(rct, self.brush)
         painter.setPen(pen)
-        painter.drawLine(rct2.topLeft(), rct2.bottomLeft())
-        painter.drawLine(rct2.topRight(), rct2.bottomRight())
+        painter.drawLine(rct.topLeft(), rct.bottomLeft())
+        painter.drawLine(rct.topRight(), rct.bottomRight())
+
         dash = QG.QPen(pen)
         dash.setStyle(QC.Qt.DashLine)
         dash.setWidth(1)
         painter.setPen(dash)
-
-        center_x = int(rct2.center().x())
-        top = int(rct2.top())
-        bottom = int(rct2.bottom())
-        painter.drawLine(center_x, top, center_x, bottom)
+        cx = rct.center().x()
+        painter.drawLine(QC.QPointF(cx, rct.top()), QC.QPointF(cx, rct.bottom()))
 
         painter.setPen(pen)
         x0, x1, y = self.get_handles_pos()

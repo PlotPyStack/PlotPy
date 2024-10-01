@@ -48,8 +48,7 @@ def get_font_array(sz: int, chars: str = DEFAULT_CHARS) -> np.ndarray | None:
     metric = pnt.fontMetrics()
     rct = metric.boundingRect(chars)
     pnt.end()
-    h = rct.height()
-    w = rct.width()
+    h, w = rct.height(), rct.width()
     img = QG.QImage(w, h, QG.QImage.Format_ARGB32)
     paint = QG.QPainter()
     paint.begin(img)
@@ -62,12 +61,11 @@ def get_font_array(sz: int, chars: str = DEFAULT_CHARS) -> np.ndarray | None:
     paint.drawText(0, paint.fontMetrics().ascent(), chars)
     paint.end()
     try:
-        data = img.bits().asstring(img.sizeInBytes())
+        data = img.bits().asstring(h * w * 4)
     except AttributeError:
         data = img.bits()
-    npy = np.frombuffer(data, np.uint8)
-    npy.shape = img.height(), img.bytesPerLine() // 4, 4
-    return npy[:, :, 0]
+    npy: np.ndarray = np.frombuffer(data, np.uint8)
+    return npy.reshape(h, w, 4)[:, :, 0]
 
 
 def write_text_on_array(
@@ -119,7 +117,7 @@ def make_items(N: int) -> list[TrImageItem]:
         s = float((info.max - info.min))
         a1 = s * (data - m) / (M - m)
         img = np.array(a1 + info.min, dtype)
-        write_text_on_array(img, 0, 0, int(N / 15.0), str(dtype))
+        write_text_on_array(img, 0, 0, int(N / 15.0), dtype.__name__)
         items.append(make.trimage(img, colormap="jet"))
     nc = int(np.sqrt(len(items)) + 1.0)
     maxy, x, y = 0, 0, 0

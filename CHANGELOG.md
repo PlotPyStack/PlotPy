@@ -14,8 +14,16 @@
 
 ## Version 2.6.3 ##
 
+🧯 In this release, test coverage is 79%.
+
 🛠️ Bug fixes:
 
+* [Issue #25](https://github.com/PlotPyStack/PlotPy/issues/25) - `OverflowError` with Contrast Adjustment panel for constant images
+* When updating image parameters (`ImageParam`) from the associated item object:
+  * If `xmin`, `xmax`, `ymin`, `ymax` attributes are not yet set (i.e. `None`), do not update them with the image data bounds
+  * Previous behavior was to update them with the image data bounds, which was leading to breaking the automatic bounds update when the image data is updated
+* [Issue #24](https://github.com/PlotPyStack/PlotPy/issues/24) - Colormap: side effect on image axes when changing the colormap
+* [Issue #23](https://github.com/PlotPyStack/PlotPy/issues/23) - Windows: Image `_scaler` engine performance regression
 * PySide6 compatibility issues:
   * Fixed deprecated call to `QMouseEvent` in `tests/unit/utils.py`
   * Added workaround for `QPolygonF` shape point slicing

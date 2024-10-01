@@ -350,12 +350,12 @@ class ImageParam(RawImageParam):
         help=_("Locked images are not movable with the mouse"),
     )
     _xdata = BeginGroup(_("Image placement along X-axis"))
-    xmin = FloatItem(_("x|min"), default=None)
-    xmax = FloatItem(_("x|max"), default=None)
+    xmin = FloatItem(_("x|min"), default=None, check=False)
+    xmax = FloatItem(_("x|max"), default=None, check=False)
     _end_xdata = EndGroup(_("Image placement along X-axis"))
     _ydata = BeginGroup(_("Image placement along Y-axis"))
-    ymin = FloatItem(_("y|min"), default=None)
-    ymax = FloatItem(_("y|max"), default=None)
+    ymin = FloatItem(_("y|min"), default=None, check=False)
+    ymax = FloatItem(_("y|max"), default=None, check=False)
     _end_ydata = EndGroup(_("Image placement along Y-axis"))
 
     def update_param(self, item: ImageItem) -> None:
@@ -366,21 +366,9 @@ class ImageParam(RawImageParam):
         """
         super().update_param(item)
         self.xmin = item.xmin
-        if self.xmin is None:
-            self.xmin = 0.0
         self.ymin = item.ymin
-        if self.ymin is None:
-            self.ymin = 0.0
-        if item.is_empty():
-            shape = (0, 0)
-        else:
-            shape = item.data.shape
         self.xmax = item.xmax
-        if self.xmax is None:
-            self.xmax = float(shape[1])
         self.ymax = item.ymax
-        if self.ymax is None:
-            self.ymax = float(shape[0])
 
     def update_item(self, item: ImageItem) -> None:
         """Update the given image item from the parameters.
