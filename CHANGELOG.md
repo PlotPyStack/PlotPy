@@ -4,6 +4,7 @@
 
 🛠️ Bug fixes:
 
+* [Issue #23](https://github.com/PlotPyStack/PlotPy/issues/23) - Windows: Image `_scaler` engine performance regression
 * PySide6 compatibility issues:
   * Fixed deprecated call to `QMouseEvent` in `tests/unit/utils.py`
   * Added workaround for `QPolygonF` shape point slicing
