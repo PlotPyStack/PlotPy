@@ -4,6 +4,7 @@
 
 🛠️ Bug fixes:
 
+* [Issue #25](https://github.com/PlotPyStack/PlotPy/issues/25) - `OverflowError` with Contrast Adjustment panel for constant images
 * When updating image parameters (`ImageParam`) from the associated item object:
   * If `xmin`, `xmax`, `ymin`, `ymax` attributes are not yet set (i.e. `None`), do not update them with the image data bounds
   * Previous behavior was to update them with the image data bounds, which was leading to breaking the automatic bounds update when the image data is updated
