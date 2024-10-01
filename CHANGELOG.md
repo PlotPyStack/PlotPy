@@ -2,6 +2,8 @@
 
 ## Version 2.6.3 ##
 
+🧯 In this release, test coverage is 79%.
+
 🛠️ Bug fixes:
 
 * [Issue #25](https://github.com/PlotPyStack/PlotPy/issues/25) - `OverflowError` with Contrast Adjustment panel for constant images
