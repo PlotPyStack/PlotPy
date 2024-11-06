@@ -2,6 +2,11 @@
 
 ## Version 2.7.0 ##
 
+Supported versions of Python have been updated (drop support for Python 3.8, add support for Python 3.13):
+
+* PlotPy < 2.7.0: Python 3.8, 3.9, 3.10, 3.11 and 3.12
+* PlotPy >= 2.7.0: Python 3.9, 3.10, 3.11, 3.12 and 3.13
+
 💥 New features / Enhancements:
 
 * Added `AnnotatedPolygon` annotation to items

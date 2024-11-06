@@ -15,5 +15,5 @@ import plotpy
 
 if __name__ == "__main__":
     print("Updating requirements.rst file...", end=" ")
-    gen_module_req_rst(plotpy, ["Python>=3.8", "PyQt5>=5.11"])
+    gen_module_req_rst(plotpy, ["Python>=3.9", "PyQt5>=5.11"])
     print("done.")
