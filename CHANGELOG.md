@@ -17,6 +17,10 @@ Supported versions of Python have been updated (drop support for Python 3.8, add
   * The `info_callback` is a function that takes the annotation object and returns a string with the information to display
   * Default `info_callback` is redirected to the `get_infos` method of the annotation object (this makes the feature backward compatible)
 
+🛠️ Bug fixes:
+
+* Fixed `pydicom` support: use `dcmread` instead of `read_file` to read DICOM files
+
 ## Version 2.6.3 ##
 
 🧯 In this release, test coverage is 79%.

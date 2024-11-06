@@ -374,7 +374,7 @@ def _import_dcm():
     # is to check if pydicom is installed:
     # pylint: disable=import-outside-toplevel
     # pylint: disable=import-error
-    from pydicom import dicomio  # type:ignore # noqa: F401
+    from pydicom import dcmread  # type:ignore # noqa: F401
 
     logger.setLevel(logging.WARNING)
 
@@ -383,9 +383,9 @@ def _imread_dcm(filename, **kwargs):
     """Open DICOM image with pydicom and return a NumPy array"""
     # pylint: disable=import-outside-toplevel
     # pylint: disable=import-error
-    from pydicom import dicomio  # type:ignore
+    from pydicom import dcmread  # type:ignore
 
-    dcm = dicomio.read_file(filename, force=True)
+    dcm = dcmread(filename, force=True)
     # **********************************************************************
     # The following is necessary until pydicom numpy support is improved:
     # (after that, a simple: 'arr = dcm.PixelArray' will work the same)
