@@ -1,5 +1,5 @@
 Coverage
-Cython
+Cython>=3.0
 NumPy>=1.17
 scikit-image>=0.18
 Pillow

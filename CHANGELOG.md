@@ -7,6 +7,11 @@ Supported versions of Python have been updated (drop support for Python 3.8, add
 * PlotPy < 2.7.0: Python 3.8, 3.9, 3.10, 3.11 and 3.12
 * PlotPy >= 2.7.0: Python 3.9, 3.10, 3.11, 3.12 and 3.13
 
+Other dependencies have been updated:
+
+* Updated versions to those available at the time of the release of the oldest supported Python version (3.9)
+* Exception: Cython 3.0 is required for Python 3.13
+
 💥 New features / Enhancements:
 
 * Added `AnnotatedPolygon` annotation to items

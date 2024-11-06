@@ -6,7 +6,6 @@ import platform
 import sys
 
 import numpy
-from Cython import __version__ as __cython_version__
 from Cython.Compiler import Main
 from setuptools import Distribution, Extension, setup
 
@@ -39,16 +38,6 @@ INCLUDE_DIRS = [SRCPATH, numpy.get_include()]
 
 MACROS_CYTHON = [("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")]
 CFLAGS_CYTHON = []
-# -------------------------------------------------------------------------------------
-# TODO: When dropping support for Cython < 3.0, we can remove the following lines.
-# In the meantime, we hide the deprecation warnings when building the package.
-if tuple(map(int, __cython_version__.split(".")[:2])) < (3, 0):
-    # hide deprecation warnings
-    MACROS_CYTHON = []
-    if not is_msvc():
-        CFLAGS_CYTHON = ["-Wno-cpp"]
-# -------------------------------------------------------------------------------------
-
 MACROS_CPP = [("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")]
 CFLAGS_CPP = ["/EHsc", "/fp:fast"] if is_msvc() else ["-Wall"]
 if platform.system() == "Darwin":
