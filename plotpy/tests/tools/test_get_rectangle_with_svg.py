@@ -29,7 +29,8 @@ class SVGToolExample(RectangularShapeTool):
 
     def create_shape(self):
         """Create shape to be drawn"""
-        svg_data = open(self.SVG_FNAME, "rb").read()
+        with open(self.SVG_FNAME, "rb") as svg_file:
+            svg_data = svg_file.read()
         shape = make.svg("rectangle", svg_data, 0, 0, 1, 1, "SVG")
         self.set_shape_style(shape)
         return shape, 0, 2

@@ -311,8 +311,8 @@ class SaveItemsTool(CommandTool):
         )
         if not fname:
             return
-        itemfile = open(fname, "wb")
-        plot.save_items(itemfile, selected=True)
+        with open(fname, "wb") as itemfile:
+            plot.save_items(itemfile, selected=True)
 
 
 class LoadItemsTool(OpenFileTool):
@@ -343,8 +343,8 @@ class LoadItemsTool(OpenFileTool):
         filename = self.get_filename(plot)
         if not filename:
             return
-        itemfile = open(filename, "rb")
-        plot.restore_items(itemfile)
+        with open(filename, "rb") as itemfile:
+            plot.restore_items(itemfile)
         plot.replot()
 
 

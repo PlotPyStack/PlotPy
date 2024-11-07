@@ -192,14 +192,14 @@ class PickleTest(IOTest):
 
     def restore_items(self) -> None:
         """Restore items"""
-        f = open(self.FNAME, "rb")
-        self.plot.restore_items(f)
+        with open(self.FNAME, "rb") as f:
+            self.plot.restore_items(f)
 
     def save_items(self) -> None:
         """Save items"""
         self.plot.select_all()
-        f = open(self.FNAME, "wb")
-        self.plot.save_items(f, selected=True)
+        with open(self.FNAME, "wb") as f:
+            self.plot.save_items(f, selected=True)
 
 
 def test_pickle() -> None:

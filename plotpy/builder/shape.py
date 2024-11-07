@@ -179,7 +179,8 @@ class ShapeBuilder:
         assert shape in ("circle", "rectangle", "square")
         assert isinstance(fname_or_data, (str, bytes))
         if isinstance(fname_or_data, str):
-            data = open(fname_or_data, "rb").read()
+            with open(fname_or_data, "rb") as file:
+                data = file.read()
         else:
             data = fname_or_data
         shapeklass = {
