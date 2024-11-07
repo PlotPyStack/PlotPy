@@ -284,55 +284,55 @@ def _imread_pil(filename, to_grayscale=False, **kwargs):
         "I;16",
         "I;16",
     )
-    img = PIL.Image.open(filename)
-    base, ext = osp.splitext(filename)
-    ext = ext.lower()
-    if ext in [".tif", ".tiff"]:
-        # try to know if multiple pages
-        nb_pages = 0
-        while True:
-            try:
-                img.seek(nb_pages)
-                nb_pages += 1
-            except EOFError:
-                break
-        if nb_pages > 1:
-            for i in range(nb_pages):
-                img.seek(i)
-                filename = base
-                filename += "_{i:d}".format(i=i)
-                filename += ext
-                img.save(filename)
-            if nb_pages == 2:
-                # possibility to be TIFF file with thumbnail and full image
-                # --> try to load full image (second one)
-                filename = base + "_{i:d}".format(i=1) + ext
-            else:
-                # we don't know which one must be loaded --> load first image
-                filename = base + "_{i:d}".format(i=0) + ext
+    with PIL.Image.open(filename) as img:
+        base, ext = osp.splitext(filename)
+        ext = ext.lower()
+        if ext in [".tif", ".tiff"]:
+            # try to know if multiple pages
+            nb_pages = 0
+            while True:
+                try:
+                    img.seek(nb_pages)
+                    nb_pages += 1
+                except EOFError:
+                    break
+            if nb_pages > 1:
+                for i in range(nb_pages):
+                    img.seek(i)
+                    filename = base
+                    filename += "_{i:d}".format(i=i)
+                    filename += ext
+                    img.save(filename)
+                if nb_pages == 2:
+                    # possibility to be TIFF file with thumbnail and full image
+                    # --> try to load full image (second one)
+                    filename = base + "_{i:d}".format(i=1) + ext
+                else:
+                    # we don't know which one must be loaded --> load first image
+                    filename = base + "_{i:d}".format(i=0) + ext
 
-    img = PIL.Image.open(filename)
-    if img.mode in ("CMYK", "YCbCr"):
-        # Converting to RGB
-        img = img.convert("RGB")
-    if to_grayscale and img.mode in ("RGB", "RGBA", "RGBX"):
-        # Converting to grayscale
-        img = img.convert("L")
-    elif "A" in img.mode or (img.mode == "P" and "transparency" in img.info):
-        img = img.convert("RGBA")
-    elif img.mode == "P":
-        img = img.convert("RGB")
-    try:
-        dtype, extra = DTYPES[img.mode]
-    except KeyError:
-        raise RuntimeError(f"{img.mode} mode is not supported")
-    shape = (img.size[1], img.size[0])
-    if extra is not None:
-        shape += (extra,)
-    try:
-        return np.array(img, dtype=np.dtype(dtype)).reshape(shape)
-    except SystemError:
-        return np.array(img.getdata(), dtype=np.dtype(dtype)).reshape(shape)
+    with PIL.Image.open(filename) as img:
+        if img.mode in ("CMYK", "YCbCr"):
+            # Converting to RGB
+            img = img.convert("RGB")
+        if to_grayscale and img.mode in ("RGB", "RGBA", "RGBX"):
+            # Converting to grayscale
+            img = img.convert("L")
+        elif "A" in img.mode or (img.mode == "P" and "transparency" in img.info):
+            img = img.convert("RGBA")
+        elif img.mode == "P":
+            img = img.convert("RGB")
+        try:
+            dtype, extra = DTYPES[img.mode]
+        except KeyError:
+            raise RuntimeError(f"{img.mode} mode is not supported")
+        shape = (img.size[1], img.size[0])
+        if extra is not None:
+            shape += (extra,)
+        try:
+            return np.array(img, dtype=np.dtype(dtype)).reshape(shape)
+        except SystemError:
+            return np.array(img.getdata(), dtype=np.dtype(dtype)).reshape(shape)
 
 
 def _imwrite_pil(filename, arr):
