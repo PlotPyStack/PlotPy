@@ -1,9 +1,12 @@
 # content of conftest.py
 
+import gc
+
 import guidata
 import h5py
 import numpy
 import PIL
+import pytest
 import qtpy
 import qwt
 import scipy
@@ -15,6 +18,22 @@ import plotpy
 # Turn on unattended mode for executing tests without user interaction
 execenv.unattended = True
 execenv.verbose = "quiet"
+
+
+@pytest.fixture(scope="session", autouse=True)
+def disable_gc_for_tests():
+    """Disable garbage collection for all tests in the session."""
+    # Important note:
+    # ---------------
+    # We need to disable garbage collection for all tests in the session because
+    # this test suite is not representative of a typical application.
+    # The high level of stress on the garbage collector can lead to false positives
+    # in tests that rely on reference counting or finalization.
+    # In a typical application, the garbage collector should be left enabled.
+
+    gc.disable()
+    yield
+    gc.enable()
 
 
 def pytest_report_header(config):

@@ -8,20 +8,20 @@ The :mod:`plotpy` package requires the following Python modules:
       - Version
       - Summary
     * - Python
-      - >=3.8, <4
+      - >=3.9, <4
       - Python programming language
     * - guidata
-      - >=3.4
+      - >=3.7
       - Automatic GUI generation for easy dataset editing and display
     * - PythonQwt
-      - >=0.12.1
+      - >=0.14
       - Qt plotting widgets for Python
-    * - NumPy
-      - >=1.17
-      - Fundamental package for array computing in Python
     * - SciPy
-      - >=1.3
+      - >=1.5
       - Fundamental algorithms for scientific computing in Python
+    * - scikit-image
+      -  >= 0.18
+      - Image processing in Python
     * - Pillow
       - 
       - Python Imaging Library (Fork)

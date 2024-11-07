@@ -75,6 +75,7 @@ The following annotation items are available:
 * :py:class:`.AnnotatedObliqueRectangle`
 * :py:class:`.AnnotatedEllipse`
 * :py:class:`.AnnotatedCircle`
+* :py:class:`.AnnotatedPolygon`
 
 Labels
 ^^^^^^

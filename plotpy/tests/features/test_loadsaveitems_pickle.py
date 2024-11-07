@@ -50,6 +50,18 @@ def build_items() -> list:
         delta = delta + 0.01
         y.append(y[-1] + delta)
 
+    polypoints1 = np.array(
+        [
+            [150.0, 330.0],
+            [270.0, 520.0],
+            [470.0, 480.0],
+            [520.0, 360.0],
+            [460.0, 200.0],
+            [250.0, 240.0],
+        ]
+    )
+    polypoints2 = polypoints1 * 0.5
+
     items = [
         make.curve(x, y, color="b"),
         make.image(filename=filename),
@@ -71,19 +83,9 @@ def build_items() -> list:
         make.ellipse(-10, 0.0, 0, 0, "el1"),
         make.annotated_rectangle(0.5, 0.8, 3, 1.0, "rc1", "tutu"),
         make.annotated_segment(-1, -1, 1, 1.0, "rc1", "tutu"),
+        make.annotated_polygon(polypoints2, "rc1", "tutu"),
         Axes((0, 0), (1, 0), (0, 1)),
-        PolygonShape(
-            np.array(
-                [
-                    [150.0, 330.0],
-                    [270.0, 520.0],
-                    [470.0, 480.0],
-                    [520.0, 360.0],
-                    [460.0, 200.0],
-                    [250.0, 240.0],
-                ]
-            )
-        ),
+        PolygonShape(polypoints1),
     ]
     return items
 
@@ -190,14 +192,14 @@ class PickleTest(IOTest):
 
     def restore_items(self) -> None:
         """Restore items"""
-        f = open(self.FNAME, "rb")
-        self.plot.restore_items(f)
+        with open(self.FNAME, "rb") as f:
+            self.plot.restore_items(f)
 
     def save_items(self) -> None:
         """Save items"""
         self.plot.select_all()
-        f = open(self.FNAME, "wb")
-        self.plot.save_items(f, selected=True)
+        with open(self.FNAME, "wb") as f:
+            self.plot.save_items(f, selected=True)
 
 
 def test_pickle() -> None:

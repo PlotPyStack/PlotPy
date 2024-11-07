@@ -12,7 +12,7 @@ from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
 from plotpy.tests import get_path
-from plotpy.tools import EllipseTool, FreeFormTool, PlaceAxesTool, RectangleTool
+from plotpy.tools import EllipseTool, PlaceAxesTool, PolygonTool, RectangleTool
 
 
 def create_window():
@@ -26,7 +26,7 @@ def create_window():
         type="image",
         size=(800, 600),
     )
-    for toolklass in (RectangleTool, EllipseTool, FreeFormTool, PlaceAxesTool):
+    for toolklass in (RectangleTool, EllipseTool, PolygonTool, PlaceAxesTool):
         win.manager.add_tool(toolklass)
     return win
 

@@ -36,7 +36,8 @@ def loadui(fname, replace_class="QwtPlot"):
     QtDesigner plugins because they don't inheritate from a PyQt5.QtGui
     object.
     """
-    uifile_text = open(fname).read().replace(replace_class, "QFrame")
+    with open(fname) as f:
+        uifile_text = f.read().replace(replace_class, "QFrame")
     ui, base_class = uic.loadUiType(io.StringIO(uifile_text))
 
     class Form(base_class, ui):
@@ -55,12 +56,10 @@ def compileui(fname, replace_class="QwtPlot"):
     :param fname:
     :param replace_class:
     """
-    uifile_text = open(fname).read().replace("QwtPlot", "QFrame")
-    uic.compileUi(
-        io.StringIO(uifile_text),
-        open(fname.replace(".ui", "_ui.py"), "w"),
-        pyqt3_wrapper=True,
-    )
+    with open(fname) as f:
+        uifile_text = f.read().replace("QwtPlot", "QFrame")
+    with open(fname.replace(".ui", "_ui.py"), "w") as pyfile:
+        uic.compileUi(io.StringIO(uifile_text), pyfile, pyqt3_wrapper=True)
 
 
 def create_qtdesigner_plugin(

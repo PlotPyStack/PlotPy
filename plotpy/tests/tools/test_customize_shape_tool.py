@@ -15,8 +15,8 @@ from plotpy.styles import style_generator, update_style_attr
 from plotpy.tests import get_path
 from plotpy.tools import (
     EllipseTool,
-    FreeFormTool,
     MultiLineTool,
+    PolygonTool,
     RectangleTool,
     SegmentTool,
 )
@@ -50,7 +50,7 @@ def create_window():
         EllipseTool,
         SegmentTool,
         MultiLineTool,
-        FreeFormTool,
+        PolygonTool,
     ):
         win.manager.add_tool(toolklass, handle_final_shape_cb=customize_shape)
     return win

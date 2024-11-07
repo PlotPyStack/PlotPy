@@ -17,6 +17,7 @@ if TYPE_CHECKING:
     from qtpy.QtCore import QPointF  # helping out python_qt_documentation
 
     from plotpy.interfaces import IItemType
+    from plotpy.plot import BasePlot
     from plotpy.styles.base import ItemParameters
 
 
@@ -219,10 +220,10 @@ class AbstractShape(QwtPlotItem):
         """
         pt = canvas_to_axes(self, pos)
         self.move_point_to(handle, pt, ctrl)
-        if self.plot():
-            self.plot().SIG_ITEM_RESIZED.emit(self, 0, 0)
-        if self.plot():
-            self.plot().SIG_ITEM_HANDLE_MOVED.emit(self)
+        plot: BasePlot = self.plot()
+        if plot is not None:
+            plot.SIG_ITEM_RESIZED.emit(self, 0, 0)
+            plot.SIG_ITEM_HANDLE_MOVED.emit(self)
 
     def move_local_shape(self, old_pos: QPointF, new_pos: QPointF) -> None:
         """Translate the shape such that old_pos becomes new_pos in canvas coordinates
@@ -234,8 +235,9 @@ class AbstractShape(QwtPlotItem):
         old_pt = canvas_to_axes(self, old_pos)
         new_pt = canvas_to_axes(self, new_pos)
         self.move_shape(old_pt, new_pt)
-        if self.plot():
-            self.plot().SIG_ITEM_MOVED.emit(self, *(old_pt + new_pt))
+        plot: BasePlot = self.plot()
+        if plot is not None:
+            plot.SIG_ITEM_MOVED.emit(self, *(old_pt + new_pt))
 
     def move_with_selection(self, delta_x: float, delta_y: float) -> None:
         """Translate the item together with other selected items
@@ -270,7 +272,7 @@ class AbstractShape(QwtPlotItem):
 
     def invalidate_plot(self) -> None:
         """Invalidate the plot to force a redraw"""
-        plot = self.plot()
+        plot: BasePlot = self.plot()
         if plot is not None:
             plot.invalidate()
 

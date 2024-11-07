@@ -58,7 +58,7 @@ Shape tools
 
 .. autoclass:: plotpy.tools.MultiLineTool
    :members:
-.. autoclass:: plotpy.tools.FreeFormTool
+.. autoclass:: plotpy.tools.PolygonTool
    :members:
 .. autoclass:: plotpy.tools.LabelTool
    :members:
@@ -83,6 +83,8 @@ Shape tools
 .. autoclass:: plotpy.tools.AnnotatedPointTool
    :members:
 .. autoclass:: plotpy.tools.AnnotatedSegmentTool
+   :members:
+.. autoclass:: plotpy.tools.AnnotatedPolygonTool
    :members:
 .. autoclass:: plotpy.tools.HRangeTool
    :members:

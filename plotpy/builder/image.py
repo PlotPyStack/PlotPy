@@ -226,9 +226,9 @@ class ImageBuilder:
         if isinstance(filename, str) and filename.lower().endswith(".dcm"):
             # pylint: disable=import-outside-toplevel
             # pylint: disable=import-error
-            from pydicom import dicomio  # type:ignore
+            from pydicom import dcmread  # type:ignore
 
-            template = dicomio.read_file(filename, stop_before_pixels=True, force=True)
+            template = dcmread(filename, stop_before_pixels=True, force=True)
             ipp = getattr(template, "ImagePositionPatient", ["0", "0", "0"])
             pxs = getattr(template, "PixelSpacing", ["1", "1"])
             ipx, ipy = float(ipp[0]), float(ipp[1])

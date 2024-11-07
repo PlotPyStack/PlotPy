@@ -42,6 +42,7 @@ from plotpy.items import (
     AnnotatedEllipse,
     AnnotatedObliqueRectangle,
     AnnotatedPoint,
+    AnnotatedPolygon,
     AnnotatedRectangle,
     AnnotatedSegment,
     BaseImageItem,
@@ -1321,7 +1322,7 @@ class BasePlot(qwt.QwtPlot):
         zlist = sorted(
             [_it.z() for _it in self.items if _it.z() >= zoffset] + [zoffset - 1]
         )
-        dzlist = np.argwhere(np.diff(zlist) > 1)
+        dzlist = np.argwhere(np.diff(zlist) > 1).flatten()
         if len(dzlist) == 0:
             z = max(zlist) + 1
         else:
@@ -2369,3 +2370,4 @@ BasePlot.register_autoscale_type(AnnotatedEllipse)
 BasePlot.register_autoscale_type(AnnotatedObliqueRectangle)
 BasePlot.register_autoscale_type(AnnotatedSegment)
 BasePlot.register_autoscale_type(AnnotatedPoint)
+BasePlot.register_autoscale_type(AnnotatedPolygon)

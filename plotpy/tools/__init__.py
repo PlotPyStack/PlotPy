@@ -10,6 +10,7 @@ from .annotation import (
     AnnotatedPointTool,
     AnnotatedRectangleTool,
     AnnotatedSegmentTool,
+    AnnotatedPolygonTool,
 )
 from .axes import AxisScaleTool, PlaceAxesTool
 from .base import (
@@ -88,7 +89,7 @@ from .selection import SelectTool
 from .shape import (
     CircleTool,
     EllipseTool,
-    FreeFormTool,
+    PolygonTool,
     MultiLineTool,
     ObliqueRectangleTool,
     PointTool,

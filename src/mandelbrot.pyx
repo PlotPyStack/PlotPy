@@ -1,3 +1,4 @@
+# cython: language_level=3
 # -*- coding: utf-8 -*-
 #
 # Licensed under the terms of the BSD 3-Clause

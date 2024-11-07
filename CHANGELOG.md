@@ -1,5 +1,31 @@
 # Changelog #
 
+## Version 2.7.0 ##
+
+Supported versions of Python have been updated (drop support for Python 3.8, add support for Python 3.13):
+
+* PlotPy < 2.7.0: Python 3.8, 3.9, 3.10, 3.11 and 3.12
+* PlotPy >= 2.7.0: Python 3.9, 3.10, 3.11, 3.12 and 3.13
+
+Other dependencies have been updated:
+
+* Updated versions to those available at the time of the release of the oldest supported Python version (3.9)
+* Exception: Cython 3.0 is required for Python 3.13
+
+💥 New features / Enhancements:
+
+* Added `AnnotatedPolygon` annotation to items
+* Added `make.annotated_polygon` function to `plotpy.builder` module
+* Customization of annotation information:
+  * Added `info_callback` argument to all annotation class constructors
+  * Added `set_info_callback` method to all annotation classes
+  * The `info_callback` is a function that takes the annotation object and returns a string with the information to display
+  * Default `info_callback` is redirected to the `get_infos` method of the annotation object (this makes the feature backward compatible)
+
+🛠️ Bug fixes:
+
+* Fixed `pydicom` support: use `dcmread` instead of `read_file` to read DICOM files
+
 ## Version 2.6.3 ##
 
 🧯 In this release, test coverage is 79%.

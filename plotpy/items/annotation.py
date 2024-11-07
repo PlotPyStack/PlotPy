@@ -14,7 +14,7 @@ The :mod:`annotation` module provides annotated shape plot items.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
 import numpy as np
 from guidata.configtools import get_icon
@@ -28,6 +28,7 @@ from plotpy.items.label import DataInfoLabel
 from plotpy.items.shape.base import AbstractShape
 from plotpy.items.shape.ellipse import EllipseShape
 from plotpy.items.shape.point import PointShape
+from plotpy.items.shape.polygon import PolygonShape
 from plotpy.items.shape.rectangle import ObliqueRectangleShape, RectangleShape
 from plotpy.items.shape.segment import SegmentShape
 from plotpy.mathutils.geometry import (
@@ -62,9 +63,20 @@ class AnnotatedShape(AbstractShape):
     SHAPE_CLASS: type[AbstractShape] = RectangleShape  # to be overridden
     LABEL_ANCHOR: str = ""
 
-    def __init__(self, annotationparam: AnnotationParam | None = None) -> None:
+    def __init__(
+        self,
+        annotationparam: AnnotationParam | None = None,
+        info_callback: Callable[[AnnotatedShape], str] | None = None,
+    ) -> None:
         super().__init__()
         assert self.LABEL_ANCHOR is not None and len(self.LABEL_ANCHOR) != 0
+        if info_callback is None:
+
+            def info_callback(annotation: AnnotatedShape) -> str:
+                """Return information on annotation"""
+                return annotation.get_infos()
+
+        self.info_callback = info_callback
         self.shape: AbstractShape = self.create_shape()
         self.label = self.create_label()
         self.area_computations_visible = True
@@ -195,6 +207,14 @@ class AnnotatedShape(AbstractShape):
         """Update the annotated shape's label contents"""
         self.label.update_text()
 
+    def set_info_callback(self, callback: Callable[[AnnotatedShape], str]) -> None:
+        """Set the callback function to get informations on current shape
+
+        Args:
+            callback: Callback function to get informations on current shape
+        """
+        self.info_callback = callback
+
     def get_text(self) -> str:
         """Return text associated to current shape
         (see :py:class:`.label.ObjectInfo`)
@@ -212,7 +232,7 @@ class AnnotatedShape(AbstractShape):
                 text += "<br>"
             text += f"<i>{subtitle}</i>"
         if self.area_computations_visible:
-            infos = self.get_infos()
+            infos = self.info_callback(self)
             if infos:
                 if text:
                     text += "<br>"
@@ -461,16 +481,21 @@ assert_interfaces_valid(AnnotatedShape)
 
 class AnnotatedPoint(AnnotatedShape):
     """
-    Construct an annotated point at coordinates (x, y)
-    with properties set with *annotationparam*
-    (see :py:class:`.styles.AnnotationParam`)
+    Construct an annotated point at coordinates (x, y) with properties set with
+    *annotationparam* (see :py:class:`.styles.AnnotationParam`)
     """
 
     SHAPE_CLASS = PointShape
     LABEL_ANCHOR = "TL"
 
-    def __init__(self, x=0, y=0, annotationparam=None):
-        AnnotatedShape.__init__(self, annotationparam)
+    def __init__(
+        self,
+        x=0,
+        y=0,
+        annotationparam: AnnotationParam | None = None,
+        info_callback: Callable[[AnnotatedShape], str] | None = None,
+    ) -> None:
+        super().__init__(annotationparam, info_callback)
         self.shape: PointShape
         self.set_pos(x, y)
         self.setIcon(get_icon("point_shape.png"))
@@ -525,8 +550,16 @@ class AnnotatedSegment(AnnotatedShape):
     SHAPE_CLASS = SegmentShape
     LABEL_ANCHOR = "C"
 
-    def __init__(self, x1=0, y1=0, x2=0, y2=0, annotationparam=None):
-        AnnotatedShape.__init__(self, annotationparam)
+    def __init__(
+        self,
+        x1=0,
+        y1=0,
+        x2=0,
+        y2=0,
+        annotationparam: AnnotationParam | None = None,
+        info_callback: Callable[[AnnotatedShape], str] | None = None,
+    ) -> None:
+        super().__init__(annotationparam, info_callback)
         self.shape: SegmentShape
         self.set_rect(x1, y1, x2, y2)
         self.setIcon(get_icon("segment.png"))
@@ -575,6 +608,166 @@ class AnnotatedSegment(AnnotatedShape):
         )
 
 
+class AnnotatedPolygon(AnnotatedShape):
+    """
+    Construct an annotated polygon with properties set with *annotationparam*
+    (see :py:class:`.styles.AnnotationParam`)
+
+    Args:
+        points: List of points
+        closed: True if polygon is closed
+        annotationparam: Annotation parameters
+    """
+
+    SHAPE_CLASS = PolygonShape
+    LABEL_ANCHOR = "C"
+
+    def __init__(
+        self,
+        points: list[tuple[float, float]] | None = None,
+        closed: bool | None = None,
+        annotationparam: AnnotationParam | None = None,
+        info_callback: Callable[[AnnotatedShape], str] | None = None,
+    ) -> None:
+        super().__init__(annotationparam, info_callback)
+        self.shape: PolygonShape
+        if points is not None:
+            self.set_points(points)
+        if closed is not None:
+            self.set_closed(closed)
+        self.setIcon(get_icon("polygon.png"))
+
+    # ----Public API-------------------------------------------------------------
+    def set_points(self, points: list[tuple[float, float]] | np.ndarray | None) -> None:
+        """Set the polygon points
+
+        Args:
+            points: List of point coordinates
+        """
+        self.shape.set_points(points)
+        self.set_label_position()
+
+    def get_points(self) -> np.ndarray:
+        """Return polygon points
+
+        Returns:
+            Polygon points (array of shape (N, 2))
+        """
+        return self.shape.get_points()
+
+    def set_closed(self, state: bool) -> None:
+        """Set closed state
+
+        Args:
+            state: True if the polygon is closed, False otherwise
+        """
+        self.shape.set_closed(state)
+
+    def is_closed(self) -> bool:
+        """Return True if the polygon is closed, False otherwise
+
+        Returns:
+            True if the polygon is closed, False otherwise
+        """
+        return self.shape.is_closed()
+
+    def is_empty(self) -> bool:
+        """Return True if the item is empty
+
+        Returns:
+            True if the item is empty, False otherwise
+        """
+        return self.shape.is_empty()
+
+    def add_local_point(self, pos: tuple[float, float]) -> int:
+        """Add a point in canvas coordinates (local coordinates)
+
+        Args:
+            pos: Position
+
+        Returns:
+            Handle of the added point
+        """
+        pt = canvas_to_axes(self, pos)
+        return self.add_point(pt)
+
+    def add_point(self, pt: tuple[float, float]) -> int:
+        """Add a point in axis coordinates
+
+        Args:
+            pt: Position
+
+        Returns:
+            Handle of the added point
+        """
+        handle = self.shape.add_point(pt)
+        self.set_label_position()
+        return handle
+
+    def del_point(self, handle: int) -> int:
+        """Delete a point
+
+        Args:
+            handle: Handle
+
+        Returns:
+            Handle of the deleted point
+        """
+        handle = self.shape.del_point(handle)
+        self.set_label_position()
+        return handle
+
+    def move_local_point_to(self, handle: int, pos: QPointF, ctrl: bool = None) -> None:
+        """Move a handle as returned by hit_test to the new position
+
+        Args:
+            handle: Handle
+            pos: Position
+            ctrl: True if <Ctrl> button is being pressed, False otherwise
+        """
+        pt = canvas_to_axes(self, pos)
+        self.move_point_to(handle, pt)
+
+    def move_shape(
+        self, old_pos: tuple[float, float], new_pos: tuple[float, float]
+    ) -> None:
+        """Translate the shape such that old_pos becomes new_pos in axis coordinates
+
+        Args:
+            old_pos: Old position
+            new_pos: New position
+        """
+        self.shape.move_shape(old_pos, new_pos)
+        self.set_label_position()
+
+    # ----AnnotatedShape API-----------------------------------------------------
+    def create_shape(self):
+        """Return the shape object associated to this annotated shape object"""
+        shape = self.SHAPE_CLASS()  # pylint: disable=not-callable
+        return shape
+
+    def set_label_position(self) -> None:
+        """Set label position, for instance based on shape position"""
+        x, y = self.shape.get_center()
+        self.label.set_pos(x, y)
+
+    def get_tr_center(self) -> tuple[float, float]:
+        """Return shape center coordinates after applying transform matrix"""
+        return self.shape.get_center()
+
+    def get_infos(self) -> str:
+        """Get informations on current shape
+
+        Returns:
+            str: Formatted string with informations on current shape
+        """
+        return "<br>".join(
+            [
+                _("Center:") + " " + self.get_tr_center_str(),
+            ]
+        )
+
+
 class AnnotatedRectangle(AnnotatedShape):
     """
     Construct an annotated rectangle between coordinates (x1, y1) and
@@ -585,8 +778,16 @@ class AnnotatedRectangle(AnnotatedShape):
     SHAPE_CLASS = RectangleShape
     LABEL_ANCHOR = "TL"
 
-    def __init__(self, x1=0, y1=0, x2=0, y2=0, annotationparam=None):
-        AnnotatedShape.__init__(self, annotationparam)
+    def __init__(
+        self,
+        x1=0,
+        y1=0,
+        x2=0,
+        y2=0,
+        annotationparam: AnnotationParam | None = None,
+        info_callback: Callable[[AnnotatedShape], str] | None = None,
+    ) -> None:
+        super().__init__(annotationparam, info_callback)
         self.shape: RectangleShape
         self.set_rect(x1, y1, x2, y2)
         self.setIcon(get_icon("rectangle.png"))
@@ -742,8 +943,16 @@ class AnnotatedEllipse(AnnotatedShape):
     SHAPE_CLASS = EllipseShape
     LABEL_ANCHOR = "C"
 
-    def __init__(self, x1=0, y1=0, x2=0, y2=0, annotationparam=None):
-        AnnotatedShape.__init__(self, annotationparam)
+    def __init__(
+        self,
+        x1=0,
+        y1=0,
+        x2=0,
+        y2=0,
+        annotationparam: AnnotationParam | None = None,
+        info_callback: Callable[[AnnotatedShape], str] | None = None,
+    ) -> None:
+        super().__init__(annotationparam, info_callback)
         self.shape: EllipseShape
         self.set_xdiameter(x1, y1, x2, y2)
         self.setIcon(get_icon("ellipse_shape.png"))

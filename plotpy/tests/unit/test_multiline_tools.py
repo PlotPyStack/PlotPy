@@ -11,81 +11,61 @@ from plotpy.tests.unit.utils import (
     keyboard_event,
     mouse_event_at_relative_plot_pos,
 )
-from plotpy.tools import FreeFormTool, MultiLineTool
+from plotpy.tools import MultiLineTool, PolygonTool
 
 
-def test_free_form_tool():
-    """Test the free form tool."""
-    corners = np.array(((0.1, 0.1), (0.1, 0.8), (0.8, 0.8), (0.8, 0.1)))
+def __generic_polyline_tool_test(
+    toolklass: type[MultiLineTool] | type[PolygonTool], points: np.ndarray
+) -> None:
+    """Generic polyline tool test."""
     with qt_app_context(exec_loop=False):
-        win, tool = create_window(FreeFormTool)
+        win, tool = create_window(toolklass)
 
-        # drag_mouse(win, x_path, y_path)
-        for x, y in corners:
-            mouse_event_at_relative_plot_pos(win, (x, y), CLICK)
+        x0, y0 = None, None
+        for x, y in points:
+            if x0 is not None:
+                x_path = np.linspace(x0, x, 10)
+                y_path = np.linspace(y0, y, 10)
+                drag_mouse(win, x_path, y_path)
+            else:
+                mouse_event_at_relative_plot_pos(win, (x, y), CLICK)
+            x0, y0 = x, y
 
-        assert tool.shape is not None
-        assert tool.shape.get_points().shape == corners.shape
+        assert tool.handler.shape is not None
+        assert tool.handler.shape.get_points().shape == points.shape
 
-        # Delete last point
         keyboard_event(win, QC.Qt.Key.Key_Backspace)
 
-        points_count, _ = tool.shape.get_points().shape
+        points_count, _ = tool.handler.shape.get_points().shape
 
-        assert points_count == (len(corners) - 1)
+        assert points_count == (len(points) - 1)
 
         # add last point by dragging mouse
-        drag_mouse(win, corners[-2:, 0], corners[-2:, 1])
+        drag_mouse(win, points[-2:, 0], points[-2:, 1])
 
-        points_count, _ = tool.shape.get_points().shape
-        assert points_count == len(corners)
+        points_count, _ = tool.handler.shape.get_points().shape
+        assert points_count == len(points)
 
-        keyboard_event(win, QC.Qt.Key.Key_Enter)
-
-        assert tool.shape is None
+        keyboard_event(win, QC.Qt.Key.Key_Space)
 
         exec_dialog(win)
+
+
+def test_polygon_tool():
+    """Test the polygon tool."""
+    corners = np.array(((0.1, 0.1), (0.1, 0.8), (0.8, 0.8), (0.8, 0.1)))
+    __generic_polyline_tool_test(PolygonTool, corners)
 
 
 def test_multiline_tool():
     """Test the multi line tool."""
     n = 100
     t = np.linspace(0, np.pi * 10, n)
-
-    # Create x and y arrays
     x_arr = t * np.cos(t) / n + 0.5
     y_arr = t * np.sin(t) / n + 0.5
-
-    with qt_app_context(exec_loop=False):
-        win, tool = create_window(MultiLineTool)
-
-        # drag_mouse(win, x_path, y_path)
-        for x, y in zip(x_arr, y_arr):
-            mouse_event_at_relative_plot_pos(win, (x, y), CLICK)
-
-        assert tool.shape is not None
-        assert tool.shape.get_points().shape == np.array([x_arr, y_arr]).T.shape
-
-        # Delete last point
-        keyboard_event(win, QC.Qt.Key.Key_Backspace)
-
-        points_count, _ = tool.shape.get_points().shape
-
-        assert points_count == (n - 1)
-
-        # add last point by dragging mouse
-        drag_mouse(win, x_arr[-2:], y_arr[-2:])
-
-        points_count, _ = tool.shape.get_points().shape
-        assert points_count == n
-
-        keyboard_event(win, QC.Qt.Key.Key_Enter)
-
-        assert tool.shape is None
-
-        exec_dialog(win)
+    __generic_polyline_tool_test(MultiLineTool, np.array([x_arr, y_arr]).T)
 
 
 if __name__ == "__main__":
-    test_free_form_tool()
+    test_polygon_tool()
     test_multiline_tool()

@@ -13,7 +13,7 @@ From a developer point of view, PlotPy V2 is a major overhaul of PlotPy V1:
   all over the codebase
 
 .. note::
-    PlotPy V2 is fully typed using Python 3.8+ type annotations.
+    PlotPy V2 is fully typed using Python type annotations.
     This means that you can use your IDE to get autocompletion and type checking
     (e.g. with VSCode, Visual Studio, etc.).
     This is a major improvement when you write code using PlotPy V2:

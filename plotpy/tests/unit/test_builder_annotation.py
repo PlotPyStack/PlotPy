@@ -18,6 +18,16 @@ DEFAULT_ARGS = {
     make.annotated_rectangle: [0.0, 0.0, 1.0, 1.0],
     make.annotated_circle: [0.0, 0.0, 1.0, 1.0],
     make.annotated_ellipse: [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0],
+    make.annotated_polygon: np.array(
+        [
+            [150.0, 330.0],
+            [270.0, 520.0],
+            [470.0, 480.0],
+            [520.0, 360.0],
+            [460.0, 200.0],
+            [250.0, 240.0],
+        ]
+    ),
 }
 
 
@@ -36,8 +46,7 @@ def _make_annotation(
 ):
     """Make annotation"""
     args = DEFAULT_ARGS[method]
-    return method(
-        *args,
+    kwargs = dict(
         title=title,
         subtitle=subtitle,
         show_label=show_label,
@@ -49,6 +58,9 @@ def _make_annotation(
         readonly=readonly,
         private=private,
     )
+    if isinstance(args, np.ndarray):
+        return method(args, **kwargs)
+    return method(*args, **kwargs)
 
 
 @pytest.mark.parametrize(
@@ -59,6 +71,7 @@ def _make_annotation(
         make.annotated_rectangle,
         make.annotated_circle,
         make.annotated_ellipse,
+        make.annotated_polygon,
     ],
 )
 def test_builder_annotation_params(method):

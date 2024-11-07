@@ -48,7 +48,7 @@ class PolygonShape(AbstractShape):
 
     def __init__(
         self,
-        points: list[tuple[float, float]] | None = None,
+        points: list[tuple[float, float]] | np.ndarray | None = None,
         closed: bool | None = None,
         shapeparam: ShapeParam | None = None,
     ) -> None:
@@ -68,10 +68,9 @@ class PolygonShape(AbstractShape):
         self.sel_pen = QG.QPen()
         self.sel_brush = QG.QBrush()
         self.sel_symbol = QwtSymbol.NoSymbol
-        self.points = np.zeros((0, 2), float)
-        if points is not None:
-            self.set_points(points)
-        self.setIcon(get_icon("freeform.png"))
+        self.points: np.ndarray | None = None
+        self.set_points(points)
+        self.setIcon(get_icon("polygon.png"))
 
     def types(self) -> tuple[type[IItemType], ...]:
         """Returns a group or category for this item.
@@ -137,22 +136,51 @@ class PolygonShape(AbstractShape):
         self.shapeparam.read_config(CONF, section, option)
         self.shapeparam.update_item(self)
 
-    def set_points(self, points: list[tuple[float, float]]) -> None:
+    def set_points(self, points: list[tuple[float, float]] | np.ndarray | None) -> None:
         """Set polygon points
 
         Args:
             points: List of point coordinates
         """
-        self.points = np.array(points, float)
-        assert self.points.shape[1] == 2
+        if points is None:
+            self.points = np.zeros((0, 2), float)
+        else:
+            self.points = np.array(points, float)
+            assert self.points.shape[1] == 2
 
     def get_points(self) -> np.ndarray:
         """Return polygon points
 
         Returns:
-            Polygon points (numpy array of shape (N, 2))
+            Polygon points (array of shape (N, 2))
         """
         return self.points
+
+    def set_closed(self, state: bool) -> None:
+        """Set closed state
+
+        Args:
+            state: True if the polygon is closed, False otherwise
+        """
+        self.closed = state
+
+    def is_closed(self) -> bool:
+        """Return True if the polygon is closed, False otherwise
+
+        Returns:
+            True if the polygon is closed, False otherwise
+        """
+        return self.closed
+
+    def get_center(self) -> tuple[float, float]:
+        """Return the center of the polygon
+
+        Returns:
+            Center of the polygon
+        """
+        if self.points is not None and self.points.size > 0:
+            return self.points.mean(axis=0)
+        return 0.0, 0.0
 
     def boundingRect(self) -> QC.QRectF:
         """Return the bounding rectangle of the data
@@ -370,6 +398,9 @@ class PolygonShape(AbstractShape):
         Returns:
             Handle of the added point
         """
+        if self.points.size == 0:
+            self.points = np.array([pt])
+            return 0
         N, _ = self.points.shape
         self.points = np.resize(self.points, (N + 1, 2))
         self.points[N, :] = pt

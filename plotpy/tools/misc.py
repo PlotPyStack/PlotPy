@@ -176,11 +176,11 @@ def save_snapshot(plot, p0, p1, new_size=None):
         # the extension .dcm is not registered in the io module, so we will not
         # get here.
         try:
-            from pydicom import dicomio  # pylint: disable=import-outside-toplevel
+            from pydicom import dcmread  # pylint: disable=import-outside-toplevel
         except ImportError:
             raise ImportError("This should not happen (pydicom is not installed)")
 
-        model_dcm = dicomio.read_file(model_fname)
+        model_dcm = dcmread(model_fname)
         try:
             ps_attr = "ImagerPixelSpacing"
             ps_x, ps_y = getattr(model_dcm, ps_attr)
