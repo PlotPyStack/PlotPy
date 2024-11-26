@@ -1,5 +1,9 @@
 # Changelog #
 
+## Version 2.7.1 ##
+
+🛠️ Bug fixes:
+
 ## Version 2.7.0 ##
 
 Supported versions of Python have been updated (drop support for Python 3.8, add support for Python 3.13):
