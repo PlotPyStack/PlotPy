@@ -198,7 +198,7 @@ class ItemListWidget(QW.QListWidget):
 
     def selection_changed(self):
         """ """
-        items = self.get_selected_items()
+        items = [item for item in self.get_selected_items() if item.can_select()]
         self.plot.select_some_items(items)
         self.plot.replot()
 

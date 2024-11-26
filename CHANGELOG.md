@@ -4,6 +4,8 @@
 
 🛠️ Bug fixes:
 
+* [Issue #26](https://github.com/PlotPyStack/PlotPy/issues/26) - Item list panel should not allow to select a non-selectable item
+
 ## Version 2.7.0 ##
 
 Supported versions of Python have been updated (drop support for Python 3.8, add support for Python 3.13):
