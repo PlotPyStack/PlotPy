@@ -10,6 +10,8 @@ the plot.
 .. autoclass:: PlotItemList
 """
 
+from typing import TYPE_CHECKING
+
 from guidata.configtools import get_icon, get_image_layout
 from guidata.qthelpers import add_actions, create_action
 from guidata.utils.misc import assert_interfaces_valid
@@ -19,7 +21,14 @@ from qtpy import QtWidgets as QW
 from plotpy.config import _
 from plotpy.constants import ID_ITEMLIST
 from plotpy.interfaces import IPanel
+from plotpy.interfaces import items as itf
 from plotpy.panels.base import PanelWidget
+
+if TYPE_CHECKING:
+    from qtpy.QtGui import QContextMenuEvent, QIcon
+    from qtpy.QtWidgets import QListWidgetItem, QWidget
+
+    from plotpy.plot import BasePlot, PlotManager
 
 
 class ItemListWidget(QW.QListWidget):
@@ -28,7 +37,7 @@ class ItemListWidget(QW.QListWidget):
     List of items attached to plot
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent: QWidget) -> None:
         super().__init__(parent)
 
         self.manager = None
@@ -50,10 +59,11 @@ class ItemListWidget(QW.QListWidget):
         self.refresh_actions()
         add_actions(self.menu, self.menu_actions)
 
-    def register_panel(self, manager):
-        """
+    def register_panel(self, manager: PlotManager) -> None:
+        """Register panel to plot manager
 
-        :param manager:
+        Args:
+            manager: plot manager to register to
         """
         self.manager = manager
 
@@ -62,16 +72,13 @@ class ItemListWidget(QW.QListWidget):
             plot.SIG_ACTIVE_ITEM_CHANGED.connect(self.active_item_changed)
         self.plot = self.manager.get_plot()
 
-    def contextMenuEvent(self, event):
+    def contextMenuEvent(self, event: QContextMenuEvent) -> None:
         """Override Qt method"""
         self.refresh_actions()
         self.menu.popup(event.globalPos())
 
-    def setup_actions(self):
-        """
-
-        :return:
-        """
+    def setup_actions(self) -> None:
+        """Setup actions"""
         self.movedown_ac = create_action(
             self,
             _("Move to back"),
@@ -95,15 +102,16 @@ class ItemListWidget(QW.QListWidget):
         )
         return [self.moveup_ac, self.movedown_ac, None, settings_ac, self.remove_ac]
 
-    def edit_plot_parameters(self):
-        """ """
+    def edit_plot_parameters(self) -> None:
+        """Edit plot parameters"""
         self.plot.edit_plot_parameters("item")
 
-    def __is_selection_contiguous(self):
+    def __is_selection_contiguous(self) -> bool:
+        """Check if selected items are contiguous"""
         indexes = sorted([self.row(lw_item) for lw_item in self.selectedItems()])
         return len(indexes) <= 1 or list(range(indexes[0], indexes[-1] + 1)) == indexes
 
-    def get_selected_items(self):
+    def get_selected_items(self) -> list[itf.IBasePlotItem]:
         """Return selected QwtPlot items
 
         .. warning::
@@ -116,8 +124,8 @@ class ItemListWidget(QW.QListWidget):
         """
         return [self.items[self.row(lw_item)] for lw_item in self.selectedItems()]
 
-    def refresh_actions(self):
-        """ """
+    def refresh_actions(self) -> None:
+        """Refresh actions"""
         is_selection = len(self.selectedItems()) > 0
         for action in self.menu_actions:
             if action is not None:
@@ -130,15 +138,20 @@ class ItemListWidget(QW.QListWidget):
             for action in [self.moveup_ac, self.movedown_ac]:
                 action.setEnabled(self.__is_selection_contiguous())
 
-    def __get_item_icon(self, item):
+    def __get_item_icon(self, item: itf.IBasePlotItem) -> QIcon:
+        """Get item icon"""
         icon = item.icon()
         if icon is None:
             return get_icon("not_found.png")
         else:
             return icon
 
-    def items_changed(self, plot):
-        """Plot items have changed"""
+    def items_changed(self, plot: BasePlot) -> None:
+        """Plot items have changed
+
+        Args:
+            plot: plot
+        """
         active_plot = self.manager.get_active_plot()
         if active_plot is not plot:
             return
@@ -164,8 +177,12 @@ class ItemListWidget(QW.QListWidget):
         self.refresh_actions()
         self.blockSignals(_block)
 
-    def active_item_changed(self, plot):
-        """Plot items have changed"""
+    def active_item_changed(self, plot: BasePlot) -> None:
+        """Plot items have changed
+
+        Args:
+            plot: plot
+        """
         active_plot = self.manager.get_active_plot()
         if active_plot is not plot:
             return
@@ -186,8 +203,12 @@ class ItemListWidget(QW.QListWidget):
         self.refresh_actions()
         self.blockSignals(_block)
 
-    def current_row_changed(self, index):
-        """QListWidget current row has changed"""
+    def current_row_changed(self, index: int) -> None:
+        """QListWidget current row has changed
+
+        Args:
+            index: index
+        """
         if index == -1:
             return
         item = self.items[index]
@@ -196,23 +217,31 @@ class ItemListWidget(QW.QListWidget):
         if item is None:
             self.plot.replot()
 
-    def selection_changed(self):
-        """ """
+    def selection_changed(self) -> None:
+        """Selection has changed"""
         items = [item for item in self.get_selected_items() if item.can_select()]
         self.plot.select_some_items(items)
         self.plot.replot()
 
-    def item_changed(self, listwidgetitem):
-        """QListWidget item has changed"""
+    def item_changed(self, listwidgetitem: QListWidgetItem) -> None:
+        """QListWidget item has changed
+
+        Args:
+            listwidgetitem: list widget item
+        """
         item = self.items[self.row(listwidgetitem)]
         visible = listwidgetitem.checkState() == QC.Qt.Checked
         if visible != item.isVisible():
             self.plot.set_item_visible(item, visible)
 
-    def move_item(self, direction):
+    def move_item(self, direction: str) -> None:
         """Move item to the background/foreground
         Works only for contiguous selection
-        -> 'refresh_actions' method should guarantee that"""
+        -> 'refresh_actions' method should guarantee that
+
+        Args:
+            direction: direction
+        """
         items = self.get_selected_items()
         if direction == "up":
             self.plot.move_up(items)
@@ -226,8 +255,8 @@ class ItemListWidget(QW.QListWidget):
                 lw_item.setSelected(True)
         self.plot.replot()
 
-    def remove_item(self):
-        """ """
+    def remove_item(self) -> None:
+        """Remove item"""
         if len(self.selectedItems()) == 1:
             message = _("Do you really want to remove this item?")
         else:
@@ -268,8 +297,12 @@ class PlotItemList(PanelWidget):
         vlayout.addWidget(toolbar)
         add_actions(toolbar, self.listwidget.menu_actions)
 
-    def register_panel(self, manager):
-        """Register panel to plot manager"""
+    def register_panel(self, manager: PlotManager) -> None:
+        """Register panel to plot manager
+
+        Args:
+            manager: plot manager
+        """
         self.manager = manager
         self.listwidget.register_panel(manager)
 
