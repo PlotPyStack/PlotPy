@@ -10,6 +10,8 @@ the plot.
 .. autoclass:: PlotItemList
 """
 
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from guidata.configtools import get_icon, get_image_layout
