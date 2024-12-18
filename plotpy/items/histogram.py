@@ -12,7 +12,6 @@ import weakref
 from typing import TYPE_CHECKING
 
 import numpy as np
-from guidata.configtools import get_icon
 from guidata.dataset import update_dataset
 from guidata.utils.misc import assert_interfaces_valid
 from qwt import QwtPlotCurve

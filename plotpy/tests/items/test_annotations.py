@@ -31,7 +31,10 @@ def test_annotation():
     persist = []
     with qt_app_context(exec_loop=True):
         persist.append(plot(make.curve(x, y, color="b"), plot_type="curve"))
-        persist.append(plot(make.image(ptd.gen_image1()), plot_type="image"))
+        item = make.image(ptd.gen_image1())
+        item.set_readonly(True)
+        item.set_selectable(False)
+        persist.append(plot(item, plot_type="image"))
         persist.append(plot(make.curve(x, y, color="b"), make.image(ptd.gen_image1())))
 
 

@@ -5,7 +5,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import numpy as np
-from guidata.configtools import get_icon
 from guidata.utils.misc import assert_interfaces_valid
 
 from plotpy.items.shape.polygon import PolygonShape

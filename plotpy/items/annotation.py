@@ -17,7 +17,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Callable
 
 import numpy as np
-from guidata.configtools import get_icon
 from guidata.dataset import update_dataset
 from guidata.utils.misc import assert_interfaces_valid
 

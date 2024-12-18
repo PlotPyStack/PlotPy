@@ -24,7 +24,6 @@ from __future__ import annotations
 
 import guidata.dataset as gds
 import numpy as np
-from guidata.configtools import get_icon
 from guidata.utils.misc import assert_interfaces_valid
 from skimage import measure
 

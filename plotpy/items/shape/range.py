@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING
 
 import guidata.io
 import numpy as np
-from guidata.configtools import get_icon
 from guidata.dataset import update_dataset
 from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
