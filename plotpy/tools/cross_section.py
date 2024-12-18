@@ -4,8 +4,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from guidata.configtools import get_icon
-
 from plotpy.config import _
 from plotpy.constants import ID_LCS, ID_OCS, ID_XCS, ID_YCS
 from plotpy.interfaces import IImageItemType
