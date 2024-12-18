@@ -36,6 +36,7 @@ class EllipseShape(PolygonShape):
     """
 
     CLOSED = True
+    _icon_name = "circle.png"
 
     def __init__(
         self,
@@ -48,17 +49,16 @@ class EllipseShape(PolygonShape):
         super().__init__(shapeparam=shapeparam)
         self.is_ellipse = False
         self.set_xdiameter(x1, y1, x2, y2)
-        self.setIcon(get_icon("circle.png"))
 
     def switch_to_ellipse(self):
         """Switch to ellipse mode"""
         self.is_ellipse = True
-        self.setIcon(get_icon("ellipse_shape.png"))
+        self.set_icon_name("ellipse_shape.png")
 
     def switch_to_circle(self):
         """Switch to circle mode"""
         self.is_ellipse = False
-        self.setIcon(get_icon("circle.png"))
+        self.set_icon_name("circle.png")
 
     def set_xdiameter(self, x0: float, y0: float, x1: float, y1: float) -> None:
         """Set the coordinates of the ellipse's X-axis diameter

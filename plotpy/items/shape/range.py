@@ -37,6 +37,8 @@ class XRangeSelection(AbstractShape):
         shapeparam: Shape parameters
     """
 
+    _icon_name = "xrange.png"
+
     def __init__(
         self,
         _min: float | None = None,
@@ -59,7 +61,6 @@ class XRangeSelection(AbstractShape):
         self.sel_symbol = None
         if self._min is not None and self._max is not None:
             self.shapeparam.update_item(self)  # creates all the above QObjects
-        self.setIcon(get_icon("xrange.png"))
 
     def set_style(self, section: str, option: str) -> None:
         """Set style for this item

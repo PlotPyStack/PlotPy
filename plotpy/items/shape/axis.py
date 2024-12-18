@@ -38,6 +38,7 @@ class Axes(PolygonShape):
     """
 
     CLOSED: bool = True
+    _icon_name = "gtaxes.png"
 
     def __init__(
         self,
@@ -60,7 +61,6 @@ class Axes(PolygonShape):
         else:
             self.axesparam = axesparam
         self.axesparam.update_param(self)
-        self.setIcon(get_icon("gtaxes.png"))
 
     def __reduce__(self) -> tuple:
         """Reduce object to picklable state"""

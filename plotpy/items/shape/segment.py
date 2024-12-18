@@ -27,6 +27,7 @@ class SegmentShape(PolygonShape):
 
     CLOSED = False
     ADDITIONNAL_POINTS = 1  # Number of points which are not part of the shape
+    _icon_name = "segment.png"
 
     def __init__(
         self,
@@ -38,7 +39,6 @@ class SegmentShape(PolygonShape):
     ):
         super().__init__(shapeparam=shapeparam)
         self.set_rect(x1, y1, x2, y2)
-        self.setIcon(get_icon("segment.png"))
 
     def set_rect(self, x1: float, y1: float, x2: float, y2: float) -> None:
         """Set the segment coordinates

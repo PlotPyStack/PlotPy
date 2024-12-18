@@ -113,6 +113,7 @@ class ImageStatsRectangle(AnnotatedRectangle):
     """
 
     shape: PolygonShape
+    _icon_name = "imagestats.png"
 
     def __init__(
         self,
@@ -127,7 +128,6 @@ class ImageStatsRectangle(AnnotatedRectangle):
         """_summary_"""
         super().__init__(x1, y1, x2, y2, annotationparam)
         self.image_item: BaseImageItem | None = None
-        self.setIcon(get_icon("imagestats.png"))
         self.stats_func = stats_func
         self.replace_stats = replace
 

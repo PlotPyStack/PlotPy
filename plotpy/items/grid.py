@@ -36,6 +36,7 @@ class GridItem(QwtPlotGrid):
 
     _readonly = True
     _private = False
+    _icon_name = "grid.png"
 
     def __init__(self, gridparam: GridParam | None = None) -> None:
         super().__init__()
@@ -47,7 +48,6 @@ class GridItem(QwtPlotGrid):
         self.immutable = True  # set to false to allow moving points around
         self.update_params()  # won't work completely because it's not yet
         # attached to plot (actually, only canvas background won't be updated)
-        self.setIcon(get_icon("grid.png"))
 
     def types(self) -> tuple[type[IItemType], ...]:
         """Returns a group or category for this item.
@@ -94,6 +94,22 @@ class GridItem(QwtPlotGrid):
             bool: True if object is private, False otherwise
         """
         return self._private
+
+    def get_icon_name(self) -> str:
+        """Return the icon name
+
+        Returns:
+            Icon name
+        """
+        return self._icon_name
+
+    def set_icon_name(self, icon_name: str) -> None:
+        """Set the icon name
+
+        Args:
+            icon_name: Icon name
+        """
+        self._icon_name = icon_name
 
     def set_selectable(self, state: bool) -> None:
         """Set item selectable state

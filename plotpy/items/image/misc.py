@@ -206,6 +206,7 @@ class Histogram2DItem(BaseImageItem):
     """
 
     __implements__ = (IBasePlotItem, IBaseImageItem, IHistDataSource, IVoiImageItemType)
+    _icon_name = "histogram2d.png"
 
     def __init__(
         self,
@@ -234,7 +235,6 @@ class Histogram2DItem(BaseImageItem):
 
         self.set_lut_range([0, 10.0])
         self.set_data(X, Y, Z)
-        self.setIcon(get_icon("histogram2d.png"))
 
     # ---- BaseImageItem API ---------------------------------------------------
     def get_default_param(self) -> Histogram2DParam:

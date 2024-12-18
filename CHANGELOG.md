@@ -1,5 +1,14 @@
 # Changelog #
 
+## Version 2.7.2 ##
+
+🛠️ Bug fixes:
+
+* Fixed regression with respect to `guiqwt` regarding plot items instantiation:
+  * `guiqwt` was allowing to instantiate plot items without needing to create a `QApplication` instance (no GUI event loop was required)
+  * This was not the case with `plotpy`, so that it was not possible -for example- to serialize/deserialize plot items to JSON without creating a `QApplication` instance
+  * This is now fixed
+
 ## Version 2.7.1 ##
 
 🛠️ Bug fixes:

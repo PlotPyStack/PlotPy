@@ -56,6 +56,8 @@ class ErrorBarCurveItem(CurveItem):
         errorbarparam: Error-bar parameters
     """
 
+    _icon_name = "errorbar.png"
+
     def __init__(
         self,
         curveparam: CurveParam | None = None,
@@ -73,7 +75,6 @@ class ErrorBarCurveItem(CurveItem):
         self._dx = None
         self._dy = None
         self.__minmaxarrays: dict[bool, tuple[float, float, float, float]] = {}
-        self.setIcon(get_icon("errorbar.png"))
 
     def serialize(
         self,

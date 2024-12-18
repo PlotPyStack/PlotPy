@@ -43,6 +43,7 @@ class RectangleShape(PolygonShape):
     """
 
     CLOSED = True
+    _icon_name = "rectangle.png"
 
     def __init__(
         self,
@@ -54,7 +55,6 @@ class RectangleShape(PolygonShape):
     ) -> None:
         super().__init__(shapeparam=shapeparam)
         self.set_rect(x1, y1, x2, y2)
-        self.setIcon(get_icon("rectangle.png"))
 
     def set_rect(self, x1: float, y1: float, x2: float, y2: float) -> None:
         """Set the coordinates of the rectangle
@@ -140,6 +140,7 @@ class ObliqueRectangleShape(PolygonShape):
     CLOSED = True
     ADDITIONNAL_POINTS = 2  # Number of points which are not part of the shape
     LINK_ADDITIONNAL_POINTS = True  # Link additionnal points with dotted lines
+    _icon_name = "oblique_rectangle.png"
 
     def __init__(
         self,
@@ -155,7 +156,6 @@ class ObliqueRectangleShape(PolygonShape):
     ) -> None:
         super().__init__(shapeparam=shapeparam)
         self.set_rect(x0, y0, x1, y1, x2, y2, x3, y3)
-        self.setIcon(get_icon("oblique_rectangle.png"))
 
     def set_rect(
         self,

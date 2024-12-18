@@ -60,6 +60,7 @@ class AnnotatedShape(AbstractShape):
     """
 
     __implements__ = (IBasePlotItem, ISerializableType)
+    _icon_name = "annotation.png"
     SHAPE_CLASS: type[AbstractShape] = RectangleShape  # to be overridden
     LABEL_ANCHOR: str = ""
 
@@ -88,7 +89,6 @@ class AnnotatedShape(AbstractShape):
         else:
             self.annotationparam = annotationparam
             self.annotationparam.update_item(self)
-        self.setIcon(get_icon("annotation.png"))
 
     def types(self) -> tuple[type[IItemType], ...]:
         """Returns a group or category for this item.
@@ -485,6 +485,7 @@ class AnnotatedPoint(AnnotatedShape):
     *annotationparam* (see :py:class:`.styles.AnnotationParam`)
     """
 
+    _icon_name = "point_shape.png"
     SHAPE_CLASS = PointShape
     LABEL_ANCHOR = "TL"
 
@@ -498,7 +499,6 @@ class AnnotatedPoint(AnnotatedShape):
         super().__init__(annotationparam, info_callback)
         self.shape: PointShape
         self.set_pos(x, y)
-        self.setIcon(get_icon("point_shape.png"))
 
     # ----Public API-------------------------------------------------------------
     def set_pos(self, x, y):
@@ -547,6 +547,7 @@ class AnnotatedSegment(AnnotatedShape):
     (see :py:class:`.styles.AnnotationParam`)
     """
 
+    _icon_name = "segment.png"
     SHAPE_CLASS = SegmentShape
     LABEL_ANCHOR = "C"
 
@@ -562,7 +563,6 @@ class AnnotatedSegment(AnnotatedShape):
         super().__init__(annotationparam, info_callback)
         self.shape: SegmentShape
         self.set_rect(x1, y1, x2, y2)
-        self.setIcon(get_icon("segment.png"))
 
     # ----Public API-------------------------------------------------------------
     def set_rect(self, x1, y1, x2, y2):
@@ -619,6 +619,7 @@ class AnnotatedPolygon(AnnotatedShape):
         annotationparam: Annotation parameters
     """
 
+    _icon_name = "polygon.png"
     SHAPE_CLASS = PolygonShape
     LABEL_ANCHOR = "C"
 
@@ -635,7 +636,6 @@ class AnnotatedPolygon(AnnotatedShape):
             self.set_points(points)
         if closed is not None:
             self.set_closed(closed)
-        self.setIcon(get_icon("polygon.png"))
 
     # ----Public API-------------------------------------------------------------
     def set_points(self, points: list[tuple[float, float]] | np.ndarray | None) -> None:
@@ -775,6 +775,7 @@ class AnnotatedRectangle(AnnotatedShape):
     (see :py:class:`.styles.AnnotationParam`)
     """
 
+    _icon_name = "rectangle.png"
     SHAPE_CLASS = RectangleShape
     LABEL_ANCHOR = "TL"
 
@@ -790,7 +791,6 @@ class AnnotatedRectangle(AnnotatedShape):
         super().__init__(annotationparam, info_callback)
         self.shape: RectangleShape
         self.set_rect(x1, y1, x2, y2)
-        self.setIcon(get_icon("rectangle.png"))
 
     # ----Public API-------------------------------------------------------------
     def set_rect(self, x1, y1, x2, y2):
@@ -842,6 +842,7 @@ class AnnotatedObliqueRectangle(AnnotatedRectangle):
     (see :py:class:`.styles.AnnotationParam`)
     """
 
+    _icon_name = "oblique_rectangle.png"
     SHAPE_CLASS = ObliqueRectangleShape
     LABEL_ANCHOR = "C"
 
@@ -851,7 +852,6 @@ class AnnotatedObliqueRectangle(AnnotatedRectangle):
         AnnotatedShape.__init__(self, annotationparam)
         self.shape: ObliqueRectangleShape
         self.set_rect(x0, y0, x1, y1, x2, y2, x3, y3)
-        self.setIcon(get_icon("oblique_rectangle.png"))
 
     # ----Public API-------------------------------------------------------------
     def get_tr_angle(self):
@@ -940,6 +940,7 @@ class AnnotatedEllipse(AnnotatedShape):
     (see :py:class:`.styles.AnnotationParam`)
     """
 
+    _icon_name = "ellipse_shape.png"
     SHAPE_CLASS = EllipseShape
     LABEL_ANCHOR = "C"
 
@@ -955,7 +956,6 @@ class AnnotatedEllipse(AnnotatedShape):
         super().__init__(annotationparam, info_callback)
         self.shape: EllipseShape
         self.set_xdiameter(x1, y1, x2, y2)
-        self.setIcon(get_icon("ellipse_shape.png"))
         self.switch_to_ellipse()
 
     # ----Public API-------------------------------------------------------------

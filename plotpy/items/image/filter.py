@@ -75,6 +75,7 @@ class ImageFilterItem(BaseImageItem):
     _can_select = True
     _can_resize = True
     _can_move = True
+    _icon_name = "funct.png"
 
     def __init__(
         self, image: RawImageItem | None, filter: Callable, param: ImageFilterParam
@@ -92,7 +93,6 @@ class ImageFilterItem(BaseImageItem):
 
         self.imagefilterparam = param
         self.imagefilterparam.update_imagefilter(self)
-        self.setIcon(get_icon("funct.png"))
 
     # ---- Public API -----------------------------------------------------------
     def set_image(self, image: RawImageItem | None) -> None:

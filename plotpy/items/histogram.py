@@ -67,6 +67,7 @@ class HistogramItem(CurveItem):
     """
 
     __implements__ = (IBasePlotItem,)
+    _icon_name = "histogram.png"
 
     def __init__(
         self,
@@ -92,7 +93,6 @@ class HistogramItem(CurveItem):
             self.histparam = histparam
         CurveItem.__init__(self, curveparam)
         self.setCurveAttribute(QwtPlotCurve.Inverted)
-        self.setIcon(get_icon("histogram.png"))
 
     def set_hist_source(self, src: BaseImageItem) -> None:
         """Set histogram source

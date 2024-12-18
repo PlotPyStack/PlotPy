@@ -25,13 +25,13 @@ class PointShape(PolygonShape):
     """
 
     CLOSED = False
+    _icon_name = "point_shape.png"
 
     def __init__(
         self, x: float = 0.0, y: float = 0.0, shapeparam: ShapeParam = None
     ) -> None:
         super().__init__(shapeparam=shapeparam)
         self.set_pos(x, y)
-        self.setIcon(get_icon("point_shape.png"))
 
     def set_pos(self, x: float, y: float) -> None:
         """Set the point coordinates to (x, y)

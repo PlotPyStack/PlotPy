@@ -45,6 +45,7 @@ class PolygonShape(AbstractShape):
     ADDITIONNAL_POINTS = 0  # Number of points which are not part of the shape
     LINK_ADDITIONNAL_POINTS = False  # Link additionnal points with dotted lines
     CLOSED = True
+    _icon_name = "polygon.png"
 
     def __init__(
         self,
@@ -70,7 +71,6 @@ class PolygonShape(AbstractShape):
         self.sel_symbol = QwtSymbol.NoSymbol
         self.points: np.ndarray | None = None
         self.set_points(points)
-        self.setIcon(get_icon("polygon.png"))
 
     def types(self) -> tuple[type[IItemType], ...]:
         """Returns a group or category for this item.

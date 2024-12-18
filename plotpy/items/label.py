@@ -207,6 +207,22 @@ class AbstractLabelItem(QwtPlotItem):
             y0 = yMap.transform(self.G[1])
             return x0, y0
 
+    def get_icon_name(self) -> str:
+        """Return the icon name
+
+        Returns:
+            Icon name
+        """
+        return self._icon_name
+
+    def set_icon_name(self, icon_name: str) -> None:
+        """Set the icon name
+
+        Args:
+            icon_name: Icon name
+        """
+        self._icon_name = icon_name
+
     def set_selectable(self, state: bool) -> None:
         """Set item selectable state
 
@@ -497,6 +513,7 @@ class LabelItem(AbstractLabelItem):
     """
 
     __implements__ = (IBasePlotItem, ISerializableType)
+    _icon_name = "label.png"
 
     def __init__(
         self, text: str | None = None, labelparam: LabelParam | None = None
@@ -505,7 +522,6 @@ class LabelItem(AbstractLabelItem):
         self.text = QG.QTextDocument()
         self.marker: qwt.symbol.QwtSymbol | None = None
         super().__init__(labelparam)
-        self.setIcon(get_icon("label.png"))
 
     def __reduce__(self) -> tuple[type, tuple]:
         """Return a tuple containing the constructor and its arguments"""
@@ -645,6 +661,7 @@ class LegendBoxItem(AbstractLabelItem):
     """
 
     __implements__ = (IBasePlotItem, ISerializableType)
+    _icon_name = "legend.png"
 
     def __init__(self, labelparam: LabelParam = None) -> None:
         self.font = None
@@ -652,7 +669,6 @@ class LegendBoxItem(AbstractLabelItem):
         super().__init__(labelparam)
         # saves the last computed sizes
         self.sizes = 0.0, 0.0, 0.0, 0.0
-        self.setIcon(get_icon("legend.png"))
 
     def types(self) -> tuple[type[IItemType], ...]:
         """Returns a group or category for this item.

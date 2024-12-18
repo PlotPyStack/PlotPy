@@ -142,11 +142,7 @@ class ItemListWidget(QW.QListWidget):
 
     def __get_item_icon(self, item: itf.IBasePlotItem) -> QIcon:
         """Get item icon"""
-        icon = item.icon()
-        if icon is None:
-            return get_icon("not_found.png")
-        else:
-            return icon
+        return get_icon(item.get_icon_name())
 
     def items_changed(self, plot: BasePlot) -> None:
         """Plot items have changed

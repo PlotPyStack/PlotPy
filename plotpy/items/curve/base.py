@@ -111,6 +111,7 @@ class CurveItem(QwtPlotCurve):
 
     _readonly = False
     _private = False
+    _icon_name = "curve.png"
 
     def __init__(self, curveparam: CurveParam | None = None) -> None:
         super().__init__()
@@ -123,7 +124,6 @@ class CurveItem(QwtPlotCurve):
         self._x = None
         self._y = None
         self.update_params()
-        self.setIcon(get_icon("curve.png"))
 
     def _get_visible_axis_min(self, axis_id: int, axis_data: np.ndarray) -> float:
         """Return axis minimum excluding zero and negative values when
@@ -171,6 +171,22 @@ class CurveItem(QwtPlotCurve):
             tuple: Tuple of class objects inheriting from IItemType
         """
         return (ICurveItemType, ITrackableItemType, ISerializableType)
+
+    def get_icon_name(self) -> str:
+        """Return the icon name
+
+        Returns:
+            Icon name
+        """
+        return self._icon_name
+
+    def set_icon_name(self, icon_name: str) -> None:
+        """Set the icon name
+
+        Args:
+            icon_name: Icon name
+        """
+        self._icon_name = icon_name
 
     def set_selectable(self, state: bool) -> None:
         """Set item selectable state

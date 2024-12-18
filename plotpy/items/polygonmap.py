@@ -64,6 +64,7 @@ class PolygonMapItem(QwtPlotItem):
     _can_resize = False
     _can_move = False
     _can_rotate = False
+    _icon_name = "polygonmap.png"
 
     def __init__(self, param: PolygonMapParam | None = None) -> None:
         super().__init__()
@@ -78,7 +79,6 @@ class PolygonMapItem(QwtPlotItem):
         #                 (polygon k points are _pts[_n[k-1]:_n[k]])
         self._c = None  # Color of polygon Nx2 [border,background] as RGBA uint32
         self.update_params()
-        self.setIcon(get_icon("polygonmap.png"))
 
     def types(self) -> tuple[type[IItemType], ...]:
         """Returns a group or category for this item.
@@ -124,6 +124,22 @@ class PolygonMapItem(QwtPlotItem):
             bool: True if item can be moved, False otherwise
         """
         return self._can_move
+
+    def get_icon_name(self) -> str:
+        """Return the icon name
+
+        Returns:
+            Icon name
+        """
+        return self._icon_name
+
+    def set_icon_name(self, icon_name: str) -> None:
+        """Set the icon name
+
+        Args:
+            icon_name: Icon name
+        """
+        self._icon_name = icon_name
 
     def set_selectable(self, state: bool) -> None:
         """Set item selectable state

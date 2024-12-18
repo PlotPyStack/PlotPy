@@ -38,6 +38,22 @@ class AbstractShape(QwtPlotItem):
         self.selected = False
 
     # ------IBasePlotItem API----------------------------------------------------
+    def get_icon_name(self) -> str:
+        """Return the icon name
+
+        Returns:
+            Icon name
+        """
+        return self._icon_name
+
+    def set_icon_name(self, icon_name: str) -> None:
+        """Set the icon name
+
+        Args:
+            icon_name: Icon name
+        """
+        self._icon_name = icon_name
+
     def set_selectable(self, state: bool) -> None:
         """Set item selectable state
 
