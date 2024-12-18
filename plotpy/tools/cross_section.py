@@ -121,7 +121,7 @@ class ObliqueCrossSectionTool(CrossSectionTool):
         """Create shape for the tool"""
         annotation = AnnotatedObliqueRectangle(0, 0, 1, 0, 1, 1, 0, 1)
         self.set_shape_style(annotation)
-        annotation.setIcon(get_icon(self.ICON))
+        annotation.set_icon_name(self.ICON)
         return annotation, 0, 2
 
 

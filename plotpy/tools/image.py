@@ -1091,9 +1091,9 @@ class LockTrImageTool(ToggleTool):
             for item in itemlist:
                 item.set_locked(checked)
                 if item.is_locked():
-                    item.setIcon(get_icon("trimage_lock.png"))
+                    item.set_icon_name("trimage_lock.png")
                 else:
-                    item.setIcon(get_icon("image.png"))
+                    item.set_icon_name("image.png")
                 plot.SIG_ITEM_PARAMETERS_CHANGED.emit(item)
             plot.SIG_ITEMS_CHANGED.emit(plot)
 
