@@ -7,7 +7,7 @@
 * Fixed regression with respect to `guiqwt` regarding plot items instantiation:
   * `guiqwt` was allowing to instantiate plot items without needing to create a `QApplication` instance (no GUI event loop was required)
   * This was not the case with `plotpy`, so that it was not possible -for example- to serialize/deserialize plot items to JSON without creating a `QApplication` instance
-  * This is now fixed
+  * This has been fixed by removing the `QIcon` instantiation from the plot items constructors (call to `QwtPlotItem.setIcon` method). Note that -in the meantime- `QwtPlotItem.setIcon` and `QwtPlotItem.icon` methods have also been removed in PythonQwt V0.14.3. Code relying on this feature should thus be updated to use the new `get_icon_name` method instead, i.e. `get_icon(item.get_icon_name())` instead of `item.icon()`.
 
 ## Version 2.7.1 ##
 
