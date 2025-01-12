@@ -85,3 +85,20 @@ functions are:
              :py:meth:`.PlotBuilder.trimage`, :py:meth:`.PlotBuilder.rgbimage`, and
              :py:meth:`.PlotBuilder.quadgrid`. If you were using it, you should
              replace it by the new ``alpha_function`` parameter.
+
+Plot item icon handling
+^^^^^^^^^^^^^^^^^^^^^^^
+
+The `guiqwt` library was allowing to instantiate plot items without needing to create
+a `QApplication` instance (no GUI event loop was required). This was not the case with
+`plotpy` V1, so that it was not possible -for example- to serialize/deserialize plot
+items to JSON without creating a `QApplication` instance.
+
+With `plotpy` V2, this has been fixed by removing the `QIcon` instantiation from the
+plot items constructors (call to `QwtPlotItem.setIcon` method).
+
+Note that -in the meantime- `QwtPlotItem.setIcon` and `QwtPlotItem.icon` methods have
+also been removed in PythonQwt V0.14.3.
+
+Code relying on this feature should thus be updated to use the new `get_icon_name`
+method instead, i.e. `get_icon(item.get_icon_name())` instead of `item.icon()`.
