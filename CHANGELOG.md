@@ -4,6 +4,8 @@
 
 🛠️ Bug fixes:
 
+* Fixed update `canvasRect` type to `QRectF` for intersection checks in `CircleSVGShape`, following [this bug fix](https://github.com/PlotPyStack/PythonQwt/commit/d0b5e26d8f78a9a65939503553f1bc1b56826e4e) in `PythonQwt` V0.14.4
+
 * Fixed regression with respect to `guiqwt` regarding plot items instantiation:
   * `guiqwt` was allowing to instantiate plot items without needing to create a `QApplication` instance (no GUI event loop was required)
   * This was not the case with `plotpy`, so that it was not possible -for example- to serialize/deserialize plot items to JSON without creating a `QApplication` instance

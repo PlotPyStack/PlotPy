@@ -119,11 +119,11 @@ class CircleSVGShape(shape.EllipseShape):
         painter: QG.QPainter,
         xMap: QwtScaleMap,
         yMap: QwtScaleMap,
-        canvasRect: QC.QRect,
+        canvasRect: QC.QRectF,
     ) -> None:
         """Draw shape (reimplement shape.Shape.draw))"""
         points, line0, line1, rect = self.compute_elements(xMap, yMap)
-        if canvasRect.intersects(rect.toRect()) and self.svg_data is not None:
+        if canvasRect.intersects(rect) and self.svg_data is not None:
             pen, brush, symbol = self.get_pen_brush(xMap, yMap)
             painter.setRenderHint(QG.QPainter.Antialiasing)
             painter.setPen(pen)
