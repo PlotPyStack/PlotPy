@@ -1,20 +1,14 @@
 # Changelog #
 
-## Version 2.7.2 ##
-
-🛠️ Bug fixes:
-
-* Fixed update `canvasRect` type to `QRectF` for intersection checks in `CircleSVGShape`, following [this bug fix](https://github.com/PlotPyStack/PythonQwt/commit/d0b5e26d8f78a9a65939503553f1bc1b56826e4e) in `PythonQwt` V0.14.4
-
-* Fixed regression with respect to `guiqwt` regarding plot items instantiation:
-  * `guiqwt` was allowing to instantiate plot items without needing to create a `QApplication` instance (no GUI event loop was required)
-  * This was not the case with `plotpy`, so that it was not possible -for example- to serialize/deserialize plot items to JSON without creating a `QApplication` instance
-  * This has been fixed by removing the `QIcon` instantiation from the plot items constructors (call to `QwtPlotItem.setIcon` method). Note that -in the meantime- `QwtPlotItem.setIcon` and `QwtPlotItem.icon` methods have also been removed in PythonQwt V0.14.3. Code relying on this feature should thus be updated to use the new `get_icon_name` method instead, i.e. `get_icon(item.get_icon_name())` instead of `item.icon()`.
-
 ## Version 2.7.1 ##
 
 🛠️ Bug fixes:
 
+* Fixed update `canvasRect` type to `QRectF` for intersection checks in `CircleSVGShape`, following [this bug fix](https://github.com/PlotPyStack/PythonQwt/commit/d0b5e26d8f78a9a65939503553f1bc1b56826e4e) in `PythonQwt` V0.14.4
+* Fixed regression with respect to `guiqwt` regarding plot items instantiation:
+  * `guiqwt` was allowing to instantiate plot items without needing to create a `QApplication` instance (no GUI event loop was required)
+  * This was not the case with `plotpy`, so that it was not possible -for example- to serialize/deserialize plot items to JSON without creating a `QApplication` instance
+  * This has been fixed by removing the `QIcon` instantiation from the plot items constructors (call to `QwtPlotItem.setIcon` method). Note that -in the meantime- `QwtPlotItem.setIcon` and `QwtPlotItem.icon` methods have also been removed in PythonQwt V0.14.3. Code relying on this feature should thus be updated to use the new `get_icon_name` method instead, i.e. `get_icon(item.get_icon_name())` instead of `item.icon()`.
 * [Issue #26](https://github.com/PlotPyStack/PlotPy/issues/26) - Item list panel should not allow to select a non-selectable item
 
 ## Version 2.7.0 ##
