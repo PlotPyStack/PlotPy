@@ -136,6 +136,16 @@ class MultiLineTool(InteractiveTool):
         self.handler.set_shape(shape, self.setup_shape)
         return setup_standard_tool_filter(filter, start_state)
 
+    def handle_final_shape(self, shape) -> None:
+        """
+        Handle the final shape after it's been created.
+
+        Args:
+            shape: The final shape object.
+        """
+        if self.handle_final_shape_cb is not None:
+            self.handle_final_shape_cb(shape)
+
     def end_polyline(self, filter: StatefulEventFilter, points: np.ndarray) -> None:
         """
         End the polyline and reset the tool.
@@ -149,6 +159,7 @@ class MultiLineTool(InteractiveTool):
         shape.set_points(points)
         shape.set_closed(self.CLOSED)
         plot.add_item_with_z_offset(shape, SHAPE_Z_OFFSET)
+        self.handle_final_shape(shape)
         self.SIG_TOOL_JOB_FINISHED.emit()
         if self.switch_to_default_tool:
             plot.set_active_item(shape)

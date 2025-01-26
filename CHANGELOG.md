@@ -1,5 +1,11 @@
 # Changelog #
 
+## Version 2.7.2 ##
+
+🛠️ Bug fixes:
+
+* [Issue #30](https://github.com/PlotPyStack/PlotPy/issues/30) - `handle_final_shape_cb` argument doesn't work on `MultilineTool`, `PolygonTool`, `AnnotatedPolygonTool`
+
 ## Version 2.7.1 ##
 
 🛠️ Bug fixes:
