@@ -133,6 +133,7 @@ def make_items(N: int) -> list[TrImageItem]:
             maxy = max(maxy, h)
         w = item.boundingRect().width()
         item.set_transform(x, y, 0.0)
+        # item.set_selectable(False)
     return items
 
 
@@ -205,7 +206,8 @@ def test_transform(N: int, assemble_images: bool) -> None:
             items,
             wintitle="Transform test ({}x{} images)".format(N, N),
             plot_type="image",
-            show_itemlist=False,
+            show_itemlist=True,
+            winsize=(1000, 600),
         )
     if assemble_images:
         build_image(items)

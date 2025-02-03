@@ -21,10 +21,11 @@ from qtpy import QtCore as QC
 from qtpy import QtWidgets as QW
 
 from plotpy.config import _
-from plotpy.constants import ID_ITEMLIST
+from plotpy.constants import ID_ITEMLIST, PARAMETERS_TITLE_ICON
 from plotpy.interfaces import IPanel
 from plotpy.interfaces import items as itf
 from plotpy.panels.base import PanelWidget
+from plotpy.styles.base import ItemParameters
 
 if TYPE_CHECKING:
     from qtpy.QtGui import QContextMenuEvent, QIcon
@@ -106,7 +107,35 @@ class ItemListWidget(QW.QListWidget):
 
     def edit_plot_parameters(self) -> None:
         """Edit plot parameters"""
-        self.plot.edit_plot_parameters("item")
+        # In order to support non-selectable items, we have to reimplement the
+        # `BasePlot.edit_plot_parameters` method. This is because we can select items
+        # using the `PlotItemList` widget, but we can't select them using the plot
+        # widget. Thus we can't rely on the `BasePlot.get_selected_items` method and
+        # other methods that rely on it.
+        #
+        # This can be tested for example by uncommenting the line containing
+        # `item.set_selectable(False)` in the `tests/items/test_transform.py` file.
+
+        # === Reimplementing the `BasePlot.edit_plot_parameters`:
+        sel_items = self.get_selected_items()
+        multiselection = len(sel_items) > 1
+        itemparams = ItemParameters(multiselection=multiselection)
+        # === === Reimplementing the `BasePlot.get_plot_parameters`:
+        for item in sel_items:
+            item.get_item_parameters(itemparams)
+        sel_items[0].get_item_parameters(itemparams)
+        Param = self.plot.get_axesparam_class(sel_items[0])
+        axesparam = Param(
+            title=_("Axes"),
+            icon="lin_lin.png",
+            comment=_("Axes associated to selected item"),
+        )
+        axesparam.update_param(sel_items[0])
+        itemparams.add("AxesParam", self.plot, axesparam)
+        # === ===
+        title, icon = PARAMETERS_TITLE_ICON["item"]
+        itemparams.edit(self.plot, title, icon)
+        # ===
 
     def __is_selection_contiguous(self) -> bool:
         """Check if selected items are contiguous"""
