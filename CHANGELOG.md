@@ -1,5 +1,9 @@
 # Changelog #
 
+## Version 2.7.3 ##
+
+🛠️ Bug fixes:
+
 ## Version 2.7.2 ##
 
 🛠️ Bug fixes:
