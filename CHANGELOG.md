@@ -4,6 +4,7 @@
 
 🛠️ Bug fixes:
 
+* [Issue #32](https://github.com/PlotPyStack/PlotPy/issues/32) - Plot item list panel's parameters dialog box is empty for non-selectable items
 * [Issue #30](https://github.com/PlotPyStack/PlotPy/issues/30) - `handle_final_shape_cb` argument doesn't work on `MultilineTool`, `PolygonTool`, `AnnotatedPolygonTool`
 
 ## Version 2.7.1 ##
