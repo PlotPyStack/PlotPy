@@ -21,8 +21,8 @@ def test_fit():
         a, b = params
         return np.cos(b * x) + a
 
-    a = FitParam("Offset", 1.0, 0.0, 2.0)
-    b = FitParam("Frequency", 2.0, 1.0, 10.0, logscale=True)
+    a = FitParam("Offset", 0.7, -1.0, 1.0)
+    b = FitParam("Frequency", 1.2, 0.3, 3.0, logscale=True)
     params = [a, b]
     values = guifit(x, y, fit, params, xlabel="Time (s)", ylabel="Power (a.u.)")
 

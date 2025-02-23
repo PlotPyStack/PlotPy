@@ -100,7 +100,7 @@ class AutoFitParam(DataSet):
     err_norm = StringItem(
         "enorm",
         default=2.0,
-        help=_("for simplex, powel, cg and bfgs norm used " "by the error function"),
+        help=_("for simplex, powel, cg and bfgs norm used by the error function"),
     )
     xtol = FloatItem(
         "xtol", default=0.0001, help=_("for simplex, powel, least squares")
@@ -724,7 +724,7 @@ class FitWidget(QWidget):
 
         return func
 
-    def autofit_simplex(self, x0: float) -> np.ndarray:
+    def autofit_simplex(self, x0: np.ndarray) -> np.ndarray:
         """Autofit using simplex
 
         Args:
@@ -738,7 +738,7 @@ class FitWidget(QWidget):
         x = fmin(self.get_norm_func(), x0, xtol=prm.xtol, ftol=prm.ftol)
         return x
 
-    def autofit_powel(self, x0: float) -> np.ndarray:
+    def autofit_powel(self, x0: np.ndarray) -> np.ndarray:
         """Autofit using Powell
 
         Args:
@@ -752,7 +752,7 @@ class FitWidget(QWidget):
         x = fmin_powell(self.get_norm_func(), x0, xtol=prm.xtol, ftol=prm.ftol)
         return x
 
-    def autofit_bfgs(self, x0: float) -> np.ndarray:
+    def autofit_bfgs(self, x0: np.ndarray) -> np.ndarray:
         """Autofit using BFGS
 
         Args:
@@ -766,7 +766,7 @@ class FitWidget(QWidget):
         x = fmin_bfgs(self.get_norm_func(), x0, gtol=prm.gtol, norm=eval(prm.norm))
         return x
 
-    def autofit_l_bfgs(self, x0: float) -> np.ndarray:
+    def autofit_l_bfgs(self, x0: np.ndarray) -> np.ndarray:
         """Autofit using L-BFGS-B
 
         Args:
@@ -783,7 +783,7 @@ class FitWidget(QWidget):
         )
         return x
 
-    def autofit_cg(self, x0: float) -> np.ndarray:
+    def autofit_cg(self, x0: np.ndarray) -> np.ndarray:
         """Autofit using conjugate gradient
 
         Args:
@@ -797,7 +797,7 @@ class FitWidget(QWidget):
         x = fmin_cg(self.get_norm_func(), x0, gtol=prm.gtol, norm=eval(prm.norm))
         return x
 
-    def autofit_lq(self, x0: float) -> np.ndarray:
+    def autofit_lq(self, x0: np.ndarray) -> np.ndarray:
         """Autofit using leastsq
 
         Args:
