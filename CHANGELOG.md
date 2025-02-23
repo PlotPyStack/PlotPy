@@ -2,7 +2,11 @@
 
 ## Version 2.7.3 ##
 
+In this release, test coverage is 80%.
+
 🛠️ Bug fixes:
+
+* [Issue #34](https://github.com/PlotPyStack/PlotPy/issues/34) - `ValueError` when trying to plot 2D histogram items with `PyQt6`
 
 ## Version 2.7.2 ##
 

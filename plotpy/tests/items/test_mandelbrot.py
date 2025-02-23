@@ -47,8 +47,7 @@ class MandelItem(RawImageItem):
 
     # ---- QwtPlotItem API ------------------------------------------------------
     def draw_image(self, painter, canvasRect, srcRect, dstRect, xMap, yMap):
-        x1, y1 = canvasRect.left(), canvasRect.top()
-        x2, y2 = canvasRect.right(), canvasRect.bottom()
+        x1, y1, x2, y2 = canvasRect.toAlignedRect().getCoords()
         i1, j1, i2, j2 = srcRect
 
         NX = x2 - x1
@@ -58,7 +57,7 @@ class MandelItem(RawImageItem):
         mandelbrot(i1, j1, i2, j2, self.data, self.IMAX)
 
         srcRect = (0, 0, NX, NY)
-        x1, y1, x2, y2 = canvasRect.getCoords()
+        x1, y1, x2, y2 = canvasRect.toAlignedRect().getCoords()
         RawImageItem.draw_image(
             self, painter, canvasRect, srcRect, (x1, y1, x2, y2), xMap, yMap
         )

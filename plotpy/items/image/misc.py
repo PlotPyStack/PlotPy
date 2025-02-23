@@ -39,7 +39,7 @@ except ImportError:
         file=sys.stderr,
     )
     print(
-        ("try running :" "python setup.py build_ext --inplace -c mingw32"),
+        ("try running: python setup.py build_ext --inplace"),
         file=sys.stderr,
     )
     raise
@@ -340,7 +340,7 @@ class Histogram2DItem(BaseImageItem):
             return BaseImageItem.draw_image(self, *args)
 
         if self.fill_canvas:
-            x1, y1, x2, y2 = canvasRect.getCoords()
+            x1, y1, x2, y2 = canvasRect.toAlignedRect().getCoords()
             drawfunc(painter, canvasRect, src_rect, (x1, y1, x2, y2), xMap, yMap)
         else:
             dst_rect = tuple([int(i) for i in dst_rect])
