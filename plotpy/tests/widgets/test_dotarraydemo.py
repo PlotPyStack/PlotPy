@@ -102,6 +102,8 @@ class DotArrayItem(RawImageItem):
 
     def draw_image(self, painter, canvasRect, srcRect, dstRect, xMap, yMap):
         """Draw image"""
+        if self.warn_if_non_linear_scale(painter, canvasRect):
+            return
         painter.setRenderHint(QG.QPainter.Antialiasing, True)
         param = self.param
         xcoords = vmap(xMap, np.arange(0, param.dim_h + 1, param.step_x))

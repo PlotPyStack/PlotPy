@@ -47,6 +47,8 @@ class MandelItem(RawImageItem):
 
     # ---- QwtPlotItem API ------------------------------------------------------
     def draw_image(self, painter, canvasRect, srcRect, dstRect, xMap, yMap):
+        if self.warn_if_non_linear_scale(painter, canvasRect):
+            return
         x1, y1, x2, y2 = canvasRect.toAlignedRect().getCoords()
         i1, j1, i2, j2 = srcRect
 

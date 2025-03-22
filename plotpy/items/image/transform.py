@@ -257,6 +257,8 @@ class TrImageItem(RawImageItem):
             xMap: X axis scale map
             yMap: Y axis scale map
         """
+        if self.warn_if_non_linear_scale(painter, canvasRect):
+            return
         W = canvasRect.width()
         H = canvasRect.height()
         if W <= 1 or H <= 1:

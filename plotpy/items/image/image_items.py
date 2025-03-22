@@ -376,6 +376,9 @@ class ImageItem(RawImageItem):
         """
         if self.data is None:
             return
+        if self.warn_if_non_linear_scale(painter, canvasRect):
+            return
+
         src2 = self._rescale_src_rect(src_rect)
         dst_rect = tuple([int(i) for i in dst_rect])
 
@@ -651,6 +654,8 @@ class XYImageItem(RawImageItem):
             xMap: X axis scale map
             yMap: Y axis scale map
         """
+        if self.warn_if_non_linear_scale(painter, canvasRect):
+            return
         xytr = self.x, self.y, src_rect
         dst_rect = tuple([int(i) for i in dst_rect])
         dest = _scale_xy(

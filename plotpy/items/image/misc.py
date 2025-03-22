@@ -169,6 +169,8 @@ class QuadGridItem(RawImageItem):
             xMap: X axis scale map
             yMap: Y axis scale map
         """
+        if self.warn_if_non_linear_scale(painter, canvasRect):
+            return
         self._offscreen[...] = np.uint32(0)
         dest = _scale_quads(
             self.X,
@@ -294,6 +296,8 @@ class Histogram2DItem(BaseImageItem):
             xMap: X axis scale map
             yMap: Y axis scale map
         """
+        if self.warn_if_non_linear_scale(painter, canvasRect):
+            return
         computation = self.histparam.computation
         i1, j1, i2, j2 = src_rect
 

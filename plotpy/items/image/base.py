@@ -14,7 +14,7 @@ from guidata.dataset import update_dataset
 from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
-from qwt import QwtPlotItem
+from qwt import QwtLinearScaleEngine, QwtPlotItem
 
 from plotpy import io
 from plotpy._scaler import (
@@ -55,6 +55,7 @@ if TYPE_CHECKING:
     from qtpy.QtGui import QColor, QPainter
 
     from plotpy.interfaces import IItemType
+    from plotpy.plot import BasePlot
     from plotpy.styles.base import ItemParameters
     from plotpy.widgets.colormap.widget import EditableColormap
 
@@ -582,6 +583,29 @@ class BaseImageItem(QwtPlotItem):
         """
         self.border_rect.draw(painter, xMap, yMap, canvasRect)
 
+    def warn_if_non_linear_scale(self, painter: QPainter, canvasRect: QRectF) -> bool:
+        """Warn if non-linear scale
+
+        Args:
+            painter: Painter
+            canvasRect: Canvas rectangle
+
+        Returns:
+            True if non-linear scale
+        """
+        plot: BasePlot = self.plot()
+        if not isinstance(
+            plot.axisScaleEngine(plot.X_BOTTOM), QwtLinearScaleEngine
+        ) or not isinstance(plot.axisScaleEngine(plot.Y_LEFT), QwtLinearScaleEngine):
+            painter.setPen(QC.Qt.red)
+            painter.drawText(
+                canvasRect,
+                QC.Qt.AlignCenter,
+                _("Non-linear scales are not supported for image items"),
+            )
+            return True
+        return False
+
     def draw_image(
         self,
         painter: QPainter,
@@ -601,6 +625,8 @@ class BaseImageItem(QwtPlotItem):
             xMap: X axis scale map
             yMap: Y axis scale map
         """
+        if self.warn_if_non_linear_scale(painter, canvasRect):
+            return
         dest = _scale_rect(
             self.data, src_rect, self._offscreen, dst_rect, self.lut, self.interpolate
         )
