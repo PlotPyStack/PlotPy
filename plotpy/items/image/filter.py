@@ -313,7 +313,7 @@ class XYImageFilterItem(ImageFilterItem):
         j0, j1 = int(yMap.transform(y0)), int(yMap.transform(y1))
 
         dstRect = QC.QRect(i0, j0, i1 - i0, j1 - j0)
-        if not dstRect.intersects(canvasRect):
+        if not dstRect.intersects(canvasRect.toAlignedRect()):
             return
 
         x, y, data = self.image.get_data(x0, y0, x1, y1)
