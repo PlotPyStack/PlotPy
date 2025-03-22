@@ -6,6 +6,11 @@ In this release, test coverage is 80%.
 
 🛠️ Bug fixes:
 
+* Fix intersection check for destination rectangle in `XYImageFilterItem`
+* [Issue #36](https://github.com/PlotPyStack/PlotPy/issues/36) - Image items are not properly scaling along Y-axis with logarithmic scale:
+  * Actually, image items do not support non-linear scales (this is an historical limitation)
+  * This is not documented at all, so we've added an explicit warning: a red colored message is displayed at the center of the image frame when any non-linear scale is applied to either X or Y axis
+  * When dealing with non-linear scales, PlotPy provides an alternative solution: the user may rely on `XYImageItem` (e.g. by using `make.xyimage`) as this item supports arbitrary X and Y pixel coordinates
 * [Issue #34](https://github.com/PlotPyStack/PlotPy/issues/34) - `ValueError` when trying to plot 2D histogram items with `PyQt6`
 
 ## Version 2.7.2 ##
