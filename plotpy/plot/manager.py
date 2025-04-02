@@ -13,49 +13,6 @@ from qtpy import QtWidgets as QW
 from plotpy.constants import ID_CONTRAST, ID_ITEMLIST, ID_XCS, ID_YCS
 from plotpy.interfaces import IPlotManager
 from plotpy.plot import BasePlot
-from plotpy.tools import (
-    AboutTool,
-    AnnotatedCircleTool,
-    AnnotatedEllipseTool,
-    AnnotatedObliqueRectangleTool,
-    AnnotatedPointTool,
-    AnnotatedRectangleTool,
-    AnnotatedSegmentTool,
-    AntiAliasingTool,
-    AspectRatioTool,
-    AverageCrossSectionTool,
-    AxisScaleTool,
-    BasePlotMenuTool,
-    ColormapTool,
-    ContrastPanelTool,
-    CopyToClipboardTool,
-    CrossSectionTool,
-    CurveStatsTool,
-    DeleteItemTool,
-    DisplayCoordsTool,
-    DoAutoscaleTool,
-    DownSamplingTool,
-    DummySeparatorTool,
-    EditItemDataTool,
-    ExportItemDataTool,
-    HelpTool,
-    ImageStatsTool,
-    ItemCenterTool,
-    ItemListPanelTool,
-    LabelTool,
-    PrintTool,
-    RectangularSelectionTool,
-    RectZoomTool,
-    ReverseColormapTool,
-    ReverseXAxisTool,
-    ReverseYAxisTool,
-    SaveAsTool,
-    SelectTool,
-    SnapshotTool,
-    XCSPanelTool,
-    YCSPanelTool,
-    ZAxisLogTool,
-)
 
 if TYPE_CHECKING:
     from typing import Callable
@@ -241,12 +198,16 @@ class PlotManager:
         Args:
             toolbar_id: toolbar's id (default to None)
         """
+        # This avoids circular imports (see Issue #39)
+        # pylint: disable=import-outside-toplevel
+        import plotpy.tools as tools
+
         if toolbar_id is None:
             for _id, toolbar in list(self.toolbars.items()):
                 if toolbar is self.get_default_toolbar():
                     toolbar_id = _id
                     break
-        self.add_tool(DummySeparatorTool, toolbar_id)
+        self.add_tool(tools.DummySeparatorTool, toolbar_id)
 
     def set_default_tool(self, tool: GuiTool) -> None:
         """
@@ -547,22 +508,26 @@ class PlotManager:
         Registering basic tools for standard plot dialog
         --> top of the context-menu
         """
-        t = self.add_tool(SelectTool)
+        # This avoids circular imports (see Issue #39)
+        # pylint: disable=import-outside-toplevel
+        import plotpy.tools as tools
+
+        t = self.add_tool(tools.SelectTool)
         self.set_default_tool(t)
-        self.add_tool(RectangularSelectionTool, intersect=False)
-        self.add_tool(RectZoomTool)
-        self.add_tool(DoAutoscaleTool)
-        self.add_tool(BasePlotMenuTool, "item")
-        self.add_tool(ExportItemDataTool)
-        self.add_tool(EditItemDataTool)
-        self.add_tool(ItemCenterTool)
-        self.add_tool(DeleteItemTool)
+        self.add_tool(tools.RectangularSelectionTool, intersect=False)
+        self.add_tool(tools.RectZoomTool)
+        self.add_tool(tools.DoAutoscaleTool)
+        self.add_tool(tools.BasePlotMenuTool, "item")
+        self.add_tool(tools.ExportItemDataTool)
+        self.add_tool(tools.EditItemDataTool)
+        self.add_tool(tools.ItemCenterTool)
+        self.add_tool(tools.DeleteItemTool)
         self.add_separator_tool()
-        self.add_tool(BasePlotMenuTool, "grid")
-        self.add_tool(BasePlotMenuTool, "axes")
-        self.add_tool(DisplayCoordsTool)
+        self.add_tool(tools.BasePlotMenuTool, "grid")
+        self.add_tool(tools.BasePlotMenuTool, "axes")
+        self.add_tool(tools.DisplayCoordsTool)
         if self.get_itemlist_panel():
-            self.add_tool(ItemListPanelTool)
+            self.add_tool(tools.ItemListPanelTool)
 
     def register_curve_tools(self) -> None:
         """
@@ -580,10 +545,14 @@ class PlotManager:
 
             :py:meth:`.plot.manager.PlotManager.register_all_tools`
         """
-        self.add_tool(CurveStatsTool)
-        self.add_tool(AntiAliasingTool)
-        self.add_tool(AxisScaleTool)
-        self.add_tool(DownSamplingTool)
+        # This avoids circular imports (see Issue #39)
+        # pylint: disable=import-outside-toplevel
+        import plotpy.tools as tools
+
+        self.add_tool(tools.CurveStatsTool)
+        self.add_tool(tools.AntiAliasingTool)
+        self.add_tool(tools.AxisScaleTool)
+        self.add_tool(tools.DownSamplingTool)
 
     def register_image_tools(self) -> None:
         """
@@ -601,21 +570,25 @@ class PlotManager:
 
             :py:meth:`.plot.manager.PlotManager.register_all_tools`
         """
-        self.add_tool(ColormapTool)
-        self.add_tool(ReverseColormapTool)
-        self.add_tool(ReverseXAxisTool)
-        self.add_tool(ReverseYAxisTool)
-        self.add_tool(ZAxisLogTool)
-        self.add_tool(AspectRatioTool)
+        # This avoids circular imports (see Issue #39)
+        # pylint: disable=import-outside-toplevel
+        import plotpy.tools as tools
+
+        self.add_tool(tools.ColormapTool)
+        self.add_tool(tools.ReverseColormapTool)
+        self.add_tool(tools.ReverseXAxisTool)
+        self.add_tool(tools.ReverseYAxisTool)
+        self.add_tool(tools.ZAxisLogTool)
+        self.add_tool(tools.AspectRatioTool)
         if self.get_contrast_panel():
-            self.add_tool(ContrastPanelTool)
-        self.add_tool(SnapshotTool)
-        self.add_tool(ImageStatsTool)
+            self.add_tool(tools.ContrastPanelTool)
+        self.add_tool(tools.SnapshotTool)
+        self.add_tool(tools.ImageStatsTool)
         if self.get_xcs_panel() and self.get_ycs_panel():
-            self.add_tool(XCSPanelTool)
-            self.add_tool(YCSPanelTool)
-            self.add_tool(CrossSectionTool)
-            self.add_tool(AverageCrossSectionTool)
+            self.add_tool(tools.XCSPanelTool)
+            self.add_tool(tools.YCSPanelTool)
+            self.add_tool(tools.CrossSectionTool)
+            self.add_tool(tools.AverageCrossSectionTool)
 
     def register_other_tools(self) -> None:
         """
@@ -633,11 +606,15 @@ class PlotManager:
 
             :py:meth:`.plot.manager.PlotManager.register_all_tools`
         """
-        self.add_tool(SaveAsTool)
-        self.add_tool(CopyToClipboardTool)
-        self.add_tool(PrintTool)
-        self.add_tool(HelpTool)
-        self.add_tool(AboutTool)
+        # This avoids circular imports (see Issue #39)
+        # pylint: disable=import-outside-toplevel
+        import plotpy.tools as tools
+
+        self.add_tool(tools.SaveAsTool)
+        self.add_tool(tools.CopyToClipboardTool)
+        self.add_tool(tools.PrintTool)
+        self.add_tool(tools.HelpTool)
+        self.add_tool(tools.AboutTool)
 
     def register_all_curve_tools(self) -> None:
         """
@@ -732,23 +709,31 @@ class PlotManager:
         """
         Register all annotation tools for the plot
         """
+        # This avoids circular imports (see Issue #39)
+        # pylint: disable=import-outside-toplevel
+        import plotpy.tools as tools
+
         self.add_separator_tool()
-        self.add_tool(AnnotatedPointTool)
-        self.add_tool(AnnotatedSegmentTool)
-        self.add_tool(AnnotatedRectangleTool)
-        self.add_tool(AnnotatedObliqueRectangleTool)
-        self.add_tool(AnnotatedCircleTool)
-        self.add_tool(AnnotatedEllipseTool)
-        self.add_tool(LabelTool)
+        self.add_tool(tools.AnnotatedPointTool)
+        self.add_tool(tools.AnnotatedSegmentTool)
+        self.add_tool(tools.AnnotatedRectangleTool)
+        self.add_tool(tools.AnnotatedObliqueRectangleTool)
+        self.add_tool(tools.AnnotatedCircleTool)
+        self.add_tool(tools.AnnotatedEllipseTool)
+        self.add_tool(tools.LabelTool)
 
     def register_curve_annotation_tools(self) -> None:
         """
         Register all curve friendly annotation tools for the plot
         """
+        # This avoids circular imports (see Issue #39)
+        # pylint: disable=import-outside-toplevel
+        import plotpy.tools as tools
+
         self.add_separator_tool()
-        self.add_tool(AnnotatedPointTool)
-        self.add_tool(AnnotatedSegmentTool)
-        self.add_tool(LabelTool)
+        self.add_tool(tools.AnnotatedPointTool)
+        self.add_tool(tools.AnnotatedSegmentTool)
+        self.add_tool(tools.LabelTool)
 
     def register_image_annotation_tools(self) -> None:
         """
