@@ -6,6 +6,7 @@ In this release, test coverage is 80%.
 
 🛠️ Bug fixes:
 
+* [Issue #40](https://github.com/PlotPyStack/PlotPy/issues/40) - Z-axis logarithmic scale (`ZAxisLogTool` tool) is not compatible with anti-aliasing interpolation
 * Fix intersection check for destination rectangle in `XYImageFilterItem`
 * [Issue #36](https://github.com/PlotPyStack/PlotPy/issues/36) - Image items are not properly scaling along Y-axis with logarithmic scale:
   * Actually, image items do not support non-linear scales (this is an historical limitation)
