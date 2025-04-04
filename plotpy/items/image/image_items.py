@@ -11,6 +11,7 @@ from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
 
 from plotpy import io
+from plotpy._scaler import INTERP_AA
 from plotpy.config import _
 from plotpy.constants import LUTAlpha
 from plotpy.coords import canvas_to_axes, pixelround
@@ -241,9 +242,13 @@ class ImageItem(RawImageItem):
             if self._log_data is None:
                 self._log_data = np.array(np.log10(self.data.clip(1)), dtype=np.float64)
             self.set_lut_range(get_nan_range(self._log_data))
+            dtype = self._log_data.dtype
         else:
             self._log_data = None
             self.set_lut_range(self._lin_lut_range)
+            dtype = self.data.dtype
+        if self.interpolate[0] == INTERP_AA:
+            self.interpolate = (INTERP_AA, self.interpolate[1].astype(dtype))
         plot.update_colormap_axis(self)
 
     # ---- BaseImageItem API ---------------------------------------------------
