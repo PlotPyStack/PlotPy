@@ -14,6 +14,10 @@ In this release, test coverage is 80%.
   * When dealing with non-linear scales, PlotPy provides an alternative solution: the user may rely on `XYImageItem` (e.g. by using `make.xyimage`) as this item supports arbitrary X and Y pixel coordinates
 * [Issue #34](https://github.com/PlotPyStack/PlotPy/issues/34) - `ValueError` when trying to plot 2D histogram items with `PyQt6`
 
+Other changes:
+
+* Replace deprecated icon files with new SVG icons for selection tools
+
 ## Version 2.7.2 ##
 
 🛠️ Bug fixes:

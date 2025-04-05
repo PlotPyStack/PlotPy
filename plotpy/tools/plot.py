@@ -224,7 +224,7 @@ class DummySeparatorTool(GuiTool):
 class RectangularSelectionTool(RectangularActionTool):
     SWITCH_TO_DEFAULT_TOOL = True
     TITLE = _("Rectangular selection tool")
-    ICON = "rectangular_select.png"
+    ICON = "select_area.svg"
 
     def __init__(self, manager, intersect=True, toolbar_id=DefaultToolbarID):
         super().__init__(

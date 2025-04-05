@@ -32,7 +32,7 @@ class SelectTool(InteractiveTool):
     """
 
     TITLE = _("Selection")
-    ICON = "selection.png"
+    ICON = "select.svg"
     CURSOR = QC.Qt.CursorShape.ArrowCursor
 
     def setup_filter(self, baseplot: BasePlot) -> int:
