@@ -47,8 +47,11 @@ def get_data(variable_size: bool) -> tuple[np.ndarray, np.ndarray]:
 class CurveUpdateDialog(PlotDialog):
     """Dialog box for curve update"""
 
-    def __init__(self, title: str, variable_size: bool = False) -> None:
+    def __init__(
+        self, title: str, variable_size: bool = False, auto_scale: bool = True
+    ) -> None:
         self.variable_size = variable_size
+        self.auto_scale = auto_scale
         options = PlotOptions(title="-", show_contrast=True, type="curve")
         super().__init__(title=title, toolbar=True, edit=False, options=options)
         self.resize(600, 600)
@@ -78,11 +81,22 @@ class CurveUpdateDialog(PlotDialog):
         variable_size_cb.setChecked(self.variable_size)
         variable_size_cb.stateChanged.connect(self.toggle_variable_size)
         self.add_widget(variable_size_cb, 0, 2)
+        auto_scale_cb = QW.QCheckBox("Auto scale")
+        auto_scale_cb.setChecked(True)
+        auto_scale_cb.stateChanged.connect(self.toggle_auto_scale)
+        self.add_widget(auto_scale_cb, 0, 3)
         self.add_widget(self.plot_widget, 1, 0, 1, 0)
 
     def toggle_variable_size(self, state: int) -> None:
         """Toggle variable size"""
         self.variable_size = state == QC.Qt.Checked
+
+    def toggle_auto_scale(self, state: int) -> None:
+        """Toggle auto scale"""
+        self.auto_scale = state == QC.Qt.Checked
+        plot = self.get_plot()
+        if self.auto_scale:
+            plot.do_autoscale()
 
     def start_curve_update(self) -> None:
         """Start curve update"""
@@ -100,7 +114,10 @@ class CurveUpdateDialog(PlotDialog):
         plot = self.get_plot()
         self.item.set_data(data[0], data[1])
         plot.set_title(f"Curve update {self.counter:03d}")
-        plot.replot()
+        if self.auto_scale:
+            plot.do_autoscale()
+        else:
+            plot.replot()
 
     def closeEvent(self, event: QG.QCloseEvent) -> None:
         """Close the dialog and stop the timer"""
