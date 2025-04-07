@@ -166,7 +166,19 @@ def gen_2d_gaussian(size, dtype, x0=0, y0=0, mu=0.0, sigma=2.0, amp=None) -> np.
     return np.array(amp * np.exp(-t / (2.0 * sigma**2)), dtype=dtype)
 
 
-def gen_xyz_data():
+def gen_1d_gaussian(
+    size, x0=0, mu=0.0, sigma=2.0, amp=None
+) -> tuple[np.ndarray, np.ndarray]:
+    """Creating 1D Gaussian (-10 <= x <= 10)"""
+    x = np.linspace(-10, 10, size)
+    if amp is None:
+        amp = 1.0
+    t = (np.abs(x - x0) - mu) ** 2
+    y = np.array(amp * np.exp(-t / (2.0 * sigma**2)), dtype=float)
+    return x, y
+
+
+def gen_xyz_data() -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Create a X, Y, Z data set for contour detection features"""
     delta = 0.025
     x, y = np.arange(-3.0, 3.0, delta), np.arange(-2.0, 2.0, delta)
