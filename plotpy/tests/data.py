@@ -156,7 +156,7 @@ def gen_xyimage(N: int = 1000) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     return x, (x + 5) ** 0.6, data
 
 
-def gen_2d_gaussian(size, dtype, x0=0, y0=0, mu=0.0, sigma=2.0, amp=None):
+def gen_2d_gaussian(size, dtype, x0=0, y0=0, mu=0.0, sigma=2.0, amp=None) -> np.ndarray:
     """Creating 2D Gaussian (-10 <= x <= 10 and -10 <= y <= 10)"""
     xydata = np.linspace(-10, 10, size)
     x, y = np.meshgrid(xydata, xydata)

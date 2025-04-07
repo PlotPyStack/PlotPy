@@ -4,8 +4,8 @@
 # (see plotpy/LICENSE for details)
 
 """
-Testing image update
-====================
+Testing image show with data update
+===================================
 
 The purpose of this test is to implement a simple use case where an image is
 updated in a loop. The image is created with random data and the pixel values
