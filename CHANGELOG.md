@@ -1,5 +1,13 @@
 # Changelog #
 
+## Version 2.7.4 ##
+
+In this release, test coverage is 80%.
+
+🛠️ Bug fixes:
+
+* [Issue #41](https://github.com/PlotPyStack/PlotPy/issues/41) - Average profile visualization: empty profile is displayed when the target rectangular area is outside the image area
+
 ## Version 2.7.3 ##
 
 In this release, test coverage is 80%.
