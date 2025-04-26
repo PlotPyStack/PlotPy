@@ -1,5 +1,13 @@
 # Changelog #
 
+## Version 2.7.4 ##
+
+In this release, test coverage is 80%.
+
+🛠️ Bug fixes:
+
+* [Issue #42](https://github.com/PlotPyStack/PlotPy/issues/42) - Image profiles: when moving/resizing image, profile plots are not refreshed
+
 ## Version 2.7.3 ##
 
 In this release, test coverage is 80%.

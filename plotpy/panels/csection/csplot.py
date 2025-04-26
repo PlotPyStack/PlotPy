@@ -231,6 +231,7 @@ class BaseCrossSectionPlot(BasePlot):
             self.do_autoscale(replot=False, axis_id=self.Z_AXIS)
             vmin, vmax = plot.get_axis_limits(self.CS_AXIS)
             self.set_axis_limits(self.CS_AXIS, vmin, vmax)
+            self.replot()
 
     def is_shape_known(self, shape: Any) -> bool:
         """Return whether shape is known
