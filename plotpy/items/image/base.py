@@ -216,15 +216,18 @@ class BaseImageItem(QwtPlotItem):
         return i, j
 
     def get_closest_index_rect(
-        self, x0: float, y0: float, x1: float, y1: float
+        self, x0: float, y0: float, x1: float, y1: float, avoid_empty: bool = True
     ) -> tuple[int, int, int, int]:
-        """Get closest image rectangular pixel area index bounds
+        """Get closest image rectangular pixel area index bounds, optionally
+        avoid returning an empty rectangular area (return at least 1x1 pixel area)
 
         Args:
             x0: X coordinate of first point
             y0: Y coordinate of first point
             x1: X coordinate of second point
             y1: Y coordinate of second point
+            avoid_empty: True to avoid returning an empty rectangular area.
+             Defaults to True.
 
         Returns:
             Closest image rectangular pixel area index bounds
@@ -240,9 +243,9 @@ class BaseImageItem(QwtPlotItem):
             ix1, ix0 = ix0, ix1
         if iy0 > iy1:
             iy1, iy0 = iy0, iy1
-        if ix0 == ix1:
+        if ix0 == ix1 and avoid_empty:
             ix1 += 1
-        if iy0 == iy1:
+        if iy0 == iy1 and avoid_empty:
             iy1 += 1
         return ix0, iy0, ix1, iy1
 
@@ -1083,7 +1086,9 @@ class BaseImageItem(QwtPlotItem):
         Returns:
             Average cross section along x-axis
         """
-        ix0, iy0, ix1, iy1 = self.get_closest_index_rect(x0, y0, x1, y1)
+        ix0, iy0, ix1, iy1 = self.get_closest_index_rect(
+            x0, y0, x1, y1, avoid_empty=False
+        )
         ydata = self.data[iy0:iy1, ix0:ix1]
         if ydata.size == 0:
             return np.array([]), np.array([])
@@ -1108,7 +1113,9 @@ class BaseImageItem(QwtPlotItem):
         Returns:
             Average cross section along y-axis
         """
-        ix0, iy0, ix1, iy1 = self.get_closest_index_rect(x0, y0, x1, y1)
+        ix0, iy0, ix1, iy1 = self.get_closest_index_rect(
+            x0, y0, x1, y1, avoid_empty=False
+        )
         ydata = self.data[iy0:iy1, ix0:ix1]
         if ydata.size == 0:
             return np.array([]), np.array([])
