@@ -11,7 +11,6 @@
             "program": "${workspaceFolder}/plotpy/tests/__init__.py",
             "console": "integratedTerminal",
             "envFile": "${workspaceFolder}/.env",
-            "python": "${config:python.defaultInterpreterPath}",
             "justMyCode": true,
             "env": {
                 "QT_COLOR_MODE": "light",
@@ -24,7 +23,6 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "envFile": "${workspaceFolder}/.env",
-            "python": "${config:python.defaultInterpreterPath}",
             "justMyCode": false,
             "pythonArgs": [
                 "-W error::DeprecationWarning",
@@ -39,7 +37,6 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "envFile": "${workspaceFolder}/.env",
-            "python": "${config:python.defaultInterpreterPath}",
             "pythonArgs": [
                 "-W error::DeprecationWarning",
             ],
