@@ -120,34 +120,31 @@
         },
         {
             "label": "Run Pylint",
-            "type": "shell",
-            "command": "cmd",
+            "command": "pylint",
             "args": [
-                "/c",
-                "run_pylint.bat",
-                // "--disable=R0801,C0103,C0114,C0115,C0116,W0612,W0613",
-                "--disable=fixme,C,R,W",
-                "--ignore=external",
+                "plotpy",
+                "--disable=C",
+                "--disable=fixme",
+                "--disable=R",
+                "--disable=W",
+                "--ignore=external"
             ],
             "options": {
-                "cwd": "scripts",
-                "env": {
-                    "UNATTENDED": "1",
-                    "PYTHON": "${command:python.interpreterPath}",
-                }
+                "cwd": "${workspaceFolder}"
             },
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": false
             },
             "presentation": {
+                "clear": true,
                 "echo": true,
-                "reveal": "always",
                 "focus": false,
                 "panel": "dedicated",
-                "showReuseMessage": true,
-                "clear": true
-            }
+                "reveal": "always",
+                "showReuseMessage": true
+            },
+            "type": "shell"
         },
         {
             "label": "Run Ruff",
