@@ -79,10 +79,7 @@
         },
         {
             "label": "Preprocess internationalization",
-            "command": "${command:python.interpreterPath}",
-            "args": [
-                "scripts/internationalization_preprocess.py"
-            ],
+            "command": "i18npreprocess",
             "group": {
                 "kind": "build",
                 "isDefault": false
@@ -102,10 +99,7 @@
         },
         {
             "label": "Postprocess internationalization",
-            "command": "${command:python.interpreterPath}",
-            "args": [
-                "scripts/internationalization_postprocess.py"
-            ],
+            "command": "i18npostprocess",
             "group": {
                 "kind": "build",
                 "isDefault": false
