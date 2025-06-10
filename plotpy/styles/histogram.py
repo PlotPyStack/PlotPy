@@ -89,7 +89,7 @@ class Histogram2DParam(BaseImageParam):
     auto_lut = BoolItem(
         _("Automatic LUT range"),
         default=True,
-        help=_("Automatically adapt color scale " "when panning, zooming"),
+        help=_("Automatically adapt color scale when panning, zooming"),
     )
     background = ColorItem(
         _("Background color"),

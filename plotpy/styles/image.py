@@ -224,9 +224,7 @@ class QuadGridParam(DataSet):
         [(0, _("Quadrangle interpolation")), (1, _("Flat"))],
         default=0,
         help=_(
-            "Image interpolation type, "
-            "Flat mode use fixed u,v "
-            "interpolation parameters"
+            "Image interpolation type, Flat mode use fixed u,v interpolation parameters"
         ),
     )
     uflat = FloatItem(

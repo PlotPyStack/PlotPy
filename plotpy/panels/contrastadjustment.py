@@ -543,7 +543,7 @@ class ContrastAdjustment(PanelWidget):
             _("Full range"),
             icon=get_icon("full_range.png"),
             triggered=self.histogram.set_full_range,
-            tip=_("Scale the image's display range " "according to data range"),
+            tip=_("Scale the image's display range according to data range"),
         )
         outliers_ac = create_action(
             self,

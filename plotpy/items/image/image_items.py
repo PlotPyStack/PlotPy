@@ -50,7 +50,7 @@ except ImportError:
         file=sys.stderr,
     )
     print(
-        ("try running :" "python setup.py build_ext --inplace -c mingw32"),
+        ("try running :python setup.py build_ext --inplace -c mingw32"),
         file=sys.stderr,
     )
     raise

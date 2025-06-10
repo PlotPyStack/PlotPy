@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-"""A custom QDoubleRangeSlider with some extra functionnalities for colormap sliders.
-"""
+"""A custom QDoubleRangeSlider with some extra functionnalities for colormap sliders."""
+
 from typing import Sequence
 
 from plotpy.external.sliders import QDoubleRangeSlider

@@ -829,7 +829,7 @@ def savefig(fname, format=None):
         format = fname.rsplit(".", 1)[-1].lower()
         fmts = [fmt.data().decode() for fmt in QG.QImageWriter.supportedImageFormats()]
         assert format in fmts, _(
-            "Function 'savefig' currently supports the " "following formats:\n%s"
+            "Function 'savefig' currently supports the following formats:\n%s"
         ) % ", ".join(fmts)
     else:
         format = format.lower()

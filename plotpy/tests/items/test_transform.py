@@ -184,7 +184,7 @@ def build_image(items: list[TrImageItem]) -> None:
     if not execenv.unattended:
         save_image("test1", dest)
     print("-" * 80)
-    print(f"Assemble test1: {int(w/4)} x {int(h/4)}")
+    print(f"Assemble test1: {int(w / 4)} x {int(h / 4)}")
     dest = assemble_imageitems(items, r, w / 4, h / 4)
     if not execenv.unattended:
         save_image("test2", dest)

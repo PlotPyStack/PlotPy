@@ -116,7 +116,7 @@ SORTED_MATPLOTLIB_COLORMAPS: list[str] = [
 
 
 def rgb_colors_to_hex_list(
-    colors: list[tuple[int, int, int]]
+    colors: list[tuple[int, int, int]],
 ) -> list[tuple[float, str]]:
     """Convert a list of RGB colors to a list of tuples with the position of the color
     and the color in hex format. Positions evenly distributed between 0 and 1.
@@ -261,7 +261,6 @@ def append_non_mpl_colormaps(mpl_colormaps: CmapDictType, colormaps: CmapDictTyp
 
 
 def main(cmaps: CmapDictType, out_json_path: str = DEFAULT_COLORMAPS_PATH):
-
     new_cmaps: dict[str, list[tuple[float, str]]] = {}
 
     # Uniform colormaps with a .colors attribute that return a list of RGB colors
