@@ -4,6 +4,57 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Run Ruff",
+            "command": "ruff",
+            "args": [
+                "check",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "presentation": {
+                "clear": true,
+                "echo": true,
+                "focus": false,
+                "panel": "dedicated",
+                "reveal": "always",
+                "showReuseMessage": true,
+            },
+            "type": "shell"
+        },
+        {
+            "label": "Run Pylint",
+            "command": "pylint",
+            "args": [
+                "plotpy",
+                "--disable=C",
+                "--disable=fixme",
+                "--disable=R",
+                "--disable=W",
+                "--ignore=external"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "presentation": {
+                "clear": true,
+                "echo": true,
+                "focus": false,
+                "panel": "dedicated",
+                "reveal": "always",
+                "showReuseMessage": true
+            },
+            "type": "shell"
+        },
+        {
             "label": "gettext - Scan",
             "type": "shell",
             "command": "cmd",
@@ -63,34 +114,6 @@
             }
         },
         {
-            "label": "Run Coverage",
-            "type": "shell",
-            "command": "cmd",
-            "args": [
-                "/c",
-                "run_coverage.bat",
-            ],
-            "options": {
-                "cwd": "scripts",
-                "env": {
-                    "UNATTENDED": "1",
-                    "PYTHON": "${command:python.interpreterPath}",
-                }
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "dedicated",
-                "showReuseMessage": true,
-                "clear": true
-            }
-        },
-        {
             "label": "Run pytest",
             "type": "shell",
             "command": "cmd",
@@ -119,57 +142,6 @@
             }
         },
         {
-            "label": "Run Pylint",
-            "command": "pylint",
-            "args": [
-                "plotpy",
-                "--disable=C",
-                "--disable=fixme",
-                "--disable=R",
-                "--disable=W",
-                "--ignore=external"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
-            "presentation": {
-                "clear": true,
-                "echo": true,
-                "focus": false,
-                "panel": "dedicated",
-                "reveal": "always",
-                "showReuseMessage": true
-            },
-            "type": "shell"
-        },
-        {
-            "label": "Run Ruff",
-            "command": "ruff",
-            "args": [
-                "check",
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
-            "presentation": {
-                "clear": true,
-                "echo": true,
-                "focus": false,
-                "panel": "dedicated",
-                "reveal": "always",
-                "showReuseMessage": true,
-            },
-            "type": "shell"
-        },
-        {
             "label": "Update requirements.txt",
             "command": "toml-to-req",
             "args": [
@@ -194,6 +166,34 @@
                 "showReuseMessage": true,
             },
             "type": "shell"
+        },
+        {
+            "label": "Run Coverage",
+            "type": "shell",
+            "command": "cmd",
+            "args": [
+                "/c",
+                "run_coverage.bat",
+            ],
+            "options": {
+                "cwd": "scripts",
+                "env": {
+                    "UNATTENDED": "1",
+                    "PYTHON": "${command:python.interpreterPath}",
+                }
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": true,
+                "clear": true
+            }
         },
         {
             "label": "Clean Up",
