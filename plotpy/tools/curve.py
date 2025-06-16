@@ -74,7 +74,7 @@ class CurveStatsTool(BaseCursorTool):
                 ("%g &lt; y &lt; %g", lambda *args: (args[1].min(), args[1].max())),
                 ("&lt;y&gt;=%g", lambda *args: args[1].mean()),
                 ("σ(y)=%g", lambda *args: args[1].std()),
-                ("∑(y)=%g", lambda *args: spt.trapezoid(args[1])),
+                ("∑(y)=%g", lambda *args: np.sum(args[1])),
                 ("∫ydx=%g", lambda *args: spt.trapezoid(args[1], args[0])),
             )
         self.labelfuncs = labelfuncs
@@ -96,7 +96,7 @@ class CurveStatsTool(BaseCursorTool):
                     ("%g &lt; y &lt; %g", lambda *args: (args[1].min(), args[1].max())),
                     ("&lt;y&gt;=%g", lambda *args: args[1].mean()),
                     ("σ(y)=%g", lambda *args: args[1].std()),
-                    ("∑(y)=%g", lambda *args: spt.trapezoid(args[1])),
+                    ("∑(y)=%g", lambda *args: np.sum(args[1])),
                     ("∫ydx=%g", lambda *args: spt.trapezoid(args[1], args[0])),
                 )
         """
