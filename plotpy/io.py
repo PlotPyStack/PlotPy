@@ -419,8 +419,7 @@ def _imread_dcm(filename, **kwargs):
                 arr = arr.reshape(spp, dcm.Rows, dcm.Columns)
             else:
                 raise NotImplementedError(
-                    "This code only handles "
-                    "SamplesPerPixel > 1 if Bits Allocated = 8"
+                    "This code only handles SamplesPerPixel > 1 if Bits Allocated = 8"
                 )
         else:
             arr = arr.reshape(dcm.Rows, dcm.Columns)

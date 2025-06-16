@@ -164,12 +164,12 @@ class ShapeParam(DataSet):
     readonly = BoolItem(
         _("Read-only shape"),
         default=False,
-        help=_("Read-only shapes can't be removed from " "the item list panel"),
+        help=_("Read-only shapes can't be removed from the item list panel"),
     )
     private = BoolItem(
         _("Private shape"),
         default=False,
-        help=_("Private shapes are not shown in " "the item list panel"),
+        help=_("Private shapes are not shown in the item list panel"),
     ).set_pos(col=1)
 
     def update_param(self, obj: PolygonShape) -> None:
@@ -305,7 +305,7 @@ class AnnotationParam(DataSet):
     _multiselection = False
     show_label = BoolItem(_("Show annotation"), default=True)
     show_computations = BoolItem(
-        _("Show informations on area " "covered by this shape"), default=True
+        _("Show informations on area covered by this shape"), default=True
     )
     show_subtitle = BoolItem(_("Show subtitle"), default=True)
     title = StringItem(_("Title"), default="").set_prop(
@@ -328,12 +328,12 @@ class AnnotationParam(DataSet):
     readonly = BoolItem(
         _("Read-only shape"),
         default=False,
-        help=_("Read-only shapes can't be removed from " "the item list panel"),
+        help=_("Read-only shapes can't be removed from the item list panel"),
     )
     private = BoolItem(
         _("Private shape"),
         default=False,
-        help=_("Private shapes are not shown in " "the item list panel"),
+        help=_("Private shapes are not shown in the item list panel"),
     ).set_pos(col=1)
 
     def update_param(self, obj: AnnotatedShape) -> None:

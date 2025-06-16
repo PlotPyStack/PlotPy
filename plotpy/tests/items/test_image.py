@@ -17,7 +17,7 @@ from plotpy.tests import vistools as ptv
 def test_image():
     """Testing ImageItem object"""
     for index, func in enumerate((ptd.gen_image1, ptd.gen_image2, ptd.gen_image3)):
-        title = test_image.__doc__ + f" #{index+1}"
+        title = test_image.__doc__ + f" #{index + 1}"
         data = func()
         with qt_app_context(exec_loop=True):
             _win = ptv.show_items([make.image(data)], wintitle=title)

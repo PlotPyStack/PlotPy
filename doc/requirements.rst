@@ -51,8 +51,11 @@ Optional modules for development:
       - 
       - Code coverage measurement for Python
     * - Cython
-      - 
+      - >=3.0
       - The Cython compiler for writing C extensions in the Python language.
+    * - toml-to-requirements
+      - ==0.3.0
+      - Convert a pyproject.toml file to a requirements.txt file
 
 Optional modules for building the documentation:
 

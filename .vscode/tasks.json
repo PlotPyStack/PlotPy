@@ -4,6 +4,80 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Run Ruff Formatter",
+            "command": "ruff",
+            "args": [
+                "format"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "clear": true,
+                "echo": true,
+                "focus": false,
+                "panel": "dedicated",
+                "reveal": "always",
+                "showReuseMessage": true
+            },
+            "type": "shell"
+        },
+        {
+            "label": "Run Ruff Linter",
+            "command": "ruff",
+            "args": [
+                "check",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "clear": true,
+                "echo": true,
+                "focus": false,
+                "panel": "dedicated",
+                "reveal": "always",
+                "showReuseMessage": true,
+            },
+            "type": "shell"
+        },
+        {
+            "label": "Run Pylint",
+            "command": "pylint",
+            "args": [
+                "plotpy",
+                "--disable=C",
+                "--disable=fixme",
+                "--disable=R",
+                "--disable=W",
+                "--ignore=external"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "clear": true,
+                "echo": true,
+                "focus": false,
+                "panel": "dedicated",
+                "reveal": "always",
+                "showReuseMessage": true
+            },
+            "type": "shell"
+        },
+        {
             "label": "gettext - Scan",
             "type": "shell",
             "command": "cmd",
@@ -17,7 +91,7 @@
                 "env": {
                     "UNATTENDED": "1",
                     "PYTHONUTF8": "1",
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
+                    "PYTHON": "${command:python.interpreterPath}",
                 }
             },
             "group": {
@@ -46,7 +120,7 @@
                 "cwd": "scripts",
                 "env": {
                     "UNATTENDED": "1",
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
+                    "PYTHON": "${command:python.interpreterPath}",
                 }
             },
             "group": {
@@ -63,34 +137,6 @@
             }
         },
         {
-            "label": "Run Coverage",
-            "type": "shell",
-            "command": "cmd",
-            "args": [
-                "/c",
-                "run_coverage.bat",
-            ],
-            "options": {
-                "cwd": "scripts",
-                "env": {
-                    "UNATTENDED": "1",
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
-                }
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "dedicated",
-                "showReuseMessage": true,
-                "clear": true
-            }
-        },
-        {
             "label": "Run pytest",
             "type": "shell",
             "command": "cmd",
@@ -102,7 +148,7 @@
                 "cwd": "scripts",
                 "env": {
                     "UNATTENDED": "1",
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}"
+                    "PYTHON": "${command:python.interpreterPath}"
                 }
             },
             "group": {
@@ -119,49 +165,44 @@
             }
         },
         {
-            "label": "Run Pylint",
+            "label": "Update requirements.txt",
+            "command": "toml-to-req",
+            "args": [
+                "--toml-file",
+                "pyproject.toml",
+                "--optional-lists",
+                "dev,doc,test",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "clear": true,
+                "echo": true,
+                "focus": false,
+                "panel": "dedicated",
+                "reveal": "always",
+                "showReuseMessage": true,
+            },
+            "type": "shell"
+        },
+        {
+            "label": "Run Coverage",
             "type": "shell",
             "command": "cmd",
             "args": [
                 "/c",
-                "run_pylint.bat",
-                // "--disable=R0801,C0103,C0114,C0115,C0116,W0612,W0613",
-                "--disable=fixme,C,R,W",
-                "--ignore=external",
+                "run_coverage.bat",
             ],
             "options": {
                 "cwd": "scripts",
                 "env": {
                     "UNATTENDED": "1",
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
-                }
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "dedicated",
-                "showReuseMessage": true,
-                "clear": true
-            }
-        },
-        {
-            "label": "Run Ruff",
-            "type": "shell",
-            "command": "cmd",
-            "args": [
-                "/c",
-                "run_ruff.bat",
-            ],
-            "options": {
-                "cwd": "scripts",
-                "env": {
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
-                    "UNATTENDED": "1"
+                    "PYTHON": "${command:python.interpreterPath}",
                 }
             },
             "group": {
@@ -213,7 +254,7 @@
                 "cwd": "scripts",
                 "env": {
                     "UNATTENDED": "1",
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
+                    "PYTHON": "${command:python.interpreterPath}",
                 }
             },
             "group": {
@@ -241,7 +282,7 @@
                 "cwd": "scripts",
                 "env": {
                     "UNATTENDED": "1",
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
+                    "PYTHON": "${command:python.interpreterPath}",
                 }
             },
             "group": {
@@ -264,7 +305,7 @@
             "options": {
                 "cwd": "scripts",
                 "env": {
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
+                    "PYTHON": "${command:python.interpreterPath}",
                     "UNATTENDED": "1",
                 }
             },
@@ -293,7 +334,7 @@
             "options": {
                 "cwd": "scripts",
                 "env": {
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
+                    "PYTHON": "${command:python.interpreterPath}",
                     "UNATTENDED": "1",
                 }
             },
@@ -326,7 +367,7 @@
             "options": {
                 "cwd": "scripts",
                 "env": {
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
+                    "PYTHON": "${command:python.interpreterPath}",
                     "UNATTENDED": "1",
                 }
             },
@@ -359,7 +400,7 @@
             "options": {
                 "cwd": "scripts",
                 "env": {
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
+                    "PYTHON": "${command:python.interpreterPath}",
                     "UNATTENDED": "1",
                 }
             },
@@ -398,7 +439,7 @@
             },
             "group": {
                 "kind": "build",
-                "isDefault": false
+                "isDefault": true
             },
             "presentation": {
                 "echo": true,

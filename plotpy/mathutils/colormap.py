@@ -136,7 +136,9 @@ DEFAULT_COLORMAPS_PATH = get_cmap_path(
 # Load custom colormaps path from the config file
 CUSTOM_COLORMAPS_PATH = get_cmap_path(
     CONF.get(
-        "colormaps", "colormaps/custom", default="colormaps_custom.json"  # type: ignore
+        "colormaps",
+        "colormaps/custom",
+        default="colormaps_custom.json",  # type: ignore
     )
 )
 

@@ -247,9 +247,9 @@ class ImageBuilder:
             )
         assert data.ndim == 2, "Data must have 2 dimensions"
         if pixel_size is None:
-            assert (
-                center_on is None
-            ), "Argument `pixel_size` must be specified when `center_on`"
+            assert center_on is None, (
+                "Argument `pixel_size` must be specified when `center_on`"
+            )
             xmin, xmax = xdata
             ymin, ymax = ydata
         else:

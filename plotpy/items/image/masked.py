@@ -149,7 +149,6 @@ class MaskedImageMixin:
     def update_mask(self) -> None:
         """Update mask"""
         if isinstance(self.data, np.ma.MaskedArray):
-
             # Casting filling_value to data dtype, otherwise this may raise an error
             # in future versions of NumPy (at the time of writing, this raises a
             # DeprecationWarning "NumPy will stop allowing conversion of out-of-bound

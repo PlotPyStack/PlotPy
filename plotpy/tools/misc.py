@@ -105,7 +105,7 @@ def save_snapshot(plot, p0, p1, new_size=None):
         _end_levels = EndGroup(_("Image levels adjustments"))
         _multiple = BeginGroup(_("Superimposed images"))
         add_images = ChoiceItem(
-            _("If image B is behind image A, " "replace intersection by"),
+            _("If image B is behind image A, replace intersection by"),
             [(False, "A"), (True, "A+B")],
             default=None,
         )

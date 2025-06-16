@@ -9,6 +9,7 @@ plotplugin
 
 A plotpy plot widget plugin for Qt Designer
 """
+
 from plotpy.widgets.qtdesigner import create_qtdesigner_plugin
 
 Plugin = create_qtdesigner_plugin(
