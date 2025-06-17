@@ -174,7 +174,10 @@
                 "dev,doc,test",
             ],
             "options": {
-                "cwd": "${workspaceFolder}"
+                "cwd": "${workspaceFolder}",
+                "statusbar": {
+                    "hide": true
+                }
             },
             "group": {
                 "kind": "build",
@@ -283,6 +286,9 @@
                 "env": {
                     "UNATTENDED": "1",
                     "PYTHON": "${command:python.interpreterPath}",
+                },
+                "statusbar": {
+                    "hide": true
                 }
             },
             "group": {
@@ -336,6 +342,9 @@
                 "env": {
                     "PYTHON": "${command:python.interpreterPath}",
                     "UNATTENDED": "1",
+                },
+                "statusbar": {
+                    "hide": true
                 }
             },
             "args": [
@@ -369,6 +378,9 @@
                 "env": {
                     "PYTHON": "${command:python.interpreterPath}",
                     "UNATTENDED": "1",
+                },
+                "statusbar": {
+                    "hide": true
                 }
             },
             "args": [
