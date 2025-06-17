@@ -14,7 +14,7 @@
             },
             "group": {
                 "kind": "build",
-                "isDefault": false
+                "isDefault": true
             },
             "presentation": {
                 "clear": true,
@@ -37,7 +37,7 @@
             },
             "group": {
                 "kind": "build",
-                "isDefault": false
+                "isDefault": true
             },
             "presentation": {
                 "clear": true,
@@ -65,7 +65,7 @@
             },
             "group": {
                 "kind": "build",
-                "isDefault": false
+                "isDefault": true
             },
             "presentation": {
                 "clear": true,
@@ -172,7 +172,10 @@
                 "dev,doc,test",
             ],
             "options": {
-                "cwd": "${workspaceFolder}"
+                "cwd": "${workspaceFolder}",
+                "statusbar": {
+                    "hide": true
+                }
             },
             "group": {
                 "kind": "build",
@@ -281,11 +284,14 @@
                 "env": {
                     "UNATTENDED": "1",
                     "PYTHON": "${command:python.interpreterPath}",
+                },
+                "statusbar": {
+                    "hide": true
                 }
             },
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": false
             },
             "presentation": {
                 "echo": true,
@@ -334,6 +340,9 @@
                 "env": {
                     "PYTHON": "${command:python.interpreterPath}",
                     "UNATTENDED": "1",
+                },
+                "statusbar": {
+                    "hide": true
                 }
             },
             "args": [
@@ -343,7 +352,7 @@
             "problemMatcher": [],
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": false
             },
             "presentation": {
                 "echo": true,
@@ -367,6 +376,9 @@
                 "env": {
                     "PYTHON": "${command:python.interpreterPath}",
                     "UNATTENDED": "1",
+                },
+                "statusbar": {
+                    "hide": true
                 }
             },
             "args": [
@@ -376,7 +388,7 @@
             "problemMatcher": [],
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": false
             },
             "presentation": {
                 "echo": true,
@@ -437,7 +449,7 @@
             },
             "group": {
                 "kind": "build",
-                "isDefault": false
+                "isDefault": true
             },
             "presentation": {
                 "echo": true,

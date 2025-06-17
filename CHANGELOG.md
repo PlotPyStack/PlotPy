@@ -1,5 +1,11 @@
 # Changelog #
 
+## Version 2.7.5 ##
+
+🛠️ Bug fixes:
+
+* [Issue #44](https://github.com/PlotPyStack/PlotPy/issues/44) - Incorrect calculation method for "∑(y)" in `CurveStatsTool`: replaced `spt.trapezoid` with `np.sum`, which is more consistent with the summation operation
+
 ## Version 2.7.4 ##
 
 In this release, test coverage is 80%.
