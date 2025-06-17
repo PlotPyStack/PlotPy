@@ -4,14 +4,13 @@ Pillow
 PyQt5
 PythonQwt>=0.14
 SciPy>=1.5
-babel == 2.17.0
+babel
 guidata>=3.7
 myst_parser
 pylint
 pytest
 pytest-xvfb
 python-docs-theme
-python-dotenv == 1.1.0
 ruff
 scikit-image >= 0.18
 sphinx

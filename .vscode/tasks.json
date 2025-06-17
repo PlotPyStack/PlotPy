@@ -78,8 +78,17 @@
             "type": "shell"
         },
         {
-            "label": "Preprocess internationalization",
-            "command": "i18npreprocess",
+            "label": "🔎 Scan translations",
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "-m",
+                "guidata.utils.translations",
+                "scan",
+                "--name",
+                "plotpy",
+                "--directory",
+                ".",
+            ],
             "group": {
                 "kind": "build",
                 "isDefault": false
@@ -98,8 +107,17 @@
             "type": "shell",
         },
         {
-            "label": "Postprocess internationalization",
-            "command": "i18npostprocess",
+            "label": "📚 Compile translations",
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "-m",
+                "guidata.utils.translations",
+                "compile",
+                "--name",
+                "plotpy",
+                "--directory",
+                ".",
+            ],
             "group": {
                 "kind": "build",
                 "isDefault": false
