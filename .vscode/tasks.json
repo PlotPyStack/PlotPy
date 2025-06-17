@@ -88,6 +88,8 @@
                 "plotpy",
                 "--directory",
                 ".",
+                "--copyright-holder",
+                "CEA, Codra, Pierre Raybaut"
             ],
             "group": {
                 "kind": "build",
