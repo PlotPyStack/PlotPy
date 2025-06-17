@@ -5,7 +5,7 @@ PyQt5
 PythonQwt>=0.14
 SciPy>=1.5
 babel
-guidata>=3.7
+guidata>=3.10
 myst_parser
 pylint
 pytest
