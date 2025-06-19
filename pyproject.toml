@@ -77,7 +77,8 @@ include = ["plotpy*"]
 version = { attr = "plotpy.__version__" }
 
 [tool.pytest.ini_options]
-addopts = "plotpy"
+addopts = "plotpy --import-mode=importlib"
+# addopts = "plotpy --import-mode=importlib --show-windows"  # Disable offscreen mode
 
 [tool.ruff]
 exclude = [".git", ".vscode", "build", "dist"]

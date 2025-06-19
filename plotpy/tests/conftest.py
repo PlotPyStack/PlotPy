@@ -1,6 +1,7 @@
 # content of conftest.py
 
 import gc
+import os
 
 import guidata
 import h5py
@@ -18,6 +19,22 @@ import plotpy
 # Turn on unattended mode for executing tests without user interaction
 execenv.unattended = True
 execenv.verbose = "quiet"
+
+
+def pytest_addoption(parser):
+    """Add custom command line options to pytest."""
+    parser.addoption(
+        "--show-windows",
+        action="store_true",
+        default=False,
+        help="Display Qt windows during tests (disables QT_QPA_PLATFORM=offscreen)",
+    )
+
+
+def pytest_configure(config):
+    """Configure pytest based on command line options."""
+    if not config.getoption("--show-windows"):
+        os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 
 @pytest.fixture(scope="session", autouse=True)
