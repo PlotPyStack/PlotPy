@@ -349,6 +349,8 @@ class ColorMapManager(QW.QDialog):
             return
         name = cmap.name
         if name == self.active_cmap_name or cmap_exists(name, DEFAULT_COLORMAPS):
+            if execenv.unattended:  # For testing purposes only
+                return
             if name == self.active_cmap_name:
                 msg = _("Colormap <b>%s</b> is the active colormap.")
             else:
