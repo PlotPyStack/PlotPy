@@ -33,8 +33,20 @@ def pytest_addoption(parser):
 
 def pytest_configure(config):
     """Configure pytest based on command line options."""
+    config.addinivalue_line(
+        "markers",
+        "requires_display: mark test as requiring a display "
+        "(skipped in offscreen mode)",
+    )
     if not config.getoption("--show-windows"):
         os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+
+
+def pytest_runtest_setup(item):
+    """Run setup before each test."""
+    if "requires_display" in item.keywords:
+        if os.environ.get("QT_QPA_PLATFORM") == "offscreen":
+            pytest.skip("Skipped in offscreen mode (requires display)")
 
 
 @pytest.fixture(scope="session", autouse=True)
