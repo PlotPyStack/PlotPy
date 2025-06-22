@@ -32,15 +32,14 @@ from plotpy.tools.base import DefaultToolbarID, InteractiveTool, ToggleTool
 from plotpy.tools.cursor import BaseCursorTool
 
 if TYPE_CHECKING:
-    from qwt import QwtText
 
     from plotpy.items.label import DataInfoLabel
     from plotpy.plot.base import BasePlot
     from plotpy.plot.manager import PlotManager
 
 
-class BaseCurveStatsTool(BaseCursorTool):
-    """Curve statistics tool
+class BaseRangeCursorTool(BaseCursorTool):
+    """Base range cursor tool
 
     Args:
         manager: PlotManager Instance
@@ -52,7 +51,7 @@ class BaseCurveStatsTool(BaseCursorTool):
          Defaults to None.
     """
 
-    TITLE = _("Signal statistics")
+    TITLE = ""
     ICON = ""  # No icon by default, subclasses should set this
     SWITCH_TO_DEFAULT_TOOL = True
     LABELFUNCS: tuple[tuple[str, Callable[..., Any]], ...] | None = None
@@ -71,6 +70,85 @@ class BaseCurveStatsTool(BaseCursorTool):
         self._last_item: weakref.ReferenceType[CurveItem] | None = None
         self.label: DataInfoLabel | None = None
         self.labelfuncs = labelfuncs or self.LABELFUNCS
+
+    def create_shape(self) -> XRangeSelection | YRangeSelection:
+        """Create shape associated with the tool"""
+        assert self.SHAPECLASS is not None, "SHAPECLASS must be set in subclasses"
+        return self.SHAPECLASS(0, 0)
+
+    def get_label_title(self) -> str | None:
+        """Return label title"""
+        return self.TITLE
+
+    def get_computation_specs(self):
+        """Return computation specs"""
+        raise NotImplementedError
+
+    def create_label(self) -> DataInfoLabel:
+        """Create label associated with the tool"""
+        # The following import is here to avoid circular imports
+        # pylint: disable=import-outside-toplevel
+        from plotpy.builder import make
+
+        plot = self.manager.get_plot()
+        title = self.get_label_title()
+        specs = self.get_computation_specs()
+        label = make.computations(self.shape, "TL", specs, title)
+        label.attach(plot)
+        label.setZ(plot.get_max_z() + 1)
+        label.setVisible(True)
+        return label
+
+    def move(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
+        """Move tool action
+
+        Args:
+            filter: StatefulEventFilter instance
+            event: Qt mouse event
+        """
+        super().move(filter, event)
+        if self.label is None:
+            self.label = self.create_label()
+
+    def end_move(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
+        """End shape move
+
+        Args:
+            filter: StatefulEventFilter instance
+            event: Qt mouse event
+        """
+        super().end_move(filter, event)
+        if self.label is not None:
+            filter.plot.add_item_with_z_offset(self.label, SHAPE_Z_OFFSET)
+            self.label = None
+
+
+class CurveStatsTool(BaseRangeCursorTool):
+    """X-range curve statistics tool
+
+    Args:
+        manager: PlotManager Instance
+        toolbar_id: Toolbar Id to use. Defaults to DefaultToolbarID.
+        title: Tool name. Defaults to None.
+        icon: Tool icon path. Defaults to None.
+        tip: Available tip. Defaults to None.
+        switch_to_default_tool: Wether to use as the default tool or not.
+         Defaults to None.
+    """
+
+    TITLE = _("Signal statistics")
+    ICON = "xrange.png"
+    LABELFUNCS: tuple[tuple[str, Callable[..., Any]], ...] = (
+        ("%g &lt; x &lt; %g", lambda *args: (args[0].min(), args[0].max())),
+        ("%g &lt; y &lt; %g", lambda *args: (args[1].min(), args[1].max())),
+        ("∆x=%g", lambda *args: args[0].max() - args[0].min()),
+        ("∆y=%g", lambda *args: args[1].max() - args[1].min()),
+        ("&lt;y&gt;=%g", lambda *args: args[1].mean()),
+        ("σ(y)=%g", lambda *args: args[1].std()),
+        ("∑(y)=%g", lambda *args: np.sum(args[1])),
+        ("∫ydx=%g", lambda *args: spt.trapezoid(args[1], args[0])),
+    )
+    SHAPECLASS = XRangeSelection
 
     def set_labelfuncs(
         self, labelfuncs: tuple[tuple[str, Callable[..., Any]], ...]
@@ -101,50 +179,6 @@ class BaseCurveStatsTool(BaseCursorTool):
             return self._last_item()
         return None
 
-    def create_shape(self) -> XRangeSelection | YRangeSelection:
-        """Create shape associated with the tool"""
-        assert self.SHAPECLASS is not None, "SHAPECLASS must be set in subclasses"
-        return self.SHAPECLASS(0, 0)
-
-    def create_label(self) -> DataInfoLabel:
-        """Create label associated with the tool"""
-        # The following import is here to avoid circular imports
-        # pylint: disable=import-outside-toplevel
-        from plotpy.builder import make
-
-        plot = self.manager.get_plot()
-        curve = self.get_associated_item(plot)
-        specs = [(curve, label, func) for label, func in self.labelfuncs]
-        title: QwtText = curve.title()
-        label = make.computations(self.shape, "TL", specs, title.text())
-        label.attach(plot)
-        label.setZ(plot.get_max_z() + 1)
-        label.setVisible(True)
-        return label
-
-    def move(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
-        """Move tool action
-
-        Args:
-            filter: StatefulEventFilter instance
-            event: Qt mouse event
-        """
-        super().move(filter, event)
-        if self.label is None:
-            self.label = self.create_label()
-
-    def end_move(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
-        """End shape move
-
-        Args:
-            filter: StatefulEventFilter instance
-            event: Qt mouse event
-        """
-        super().end_move(filter, event)
-        if self.label is not None:
-            filter.plot.add_item_with_z_offset(self.label, SHAPE_Z_OFFSET)
-            self.label = None
-
     def get_associated_item(self, plot: BasePlot) -> CurveItem | None:
         """Get associated item
 
@@ -159,6 +193,16 @@ class BaseCurveStatsTool(BaseCursorTool):
             self._last_item = weakref.ref(items[0])
         return self.get_last_item()
 
+    def get_label_title(self) -> str | None:
+        """Return label title"""
+        curve = self.get_associated_item(self.manager.get_plot())
+        return curve.title().text() if curve else None
+
+    def get_computation_specs(self) -> list[tuple[CurveItem, str, Callable[..., Any]]]:
+        """Return computation specs"""
+        curve = self.get_associated_item(self.manager.get_plot())
+        return [(curve, label, func) for label, func in self.labelfuncs]
+
     def update_status(self, plot: BasePlot) -> None:
         """Update tool status
 
@@ -169,8 +213,8 @@ class BaseCurveStatsTool(BaseCursorTool):
         self.action.setEnabled(item is not None)
 
 
-class XCurveStatsTool(BaseCurveStatsTool):
-    """X-range curve statistics tool
+class YRangeCursorTool(BaseRangeCursorTool):
+    """Y-range cursor tool
 
     Args:
         manager: PlotManager Instance
@@ -182,45 +226,36 @@ class XCurveStatsTool(BaseCurveStatsTool):
          Defaults to None.
     """
 
-    TITLE = BaseCurveStatsTool.TITLE + " (X)"
-    ICON = "xrange.png"
-    LABELFUNCS: tuple[tuple[str, Callable[..., Any]], ...] = (
-        ("%g &lt; x &lt; %g", lambda *args: (args[0].min(), args[0].max())),
-        ("%g &lt; y &lt; %g", lambda *args: (args[1].min(), args[1].max())),
-        ("∆x=%g", lambda *args: args[0].max() - args[0].min()),
-        ("∆y=%g", lambda *args: args[1].max() - args[1].min()),
-        ("&lt;y&gt;=%g", lambda *args: args[1].mean()),
-        ("σ(y)=%g", lambda *args: args[1].std()),
-        ("∑(y)=%g", lambda *args: np.sum(args[1])),
-        ("∫ydx=%g", lambda *args: spt.trapezoid(args[1], args[0])),
-    )
-    SHAPECLASS = XRangeSelection
-
-
-CurveStatsTool = XCurveStatsTool  # Alias for backward compatibility
-
-
-class YCurveStatsTool(BaseCurveStatsTool):
-    """Y-range curve statistics tool
-
-    Args:
-        manager: PlotManager Instance
-        toolbar_id: Toolbar Id to use. Defaults to DefaultToolbarID.
-        title: Tool name. Defaults to None.
-        icon: Tool icon path. Defaults to None.
-        tip: Available tip. Defaults to None.
-        switch_to_default_tool: Wether to use as the default tool or not.
-         Defaults to None.
-    """
-
-    TITLE = BaseCurveStatsTool.TITLE + " (Y)"
+    TITLE = _("Y-range")
     ICON = "yrange.png"
     LABELFUNCS: tuple[tuple[str, Callable[..., Any]], ...] = (
-        ("%g &lt; x &lt; %g", lambda *args: (args[0].min(), args[0].max())),
-        ("%g &lt; y &lt; %g", lambda *args: (args[1].min(), args[1].max())),
-        ("∆y=%g", lambda *args: args[1].max() - args[1].min()),
+        ("%g &lt; y &lt; %g", lambda ymin, ymax: (ymin, ymax)),
+        ("∆y=%g", lambda ymin, ymax: ymax - ymin),
     )
     SHAPECLASS = YRangeSelection
+
+    def set_labelfuncs(
+        self, labelfuncs: tuple[tuple[str, Callable[..., Any]], ...]
+    ) -> None:
+        """Set label functions
+
+        Args:
+            labelfuncs: Label functions
+
+        Example:
+
+            .. code-block:: python
+
+                labelfuncs = (
+                    ("%g &lt; y &lt; %g", lambda ymin, ymax: (ymin, ymax)),
+                    ("∆y=%g", lambda ymin, ymax: ymax - ymin),
+                )
+        """
+        self.labelfuncs = labelfuncs
+
+    def get_computation_specs(self) -> list[tuple[str, Callable[..., Any]]]:
+        """Return computation specs"""
+        return [(label, func) for label, func in self.labelfuncs]
 
 
 class AntiAliasingTool(ToggleTool):

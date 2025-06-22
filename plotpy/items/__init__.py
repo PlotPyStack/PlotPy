@@ -46,6 +46,8 @@ from .label import (
     LegendBoxItem,
     ObjectInfo,
     RangeComputation,
+    XRangeComputation,
+    YRangeComputation,
     RangeComputation2d,
     RangeInfo,
     SelectedLegendBoxItem,

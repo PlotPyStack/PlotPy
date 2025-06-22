@@ -86,6 +86,7 @@ The following label items are available:
 * :py:class:`.LabelItem`
 * :py:class:`.LegendBoxItem`
 * :py:class:`.SelectedLegendBoxItem`
-* :py:class:`.RangeComputation`
+* :py:class:`.XRangeComputation`
+* :py:class:`.YRangeComputation`
 * :py:class:`.RangeComputation2d`
 * :py:class:`.DataInfoLabel`

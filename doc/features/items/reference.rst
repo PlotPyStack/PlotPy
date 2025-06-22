@@ -138,7 +138,9 @@ Labels
    :members:
 .. autoclass:: plotpy.items.SelectedLegendBoxItem
    :members:
-.. autoclass:: plotpy.items.RangeComputation
+.. autoclass:: plotpy.items.XRangeComputation
+   :members:
+.. autoclass:: plotpy.items.YRangeComputation
    :members:
 .. autoclass:: plotpy.items.RangeComputation2d
    :members:

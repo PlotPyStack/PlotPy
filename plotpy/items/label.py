@@ -948,23 +948,25 @@ class RangeInfo(ObjectInfo):
         return self.label % self.func(v, dv)
 
 
-class RangeComputation(ObjectInfo):
+class XRangeComputation(ObjectInfo):
     """ObjectInfo showing curve computations relative to a `XRangeSelection`
-    or `YRangeSelection` shape
+    shape
 
     Args:
         label: formatted string
         curve: CurveItem object
-        xrangeselection: `XRangeSelection` or `YRangeSelection` object
-        function: input arguments are x, y arrays (extraction of arrays
-         corresponding to the xrangeselection X-axis range)
+        rangeselection: `XRangeSelection` object
+        function: callback function to compute the text to be displayed depending on the
+         range and eventually the curve data. Input arguments are x, y arrays
+        (extraction of associated curve data corresponding to the `rangeselection`
+        X-axis range).
     """
 
     def __init__(
         self,
         label: str,
         curve: CurveItem,
-        rangeselection: XRangeSelection | YRangeSelection,
+        rangeselection: XRangeSelection,
         function: Callable | None = None,
     ) -> None:
         self.label = str(label)
@@ -987,14 +989,11 @@ class RangeComputation(ObjectInfo):
 
     def get_text(self) -> str:
         """Return the text to be displayed"""
-        # pylint: disable=import-outside-toplevel
-        from plotpy.items import XRangeSelection
-
-        v0, v1 = self.range.get_range()
+        x0, x1 = self.range.get_range()
         data = self.curve.get_data()
-        vdata = data[0 if isinstance(self.range, XRangeSelection) else 1]
-        i0 = vdata.searchsorted(v0)
-        i1 = vdata.searchsorted(v1)
+        xdata = data[0]
+        i0 = xdata.searchsorted(x0)
+        i1 = xdata.searchsorted(x1)
         if i0 > i1:
             i0, i1 = i1, i0
         vectors = []
@@ -1006,6 +1005,45 @@ class RangeComputation(ObjectInfo):
             else:
                 vectors.append(vector[i0:i1])
         return self.label % self.func(*vectors)
+
+
+RangeComputation = XRangeComputation  # For backward compatibility
+
+
+class YRangeComputation(ObjectInfo):
+    """ObjectInfo showing computations relative to a `YRangeSelection` shape
+
+    Args:
+        label: formatted string
+        rangeselection: `YRangeSelection` object
+        function: callback function to compute the text to be displayed.
+
+    .. note::
+
+        Unlike the `XRangeSelection`, the `YRangeSelection` does not depend on any
+        curve data, the input arguments of the callback function are simply ymin, ymax
+        values (extraction of the `rangeselection` Y-axis range).
+    """
+
+    def __init__(
+        self,
+        label: str,
+        rangeselection: YRangeSelection,
+        function: Callable,
+    ) -> None:
+        self.label = str(label)
+        self.range = rangeselection
+        if function is None:
+
+            def function(v, dv):
+                return v, dv
+
+        self.func = function
+
+    def get_text(self) -> str:
+        """Return the text to be displayed"""
+        y0, y1 = self.range.get_range()
+        return self.label % self.func(y0, y1)
 
 
 class RangeComputation2d(ObjectInfo):

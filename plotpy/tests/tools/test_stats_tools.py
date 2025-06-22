@@ -21,10 +21,10 @@ from plotpy.plot import PlotDialog, PlotOptions
 from plotpy.tests.data import gen_image4
 from plotpy.tests.unit.utils import drag_mouse
 from plotpy.tools import (
+    CurveStatsTool,
     ImageStatsTool,
     InteractiveTool,
-    XCurveStatsTool,
-    YCurveStatsTool,
+    YRangeCursorTool,
 )
 
 if TYPE_CHECKING:
@@ -79,10 +79,10 @@ class MyPlotDialog(PlotDialog):
 
 
 def test_curve_x_stats_tools() -> None:
-    """Test XCurveStatsTool"""
+    """Test CurveStatsTool"""
     with qt_app_context(exec_loop=True):
-        win = MyPlotDialog(type=PlotType.CURVE, toolclass=XCurveStatsTool)
-        tool = win.manager.get_tool(XCurveStatsTool)
+        win = MyPlotDialog(type=PlotType.CURVE, toolclass=CurveStatsTool)
+        tool = win.manager.get_tool(CurveStatsTool)
         labelfuncs = (
             ("Mean = %g", lambda *args: np.mean(args[1])),
             ("Std = %g", lambda *args: np.std(args[1])),
@@ -93,11 +93,11 @@ def test_curve_x_stats_tools() -> None:
         win.show()
 
 
-def test_curve_y_stats_tools() -> None:
-    """Test YCurveStatsTool"""
+def test_y_range_cursor_tool() -> None:
+    """Test YRangeCursorTool"""
     with qt_app_context(exec_loop=True):
-        win = MyPlotDialog(type=PlotType.CURVE, toolclass=YCurveStatsTool)
-        tool = win.manager.get_tool(YCurveStatsTool)
+        win = MyPlotDialog(type=PlotType.CURVE, toolclass=YRangeCursorTool)
+        tool = win.manager.get_tool(YRangeCursorTool)
         labelfuncs = (
             ("Mean = %g", lambda *args: np.mean(args[1])),
             ("Std = %g", lambda *args: np.std(args[1])),
@@ -173,5 +173,5 @@ def test_image_stats_tools() -> None:
 
 if __name__ == "__main__":
     test_curve_x_stats_tools()
-    test_curve_y_stats_tools()
+    test_y_range_cursor_tool()
     test_image_stats_tools()

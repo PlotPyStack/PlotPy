@@ -29,12 +29,13 @@ from plotpy.items import (
     ImageItem,
     LabelItem,
     LegendBoxItem,
-    RangeComputation,
     RangeComputation2d,
     RangeInfo,
     RectangleShape,
     SelectedLegendBoxItem,
+    XRangeComputation,
     XRangeSelection,
+    YRangeComputation,
     YRangeSelection,
 )
 from plotpy.styles import LabelParam, LabelParamWithContents, LegendParam
@@ -137,13 +138,17 @@ class LabelBuilder:
             return SelectedLegendBoxItem(param, restrict_items)
 
     def info_label(
-        self, anchor: str, comps: list, title: str | None = None
+        self,
+        anchor: str,
+        comps: list[XRangeSelection] | list[YRangeSelection],
+        title: str | None = None,
     ) -> DataInfoLabel:
         """Make an info label `plot item`
 
         Args:
             anchor: anchor position. See :py:class:`.LabelParam` for details
-            comps: list of :py:class:`.label.RangeComputation` objects
+            comps: list of :py:class:`.label.XRangeComputation` or
+             :py:class:`.label.YRangeComputation` objects
             title: label name. Default is None
 
         Returns:
@@ -203,8 +208,8 @@ class LabelBuilder:
         range: XRangeSelection | YRangeSelection,
         anchor: str,
         label: str,
-        curve: CurveItem,
-        function: Callable,
+        curve: CurveItem | None = None,
+        function: Callable | None = None,
         title: str | None = None,
     ) -> DataInfoLabel:
         """Make a computation label `plot item`
@@ -213,7 +218,7 @@ class LabelBuilder:
             range: range selection object
             anchor: anchor position. See :py:class:`.LabelParam` for details
             label: label name. See :py:class:`.DataInfoLabel` for details
-            curve: curve item
+            curve: curve item (not used for `YRangeSelection`)
             function: function to apply to the range selection object
              Default is None (default function is `lambda x, dx: (x, dx)`)
 
@@ -222,37 +227,59 @@ class LabelBuilder:
         """
         if title is None:
             title = curve.param.label
-        return self.computations(range, anchor, [(curve, label, function)], title=title)
+        if isinstance(range, XRangeSelection):
+            specs = [(curve, label, function)]
+        elif isinstance(range, YRangeSelection):
+            specs = [(label, function)]
+        else:
+            raise TypeError(
+                "Invalid range selection type: "
+                f"{type(range).__name__}. "
+                "Expected XRangeSelection or YRangeSelection."
+            )
+        return self.computations(range, anchor, specs, title=title)
 
     def computations(
         self,
-        range: XRangeSelection | YRangeSelection,
+        rangeselection: XRangeSelection | YRangeSelection,
         anchor: str,
-        specs: list,
+        specs: list[tuple[CurveItem, str, Callable]] | list[tuple[str, Callable]],
         title: str | None = None,
     ) -> DataInfoLabel:
         """Make computation labels  `plot item`
 
         Args:
-            range: range selection object
+            rangeselection: range selection object
             anchor: anchor position. See :py:class:`.LabelParam` for details
-            specs: list of (curve, label, function) tuples
+            specs: list of (curve, label, function) tuples for `XRangeComputation`,
+             list of (label, function) tuples for `YRangeComputation`
             title: label name. Default is None
 
         Returns:
             Data info label object
         """
         comps = []
-        same_curve = True
-        curve0 = None
-        for curve, label, function in specs:
-            comp = RangeComputation(label, curve, range, function)
-            comps.append(comp)
-            if curve0 is None:
-                curve0 = curve
-            same_curve = same_curve and curve is curve0
-        if title is None and same_curve:
-            title = curve.param.label
+        if isinstance(rangeselection, XRangeSelection):
+            same_curve = True
+            curve0 = None
+            for curve, label, function in specs:
+                comp = XRangeComputation(label, curve, rangeselection, function)
+                comps.append(comp)
+                if curve0 is None:
+                    curve0 = curve
+                same_curve = same_curve and curve is curve0
+            if title is None and same_curve:
+                title = curve.param.label
+        elif isinstance(rangeselection, YRangeSelection):
+            for label, function in specs:
+                comp = YRangeComputation(label, rangeselection, function)
+                comps.append(comp)
+        else:
+            raise TypeError(
+                "Invalid range selection type: "
+                f"{type(rangeselection).__name__}. "
+                "Expected XRangeSelection or YRangeSelection."
+            )
         return self.info_label(anchor, comps, title=title)
 
     def computation2d(

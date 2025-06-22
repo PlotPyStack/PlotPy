@@ -4,10 +4,9 @@
 
 💥 New features / Enhancements:
 
-* [Issue #45](https://github.com/PlotPyStack/PlotPy/issues/45) - Add support for new curve statistics tools: `XCurveStatsTool` and `YCurveStatsTool`
-  * These tools are similar to the existing `CurveStatsTool`, but they compute statistics for the X and Y coordinates of the curve points, respectively
-  * They can be added to the plot widget using `plot_widget.manager.add_tool(XCurveStatsTool)` or `plot_widget.manager.add_tool(YCurveStatsTool)`
-  * The tools display a table with the computed statistics (mean, median, standard deviation, etc.) for the X or Y coordinates of the curve points
+* [Issue #45](https://github.com/PlotPyStack/PlotPy/issues/45) - Add support for new curve Y-range cursor tool `YRangeCursorTool`:
+  * This tool is similar to the existing `CurveStatsTool`, but it simply shows the Y-range values (min, max and interval).
+  * It can be added to the plot widget using `plot_widget.manager.add_tool(YRangeCursorTool)`
 
 🛠️ Bug fixes:
 
