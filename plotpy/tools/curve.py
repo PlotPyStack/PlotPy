@@ -56,7 +56,7 @@ class BaseCurveStatsTool(BaseCursorTool):
     ICON = ""  # No icon by default, subclasses should set this
     SWITCH_TO_DEFAULT_TOOL = True
     LABELFUNCS: tuple[tuple[str, Callable[..., Any]], ...] | None = None
-    SHAPECLASS: type[XRangeSelection | YRangeSelection] | None = None
+    SHAPECLASS: type[XRangeSelection | YRangeSelection] = XRangeSelection
 
     def __init__(
         self,
