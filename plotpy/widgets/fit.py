@@ -606,7 +606,7 @@ class FitWidget(QWidget):
             plot.add_item(self.legend)
 
         if self.xrange is None:
-            self.xrange = make.range(0.0, 1.0)
+            self.xrange = make.xrange(0.0, 1.0)
             plot.add_item(self.xrange)
         self.xrange.set_range(self.autofit_prm.xmin, self.autofit_prm.xmax)
         self.xrange.setVisible(self.show_xrange)

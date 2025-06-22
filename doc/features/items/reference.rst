@@ -98,6 +98,8 @@ Shapes
    :members:
 .. autoclass:: plotpy.items.XRangeSelection
    :members:
+.. autoclass:: plotpy.items.YRangeSelection
+   :members:
 .. autoclass:: plotpy.items.Marker
    :members:
 .. autoclass:: plotpy.items.RectangleSVGShape

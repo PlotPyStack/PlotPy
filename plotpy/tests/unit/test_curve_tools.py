@@ -23,16 +23,14 @@ if TYPE_CHECKING:
 
 
 from plotpy.items import DataInfoLabel, XRangeSelection
-from plotpy.tools import (
-    CurveStatsTool,
-)
+from plotpy.tools import XCurveStatsTool
 from plotpy.tools.selection import SelectTool
 
 
 def test_curve_stat_tool():
     """Test the curve stats tool."""
     with qt_app_context(exec_loop=False):
-        win, _tool = create_window(CurveStatsTool)
+        win, _tool = create_window(XCurveStatsTool)
         win.show()
         plot = win.manager.get_plot()
 

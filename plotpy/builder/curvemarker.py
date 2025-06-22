@@ -32,6 +32,7 @@ from plotpy.items import (
     HistogramItem,
     Marker,
     XRangeSelection,
+    YRangeSelection,
 )
 from plotpy.plot import BasePlot
 from plotpy.styles import (
@@ -58,6 +59,7 @@ class CurveMarkerCursorBuilder:
 
     def __init__(self):
         self.style = style_generator()
+        self.range = self.xrange  # Compatibility with old code
 
     # ---- Plot items -----------------------------------------------------------------
 
@@ -670,8 +672,8 @@ class CurveMarkerCursorBuilder:
         self.__set_curve_axes(hist, xaxis, yaxis)
         return hist
 
-    def range(self, xmin: float, xmax: float) -> XRangeSelection:
-        """Make a range `plot item`
+    def xrange(self, xmin: float, xmax: float) -> XRangeSelection:
+        """Make a X-range `plot item`
 
         Args:
             xmin: minimum value
@@ -681,6 +683,18 @@ class CurveMarkerCursorBuilder:
             :py:class:`.XRangeSelection` object
         """
         return XRangeSelection(xmin, xmax)
+
+    def yrange(self, ymin: float, ymax: float) -> YRangeSelection:
+        """Make a Y-range `plot item`
+
+        Args:
+            ymin: minimum value
+            ymax: maximum value
+
+        Returns:
+            :py:class:`.YRangeSelection` object
+        """
+        return YRangeSelection(ymin, ymax)
 
     def vcursor(
         self,

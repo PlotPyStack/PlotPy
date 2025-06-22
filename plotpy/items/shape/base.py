@@ -37,6 +37,14 @@ class AbstractShape(QwtPlotItem):
         super().__init__()
         self.selected = False
 
+    def plot(self) -> BasePlot | None:
+        """Return the plot this item belongs to
+
+        Returns:
+            Plot this item belongs to, or None if not attached to any
+        """
+        return super().plot()
+
     # ------IBasePlotItem API----------------------------------------------------
     def get_icon_name(self) -> str:
         """Return the icon name

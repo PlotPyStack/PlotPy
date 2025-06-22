@@ -38,7 +38,7 @@ if TYPE_CHECKING:
     from qtpy.QtGui import QBrush, QPainter, QPen, QTextDocument
 
     from plotpy.interfaces import IItemType
-    from plotpy.items import ImageItem, RectangleShape, XRangeSelection
+    from plotpy.items import ImageItem, RectangleShape, XRangeSelection, YRangeSelection
     from plotpy.styles.base import ItemParameters
 
 ANCHORS = {
@@ -908,18 +908,19 @@ class ObjectInfo:
 
 
 class RangeInfo(ObjectInfo):
-    """ObjectInfo handling XRangeSelection shape informations: x, dx
+    """ObjectInfo handling `XRangeSelection` or `YRangeSelection`
+    shape informations: x, dx or y, dy
 
     Args:
         label: Formatted string
-        xrangeselection: XRangeSelection object
+        xrangeselection: `XRangeSelection` or `YRangeSelection` object
         function: Input arguments are x, dx ; returns objects used to format the
          label. Default function is `lambda x, dx: (x, dx)`.
 
     Examples::
         x = linspace(-10, 10, 10)
         y = sin(sin(sin(x)))
-        xrangeselection = make.range(-2, 2)
+        xrangeselection = make.xrange(-2, 2)
         RangeInfo(u"x = %.1f ± %.1f cm", xrangeselection, lambda x, dx: (x, dx))
         disp = make.info_label('BL', comp, title="titre")
     """
@@ -927,34 +928,34 @@ class RangeInfo(ObjectInfo):
     def __init__(
         self,
         label: str,
-        xrangeselection: XRangeSelection,
+        rangeselection: XRangeSelection | YRangeSelection,
         function: Callable | None = None,
     ) -> None:
         self.label = str(label)
-        self.range = xrangeselection
+        self.range = rangeselection
         if function is None:
 
-            def function(x, dx):
-                return x, dx
+            def function(v, dv):
+                return v, dv
 
         self.func = function
 
     def get_text(self) -> str:
         """Return the text to be displayed"""
-        x0, x1 = self.range.get_range()
-        x = 0.5 * (x0 + x1)
-        dx = 0.5 * (x1 - x0)
-        return self.label % self.func(x, dx)
+        v0, v1 = self.range.get_range()
+        v = 0.5 * (v0 + v1)
+        dv = 0.5 * (v1 - v0)
+        return self.label % self.func(v, dv)
 
 
 class RangeComputation(ObjectInfo):
-    """ObjectInfo showing curve computations relative to a XRangeSelection
-    shape
+    """ObjectInfo showing curve computations relative to a `XRangeSelection`
+    or `YRangeSelection` shape
 
     Args:
         label: formatted string
         curve: CurveItem object
-        xrangeselection: XRangeSelection object
+        xrangeselection: `XRangeSelection` or `YRangeSelection` object
         function: input arguments are x, y arrays (extraction of arrays
          corresponding to the xrangeselection X-axis range)
     """
@@ -963,16 +964,16 @@ class RangeComputation(ObjectInfo):
         self,
         label: str,
         curve: CurveItem,
-        xrangeselection: XRangeSelection,
+        rangeselection: XRangeSelection | YRangeSelection,
         function: Callable | None = None,
     ) -> None:
         self.label = str(label)
         self.curve = curve
-        self.range = xrangeselection
+        self.range = rangeselection
         if function is None:
 
-            def function(x, dx):
-                return x, dx
+            def function(v, dv):
+                return v, dv
 
         self.func = function
 
@@ -986,11 +987,14 @@ class RangeComputation(ObjectInfo):
 
     def get_text(self) -> str:
         """Return the text to be displayed"""
-        x0, x1 = self.range.get_range()
+        # pylint: disable=import-outside-toplevel
+        from plotpy.items import XRangeSelection
+
+        v0, v1 = self.range.get_range()
         data = self.curve.get_data()
-        X = data[0]
-        i0 = X.searchsorted(x0)
-        i1 = X.searchsorted(x1)
+        vdata = data[0 if isinstance(self.range, XRangeSelection) else 1]
+        i0 = vdata.searchsorted(v0)
+        i1 = vdata.searchsorted(v1)
         if i0 > i1:
             i0, i1 = i1, i0
         vectors = []

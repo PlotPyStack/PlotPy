@@ -9,7 +9,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Type
 
 import numpy as np
 from guidata.qthelpers import create_toolbutton, execenv, qt_app_context
@@ -20,7 +20,12 @@ from plotpy.constants import PlotType
 from plotpy.plot import PlotDialog, PlotOptions
 from plotpy.tests.data import gen_image4
 from plotpy.tests.unit.utils import drag_mouse
-from plotpy.tools import CurveStatsTool, ImageStatsTool
+from plotpy.tools import (
+    ImageStatsTool,
+    InteractiveTool,
+    XCurveStatsTool,
+    YCurveStatsTool,
+)
 
 if TYPE_CHECKING:
     from plotpy.items.image.base import BaseImageItem
@@ -28,13 +33,14 @@ if TYPE_CHECKING:
 
 
 class MyPlotDialog(PlotDialog):
-    def __init__(self, type: PlotType) -> None:
+    def __init__(self, type: PlotType, toolclass: Type[InteractiveTool]) -> None:
         """Reimplement PlotDialog method"""
         super().__init__(
             title=f"{type.name.lower().capitalize()} Statistics tools test",
             toolbar=True,
             options=PlotOptions(type=type),
         )
+        self.toolclass = toolclass
         # No need to add the tools to the manager, they are automatically added
         # when the `register_curve_tools` or `register_image_tools` method is called
         self.setup_items()
@@ -55,9 +61,7 @@ class MyPlotDialog(PlotDialog):
 
     def simulate_stats_tool(self) -> None:
         """Simulate the statistics tool"""
-        options = self.plot_widget.options
-        klass = CurveStatsTool if options.type is PlotType.CURVE else ImageStatsTool
-        tool = self.manager.get_tool(klass)
+        tool = self.manager.get_tool(self.toolclass)
         tool.activate()
         drag_mouse(self, np.array([0.4, 0.8]), np.array([0.2, 0.7]))
 
@@ -74,11 +78,26 @@ class MyPlotDialog(PlotDialog):
         plot.select_item(item)
 
 
-def test_curve_stats_tools() -> None:
-    """Test"""
+def test_curve_x_stats_tools() -> None:
+    """Test XCurveStatsTool"""
     with qt_app_context(exec_loop=True):
-        win = MyPlotDialog(type=PlotType.CURVE)
-        tool = win.manager.get_tool(CurveStatsTool)
+        win = MyPlotDialog(type=PlotType.CURVE, toolclass=XCurveStatsTool)
+        tool = win.manager.get_tool(XCurveStatsTool)
+        labelfuncs = (
+            ("Mean = %g", lambda *args: np.mean(args[1])),
+            ("Std = %g", lambda *args: np.std(args[1])),
+            ("Max = %g", lambda *args: np.max(args[1])),
+            ("Min = %g", lambda *args: np.min(args[1])),
+        )
+        tool.set_labelfuncs(labelfuncs)
+        win.show()
+
+
+def test_curve_y_stats_tools() -> None:
+    """Test YCurveStatsTool"""
+    with qt_app_context(exec_loop=True):
+        win = MyPlotDialog(type=PlotType.CURVE, toolclass=YCurveStatsTool)
+        tool = win.manager.get_tool(YCurveStatsTool)
         labelfuncs = (
             ("Mean = %g", lambda *args: np.mean(args[1])),
             ("Std = %g", lambda *args: np.std(args[1])),
@@ -146,12 +165,13 @@ def get_more_stats(
 def test_image_stats_tools() -> None:
     """Test"""
     with qt_app_context(exec_loop=True):
-        win = MyPlotDialog(type=PlotType.IMAGE)
+        win = MyPlotDialog(type=PlotType.IMAGE, toolclass=ImageStatsTool)
         tool = win.manager.get_tool(ImageStatsTool)
         tool.set_stats_func(get_more_stats, replace=False)
         win.show()
 
 
 if __name__ == "__main__":
-    test_curve_stats_tools()
+    test_curve_x_stats_tools()
+    test_curve_y_stats_tools()
     test_image_stats_tools()

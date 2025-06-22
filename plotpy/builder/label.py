@@ -35,6 +35,7 @@ from plotpy.items import (
     RectangleShape,
     SelectedLegendBoxItem,
     XRangeSelection,
+    YRangeSelection,
 )
 from plotpy.styles import LabelParam, LabelParamWithContents, LegendParam
 
@@ -166,13 +167,14 @@ class LabelBuilder:
 
     def range_info_label(
         self,
-        range: XRangeSelection,
+        range: XRangeSelection | YRangeSelection,
         anchor: str,
         label: str,
         function: Callable = None,
         title: str | None = None,
     ) -> DataInfoLabel:
-        """Make an info label `plot item` showing an XRangeSelection object infos
+        """Make an info label `plot item` showing an `XRangeSelection` or
+        `YRangeSelection` object information.
 
         Args:
             range: range selection object
@@ -189,7 +191,7 @@ class LabelBuilder:
 
             x = linspace(-10, 10, 10)
             y = sin(sin(sin(x)))
-            range = make.range(-2, 2)
+            range = make.xrange(-2, 2)
             disp = make.range_info_label(range, 'BL', "x = %.1f ± %.1f cm",
                                          lambda x, dx: (x, dx))
         """
@@ -198,7 +200,7 @@ class LabelBuilder:
 
     def computation(
         self,
-        range: XRangeSelection,
+        range: XRangeSelection | YRangeSelection,
         anchor: str,
         label: str,
         curve: CurveItem,
@@ -223,7 +225,11 @@ class LabelBuilder:
         return self.computations(range, anchor, [(curve, label, function)], title=title)
 
     def computations(
-        self, range: XRangeSelection, anchor: str, specs: list, title: str | None = None
+        self,
+        range: XRangeSelection | YRangeSelection,
+        anchor: str,
+        specs: list,
+        title: str | None = None,
     ) -> DataInfoLabel:
         """Make computation labels  `plot item`
 

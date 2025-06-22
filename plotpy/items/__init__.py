@@ -65,4 +65,5 @@ from .shape import (
     SegmentShape,
     SquareSVGShape,
     XRangeSelection,
+    YRangeSelection,
 )

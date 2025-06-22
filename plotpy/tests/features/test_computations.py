@@ -21,7 +21,7 @@ def test_computations():
     y = np.sin(np.sin(np.sin(x)))
     with qt_app_context(exec_loop=True):
         curve = make.curve(x, y, "ab", "b")
-        range = make.range(-2, 2)
+        range = make.xrange(-2, 2)
         disp0 = make.range_info_label(
             range, "BR", "x = %.1f ± %.1f cm", title="Range infos"
         )

@@ -15,7 +15,6 @@ def test_tools_cyclic_import():
     from plotpy.tools import (
         AnnotatedPointTool,  # noqa: F401
         AverageCrossSectionTool,  # noqa: F401
-        CurveStatsTool,  # noqa: F401
         DoAutoscaleTool,  # noqa: F401
         ItemCenterTool,  # noqa: F401
         OpenImageTool,  # noqa: F401
@@ -23,6 +22,8 @@ def test_tools_cyclic_import():
         PrintTool,  # noqa: F401
         RectangularActionTool,  # noqa: F401
         SelectTool,  # noqa: F401
+        XCurveStatsTool,  # noqa: F401
+        YCurveStatsTool,  # noqa: F401
     )
 
 

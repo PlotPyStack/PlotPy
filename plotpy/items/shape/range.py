@@ -27,8 +27,8 @@ if TYPE_CHECKING:
     from plotpy.styles.base import ItemParameters
 
 
-class XRangeSelection(AbstractShape):
-    """X range selection shape
+class BaseRangeSelection(AbstractShape):
+    """Range selection shape
 
     Args:
         _min: Minimum value
@@ -36,7 +36,7 @@ class XRangeSelection(AbstractShape):
         shapeparam: Shape parameters
     """
 
-    _icon_name = "xrange.png"
+    _icon_name = ""  # This should be set in subclasses
 
     def __init__(
         self,
@@ -75,7 +75,7 @@ class XRangeSelection(AbstractShape):
         """Return state information for pickling"""
         self.shapeparam.update_param(self)
         state = (self.shapeparam, self._min, self._max)
-        return (XRangeSelection, (), state)
+        return (self.__class__, (), state)
 
     def __setstate__(self, state: tuple) -> None:
         """Restore state information from pickling"""
@@ -115,9 +115,162 @@ class XRangeSelection(AbstractShape):
         """Return the handles position
 
         Returns:
+            Tuple with three elements (x0, x1, y) or (y0, y1, x) depending on the
+            orientation of the range selection. The first two elements are the
+            positions of the handles, and the third element is the fixed position
+            (either y or x) depending on the orientation.
+        """
+        raise NotImplementedError("get_handles_pos must be implemented in subclasses")
+
+    def draw(
+        self,
+        painter: QPainter,
+        xMap: qwt.scale_map.QwtScaleMap,
+        yMap: qwt.scale_map.QwtScaleMap,
+        canvasRect: QRectF,
+    ) -> None:
+        """Draw the item
+
+        Args:
+            painter: Painter
+            xMap: X axis scale map
+            yMap: Y axis scale map
+            canvasRect: Canvas rectangle
+        """
+        raise NotImplementedError("draw must be implemented in subclasses")
+
+    def hit_test(self, pos: QPointF) -> tuple[float, float, bool, None]:
+        """Return a tuple (distance, attach point, inside, other_object)
+
+        Args:
+            pos: Position
+
+        Returns:
+            tuple: Tuple with four elements: (distance, attach point, inside,
+             other_object).
+
+        Description of the returned values:
+
+        * distance: distance in pixels (canvas coordinates) to the closest
+           attach point
+        * attach point: handle of the attach point
+        * inside: True if the mouse button has been clicked inside the object
+        * other_object: if not None, reference of the object which will be
+           considered as hit instead of self
+        """
+        raise NotImplementedError("hit_test must be implemented in subclasses")
+
+    def move_local_point_to(self, handle: int, pos: QPointF, ctrl: bool = None) -> None:
+        """Move a handle as returned by hit_test to the new position
+
+        Args:
+            handle: Handle
+            pos: Position
+            ctrl: True if <Ctrl> button is being pressed, False otherwise
+        """
+        raise NotImplementedError(
+            "move_local_point_to must be implemented in subclasses"
+        )
+
+    def move_point_to(
+        self, handle: int, pos: tuple[float, float], ctrl: bool = False
+    ) -> None:
+        """Move a handle as returned by hit_test to the new position
+
+        Args:
+            handle: Handle
+            pos: Position
+            ctrl: True if <Ctrl> button is being pressed, False otherwise
+        """
+        raise NotImplementedError("move_point_to must be implemented in subclasses")
+
+    def move_shape(
+        self, old_pos: tuple[float, float], new_pos: tuple[float, float]
+    ) -> None:
+        """Translate the shape such that old_pos becomes new_pos in axis coordinates
+
+        Args:
+            old_pos: Old position
+            new_pos: New position
+        """
+        raise NotImplementedError("move_shape must be implemented in subclasses")
+
+    def boundingRect(self) -> QC.QRectF:
+        """Return the bounding rectangle of the shape
+
+        Returns:
+            Bounding rectangle of the shape
+        """
+        raise NotImplementedError("boundingRect must be implemented in subclasses")
+
+    def get_range(self) -> tuple[float, float]:
+        """Return the range
+
+        Returns:
+            Tuple with two elements (min, max).
+        """
+        return self._min, self._max
+
+    def set_range(self, _min: float, _max: float, dosignal: bool = True) -> None:
+        """Set the range
+
+        Args:
+            _min: Minimum value
+            _max: Maximum value
+            dosignal: True to emit the SIG_RANGE_CHANGED signal
+        """
+        self._min = _min
+        self._max = _max
+        if dosignal:
+            self.plot().SIG_RANGE_CHANGED.emit(self, self._min, self._max)
+
+    def update_item_parameters(self) -> None:
+        """Update item parameters (dataset) from object properties"""
+        self.shapeparam.update_param(self)
+
+    def get_item_parameters(self, itemparams: ItemParameters) -> None:
+        """
+        Appends datasets to the list of DataSets describing the parameters
+        used to customize apearance of this item
+
+        Args:
+            itemparams: Item parameters
+        """
+        self.update_item_parameters()
+        itemparams.add("ShapeParam", self, self.shapeparam)
+
+    def set_item_parameters(self, itemparams: ItemParameters) -> None:
+        """
+        Change the appearance of this item according
+        to the parameter set provided
+
+        Args:
+            itemparams: Item parameters
+        """
+        update_dataset(self.shapeparam, itemparams.get("ShapeParam"), visible_only=True)
+        self.shapeparam.update_item(self)
+        self.sel_brush = QG.QBrush(self.brush)
+
+
+class XRangeSelection(BaseRangeSelection):
+    """X range selection shape
+
+    Args:
+        _min: Minimum value
+        _max: Maximum value
+        shapeparam: Shape parameters
+    """
+
+    _icon_name = "xrange.png"
+
+    def get_handles_pos(self) -> tuple[float, float, float]:
+        """Return the handles position
+
+        Returns:
             Tuple with three elements (x0, x1, y).
         """
         plot = self.plot()
+        assert plot is not None, "Item must be attached to a plot"
         rct = plot.canvas().contentsRect()
         y = rct.center().y()
         x0 = plot.transform(self.xAxis(), self._min)
@@ -232,28 +385,6 @@ class XRangeSelection(AbstractShape):
             self._max += move
 
         self.plot().SIG_RANGE_CHANGED.emit(self, self._min, self._max)
-        # self.plot().replot()
-
-    def get_range(self) -> tuple[float, float]:
-        """Return the range
-
-        Returns:
-            Tuple with two elements (min, max).
-        """
-        return self._min, self._max
-
-    def set_range(self, _min: float, _max: float, dosignal: bool = True) -> None:
-        """Set the range
-
-        Args:
-            _min: Minimum value
-            _max: Maximum value
-            dosignal: True to emit the SIG_RANGE_CHANGED signal
-        """
-        self._min = _min
-        self._max = _max
-        if dosignal:
-            self.plot().SIG_RANGE_CHANGED.emit(self, self._min, self._max)
 
     def move_shape(
         self, old_pos: tuple[float, float], new_pos: tuple[float, float]
@@ -270,33 +401,6 @@ class XRangeSelection(AbstractShape):
         self.plot().SIG_RANGE_CHANGED.emit(self, self._min, self._max)
         self.plot().replot()
 
-    def update_item_parameters(self) -> None:
-        """Update item parameters (dataset) from object properties"""
-        self.shapeparam.update_param(self)
-
-    def get_item_parameters(self, itemparams: ItemParameters) -> None:
-        """
-        Appends datasets to the list of DataSets describing the parameters
-        used to customize apearance of this item
-
-        Args:
-            itemparams: Item parameters
-        """
-        self.update_item_parameters()
-        itemparams.add("ShapeParam", self, self.shapeparam)
-
-    def set_item_parameters(self, itemparams: ItemParameters) -> None:
-        """
-        Change the appearance of this item according
-        to the parameter set provided
-
-        Args:
-            itemparams: Item parameters
-        """
-        update_dataset(self.shapeparam, itemparams.get("ShapeParam"), visible_only=True)
-        self.shapeparam.update_item(self)
-        self.sel_brush = QG.QBrush(self.brush)
-
     def boundingRect(self) -> QC.QRectF:
         """Return the bounding rectangle of the shape
 
@@ -307,3 +411,164 @@ class XRangeSelection(AbstractShape):
 
 
 assert_interfaces_valid(XRangeSelection)
+
+
+class YRangeSelection(BaseRangeSelection):
+    """Y range selection shape
+
+    Args:
+        _min: Minimum value
+        _max: Maximum value
+        shapeparam: Shape parameters
+    """
+
+    _icon_name = "yrange.png"
+
+    def get_handles_pos(self) -> tuple[float, float, float]:
+        """Return the handles position
+
+        Returns:
+            Tuple with three elements (y0, y1, x).
+        """
+        plot = self.plot()
+        assert plot is not None, "Item must be attached to a plot"
+        rct = plot.canvas().contentsRect()
+        x = rct.center().x()
+        y0 = plot.transform(self.yAxis(), self._min)
+        y1 = plot.transform(self.yAxis(), self._max)
+        return y0, y1, x
+
+    def draw(
+        self,
+        painter: QPainter,
+        xMap: qwt.scale_map.QwtScaleMap,
+        yMap: qwt.scale_map.QwtScaleMap,
+        canvasRect: QRectF,
+    ) -> None:
+        """Draw the item
+
+        Args:
+            painter: Painter
+            xMap: X axis scale map
+            yMap: Y axis scale map
+            canvasRect: Canvas rectangle
+        """
+        plot: BasePlot = self.plot()
+        if not plot:
+            return
+        if self.selected:
+            pen: QG.QPen = self.sel_pen
+            sym: QwtSymbol = self.sel_symbol
+        else:
+            pen: QG.QPen = self.pen
+            sym: QwtSymbol = self.symbol
+
+        rct = QC.QRectF(plot.canvas().contentsRect())
+        rct.setTop(yMap.transform(self._max))
+        rct.setBottom(yMap.transform(self._min))
+
+        painter.fillRect(rct, self.brush)
+        painter.setPen(pen)
+        painter.drawLine(rct.topLeft(), rct.topRight())
+        painter.drawLine(rct.bottomLeft(), rct.bottomRight())
+
+        dash = QG.QPen(pen)
+        dash.setStyle(QC.Qt.DashLine)
+        dash.setWidth(1)
+        painter.setPen(dash)
+        cy = rct.center().y()
+        painter.drawLine(QC.QPointF(rct.left(), cy), QC.QPointF(rct.right(), cy))
+
+        painter.setPen(pen)
+        y0, y1, x = self.get_handles_pos()
+        sym.drawSymbol(painter, QC.QPointF(x, y0))
+        sym.drawSymbol(painter, QC.QPointF(x, y1))
+
+    def hit_test(self, pos: QPointF) -> tuple[float, float, bool, None]:
+        """Return a tuple (distance, attach point, inside, other_object)
+
+        Args:
+            pos: Position
+
+        Returns:
+            tuple: Tuple with four elements: (distance, attach point, inside,
+             other_object).
+
+        Description of the returned values:
+
+        * distance: distance in pixels (canvas coordinates) to the closest
+           attach point
+        * attach point: handle of the attach point
+        * inside: True if the mouse button has been clicked inside the object
+        * other_object: if not None, reference of the object which will be
+           considered as hit instead of self
+        """
+        _x, y = pos.x(), pos.y()
+        y0, y1, _xp = self.get_handles_pos()
+        d0 = math.fabs(y0 - y)
+        d1 = math.fabs(y1 - y)
+        d2 = math.fabs((y0 + y1) / 2 - y)
+        z = np.array([d0, d1, d2])
+        dist = z.min()
+        handle = z.argmin()
+        inside = bool(y0 < y < y1)
+        return dist, handle, inside, None
+
+    def move_local_point_to(self, handle: int, pos: QPointF, ctrl: bool = None) -> None:
+        """Move a handle as returned by hit_test to the new position
+
+        Args:
+            handle: Handle
+            pos: Position
+            ctrl: True if <Ctrl> button is being pressed, False otherwise
+        """
+        _x, y = canvas_to_axes(self, pos)
+        self.move_point_to(handle, (0, y), ctrl)
+
+    def move_point_to(
+        self, handle: int, pos: tuple[float, float], ctrl: bool = False
+    ) -> None:
+        """Move a handle as returned by hit_test to the new position
+
+        Args:
+            handle: Handle
+            pos: Position
+            ctrl: True if <Ctrl> button is being pressed, False otherwise
+        """
+        _, val = pos
+        if handle == 0:
+            self._min = val
+        elif handle == 1:
+            self._max = val
+        elif handle == 2:
+            move = val - (self._max + self._min) / 2
+            self._min += move
+            self._max += move
+
+        self.plot().SIG_RANGE_CHANGED.emit(self, self._min, self._max)
+
+    def move_shape(
+        self, old_pos: tuple[float, float], new_pos: tuple[float, float]
+    ) -> None:
+        """Translate the shape such that old_pos becomes new_pos in axis coordinates
+
+        Args:
+            old_pos: Old position
+            new_pos: New position
+        """
+        dy = new_pos[1] - old_pos[1]
+        self._min += dy
+        self._max += dy
+        self.plot().SIG_RANGE_CHANGED.emit(self, self._min, self._max)
+        self.plot().replot()
+
+    def boundingRect(self) -> QC.QRectF:
+        """Return the bounding rectangle of the shape
+
+        Returns:
+            Bounding rectangle of the shape
+        """
+        return QC.QRectF(0, self._min, 0, self._max - self._min)
+
+
+assert_interfaces_valid(YRangeSelection)

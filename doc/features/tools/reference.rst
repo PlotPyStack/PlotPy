@@ -92,7 +92,9 @@ Shape tools
 Curve tools
 ^^^^^^^^^^^
 
-.. autoclass:: plotpy.tools.CurveStatsTool
+.. autoclass:: plotpy.tools.XCurveStatsTool
+   :members:
+.. autoclass:: plotpy.tools.YCurveStatsTool
    :members:
 .. autoclass:: plotpy.tools.SelectPointTool
    :members:

@@ -549,7 +549,8 @@ class PlotManager:
         # pylint: disable=import-outside-toplevel
         import plotpy.tools as tools
 
-        self.add_tool(tools.CurveStatsTool)
+        self.add_tool(tools.XCurveStatsTool)
+        self.add_tool(tools.YCurveStatsTool)
         self.add_tool(tools.AntiAliasingTool)
         self.add_tool(tools.AxisScaleTool)
         self.add_tool(tools.DownSamplingTool)

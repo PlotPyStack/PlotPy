@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: plotpy VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-06-17 16:37+0200\n"
+"POT-Creation-Date: 2025-06-22 12:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.13.1\n"
+"Generated-By: Babel 2.17.0\n"
 
 msgid "Annotation"
 msgstr ""
@@ -1387,6 +1387,7 @@ msgstr ""
 msgid "If image B is behind image A, replace intersection by"
 msgstr ""
 
+#, python-brace-format
 msgid "There is not enough memory left to process this {destw:d} x {desth:d} image ({mbytes:d} MB would be required)."
 msgstr ""
 
@@ -1571,6 +1572,7 @@ msgstr ""
 msgid "Curve fitting parameter"
 msgstr ""
 
+#, python-brace-format
 msgid "Edit '{name}' fit parameter properties"
 msgstr ""
 
@@ -1605,6 +1607,7 @@ msgstr ""
 msgid "Flip:"
 msgstr ""
 
+#, python-brace-format
 msgid ""
 "{filename} could not be written:\n"
 "{msg}"
@@ -1613,6 +1616,7 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
+#, python-brace-format
 msgid ""
 "{filename} could not be opened:\n"
 "{msg}"

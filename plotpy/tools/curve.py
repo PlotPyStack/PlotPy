@@ -26,7 +26,7 @@ from plotpy.events import (
     setup_standard_tool_filter,
 )
 from plotpy.interfaces import ICurveItemType
-from plotpy.items import Marker, XRangeSelection
+from plotpy.items import Marker, XRangeSelection, YRangeSelection
 from plotpy.items.curve.base import CurveItem
 from plotpy.tools.base import DefaultToolbarID, InteractiveTool, ToggleTool
 from plotpy.tools.cursor import BaseCursorTool
@@ -39,7 +39,7 @@ if TYPE_CHECKING:
     from plotpy.plot.manager import PlotManager
 
 
-class CurveStatsTool(BaseCursorTool):
+class BaseCurveStatsTool(BaseCursorTool):
     """Curve statistics tool
 
     Args:
@@ -53,8 +53,10 @@ class CurveStatsTool(BaseCursorTool):
     """
 
     TITLE = _("Signal statistics")
-    ICON = "xrange.png"
+    ICON = ""  # No icon by default, subclasses should set this
     SWITCH_TO_DEFAULT_TOOL = True
+    LABELFUNCS: tuple[tuple[str, Callable[..., Any]], ...] | None = None
+    SHAPECLASS: type[XRangeSelection | YRangeSelection] | None = None
 
     def __init__(
         self,
@@ -68,16 +70,7 @@ class CurveStatsTool(BaseCursorTool):
         super().__init__(manager, toolbar_id, title=title, icon=icon, tip=tip)
         self._last_item: weakref.ReferenceType[CurveItem] | None = None
         self.label: DataInfoLabel | None = None
-        if labelfuncs is None:
-            labelfuncs: tuple[tuple[str, Callable[..., Any]], ...] = (
-                ("%g &lt; x &lt; %g", lambda *args: (args[0].min(), args[0].max())),
-                ("%g &lt; y &lt; %g", lambda *args: (args[1].min(), args[1].max())),
-                ("&lt;y&gt;=%g", lambda *args: args[1].mean()),
-                ("σ(y)=%g", lambda *args: args[1].std()),
-                ("∑(y)=%g", lambda *args: np.sum(args[1])),
-                ("∫ydx=%g", lambda *args: spt.trapezoid(args[1], args[0])),
-            )
-        self.labelfuncs = labelfuncs
+        self.labelfuncs = labelfuncs or self.LABELFUNCS
 
     def set_labelfuncs(
         self, labelfuncs: tuple[tuple[str, Callable[..., Any]], ...]
@@ -108,9 +101,10 @@ class CurveStatsTool(BaseCursorTool):
             return self._last_item()
         return None
 
-    def create_shape(self) -> XRangeSelection:
+    def create_shape(self) -> XRangeSelection | YRangeSelection:
         """Create shape associated with the tool"""
-        return XRangeSelection(0, 0)
+        assert self.SHAPECLASS is not None, "SHAPECLASS must be set in subclasses"
+        return self.SHAPECLASS(0, 0)
 
     def create_label(self) -> DataInfoLabel:
         """Create label associated with the tool"""
@@ -173,6 +167,60 @@ class CurveStatsTool(BaseCursorTool):
         """
         item = self.get_associated_item(plot)
         self.action.setEnabled(item is not None)
+
+
+class XCurveStatsTool(BaseCurveStatsTool):
+    """X-range curve statistics tool
+
+    Args:
+        manager: PlotManager Instance
+        toolbar_id: Toolbar Id to use. Defaults to DefaultToolbarID.
+        title: Tool name. Defaults to None.
+        icon: Tool icon path. Defaults to None.
+        tip: Available tip. Defaults to None.
+        switch_to_default_tool: Wether to use as the default tool or not.
+         Defaults to None.
+    """
+
+    TITLE = BaseCurveStatsTool.TITLE + " (X)"
+    ICON = "xrange.png"
+    LABELFUNCS: tuple[tuple[str, Callable[..., Any]], ...] = (
+        ("%g &lt; x &lt; %g", lambda *args: (args[0].min(), args[0].max())),
+        ("%g &lt; y &lt; %g", lambda *args: (args[1].min(), args[1].max())),
+        ("∆x=%g", lambda *args: args[0].max() - args[0].min()),
+        ("∆y=%g", lambda *args: args[1].max() - args[1].min()),
+        ("&lt;y&gt;=%g", lambda *args: args[1].mean()),
+        ("σ(y)=%g", lambda *args: args[1].std()),
+        ("∑(y)=%g", lambda *args: np.sum(args[1])),
+        ("∫ydx=%g", lambda *args: spt.trapezoid(args[1], args[0])),
+    )
+    SHAPECLASS = XRangeSelection
+
+
+CurveStatsTool = XCurveStatsTool  # Alias for backward compatibility
+
+
+class YCurveStatsTool(BaseCurveStatsTool):
+    """Y-range curve statistics tool
+
+    Args:
+        manager: PlotManager Instance
+        toolbar_id: Toolbar Id to use. Defaults to DefaultToolbarID.
+        title: Tool name. Defaults to None.
+        icon: Tool icon path. Defaults to None.
+        tip: Available tip. Defaults to None.
+        switch_to_default_tool: Wether to use as the default tool or not.
+         Defaults to None.
+    """
+
+    TITLE = BaseCurveStatsTool.TITLE + " (Y)"
+    ICON = "yrange.png"
+    LABELFUNCS: tuple[tuple[str, Callable[..., Any]], ...] = (
+        ("%g &lt; x &lt; %g", lambda *args: (args[0].min(), args[0].max())),
+        ("%g &lt; y &lt; %g", lambda *args: (args[1].min(), args[1].max())),
+        ("∆y=%g", lambda *args: args[1].max() - args[1].min()),
+    )
+    SHAPECLASS = YRangeSelection
 
 
 class AntiAliasingTool(ToggleTool):

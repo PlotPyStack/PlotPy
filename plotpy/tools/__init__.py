@@ -36,6 +36,8 @@ from .cursor import HCursorTool, HRangeTool, VCursorTool, XCursorTool
 from .curve import (
     AntiAliasingTool,
     CurveStatsTool,
+    XCurveStatsTool,
+    YCurveStatsTool,
     DownSamplingTool,
     EditPointTool,
     SelectPointsTool,
