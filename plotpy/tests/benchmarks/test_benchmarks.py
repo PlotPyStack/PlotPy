@@ -51,7 +51,7 @@ class BaseBM:
     @classmethod
     def print_header(cls):
         """Print header for benchmark results"""
-        execenv.print(f"PlotPy plot benchmark [{about.get_python_libs_infos()}]")
+        execenv.print(f"PlotPy plot benchmark [{about.get_python_libs_info()}]")
         execenv.print()
         table_header = (
             "N".rjust(10) + " | " + "∆t (ms)".rjust(7) + " | " + "Description"

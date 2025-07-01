@@ -23,7 +23,7 @@ def test_computations():
         curve = make.curve(x, y, "ab", "b")
         range = make.xrange(-2, 2)
         disp0 = make.range_info_label(
-            range, "BR", "x = %.1f ± %.1f cm", title="Range infos"
+            range, "BR", "x = %.1f ± %.1f cm", title="Range info"
         )
 
         disp1 = make.computation(

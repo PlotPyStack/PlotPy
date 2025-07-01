@@ -23,15 +23,15 @@ class MyPlotDialog(PlotDialog):
         super().__init__(
             title="ActionTool test", toolbar=True, options=PlotOptions(type="image")
         )
-        self.info_action = create_action(self, "Show infos", triggered=self.show_info)
+        self.info_action = create_action(self, "Show info", triggered=self.show_info)
         self.manager.add_tool(ActionTool, self.info_action, item_types=(ImageItem,))
 
     def show_info(self):
-        """Show infos on selected item(s)"""
+        """Show info on selected item(s)"""
         # This is just a demo of what can be done with ActionTool
         plot = self.get_plot()
         for item in plot.get_selected_items():
-            QW.QMessageBox.information(self, "Item infos", str(item))
+            QW.QMessageBox.information(self, "Item info", str(item))
 
 
 def test_image_plot_tools():

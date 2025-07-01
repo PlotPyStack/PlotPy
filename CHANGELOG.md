@@ -82,7 +82,7 @@ Other dependencies have been updated:
   * Added `info_callback` argument to all annotation class constructors
   * Added `set_info_callback` method to all annotation classes
   * The `info_callback` is a function that takes the annotation object and returns a string with the information to display
-  * Default `info_callback` is redirected to the `get_infos` method of the annotation object (this makes the feature backward compatible)
+  * Default `info_callback` is redirected to the `get_info` method of the annotation object (this makes the feature backward compatible)
 
 🛠️ Bug fixes:
 

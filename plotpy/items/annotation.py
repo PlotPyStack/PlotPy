@@ -74,7 +74,7 @@ class AnnotatedShape(AbstractShape):
 
             def info_callback(annotation: AnnotatedShape) -> str:
                 """Return information on annotation"""
-                return annotation.get_infos()
+                return annotation.get_info()
 
         self.info_callback = info_callback
         self.shape: AbstractShape = self.create_shape()
@@ -231,11 +231,11 @@ class AnnotatedShape(AbstractShape):
                 text += "<br>"
             text += f"<i>{subtitle}</i>"
         if self.area_computations_visible:
-            infos = self.info_callback(self)
-            if infos:
+            info = self.info_callback(self)
+            if info:
                 if text:
                     text += "<br>"
-                text += infos
+                text += info
         return text
 
     def x_to_str(self, x: float) -> str:
@@ -304,7 +304,7 @@ class AnnotatedShape(AbstractShape):
         xs, ys = self.get_tr_size()
         return f"{self.x_to_str(xs)} x {self.y_to_str(ys)}"
 
-    def get_infos(self) -> str:
+    def get_info(self) -> str:
         """Get informations on current shape
 
         Returns:
@@ -525,7 +525,7 @@ class AnnotatedPoint(AnnotatedShape):
         xt, yt = self.apply_transform_matrix(*self.shape.points[0])
         return xt, yt
 
-    def get_infos(self) -> str:
+    def get_info(self) -> str:
         """Get informations on current shape
 
         Returns:
@@ -593,7 +593,7 @@ class AnnotatedSegment(AnnotatedShape):
         self.label.set_pos(*compute_center(x1, y1, x2, y2))
 
     # ----AnnotatedShape API-----------------------------------------------------
-    def get_infos(self) -> str:
+    def get_info(self) -> str:
         """Get informations on current shape
 
         Returns:
@@ -754,7 +754,7 @@ class AnnotatedPolygon(AnnotatedShape):
         """Return shape center coordinates after applying transform matrix"""
         return self.shape.get_center()
 
-    def get_infos(self) -> str:
+    def get_info(self) -> str:
         """Get informations on current shape
 
         Returns:
@@ -820,7 +820,7 @@ class AnnotatedRectangle(AnnotatedShape):
         """Return shape size after applying transform matrix"""
         return compute_rect_size(*self.get_transformed_coords(0, 2))
 
-    def get_infos(self) -> str:
+    def get_info(self) -> str:
         """Get informations on current shape
 
         Returns:
@@ -912,7 +912,7 @@ class AnnotatedObliqueRectangle(AnnotatedRectangle):
         return dx, dy
 
     # ----AnnotatedShape API-----------------------------------------------------
-    def get_infos(self) -> str:
+    def get_info(self) -> str:
         """Get informations on current shape
 
         Returns:
@@ -1033,7 +1033,7 @@ class AnnotatedEllipse(AnnotatedShape):
             dx, dy = dy, dx
         return dx, dy
 
-    def get_infos(self) -> str:
+    def get_info(self) -> str:
         """Get informations on current shape
 
         Returns:
@@ -1064,7 +1064,7 @@ class AnnotatedCircle(AnnotatedEllipse):
         return compute_distance(*self.get_transformed_coords(0, 1))
 
     # ----AnnotatedShape API-------------------------------------------------
-    def get_infos(self) -> str:
+    def get_info(self) -> str:
         """Get informations on current shape
 
         Returns:

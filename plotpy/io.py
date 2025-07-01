@@ -435,11 +435,11 @@ def _imwrite_dcm(filename, arr, template=None):
         "The `template` keyword argument is required to save DICOM files\n"
         "(that is the template DICOM structure object)"
     )
-    infos = np.iinfo(arr.dtype)
-    template.BitsAllocated = infos.bits
-    template.BitsStored = infos.bits
-    template.HighBit = infos.bits - 1
-    template.PixelRepresentation = ("u", "i").index(infos.kind)
+    info = np.iinfo(arr.dtype)
+    template.BitsAllocated = info.bits
+    template.BitsStored = info.bits
+    template.HighBit = info.bits - 1
+    template.PixelRepresentation = ("u", "i").index(info.kind)
     data_vr = ("US", "SS")[template.PixelRepresentation]
     template.Rows = arr.shape[0]
     template.Columns = arr.shape[1]

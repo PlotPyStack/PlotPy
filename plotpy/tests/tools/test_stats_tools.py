@@ -127,7 +127,7 @@ def get_more_stats(
     y1: float,
 ) -> str:
     """Return formatted string with stats on image rectangular area
-    (output should be compatible with AnnotatedShape.get_infos)
+    (output should be compatible with AnnotatedShape.get_info)
 
     Args:
         item: image item
@@ -140,26 +140,26 @@ def get_more_stats(
     data = item.data[iy0:iy1, ix0:ix1]
     p: BaseImageParam = item.param
     xunit, yunit, zunit = p.get_units()
-    infos = ""
+    info = ""
     if xunit == yunit:
         surfacefmt = p.xformat.split()[0] + " " + xunit
         if xunit != "":
             surfacefmt = surfacefmt + "²"
         surface = abs((x1 - x0) * (y1 - y0))
-        infos += _("surface = %s") % (surfacefmt % surface)
+        info += _("surface = %s") % (surfacefmt % surface)
     integral = data.sum()
     integral_fmt = r"%.3e " + zunit
-    infos = infos + "<br>" + _("sum = %s") % (integral_fmt % integral)
+    info = info + "<br>" + _("sum = %s") % (integral_fmt % integral)
     if xunit == yunit and xunit is not None and zunit is not None:
         if surface != 0:
             density = integral / surface
             densityfmt = r"%.3e"
             if xunit and zunit:
                 densityfmt += " " + zunit + "/" + xunit + "²"
-            infos = infos + "<br>" + _("density = %s") % (densityfmt % density)
+            info = info + "<br>" + _("density = %s") % (densityfmt % density)
         else:
-            infos = infos + "<br>" + _("density not computed : surface is null !")
-    return infos
+            info = info + "<br>" + _("density not computed : surface is null !")
+    return info
 
 
 def test_image_stats_tools() -> None:

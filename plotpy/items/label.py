@@ -1078,22 +1078,22 @@ class DataInfoLabel(LabelItem):
 
     Args:
         labelparam: Label parameters
-        infos: List of objects implementing the ``get_text`` method
+        info: List of objects implementing the ``get_text`` method
     """
 
     __implements__ = (IBasePlotItem,)
 
     def __init__(
-        self, labelparam: LabelParam | None = None, infos: list[Any] | None = None
+        self, labelparam: LabelParam | None = None, info: list[Any] | None = None
     ) -> None:
         super().__init__(None, labelparam)
-        if isinstance(infos, ObjectInfo):
-            infos = [infos]
-        self.infos = infos
+        if isinstance(info, ObjectInfo):
+            info = [info]
+        self.info = info
 
     def __reduce__(self) -> tuple[type, tuple]:
         """Return a tuple containing the constructor and its arguments"""
-        return (self.__class__, (self.labelparam, self.infos))
+        return (self.__class__, (self.labelparam, self.info))
 
     def types(self) -> tuple[type[IItemType], ...]:
         """Returns a group or category for this item.
@@ -1111,6 +1111,6 @@ class DataInfoLabel(LabelItem):
             text = ["<b>%s</b>" % title]
         else:
             text = []
-        for info in self.infos:
+        for info in self.info:
             text.append(info.get_text())
         self.set_text("<br/>".join(text))

@@ -18,19 +18,19 @@ import plotpy
 from plotpy.config import _
 
 
-def get_python_libs_infos(addinfos: str = "") -> str:
+def get_python_libs_info(addinfo: str = "") -> str:
     """Get Python and libraries information
 
     Args:
-        addinfos: additional information to be displayed
+        addinfo: additional information to be displayed
 
     Returns:
         str: Python and libraries information
     """
-    if addinfos:
-        addinfos = ", " + addinfos
-    addinfos = f"PlotPy {plotpy.__version__}{addinfos}"
-    return guidata_about.get_python_libs_infos(addinfos)
+    if addinfo:
+        addinfo = ", " + addinfo
+    addinfo = f"PlotPy {plotpy.__version__}{addinfo}"
+    return guidata_about.get_python_libs_info(addinfo)
 
 
 def about(html: bool = True, copyright_only: bool = False) -> str:
@@ -51,8 +51,8 @@ def about(html: bool = True, copyright_only: bool = False) -> str:
         year=2016,
         organization="PlotPyStack",
     )
-    addinfos = f"guidata {guidata.__version__}, PythonQwt {qwt.__version__}"
-    return info.about(html=html, copyright_only=copyright_only, addinfos=addinfos)
+    addinfo = f"guidata {guidata.__version__}, PythonQwt {qwt.__version__}"
+    return info.about(html=html, copyright_only=copyright_only, addinfo=addinfo)
 
 
 def show_about_dialog() -> None:

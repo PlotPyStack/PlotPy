@@ -72,7 +72,7 @@ def get_stats(
     y1: float,
 ) -> str:
     """Return formatted string with stats on image rectangular area
-    (output should be compatible with AnnotatedShape.get_infos)
+    (output should be compatible with AnnotatedShape.get_info)
 
     Args:
         item: image item
@@ -109,7 +109,7 @@ class ImageStatsRectangle(AnnotatedRectangle):
         stats_func: function to get statistics. Defaults to None.
          (see :py:func:`get_stats` for signature and default implementation)
         replace: True to replace stats (statistics are not added to the
-         base infos but replace them). Defaults to False.
+         base info but replace them). Defaults to False.
     """
 
     shape: PolygonShape
@@ -141,7 +141,7 @@ class ImageStatsRectangle(AnnotatedRectangle):
         self.setTitle(self.image_item.title())
 
     # ----AnnotatedShape API-----------------------------------------------------
-    def get_infos(self) -> str | None:
+    def get_info(self) -> str | None:
         """Get informations on current shape
 
         Returns:
@@ -168,14 +168,14 @@ class ImageStatsRectangle(AnnotatedRectangle):
             return _("No available data")
         x0, y0, x1, y1 = self.get_rect()
         if self.replace_stats:
-            base_infos = ""
+            base_info = ""
         else:
-            base_infos = get_stats(self.image_item, x0, y0, x1, y1)
+            base_info = get_stats(self.image_item, x0, y0, x1, y1)
         if self.stats_func is not None:
-            if base_infos:
-                base_infos += "<br>"
-            base_infos += self.stats_func(self.image_item, x0, y0, x1, y1)
-        return base_infos
+            if base_info:
+                base_info += "<br>"
+            base_info += self.stats_func(self.image_item, x0, y0, x1, y1)
+        return base_info
 
 
 class ImageStatsTool(RectangularShapeTool):
@@ -195,7 +195,7 @@ class ImageStatsTool(RectangularShapeTool):
         stats_func: function to get statistics. Defaults to None.
          (see :py:func:`get_stats` for signature and default implementation)
         replace: True to replace stats (statistics are not added to the
-         base infos but replace them). Defaults to False.
+         base info but replace them). Defaults to False.
 
     .. note:: The stats_func function should return a formatted string with
         statistics on the image rectangular area. The function signature should
@@ -257,7 +257,7 @@ class ImageStatsTool(RectangularShapeTool):
         Args:
             stats_func: function to get statistics
              (see :py:func:`get_stats` for signature and default implementation)
-            replace: True to replace stats (statistics are not added to the base infos
+            replace: True to replace stats (statistics are not added to the base info
              but replace them). Defaults to False.
         """
         self.stats_func = stats_func
