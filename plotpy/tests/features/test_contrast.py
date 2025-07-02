@@ -83,7 +83,7 @@ def test_contrast3():
         data = gen_image4(512, 512)
         data = np.fft.fftshift(np.fft.fft2(data)).real
         item = make.image(data, colormap="viridis", eliminate_outliers=2.0)
-        win = __create_dialog_with_contrast(item)
+        _win = __create_dialog_with_contrast(item)
 
 
 if __name__ == "__main__":
