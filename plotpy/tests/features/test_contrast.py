@@ -10,12 +10,13 @@
 import os
 import os.path as osp
 
+import numpy as np
 from guidata.env import execenv
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
 from plotpy.tests import get_path
-from plotpy.tests.data import gen_image1
+from plotpy.tests.data import gen_image1, gen_image4
 
 
 def __create_dialog_with_contrast(item):
@@ -72,6 +73,20 @@ def test_contrast2():
         plot.set_active_item(item2)
 
 
+def test_contrast3():
+    """Contrast test 3
+
+    Test if level histogram works properly when the image has a really high dynamic
+    range (the validation is not automatic)
+    """
+    with qt_app_context(exec_loop=True):
+        data = gen_image4(512, 512)
+        data = np.fft.fftshift(np.fft.fft2(data)).real
+        item = make.image(data, colormap="viridis", eliminate_outliers=2.0)
+        win = __create_dialog_with_contrast(item)
+
+
 if __name__ == "__main__":
-    # test_contrast1()
+    test_contrast1()
     test_contrast2()
+    test_contrast3()

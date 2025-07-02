@@ -11,6 +11,7 @@
 🛠️ Bug fixes:
 
 * [Issue #44](https://github.com/PlotPyStack/PlotPy/issues/44) - Incorrect calculation method for "∑(y)" in `CurveStatsTool`: replaced `spt.trapezoid` with `np.sum`, which is more consistent with the summation operation
+* [Issue #46](https://github.com/PlotPyStack/PlotPy/issues/46) - Contrast adjustment with 'Eliminate outliers' failed for float images with high dynamic range
 
 Other changes:
 
