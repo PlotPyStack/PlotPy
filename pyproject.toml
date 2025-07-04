@@ -38,7 +38,7 @@ classifiers = [
 ]
 requires-python = ">=3.9, <4"
 dependencies = [
-    "guidata>=3.10",
+    "guidata>=3.11",
     "PythonQwt>=0.14",
     "SciPy>=1.5",
     "scikit-image >= 0.18",
@@ -56,6 +56,7 @@ plotpy-tests = "plotpy.tests:run"
 plotpy-benchmarks = "plotpy.tests.benchmarks:run"
 
 [project.optional-dependencies]
+qt = ["PyQt5>=5.11"]
 dev = ["babel", "Coverage", "Cython>=3.0", "pylint", "ruff", "toml-to-requirements"]
 doc = [
     "PyQt5",
