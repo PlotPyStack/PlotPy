@@ -11,16 +11,19 @@ The `PlotPy` package requires the following Python modules:
       - >=3.9, <4
       - Python programming language
     * - guidata
-      - >=3.11
+      -  >= 3.11
       - Automatic GUI generation for easy dataset editing and display
     * - PythonQwt
-      - >=0.14
+      -  >= 0.14
       - Qt plotting widgets for Python
+    * - numpy
+      -  >= 1.22
+      - Fundamental package for array computing in Python
     * - SciPy
-      - >=1.5
+      -  >= 1.7.3
       - Fundamental algorithms for scientific computing in Python
     * - scikit-image
-      -  >= 0.18
+      -  >= 0.19
       - Image processing in Python
     * - Pillow
       - 
@@ -39,7 +42,7 @@ Optional modules for GUI support (Qt):
       - Version
       - Summary
     * - PyQt5
-      - >=5.11
+      - >=5.15.6
       - Python bindings for the Qt cross platform application toolkit
 
 Optional modules for development:
@@ -76,9 +79,6 @@ Optional modules for building the documentation:
     * - Name
       - Version
       - Summary
-    * - PyQt5
-      - 
-      - Python bindings for the Qt cross platform application toolkit
     * - sphinx
       - 
       - Python documentation generator
