@@ -28,9 +28,9 @@ The ``requirements.txt`` mentioned in the following sections is a text file whic
 contains the list of all the Python packages required for building up the projet
 environment. It is used by the ``pip`` command to install all the dependencies.
 
-The ``requirements.txt`` file is generated automatically by the
-``toml-to-requirements`` tool. It is based on the ``pyproject.toml`` file
-which is the reference file for the project dependencies.
+The ``requirements.txt`` file is generated automatically by the ``guidata-genreqs``
+tool. It is based on the ``pyproject.toml`` file which is the reference file for the
+project dependencies.
 
 .. warning::
 
@@ -42,7 +42,7 @@ To update the ``requirements.txt`` file, use the Visual Studio task
 
 .. code-block:: bash
 
-    toml-to-req --toml-file pyproject.toml --include-optional-lists dev,doc,test
+    python -m guidata.utils.genreqs txt
 
 
 Microsoft Windows 10

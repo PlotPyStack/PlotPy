@@ -57,7 +57,7 @@ plotpy-benchmarks = "plotpy.tests.benchmarks:run"
 
 [project.optional-dependencies]
 qt = ["PyQt5>=5.11"]
-dev = ["babel", "Coverage", "Cython>=3.0", "pylint", "ruff", "toml-to-requirements"]
+dev = ["babel", "Coverage", "Cython>=3.0", "pylint", "ruff"]
 doc = [
     "PyQt5",
     "sphinx",
