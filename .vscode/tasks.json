@@ -208,6 +208,30 @@
             "type": "shell"
         },
         {
+            "label": "🔁 Reinstall guidata dev",
+            "type": "shell",
+            "windows": {
+                "command": "pip uninstall -y guidata; Remove-Item -Recurse -Force .venv/Lib/site-packages/guidata -ErrorAction SilentlyContinue; pip install -e ../guidata",
+            },
+            "linux": {
+                "command": "pip uninstall -y guidata && rm -rf .venv/lib/python*/site-packages/guidata && pip install -e ../guidata"
+            },
+            "osx": {
+                "command": "pip uninstall -y guidata && rm -rf .venv/lib/python*/site-packages/guidata && pip install -e ../guidata"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "statusbar": {
+                    "hide": true
+                }
+            },
+            "presentation": {
+                "panel": "dedicated",
+                "reveal": "always"
+            },
+            "problemMatcher": []
+        },
+        {
             "label": "🧹 Clean Up",
             "type": "shell",
             "command": "cmd",
