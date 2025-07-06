@@ -42,7 +42,7 @@ Optional modules for GUI support (Qt):
       - Version
       - Summary
     * - PyQt5
-      - >=5.15.6
+      - >5.15.5
       - Python bindings for the Qt cross platform application toolkit
 
 Optional modules for development:

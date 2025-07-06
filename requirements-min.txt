@@ -1,7 +1,6 @@
 Coverage
 Cython==3.0
 Pillow
-PyQt5==5.15.6
 PythonQwt==0.14
 SciPy==1.7.3
 babel
