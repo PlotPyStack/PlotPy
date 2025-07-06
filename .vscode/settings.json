@@ -7,12 +7,9 @@
     ],
     "files.exclude": {
         "**/__pycache__": true,
-        "**/.pytest_cache": true,
-        "**/.hypothesis": true,
         "**/*.pyc": true,
         "**/*.pyo": true,
         "**/*.pyd": true,
-        ".venv": true
     },
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
@@ -21,13 +18,14 @@
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
     "python.testing.pytestPath": "pytest",
-    "python.testing.pytestArgs": [
-        "plotpy"
-    ],
+    "python.testing.pytestArgs": [],
     "[python]": {
         "editor.defaultFormatter": "charliermarsh.ruff"
     },
     "editor.codeActionsOnSave": {
-        "source.organizeImports": "explicit",
+        "source.organizeImports.ruff": "explicit"
+    },
+    "[restructuredtext]": {
+        "editor.wordWrap": "on"
     },
 }
