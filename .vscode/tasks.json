@@ -208,34 +208,6 @@
             "type": "shell"
         },
         {
-            "label": "Run Coverage",
-            "type": "shell",
-            "command": "cmd",
-            "args": [
-                "/c",
-                "run_coverage.bat",
-            ],
-            "options": {
-                "cwd": "scripts",
-                "env": {
-                    "UNATTENDED": "1",
-                    "PYTHON": "${command:python.interpreterPath}",
-                }
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "dedicated",
-                "showReuseMessage": true,
-                "clear": true
-            }
-        },
-        {
             "label": "🧹 Clean Up",
             "type": "shell",
             "command": "cmd",
@@ -440,28 +412,61 @@
             ]
         },
         {
-            "label": "📊 Display Coverage",
+            "label": "🧪 Run coverage tests",
             "type": "shell",
-            "command": "cmd",
+            "command": "${command:python.interpreterPath}",
             "args": [
-                "/c",
-                "display_cov.bat",
+                "-m",
+                "coverage",
+                "run",
+                "-m",
+                "pytest",
+                "plotpy"
             ],
             "options": {
-                "cwd": "scripts",
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "COVERAGE_PROCESS_START": "${workspaceFolder}/.coveragerc",
+                },
+                "statusbar": {
+                    "hide": true
+                }
             },
             "group": {
-                "kind": "build",
+                "kind": "test",
                 "isDefault": true
             },
             "presentation": {
-                "echo": true,
-                "reveal": "never",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": false,
-                "clear": true
-            }
+                "panel": "dedicated"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "📊 Coverage full",
+            "type": "shell",
+            "windows": {
+                "command": "${command:python.interpreterPath} -m coverage combine && ${command:python.interpreterPath} -m coverage html && start htmlcov\\index.html"
+            },
+            "linux": {
+                "command": "${command:python.interpreterPath} -m coverage combine && ${command:python.interpreterPath} -m coverage html && xdg-open htmlcov/index.html"
+            },
+            "osx": {
+                "command": "${command:python.interpreterPath} -m coverage combine && ${command:python.interpreterPath} -m coverage html && open htmlcov/index.html"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "COVERAGE_PROCESS_START": "${workspaceFolder}/.coveragerc"
+                }
+            },
+            "presentation": {
+                "panel": "dedicated"
+            },
+            "problemMatcher": [],
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "🧪 Run coverage tests",
+            ],
         },
     ]
 }
