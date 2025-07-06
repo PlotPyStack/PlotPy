@@ -54,6 +54,9 @@ Optional modules for development:
     * - Name
       - Version
       - Summary
+    * - build
+      - 
+      - A simple, correct Python build frontend
     * - babel
       - 
       - Internationalization utilities

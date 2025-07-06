@@ -1,9 +1,11 @@
 Coverage
 Cython==3.0
 Pillow
+PyQt5
 PythonQwt==0.14
 SciPy==1.7.3
 babel
+build
 guidata==3.11
 myst_parser
 numpy==1.22
