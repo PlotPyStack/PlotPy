@@ -294,37 +294,6 @@
             }
         },
         {
-            "label": "⚠️ Upgrade whole environment ⚠️",
-            "type": "shell",
-            "command": "cmd",
-            "args": [
-                "/c",
-                "upgrade_env.bat"
-            ],
-            "options": {
-                "cwd": "scripts",
-                "env": {
-                    "UNATTENDED": "1",
-                    "PYTHON": "${command:python.interpreterPath}",
-                },
-                "statusbar": {
-                    "hide": true
-                }
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": false
-            }
-        },
-        {
             "label": "📚 Build documentation",
             "command": "${command:python.interpreterPath}",
             "args": [
