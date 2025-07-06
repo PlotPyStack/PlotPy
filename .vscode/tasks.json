@@ -325,7 +325,7 @@
             }
         },
         {
-            "label": "Build documentation",
+            "label": "📚 Build documentation",
             "command": "${command:python.interpreterPath}",
             "args": [
                 "-m",
@@ -339,13 +339,10 @@
             ],
             "options": {
                 "cwd": "${workspaceFolder}/doc",
-                "statusbar": {
-                    "hide": true
-                }
             },
             "group": {
                 "kind": "build",
-                "isDefault": false
+                "isDefault": true
             },
             "presentation": {
                 "clear": true,
@@ -362,7 +359,24 @@
             ]
         },
         {
-            "label": "Build Python packages",
+            "label": "🌐 Open HTML doc",
+            "type": "shell",
+            "windows": {
+                "command": "start ../build/doc/index.html"
+            },
+            "linux": {
+                "command": "xdg-open ../build/doc/index.html"
+            },
+            "osx": {
+                "command": "open ../build/doc/index.html"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}/doc"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "📦 Build Python packages",
             "type": "shell",
             "command": "cmd",
             "options": {
@@ -435,7 +449,7 @@
             ]
         },
         {
-            "label": "Build extensions in place",
+            "label": "⛏️ Build in place",
             "type": "shell",
             "command": "cmd",
             "options": {
@@ -468,7 +482,7 @@
             ]
         },
         {
-            "label": "Display Coverage",
+            "label": "📊 Display Coverage",
             "type": "shell",
             "command": "cmd",
             "args": [
