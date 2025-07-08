@@ -7,6 +7,7 @@
 * [Issue #45](https://github.com/PlotPyStack/PlotPy/issues/45) - Add support for new curve Y-range cursor tool `YRangeCursorTool`:
   * This tool is similar to the existing `CurveStatsTool`, but it simply shows the Y-range values (min, max and interval).
   * It can be added to the plot widget using `plot_widget.manager.add_tool(YRangeCursorTool)`
+* Update color configurations defaults for improved visibility
 
 🛠️ Bug fixes:
 
@@ -15,8 +16,15 @@
 
 Other changes:
 
+* API breakage: renamed annotations `AnnotatedShape.get_infos` method to `get_info`
 * Updated `guidata` dependency to V3.10.0
 * Using new `guidata` translation utility based on `babel`
+* Updated dependencies following the latest security advisories (NumPy >= 1.22)
+* Added `pre-commit` hook to run `ruff` (both `ruff check` and `ruff format`) on commit
+* Added missing `build` optional dependency to development dependencies in `pyproject.toml`
+* Visual Studio Code tasks:
+  * Major overhaul (cleanup and simplification)
+  * Removal of no longer used batch files
 
 ## Version 2.7.4 ##
 
