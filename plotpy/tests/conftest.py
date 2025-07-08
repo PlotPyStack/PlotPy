@@ -13,8 +13,6 @@ import qwt
 import scipy
 import tifffile
 from guidata.env import execenv
-from qtpy import QtCore as QC
-from qtpy import QtWidgets as QW
 
 import plotpy
 
@@ -49,20 +47,6 @@ def pytest_runtest_setup(item):
     if "requires_display" in item.keywords:
         if os.environ.get("QT_QPA_PLATFORM") == "offscreen":
             pytest.skip("Skipped in offscreen mode (requires display)")
-
-
-@pytest.hookimpl(tryfirst=True)
-def pytest_runtest_teardown(item, nextitem):  # pylint: disable=unused-argument
-    """Run teardown after each test."""
-    # This is necessary to close any open dialogs after each test because the
-    # mechanism used to close them automatically in the test suite
-    # (i.e., `exec_dialog`) does not work with some PyQt versions.
-    QC.QCoreApplication.processEvents()
-    qapp: QW.QApplication = QW.QApplication.instance()
-    if qapp is not None:
-        for widget in qapp.topLevelWidgets():
-            if isinstance(widget, QW.QDialog) and widget.isVisible():
-                widget.reject()
 
 
 @pytest.fixture(scope="session", autouse=True)
