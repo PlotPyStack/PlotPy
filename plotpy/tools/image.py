@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-import weakref
 from typing import TYPE_CHECKING, Any, Callable, Literal
 
 from guidata.configtools import get_icon
@@ -39,6 +38,7 @@ from plotpy.tools.base import (
     DefaultToolbarID,
     GuiTool,
     InteractiveTool,
+    LastItemHolder,
     PanelTool,
     ToggleTool,
 )
@@ -243,7 +243,7 @@ class ImageStatsTool(RectangularShapeTool):
             icon,
             tip,
         )
-        self._last_item = None
+        self.last_item_holder = LastItemHolder(IImageItemType)
         self.stats_func = stats_func
         self.replace_stats = replace
 
@@ -262,16 +262,6 @@ class ImageStatsTool(RectangularShapeTool):
         """
         self.stats_func = stats_func
         self.replace_stats = replace
-
-    def get_last_item(self) -> BaseImageItem | None:
-        """Last image item getter
-
-        Returns:
-            Returns last image item or None
-        """
-        if self._last_item is not None:
-            return self._last_item()
-        return None
 
     def create_shape(self) -> tuple[ImageStatsRectangle, Literal[0], Literal[2]]:
         """Returns a new ImageStatsRectangle instance and the index of handles to
@@ -311,7 +301,7 @@ class ImageStatsTool(RectangularShapeTool):
             final: unused argument. Defaults to False.
         """
         plot = shape.plot()
-        image = self.get_last_item()
+        image = self.last_item_holder.get()
         if plot is not None and image is not None:
             plot.unselect_all()
             plot.set_active_item(shape)
@@ -326,20 +316,6 @@ class ImageStatsTool(RectangularShapeTool):
         super().handle_final_shape(shape)
         self.register_shape(shape, final=True)
 
-    def get_associated_item(self, plot: BasePlot) -> BaseImageItem | None:
-        """Return a reference to the last image item associated with the tool
-
-        Args:
-            plot: Plot instance
-
-        Returns:
-            Reference to the last image item associated with the tool
-        """
-        items = plot.get_selected_items(item_type=IImageItemType)
-        if len(items) == 1:
-            self._last_item = weakref.ref(items[0])
-        return self.get_last_item()
-
     def update_status(self, plot: BasePlot) -> None:
         """Update tool status if the plot type is not PlotType.CURVE.
 
@@ -347,7 +323,7 @@ class ImageStatsTool(RectangularShapeTool):
             plot: Plot instance
         """
         if update_image_tool_status(self, plot):
-            item = self.get_associated_item(plot)
+            item = self.last_item_holder.update_from_selection(plot)
             self.action.setEnabled(item is not None)
 
 
