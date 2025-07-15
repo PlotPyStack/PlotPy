@@ -1,6 +1,6 @@
 # Changelog #
 
-## Version 2.8.0 ##
+## Version 2.7.5 ##
 
 💥 New features / Enhancements:
 
@@ -12,6 +12,10 @@
 🛠️ Bug fixes:
 
 * [Issue #44](https://github.com/PlotPyStack/PlotPy/issues/44) - Incorrect calculation method for "∑(y)" in `CurveStatsTool`: replaced `spt.trapezoid` with `np.sum`, which is more consistent with the summation operation
+* Fix `update_status` method in all cross-section tools (intensity profile tools):
+  * Use `get_items` instead of `get_selected_items` to retrieve the image items
+  * This allows the tools to work properly when no image item is selected, but there are image items in the plot
+  * This closes [Issue #47](https://github.com/PlotPyStack/PlotPy/issues/47) - Intensity profile tools do not work when no image item is selected
 * [Issue #46](https://github.com/PlotPyStack/PlotPy/issues/46) - Contrast adjustment with 'Eliminate outliers' failed for float images with high dynamic range
 
 Other changes:

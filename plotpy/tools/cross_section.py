@@ -33,7 +33,7 @@ class CrossSectionTool(RectangularShapeTool):
     def update_status(self, plot: BasePlot) -> None:
         """Update status of the tool"""
         if update_image_tool_status(self, plot):
-            item = plot.get_selected_items(item_type=IImageItemType)
+            item = plot.get_items(item_type=IImageItemType)
             self.action.setEnabled(len(item) > 0)
 
     def create_shape(self) -> AnnotatedPoint:
