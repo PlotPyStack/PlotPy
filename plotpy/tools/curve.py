@@ -178,12 +178,12 @@ class CurveStatsTool(BaseRangeCursorTool):
 
     def get_label_title(self) -> str | None:
         """Return label title"""
-        curve = self.last_item_holder.get()
+        curve = self.last_item_holder.update_from_selection(self.manager.get_plot())
         return curve.title().text() if curve else None
 
     def get_computation_specs(self) -> list[tuple[CurveItem, str, Callable[..., Any]]]:
         """Return computation specs"""
-        curve = self.last_item_holder.get()
+        curve = self.last_item_holder.update_from_selection(self.manager.get_plot())
         return [(curve, label, func) for label, func in self.labelfuncs]
 
     def update_status(self, plot: BasePlot) -> None:
