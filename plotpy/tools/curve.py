@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-import weakref
 from typing import TYPE_CHECKING, Any, Callable
 
 import numpy as np
@@ -28,7 +27,12 @@ from plotpy.events import (
 from plotpy.interfaces import ICurveItemType
 from plotpy.items import Marker, XRangeSelection
 from plotpy.items.curve.base import CurveItem
-from plotpy.tools.base import DefaultToolbarID, InteractiveTool, ToggleTool
+from plotpy.tools.base import (
+    DefaultToolbarID,
+    InteractiveTool,
+    LastItemHolder,
+    ToggleTool,
+)
 from plotpy.tools.cursor import BaseCursorTool
 
 if TYPE_CHECKING:
@@ -66,7 +70,7 @@ class CurveStatsTool(BaseCursorTool):
         tip: str | None = None,
     ) -> None:
         super().__init__(manager, toolbar_id, title=title, icon=icon, tip=tip)
-        self._last_item: weakref.ReferenceType[CurveItem] | None = None
+        self.last_item_holder = LastItemHolder(ICurveItemType)
         self.label: DataInfoLabel | None = None
         if labelfuncs is None:
             labelfuncs: tuple[tuple[str, Callable[..., Any]], ...] = (
@@ -102,12 +106,6 @@ class CurveStatsTool(BaseCursorTool):
         """
         self.labelfuncs = labelfuncs
 
-    def get_last_item(self) -> CurveItem | None:
-        """Get last item on which the tool was used"""
-        if self._last_item is not None:
-            return self._last_item()
-        return None
-
     def create_shape(self) -> XRangeSelection:
         """Create shape associated with the tool"""
         return XRangeSelection(0, 0)
@@ -119,7 +117,7 @@ class CurveStatsTool(BaseCursorTool):
         from plotpy.builder import make
 
         plot = self.manager.get_plot()
-        curve = self.get_associated_item(plot)
+        curve = self.last_item_holder.update_from_selection(plot)
         specs = [(curve, label, func) for label, func in self.labelfuncs]
         title: QwtText = curve.title()
         label = make.computations(self.shape, "TL", specs, title.text())
@@ -151,27 +149,13 @@ class CurveStatsTool(BaseCursorTool):
             filter.plot.add_item_with_z_offset(self.label, SHAPE_Z_OFFSET)
             self.label = None
 
-    def get_associated_item(self, plot: BasePlot) -> CurveItem | None:
-        """Get associated item
-
-        Args:
-            plot: BasePlot instance
-
-        Returns:
-            curve item or None
-        """
-        items = plot.get_selected_items(item_type=ICurveItemType)
-        if len(items) == 1:
-            self._last_item = weakref.ref(items[0])
-        return self.get_last_item()
-
     def update_status(self, plot: BasePlot) -> None:
         """Update tool status
 
         Args:
             plot: BasePlot instance
         """
-        item = self.get_associated_item(plot)
+        item = self.last_item_holder.update_from_selection(plot)
         self.action.setEnabled(item is not None)
 
 
