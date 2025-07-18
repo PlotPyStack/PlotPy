@@ -7,6 +7,8 @@
             "label": "🧽 Ruff Formatter",
             "command": "${command:python.interpreterPath}",
             "args": [
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
                 "-m",
                 "ruff",
                 "format"
@@ -32,6 +34,8 @@
             "label": "🔦 Ruff Linter",
             "command": "${command:python.interpreterPath}",
             "args": [
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
                 "-m",
                 "ruff",
                 "check",
@@ -58,6 +62,8 @@
             "label": "🔦 Pylint",
             "command": "${command:python.interpreterPath}",
             "args": [
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
                 "-m",
                 "pylint",
                 "plotpy",
@@ -92,6 +98,8 @@
             "label": "🔎 Scan translations",
             "command": "${command:python.interpreterPath}",
             "args": [
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
                 "-m",
                 "guidata.utils.translations",
                 "scan",
@@ -123,6 +131,8 @@
             "label": "📚 Compile translations",
             "command": "${command:python.interpreterPath}",
             "args": [
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
                 "-m",
                 "guidata.utils.translations",
                 "compile",
@@ -152,6 +162,8 @@
             "label": "🚀 Pytest",
             "command": "${command:python.interpreterPath}",
             "args": [
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
                 "-m",
                 "pytest",
                 "--ff",
@@ -180,6 +192,8 @@
             "label": "Generate requirements",
             "command": "${command:python.interpreterPath}",
             "args": [
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
                 "-m",
                 "guidata.utils.genreqs",
                 "all",
@@ -260,6 +274,8 @@
             "type": "shell",
             "command": "${command:python.interpreterPath}",
             "args": [
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
                 "-m",
                 "pip",
                 "install",
@@ -295,6 +311,8 @@
             "label": "📚 Build documentation",
             "command": "${command:python.interpreterPath}",
             "args": [
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
                 "-m",
                 "sphinx",
                 "build",
@@ -347,6 +365,8 @@
             "type": "shell",
             "command": "${command:python.interpreterPath}",
             "args": [
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
                 "-m",
                 "guidata.utils.securebuild",
             ],
@@ -441,6 +461,8 @@
             "type": "shell",
             "command": "${command:python.interpreterPath}",
             "args": [
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
                 "-m",
                 "coverage",
                 "run",
