@@ -21,13 +21,12 @@ jobs:
       - name: Install build dependencies (for prebuild)
         run: |
           pip install --upgrade pip
-          pip install guidata babel
+          pip install babel
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.21.2
         env:
-          CIBW_SKIP: "*-win32 *-manylinux_i686"
-          CIBW_BEFORE_BUILD: pip install guidata babel && python -m guidata.utils.translations compile --name plotpy --directory .
+          CIBW_BEFORE_BUILD: pip install guidata babel && pybabel compile -d plotpy/locale -D plotpy
 
       - uses: actions/upload-artifact@v4
         with:
@@ -42,11 +41,11 @@ jobs:
 
       - name: Install build dependencies
         run: |
-          pip install guidata babel
+          pip install babel
 
-      - name: Compile translations
+      - name: Compile translations using Babel
         run: |
-          python -m guidata.utils.translations compile --name plotpy --directory .
+          pybabel compile -d plotpy/locale -D plotpy
 
       - name: Build sdist
         run: pipx run build --sdist
