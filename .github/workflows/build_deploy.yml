@@ -26,7 +26,7 @@ jobs:
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.21.2
         env:
-          CIBW_BEFORE_BUILD: pip install guidata babel && python -m plotpy.utils.translations compile --name plotpy --directory .
+          CIBW_BEFORE_BUILD: pip install guidata babel && python -m guidata.utils.translations compile --name plotpy --directory .
 
       - uses: actions/upload-artifact@v4
         with:
@@ -45,7 +45,7 @@ jobs:
 
       - name: Compile translations
         run: |
-          python -m plotpy.utils.translations compile --name plotpy --directory .
+          python -m guidata.utils.translations compile --name plotpy --directory .
 
       - name: Build sdist
         run: pipx run build --sdist
