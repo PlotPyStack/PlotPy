@@ -26,7 +26,7 @@ jobs:
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.21.2
         env:
-          CIBW_BEFORE_BUILD: pip install guidata babel && pybabel compile -d plotpy/locale -D plotpy
+          CIBW_BEFORE_BUILD: pip install babel && pybabel compile -d plotpy/locale -D plotpy
 
       - uses: actions/upload-artifact@v4
         with:
