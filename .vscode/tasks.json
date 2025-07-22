@@ -11,14 +11,14 @@
                 "${command:python.interpreterPath}",
                 "-m",
                 "ruff",
-                "format"
+                "format",
             ],
             "options": {
-                "cwd": "${workspaceFolder}"
+                "cwd": "${workspaceFolder}",
             },
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": true,
             },
             "presentation": {
                 "clear": true,
@@ -26,9 +26,9 @@
                 "focus": false,
                 "panel": "dedicated",
                 "reveal": "always",
-                "showReuseMessage": true
+                "showReuseMessage": true,
             },
-            "type": "shell"
+            "type": "shell",
         },
         {
             "label": "🔦 Ruff Linter",
@@ -42,11 +42,11 @@
                 "--fix",
             ],
             "options": {
-                "cwd": "${workspaceFolder}"
+                "cwd": "${workspaceFolder}",
             },
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": true,
             },
             "presentation": {
                 "clear": true,
@@ -56,7 +56,7 @@
                 "reveal": "always",
                 "showReuseMessage": true,
             },
-            "type": "shell"
+            "type": "shell",
         },
         {
             "label": "🔦 Pylint",
@@ -75,14 +75,14 @@
                 "--disable=too-many-lines",
                 "--disable=too-many-locals",
                 "--disable=too-many-public-methods",
-                "--disable=too-many-statements"
+                "--disable=too-many-statements",
             ],
             "options": {
-                "cwd": "${workspaceFolder}"
+                "cwd": "${workspaceFolder}",
             },
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": true,
             },
             "presentation": {
                 "clear": true,
@@ -90,9 +90,9 @@
                 "focus": false,
                 "panel": "dedicated",
                 "reveal": "always",
-                "showReuseMessage": true
+                "showReuseMessage": true,
             },
-            "type": "shell"
+            "type": "shell",
         },
         {
             "label": "🔎 Scan translations",
@@ -108,14 +108,14 @@
                 "--directory",
                 ".",
                 "--copyright-holder",
-                "CEA, Codra, Pierre Raybaut"
+                "CEA, Codra, Pierre Raybaut",
             ],
             "group": {
                 "kind": "build",
-                "isDefault": false
+                "isDefault": false,
             },
             "options": {
-                "cwd": "${workspaceFolder}"
+                "cwd": "${workspaceFolder}",
             },
             "presentation": {
                 "echo": true,
@@ -123,7 +123,7 @@
                 "panel": "shared",
                 "reveal": "always",
                 "showReuseMessage": true,
-                "clear": false
+                "clear": false,
             },
             "type": "shell",
         },
@@ -143,10 +143,10 @@
             ],
             "group": {
                 "kind": "build",
-                "isDefault": false
+                "isDefault": false,
             },
             "options": {
-                "cwd": "${workspaceFolder}"
+                "cwd": "${workspaceFolder}",
             },
             "presentation": {
                 "echo": true,
@@ -154,9 +154,9 @@
                 "panel": "shared",
                 "reveal": "always",
                 "showReuseMessage": true,
-                "clear": false
+                "clear": false,
             },
-            "type": "shell"
+            "type": "shell",
         },
         {
             "label": "🚀 Pytest",
@@ -171,12 +171,12 @@
             "options": {
                 "cwd": "${workspaceFolder}",
                 "env": {
-                    "UNATTENDED": "1"
-                }
+                    "UNATTENDED": "1",
+                },
             },
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": true,
             },
             "presentation": {
                 "echo": true,
@@ -184,7 +184,7 @@
                 "focus": false,
                 "panel": "dedicated",
                 "showReuseMessage": true,
-                "clear": true
+                "clear": true,
             },
             "type": "shell",
         },
@@ -204,12 +204,12 @@
                     "PYTHONPATH": "C:/Dev/Projets/guidata",
                 },
                 "statusbar": {
-                    "hide": true
-                }
+                    "hide": true,
+                },
             },
             "group": {
                 "kind": "build",
-                "isDefault": false
+                "isDefault": false,
             },
             "presentation": {
                 "clear": true,
@@ -219,7 +219,7 @@
                 "reveal": "always",
                 "showReuseMessage": true,
             },
-            "type": "shell"
+            "type": "shell",
         },
         {
             "label": "🔁 Reinstall guidata dev",
@@ -228,22 +228,22 @@
                 "command": "pip uninstall -y guidata; Remove-Item -Recurse -Force .venv/Lib/site-packages/guidata -ErrorAction SilentlyContinue; pip install -e ../guidata",
             },
             "linux": {
-                "command": "pip uninstall -y guidata && rm -rf .venv/lib/python*/site-packages/guidata && pip install -e ../guidata"
+                "command": "pip uninstall -y guidata && rm -rf .venv/lib/python*/site-packages/guidata && pip install -e ../guidata",
             },
             "osx": {
-                "command": "pip uninstall -y guidata && rm -rf .venv/lib/python*/site-packages/guidata && pip install -e ../guidata"
+                "command": "pip uninstall -y guidata && rm -rf .venv/lib/python*/site-packages/guidata && pip install -e ../guidata",
             },
             "options": {
                 "cwd": "${workspaceFolder}",
                 "statusbar": {
-                    "hide": true
-                }
+                    "hide": true,
+                },
             },
             "presentation": {
                 "panel": "dedicated",
-                "reveal": "always"
+                "reveal": "always",
             },
-            "problemMatcher": []
+            "problemMatcher": [],
         },
         {
             "label": "🧹 Clean Up",
@@ -251,14 +251,14 @@
             "command": "cmd",
             "args": [
                 "/c",
-                "clean_up.bat"
+                "clean_up.bat",
             ],
             "options": {
                 "cwd": "scripts",
             },
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": true,
             },
             "presentation": {
                 "echo": true,
@@ -266,8 +266,8 @@
                 "focus": false,
                 "panel": "shared",
                 "showReuseMessage": true,
-                "clear": false
-            }
+                "clear": false,
+            },
         },
         {
             "label": "Upgrade PythonQwt/guidata",
@@ -288,15 +288,15 @@
                 "cwd": "scripts",
                 "env": {
                     "PYTHON": "${command:python.interpreterPath}",
-                    "UNATTENDED": "1"
+                    "UNATTENDED": "1",
                 },
                 "statusbar": {
-                    "hide": true
-                }
+                    "hide": true,
+                },
             },
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": true,
             },
             "presentation": {
                 "echo": true,
@@ -304,8 +304,8 @@
                 "focus": false,
                 "panel": "shared",
                 "showReuseMessage": true,
-                "clear": false
-            }
+                "clear": false,
+            },
         },
         {
             "label": "📚 Build documentation",
@@ -320,14 +320,14 @@
                 "build/doc",
                 "-b",
                 "html",
-                "-W"
+                "-W",
             ],
             "options": {
                 "cwd": "${workspaceFolder}",
             },
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": true,
             },
             "presentation": {
                 "clear": true,
@@ -340,25 +340,25 @@
             "type": "shell",
             "dependsOrder": "sequence",
             "dependsOn": [
-                "Generate requirements"
-            ]
+                "Generate requirements",
+            ],
         },
         {
             "label": "🌐 Open HTML doc",
             "type": "shell",
             "windows": {
-                "command": "start build/doc/index.html"
+                "command": "start build/doc/index.html",
             },
             "linux": {
-                "command": "xdg-open build/doc/index.html"
+                "command": "xdg-open build/doc/index.html",
             },
             "osx": {
-                "command": "open build/doc/index.html"
+                "command": "open build/doc/index.html",
             },
             "options": {
-                "cwd": "${workspaceFolder}"
+                "cwd": "${workspaceFolder}",
             },
-            "problemMatcher": []
+            "problemMatcher": [],
         },
         {
             "label": "📦 Build package",
@@ -371,21 +371,21 @@
                 "guidata.utils.securebuild",
             ],
             "options": {
-                "cwd": "${workspaceFolder}"
+                "cwd": "${workspaceFolder}",
             },
             "group": {
                 "kind": "build",
-                "isDefault": false
+                "isDefault": false,
             },
             "presentation": {
                 "clear": true,
-                "panel": "dedicated"
+                "panel": "dedicated",
             },
             "problemMatcher": [],
             "dependsOrder": "sequence",
             "dependsOn": [
                 "🧹 Clean Up",
-            ]
+            ],
         },
         {
             "label": "Build all wheels",
@@ -398,17 +398,17 @@
                     "UNATTENDED": "1",
                 },
                 "statusbar": {
-                    "hide": true
-                }
+                    "hide": true,
+                },
             },
             "args": [
                 "/c",
-                "build_wheels.bat"
+                "build_wheels.bat",
             ],
             "problemMatcher": [],
             "group": {
                 "kind": "build",
-                "isDefault": false
+                "isDefault": false,
             },
             "presentation": {
                 "echo": true,
@@ -416,12 +416,12 @@
                 "focus": false,
                 "panel": "shared",
                 "showReuseMessage": true,
-                "clear": true
+                "clear": true,
             },
             "dependsOrder": "sequence",
             "dependsOn": [
                 "🧹 Clean Up",
-            ]
+            ],
         },
         {
             "label": "⛏️ Build in place",
@@ -432,16 +432,16 @@
                 "env": {
                     "PYTHON": "${command:python.interpreterPath}",
                     "UNATTENDED": "1",
-                }
+                },
             },
             "args": [
                 "/c",
-                "build_inplace.bat"
+                "build_inplace.bat",
             ],
             "problemMatcher": [],
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": true,
             },
             "presentation": {
                 "echo": true,
@@ -449,12 +449,12 @@
                 "focus": false,
                 "panel": "shared",
                 "showReuseMessage": true,
-                "clear": true
+                "clear": true,
             },
             "dependsOrder": "sequence",
             "dependsOn": [
                 "🧹 Clean Up",
-            ]
+            ],
         },
         {
             "label": "🧪 Coverage tests",
@@ -468,7 +468,7 @@
                 "run",
                 "-m",
                 "pytest",
-                "plotpy"
+                "plotpy",
             ],
             "options": {
                 "cwd": "${workspaceFolder}",
@@ -476,38 +476,38 @@
                     "COVERAGE_PROCESS_START": "${workspaceFolder}/.coveragerc",
                 },
                 "statusbar": {
-                    "hide": true
-                }
+                    "hide": true,
+                },
             },
             "group": {
                 "kind": "test",
-                "isDefault": true
+                "isDefault": true,
             },
             "presentation": {
-                "panel": "dedicated"
+                "panel": "dedicated",
             },
-            "problemMatcher": []
+            "problemMatcher": [],
         },
         {
             "label": "📊 Coverage full",
             "type": "shell",
             "windows": {
-                "command": "${command:python.interpreterPath} -m coverage combine && ${command:python.interpreterPath} -m coverage html && start htmlcov\\index.html"
+                "command": "${command:python.interpreterPath} -m coverage combine && ${command:python.interpreterPath} -m coverage html && start htmlcov\\index.html",
             },
             "linux": {
-                "command": "${command:python.interpreterPath} -m coverage combine && ${command:python.interpreterPath} -m coverage html && xdg-open htmlcov/index.html"
+                "command": "${command:python.interpreterPath} -m coverage combine && ${command:python.interpreterPath} -m coverage html && xdg-open htmlcov/index.html",
             },
             "osx": {
-                "command": "${command:python.interpreterPath} -m coverage combine && ${command:python.interpreterPath} -m coverage html && open htmlcov/index.html"
+                "command": "${command:python.interpreterPath} -m coverage combine && ${command:python.interpreterPath} -m coverage html && open htmlcov/index.html",
             },
             "options": {
                 "cwd": "${workspaceFolder}",
                 "env": {
-                    "COVERAGE_PROCESS_START": "${workspaceFolder}/.coveragerc"
-                }
+                    "COVERAGE_PROCESS_START": "${workspaceFolder}/.coveragerc",
+                },
             },
             "presentation": {
-                "panel": "dedicated"
+                "panel": "dedicated",
             },
             "problemMatcher": [],
             "dependsOrder": "sequence",
@@ -515,5 +515,5 @@
                 "🧪 Coverage tests",
             ],
         },
-    ]
+    ],
 }
