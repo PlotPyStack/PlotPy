@@ -22,6 +22,9 @@
   * This signal is emitted when the parameters of an item are changed using the parameters dialog, or a specific tool (e.g. the colormap selection tool, or the lock/unlock tool for image items)
   * The signal is emitted with the item as argument
   * The `ItemListWidget` now listens to this signal and refreshes the item list accordingly
+* Edit tools (Edit data, parameters, etc.):
+  * Exclude read-only items from the list of editable items
+  * It is no longer possible to edit parameters or data of read-only items
 
 Other changes:
 
