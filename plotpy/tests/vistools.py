@@ -29,6 +29,7 @@ def show_items(
     show_itemlist: bool = True,
     show_contrast: bool = False,
     winsize: tuple[int, int] | None = None,
+    disable_readonly_for_items: bool = True,
 ) -> PlotDialog:
     """Show plot items in a dialog box"""
     winsize = (640, 480) if winsize is None else winsize
@@ -50,6 +51,7 @@ def show_items(
     plot = win.manager.get_plot()
     for item in items:
         plot.add_item(item)
-    plot.set_items_readonly(False)
+    if disable_readonly_for_items:
+        plot.set_items_readonly(False)
     win.show()
     return win

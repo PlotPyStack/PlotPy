@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: plotpy 2.7.4\n"
 "Report-Msgid-Bugs-To: p.raybaut@codra.fr\n"
-"POT-Creation-Date: 2025-07-06 14:53+0200\n"
+"POT-Creation-Date: 2025-07-27 15:03+0200\n"
 "PO-Revision-Date: 2025-06-02 11:14+0200\n"
 "Last-Translator: Christophe Debonnel <c.debonnel@codra.fr>\n"
 "Language: fr\n"
@@ -282,6 +282,9 @@ msgstr ""
 "\n"
 "Note : la LUT est codée sur 1024 niveaux (0...1023)"
 
+msgid "Rename"
+msgstr "Renommer"
+
 msgid "Move to back"
 msgstr "Déplacer vers l'arrière-plan"
 
@@ -293,6 +296,9 @@ msgstr "Supprimer"
 
 msgid "Axes associated to selected item"
 msgstr "Axes associés à l'objet sélectionné"
+
+msgid "New title:"
+msgstr "Nouveau titre :"
 
 msgid "Do you really want to remove this item?"
 msgstr "Souhaitez-vous vraiment supprimer cet objet ?"
@@ -1678,4 +1684,3 @@ msgstr "Rotation et rognage"
 
 msgid "Show cropping rectangle"
 msgstr "Afficher le rectangle de rognage"
-

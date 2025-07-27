@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: plotpy VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-07-06 14:53+0200\n"
+"POT-Creation-Date: 2025-07-27 15:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -273,6 +273,9 @@ msgid ""
 "Note: LUT is coded over 1024 levels (0...1023)"
 msgstr ""
 
+msgid "Rename"
+msgstr ""
+
 msgid "Move to back"
 msgstr ""
 
@@ -283,6 +286,9 @@ msgid "Remove"
 msgstr ""
 
 msgid "Axes associated to selected item"
+msgstr ""
+
+msgid "New title:"
 msgstr ""
 
 msgid "Do you really want to remove this item?"

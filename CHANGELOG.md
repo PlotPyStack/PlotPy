@@ -1,6 +1,6 @@
 # Changelog #
 
-## Version 2.7.5 ##
+## Version 2.8.0 ##
 
 💥 New features / Enhancements:
 
@@ -8,6 +8,9 @@
   * This tool is similar to the existing `CurveStatsTool`, but it simply shows the Y-range values (min, max and interval).
   * It can be added to the plot widget using `plot_widget.manager.add_tool(YRangeCursorTool)`
 * Update color configurations defaults for improved visibility
+* Item list:
+  * Added a new "Rename" context menu entry to rename the selected item
+  * This entry is only available for editable items
 
 🛠️ Bug fixes:
 
