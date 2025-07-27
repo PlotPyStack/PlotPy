@@ -1812,8 +1812,7 @@ class BasePlot(qwt.QwtPlot):
             bool: True if the plot parameters are available
         """
         if key == "item":
-            item = self.get_active_item()
-            return item is not None and not item.is_readonly()
+            return self.get_active_item() is not None
         else:
             return True
 
