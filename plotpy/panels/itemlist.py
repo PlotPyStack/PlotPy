@@ -25,13 +25,12 @@ from plotpy.constants import ID_ITEMLIST, PARAMETERS_TITLE_ICON
 from plotpy.interfaces import IPanel
 from plotpy.interfaces import items as itf
 from plotpy.panels.base import PanelWidget
+from plotpy.plot import BasePlot, PlotManager
 from plotpy.styles.base import ItemParameters
 
 if TYPE_CHECKING:
     from qtpy.QtGui import QContextMenuEvent, QIcon
     from qtpy.QtWidgets import QListWidgetItem, QWidget
-
-    from plotpy.plot import BasePlot, PlotManager
 
 
 class ItemListWidget(QW.QListWidget):
@@ -73,6 +72,7 @@ class ItemListWidget(QW.QListWidget):
         for plot in self.manager.get_plots():
             plot.SIG_ITEMS_CHANGED.connect(self.items_changed)
             plot.SIG_ACTIVE_ITEM_CHANGED.connect(self.active_item_changed)
+            plot.SIG_ITEM_PARAMETERS_CHANGED.connect(self.item_parameters_changed)
         self.plot = self.manager.get_plot()
 
     def contextMenuEvent(self, event: QContextMenuEvent) -> None:
@@ -229,6 +229,17 @@ class ItemListWidget(QW.QListWidget):
             lw_item.setFont(font)
         self.refresh_actions()
         self.blockSignals(_block)
+
+    def item_parameters_changed(self, item: itf.IBasePlotItem) -> None:
+        """Item parameters have changed
+
+        Args:
+            item: item
+        """
+        if not isinstance(item, BasePlot):
+            plot = item.plot()
+            if plot is not None:
+                self.items_changed(plot)
 
     def current_row_changed(self, index: int) -> None:
         """QListWidget current row has changed

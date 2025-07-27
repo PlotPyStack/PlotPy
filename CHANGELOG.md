@@ -17,6 +17,11 @@
   * This allows the tools to work properly when no image item is selected, but there are image items in the plot
   * This closes [Issue #47](https://github.com/PlotPyStack/PlotPy/issues/47) - Intensity profile tools do not work when no image item is selected
 * [Issue #46](https://github.com/PlotPyStack/PlotPy/issues/46) - Contrast adjustment with 'Eliminate outliers' failed for float images with high dynamic range
+* Item list: refresh tree when item parameters are changed:
+  * Added `SIG_ITEM_PARAMETERS_CHANGED` signal to `BasePlot` class
+  * This signal is emitted when the parameters of an item are changed using the parameters dialog, or a specific tool (e.g. the colormap selection tool, or the lock/unlock tool for image items)
+  * The signal is emitted with the item as argument
+  * The `ItemListWidget` now listens to this signal and refreshes the item list accordingly
 
 Other changes:
 
