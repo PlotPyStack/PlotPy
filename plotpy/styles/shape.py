@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import warnings
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -111,21 +110,6 @@ class MarkerParam(DataSet):
         item.setSpacing(self.spacing)
         item.update_label()
 
-    # TODO: remove this method in a future release
-    def update_marker(self, obj: Marker) -> None:
-        """Update object from parameters. Deprecated, use update_item instead.
-
-        Args:
-            obj: Marker object
-        """
-        warnings.warn(
-            "`MarkerParam.update_marker` method is deprecated and will be removed "
-            "in a future release. Please use `update_item` instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        self.update_item(obj)
-
     def set_markerstyle(self, style: None | str | int) -> None:
         """Set marker line style
 
@@ -216,21 +200,6 @@ class ShapeParam(DataSet):
         if plot is not None:
             plot.blockSignals(False)
 
-    # TODO: remove this method in a future release
-    def update_shape(self, obj: PolygonShape) -> None:
-        """Update object from parameters. Deprecated, use update_item instead.
-
-        Args:
-            obj: Shape object
-        """
-        warnings.warn(
-            "`ShapeParam.update_shape` method is deprecated and will be removed "
-            "in a future release. Please use `update_item` instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        self.update_item(obj)
-
 
 class AxesShapeParam(DataSet):
     """Parameters for an axes item"""
@@ -282,21 +251,6 @@ class AxesShapeParam(DataSet):
         item.x_brush = self.xarrow_brush.build_brush()
         item.y_pen = self.yarrow_pen.build_pen()
         item.y_brush = self.yarrow_brush.build_brush()
-
-    # TODO: remove this method in a future release
-    def update_axes(self, obj: Axes) -> None:
-        """Update object from parameters. Deprecated, use update_item instead.
-
-        Args:
-            obj: Axes object
-        """
-        warnings.warn(
-            "`AxesShapeParam.update_axes` method is deprecated and will be removed "
-            "in a future release. Please use `update_item` instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        self.update_item(obj)
 
 
 class AnnotationParam(DataSet):
@@ -369,21 +323,6 @@ class AnnotationParam(DataSet):
         if plot is not None:
             plot.blockSignals(False)
 
-    # TODO: remove this method in a future release
-    def update_annotation(self, obj: AnnotatedShape) -> None:
-        """Update object from parameters. Deprecated, use update_item instead.
-
-        Args:
-            obj: AnnotatedShape object
-        """
-        warnings.warn(
-            "`AnnotationParam.update_annotation` method is deprecated and "
-            "will be removed in a future release. Please use `update_item` instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        self.update_item(obj)
-
 
 class AnnotationParam_MS(AnnotationParam):
     """Parameters for annotations with multi-selection enabled"""
@@ -449,18 +388,3 @@ class RangeShapeParam(DataSet):
         item.brush = QG.QBrush(col)
         item.symbol = self.symbol.build_symbol()
         item.sel_symbol = self.sel_symbol.build_symbol()
-
-    # TODO: remove this method in a future release
-    def update_range(self, obj: XRangeSelection) -> None:
-        """Update object from parameters. Deprecated, use update_item instead.
-
-        Args:
-            obj: XRangeSelection object
-        """
-        warnings.warn(
-            "`RangeShapeParam.update_range` method is deprecated and "
-            "will be removed in a future release. Please use `update_item` instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        self.update_item(obj)

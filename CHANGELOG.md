@@ -15,6 +15,17 @@
   * Added support for item title in parameters data set (`RangeShapeParam`)
   * This concerns the `XRangeSelection` and `YRangeSelection` items
 
+🧹 API cleanup: removed deprecated update methods (use `update_item` instead)
+
+* Removed `AnnotationParam.update_annotation` method
+* Removed `AxesShapeParam.update_axes` method
+* Removed `AxesParam.update_axes` method
+* Removed `ImageAxesParam.update_axes` method
+* Removed `LabelParam.update_label` method
+* Removed `MarkerParam.update_marker` method
+* Removed `RangeShapeParam.update_range` method
+* Removed `ShapeParam.update_shape` method
+
 🛠️ Bug fixes:
 
 * [Issue #46](https://github.com/PlotPyStack/PlotPy/issues/46) - Contrast adjustment with 'Eliminate outliers' failed for float images with high dynamic range

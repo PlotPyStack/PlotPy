@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import warnings
 from typing import TYPE_CHECKING
 
 from guidata.dataset import (
@@ -139,21 +138,6 @@ class AxesParam(DataSet):
         item.setYAxis(self.yaxis_id)
         self.yaxis.update_axis(plot, self.yaxis_id)
 
-    # TODO: remove this method in a future release
-    def update_axes(self, obj: QwtPlotItem) -> None:
-        """Update object from parameters. Deprecated, use update_item instead.
-
-        Args:
-            item: The plot item to update.
-        """
-        warnings.warn(
-            "`AxesParam.update_axes` method is deprecated and will be removed "
-            "in a future release. Please use `update_item` instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        self.update_item(obj)
-
 
 class ImageAxesParam(DataSet):
     """Parameters for the axes of an image plot."""
@@ -200,18 +184,3 @@ class ImageAxesParam(DataSet):
         plot.update_colormap_axis(item)
         for axis_id in (X_BOTTOM, Y_LEFT, Y_RIGHT):
             plot.SIG_AXIS_PARAMETERS_CHANGED.emit(axis_id)
-
-    # TODO: remove this method in a future release
-    def update_axes(self, obj: BaseImageItem) -> None:
-        """Update object from parameters. Deprecated, use update_item instead.
-
-        Args:
-            obj: The image item to update.
-        """
-        warnings.warn(
-            "`ImageAxesParam.update_axes` method is deprecated and will be removed "
-            "in a future release. Please use `update_item` instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        self.update_item(obj)
