@@ -11,6 +11,9 @@
 * Item list:
   * Added a new "Rename" context menu entry to rename the selected item
   * This entry is only available for editable items
+* X and Y range selection items:
+  * Added support for item title in parameters data set (`RangeShapeParam`)
+  * This concerns the `XRangeSelection` and `YRangeSelection` items
 
 🛠️ Bug fixes:
 

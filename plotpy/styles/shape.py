@@ -397,6 +397,7 @@ ItemParameters.register_multiselection(AnnotationParam, AnnotationParam_MS)
 class RangeShapeParam(DataSet):
     """Parameters for a range selection item"""
 
+    label = StringItem(_("Title"), default="")
     _styles = BeginTabGroup("Styles")
     # ------------------------------------------------------------------ Line tab
     ___line = BeginGroup(_("Line")).set_prop("display", icon="dashdot.png")
@@ -416,22 +417,23 @@ class RangeShapeParam(DataSet):
     # ----------------------------------------------------------------------- End
     _endstyles = EndTabGroup("Styles")
 
-    def update_param(self, range: XRangeSelection) -> None:
+    def update_param(self, obj: XRangeSelection) -> None:
         """Update parameters from object
 
         Args:
-            range: XRangeSelection object
+            obj: XRangeSelection object
         """
+        self.label = str(obj.title().text())
         self.line: LineStyleParam
         self.sel_line: LineStyleParam
         self.symbol: SymbolParam
         self.sel_symbol: SymbolParam
-        self.line.update_param(range.pen)
-        self.sel_line.update_param(range.sel_pen)
-        self.fill = range.brush.color().name()
-        self.shade = range.brush.color().alphaF()
-        self.symbol.update_param(range.symbol)
-        self.sel_symbol.update_param(range.sel_symbol)
+        self.line.update_param(obj.pen)
+        self.sel_line.update_param(obj.sel_pen)
+        self.fill = obj.brush.color().name()
+        self.shade = obj.brush.color().alphaF()
+        self.symbol.update_param(obj.symbol)
+        self.sel_symbol.update_param(obj.sel_symbol)
 
     def update_item(self, item: XRangeSelection) -> None:
         """Update object from parameters
@@ -439,6 +441,7 @@ class RangeShapeParam(DataSet):
         Args:
             range: XRangeSelection object
         """
+        item.setTitle(self.label)
         item.pen = self.line.build_pen()
         item.sel_pen = self.sel_line.build_pen()
         col = QG.QColor(self.fill)
