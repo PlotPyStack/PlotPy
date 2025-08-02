@@ -38,6 +38,10 @@ jobs:
         pip install PyQt5 setuptools numpy Cython
         python setup.py build_ext --inplace
         pip install .[test]
+        if [ "${{ github.ref_name }}" = "develop" ]; then
+           pip uninstall -y guidata
+           pip install git+https://github.com/PlotPyStack/guidata.git@develop
+        fi
     - name: Lint with Ruff
       run: ruff check --output-format=github plotpy
     - name: Test with pytest
