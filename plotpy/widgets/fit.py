@@ -83,8 +83,8 @@ if TYPE_CHECKING:
 class AutoFitParam(DataSet):
     """Automatic fit parameters"""
 
-    xmin = FloatItem("xmin")
-    xmax = FloatItem("xmax")
+    xmin = FloatItem("xmin", default=0.0)
+    xmax = FloatItem("xmax", default=1.0)
     method = ChoiceItem(
         _("Method"),
         [
@@ -99,7 +99,7 @@ class AutoFitParam(DataSet):
     )
     err_norm = StringItem(
         "enorm",
-        default=2.0,
+        default="2.0",
         help=_("for simplex, powel, cg and bfgs norm used by the error function"),
     )
     xtol = FloatItem(
@@ -117,7 +117,7 @@ class AutoFitParam(DataSet):
 class FitParamDataSet(DataSet):
     """Fit parameter dataset"""
 
-    name = StringItem(_("Name"))
+    name = StringItem(_("Name"), default="")
     value = FloatItem(_("Value"), default=0.0)
     min = FloatItem(_("Min"), default=-1.0)
     max = FloatItem(_("Max"), default=1.0).set_pos(col=1)
