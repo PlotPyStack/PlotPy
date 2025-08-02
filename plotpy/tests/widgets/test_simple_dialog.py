@@ -22,9 +22,9 @@ from plotpy.tools import OpenImageTool
 
 
 class ImageParam(DataSet):
-    title = StringItem(_("Title"))
-    width = IntItem(_("Width"), help=_("Image width (pixels)"))
-    height = IntItem(_("Height"), help=_("Image height (pixels)"))
+    title = StringItem(_("Title"), default=_("Image title"))
+    width = IntItem(_("Width"), default=512, help=_("Image width (pixels)"))
+    height = IntItem(_("Height"), default=512, help=_("Image height (pixels)"))
 
 
 class FilterParam(DataSet):

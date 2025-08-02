@@ -722,9 +722,9 @@ class SelectPointsTool(InteractiveTool):
 class InsertionDataSet(DataSet):
     """Insertion parameters"""
 
-    __index = IntItem(_("Insertion index"), min=0)
+    __index = IntItem(_("Insertion index"), min=0, default=0)
     index = __index
-    value = FloatItem(_("New value"))
+    value = FloatItem(_("New value"), default=0.0)
     index_offset = ChoiceItem(
         _("Location"), choices=[_("Before"), _("After")], default=0
     )

@@ -83,8 +83,8 @@ if TYPE_CHECKING:
 class AutoFitParam(DataSet):
     """Automatic fit parameters"""
 
-    xmin = FloatItem("xmin")
-    xmax = FloatItem("xmax")
+    xmin = FloatItem("xmin", default=0.0)
+    xmax = FloatItem("xmax", default=1.0)
     method = ChoiceItem(
         _("Method"),
         [
@@ -99,7 +99,7 @@ class AutoFitParam(DataSet):
     )
     err_norm = StringItem(
         "enorm",
-        default=2.0,
+        default="2.0",
         help=_("for simplex, powel, cg and bfgs norm used by the error function"),
     )
     xtol = FloatItem(
@@ -117,7 +117,7 @@ class AutoFitParam(DataSet):
 class FitParamDataSet(DataSet):
     """Fit parameter dataset"""
 
-    name = StringItem(_("Name"))
+    name = StringItem(_("Name"), default="")
     value = FloatItem(_("Value"), default=0.0)
     min = FloatItem(_("Min"), default=-1.0)
     max = FloatItem(_("Max"), default=1.0).set_pos(col=1)
@@ -612,12 +612,12 @@ class FitWidget(QWidget):
         self.xrange.setVisible(self.show_xrange)
 
         if self.data_curve is None:
-            self.data_curve = make.curve([], [], _("Data"), color="b", linewidth=2)
+            self.data_curve = make.curve([], [], _("Data"), color="b", linewidth=2.0)
             plot.add_item(self.data_curve)
         self.data_curve.set_data(self.x, self.y)
 
         if self.fit_curve is None:
-            self.fit_curve = make.curve([], [], _("Fit"), color="r", linewidth=2)
+            self.fit_curve = make.curve([], [], _("Fit"), color="r", linewidth=2.0)
             plot.add_item(self.fit_curve)
         self.fit_curve.set_data(self.x, yfit)
 

@@ -29,8 +29,8 @@ def test_pixel_coords():
     with qt_app_context(exec_loop=True):
         image = make.image(data, interpolation="nearest")
         text = "First pixel should be centered on (0, 0) coordinates"
-        label = make.label(text, (1, 1), (0, 0), "L")
-        rect = make.rectangle(5, 5, 10, 10, "Rectangle")
+        label = make.label(text, (1.0, 1.0), (0, 0), "L")
+        rect = make.rectangle(5.0, 5.0, 10.0, 10.0, "Rectangle")
         cursors = []
         for i_cursor in range(0, 21, 10):
             cursors.append(make.vcursor(i_cursor, movable=False))

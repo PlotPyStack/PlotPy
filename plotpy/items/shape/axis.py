@@ -49,7 +49,7 @@ class Axes(PolygonShape):
     ) -> None:
         super().__init__(shapeparam=shapeparam)
         self.set_rect(p0, p1, p2)
-        self.arrow_angle = 15  # degrees
+        self.arrow_angle = 15.0  # degrees
         self.arrow_size = 0.05  # % of axe length
         self.x_pen = self.pen
         self.x_brush = self.brush

@@ -373,7 +373,7 @@ class SymbolParam(DataSet):
             self.marker = MARKER_NAME[symb]
             return
         self.marker = MARKER_NAME[symb.style()]
-        self.size = symb.size().width()
+        self.size = int(symb.size().width())
         self.edgecolor = str(symb.pen().color().name())
         self.facecolor = str(symb.brush().color().name())
 
@@ -420,7 +420,7 @@ DataSetEditLayout.register(SymbolItem, SymbolItemWidget)
 class LineStyleParam(DataSet):
     style = ImageChoiceItem(_("Style"), LINESTYLE_CHOICES, default="SolidLine")
     color = ColorItem(_("Color"), default="black")
-    width = FloatItem(_("Width"), default=1.0, min=0)
+    width = FloatItem(_("Width"), default=1.0, min=0.0)
 
     def update_param(self, pen):
         """

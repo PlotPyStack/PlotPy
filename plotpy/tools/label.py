@@ -83,7 +83,7 @@ class LabelTool(InteractiveTool):
         if textparam.edit(plot):
             text = textparam.text.replace("\n", "<br>")
 
-            label = make.label(text, (0, 0), (10, 10), "TL")
+            label = make.label(text, (0.0, 0.0), (10, 10), "TL")
             title = label.labelparam.label
             self.set_label_style(label)
             label.setTitle(self.TITLE)
