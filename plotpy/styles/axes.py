@@ -46,8 +46,8 @@ class AxisParam(DataSet):
     scale = ChoiceItem(
         _("Scale"), [("lin", _("linear")), ("log", _("logarithmic"))], default="lin"
     )
-    vmin = FloatItem("Min", help=_("Lower axis limit"))
-    vmax = FloatItem("Max", help=_("Upper axis limit"))
+    vmin = FloatItem("Min", help=_("Lower axis limit"), default=0.0)
+    vmax = FloatItem("Max", help=_("Upper axis limit"), default=1.0)
 
     def update_param(self, plot: BasePlot, axis_id: int) -> None:
         """

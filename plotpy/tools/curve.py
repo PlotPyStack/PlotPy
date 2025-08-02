@@ -32,7 +32,6 @@ from plotpy.tools.base import DefaultToolbarID, InteractiveTool, ToggleTool
 from plotpy.tools.cursor import BaseCursorTool
 
 if TYPE_CHECKING:
-
     from plotpy.items.label import DataInfoLabel
     from plotpy.plot.base import BasePlot
     from plotpy.plot.manager import PlotManager
@@ -739,9 +738,9 @@ class SelectPointsTool(InteractiveTool):
 class InsertionDataSet(DataSet):
     """Insertion parameters"""
 
-    __index = IntItem(_("Insertion index"), min=0)
+    __index = IntItem(_("Insertion index"), min=0, default=0)
     index = __index
-    value = FloatItem(_("New value"))
+    value = FloatItem(_("New value"), default=0.0)
     index_offset = ChoiceItem(
         _("Location"), choices=[_("Before"), _("After")], default=0
     )

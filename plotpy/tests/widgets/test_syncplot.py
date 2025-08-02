@@ -75,9 +75,9 @@ def test_syncplot_curves():
 
 def test_syncplot_images():
     """Test plot synchronization: images"""
-    img1 = gen_2d_gaussian(20, np.uint8, x0=-10, y0=-10, mu=7, sigma=10.0)
-    img2 = gen_2d_gaussian(20, np.uint8, x0=-10, y0=-10, mu=5, sigma=8.0)
-    img3 = gen_2d_gaussian(20, np.uint8, x0=-10, y0=-10, mu=3, sigma=6.0)
+    img1 = gen_2d_gaussian(20, np.uint8, x0=-10.0, y0=-10.0, mu=7.0, sigma=10.0)
+    img2 = gen_2d_gaussian(20, np.uint8, x0=-10.0, y0=-10.0, mu=5.0, sigma=8.0)
+    img3 = gen_2d_gaussian(20, np.uint8, x0=-10.0, y0=-10.0, mu=3.0, sigma=6.0)
     with qt_app_context(exec_loop=True):
 
         def makeim(data):
