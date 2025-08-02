@@ -433,7 +433,7 @@ class MaskedImageParamMixin(DataSet):
     """Mixin for masked image parameters."""
 
     g_mask = BeginGroup(_("Mask"))
-    filling_value = FloatItem(_("Filling value"), allow_none=True)
+    filling_value = FloatItem(_("Filling value"))
     show_mask = BoolItem(_("Show image mask"), default=False)
     alpha_masked = FloatItem(_("Masked area alpha"), default=0.7, min=0, max=1)
     alpha_unmasked = FloatItem(_("Unmasked area alpha"), default=0.0, min=0, max=1)

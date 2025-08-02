@@ -447,11 +447,9 @@ class ZAxisLogTool(ToggleTool):
 class AspectRatioParam(DataSet):
     """Dataset containing aspect ratio parameters."""
 
-    lock = BoolItem(_("Lock aspect ratio"), default=True)
-    current = FloatItem(_("Current value"), default=1.0).set_prop(
-        "display", active=False
-    )
-    ratio = FloatItem(_("Lock value"), min=1e-3, default=1.0)
+    lock = BoolItem(_("Lock aspect ratio"))
+    current = FloatItem(_("Current value")).set_prop("display", active=False)
+    ratio = FloatItem(_("Lock value"), min=1e-3)
 
 
 class AspectRatioTool(CommandTool):
