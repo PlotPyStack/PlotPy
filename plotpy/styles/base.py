@@ -373,7 +373,7 @@ class SymbolParam(DataSet):
             self.marker = MARKER_NAME[symb]
             return
         self.marker = MARKER_NAME[symb.style()]
-        self.size = int(symb.size().width())
+        self.size = symb.size().width()
         self.edgecolor = str(symb.pen().color().name())
         self.facecolor = str(symb.brush().color().name())
 
