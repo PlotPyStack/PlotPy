@@ -30,7 +30,7 @@ class ErrorBarParam(DataSet):
     alpha = FloatItem(
         _("Alpha"), default=0.9, min=0, max=1, help=_("Error bar transparency")
     )
-    width = FloatItem(_("Width"), default=1.0, min=1.0)
+    width = FloatItem(_("Width"), default=1.0, min=1)
     cap = IntItem(_("Cap"), default=4, min=0)
     ontop = BoolItem(_("set to foreground"), _("Visibility"), default=False)
 

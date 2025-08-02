@@ -43,7 +43,6 @@ class ColorPickDataSet(DataSet):
             _("Relative position"),
             min=0.0,
             max=1.0,
-            default=0.5,
             help=_("Must be a value between 0.0 and 1.0."),
         )
         .set_prop("display", format="%.2f")

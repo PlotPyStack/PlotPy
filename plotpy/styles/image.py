@@ -433,7 +433,7 @@ class MaskedImageParamMixin(DataSet):
     """Mixin for masked image parameters."""
 
     g_mask = BeginGroup(_("Mask"))
-    filling_value = FloatItem(_("Filling value"), default=0.0)
+    filling_value = FloatItem(_("Filling value"))
     show_mask = BoolItem(_("Show image mask"), default=False)
     alpha_masked = FloatItem(_("Masked area alpha"), default=0.7, min=0, max=1)
     alpha_unmasked = FloatItem(_("Unmasked area alpha"), default=0.0, min=0, max=1)
@@ -501,10 +501,10 @@ class ImageFilterParam(BaseImageParam):
 
     label = StringItem(_("Title"), default=_("Filter"))
     g1 = BeginGroup(_("Bounds"))
-    xmin = FloatItem(_("x|min"), default=0.0)
-    xmax = FloatItem(_("x|max"), default=1.0)
-    ymin = FloatItem(_("y|min"), default=0.0)
-    ymax = FloatItem(_("y|max"), default=1.0)
+    xmin = FloatItem(_("x|min"))
+    xmax = FloatItem(_("x|max"))
+    ymin = FloatItem(_("y|min"))
+    ymax = FloatItem(_("y|max"))
     _g1 = EndGroup("sub-group")
     use_source_cmap = BoolItem(
         _("Use image colormap and level"), _("Color map"), default=True

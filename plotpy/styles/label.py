@@ -47,9 +47,7 @@ class LabelParam(DataSet):
     ___cont = BeginGroup(_("Contents")).set_prop(
         "display", icon="label.png", hide=GetAttrProp("_no_contents")
     )
-    contents = TextItem("", default="").set_prop(
-        "display", hide=GetAttrProp("_no_contents")
-    )
+    contents = TextItem("").set_prop("display", hide=GetAttrProp("_no_contents"))
     ___econt = EndGroup(_("Contents")).set_prop(
         "display", hide=GetAttrProp("_no_contents")
     )

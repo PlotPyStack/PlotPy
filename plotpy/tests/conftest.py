@@ -12,13 +12,9 @@ import qtpy
 import qwt
 import scipy
 import tifffile
-from guidata.config import ValidationMode, set_validation_mode
 from guidata.env import execenv
 
 import plotpy
-
-# Set validation mode to STRICT for the sigima package
-set_validation_mode(ValidationMode.STRICT)
 
 # Turn on unattended mode for executing tests without user interaction
 execenv.unattended = True

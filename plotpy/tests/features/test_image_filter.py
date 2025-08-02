@@ -53,7 +53,7 @@ def test_imagefilter():
     data = io.imread(filename, to_grayscale=True)
     x = np.linspace(0, 30.0, data.shape[1])
     y = np.linspace(0, 30.0, data.shape[0])
-    imshow(x, y, data, filter_area=(10.0, 20.0, 5.0, 15.0))
+    imshow(x, y, data, filter_area=(10, 20, 5, 15))
 
 
 if __name__ == "__main__":

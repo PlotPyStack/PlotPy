@@ -49,16 +49,14 @@ class DotArrayParam(gds.DataSet):
         pass
 
     g1 = gds.BeginGroup("Size of the area")
-    dim_h = gds.FloatItem("Width", default=20.0, min=0.0, unit="mm")
-    dim_v = gds.FloatItem("Height", default=20.0, min=0.0, unit="mm")
+    dim_h = gds.FloatItem("Width", default=20, min=0, unit="mm")
+    dim_v = gds.FloatItem("Height", default=20, min=0, unit="mm")
     _g1 = gds.EndGroup("Size of the area")
 
     g2 = gds.BeginGroup("Grid pattern properties")
-    step_x = gds.FloatItem("Step in X-axis", default=1.0, min=1.0, unit="mm")
-    step_y = gds.FloatItem("Step in Y-axis", default=1.0, min=1.0, unit="mm")
-    size = gds.FloatItem(
-        "Dot size", default=0.2, min=0.0, max=2.0, slider=True, unit="mm"
-    )
+    step_x = gds.FloatItem("Step in X-axis", default=1, min=1, unit="mm")
+    step_y = gds.FloatItem("Step in Y-axis", default=1, min=1, unit="mm")
+    size = gds.FloatItem("Dot size", default=0.2, min=0, max=2, slider=True, unit="mm")
     color = gds.ColorItem("Dot color", default="red")
     _g2 = gds.EndGroup("Grid pattern properties")
 
