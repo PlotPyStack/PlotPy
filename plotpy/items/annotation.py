@@ -760,7 +760,7 @@ class BaseAnnotatedRangeSelection(AnnotatedShape):
         self.shape.attach(plot)
 
 
-class AnnotatedXRangeSelection(BaseAnnotatedRangeSelection):
+class AnnotatedXRange(BaseAnnotatedRangeSelection):
     """
     Construct an annotated X range selection with properties set with
     *annotationparam* (see :py:class:`.styles.AnnotationParam`)

@@ -11,7 +11,7 @@ from .annotation import (
     AnnotatedRectangle,
     AnnotatedPolygon,
     AnnotatedSegment,
-    AnnotatedXRangeSelection,
+    AnnotatedXRange,
     AnnotatedYRangeSelection,
     AnnotatedShape,
 )

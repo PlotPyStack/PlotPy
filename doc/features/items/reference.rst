@@ -118,7 +118,7 @@ Annotations
    :members:
 .. autoclass:: plotpy.items.AnnotatedSegment
    :members:
-.. autoclass:: plotpy.items.AnnotatedXRangeSelection
+.. autoclass:: plotpy.items.AnnotatedXRange
    :members:
 .. autoclass:: plotpy.items.AnnotatedYRangeSelection
    :members:

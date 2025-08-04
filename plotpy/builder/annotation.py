@@ -30,7 +30,7 @@ from plotpy.items import (
     AnnotatedPolygon,
     AnnotatedRectangle,
     AnnotatedSegment,
-    AnnotatedXRangeSelection,
+    AnnotatedXRange,
     AnnotatedYRangeSelection,
 )
 from plotpy.styles import AnnotationParam
@@ -403,7 +403,7 @@ class AnnotationBuilder:
         transform_matrix: np.ndarray | None = None,
         readonly: bool | None = None,
         private: bool | None = None,
-    ) -> AnnotatedXRangeSelection:
+    ) -> AnnotatedXRange:
         """Make an annotated x-range selection `plot item`
 
         Args:
@@ -421,10 +421,10 @@ class AnnotationBuilder:
             private: private. Default is None
 
         Returns:
-            :py:class:`.AnnotatedXRangeSelection` object
+            :py:class:`.AnnotatedXRange` object
         """
         return self.__annotated_shape(
-            AnnotatedXRangeSelection,
+            AnnotatedXRange,
             (x0, x1),
             title,
             subtitle,

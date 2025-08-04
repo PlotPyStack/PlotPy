@@ -72,7 +72,7 @@ The following annotation items are available:
 
 * :py:class:`.AnnotatedPoint`
 * :py:class:`.AnnotatedSegment`
-* :py:class:`.AnnotatedXRangeSelection`
+* :py:class:`.AnnotatedXRange`
 * :py:class:`.AnnotatedYRangeSelection`
 * :py:class:`.AnnotatedRectangle`
 * :py:class:`.AnnotatedObliqueRectangle`
