@@ -170,6 +170,16 @@ class AnnotatedShape(AbstractShape):
         if self.label.isVisible():
             self.label.draw(painter, xMap, yMap, canvasRect)
 
+    # ----AbstractShape API------------------------------------------------------
+    def set_readonly(self, state: bool) -> None:
+        """Set object readonly state
+
+        Args:
+            state: True if object is readonly, False otherwise
+        """
+        super().set_readonly(state)
+        self.shape.set_readonly(state)
+
     # ----Public API-------------------------------------------------------------
     def create_shape(self):
         """Return the shape object associated to this annotated shape object"""
@@ -185,6 +195,8 @@ class AnnotatedShape(AbstractShape):
         label_param = LabelParam(_("Label"), icon="label.png")
         label_param.read_config(CONF, "plot", "shape/label")
         label_param.anchor = self.LABEL_ANCHOR
+        if self.LABEL_ANCHOR == "C":
+            label_param.xc = label_param.yc = 0
         return DataInfoLabel(label_param, [self])
 
     def is_label_visible(self) -> bool:

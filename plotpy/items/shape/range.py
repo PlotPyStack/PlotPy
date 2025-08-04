@@ -319,7 +319,7 @@ class XRangeSelection(BaseRangeSelection):
         cx = rct.center().x()
         painter.drawLine(QC.QPointF(cx, rct.top()), QC.QPointF(cx, rct.bottom()))
 
-        if self.can_resize():
+        if self.can_resize() and not self.is_readonly():
             painter.setPen(pen)
             x0, x1, y = self.get_handles_pos()
             sym.drawSymbol(painter, QC.QPointF(x0, y))
@@ -481,7 +481,7 @@ class YRangeSelection(BaseRangeSelection):
         cy = rct.center().y()
         painter.drawLine(QC.QPointF(rct.left(), cy), QC.QPointF(rct.right(), cy))
 
-        if self.can_resize():
+        if self.can_resize() and not self.is_readonly():
             painter.setPen(pen)
             y0, y1, x = self.get_handles_pos()
             sym.drawSymbol(painter, QC.QPointF(x, y0))
