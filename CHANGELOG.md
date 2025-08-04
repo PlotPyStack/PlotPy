@@ -41,6 +41,9 @@
   * Setting item movable state now also sets the resizable state:
     * The PlotPy event system won't prevent the user from moving the item by dragging the handles if the item is just not movable: it has to be not resizable, which is not intuitive.
     * This is now fixed
+* Range selection items (`XRangeSelection`, `YRangeSelection`):
+  * Handles are now displayed only when the item is resizable
+  * If the item is set as not resizable (using the `set_resizable` method), the handles will be hidden
 
 Other changes:
 
