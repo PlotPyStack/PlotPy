@@ -693,14 +693,6 @@ class BaseAnnotatedRangeSelection(AnnotatedShape):
         shape = self.SHAPE_CLASS(0, 0)
         return shape
 
-    def set_label_position(self) -> None:
-        """Set label position, for instance based on shape position"""
-        _min, _max = self.get_range()
-        x, y = 0.5 * (_min + _max), 0
-        if isinstance(self.shape, YRangeSelection):
-            x, y = y, x
-        self.label.set_pos(x, y)
-
     def get_info(self) -> str:
         """Get informations on current shape
 
@@ -741,6 +733,24 @@ class BaseAnnotatedRangeSelection(AnnotatedShape):
         return self.shape.hit_test(pos)
 
     # ----QwtPlotItem API--------------------------------------------------------
+    def draw(
+        self,
+        painter: QPainter,
+        xMap: qwt.scale_map.QwtScaleMap,
+        yMap: qwt.scale_map.QwtScaleMap,
+        canvasRect: QRectF,
+    ) -> None:
+        """Draw the item
+
+        Args:
+            painter: Painter
+            xMap: X axis scale map
+            yMap: Y axis scale map
+            canvasRect: Canvas rectangle
+        """
+        self.set_label_position()
+        super().draw(painter, xMap, yMap, canvasRect)
+
     def attach(self, plot):
         """
         Attach the item to a plot.
@@ -758,6 +768,7 @@ class BaseAnnotatedRangeSelection(AnnotatedShape):
         """
         super().attach(plot)
         self.shape.attach(plot)
+        self.set_label_position()
 
 
 class AnnotatedXRange(BaseAnnotatedRangeSelection):
@@ -785,6 +796,17 @@ class AnnotatedXRange(BaseAnnotatedRangeSelection):
     ) -> None:
         super().__init__(_min, _max, annotationparam, info_callback)
 
+    # ----AnnotatedShape API-----------------------------------------------------
+    def set_label_position(self) -> None:
+        """Set label position, for instance based on shape position"""
+        plot = self.plot()
+        if plot is not None:
+            x0, x1, y = self.shape.get_handles_pos()
+            x = 0.5 * (x0 + x1)
+            x = plot.invTransform(self.xAxis(), x)
+            y = plot.invTransform(self.yAxis(), y)
+            self.label.set_pos(x, y)
+
 
 class AnnotatedYRange(BaseAnnotatedRangeSelection):
     """
@@ -810,6 +832,17 @@ class AnnotatedYRange(BaseAnnotatedRangeSelection):
         info_callback: Callable[[AnnotatedShape], str] | None = None,
     ) -> None:
         super().__init__(_min, _max, annotationparam, info_callback)
+
+    # ----AnnotatedShape API-----------------------------------------------------
+    def set_label_position(self) -> None:
+        """Set label position, for instance based on shape position"""
+        plot = self.plot()
+        if plot is not None:
+            y0, y1, x = self.shape.get_handles_pos()
+            y = 0.5 * (y0 + y1)
+            x = plot.invTransform(self.xAxis(), x)
+            y = plot.invTransform(self.yAxis(), y)
+            self.label.set_pos(x, y)
 
 
 class AnnotatedPolygon(AnnotatedShape):
