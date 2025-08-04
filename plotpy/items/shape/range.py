@@ -221,8 +221,9 @@ class BaseRangeSelection(AbstractShape):
         """
         self._min = _min
         self._max = _max
-        if dosignal:
-            self.plot().SIG_RANGE_CHANGED.emit(self, self._min, self._max)
+        plot = self.plot()
+        if dosignal and plot is not None:
+            plot.SIG_RANGE_CHANGED.emit(self, self._min, self._max)
 
     def update_item_parameters(self) -> None:
         """Update item parameters (dataset) from object properties"""

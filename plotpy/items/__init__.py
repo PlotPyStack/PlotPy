@@ -11,6 +11,8 @@ from .annotation import (
     AnnotatedRectangle,
     AnnotatedPolygon,
     AnnotatedSegment,
+    AnnotatedXRangeSelection,
+    AnnotatedYRangeSelection,
     AnnotatedShape,
 )
 from .contour import ContourItem, create_contour_items

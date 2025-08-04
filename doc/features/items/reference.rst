@@ -118,6 +118,10 @@ Annotations
    :members:
 .. autoclass:: plotpy.items.AnnotatedSegment
    :members:
+.. autoclass:: plotpy.items.AnnotatedXRangeSelection
+   :members:
+.. autoclass:: plotpy.items.AnnotatedYRangeSelection
+   :members:
 .. autoclass:: plotpy.items.AnnotatedRectangle
    :members:
 .. autoclass:: plotpy.items.AnnotatedObliqueRectangle

@@ -30,6 +30,8 @@ from plotpy.items import (
     AnnotatedPolygon,
     AnnotatedRectangle,
     AnnotatedSegment,
+    AnnotatedXRangeSelection,
+    AnnotatedYRangeSelection,
 )
 from plotpy.styles import AnnotationParam
 
@@ -138,6 +140,8 @@ class AnnotationBuilder:
         transform_matrix,
         readonly,
         private,
+        section: str = "plot",
+        option: str = "shape/drag",
     ):
         param = self.__get_annotationparam(
             title=title,
@@ -155,7 +159,7 @@ class AnnotationBuilder:
             shape = shapeclass(points, annotationparam=param)
         else:
             shape = shapeclass(*points, annotationparam=param)
-        shape.set_style("plot", "shape/drag")
+        shape.set_style(section, option)
         return shape
 
     def annotated_rectangle(
@@ -383,6 +387,108 @@ class AnnotationBuilder:
             transform_matrix,
             readonly,
             private,
+        )
+
+    def annotated_xrange(
+        self,
+        x0: float,
+        x1: float,
+        title: str | None = None,
+        subtitle: str | None = None,
+        show_label: bool | None = None,
+        show_computations: bool | None = None,
+        show_subtitle: bool | None = None,
+        format: str | None = None,
+        uncertainty: float | None = None,
+        transform_matrix: np.ndarray | None = None,
+        readonly: bool | None = None,
+        private: bool | None = None,
+    ) -> AnnotatedXRangeSelection:
+        """Make an annotated x-range selection `plot item`
+
+        Args:
+            x0: lower x coordinate
+            x1: upper x coordinate
+            title: label name. Default is None
+            subtitle: label subtitle. Default is None
+            show_label: show label. Default is None
+            show_computations: show computations. Default is None
+            show_subtitle: show subtitle. Default is None
+            format: string formatting. Default is None
+            uncertainty: measurement relative uncertainty. Default is None
+            transform_matrix: transform matrix. Default is None
+            readonly: readonly. Default is None
+            private: private. Default is None
+
+        Returns:
+            :py:class:`.AnnotatedXRangeSelection` object
+        """
+        return self.__annotated_shape(
+            AnnotatedXRangeSelection,
+            (x0, x1),
+            title,
+            subtitle,
+            show_label,
+            show_computations,
+            show_subtitle,
+            format,
+            uncertainty,
+            transform_matrix,
+            readonly,
+            private,
+            section="plot",
+            option="range",
+        )
+
+    def annotated_yrange(
+        self,
+        y0: float,
+        y1: float,
+        title: str | None = None,
+        subtitle: str | None = None,
+        show_label: bool | None = None,
+        show_computations: bool | None = None,
+        show_subtitle: bool | None = None,
+        format: str | None = None,
+        uncertainty: float | None = None,
+        transform_matrix: np.ndarray | None = None,
+        readonly: bool | None = None,
+        private: bool | None = None,
+    ) -> AnnotatedYRangeSelection:
+        """Make an annotated y-range selection `plot item`
+
+        Args:
+            y0: lower y coordinate
+            y1: upper y coordinate
+            title: label name. Default is None
+            subtitle: label subtitle. Default is None
+            show_label: show label. Default is None
+            show_computations: show computations. Default is None
+            show_subtitle: show subtitle. Default is None
+            format: string formatting. Default is None
+            uncertainty: measurement relative uncertainty. Default is None
+            transform_matrix: transform matrix. Default is None
+            readonly: readonly. Default is None
+            private: private. Default is None
+
+        Returns:
+            :py:class:`.AnnotatedYRangeSelection` object
+        """
+        return self.__annotated_shape(
+            AnnotatedYRangeSelection,
+            (y0, y1),
+            title,
+            subtitle,
+            show_label,
+            show_computations,
+            show_subtitle,
+            format,
+            uncertainty,
+            transform_matrix,
+            readonly,
+            private,
+            section="plot",
+            option="range",
         )
 
     def annotated_polygon(

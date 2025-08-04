@@ -616,6 +616,8 @@ register_serializable_items(
         "Axes",
         "AnnotatedPoint",
         "AnnotatedSegment",
+        "AnnotatedXRangeSelection",
+        "AnnotatedYRangeSelection",
         "AnnotatedRectangle",
         "AnnotatedObliqueRectangle",
         "AnnotatedEllipse",

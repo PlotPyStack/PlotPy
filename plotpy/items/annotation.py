@@ -28,6 +28,7 @@ from plotpy.items.shape.base import AbstractShape
 from plotpy.items.shape.ellipse import EllipseShape
 from plotpy.items.shape.point import PointShape
 from plotpy.items.shape.polygon import PolygonShape
+from plotpy.items.shape.range import XRangeSelection, YRangeSelection
 from plotpy.items.shape.rectangle import ObliqueRectangleShape, RectangleShape
 from plotpy.items.shape.segment import SegmentShape
 from plotpy.mathutils.geometry import (
@@ -605,6 +606,210 @@ class AnnotatedSegment(AnnotatedShape):
                 _("Distance:") + " " + self.x_to_str(self.get_tr_length()),
             ]
         )
+
+
+class BaseAnnotatedRangeSelection(AnnotatedShape):
+    """
+    Construct an annotated range selection with properties set with
+    *annotationparam* (see :py:class:`.styles.AnnotationParam`)
+
+    Args:
+        annotationparam: Annotation parameters
+        info_callback: Callback to get information on the shape
+    """
+
+    _icon_name = ""  # to be overridden
+    SHAPE_CLASS: type[AbstractShape] = XRangeSelection  # to be overridden
+
+    def __init__(
+        self,
+        _min: float | None = None,
+        _max: float | None = None,
+        annotationparam: AnnotationParam | None = None,
+        info_callback: Callable[[AnnotatedShape], str] | None = None,
+    ) -> None:
+        super().__init__(annotationparam, info_callback)
+        self.shape: XRangeSelection | YRangeSelection
+        self.shape.set_private(True)
+        self.set_range(_min, _max)
+
+    # ----Public API-------------------------------------------------------------
+    def set_range(self, _min: float | None, _max: float | None) -> None:
+        """Set the range selection coordinates
+
+        Args:
+            _min: Minimum value
+            _max: Maximum value
+        """
+        self.shape.set_range(_min, _max)
+        self.set_label_position()
+
+    def get_range(self) -> tuple[float, float]:
+        """Return the range selection coordinates
+
+        Returns:
+            Range selection coordinates as a tuple (min, max)
+        """
+        return self.shape.get_range()
+
+    def get_tr_range(self) -> float:
+        """Return the range selection length after applying transform matrix
+
+        Returns:
+            Range selection length after applying transform matrix
+        """
+        return compute_distance(*self.get_transformed_coords(0, 1))
+
+    def get_tr_center(self) -> float:
+        """Return the range selection position (middle) after applying transform matrix
+
+        Returns:
+            Range selection position (middle) after applying transform matrix
+        """
+        center = compute_center(*self.get_transformed_coords(0, 1))
+        if isinstance(self.shape, XRangeSelection):
+            return center[0]
+        return center[1]
+
+    # pylint: disable=unused-argument
+    def get_transformed_coords(self, handle1, handle2):
+        """
+
+        :param handle1:
+        :param handle2:
+        :return:
+        """
+        x1, x2 = self.get_range()
+        y1 = y2 = 0.0
+        if isinstance(self.shape, YRangeSelection):
+            x1, x2, y1, y2 = y1, y2, x1, x2
+        x1, y1 = self.apply_transform_matrix(x1, y1)
+        x2, y2 = self.apply_transform_matrix(x2, y2)
+        return x1, y1, x2, y2
+
+    # ----AnnotatedShape API-----------------------------------------------------
+    def create_shape(self):
+        """Return the shape object associated to this annotated shape object"""
+        shape = self.SHAPE_CLASS(0, 0)
+        return shape
+
+    def set_label_position(self) -> None:
+        """Set label position, for instance based on shape position"""
+        _min, _max = self.get_range()
+        x, y = 0.5 * (_min + _max), 0
+        if isinstance(self.shape, YRangeSelection):
+            x, y = y, x
+        self.label.set_pos(x, y)
+
+    def get_info(self) -> str:
+        """Get informations on current shape
+
+        Returns:
+            str: Formatted string with informations on current shape
+        """
+        coord_str = "x" if isinstance(self.shape, XRangeSelection) else "y"
+        center_val = self.x_to_str(self.get_tr_center())
+        range_val = self.x_to_str(self.get_tr_range())
+        half_range_val = self.x_to_str(self.get_tr_range() / 2)
+        return "<br>".join(
+            [
+                f"{coord_str} = {center_val} ± {half_range_val}",
+                f"Δ{coord_str} = {range_val}",
+            ]
+        )
+
+    # ----IBasePlotItem API------------------------------------------------------
+    def hit_test(self, pos: QPointF) -> tuple[float, float, bool, None]:
+        """Return a tuple (distance, attach point, inside, other_object)
+
+        Args:
+            pos: Position
+
+        Returns:
+            tuple: Tuple with four elements: (distance, attach point, inside,
+             other_object).
+
+        Description of the returned values:
+
+        * distance: distance in pixels (canvas coordinates) to the closest
+           attach point
+        * attach point: handle of the attach point
+        * inside: True if the mouse button has been clicked inside the object
+        * other_object: if not None, reference of the object which will be
+           considered as hit instead of self
+        """
+        return self.shape.hit_test(pos)
+
+    # ----QwtPlotItem API--------------------------------------------------------
+    def attach(self, plot):
+        """
+        Attach the item to a plot.
+
+        This method will attach a `QwtPlotItem` to the `QwtPlot` argument.
+        It will first detach the `QwtPlotItem` from any plot from a previous
+        call to attach (if necessary). If a None argument is passed, it will
+        detach from any `QwtPlot` it was attached to.
+
+        :param qwt.plot.QwtPlot plot: Plot widget
+
+        .. seealso::
+
+            :py:meth:`detach()`
+        """
+        super().attach(plot)
+        self.shape.attach(plot)
+
+
+class AnnotatedXRangeSelection(BaseAnnotatedRangeSelection):
+    """
+    Construct an annotated X range selection with properties set with
+    *annotationparam* (see :py:class:`.styles.AnnotationParam`)
+
+    Args:
+        _min: Minimum value
+        _max: Maximum value
+        annotationparam: Annotation parameters
+        info_callback: Callback to get information on the shape
+    """
+
+    _icon_name = "xrange.png"
+    SHAPE_CLASS = XRangeSelection
+    LABEL_ANCHOR = "C"
+
+    def __init__(
+        self,
+        _min: float | None = None,
+        _max: float | None = None,
+        annotationparam: AnnotationParam | None = None,
+        info_callback: Callable[[AnnotatedShape], str] | None = None,
+    ) -> None:
+        super().__init__(_min, _max, annotationparam, info_callback)
+
+
+class AnnotatedYRangeSelection(BaseAnnotatedRangeSelection):
+    """
+    Construct an annotated Y range selection with properties set with
+    *annotationparam* (see :py:class:`.styles.AnnotationParam`)
+
+    Args:
+        _min: Minimum value
+        _max: Maximum value
+        annotationparam: Annotation parameters
+        info_callback: Callback to get information on the shape
+    """
+
+    _icon_name = "yrange.png"
+    SHAPE_CLASS = YRangeSelection
+    LABEL_ANCHOR = "C"
+
+    def __init__(
+        self,
+        _min: float | None = None,
+        _max: float | None = None,
+        annotationparam: AnnotationParam | None = None,
+        info_callback: Callable[[AnnotatedShape], str] | None = None,
+    ) -> None:
+        super().__init__(_min, _max, annotationparam, info_callback)
 
 
 class AnnotatedPolygon(AnnotatedShape):
