@@ -786,7 +786,7 @@ class AnnotatedXRange(BaseAnnotatedRangeSelection):
         super().__init__(_min, _max, annotationparam, info_callback)
 
 
-class AnnotatedYRangeSelection(BaseAnnotatedRangeSelection):
+class AnnotatedYRange(BaseAnnotatedRangeSelection):
     """
     Construct an annotated Y range selection with properties set with
     *annotationparam* (see :py:class:`.styles.AnnotationParam`)

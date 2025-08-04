@@ -120,7 +120,7 @@ Annotations
    :members:
 .. autoclass:: plotpy.items.AnnotatedXRange
    :members:
-.. autoclass:: plotpy.items.AnnotatedYRangeSelection
+.. autoclass:: plotpy.items.AnnotatedYRange
    :members:
 .. autoclass:: plotpy.items.AnnotatedRectangle
    :members:

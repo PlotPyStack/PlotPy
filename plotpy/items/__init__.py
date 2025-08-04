@@ -12,7 +12,7 @@ from .annotation import (
     AnnotatedPolygon,
     AnnotatedSegment,
     AnnotatedXRange,
-    AnnotatedYRangeSelection,
+    AnnotatedYRange,
     AnnotatedShape,
 )
 from .contour import ContourItem, create_contour_items

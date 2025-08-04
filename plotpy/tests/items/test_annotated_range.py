@@ -3,7 +3,7 @@
 # Licensed under the terms of the BSD 3-Clause
 # (see plotpy/LICENSE for details)
 
-"""Testing `AnnotatedXRange` and `AnnotatedYRangeSelection` items"""
+"""Testing `AnnotatedXRange` and `AnnotatedYRange` items"""
 
 # guitest: show
 
@@ -15,7 +15,7 @@ from plotpy.tests import vistools as ptv
 
 
 def test_annotated_range_selection():
-    """Test AnnotatedXRange and AnnotatedYRangeSelection items"""
+    """Test AnnotatedXRange and AnnotatedYRange items"""
     x = np.linspace(-10, 10, 200)
     y = np.sin(np.sin(np.sin(x)))
     with qt_app_context(exec_loop=True):

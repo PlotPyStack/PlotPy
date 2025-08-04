@@ -31,7 +31,7 @@ from plotpy.items import (
     AnnotatedRectangle,
     AnnotatedSegment,
     AnnotatedXRange,
-    AnnotatedYRangeSelection,
+    AnnotatedYRange,
 )
 from plotpy.styles import AnnotationParam
 
@@ -454,7 +454,7 @@ class AnnotationBuilder:
         transform_matrix: np.ndarray | None = None,
         readonly: bool | None = None,
         private: bool | None = None,
-    ) -> AnnotatedYRangeSelection:
+    ) -> AnnotatedYRange:
         """Make an annotated y-range selection `plot item`
 
         Args:
@@ -472,10 +472,10 @@ class AnnotationBuilder:
             private: private. Default is None
 
         Returns:
-            :py:class:`.AnnotatedYRangeSelection` object
+            :py:class:`.AnnotatedYRange` object
         """
         return self.__annotated_shape(
-            AnnotatedYRangeSelection,
+            AnnotatedYRange,
             (y0, y1),
             title,
             subtitle,

@@ -15,7 +15,7 @@
   * Added support for item title in parameters data set (`RangeShapeParam`)
   * This concerns the `XRangeSelection` and `YRangeSelection` items
 * New annotated X and Y range selection items:
-  * Added `AnnotatedXRange` and `AnnotatedYRangeSelection` items
+  * Added `AnnotatedXRange` and `AnnotatedYRange` items
   * These items provide X and Y range selection with an annotation label
   * They can be created using `make.annotated_xrange` and `make.annotated_yrange` functions
 
