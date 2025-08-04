@@ -712,12 +712,16 @@ class BaseAnnotatedRangeSelection(AnnotatedShape):
             str: Formatted string with informations on current shape
         """
         coord_str = "x" if isinstance(self.shape, XRangeSelection) else "y"
-        center_val = self.x_to_str(self.get_tr_center())
-        range_val = self.x_to_str(self.get_tr_range())
-        half_range_val = self.x_to_str(self.get_tr_range() / 2)
+        c, r = self.get_tr_center(), self.get_tr_range()
+        center_val = self.x_to_str(c)
+        range_val = self.x_to_str(r)
+        lower_val = self.x_to_str(c - 0.5 * r)
+        upper_val = self.x_to_str(c + 0.5 * r)
         return "<br>".join(
             [
-                f"{coord_str} = {center_val} ± {half_range_val}",
+                f"{coord_str}<sub>C</sub> = {center_val}",
+                f"{coord_str}<sub>MIN</sub> = {lower_val}",
+                f"{coord_str}<sub>MAX</sub> = {upper_val}",
                 f"Δ{coord_str} = {range_val}",
             ]
         )
