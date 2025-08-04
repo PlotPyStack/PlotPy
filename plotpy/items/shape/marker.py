@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import math
-from typing import TYPE_CHECKING
+from contextlib import contextmanager
+from typing import TYPE_CHECKING, Generator
 
 from guidata.dataset import update_dataset
 from guidata.utils.misc import assert_interfaces_valid
@@ -26,6 +27,27 @@ if TYPE_CHECKING:
 
     from plotpy.interfaces import IItemType
     from plotpy.styles.base import ItemParameters
+
+
+@contextmanager
+def no_symbol_context(
+    item: QwtPlotMarker, condition: bool
+) -> Generator[None, None, None]:
+    """Context manager for temporarily changing a marker's symbol
+
+    Args:
+        item: The marker object whose symbol might be changed
+        condition: If True, the symbol will be changed to None temporarily
+    """
+    old_symbol = None
+    if condition:
+        old_symbol = item.symbol()
+        item.setSymbol(None)
+    try:
+        yield
+    finally:
+        if condition and old_symbol is not None:
+            item.setSymbol(old_symbol)
 
 
 class Marker(QwtPlotMarker):
@@ -137,7 +159,8 @@ class Marker(QwtPlotMarker):
             x, y = self.center_handle(self.xValue(), self.yValue())
             self.setValue(x, y)
         self.update_label()
-        QwtPlotMarker.draw(self, painter, xMap, yMap, canvasRect)
+        with no_symbol_context(self, not self.can_resize()):
+            QwtPlotMarker.draw(self, painter, xMap, yMap, canvasRect)
 
     # ------IBasePlotItem API----------------------------------------------------
     def get_icon_name(self) -> str:
@@ -180,6 +203,14 @@ class Marker(QwtPlotMarker):
             state: True if item is movable, False otherwise
         """
         self._can_move = state
+        # For a marker, setting the movable state to False means that, obviously,
+        # it cannot be moved. However, due to the way the event system works,
+        # the marker can still be moved by the user: it has to be not resizable
+        # to prevent the user from moving it by dragging the handles, which is not
+        # intuitive for a marker (from a user point of view, a marker is a point
+        # or a line, not a shape with handles).
+        # So, we set the resizable state to the same value as the movable state:
+        self.set_resizable(state)
 
     def set_rotatable(self, state: bool) -> None:
         """Set item rotatable state

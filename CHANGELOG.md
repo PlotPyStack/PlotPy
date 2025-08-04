@@ -37,6 +37,10 @@
 * Edit tools (Edit data, center image position):
   * Exclude read-only items from the list of editable items
   * It is no longer possible to use those tools on read-only items
+* Marker items (markers, cursors):
+  * Setting item movable state now also sets the resizable state:
+    * The PlotPy event system won't prevent the user from moving the item by dragging the handles if the item is just not movable: it has to be not resizable, which is not intuitive.
+    * This is now fixed
 
 Other changes:
 
