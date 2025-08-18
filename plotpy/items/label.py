@@ -453,7 +453,7 @@ class AbstractLabelItem(QwtPlotItem):
             lx += new_pos.x() - old_pos.x()
             ly += new_pos.y() - old_pos.y()
             self.C = lx, ly
-            self.labelparam.xc, self.labelparam.yc = lx, ly
+            self.labelparam.xc, self.labelparam.yc = int(lx), int(ly)
             lx0, ly0 = canvas_to_axes(self, old_pos)
             lx1, ly1 = canvas_to_axes(self, new_pos)
         else:
