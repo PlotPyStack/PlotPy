@@ -17,7 +17,7 @@ from plotpy.tools import EllipseTool, PlaceAxesTool, PolygonTool, RectangleTool
 
 def create_window():
     gridparam = make.gridparam(
-        background="black", minor_enabled=(False, False), major_style=(".", "gray", 1)
+        background="black", minor_enabled=(False, False), major_style=(":", "gray", 1)
     )
     win = make.dialog(
         toolbar=True,

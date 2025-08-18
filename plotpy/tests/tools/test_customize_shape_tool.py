@@ -35,7 +35,7 @@ def customize_shape(shape):
 
 def create_window():
     gridparam = make.gridparam(
-        background="black", minor_enabled=(False, False), major_style=(".", "gray", 1)
+        background="black", minor_enabled=(False, False), major_style=(":", "gray", 1)
     )
     win = make.dialog(
         edit=False,
