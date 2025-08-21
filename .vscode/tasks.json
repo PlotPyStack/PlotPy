@@ -122,6 +122,36 @@
             "type": "shell",
         },
         {
+            "label": "🚀 Pytest",
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
+                "-m",
+                "pytest",
+                "--ff",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "UNATTENDED": "1",
+                },
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true,
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": true,
+                "clear": true,
+            },
+            "type": "shell",
+        },
+        {
             "label": "🔎 Scan translations",
             "command": "${command:python.interpreterPath}",
             "args": [
@@ -182,36 +212,6 @@
                 "panel": "dedicated",
                 "reveal": "always",
                 "showReuseMessage": true,
-            },
-            "type": "shell",
-        },
-        {
-            "label": "🚀 Pytest",
-            "command": "${command:python.interpreterPath}",
-            "args": [
-                "scripts/run_with_env.py",
-                "${command:python.interpreterPath}",
-                "-m",
-                "pytest",
-                "--ff",
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}",
-                "env": {
-                    "UNATTENDED": "1",
-                },
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": true,
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "dedicated",
-                "showReuseMessage": true,
-                "clear": true,
             },
             "type": "shell",
         },
