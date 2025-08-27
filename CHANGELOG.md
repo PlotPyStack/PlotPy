@@ -18,6 +18,9 @@
   * Added `AnnotatedXRange` and `AnnotatedYRange` items
   * These items provide X and Y range selection with an annotation label
   * They can be created using `make.annotated_xrange` and `make.annotated_yrange` functions
+* New `SyncPlotDialog` class:
+  * This class provides a dialog for displaying synchronized plots.
+  * This is a complementary class to `SyncPlotWindow`, providing a modal dialog interface for synchronized plotting.
 
 🧹 API cleanup: removed deprecated update methods (use `update_item` instead)
 
