@@ -12,5 +12,6 @@ from .plotwidget import (
     PlotWindow,
     SubplotWidget,
     SyncPlotWindow,
+    SyncPlotDialog,
     set_widget_title_icon,
 )

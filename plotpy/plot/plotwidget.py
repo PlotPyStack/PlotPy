@@ -889,7 +889,103 @@ class SubplotWidget(BasePlotWidget):
         self.manager.add_plot(plot, plot_id)
 
 
-class SyncPlotWindow(QW.QMainWindow):
+class BaseSyncPlot:
+    """Base class for synchronized plot windows and dialogs"""
+
+    def __init__(
+        self,
+        toolbar: bool = True,
+        options: PlotOptions | dict[str, Any] | None = None,
+        auto_tools: bool = True,
+        title: str = "PlotPy",
+        icon: str = "plotpy.svg",
+        size: tuple[int, int] | None = None,
+    ) -> None:
+        self.manager = PlotManager(None)
+        self.manager.set_main(self)
+        self.subplotwidget = SubplotWidget(self.manager, parent=self, options=options)
+        self.toolbar = QW.QToolBar(_("Tools"), self)
+        self.toolbar.setVisible(toolbar)
+        self.manager.add_toolbar(self.toolbar, "default")
+        self.toolbar.setMovable(True)
+        self.toolbar.setFloatable(True)
+        self.auto_tools = auto_tools
+        set_widget_title_icon(self, title, icon, size)
+        # Note: setup_layout() is called by subclasses after Qt widget initialization
+
+    def setup_layout(self) -> None:
+        """Setup the layout - to be implemented by subclasses"""
+        raise NotImplementedError("Subclasses must implement `setup_layout` method")
+
+    def get_toolbar(self) -> QW.QToolBar:
+        """Return main toolbar
+
+        Returns:
+            The plot widget main toolbar
+        """
+        return self.toolbar
+
+    def get_manager(self) -> PlotManager:
+        """Return the plot manager
+
+        Returns:
+            The plot widget manager
+        """
+        return self.manager
+
+    def finalize_configuration(self) -> None:
+        """Configure plot manager and register all tools"""
+        self.subplotwidget.add_panels_to_manager()
+        if self.auto_tools:
+            self.subplotwidget.register_tools()
+
+    def rescale_plots(self) -> None:
+        """Rescale all plots"""
+        QW.QApplication.instance().processEvents()
+        for plot in self.subplotwidget.plots:
+            plot.do_autoscale()
+
+    def add_plot(
+        self,
+        row: int,
+        col: int,
+        plot: BasePlot,
+        sync: bool = False,
+        plot_id: str | None = None,
+    ) -> None:
+        """Add plot to window
+
+        Args:
+            row: The row index
+            col: The column index
+            plot: The plot to add
+            sync: If True, the axes are synchronized
+            plot_id: The plot id
+        """
+        if plot_id is None:
+            plot_id = str(len(self.subplotwidget.plots) + 1)
+        self.subplotwidget.add_plot(plot, row, col, plot_id)
+        if sync and len(self.subplotwidget.plots) > 1:
+            self._synchronize_with_existing_plots(plot_id)
+
+    def _synchronize_with_existing_plots(self, plot_id: str) -> None:
+        """Synchronize the new plot with existing plots"""
+        syncaxis = self.manager.synchronize_axis
+        for i_plot in range(len(self.subplotwidget.plots) - 1):
+            existing_plot_id = f"{i_plot + 1}"
+            syncaxis(X_BOTTOM, [plot_id, existing_plot_id])
+            syncaxis(Y_LEFT, [plot_id, existing_plot_id])
+
+    def get_plots(self) -> list[BasePlot]:
+        """Return the plots
+
+        Returns:
+            list[BasePlot]: The plots
+        """
+        return self.subplotwidget.get_plots()
+
+
+class SyncPlotWindow(QW.QMainWindow, BaseSyncPlot):
     """Window for showing plots, optionally synchronized
 
     Args:
@@ -927,83 +1023,77 @@ class SyncPlotWindow(QW.QMainWindow):
         icon: str = "plotpy.svg",
         size: tuple[int, int] | None = None,
     ) -> None:
-        super().__init__(parent)
-        set_widget_title_icon(self, title, icon, size)
-        self.manager = PlotManager(None)
-        self.manager.set_main(self)
-        self.subplotwidget = SubplotWidget(self.manager, parent=self, options=options)
-        self.setCentralWidget(self.subplotwidget)
-        self.toolbar = QW.QToolBar(_("Tools"), self)
-        self.toolbar.setVisible(toolbar)
-        self.manager.add_toolbar(self.toolbar, "default")
-        self.toolbar.setMovable(True)
-        self.toolbar.setFloatable(True)
-        self.addToolBar(self.toolbar)
-        self.auto_tools = auto_tools
-
-    def get_toolbar(self) -> QW.QToolBar:
-        """Return main toolbar
-
-        Returns:
-            The plot widget main toolbar
-        """
-        return self.toolbar
-
-    def get_manager(self) -> PlotManager:
-        """Return the plot manager
-
-        Returns:
-            The plot widget manager
-        """
-        return self.manager
-
-    def finalize_configuration(self) -> None:
-        """Configure plot manager and register all tools"""
-        self.subplotwidget.add_panels_to_manager()
-        if self.auto_tools:
-            self.subplotwidget.register_tools()
-
-    def rescale_plots(self) -> None:
-        """Rescale all plots"""
-        QW.QApplication.instance().processEvents()
-        for plot in self.subplotwidget.plots:
-            plot.do_autoscale()
+        self.subplotwidget: SubplotWidget
+        self.toolbar: QW.QToolBar
+        QW.QMainWindow.__init__(self, parent)
+        BaseSyncPlot.__init__(self, toolbar, options, auto_tools, title, icon, size)
+        self.setup_layout()
 
     def showEvent(self, event):  # pylint: disable=C0103
         """Reimplement Qt method"""
         super().showEvent(event)
         QC.QTimer.singleShot(0, self.rescale_plots)
 
-    def add_plot(
+    def setup_layout(self) -> None:
+        """Setup the main window layout"""
+        self.setCentralWidget(self.subplotwidget)
+        self.addToolBar(self.toolbar)
+
+
+class SyncPlotDialog(QW.QDialog, BaseSyncPlot):
+    """Dialog for showing plots, optionally synchronized
+
+    Args:
+        parent: parent widget
+        toolbar: show/hide toolbar
+        options: plot options
+        auto_tools: If True, the plot tools are automatically registered.
+         If False, the user must register the tools manually.
+        title: The window title
+        icon: The window icon
+        size: The window size (width, height). Defaults to None (no resize)
+
+    Usage: first, create a dialog, then add plots to it, then call the
+    :py:meth:`.SyncPlotDialog.finalize_configuration` method to add panels and
+    eventually register tools.
+
+    Example::
+
+        from plotpy.plot import BasePlot, SyncPlotDialog
+        dlg = SyncPlotDialog(title="My dialog")
+        plot = BasePlot()
+        dlg.add_plot(plot)
+        dlg.finalize_configuration()
+        dlg.exec()
+    """
+
+    def __init__(
         self,
-        row: int,
-        col: int,
-        plot: BasePlot,
-        sync: bool = False,
-        plot_id: str | None = None,
+        parent: QWidget | None = None,
+        toolbar: bool = True,
+        options: PlotOptions | dict[str, Any] | None = None,
+        auto_tools: bool = True,
+        title: str = "PlotPy",
+        icon: str = "plotpy.svg",
+        size: tuple[int, int] | None = None,
     ) -> None:
-        """Add plot to window
+        self.subplotwidget: SubplotWidget
+        self.toolbar: QW.QToolBar
+        QW.QDialog.__init__(self, parent)
+        BaseSyncPlot.__init__(self, toolbar, options, auto_tools, title, icon, size)
+        self.setup_layout()
+        self.setWindowFlags(QC.Qt.Window)
 
-        Args:
-            row: The row index
-            col: The column index
-            plot: The plot to add
-            sync: If True, the axes are synchronized
-            plot_id: The plot id
-        """
-        if plot_id is None:
-            plot_id = str(len(self.subplotwidget.plots) + 1)
-        self.subplotwidget.add_plot(plot, row, col, plot_id)
-        if sync and len(self.subplotwidget.plots) > 1:
-            syncaxis = self.manager.synchronize_axis
-            for i_plot in range(len(self.subplotwidget.plots) - 1):
-                syncaxis(X_BOTTOM, [plot_id, f"{i_plot + 1}"])
-                syncaxis(Y_LEFT, [plot_id, f"{i_plot + 1}"])
+    def showEvent(self, event):  # pylint: disable=C0103
+        """Reimplement Qt method"""
+        super().showEvent(event)
+        QC.QTimer.singleShot(0, self.rescale_plots)
 
-    def get_plots(self) -> list[BasePlot]:
-        """Return the plots
-
-        Returns:
-            list[BasePlot]: The plots
-        """
-        return self.subplotwidget.get_plots()
+    def setup_layout(self) -> None:
+        """Setup the dialog layout"""
+        self.plot_layout = QW.QGridLayout()
+        self.plot_layout.addWidget(self.subplotwidget)
+        layout = QW.QVBoxLayout()
+        layout.addWidget(self.toolbar)
+        layout.addLayout(self.plot_layout)
+        self.setLayout(layout)
