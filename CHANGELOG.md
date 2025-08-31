@@ -36,6 +36,10 @@
 🛠️ Bug fixes:
 
 * [Issue #46](https://github.com/PlotPyStack/PlotPy/issues/46) - Contrast adjustment with 'Eliminate outliers' failed for float images with high dynamic range
+* Fixed `ErrorBarCurveItem` handling of all-NaN data:
+  * Fixed `ValueError: zero-size array to reduction operation minimum which has no identity` when error bar curves contain only NaN values
+  * Added proper checks in `boundingRect()` and `draw()` methods to handle empty arrays gracefully
+  * Error bar curves with all-NaN data now fall back to parent class behavior instead of crashing
 * Item list: refresh tree when item parameters are changed:
   * Added `SIG_ITEM_PARAMETERS_CHANGED` signal to `BasePlot` class
   * This signal is emitted when the parameters of an item are changed using the parameters dialog, or a specific tool (e.g. the colormap selection tool, or the lock/unlock tool for image items)

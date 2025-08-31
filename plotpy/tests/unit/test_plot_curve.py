@@ -19,6 +19,26 @@ from plotpy.tools import (
 )
 
 
+def test_plot_curve_anomalies():
+    """Test plotting of a curve with anomalies"""
+    x = np.array([0.0, 1.0, 2.0, 3.0, 4.0, 5.0])
+    dx = dy = y = x * np.nan
+
+    with qt_app_context(exec_loop=False):
+        win = make.dialog(toolbar=True, type="curve")
+        plot = win.manager.get_plot()
+        for curve in (
+            make.merror(x, y, label="Curve"),
+            make.merror(x, y, dx, label="Curve"),
+            make.merror(x, y, dy, label="Curve"),
+            make.merror(x, y, dx, dy, label="Curve"),
+        ):
+            plot.add_item(curve)
+        win.show()
+        plot.do_autoscale()  # Force autoscale (was crashing initially with NaN data)
+        exec_dialog(win)
+
+
 def test_plot_curve():
     """Test plotting of a curve with PlotDialog"""
     x = np.linspace(-10, 10, 200)
@@ -90,5 +110,6 @@ def test_plot_curve_anti_aliasing():
 
 
 if __name__ == "__main__":
-    test_plot_curve()
-    test_plot_curve_anti_aliasing()
+    test_plot_curve_anomalies()
+    # test_plot_curve()
+    # test_plot_curve_anti_aliasing()
