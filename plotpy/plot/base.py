@@ -1302,7 +1302,7 @@ class BasePlot(qwt.QwtPlot):
         self.SIG_ITEMS_CHANGED.emit(self)
 
         if isinstance(item, BaseImageItem):
-            parent: QW.QWidget = self.parent()
+            parent = self.parentWidget()
             if parent is not None:
                 parent.setUpdatesEnabled(False)
             self.update_colormap_axis(item)

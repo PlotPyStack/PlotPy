@@ -598,7 +598,7 @@ class ColormapTool(CommandTool):
         ):
             return
         manager = ColorMapManager(
-            plot.parent(), active_colormap=self._active_colormap.name
+            plot.parentWidget(), active_colormap=self._active_colormap.name
         )
         manager.SIG_APPLY_COLORMAP.connect(self.update_plot)
         if exec_dialog(manager) and (cmap := manager.get_colormap()) is not None:
@@ -1325,7 +1325,7 @@ class RotateCropTool(CommandTool):
             if isinstance(item, TrImageItem):
                 z = int(item.z())
                 plot.del_item(item)
-                dlg = RotateCropDialog(plot.parent(), options=self.options)
+                dlg = RotateCropDialog(plot.parentWidget(), options=self.options)
                 dlg.set_item(item)
                 ok = dlg.exec()
                 plot.add_item(item, z=z)

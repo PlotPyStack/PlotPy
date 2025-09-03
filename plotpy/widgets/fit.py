@@ -298,13 +298,13 @@ class FitParam:
         """Update slider value"""
         if self.value is None or self.min is None or self.max is None:
             self.slider.setEnabled(False)
-            if self.slider.parent() and self.slider.parent().isVisible():
+            if self.slider.parentWidget() and self.slider.parentWidget().isVisible():
                 self.slider.show()
         elif self.value == self.min and self.max == self.min:
             self.slider.hide()
         else:
             self.slider.setEnabled(True)
-            if self.slider.parent() and self.slider.parent().isVisible():
+            if self.slider.parentWidget() and self.slider.parentWidget().isVisible():
                 self.slider.show()
             if self.logscale:
                 value_delta = max([np.log10(1 + self.value - self.min), 0.0])
@@ -366,7 +366,7 @@ def add_fitparam_widgets_to(
     row_nb = 0
     col_nb = 0
     for i, param in enumerate(fitparams):
-        param.create_widgets(layout.parent(), refresh_callback)
+        param.create_widgets(layout.parentWidget(), refresh_callback)
         widgets = param.get_widgets()
         w_colums = len(widgets) + 1
         row_contents += [
