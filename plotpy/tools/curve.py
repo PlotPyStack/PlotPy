@@ -954,6 +954,7 @@ class EditPointTool(InteractiveTool):
                 0,
                 QC.QPointF(*new_pos),  # type: ignore
             )
+            filter.plot.replot()  # Needed on non-Windows platforms to update the view
 
     def __get_active_curve_item(self, filter: StatefulEventFilter) -> CurveItem:
         """Get active curve item. Simple method to avoid type checking errors.

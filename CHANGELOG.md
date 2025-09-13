@@ -35,6 +35,7 @@
 
 🛠️ Bug fixes:
 
+* Fixed plot update after inserting a point using the `EditPointTool` on non-Windows platforms
 * [Issue #46](https://github.com/PlotPyStack/PlotPy/issues/46) - Contrast adjustment with 'Eliminate outliers' failed for float images with high dynamic range
 * Fixed `ErrorBarCurveItem` handling of all-NaN data:
   * Fixed `ValueError: zero-size array to reduction operation minimum which has no identity` when error bar curves contain only NaN values
