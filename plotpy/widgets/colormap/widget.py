@@ -592,7 +592,7 @@ class ColorMapWidget(QW.QWidget):
     def add_handle_at_relative_pos(
         self, relative_pos: float, new_color: QG.QColor | int | None = None
     ) -> None:
-        """insert a handle in the widget at the relative position (between 0. and 1.).
+        """Insert a handle in the widget at the relative position (between 0. and 1.).
         Mutates the colormap object. If the relative position is already occupied by a
         handle, the new handle will be inserted at the closest available position then
         will be moved back to the requested position.
