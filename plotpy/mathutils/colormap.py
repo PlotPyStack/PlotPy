@@ -187,7 +187,6 @@ def build_icon_from_cmap(
          the actual colormap width will be 14 (16 - 2 * 1). This was done to prevent
          interpolation on display.
     """
-
     padded_width = width - 2 * margin
     padded_height = height - 2 * margin
 

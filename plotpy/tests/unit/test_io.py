@@ -29,7 +29,6 @@ def compute_image(N=1000, M=1000):
 
 def test_imwrite_png(tmpdir):
     """Test writing of a png file"""
-
     # write a random image
     dest = tmpdir / "out.png"
     data = compute_image(1000, 500)
@@ -109,7 +108,6 @@ def test_imread_dcm():
 
 def test_imread_txt(tmpdir):
     """Test reading of txt file"""
-
     img = tmpdir / "img.txt"
     content = "\n".join(" ".join(f"{n:d}" for n in range(255)) for _ in range(50))
     img.write_text(content, "ascii")

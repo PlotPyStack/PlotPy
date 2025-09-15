@@ -370,7 +370,6 @@ class ColorMapWidget(QW.QWidget):
         """When called, computes a slider position from the current position of the
         mouse and maps it to slider range. Then finds which handles was selected and
         emits the custom signal HANDLE_SELECTED(handle_index) and caches the index."""
-
         self._handle_selected = self.multi_range_hslider.pressed_index
         self.HANDLE_SELECTED.emit(self._handle_selected)
 
@@ -601,7 +600,6 @@ class ColorMapWidget(QW.QWidget):
         Args:
             relative_pos: insertion position
         """
-
         if new_color is None:
             new_color = self._colormap.color(self.qwt_color_interval, relative_pos)
 

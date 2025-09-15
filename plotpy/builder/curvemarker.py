@@ -376,7 +376,6 @@ class CurveMarkerCursorBuilder:
 
             curve(x, y, marker='o', markerfacecolor='w')
         """
-
         if dx is not None or dy is not None:
             return self.error(
                 x,

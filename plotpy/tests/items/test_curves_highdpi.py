@@ -20,7 +20,6 @@ from plotpy.tests import vistools as ptv
 @pytest.mark.skip(reason="This test is not relevant for the automated test suite")
 def test_plot_highdpi():
     """Curve plotting test with high DPI"""
-
     # When setting the QT_SCALE_FACTOR to "2", performance is degraded, due to the
     # increased number of points to be drawn. As a workaround, we use the downsampling
     # feature to reduce the number of points to be drawn.

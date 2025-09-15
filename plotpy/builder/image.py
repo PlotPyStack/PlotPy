@@ -463,7 +463,6 @@ class ImageBuilder:
         Returns:
             :py:class:`.MaskedXYImageItem` object
         """
-
         if isinstance(x, (list, tuple)):
             x = np.array(x)
         if isinstance(y, (list, tuple)):

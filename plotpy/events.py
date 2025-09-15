@@ -1096,7 +1096,6 @@ class WheelZoomHandler(WheelHandler):
             Returns two tuples of four floats each, representing the parameters used
             by BasePlot.do_zoom_view.
         """
-
         x, y = pos.x(), pos.y()
         rect = plot.contentsRect()
         w, h = rect.width(), rect.height()

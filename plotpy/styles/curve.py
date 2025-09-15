@@ -68,7 +68,6 @@ class CurveParam(DataSet):
         Args:
             curve: instance of CurveItem to update
         """
-
         plot = curve.plot()
         if plot is not None:
             plot.blockSignals(True)  # Avoid unwanted calls of update_param

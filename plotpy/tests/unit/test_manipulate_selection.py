@@ -123,7 +123,6 @@ def test_move_with_mouse(img_item_factory: Callable[[], BaseImageItem] | None):
     Arg:
         img_item_factory: image item factory function. Defaults to None.
     """
-
     with qt_app_context(exec_loop=False):
         img_item = None if img_item_factory is None else img_item_factory()
         win, tool, plot, img_item = _setup_plot(img_item)

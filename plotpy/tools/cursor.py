@@ -94,7 +94,6 @@ class HRangeTool(BaseCursorTool):
 
         :return:
         """
-
         return XRangeSelection(0, 0)
 
 
