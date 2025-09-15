@@ -37,6 +37,8 @@ def pytest_addoption(parser):
 
 def pytest_configure(config):
     """Configure pytest based on command line options."""
+    if config.option.durations is None:
+        config.option.durations = 10  # Default to showing 10 slowest tests
     config.addinivalue_line(
         "markers",
         "requires_display: mark test as requiring a display "
