@@ -56,6 +56,12 @@
 * Range selection items (`XRangeSelection`, `YRangeSelection`):
   * Handles are now displayed only when the item is resizable
   * If the item is set as not resizable (using the `set_resizable` method), the handles will be hidden
+* Fixed cursor label formatting error with percentage symbols:
+  * Fixed `ValueError: unsupported format character '=' (0x3d)` when cursor labels contain percentage signs followed by format specifiers (e.g., "Crossing at 20.0% = %g")
+  * The issue occurred because old-style string formatting (`label % value`) treated the `%` in percentage displays as format specifiers
+  * Added robust fallback mechanism that tests label format once during cursor creation and uses regex-based replacement when needed
+  * Performance optimized: format validation is done once at cursor creation time, not on every callback execution
+  * Affects `vcursor`, `hcursor`, and `xcursor` methods in `CurveMarkerBuilder`
 
 Other changes:
 
