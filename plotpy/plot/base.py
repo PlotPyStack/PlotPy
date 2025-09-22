@@ -87,6 +87,7 @@ class BasePlotOptions:
         type: The plot type ("auto", "manual", "curve" or "image")
         axes_synchronised: If True, the axes are synchronised
         force_colorbar_enabled: If True, the colorbar is always enabled
+        show_axes_tab: If True, the axes tab is shown in the parameters dialog
     """
 
     title: str | None = None
@@ -105,6 +106,7 @@ class BasePlotOptions:
     type: str | PlotType = "auto"
     axes_synchronised: bool = False
     force_colorbar_enabled: bool = False
+    show_axes_tab: bool = True
 
     def __post_init__(self) -> None:
         """Check arguments"""
@@ -827,6 +829,22 @@ class BasePlot(qwt.QwtPlot):
         text.setFont(self.font_title)
         self.setTitle(text)
         self.SIG_PLOT_LABELS_CHANGED.emit(self)
+
+    def get_show_axes_tab(self) -> bool:
+        """Get whether the axes tab is shown in the parameters dialog
+
+        Returns:
+            bool: True if the axes tab is shown
+        """
+        return self.options.show_axes_tab
+
+    def set_show_axes_tab(self, show: bool) -> None:
+        """Set whether the axes tab is shown in the parameters dialog
+
+        Args:
+            show (bool): True to show the axes tab
+        """
+        self.options.show_axes_tab = show
 
     def get_axis_id(self, axis_name: str | int) -> int:
         """Return axis ID from axis name
@@ -1868,14 +1886,15 @@ class BasePlot(qwt.QwtPlot):
             if not active_item:
                 return
             self.get_selected_item_parameters(itemparams)
-            Param = self.get_axesparam_class(active_item)
-            axesparam = Param(
-                title=_("Axes"),
-                icon="lin_lin.png",
-                comment=_("Axes associated to selected item"),
-            )
-            axesparam.update_param(active_item)
-            itemparams.add("AxesParam", self, axesparam)
+            if self.get_show_axes_tab():
+                Param = self.get_axesparam_class(active_item)
+                axesparam = Param(
+                    title=_("Axes"),
+                    icon="lin_lin.png",
+                    comment=_("Axes associated to selected item"),
+                )
+                axesparam.update_param(active_item)
+                itemparams.add("AxesParam", self, axesparam)
 
     def set_item_parameters(self, itemparams: ItemParameters) -> None:
         """Set item (plot, here) parameters

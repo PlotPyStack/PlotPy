@@ -138,14 +138,15 @@ class ItemListWidget(QW.QListWidget):
         for item in sel_items:
             item.get_item_parameters(itemparams)
         sel_items[0].get_item_parameters(itemparams)
-        Param = self.plot.get_axesparam_class(sel_items[0])
-        axesparam = Param(
-            title=_("Axes"),
-            icon="lin_lin.png",
-            comment=_("Axes associated to selected item"),
-        )
-        axesparam.update_param(sel_items[0])
-        itemparams.add("AxesParam", self.plot, axesparam)
+        if self.plot.get_show_axes_tab():
+            Param = self.plot.get_axesparam_class(sel_items[0])
+            axesparam = Param(
+                title=_("Axes"),
+                icon="lin_lin.png",
+                comment=_("Axes associated to selected item"),
+            )
+            axesparam.update_param(sel_items[0])
+            itemparams.add("AxesParam", self.plot, axesparam)
         # === ===
         title, icon = PARAMETERS_TITLE_ICON["item"]
         itemparams.edit(self.plot, title, icon)

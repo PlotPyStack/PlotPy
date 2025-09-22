@@ -4,6 +4,11 @@
 
 💥 New features / Enhancements:
 
+* Added optional "Axes" tab control in Parameters dialog:
+  * New `show_axes_tab` option in `BasePlotOptions` and `PlotOptions` (default: `True`)
+  * When set to `False`, the "Axes" tab is hidden from item parameter dialogs
+  * This allows applications to provide their own axes management while using PlotPy
+  * Can be configured during plot creation or changed at runtime using `plot.set_show_axes_tab(False)`
 * [Issue #45](https://github.com/PlotPyStack/PlotPy/issues/45) - Add support for new curve Y-range cursor tool `YRangeCursorTool`:
   * This tool is similar to the existing `CurveStatsTool`, but it simply shows the Y-range values (min, max and interval).
   * It can be added to the plot widget using `plot_widget.manager.add_tool(YRangeCursorTool)`
