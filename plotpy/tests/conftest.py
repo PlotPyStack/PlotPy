@@ -14,6 +14,7 @@ import scipy
 import tifffile
 from guidata.config import ValidationMode, set_validation_mode
 from guidata.env import execenv
+from guidata.utils.gitreport import format_git_info_for_pytest, get_git_info_for_modules
 
 import plotpy
 
@@ -76,7 +77,7 @@ def pytest_report_header(config):
     qtbindings_version = qtpy.PYSIDE_VERSION
     if qtbindings_version is None:
         qtbindings_version = qtpy.PYQT_VERSION
-    return [
+    infolist = [
         f"PlotPy {plotpy.__version__}",
         f"  guidata {guidata.__version__}, PythonQwt {qwt.__version__}, "
         f"{qtpy.API_NAME} {qtbindings_version} [Qt version: {qtpy.QT_VERSION}]",
@@ -84,3 +85,15 @@ def pytest_report_header(config):
         f"h5py {h5py.__version__}, Pillow {PIL.__version__}, "
         f"tifffile {tifffile.__version__}",
     ]
+
+    # Git information for all modules using the gitreport module
+    modules_config = [
+        ("PlotPy", plotpy, "."),  # PlotPy uses current directory
+        ("guidata", guidata, None),
+    ]
+    git_repos = get_git_info_for_modules(modules_config)
+    git_info_lines = format_git_info_for_pytest(git_repos, "PlotPy")
+    if git_info_lines:
+        infolist.extend(git_info_lines)
+
+    return infolist
