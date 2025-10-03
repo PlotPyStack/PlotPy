@@ -4,6 +4,12 @@
 
 💥 New features / Enhancements:
 
+* Configurable autoscale margin:
+  * Added `autoscale_margin_percent` parameter to `BasePlotOptions` for intuitive percentage-based margin control
+  * Users can now specify autoscale margins as percentages (e.g., `0.2` for 0.2%, `5.0` for 5%)
+  * Replaces the previous decimal-based approach with more user-friendly percentage values
+  * Default remains 0.2% (equivalent to previous 0.002) for backward compatibility
+  * Includes validation to prevent unreasonable values (0-50% range)
 * Image statistics tool improvements:
   * Enhanced `get_stats` function to display delta (Δ) values for coordinate ranges
   * Now shows Δx, Δy, and Δz values alongside the min/max ranges for better analysis

@@ -88,6 +88,8 @@ class BasePlotOptions:
         axes_synchronised: If True, the axes are synchronised
         force_colorbar_enabled: If True, the colorbar is always enabled
         show_axes_tab: If True, the axes tab is shown in the parameters dialog
+        autoscale_margin_percent: The percentage margin added when autoscaling
+         (0.2% by default)
     """
 
     title: str | None = None
@@ -107,6 +109,7 @@ class BasePlotOptions:
     axes_synchronised: bool = False
     force_colorbar_enabled: bool = False
     show_axes_tab: bool = True
+    autoscale_margin_percent: float = 0.2
 
     def __post_init__(self) -> None:
         """Check arguments"""
@@ -120,6 +123,11 @@ class BasePlotOptions:
         # Check aspect ratio
         if self.aspect_ratio <= 0:
             raise ValueError("aspect_ratio must be strictly positive")
+        # Check autoscale margin percentage
+        if self.autoscale_margin_percent < 0:
+            raise ValueError("autoscale_margin_percent must be non-negative")
+        if self.autoscale_margin_percent > 50:
+            raise ValueError("autoscale_margin_percent must be <= 50%")
         # Show a warning if force_colorbar_enabled is True and type is "curve"
         if self.force_colorbar_enabled and self.type == "curve":
             warnings.warn(
@@ -309,6 +317,7 @@ class BasePlot(qwt.QwtPlot):
         self.options = options = options if options is not None else BasePlotOptions()
 
         self.__autoscale_excluded_items: list[itf.IBasePlotItem] = []
+        self.autoscale_margin_percent = options.autoscale_margin_percent
         self.lock_aspect_ratio = options.lock_aspect_ratio
         self.__autoLockAspectRatio = False
         if self.lock_aspect_ratio is None:
@@ -1104,6 +1113,32 @@ class BasePlot(qwt.QwtPlot):
         self.set_axis_scale(ax, xscale)
         self.set_axis_scale(ay, yscale)
         self.replot()
+
+    def get_autoscale_margin_percent(self) -> float:
+        """Get autoscale margin percentage
+
+        Returns:
+            float: the autoscale margin percentage
+        """
+        return self.autoscale_margin_percent
+
+    def set_autoscale_margin_percent(self, margin_percent: float) -> None:
+        """Set autoscale margin percentage
+
+        Args:
+            margin_percent (float): the autoscale margin percentage (0-50)
+
+        Raises:
+            ValueError: if margin_percent is not in valid range
+        """
+        if margin_percent < 0:
+            raise ValueError("autoscale_margin_percent must be non-negative")
+        if margin_percent > 50:
+            raise ValueError("autoscale_margin_percent must be <= 50%")
+
+        self.autoscale_margin_percent = margin_percent
+        # Trigger an autoscale to apply the new margin immediately
+        self.do_autoscale(replot=True)
 
     def enable_used_axes(self):
         """
@@ -2037,12 +2072,14 @@ class BasePlot(qwt.QwtPlot):
                 vmax += 1
             elif self.get_axis_scale(axis_id) == "lin":
                 dv = vmax - vmin
-                vmin -= 0.002 * dv
-                vmax += 0.002 * dv
+                margin = self.autoscale_margin_percent / 100.0
+                vmin -= margin * dv
+                vmax += margin * dv
             elif vmin > 0 and vmax > 0:  # log scale
                 dv = np.log10(vmax) - np.log10(vmin)
-                vmin = 10 ** (np.log10(vmin) - 0.002 * dv)
-                vmax = 10 ** (np.log10(vmax) + 0.002 * dv)
+                margin = self.autoscale_margin_percent / 100.0
+                vmin = 10 ** (np.log10(vmin) - margin * dv)
+                vmax = 10 ** (np.log10(vmax) + margin * dv)
             self.set_axis_limits(axis_id, vmin, vmax)
         self.setAutoReplot(auto)
         self.updateAxes()
