@@ -1506,11 +1506,11 @@ class ObjectHandler:
                         self.active = nearest
                         self.handle = nearest_handle
                         self.inside = nearest_inside
+                        # Update distance for the new object
+                        dist = nearest_dist
                         # Clear unselection pending since we've switched to a new object
                         self.unselection_pending = False
-                        # No need to process further - we've completed the selection
-                        plot.replot()
-                        return
+                        # Continue to move_or_resize_object for proper validation
                     else:
                         # Clicked on empty space - unselect everything
                         self.__unselect_objects(filter)
