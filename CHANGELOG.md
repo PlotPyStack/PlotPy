@@ -42,6 +42,10 @@
 
 * Fixed plot update after inserting a point using the `EditPointTool` on non-Windows platforms
 * [Issue #46](https://github.com/PlotPyStack/PlotPy/issues/46) - Contrast adjustment with 'Eliminate outliers' failed for float images with high dynamic range
+* [Issue #29](https://github.com/PlotPyStack/PlotPy/issues/29) - SelectTool: Selecting Another Shape Without Unselection
+  * Fixed direct selection between different shapes without requiring intermediate click on empty space
+  * Users can now click directly from one shape to another for immediate selection
+  * Maintains all existing functionality including multi-selection (Ctrl+click), moving, and resizing
 * Fixed `ErrorBarCurveItem` handling of all-NaN data:
   * Fixed `ValueError: zero-size array to reduction operation minimum which has no identity` when error bar curves contain only NaN values
   * Added proper checks in `boundingRect()` and `draw()` methods to handle empty arrays gracefully
