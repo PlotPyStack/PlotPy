@@ -88,9 +88,16 @@ def get_stats(
         [
             "%sx%s %s" % (item.data.shape[1], item.data.shape[0], str(item.data.dtype)),
             "",
-            "%s ≤ x ≤ %s" % (p.xformat % x0, p.xformat % x1),
-            "%s ≤ y ≤ %s" % (p.yformat % y0, p.yformat % y1),
-            "%s ≤ z ≤ %s" % (p.zformat % data.min(), p.zformat % data.max()),
+            "%s ≤ x ≤ %s (Δx = %s)"
+            % (p.xformat % x0, p.xformat % x1, p.xformat % (x1 - x0)),
+            "%s ≤ y ≤ %s (Δy = %s)"
+            % (p.yformat % y0, p.yformat % y1, p.yformat % (y1 - y0)),
+            "%s ≤ z ≤ %s (Δz = %s)"
+            % (
+                p.zformat % data.min(),
+                p.zformat % data.max(),
+                p.zformat % (data.max() - data.min()),
+            ),
             "‹z› = " + p.zformat % data.mean(),
             "σ(z) = " + p.zformat % data.std(),
         ]

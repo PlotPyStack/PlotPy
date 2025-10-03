@@ -4,6 +4,9 @@
 
 💥 New features / Enhancements:
 
+* Image statistics tool improvements:
+  * Enhanced `get_stats` function to display delta (Δ) values for coordinate ranges
+  * Now shows Δx, Δy, and Δz values alongside the min/max ranges for better analysis
 * Added optional "Axes" tab control in Parameters dialog:
   * New `show_axes_tab` option in `BasePlotOptions` and `PlotOptions` (default: `True`)
   * When set to `False`, the "Axes" tab is hidden from item parameter dialogs
