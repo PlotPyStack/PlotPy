@@ -52,10 +52,12 @@ from plotpy.items import (
     PolygonMapItem,
     PolygonShape,
 )
+from plotpy.plot.scaledraw import DateTimeScaleDraw
 from plotpy.styles.axes import AxesParam, AxeStyleParam, AxisParam, ImageAxesParam
 from plotpy.styles.base import GridParam, ItemParameters
 
 if TYPE_CHECKING:
+    from datetime import datetime
     from typing import IO
 
     from qwt.scale_widget import QwtScaleWidget
@@ -1113,6 +1115,80 @@ class BasePlot(qwt.QwtPlot):
         self.set_axis_scale(ax, xscale)
         self.set_axis_scale(ay, yscale)
         self.replot()
+
+    def set_axis_datetime(
+        self,
+        axis_id: int | str,
+        format: str = "%Y-%m-%d %H:%M:%S",
+        rotate: float = -45,
+        spacing: int = 20,
+    ) -> None:
+        """Configure an axis to display datetime labels
+
+        This method sets up an axis to display Unix timestamps as formatted
+        date/time strings.
+
+        Args:
+            axis_id: Axis ID (constants.Y_LEFT, constants.X_BOTTOM, ...)
+                or string: 'bottom', 'left', 'top' or 'right'
+            format: Format string for datetime display (default: "%Y-%m-%d %H:%M:%S").
+                Uses Python datetime.strftime() format codes.
+            rotate: Rotation angle for labels in degrees (default: -45)
+            spacing: Spacing between labels (default: 20)
+
+        Examples:
+            >>> # Enable datetime on x-axis with default format
+            >>> plot.set_axis_datetime("bottom")
+
+            >>> # Enable datetime with time only
+            >>> plot.set_axis_datetime("bottom", format="%H:%M:%S")
+
+            >>> # Enable datetime with date only, no rotation
+            >>> plot.set_axis_datetime("bottom", format="%Y-%m-%d", rotate=0)
+        """
+        axis_id = self.get_axis_id(axis_id)
+        scale_draw = DateTimeScaleDraw(format=format, rotate=rotate, spacing=spacing)
+        self.setAxisScaleDraw(axis_id, scale_draw)
+        self.replot()
+
+    def set_axis_limits_from_datetime(
+        self,
+        axis_id: int | str,
+        dt_min: "datetime",
+        dt_max: "datetime",
+        stepsize: int = 0,
+    ) -> None:
+        """Set axis limits using datetime objects
+
+        This is a convenience method to set axis limits for datetime axes without
+        manually converting datetime objects to Unix timestamps.
+
+        Args:
+            axis_id: Axis ID (constants.Y_LEFT, constants.X_BOTTOM, ...)
+                or string: 'bottom', 'left', 'top' or 'right'
+            dt_min: Minimum datetime value
+            dt_max: Maximum datetime value
+            stepsize: The step size (optional, default=0)
+
+        Examples:
+            >>> from datetime import datetime
+            >>> # Set x-axis limits to a specific date range
+            >>> dt1 = datetime(2025, 10, 7, 10, 0, 0)
+            >>> dt2 = datetime(2025, 10, 7, 18, 0, 0)
+            >>> plot.set_axis_limits_from_datetime("bottom", dt1, dt2)
+        """
+        from datetime import datetime
+
+        if not isinstance(dt_min, datetime) or not isinstance(dt_max, datetime):
+            raise TypeError("dt_min and dt_max must be datetime objects")
+
+        # Convert datetime objects to Unix timestamps
+        epoch = datetime(1970, 1, 1)
+        timestamp_min = (dt_min - epoch).total_seconds()
+        timestamp_max = (dt_max - epoch).total_seconds()
+
+        # Set the axis limits using the timestamps
+        self.set_axis_limits(axis_id, timestamp_min, timestamp_max, stepsize)
 
     def get_autoscale_margin_percent(self) -> float:
         """Get autoscale margin percentage

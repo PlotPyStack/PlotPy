@@ -35,6 +35,14 @@
 * New `SyncPlotDialog` class:
   * This class provides a dialog for displaying synchronized plots.
   * This is a complementary class to `SyncPlotWindow`, providing a modal dialog interface for synchronized plotting.
+* Native datetime axis support:
+  * Added `DateTimeScaleDraw` class in `plotpy.styles.scaledraw` for formatting axis labels as date/time strings
+  * Added `BasePlot.set_axis_datetime()` method to easily configure an axis for datetime display
+  * Added `BasePlot.set_axis_limits_from_datetime()` method to set axis limits using datetime objects directly
+  * Supports customizable datetime format strings using Python's `strftime` format codes
+  * Configurable label rotation and spacing for optimal display
+  * Example: `plot.set_axis_datetime("bottom", format="%H:%M:%S")` for time-only display
+  * Example: `plot.set_axis_limits_from_datetime("bottom", dt1, dt2)` to zoom to a specific time range
 
 🧹 API cleanup: removed deprecated update methods (use `update_item` instead)
 
