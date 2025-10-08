@@ -22,7 +22,7 @@ class DateTimeScaleDraw(QwtScaleDraw):
         format: Format string for datetime display (default: "%Y-%m-%d %H:%M:%S").
                 Uses Python datetime.strftime() format codes.
         rotate: Rotation angle for labels in degrees (default: -45)
-        spacing: Spacing between labels (default: 20)
+        spacing: Spacing between labels (default: 4)
 
     Examples:
         >>> # Create a datetime scale with default format
@@ -39,7 +39,7 @@ class DateTimeScaleDraw(QwtScaleDraw):
         self,
         format: str = "%Y-%m-%d %H:%M:%S",
         rotate: float = -45,
-        spacing: int = 20,
+        spacing: int = 4,
     ):
         super().__init__()
         self._format = format

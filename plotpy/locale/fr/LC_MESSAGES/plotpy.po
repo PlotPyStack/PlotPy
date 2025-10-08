@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: plotpy 2.7.4\n"
 "Report-Msgid-Bugs-To: p.raybaut@codra.fr\n"
-"POT-Creation-Date: 2025-07-27 15:03+0200\n"
+"POT-Creation-Date: 2025-10-08 11:19+0200\n"
 "PO-Revision-Date: 2025-06-02 11:14+0200\n"
 "Last-Translator: Christophe Debonnel <c.debonnel@codra.fr>\n"
 "Language: fr\n"
@@ -356,14 +356,17 @@ msgstr "Police du titre"
 msgid "Values font"
 msgstr "Police des valeurs"
 
+msgid "Scale"
+msgstr "Échelle"
+
 msgid "linear"
 msgstr "linéaire"
 
+msgid "date/time"
+msgstr "date/heure"
+
 msgid "logarithmic"
 msgstr "logarithmique"
-
-msgid "Scale"
-msgstr "Échelle"
 
 msgid "Lower axis limit"
 msgstr "Borne inférieure de l'axe"

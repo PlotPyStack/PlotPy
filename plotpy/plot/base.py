@@ -20,6 +20,7 @@ import pickle
 import sys
 import warnings
 import weakref
+from datetime import datetime
 from math import fabs
 from typing import TYPE_CHECKING, Any
 
@@ -57,7 +58,6 @@ from plotpy.styles.axes import AxesParam, AxeStyleParam, AxisParam, ImageAxesPar
 from plotpy.styles.base import GridParam, ItemParameters
 
 if TYPE_CHECKING:
-    from datetime import datetime
     from typing import IO
 
     from qwt.scale_widget import QwtScaleWidget
@@ -166,7 +166,11 @@ class BasePlot(qwt.QwtPlot):
     Y_LEFT, Y_RIGHT, X_BOTTOM, X_TOP = cst.Y_LEFT, cst.Y_RIGHT, cst.X_BOTTOM, cst.X_TOP
     AXIS_IDS = (Y_LEFT, Y_RIGHT, X_BOTTOM, X_TOP)
     AXIS_NAMES = {"left": Y_LEFT, "right": Y_RIGHT, "bottom": X_BOTTOM, "top": X_TOP}
-    AXIS_TYPES = {"lin": qwt.QwtLinearScaleEngine, "log": qwt.QwtLogScaleEngine}
+    AXIS_TYPES = {
+        "lin": qwt.QwtLinearScaleEngine,
+        "log": qwt.QwtLogScaleEngine,
+        "datetime": qwt.QwtDateTimeScaleEngine,
+    }
     AXIS_CONF_OPTIONS = ("axis", "axis", "axis", "axis")
     DEFAULT_ACTIVE_XAXIS = X_BOTTOM
     DEFAULT_ACTIVE_YAXIS = Y_LEFT
@@ -492,7 +496,51 @@ class BasePlot(qwt.QwtPlot):
         item: TrackableItem = self.get_last_active_item(itf.ITrackableItemType)
         if item:
             return item.get_coordinates_label(x, y)
-        return f"<b>{title}</b><br>x = {x:g}<br>y = {y:g}"
+        return self.format_coordinate_values(x, y, "bottom", "left", title)
+
+    def format_coordinate_values(
+        self, x: float, y: float, xaxis: str | int, yaxis: str | int, title: str
+    ) -> str:
+        """Format coordinate values with axis-aware formatting
+
+        Args:
+            x: The x coordinate value
+            y: The y coordinate value
+            xaxis: The x axis name ("bottom", "top") or axis ID
+            yaxis: The y axis name ("left", "right") or axis ID
+            title: The title to display in the coordinate string
+
+        Returns:
+            str: Formatted coordinate string with HTML markup
+        """
+        x_formatted = self.format_coordinate_value(x, xaxis)
+        y_formatted = self.format_coordinate_value(y, yaxis)
+        return f"<b>{title}</b><br>x = {x_formatted}<br>y = {y_formatted}"
+
+    def format_coordinate_value(self, value: float, axis_id: str | int) -> str:
+        """Format a coordinate value based on the axis scale type
+
+        Args:
+            value: The coordinate value to format
+            axis_id: The axis name ("bottom", "top", "left", "right") or axis ID
+
+        Returns:
+            str: Formatted coordinate value
+        """
+        axis_id = self.get_axis_id(axis_id)
+
+        # Check if this axis is using datetime scale
+        if self.get_axis_scale(axis_id) == "datetime":
+            try:
+                scale_draw: DateTimeScaleDraw = self.axisScaleDraw(axis_id)
+                dt = datetime.fromtimestamp(value)
+                return dt.strftime(scale_draw.get_format())
+            except (ValueError, OSError, OverflowError):
+                # Handle invalid timestamps, fall back to numeric display
+                return f"{value:g}"
+        else:
+            # Standard numeric formatting
+            return f"{value:g}"
 
     def set_marker_axes(self) -> None:
         """
@@ -657,7 +705,7 @@ class BasePlot(qwt.QwtPlot):
                 F = 1 + 3 * direction * float(x1 - x0) / width
             if F * (hbound - lbound) == 0:
                 continue
-            if self.get_axis_scale(axis_id) == "lin":
+            if self.get_axis_scale(axis_id) in ("lin", "datetime"):
                 orig = self.invTransform(axis_id, start)
                 vmin = orig - F * (orig - lbound)
                 vmax = orig + F * (hbound - orig)
@@ -1063,7 +1111,7 @@ class BasePlot(qwt.QwtPlot):
             self.setAxisMaxMinor(axis_id, nminor)
 
     def get_axis_scale(self, axis_id: int) -> str:
-        """Return the name ('lin' or 'log') of the scale used by axis
+        """Return the name ('lin', 'log', or 'datetime') of the scale used by axis
 
         Args:
             axis_id (int): the axis id
@@ -1073,24 +1121,39 @@ class BasePlot(qwt.QwtPlot):
         """
         axis_id = self.get_axis_id(axis_id)
         engine = self.axisScaleEngine(axis_id)
-        for axis_label, axis_type in list(self.AXIS_TYPES.items()):
-            if isinstance(engine, axis_type):
-                return axis_label
-        return "lin"  # unknown default to linear
+
+        # Check for most specific types first, since datetime inherits from linear
+        if isinstance(engine, self.AXIS_TYPES["datetime"]):
+            return "datetime"
+        elif isinstance(engine, self.AXIS_TYPES["log"]):
+            return "log"
+        elif isinstance(engine, self.AXIS_TYPES["lin"]):
+            return "lin"
+        else:
+            return "lin"  # unknown default to linear
 
     def set_axis_scale(self, axis_id: int, scale: str, autoscale: bool = True) -> None:
         """Set axis scale
 
         Args:
             axis_id (int): the axis id
-            scale (str): the axis scale ('lin' or 'log')
+            scale (str): the axis scale ('lin', 'log', or 'datetime')
             autoscale (bool): autoscale the axis (optional, default=True)
 
         Example:
             self.set_axis_scale(curve.yAxis(), 'lin')
+            self.set_axis_scale('bottom', 'datetime')  # For time series data
         """
         axis_id = self.get_axis_id(axis_id)
-        self.setAxisScaleEngine(axis_id, self.AXIS_TYPES[scale]())
+        scale_engine = self.AXIS_TYPES[scale]()
+
+        if scale != self.get_axis_scale(axis_id):
+            if scale == "datetime":
+                self.setAxisScaleDraw(axis_id, DateTimeScaleDraw())
+            else:
+                self.setAxisScaleDraw(axis_id, qwt.QwtScaleDraw())
+
+        self.setAxisScaleEngine(axis_id, scale_engine)
         if autoscale:
             self.do_autoscale(replot=False)
 
@@ -1106,7 +1169,7 @@ class BasePlot(qwt.QwtPlot):
         """Set active curve scales
 
         Args:
-            xscale (str): the x axis scale ('lin' or 'log')
+            xscale (str): the x axis scale ('lin', 'log' or 'datetime')
             yscale (str): the y axis scale ('lin' or 'log')
 
         Example:
@@ -1121,7 +1184,7 @@ class BasePlot(qwt.QwtPlot):
         axis_id: int | str,
         format: str = "%Y-%m-%d %H:%M:%S",
         rotate: float = -45,
-        spacing: int = 20,
+        spacing: int = 4,
     ) -> None:
         """Configure an axis to display datetime labels
 
@@ -1134,7 +1197,7 @@ class BasePlot(qwt.QwtPlot):
             format: Format string for datetime display (default: "%Y-%m-%d %H:%M:%S").
                 Uses Python datetime.strftime() format codes.
             rotate: Rotation angle for labels in degrees (default: -45)
-            spacing: Spacing between labels (default: 20)
+            spacing: Spacing between labels (default: 4)
 
         Examples:
             >>> # Enable datetime on x-axis with default format
@@ -1149,13 +1212,15 @@ class BasePlot(qwt.QwtPlot):
         axis_id = self.get_axis_id(axis_id)
         scale_draw = DateTimeScaleDraw(format=format, rotate=rotate, spacing=spacing)
         self.setAxisScaleDraw(axis_id, scale_draw)
-        self.replot()
+        scale_engine = qwt.QwtDateTimeScaleEngine()
+        self.setAxisScaleEngine(axis_id, scale_engine)
+        self.do_autoscale()
 
     def set_axis_limits_from_datetime(
         self,
         axis_id: int | str,
-        dt_min: "datetime",
-        dt_max: "datetime",
+        dt_min: datetime,
+        dt_max: datetime,
         stepsize: int = 0,
     ) -> None:
         """Set axis limits using datetime objects
@@ -1177,8 +1242,6 @@ class BasePlot(qwt.QwtPlot):
             >>> dt2 = datetime(2025, 10, 7, 18, 0, 0)
             >>> plot.set_axis_limits_from_datetime("bottom", dt1, dt2)
         """
-        from datetime import datetime
-
         if not isinstance(dt_min, datetime) or not isinstance(dt_max, datetime):
             raise TypeError("dt_min and dt_max must be datetime objects")
 

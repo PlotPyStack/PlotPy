@@ -43,7 +43,9 @@ class AxisParam(DataSet):
     """Scale parameters for an axis."""
 
     scale = ChoiceItem(
-        _("Scale"), [("lin", _("linear")), ("log", _("logarithmic"))], default="lin"
+        _("Scale"),
+        [("lin", _("linear")), ("log", _("logarithmic")), ("datetime", _("date/time"))],
+        default="lin",
     )
     vmin = FloatItem("Min", help=_("Lower axis limit"), default=0.0)
     vmax = FloatItem("Max", help=_("Upper axis limit"), default=1.0)

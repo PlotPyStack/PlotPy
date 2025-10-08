@@ -72,7 +72,7 @@ test = ["pytest", "pytest-xvfb"]
 include = ["plotpy*"]
 
 [tool.setuptools.package-data]
-"*" = ["*.png", "*.svg", "*.mo", "*.cfg", "*.toml", "*.dcm", "*.ui", "*.json"]
+"*" = ["*.png", "*.svg", "*.mo", "*.cfg", "*.toml", "*.dcm", "*.ui", "*.json", "*.txt"]
 
 [tool.setuptools.dynamic]
 version = { attr = "plotpy.__version__" }

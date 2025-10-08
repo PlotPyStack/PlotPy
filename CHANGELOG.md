@@ -43,6 +43,13 @@
   * Configurable label rotation and spacing for optimal display
   * Example: `plot.set_axis_datetime("bottom", format="%H:%M:%S")` for time-only display
   * Example: `plot.set_axis_limits_from_datetime("bottom", dt1, dt2)` to zoom to a specific time range
+  * Added `"datetime"` as a valid scale type (alongside `"lin"` and `"log"`) for axis configuration
+  * Added datetime coordinate formatting support throughout PlotPy:
+    * Cursor tools (`VCursorTool`, `HCursorTool`, `XCursorTool`) now display datetime-formatted X/Y coordinates
+    * `CurveStatsTool` now displays datetime-formatted X coordinates for statistical computations
+    * Marker labels automatically format coordinates as datetime when axis uses datetime scale
+    * Coordinate display in the plot canvas now shows datetime format when appropriate
+    * Refactored `ObjectInfo` base class to provide shared datetime formatting methods for code reuse
 
 🧹 API cleanup: removed deprecated update methods (use `update_item` instead)
 

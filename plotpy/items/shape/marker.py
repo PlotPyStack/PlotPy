@@ -26,6 +26,7 @@ if TYPE_CHECKING:
     from qtpy.QtGui import QPainter
 
     from plotpy.interfaces import IItemType
+    from plotpy.plot import BasePlot
     from plotpy.styles.base import ItemParameters
 
 
@@ -510,16 +511,41 @@ class Marker(QwtPlotMarker):
     def update_label(self) -> None:
         """Update label"""
         x, y = self.xValue(), self.yValue()
+        plot: BasePlot = self.plot()
         if self.label_cb:
             label = self.label_cb(x, y)
             if label is None:
                 return
         elif self.is_vertical():
-            label = f"x = {x:g}"
+            # Format x-coordinate considering datetime axis
+            if plot is not None and plot.get_axis_scale(self.xAxis()) == "datetime":
+                x_formatted = plot.format_coordinate_value(x, self.xAxis())
+                label = f"x = {x_formatted}"
+            else:
+                label = f"x = {x:g}"
         elif self.is_horizontal():
-            label = f"y = {y:g}"
+            # Format y-coordinate considering datetime axis
+            if plot is not None and plot.get_axis_scale(self.yAxis()) == "datetime":
+                y_formatted = plot.format_coordinate_value(y, self.yAxis())
+                label = f"y = {y_formatted}"
+            else:
+                label = f"y = {y:g}"
         else:
-            label = f"x = {x:g}<br>y = {y:g}"
+            # Format both coordinates considering datetime axes
+            if plot is not None:
+                x_formatted = x
+                y_formatted = y
+                if plot.get_axis_scale(self.xAxis()) == "datetime":
+                    x_formatted = plot.format_coordinate_value(x, self.xAxis())
+                else:
+                    x_formatted = f"{x:g}"
+                if plot.get_axis_scale(self.yAxis()) == "datetime":
+                    y_formatted = plot.format_coordinate_value(y, self.yAxis())
+                else:
+                    y_formatted = f"{y:g}"
+                label = f"x = {x_formatted}<br>y = {y_formatted}"
+            else:
+                label = f"x = {x:g}<br>y = {y:g}"
         text = self.label()
         text.setText(label)
         self.setLabel(text)
