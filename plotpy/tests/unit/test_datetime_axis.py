@@ -10,10 +10,10 @@
 from datetime import datetime
 
 import numpy as np
+import qwt
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
-from plotpy.plot.scaledraw import DateTimeScaleDraw
 from plotpy.tests import vistools as ptv
 
 
@@ -31,7 +31,7 @@ def test_datetime_axis():
         # Test 1: Set datetime axis with default format
         plot.set_axis_datetime("bottom")
         scale_draw = plot.axisScaleDraw(plot.xBottom)
-        assert isinstance(scale_draw, DateTimeScaleDraw)
+        assert isinstance(scale_draw, qwt.QwtDateTimeScaleDraw)
         assert scale_draw.get_format() == "%Y-%m-%d %H:%M:%S"
 
         # Test 2: Set datetime axis with custom format (time only)

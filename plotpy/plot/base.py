@@ -53,7 +53,6 @@ from plotpy.items import (
     PolygonMapItem,
     PolygonShape,
 )
-from plotpy.plot.scaledraw import DateTimeScaleDraw
 from plotpy.styles.axes import AxesParam, AxeStyleParam, AxisParam, ImageAxesParam
 from plotpy.styles.base import GridParam, ItemParameters
 
@@ -532,7 +531,7 @@ class BasePlot(qwt.QwtPlot):
         # Check if this axis is using datetime scale
         if self.get_axis_scale(axis_id) == "datetime":
             try:
-                scale_draw: DateTimeScaleDraw = self.axisScaleDraw(axis_id)
+                scale_draw: qwt.QwtDateTimeScaleDraw = self.axisScaleDraw(axis_id)
                 dt = datetime.fromtimestamp(value)
                 return dt.strftime(scale_draw.get_format())
             except (ValueError, OSError, OverflowError):
@@ -1149,7 +1148,7 @@ class BasePlot(qwt.QwtPlot):
 
         if scale != self.get_axis_scale(axis_id):
             if scale == "datetime":
-                self.setAxisScaleDraw(axis_id, DateTimeScaleDraw())
+                self.setAxisScaleDraw(axis_id, qwt.QwtDateTimeScaleDraw())
             else:
                 self.setAxisScaleDraw(axis_id, qwt.QwtScaleDraw())
 
@@ -1210,10 +1209,18 @@ class BasePlot(qwt.QwtPlot):
             >>> plot.set_axis_datetime("bottom", format="%Y-%m-%d", rotate=0)
         """
         axis_id = self.get_axis_id(axis_id)
-        scale_draw = DateTimeScaleDraw(format=format, rotate=rotate, spacing=spacing)
+        scale_draw = qwt.QwtDateTimeScaleDraw(format=format, spacing=spacing)
         self.setAxisScaleDraw(axis_id, scale_draw)
         scale_engine = qwt.QwtDateTimeScaleEngine()
         self.setAxisScaleEngine(axis_id, scale_engine)
+        if rotate != 0:
+            self.setAxisLabelRotation(axis_id, rotate)
+            if rotate < 0:
+                self.setAxisLabelAlignment(axis_id, QC.Qt.AlignLeft | QC.Qt.AlignBottom)
+            else:
+                self.setAxisLabelAlignment(
+                    axis_id, QC.Qt.AlignRight | QC.Qt.AlignBottom
+                )
         self.do_autoscale()
 
     def set_axis_limits_from_datetime(
