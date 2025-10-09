@@ -43,9 +43,9 @@ jobs:
            cd ..
            git clone --depth 1 --branch develop https://github.com/PlotPyStack/guidata.git
            git clone --depth 1 https://github.com/PlotPyStack/PythonQwt.git
+           cd PlotPy
            pip install -e ../guidata
            pip install -e ../PythonQwt
-           cd PlotPy
         fi
     - name: Lint with Ruff
       run: ruff check --output-format=github plotpy
