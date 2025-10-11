@@ -55,6 +55,7 @@ jobs:
         else
            # Install from PyPI normally for main branch
            pip install .[test]
+        fi
     - name: Lint with Ruff
       run: ruff check --output-format=github plotpy
     - name: Test with pytest
