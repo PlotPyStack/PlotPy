@@ -63,6 +63,11 @@
 
 🛠️ Bug fixes:
 
+* Fixed index bounds calculation for image slicing compatibility:
+  * Corrected the calculation of maximum indices in `get_plot_coordinates` to ensure proper bounds when using NumPy array slicing
+  * Previously, the maximum indices were off by one, which could cause issues when extracting image data using the returned coordinates
+  * Now returns indices that correctly align with Python/NumPy slicing conventions (e.g., `[i1:i2+1, j1:j2+1]`)
+  * This fixes an historic bug that could lead to off-by-one errors when users extracted image data using the coordinates provided by this function
 * Fixed plot update after inserting a point using the `EditPointTool` on non-Windows platforms
 * [Issue #46](https://github.com/PlotPyStack/PlotPy/issues/46) - Contrast adjustment with 'Eliminate outliers' failed for float images with high dynamic range
 * [Issue #29](https://github.com/PlotPyStack/PlotPy/issues/29) - SelectTool: Selecting Another Shape Without Unselection

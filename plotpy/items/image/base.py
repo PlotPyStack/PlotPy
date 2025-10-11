@@ -230,23 +230,30 @@ class BaseImageItem(QwtPlotItem):
              Defaults to True.
 
         Returns:
-            Closest image rectangular pixel area index bounds
+            Closest image rectangular pixel area index bounds compatible with
+            direct array slicing (e.g., data[iy0:iy1, ix0:ix1])
 
         .. note::
 
             Avoid returning empty rectangular area (return 1x1 pixel area instead).
             Handle reversed/not-reversed Y-axis orientation.
+            Indices are compatible with direct array slicing and match get_data
+            behavior.
         """
         ix0, iy0 = self.get_closest_indexes(x0, y0, corner="TL")
-        ix1, iy1 = self.get_closest_indexes(x1, y1, corner="BR")
+        # Use TL to avoid double +1 addition
+        ix1, iy1 = self.get_closest_indexes(x1, y1, corner="TL")
         if ix0 > ix1:
             ix1, ix0 = ix0, ix1
         if iy0 > iy1:
             iy1, iy0 = iy0, iy1
+        # Add +1 to bottom-right indices for slice compatibility (matches get_data)
+        ix1 = min(ix1 + 1, self.data.shape[1])
+        iy1 = min(iy1 + 1, self.data.shape[0])
         if ix0 == ix1 and avoid_empty:
-            ix1 += 1
+            ix1 = min(ix1 + 1, self.data.shape[1])
         if iy0 == iy1 and avoid_empty:
-            iy1 += 1
+            iy1 = min(iy1 + 1, self.data.shape[0])
         return ix0, iy0, ix1, iy1
 
     def align_rectangular_shape(self, shape: RectangleShape) -> None:
