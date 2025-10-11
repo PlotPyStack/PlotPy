@@ -37,7 +37,6 @@ jobs:
         python -m pip install ruff pytest
         pip install PyQt5 setuptools numpy Cython
         python setup.py build_ext --inplace
-        pip install .[test]
         if [ "${{ github.ref_name }}" = "develop" ]; then
            pip uninstall -y guidata PythonQwt
            cd ..
@@ -46,7 +45,16 @@ jobs:
            cd PlotPy
            pip install -e ../guidata
            pip install -e ../PythonQwt
-        fi
+           # Install tomli for TOML parsing (safe if already present)
+           pip install tomli
+           # Extract dependencies and save to file, then install
+           python -c "import tomli; f=open('pyproject.toml','rb'); data=tomli.load(f); deps=[d for d in data['project']['dependencies'] if not any(p in d for p in ['guidata', 'PythonQwt'])]; open('deps.txt','w').write('\n'.join(deps))"
+           pip install -r deps.txt
+           # Install PlotPy without dependencies
+           pip install --no-deps .
+        else
+           # Install from PyPI normally for main branch
+           pip install .[test]
     - name: Lint with Ruff
       run: ruff check --output-format=github plotpy
     - name: Test with pytest
