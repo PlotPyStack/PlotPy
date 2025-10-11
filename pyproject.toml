@@ -39,7 +39,7 @@ classifiers = [
 requires-python = ">=3.9, <4"
 dependencies = [
     "guidata >= 3.11",
-    "PythonQwt >= 0.14",
+    "PythonQwt >= 0.15",
     "numpy >= 1.22",
     "SciPy >= 1.7.3",
     "scikit-image >= 0.19",
