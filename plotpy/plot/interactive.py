@@ -533,7 +533,7 @@ def plotyy(x1, y1, x2, y2):
         import numpy as np
         x = np.linspace(-5, 5, 1000)
         plotyy(x, np.sin(x), x, np.cos(x))
-        ylabel("sinus", "cosinus")
+        ylabel("sine", "cosine")
         show()
     """
     axe = gca()
