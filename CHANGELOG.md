@@ -63,6 +63,7 @@
 
 🛠️ Bug fixes:
 
+* [Issue #49](https://github.com/PlotPyStack/PlotPy/issues/49) - Using cross-section tools on `XYImageItem` images alters the X/Y coordinate arrays
 * Fixed index bounds calculation for image slicing compatibility:
   * Corrected the calculation of maximum indices in `get_plot_coordinates` to ensure proper bounds when using NumPy array slicing
   * Previously, the maximum indices were off by one, which could cause issues when extracting image data using the returned coordinates

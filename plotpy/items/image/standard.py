@@ -703,7 +703,10 @@ class XYImageItem(RawImageItem):
         Returns:
             X values corresponding to the given pixel indexes
         """
-        return self.x[i0:i1]
+        # Returning a copy to prevent modification of internal data by caller
+        # (Fixes issue #49 - Using cross-section tools on `XYImageItem` images alters
+        # the X/Y coordinate arrays)
+        return self.x[i0:i1].copy()
 
     def get_y_values(self, j0: int, j1: int) -> np.ndarray:
         """Get Y values from pixel indexes
@@ -715,7 +718,7 @@ class XYImageItem(RawImageItem):
         Returns:
             Y values corresponding to the given pixel indexes
         """
-        return self.y[j0:j1]
+        return self.y[j0:j1].copy()  # (same remark as in `get_x_values`)
 
     def get_closest_coordinates(self, x: float, y: float) -> tuple[float, float]:
         """
