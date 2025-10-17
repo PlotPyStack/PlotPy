@@ -319,16 +319,14 @@ class CrossSectionItem(ErrorBarCurveItem):
                 self.update_curve_data(obj)
 
     def update_curve_data(self, obj):
-        """
+        """Update curve data from cross section
 
-        :param obj:
+        Args:
+            obj: The object defining the cross section (marker, shape, etc.)
         """
         sectx, secty = self.get_cross_section(obj)
         if secty.size == 0 or np.all(np.isnan(secty)):
             sectx, secty = np.array([]), np.array([])
-        elif self.param.curvestyle != "Steps" and sectx.size > 1:
-            # Center the symbols at the middle of pixels:
-            sectx[:-1] += np.mean(np.diff(sectx) / 2)
         if self.orientation() == QC.Qt.Orientation.Vertical:
             self.process_curve_data(secty, sectx)
         else:

@@ -63,7 +63,16 @@
 
 🛠️ Bug fixes:
 
-* [Issue #49](https://github.com/PlotPyStack/PlotPy/issues/49) - Using cross-section tools on `XYImageItem` images alters the X/Y coordinate arrays
+* [Issue #49](https://github.com/PlotPyStack/PlotPy/issues/49) - Fixed multiple coordinate handling bugs in `XYImageItem`:
+  * **Root cause**: `XYImageItem` internally stores bin edges (length n+1) but several methods were incorrectly treating them as pixel centers (length n)
+  * Fixed `get_x_values()` and `get_y_values()` to correctly compute and return pixel centers from stored bin edges: `(edge[i] + edge[i+1]) / 2`
+  * Fixed `get_pixel_coordinates()` to correctly convert plot coordinates to pixel indices using `searchsorted()` with proper edge-to-index adjustment
+  * Fixed `get_plot_coordinates()` to return pixel center coordinates instead of bin edge coordinates
+  * Fixed `get_closest_coordinates()` to return pixel center coordinates instead of bin edge coordinates
+  * Added comprehensive docstring documentation explaining that `XYImageItem.x` and `XYImageItem.y` store bin edges, not pixel centers
+  * Removed redundant pixel centering code in `CrossSectionItem.update_curve_data()` that was working around these bugs
+  * This fixes the reported issue where using cross-section tools progressively translated image data to the bottom-right corner
+  * All coordinate-related methods now properly handle the bin edge vs pixel center distinction throughout the `XYImageItem` API
 * Fixed index bounds calculation for image slicing compatibility:
   * Corrected the calculation of maximum indices in `get_plot_coordinates` to ensure proper bounds when using NumPy array slicing
   * Previously, the maximum indices were off by one, which could cause issues when extracting image data using the returned coordinates

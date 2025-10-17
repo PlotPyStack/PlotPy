@@ -34,7 +34,6 @@ from plotpy.styles.image import ImageParam, RGBImageParam, XYImageParam
 
 if TYPE_CHECKING:
     import guidata.io
-    import qwt.color_map
     import qwt.scale_map
     from qtpy.QtCore import QPointF, QRectF
     from qtpy.QtGui import QColor, QPainter
@@ -510,10 +509,17 @@ class XYImageItem(RawImageItem):
     """XY image item (non-linear axes)
 
     Args:
-        x: 1D NumPy array, must be increasing
-        y: 1D NumPy array, must be increasing
+        x: 1D NumPy array of pixel center coordinates, must be increasing
+        y: 1D NumPy array of pixel center coordinates, must be increasing
         data: 2D NumPy array
         param: image parameters
+
+    Note:
+        Internally, `self.x` and `self.y` store **bin edges** (boundaries between
+        pixels), not pixel centers. If input arrays have length nj and ni (matching
+        data dimensions), they are converted to bin edges of length nj+1 and ni+1
+        using `to_bins()`. Methods that need pixel center coordinates must compute
+        them from the stored bin edges.
     """
 
     __implements__ = (IBasePlotItem, IBaseImageItem, ISerializableType)
@@ -604,12 +610,19 @@ class XYImageItem(RawImageItem):
         """Set X and Y data
 
         Args:
-            x: 1D NumPy array, must be increasing
-            y: 1D NumPy array, must be increasing
+            x: 1D NumPy array of pixel center coordinates, must be increasing
+            y: 1D NumPy array of pixel center coordinates, must be increasing
 
         Raises:
             ValueError: If X or Y are not increasing
             IndexError: If X or Y are not of the right length
+
+        Note:
+            Input arrays represent pixel **center** coordinates. Internally, they are
+            stored as bin **edges** in `self.x` and `self.y`:
+            - If input has length nj (or ni), it's converted to edges via `to_bins()`
+            - If input already has length nj+1 (or ni+1), it's used directly as edges
+            - The stored edges have length nj+1 and ni+1 (one more than data dimensions)
         """
         ni, nj = self.data.shape
         x = np.array(x, float)
@@ -677,9 +690,18 @@ class XYImageItem(RawImageItem):
             yplot: Y plot coordinate
 
         Returns:
-            Pixel coordinates
+            Pixel coordinates (integer pixel indices)
         """
-        return self.x.searchsorted(xplot), self.y.searchsorted(yplot)
+        # self.x and self.y are bin edges. searchsorted finds the right edge index.
+        # To get the pixel index, we need the left edge index, which is right_edge - 1
+        # But clamp to valid range [0, n-1] where n is number of pixels
+        i = self.x.searchsorted(xplot)
+        j = self.y.searchsorted(yplot)
+        # searchsorted returns the insertion point (right edge index)
+        # Pixel index is insertion_point - 1, but clamped to [0, data.shape-1]
+        i = max(0, min(i - 1, self.data.shape[1] - 1))
+        j = max(0, min(j - 1, self.data.shape[0] - 1))
+        return i, j
 
     def get_plot_coordinates(self, xpixel: float, ypixel: float) -> tuple[float, float]:
         """Get plot coordinates from pixel coordinates
@@ -689,9 +711,17 @@ class XYImageItem(RawImageItem):
             ypixel: Y pixel coordinate
 
         Returns:
-            Plot coordinates
+            Plot coordinates (pixel center coordinates)
         """
-        return self.x[int(pixelround(xpixel))], self.y[int(pixelround(ypixel))]
+        # self.x and self.y store bin edges, compute centers
+        i = int(pixelround(xpixel))
+        j = int(pixelround(ypixel))
+        # Protect against out-of-bounds access
+        i = max(0, min(i, len(self.x) - 2))
+        j = max(0, min(j, len(self.y) - 2))
+        x_center = (self.x[i] + self.x[i + 1]) / 2.0
+        y_center = (self.y[j] + self.y[j + 1]) / 2.0
+        return x_center, y_center
 
     def get_x_values(self, i0: int, i1: int) -> np.ndarray:
         """Get X values from pixel indexes
@@ -701,12 +731,13 @@ class XYImageItem(RawImageItem):
             i1: Second index
 
         Returns:
-            X values corresponding to the given pixel indexes
+            X values corresponding to the given pixel indexes (pixel centers)
         """
-        # Returning a copy to prevent modification of internal data by caller
+        # self.x stores bin edges (length nj+1), but we need to return pixel centers
+        # Compute centers from edges: center[i] = (edge[i] + edge[i+1]) / 2
         # (Fixes issue #49 - Using cross-section tools on `XYImageItem` images alters
         # the X/Y coordinate arrays)
-        return self.x[i0:i1].copy()
+        return (self.x[i0:i1] + self.x[i0 + 1 : i1 + 1]) / 2.0
 
     def get_y_values(self, j0: int, j1: int) -> np.ndarray:
         """Get Y values from pixel indexes
@@ -716,9 +747,11 @@ class XYImageItem(RawImageItem):
             j1: Second index
 
         Returns:
-            Y values corresponding to the given pixel indexes
+            Y values corresponding to the given pixel indexes (pixel centers)
         """
-        return self.y[j0:j1].copy()  # (same remark as in `get_x_values`)
+        # self.y stores bin edges (length ni+1), but we need to return pixel centers
+        # Compute centers from edges: center[j] = (edge[j] + edge[j+1]) / 2
+        return (self.y[j0:j1] + self.y[j0 + 1 : j1 + 1]) / 2.0
 
     def get_closest_coordinates(self, x: float, y: float) -> tuple[float, float]:
         """
@@ -729,10 +762,16 @@ class XYImageItem(RawImageItem):
             y: Y coordinate
 
         Returns:
-            tuple[float, float]: Closest coordinates
+            tuple[float, float]: Closest pixel center coordinates
         """
         i, j = self.get_closest_indexes(x, y)
-        return self.x[i], self.y[j]
+        # self.x and self.y store bin edges, compute centers
+        # Protect against out-of-bounds access
+        i = max(0, min(i, len(self.x) - 2))
+        j = max(0, min(j, len(self.y) - 2))
+        x_center = (self.x[i] + self.x[i + 1]) / 2.0
+        y_center = (self.y[j] + self.y[j + 1]) / 2.0
+        return x_center, y_center
 
     # ---- IBasePlotItem API ---------------------------------------------------
     def types(self) -> tuple[type[IItemType], ...]:
