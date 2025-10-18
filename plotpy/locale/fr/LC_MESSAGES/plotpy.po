@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: plotpy 2.7.4\n"
 "Report-Msgid-Bugs-To: p.raybaut@codra.fr\n"
-"POT-Creation-Date: 2025-10-08 11:19+0200\n"
+"POT-Creation-Date: 2025-10-18 16:38+0200\n"
 "PO-Revision-Date: 2025-06-02 11:14+0200\n"
 "Last-Translator: Christophe Debonnel <c.debonnel@codra.fr>\n"
 "Language: fr\n"
@@ -1603,6 +1603,9 @@ msgstr "Format"
 
 msgid "Logarithmic"
 msgstr "Logarithmique"
+
+msgid "Fixed value during optimization"
+msgstr "Valeur fixe pendant l'optimisation"
 
 msgid "Curve fitting parameter"
 msgstr "Paramètre d'ajustement"

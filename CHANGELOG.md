@@ -4,6 +4,14 @@
 
 💥 New features / Enhancements:
 
+* Curve fitting: added support for locked parameters:
+  * New `locked` parameter in `FitParam` class to lock parameter values during automatic optimization
+  * New `locked` field in `FitParamDataSet` to configure parameter locking via the settings dialog
+  * When locked, parameters retain their manually-adjusted values during auto-fit
+  * Visual indicators: locked parameters show a 🔒 emoji and are grayed out with disabled controls
+  * All optimization algorithms (simplex, Powell, BFGS, L-BFGS-B, conjugate gradient, least squares) fully support locked parameters
+  * Enables partial optimization workflows: fix well-determined parameters, optimize uncertain ones
+  * Improves fit convergence by reducing problem dimensionality
 * Configurable autoscale margin:
   * Added `autoscale_margin_percent` parameter to `BasePlotOptions` for intuitive percentage-based margin control
   * Users can now specify autoscale margins as percentages (e.g., `0.2` for 0.2%, `5.0` for 5%)
