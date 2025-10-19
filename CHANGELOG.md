@@ -71,6 +71,13 @@
 
 🛠️ Bug fixes:
 
+* Fixed `RuntimeError` in `SyncPlotWindow` and `SyncPlotDialog` when closing widgets quickly:
+  * Fixed "wrapped C/C++ object of type QwtScaleWidget has been deleted" error that occurred when widgets were closed before the deferred plot rescaling operation could complete
+  * Replaced `QTimer.singleShot()` with controllable `QTimer` instances that can be stopped on widget close
+  * Added `handle_show_event()` and `handle_close_event()` methods to `BaseSyncPlot` for proper timer lifecycle management
+  * Refactored `showEvent()` and `closeEvent()` in both `SyncPlotWindow` and `SyncPlotDialog` to eliminate code duplication
+  * Added early exit check in `rescale_plots()` to prevent execution if the timer has been stopped
+  * This fix ensures clean widget shutdown and prevents Qt from attempting to access deleted C++ objects
 * Cross-section panels: Fixed autoscaling logic in `BaseCrossSectionPlot`
   * Streamlined handling of `autoscale_mode` and `lockscales` options for consistent scaling behavior across all code paths
   * The `update_plot()` method now delegates all scaling logic to `plot_axis_changed()` to avoid code duplication and ensure consistency

@@ -910,6 +910,7 @@ class BaseSyncPlot:
         self.toolbar.setMovable(True)
         self.toolbar.setFloatable(True)
         self.auto_tools = auto_tools
+        self._rescale_timer: QC.QTimer | None = None
         set_widget_title_icon(self, title, icon, size)
         # Note: setup_layout() is called by subclasses after Qt widget initialization
 
@@ -940,10 +941,32 @@ class BaseSyncPlot:
             self.subplotwidget.register_tools()
 
     def rescale_plots(self) -> None:
-        """Rescale all plots"""
+        """Rescale all plots
+
+        Note: This method is called via QTimer.singleShot, so it may be invoked
+        even after the widget starts closing. We check if rescaling is still needed.
+        """
+        # Don't rescale if timer was already stopped (widget is closing)
+        if self._rescale_timer is None or not self._rescale_timer.isActive():
+            return
+
         QW.QApplication.instance().processEvents()
         for plot in self.subplotwidget.plots:
             plot.do_autoscale()
+
+    def handle_show_event(self) -> None:
+        """Handle the show event to trigger plot rescaling"""
+        # Use a QTimer instance so we can stop it if the widget is closed quickly
+        if self._rescale_timer is None:
+            self._rescale_timer = QC.QTimer(self)
+            self._rescale_timer.setSingleShot(True)
+            self._rescale_timer.timeout.connect(self.rescale_plots)
+        self._rescale_timer.start(0)
+
+    def handle_close_event(self) -> None:
+        """Handle the close event to stop pending timer"""
+        if self._rescale_timer is not None and self._rescale_timer.isActive():
+            self._rescale_timer.stop()
 
     def add_plot(
         self,
@@ -1032,7 +1055,12 @@ class SyncPlotWindow(QW.QMainWindow, BaseSyncPlot):
     def showEvent(self, event):  # pylint: disable=C0103
         """Reimplement Qt method"""
         super().showEvent(event)
-        QC.QTimer.singleShot(0, self.rescale_plots)
+        self.handle_show_event()
+
+    def closeEvent(self, event):  # pylint: disable=C0103
+        """Reimplement Qt method to stop pending timer before closing"""
+        self.handle_close_event()
+        super().closeEvent(event)
 
     def setup_layout(self) -> None:
         """Setup the main window layout"""
@@ -1087,7 +1115,12 @@ class SyncPlotDialog(QW.QDialog, BaseSyncPlot):
     def showEvent(self, event):  # pylint: disable=C0103
         """Reimplement Qt method"""
         super().showEvent(event)
-        QC.QTimer.singleShot(0, self.rescale_plots)
+        self.handle_show_event()
+
+    def closeEvent(self, event):  # pylint: disable=C0103
+        """Reimplement Qt method to stop pending timer before closing"""
+        self.handle_close_event()
+        super().closeEvent(event)
 
     def setup_layout(self) -> None:
         """Setup the dialog layout"""
