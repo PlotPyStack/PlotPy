@@ -71,6 +71,11 @@
 
 🛠️ Bug fixes:
 
+* Cross-section panels: Fixed autoscaling logic in `BaseCrossSectionPlot`
+  * Streamlined handling of `autoscale_mode` and `lockscales` options for consistent scaling behavior across all code paths
+  * The `update_plot()` method now delegates all scaling logic to `plot_axis_changed()` to avoid code duplication and ensure consistency
+  * Fixed issue where Y cross-section plots for rectangular images with non-uniform axes (e.g., Y = f(X)) were not properly scaled on initial display
+  * The lockscales mode now correctly syncs the cross-section axis (CS_AXIS) to the image plot while autoscaling the intensity axis (Z_AXIS)
 * [Issue #49](https://github.com/PlotPyStack/PlotPy/issues/49) - Fixed multiple coordinate handling bugs in `XYImageItem`:
   * **Root cause**: `XYImageItem` internally stores bin edges (length n+1) but several methods were incorrectly treating them as pixel centers (length n)
   * Fixed `get_x_values()` and `get_y_values()` to correctly compute and return pixel centers from stored bin edges: `(edge[i] + edge[i+1]) / 2`
