@@ -25,13 +25,12 @@ from plotpy.constants import ID_ITEMLIST, PARAMETERS_TITLE_ICON
 from plotpy.interfaces import IPanel
 from plotpy.interfaces import items as itf
 from plotpy.panels.base import PanelWidget
+from plotpy.plot import BasePlot, PlotManager
 from plotpy.styles.base import ItemParameters
 
 if TYPE_CHECKING:
     from qtpy.QtGui import QContextMenuEvent, QIcon
     from qtpy.QtWidgets import QListWidgetItem, QWidget
-
-    from plotpy.plot import BasePlot, PlotManager
 
 
 class ItemListWidget(QW.QListWidget):
@@ -73,6 +72,7 @@ class ItemListWidget(QW.QListWidget):
         for plot in self.manager.get_plots():
             plot.SIG_ITEMS_CHANGED.connect(self.items_changed)
             plot.SIG_ACTIVE_ITEM_CHANGED.connect(self.active_item_changed)
+            plot.SIG_ITEM_PARAMETERS_CHANGED.connect(self.item_parameters_changed)
         self.plot = self.manager.get_plot()
 
     def contextMenuEvent(self, event: QContextMenuEvent) -> None:
@@ -82,6 +82,13 @@ class ItemListWidget(QW.QListWidget):
 
     def setup_actions(self) -> None:
         """Setup actions"""
+        self.rename_ac = create_action(
+            self,
+            _("Rename"),
+            icon=get_icon("rename.png"),
+            triggered=self.rename_item,
+            shortcut="F2",
+        )
         self.movedown_ac = create_action(
             self,
             _("Move to back"),
@@ -94,7 +101,7 @@ class ItemListWidget(QW.QListWidget):
             icon=get_icon("arrow_up.png"),
             triggered=lambda: self.move_item("up"),
         )
-        settings_ac = create_action(
+        self.settings_ac = create_action(
             self,
             _("Parameters..."),
             icon=get_icon("settings.png"),
@@ -103,7 +110,14 @@ class ItemListWidget(QW.QListWidget):
         self.remove_ac = create_action(
             self, _("Remove"), icon=get_icon("trash.png"), triggered=self.remove_item
         )
-        return [self.moveup_ac, self.movedown_ac, None, settings_ac, self.remove_ac]
+        return [
+            self.rename_ac,
+            self.moveup_ac,
+            self.movedown_ac,
+            None,
+            self.settings_ac,
+            self.remove_ac,
+        ]
 
     def edit_plot_parameters(self) -> None:
         """Edit plot parameters"""
@@ -124,14 +138,15 @@ class ItemListWidget(QW.QListWidget):
         for item in sel_items:
             item.get_item_parameters(itemparams)
         sel_items[0].get_item_parameters(itemparams)
-        Param = self.plot.get_axesparam_class(sel_items[0])
-        axesparam = Param(
-            title=_("Axes"),
-            icon="lin_lin.png",
-            comment=_("Axes associated to selected item"),
-        )
-        axesparam.update_param(sel_items[0])
-        itemparams.add("AxesParam", self.plot, axesparam)
+        if self.plot.get_show_axes_tab():
+            Param = self.plot.get_axesparam_class(sel_items[0])
+            axesparam = Param(
+                title=_("Axes"),
+                icon="lin_lin.png",
+                comment=_("Axes associated to selected item"),
+            )
+            axesparam.update_param(sel_items[0])
+            itemparams.add("AxesParam", self.plot, axesparam)
         # === ===
         title, icon = PARAMETERS_TITLE_ICON["item"]
         itemparams.edit(self.plot, title, icon)
@@ -162,12 +177,14 @@ class ItemListWidget(QW.QListWidget):
             if action is not None:
                 action.setEnabled(is_selection)
         if is_selection:
-            remove_state = True
+            editable_state = True
             for item in self.get_selected_items():
-                remove_state = remove_state and not item.is_readonly()
-            self.remove_ac.setEnabled(remove_state)
+                editable_state = editable_state and not item.is_readonly()
+            self.remove_ac.setEnabled(editable_state)
             for action in [self.moveup_ac, self.movedown_ac]:
                 action.setEnabled(self.__is_selection_contiguous())
+            self.rename_ac.setEnabled(editable_state and len(self.selectedItems()) == 1)
+            self.settings_ac.setEnabled(editable_state)
 
     def __get_item_icon(self, item: itf.IBasePlotItem) -> QIcon:
         """Get item icon"""
@@ -230,6 +247,17 @@ class ItemListWidget(QW.QListWidget):
         self.refresh_actions()
         self.blockSignals(_block)
 
+    def item_parameters_changed(self, item: itf.IBasePlotItem) -> None:
+        """Item parameters have changed
+
+        Args:
+            item: item
+        """
+        if not isinstance(item, BasePlot):
+            plot = item.plot()
+            if plot is not None:
+                self.items_changed(plot)
+
     def current_row_changed(self, index: int) -> None:
         """QListWidget current row has changed
 
@@ -260,6 +288,18 @@ class ItemListWidget(QW.QListWidget):
         visible = listwidgetitem.checkState() == QC.Qt.Checked
         if visible != item.isVisible():
             self.plot.set_item_visible(item, visible)
+
+    def rename_item(self) -> None:
+        """Rename item"""
+        item = self.get_selected_items()[0]
+        title = item.title().text()
+        new_title, ok = QW.QInputDialog.getText(
+            self, _("Rename"), _("New title:"), text=title
+        )
+        if ok and new_title != title:
+            item.setTitle(new_title)
+            self.plot.replot()
+            self.items_changed(self.plot)
 
     def move_item(self, direction: str) -> None:
         """Move item to the background/foreground

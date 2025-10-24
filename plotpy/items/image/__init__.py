@@ -5,7 +5,7 @@
 
 from .base import BaseImageItem, RawImageItem
 from .filter import ImageFilterItem, XYImageFilterItem
-from .image_items import ImageItem, RGBImageItem, XYImageItem
+from .standard import ImageItem, RGBImageItem, XYImageItem
 from .masked import MaskedArea, MaskedImageItem, MaskedXYImageItem
 from .misc import (
     Histogram2DItem,

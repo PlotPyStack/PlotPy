@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-import weakref
 from typing import TYPE_CHECKING, Any, Callable, Literal
 
 from guidata.configtools import get_icon
@@ -39,6 +38,7 @@ from plotpy.tools.base import (
     DefaultToolbarID,
     GuiTool,
     InteractiveTool,
+    LastItemHolder,
     PanelTool,
     ToggleTool,
 )
@@ -88,9 +88,16 @@ def get_stats(
         [
             "%sx%s %s" % (item.data.shape[1], item.data.shape[0], str(item.data.dtype)),
             "",
-            "%s ≤ x ≤ %s" % (p.xformat % x0, p.xformat % x1),
-            "%s ≤ y ≤ %s" % (p.yformat % y0, p.yformat % y1),
-            "%s ≤ z ≤ %s" % (p.zformat % data.min(), p.zformat % data.max()),
+            "%s ≤ x ≤ %s (Δx = %s)"
+            % (p.xformat % x0, p.xformat % x1, p.xformat % (x1 - x0)),
+            "%s ≤ y ≤ %s (Δy = %s)"
+            % (p.yformat % y0, p.yformat % y1, p.yformat % (y1 - y0)),
+            "%s ≤ z ≤ %s (Δz = %s)"
+            % (
+                p.zformat % data.min(),
+                p.zformat % data.max(),
+                p.zformat % (data.max() - data.min()),
+            ),
             "‹z› = " + p.zformat % data.mean(),
             "σ(z) = " + p.zformat % data.std(),
         ]
@@ -243,7 +250,7 @@ class ImageStatsTool(RectangularShapeTool):
             icon,
             tip,
         )
-        self._last_item = None
+        self.last_item_holder = LastItemHolder(IImageItemType)
         self.stats_func = stats_func
         self.replace_stats = replace
 
@@ -262,16 +269,6 @@ class ImageStatsTool(RectangularShapeTool):
         """
         self.stats_func = stats_func
         self.replace_stats = replace
-
-    def get_last_item(self) -> BaseImageItem | None:
-        """Last image item getter
-
-        Returns:
-            Returns last image item or None
-        """
-        if self._last_item is not None:
-            return self._last_item()
-        return None
 
     def create_shape(self) -> tuple[ImageStatsRectangle, Literal[0], Literal[2]]:
         """Returns a new ImageStatsRectangle instance and the index of handles to
@@ -311,7 +308,7 @@ class ImageStatsTool(RectangularShapeTool):
             final: unused argument. Defaults to False.
         """
         plot = shape.plot()
-        image = self.get_last_item()
+        image = self.last_item_holder.get()
         if plot is not None and image is not None:
             plot.unselect_all()
             plot.set_active_item(shape)
@@ -326,20 +323,6 @@ class ImageStatsTool(RectangularShapeTool):
         super().handle_final_shape(shape)
         self.register_shape(shape, final=True)
 
-    def get_associated_item(self, plot: BasePlot) -> BaseImageItem | None:
-        """Return a reference to the last image item associated with the tool
-
-        Args:
-            plot: Plot instance
-
-        Returns:
-            Reference to the last image item associated with the tool
-        """
-        items = plot.get_selected_items(item_type=IImageItemType)
-        if len(items) == 1:
-            self._last_item = weakref.ref(items[0])
-        return self.get_last_item()
-
     def update_status(self, plot: BasePlot) -> None:
         """Update tool status if the plot type is not PlotType.CURVE.
 
@@ -347,7 +330,7 @@ class ImageStatsTool(RectangularShapeTool):
             plot: Plot instance
         """
         if update_image_tool_status(self, plot):
-            item = self.get_associated_item(plot)
+            item = self.last_item_holder.update_from_selection(plot)
             self.action.setEnabled(item is not None)
 
 
@@ -447,9 +430,11 @@ class ZAxisLogTool(ToggleTool):
 class AspectRatioParam(DataSet):
     """Dataset containing aspect ratio parameters."""
 
-    lock = BoolItem(_("Lock aspect ratio"))
-    current = FloatItem(_("Current value")).set_prop("display", active=False)
-    ratio = FloatItem(_("Lock value"), min=1e-3)
+    lock = BoolItem(_("Lock aspect ratio"), default=True)
+    current = FloatItem(_("Current value"), default=1.0).set_prop(
+        "display", active=False
+    )
+    ratio = FloatItem(_("Lock value"), min=1e-3, default=1.0)
 
 
 class AspectRatioTool(CommandTool):
@@ -620,7 +605,7 @@ class ColormapTool(CommandTool):
         ):
             return
         manager = ColorMapManager(
-            plot.parent(), active_colormap=self._active_colormap.name
+            plot.parentWidget(), active_colormap=self._active_colormap.name
         )
         manager.SIG_APPLY_COLORMAP.connect(self.update_plot)
         if exec_dialog(manager) and (cmap := manager.get_colormap()) is not None:
@@ -1347,7 +1332,7 @@ class RotateCropTool(CommandTool):
             if isinstance(item, TrImageItem):
                 z = int(item.z())
                 plot.del_item(item)
-                dlg = RotateCropDialog(plot.parent(), options=self.options)
+                dlg = RotateCropDialog(plot.parentWidget(), options=self.options)
                 dlg.set_item(item)
                 ok = dlg.exec()
                 plot.add_item(item, z=z)

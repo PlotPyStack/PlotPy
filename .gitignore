@@ -55,3 +55,5 @@ htmlcov
 # Other
 *.bak
 *_ui.py
+*.mo
+*.pot

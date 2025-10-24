@@ -131,6 +131,20 @@ class EditItemDataTool(ItemManipulationBaseTool):
             manager, toolbar_id, curve_func=edit_curve_data, image_func=edit_image_data
         )
 
+    def get_supported_items(self, plot: BasePlot) -> list:
+        """
+        Get supported items from the plot.
+
+        Args:
+            plot: Plot instance
+
+        Returns:
+            List of supported plot items
+        """
+        items = super().get_supported_items(plot)
+        # Read-only items are not editable, obviously
+        return [item for item in items if not item.is_readonly()]
+
 
 class ExportItemDataTool(ItemManipulationBaseTool):
     """Tool for exporting item data."""
@@ -189,10 +203,11 @@ class ItemCenterTool(CommandTool):
             AnnotatedCircle,
             AnnotatedPolygon,
         )
+        # Read-only items are not editable, obviously
         return [
             item
             for item in plot.get_selected_items(z_sorted=True)
-            if isinstance(item, item_types)
+            if isinstance(item, item_types) and not item.is_readonly()
         ]
 
     def update_status(self, plot: BasePlot) -> None:
@@ -233,15 +248,15 @@ class DeleteItemTool(CommandTool):
         """
         super().__init__(manager, _("Remove"), "trash.png", toolbar_id=toolbar_id)
 
-    def get_removable_items(self, plot: BasePlot) -> list:
+    def get_supported_items(self, plot: BasePlot) -> list:
         """
-        Get removable items from the plot.
+        Get supported items from the plot.
 
         Args:
             plot: Plot instance
 
         Returns:
-            List of removable plot items
+            List of supported plot items
         """
         return [item for item in plot.get_selected_items() if not item.is_readonly()]
 
@@ -252,7 +267,7 @@ class DeleteItemTool(CommandTool):
         Args:
             plot: Plot instance
         """
-        self.action.setEnabled(len(self.get_removable_items(plot)) > 0)
+        self.action.setEnabled(len(self.get_supported_items(plot)) > 0)
 
     def activate_command(self, plot: BasePlot, checked: bool) -> None:
         """
@@ -262,7 +277,7 @@ class DeleteItemTool(CommandTool):
             plot: Plot instance
             checked: Whether the tool is checked
         """
-        items = self.get_removable_items(plot)
+        items = self.get_supported_items(plot)
         if len(items) == 1:
             message = _("Do you really want to remove this item?")
         else:

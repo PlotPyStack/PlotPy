@@ -1,7 +1,6 @@
 name: Build and upload to PyPI
 
 on:
-  workflow_dispatch:
   release:
     types:
       - published
@@ -18,8 +17,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install build dependencies (for prebuild)
+        run: |
+          pip install --upgrade pip
+          pip install babel
+
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.21.2
+        env:
+          CIBW_BEFORE_BUILD: pip install babel && pybabel compile -d plotpy/locale -D plotpy
 
       - uses: actions/upload-artifact@v4
         with:
@@ -31,6 +37,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          pip install babel
+
+      - name: Compile translations using Babel
+        run: |
+          pybabel compile -d plotpy/locale -D plotpy
 
       - name: Build sdist
         run: pipx run build --sdist

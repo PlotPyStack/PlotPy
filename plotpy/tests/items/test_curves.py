@@ -24,8 +24,8 @@ def test_plot():
     with qt_app_context(exec_loop=True):
         items = [
             make.curve(x, y, color="b"),
-            make.curve(x2, y2, color="g", curvestyle="Sticks", title="toto"),
-            make.curve(x, np.sin(2 * y), color="r"),
+            curve1 := make.curve(x2, y2, color="g", title="Readonly"),
+            curve2 := make.curve(x, np.sin(2 * y), color="r", title="Private"),
             make.merror(x, y / 2, dy),
             make.label(
                 "Relative position <b>outside</b>", (x[0], y[0]), (-10, -10), "BR"
@@ -40,8 +40,14 @@ def test_plot():
                 movable=False,
             ),
         ]
+        curve1.set_readonly(True)
+        curve2.set_private(True)
         _win = ptv.show_items(
-            items, wintitle=test_plot.__doc__, title="Curves", plot_type="curve"
+            items,
+            wintitle=test_plot.__doc__,
+            title="Curves",
+            plot_type="curve",
+            disable_readonly_for_items=False,
         )
 
 

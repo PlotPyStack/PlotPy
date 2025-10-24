@@ -168,10 +168,15 @@ def style_generator(color_keys="bgrcmykG"):
                 yield color + linestyle
 
 
-def update_style_attr(style, param):
-    """Parse a MATLAB-like style string and
-    update the color, linestyle, marker attributes of the param
-    object
+def update_style_attr(style: str, param) -> None:
+    """Parse a MATLAB-like style string.
+
+    Example: 'r--o' for red dashed line with circle markers
+
+    Also accepts HTML colors like '#ff0000'.
+
+    Args:
+        style: style string
     """
     for marker in list(MARKERS.keys()):
         if marker in style:
@@ -185,12 +190,18 @@ def update_style_attr(style, param):
             break
     else:
         param.line.style = "NoPen"
-    for color in list(COLORS.keys()):
-        if color in style:
-            param.line.color = COLORS[color]
-            param.symbol.facecolor = COLORS[color]
-            param.symbol.edgecolor = COLORS[color]
+    color = "black"
+    for style_str in style:
+        if style_str.startswith("#"):  # HTML color
+            color = style_str[:7]
             break
+    for color_letter in list(COLORS.keys()):
+        if color_letter in style:
+            color = COLORS[color_letter]
+            break
+    param.line.color = color
+    param.symbol.facecolor = color
+    param.symbol.edgecolor = color
 
 
 class ItemParameters:
@@ -373,7 +384,7 @@ class SymbolParam(DataSet):
             self.marker = MARKER_NAME[symb]
             return
         self.marker = MARKER_NAME[symb.style()]
-        self.size = symb.size().width()
+        self.size = int(symb.size().width())
         self.edgecolor = str(symb.pen().color().name())
         self.facecolor = str(symb.brush().color().name())
 
@@ -420,7 +431,7 @@ DataSetEditLayout.register(SymbolItem, SymbolItemWidget)
 class LineStyleParam(DataSet):
     style = ImageChoiceItem(_("Style"), LINESTYLE_CHOICES, default="SolidLine")
     color = ColorItem(_("Color"), default="black")
-    width = FloatItem(_("Width"), default=1.0, min=0)
+    width = FloatItem(_("Width"), default=1.0, min=0.0)
 
     def update_param(self, pen):
         """

@@ -88,7 +88,7 @@ class DummyDevice(QC.QObject):
                 if value <= 0.0 or value >= 1:
                     self.increasing_value = not self.increasing_value
             self.previous_value = value
-        elif self.mode == "sinus":
+        elif self.mode == "sine":
             value = 0.5 * np.sin(time.time() / np.pi) + 0.5
         else:
             raise ValueError("Unknown mode %r" % self.mode)
@@ -409,9 +409,9 @@ if __name__ == "__main__":
         color="r",
     )
 
-    device1 = DummyDevice(period=10, mode="sinus")
+    device1 = DummyDevice(period=10, mode="sine")
     device1.init_device(buffer1)
-    device2 = DummyDevice(period=500, mode="sinus")  # , duration_range=(4000, 7000))
+    device2 = DummyDevice(period=500, mode="sine")  # , duration_range=(4000, 7000))
     device2.init_device(buffer2)
     #    win.showMaximized()
     win.resize(800, 400)

@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import warnings
 from typing import TYPE_CHECKING
 
 from guidata.dataset import (
@@ -47,7 +46,9 @@ class LabelParam(DataSet):
     ___cont = BeginGroup(_("Contents")).set_prop(
         "display", icon="label.png", hide=GetAttrProp("_no_contents")
     )
-    contents = TextItem("").set_prop("display", hide=GetAttrProp("_no_contents"))
+    contents = TextItem("", default="").set_prop(
+        "display", hide=GetAttrProp("_no_contents")
+    )
     ___econt = EndGroup(_("Contents")).set_prop(
         "display", hide=GetAttrProp("_no_contents")
     )
@@ -200,21 +201,6 @@ class LabelParam(DataSet):
         color = QG.QColor(self.bgcolor)
         color.setAlphaF(self.bgalpha)
         item.bg_brush = QG.QBrush(color)
-
-    # TODO: remove this method in a future release
-    def update_label(self, obj: LabelItem) -> None:
-        """Update the label item with the parameters. This method is deprecated.
-
-        Args:
-            obj: The label item to update.
-        """
-        warnings.warn(
-            "`LabelParam.update_label` method is deprecated and will be removed "
-            "in a future release. Please use `update_item` instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        self.update_item(obj)
 
 
 class LabelParam_MS(LabelParam):

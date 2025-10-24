@@ -1096,7 +1096,6 @@ class WheelZoomHandler(WheelHandler):
             Returns two tuples of four floats each, representing the parameters used
             by BasePlot.do_zoom_view.
         """
-
         x, y = pos.x(), pos.y()
         rect = plot.contentsRect()
         w, h = rect.width(), rect.height()
@@ -1498,9 +1497,25 @@ class ObjectHandler:
                         self.inside = inside
                         break
                 else:
-                    self.__unselect_objects(filter)
-                    filter.set_state(self.start_state, event)
-                    return
+                    # Check if user clicked on a different selectable object
+                    if nearest is not None and nearest.can_select():
+                        # Direct selection of a different object
+                        plot.unselect_all()
+                        plot.select_item(nearest)
+                        plot.set_active_item(nearest)
+                        self.active = nearest
+                        self.handle = nearest_handle
+                        self.inside = nearest_inside
+                        # Update distance for the new object
+                        dist = nearest_dist
+                        # Clear unselection pending since we've switched to a new object
+                        self.unselection_pending = False
+                        # Continue to move_or_resize_object for proper validation
+                    else:
+                        # Clicked on empty space - unselect everything
+                        self.__unselect_objects(filter)
+                        filter.set_state(self.start_state, event)
+                        return
         else:
             # No item is selected
             self.active = nearest

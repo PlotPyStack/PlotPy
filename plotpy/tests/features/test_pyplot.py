@@ -59,7 +59,7 @@ def test_pyplot():
 
     plt.figure("plotyy")
     plt.plotyy(x, np.sin(x), x, np.cos(x))
-    plt.ylabel("sinus", "cosinus")
+    plt.ylabel("sine", "cosine")
     plt.show()
 
     plt.figure("hist")

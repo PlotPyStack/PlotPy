@@ -13,6 +13,10 @@ See https://github.com/PlotPyStack/guiqwt/issues/90
 
 # guitest: show
 
+from __future__ import annotations
+
+from typing import Literal
+
 import numpy as np
 from guidata.qthelpers import qt_app_context
 
@@ -22,15 +26,20 @@ from plotpy.tests import vistools as ptv
 from plotpy.tools import DisplayCoordsTool
 
 
-def test_pixel_coords():
+def test_pixel_coords(image_type: Literal["standard", "xy"] = "standard") -> None:
     """Testing image pixel coordinates"""
-    title = test_pixel_coords.__doc__
+    title = test_pixel_coords.__doc__ + f" ({image_type} image)"
     data = ptd.gen_2d_gaussian(20, np.uint8, x0=-10, y0=-10, mu=7, sigma=10.0)
     with qt_app_context(exec_loop=True):
-        image = make.image(data, interpolation="nearest")
+        if image_type == "xy":
+            x = np.linspace(0.0, 10.0, data.shape[1], dtype=float)
+            y = np.linspace(0.0, 10.0, data.shape[0], dtype=float) ** 2 / 10.0
+            image = make.xyimage(x, y, data, interpolation="nearest")
+        else:
+            image = make.image(data, interpolation="nearest")
         text = "First pixel should be centered on (0, 0) coordinates"
-        label = make.label(text, (1, 1), (0, 0), "L")
-        rect = make.rectangle(5, 5, 10, 10, "Rectangle")
+        label = make.label(text, (1.0, 1.0), (0, 0), "L")
+        rect = make.rectangle(5.0, 5.0, 10.0, 10.0, "Rectangle")
         cursors = []
         for i_cursor in range(0, 21, 10):
             cursors.append(make.vcursor(i_cursor, movable=False))
@@ -42,4 +51,5 @@ def test_pixel_coords():
 
 
 if __name__ == "__main__":
-    test_pixel_coords()
+    test_pixel_coords("standard")
+    test_pixel_coords("xy")

@@ -262,10 +262,10 @@ def parse_color(color: str, default_attr) -> QColor | QGradient:
 def update_styles_from_stylesheet(obj: _GenericRangeSlider):
     qss: str = obj.styleSheet()
 
-    parent = obj.parent()
+    parent = obj.parentWidget()
     while parent is not None:
         qss = parent.styleSheet() + qss
-        parent = parent.parent()
+        parent = parent.parentWidget()
     qss = QApplication.instance().styleSheet() + qss
     if not qss:
         return

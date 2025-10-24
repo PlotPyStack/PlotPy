@@ -20,6 +20,7 @@ curve, cursor and marker items.
 
 from __future__ import annotations
 
+import re
 from typing import TYPE_CHECKING
 
 import numpy  # only to help intersphinx finding numpy doc
@@ -376,7 +377,6 @@ class CurveMarkerCursorBuilder:
 
             curve(x, y, marker='o', markerfacecolor='w')
         """
-
         if dx is not None or dy is not None:
             return self.error(
                 x,
@@ -723,10 +723,40 @@ class CurveMarkerCursorBuilder:
                 return ""
 
         else:
+            # Test the label format once with a dummy value to determine the strategy
+            dummy_x = 3.14159
+            try:
+                _ = label % dummy_x  # Test if old-style formatting works
 
-            def label_cb(x, y):
-                """Label callback"""
-                return label % x
+                # If we get here, old-style formatting works fine
+                def label_cb(x, y):
+                    """Label callback"""
+                    return label % x
+            except (ValueError, TypeError):
+                # If old-style formatting fails, prepare regex-based fallback
+
+                # Pre-compile patterns for efficiency
+                patterns = [
+                    (re.compile(r"%g"), lambda x: str(x)),
+                    (re.compile(r"%f"), lambda x: f"{x:f}"),
+                    (re.compile(r"%d"), lambda x: f"{int(x):d}"),
+                    (re.compile(r"%.(\d+)f"), lambda x, m: f"{x:.{m.group(1)}f}"),
+                    (re.compile(r"%.(\d+)g"), lambda x, m: f"{x:.{m.group(1)}g}"),
+                ]
+
+                def label_cb(x, y):
+                    """Label callback with regex-based replacement"""
+                    result = label
+                    for pattern, replacement_func in patterns:
+                        if pattern.groups > 0:  # Pattern with groups
+
+                            def repl(match):
+                                return replacement_func(x, match)
+
+                            result = pattern.sub(repl, result)
+                        else:  # Simple pattern
+                            result = pattern.sub(lambda m: replacement_func(x), result)
+                    return result
 
         return self.marker(
             position=(x, 0),
@@ -764,10 +794,41 @@ class CurveMarkerCursorBuilder:
                 return ""
 
         else:
+            # Test the label format once with a dummy value to determine the strategy
+            dummy_y = 3.14159
+            try:
+                _ = label % dummy_y  # Test if old-style formatting works
 
-            def label_cb(x, y):
-                """Label callback"""
-                return label % y
+                # If we get here, old-style formatting works fine
+                def label_cb(x, y):
+                    """Label callback"""
+                    return label % y
+            except (ValueError, TypeError):
+                # If old-style formatting fails, prepare regex-based fallback
+                import re
+
+                # Pre-compile patterns for efficiency
+                patterns = [
+                    (re.compile(r"%g"), lambda y: str(y)),
+                    (re.compile(r"%f"), lambda y: f"{y:f}"),
+                    (re.compile(r"%d"), lambda y: f"{int(y):d}"),
+                    (re.compile(r"%.(\d+)f"), lambda y, m: f"{y:.{m.group(1)}f}"),
+                    (re.compile(r"%.(\d+)g"), lambda y, m: f"{y:.{m.group(1)}g}"),
+                ]
+
+                def label_cb(x, y):
+                    """Label callback with regex-based replacement"""
+                    result = label
+                    for pattern, replacement_func in patterns:
+                        if pattern.groups > 0:  # Pattern with groups
+
+                            def repl(match):
+                                return replacement_func(y, match)
+
+                            result = pattern.sub(repl, result)
+                        else:  # Simple pattern
+                            result = pattern.sub(lambda m: replacement_func(y), result)
+                    return result
 
         return self.marker(
             position=(0, y),
@@ -807,10 +868,54 @@ class CurveMarkerCursorBuilder:
                 return ""
 
         else:
+            # Test the label format once with dummy values to determine the strategy
+            dummy_x, dummy_y = 3.14159, 2.71828
+            try:
+                _ = label % (dummy_x, dummy_y)  # Test if old-style formatting works
 
-            def label_cb(x, y):
-                """Label callback"""
-                return label % (x, y)
+                # If we get here, old-style formatting works fine
+                def label_cb(x, y):
+                    """Label callback"""
+                    return label % (x, y)
+            except (ValueError, TypeError):
+                # If old-style formatting fails, prepare regex-based fallback
+                import re
+
+                # Pre-compile patterns for efficiency
+                # For xcursor, handle both single and dual format specifiers
+                single_patterns = [
+                    (re.compile(r"%g"), lambda val: str(val)),
+                    (re.compile(r"%f"), lambda val: f"{val:f}"),
+                    (re.compile(r"%d"), lambda val: f"{int(val):d}"),
+                    (re.compile(r"%.(\d+)f"), lambda val, m: f"{val:.{m.group(1)}f}"),
+                    (re.compile(r"%.(\d+)g"), lambda val, m: f"{val:.{m.group(1)}g}"),
+                ]
+
+                def label_cb(x, y):
+                    """Label callback with regex-based replacement"""
+                    result = label
+                    # Apply single patterns, alternating between x and y values
+                    x_turn = True  # Start with x
+                    for pattern, replacement_func in single_patterns:
+                        if pattern.groups > 0:  # Pattern with groups
+
+                            def repl(match):
+                                nonlocal x_turn
+                                val = x if x_turn else y
+                                x_turn = not x_turn
+                                return replacement_func(val, match)
+
+                            result = pattern.sub(repl, result)
+                        else:  # Simple pattern
+
+                            def repl(match):
+                                nonlocal x_turn
+                                val = x if x_turn else y
+                                x_turn = not x_turn
+                                return replacement_func(val)
+
+                            result = pattern.sub(repl, result)
+                    return result
 
         return self.marker(
             position=(x, y),

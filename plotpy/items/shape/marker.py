@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import math
-from typing import TYPE_CHECKING
+from contextlib import contextmanager
+from typing import TYPE_CHECKING, Generator
 
 from guidata.dataset import update_dataset
 from guidata.utils.misc import assert_interfaces_valid
@@ -25,7 +26,29 @@ if TYPE_CHECKING:
     from qtpy.QtGui import QPainter
 
     from plotpy.interfaces import IItemType
+    from plotpy.plot import BasePlot
     from plotpy.styles.base import ItemParameters
+
+
+@contextmanager
+def no_symbol_context(
+    item: QwtPlotMarker, condition: bool
+) -> Generator[None, None, None]:
+    """Context manager for temporarily changing a marker's symbol
+
+    Args:
+        item: The marker object whose symbol might be changed
+        condition: If True, the symbol will be changed to None temporarily
+    """
+    old_symbol = None
+    if condition:
+        old_symbol = item.symbol()
+        item.setSymbol(None)
+    try:
+        yield
+    finally:
+        if condition and old_symbol is not None:
+            item.setSymbol(old_symbol)
 
 
 class Marker(QwtPlotMarker):
@@ -137,7 +160,8 @@ class Marker(QwtPlotMarker):
             x, y = self.center_handle(self.xValue(), self.yValue())
             self.setValue(x, y)
         self.update_label()
-        QwtPlotMarker.draw(self, painter, xMap, yMap, canvasRect)
+        with no_symbol_context(self, not self.can_resize()):
+            QwtPlotMarker.draw(self, painter, xMap, yMap, canvasRect)
 
     # ------IBasePlotItem API----------------------------------------------------
     def get_icon_name(self) -> str:
@@ -180,6 +204,14 @@ class Marker(QwtPlotMarker):
             state: True if item is movable, False otherwise
         """
         self._can_move = state
+        # For a marker, setting the movable state to False means that, obviously,
+        # it cannot be moved. However, due to the way the event system works,
+        # the marker can still be moved by the user: it has to be not resizable
+        # to prevent the user from moving it by dragging the handles, which is not
+        # intuitive for a marker (from a user point of view, a marker is a point
+        # or a line, not a shape with handles).
+        # So, we set the resizable state to the same value as the movable state:
+        self.set_resizable(state)
 
     def set_rotatable(self, state: bool) -> None:
         """Set item rotatable state
@@ -479,16 +511,41 @@ class Marker(QwtPlotMarker):
     def update_label(self) -> None:
         """Update label"""
         x, y = self.xValue(), self.yValue()
+        plot: BasePlot = self.plot()
         if self.label_cb:
             label = self.label_cb(x, y)
             if label is None:
                 return
         elif self.is_vertical():
-            label = f"x = {x:g}"
+            # Format x-coordinate considering datetime axis
+            if plot is not None and plot.get_axis_scale(self.xAxis()) == "datetime":
+                x_formatted = plot.format_coordinate_value(x, self.xAxis())
+                label = f"x = {x_formatted}"
+            else:
+                label = f"x = {x:g}"
         elif self.is_horizontal():
-            label = f"y = {y:g}"
+            # Format y-coordinate considering datetime axis
+            if plot is not None and plot.get_axis_scale(self.yAxis()) == "datetime":
+                y_formatted = plot.format_coordinate_value(y, self.yAxis())
+                label = f"y = {y_formatted}"
+            else:
+                label = f"y = {y:g}"
         else:
-            label = f"x = {x:g}<br>y = {y:g}"
+            # Format both coordinates considering datetime axes
+            if plot is not None:
+                x_formatted = x
+                y_formatted = y
+                if plot.get_axis_scale(self.xAxis()) == "datetime":
+                    x_formatted = plot.format_coordinate_value(x, self.xAxis())
+                else:
+                    x_formatted = f"{x:g}"
+                if plot.get_axis_scale(self.yAxis()) == "datetime":
+                    y_formatted = plot.format_coordinate_value(y, self.yAxis())
+                else:
+                    y_formatted = f"{y:g}"
+                label = f"x = {x_formatted}<br>y = {y_formatted}"
+            else:
+                label = f"x = {x:g}<br>y = {y:g}"
         text = self.label()
         text.setText(label)
         self.setLabel(text)

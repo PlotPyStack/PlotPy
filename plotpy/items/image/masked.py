@@ -18,7 +18,7 @@ from plotpy.interfaces import (
     IHistDataSource,
     IVoiImageItemType,
 )
-from plotpy.items.image.image_items import ImageItem, XYImageItem
+from plotpy.items.image.standard import ImageItem, XYImageItem
 from plotpy.styles.image import MaskedImageParam, MaskedXYImageParam
 
 if TYPE_CHECKING:

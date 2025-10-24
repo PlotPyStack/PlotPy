@@ -26,6 +26,7 @@ if TYPE_CHECKING:
     import guidata.io
 
     from plotpy.interfaces import IItemType
+    from plotpy.plot import BasePlot
     from plotpy.styles.base import ItemParameters
 
 
@@ -503,7 +504,16 @@ class CurveItem(QwtPlotCurve):
             str: Coordinates label
         """
         title = self.title().text()
-        return f"{title}:<br>x = {x:g}<br>y = {y:g}"
+
+        # Use the plot's consolidated coordinate formatting method
+        plot: BasePlot = self.plot()
+        if plot is not None:
+            # Format using the plot's consolidated coordinate formatting method
+            return plot.format_coordinate_values(
+                x, y, self.xAxis(), self.yAxis(), title
+            )
+        else:
+            return f"{title}:<br>x = {x:g}<br>y = {y:g}"
 
     def get_closest_x(self, xc: float) -> tuple[float, float]:
         """

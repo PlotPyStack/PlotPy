@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import warnings
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -111,21 +110,6 @@ class MarkerParam(DataSet):
         item.setSpacing(self.spacing)
         item.update_label()
 
-    # TODO: remove this method in a future release
-    def update_marker(self, obj: Marker) -> None:
-        """Update object from parameters. Deprecated, use update_item instead.
-
-        Args:
-            obj: Marker object
-        """
-        warnings.warn(
-            "`MarkerParam.update_marker` method is deprecated and will be removed "
-            "in a future release. Please use `update_item` instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        self.update_item(obj)
-
     def set_markerstyle(self, style: None | str | int) -> None:
         """Set marker line style
 
@@ -216,27 +200,16 @@ class ShapeParam(DataSet):
         if plot is not None:
             plot.blockSignals(False)
 
-    # TODO: remove this method in a future release
-    def update_shape(self, obj: PolygonShape) -> None:
-        """Update object from parameters. Deprecated, use update_item instead.
-
-        Args:
-            obj: Shape object
-        """
-        warnings.warn(
-            "`ShapeParam.update_shape` method is deprecated and will be removed "
-            "in a future release. Please use `update_item` instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        self.update_item(obj)
-
 
 class AxesShapeParam(DataSet):
     """Parameters for an axes item"""
 
-    arrow_angle = FloatItem(_("Arrow angle") + " (°)", min=0, max=90, nonzero=True)
-    arrow_size = FloatItem(_("Arrow size") + " (%)", min=0, max=100, nonzero=True)
+    arrow_angle = FloatItem(
+        _("Arrow angle") + " (°)", min=0.0, max=90.0, default=15.0, nonzero=True
+    )
+    arrow_size = FloatItem(
+        _("Arrow size") + " (%)", min=0.0, max=100.0, default=0.05, nonzero=True
+    )
     _styles = BeginTabGroup("Styles")
     # ------------------------------------------------------------------ Line tab
     ___line = BeginGroup(_("Line")).set_prop("display", icon="dashdot.png")
@@ -282,21 +255,6 @@ class AxesShapeParam(DataSet):
         item.x_brush = self.xarrow_brush.build_brush()
         item.y_pen = self.yarrow_pen.build_pen()
         item.y_brush = self.yarrow_brush.build_brush()
-
-    # TODO: remove this method in a future release
-    def update_axes(self, obj: Axes) -> None:
-        """Update object from parameters. Deprecated, use update_item instead.
-
-        Args:
-            obj: Axes object
-        """
-        warnings.warn(
-            "`AxesShapeParam.update_axes` method is deprecated and will be removed "
-            "in a future release. Please use `update_item` instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        self.update_item(obj)
 
 
 class AnnotationParam(DataSet):
@@ -369,21 +327,6 @@ class AnnotationParam(DataSet):
         if plot is not None:
             plot.blockSignals(False)
 
-    # TODO: remove this method in a future release
-    def update_annotation(self, obj: AnnotatedShape) -> None:
-        """Update object from parameters. Deprecated, use update_item instead.
-
-        Args:
-            obj: AnnotatedShape object
-        """
-        warnings.warn(
-            "`AnnotationParam.update_annotation` method is deprecated and "
-            "will be removed in a future release. Please use `update_item` instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        self.update_item(obj)
-
 
 class AnnotationParam_MS(AnnotationParam):
     """Parameters for annotations with multi-selection enabled"""
@@ -397,6 +340,7 @@ ItemParameters.register_multiselection(AnnotationParam, AnnotationParam_MS)
 class RangeShapeParam(DataSet):
     """Parameters for a range selection item"""
 
+    label = StringItem(_("Title"), default="")
     _styles = BeginTabGroup("Styles")
     # ------------------------------------------------------------------ Line tab
     ___line = BeginGroup(_("Line")).set_prop("display", icon="dashdot.png")
@@ -416,22 +360,23 @@ class RangeShapeParam(DataSet):
     # ----------------------------------------------------------------------- End
     _endstyles = EndTabGroup("Styles")
 
-    def update_param(self, range: XRangeSelection) -> None:
+    def update_param(self, obj: XRangeSelection) -> None:
         """Update parameters from object
 
         Args:
-            range: XRangeSelection object
+            obj: XRangeSelection object
         """
+        self.label = str(obj.title().text())
         self.line: LineStyleParam
         self.sel_line: LineStyleParam
         self.symbol: SymbolParam
         self.sel_symbol: SymbolParam
-        self.line.update_param(range.pen)
-        self.sel_line.update_param(range.sel_pen)
-        self.fill = range.brush.color().name()
-        self.shade = range.brush.color().alphaF()
-        self.symbol.update_param(range.symbol)
-        self.sel_symbol.update_param(range.sel_symbol)
+        self.line.update_param(obj.pen)
+        self.sel_line.update_param(obj.sel_pen)
+        self.fill = obj.brush.color().name()
+        self.shade = obj.brush.color().alphaF()
+        self.symbol.update_param(obj.symbol)
+        self.sel_symbol.update_param(obj.sel_symbol)
 
     def update_item(self, item: XRangeSelection) -> None:
         """Update object from parameters
@@ -439,6 +384,7 @@ class RangeShapeParam(DataSet):
         Args:
             range: XRangeSelection object
         """
+        item.setTitle(self.label)
         item.pen = self.line.build_pen()
         item.sel_pen = self.sel_line.build_pen()
         col = QG.QColor(self.fill)
@@ -446,18 +392,3 @@ class RangeShapeParam(DataSet):
         item.brush = QG.QBrush(col)
         item.symbol = self.symbol.build_symbol()
         item.sel_symbol = self.sel_symbol.build_symbol()
-
-    # TODO: remove this method in a future release
-    def update_range(self, obj: XRangeSelection) -> None:
-        """Update object from parameters. Deprecated, use update_item instead.
-
-        Args:
-            obj: XRangeSelection object
-        """
-        warnings.warn(
-            "`RangeShapeParam.update_range` method is deprecated and "
-            "will be removed in a future release. Please use `update_item` instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        self.update_item(obj)

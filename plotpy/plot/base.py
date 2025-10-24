@@ -20,6 +20,7 @@ import pickle
 import sys
 import warnings
 import weakref
+from datetime import datetime
 from math import fabs
 from typing import TYPE_CHECKING, Any
 
@@ -87,6 +88,9 @@ class BasePlotOptions:
         type: The plot type ("auto", "manual", "curve" or "image")
         axes_synchronised: If True, the axes are synchronised
         force_colorbar_enabled: If True, the colorbar is always enabled
+        show_axes_tab: If True, the axes tab is shown in the parameters dialog
+        autoscale_margin_percent: The percentage margin added when autoscaling
+         (0.2% by default)
     """
 
     title: str | None = None
@@ -105,6 +109,8 @@ class BasePlotOptions:
     type: str | PlotType = "auto"
     axes_synchronised: bool = False
     force_colorbar_enabled: bool = False
+    show_axes_tab: bool = True
+    autoscale_margin_percent: float = 0.2
 
     def __post_init__(self) -> None:
         """Check arguments"""
@@ -118,6 +124,11 @@ class BasePlotOptions:
         # Check aspect ratio
         if self.aspect_ratio <= 0:
             raise ValueError("aspect_ratio must be strictly positive")
+        # Check autoscale margin percentage
+        if self.autoscale_margin_percent < 0:
+            raise ValueError("autoscale_margin_percent must be non-negative")
+        if self.autoscale_margin_percent > 50:
+            raise ValueError("autoscale_margin_percent must be <= 50%")
         # Show a warning if force_colorbar_enabled is True and type is "curve"
         if self.force_colorbar_enabled and self.type == "curve":
             warnings.warn(
@@ -154,7 +165,11 @@ class BasePlot(qwt.QwtPlot):
     Y_LEFT, Y_RIGHT, X_BOTTOM, X_TOP = cst.Y_LEFT, cst.Y_RIGHT, cst.X_BOTTOM, cst.X_TOP
     AXIS_IDS = (Y_LEFT, Y_RIGHT, X_BOTTOM, X_TOP)
     AXIS_NAMES = {"left": Y_LEFT, "right": Y_RIGHT, "bottom": X_BOTTOM, "top": X_TOP}
-    AXIS_TYPES = {"lin": qwt.QwtLinearScaleEngine, "log": qwt.QwtLogScaleEngine}
+    AXIS_TYPES = {
+        "lin": qwt.QwtLinearScaleEngine,
+        "log": qwt.QwtLogScaleEngine,
+        "datetime": qwt.QwtDateTimeScaleEngine,
+    }
     AXIS_CONF_OPTIONS = ("axis", "axis", "axis", "axis")
     DEFAULT_ACTIVE_XAXIS = X_BOTTOM
     DEFAULT_ACTIVE_YAXIS = Y_LEFT
@@ -307,6 +322,7 @@ class BasePlot(qwt.QwtPlot):
         self.options = options = options if options is not None else BasePlotOptions()
 
         self.__autoscale_excluded_items: list[itf.IBasePlotItem] = []
+        self.autoscale_margin_percent = options.autoscale_margin_percent
         self.lock_aspect_ratio = options.lock_aspect_ratio
         self.__autoLockAspectRatio = False
         if self.lock_aspect_ratio is None:
@@ -479,7 +495,51 @@ class BasePlot(qwt.QwtPlot):
         item: TrackableItem = self.get_last_active_item(itf.ITrackableItemType)
         if item:
             return item.get_coordinates_label(x, y)
-        return f"<b>{title}</b><br>x = {x:g}<br>y = {y:g}"
+        return self.format_coordinate_values(x, y, "bottom", "left", title)
+
+    def format_coordinate_values(
+        self, x: float, y: float, xaxis: str | int, yaxis: str | int, title: str
+    ) -> str:
+        """Format coordinate values with axis-aware formatting
+
+        Args:
+            x: The x coordinate value
+            y: The y coordinate value
+            xaxis: The x axis name ("bottom", "top") or axis ID
+            yaxis: The y axis name ("left", "right") or axis ID
+            title: The title to display in the coordinate string
+
+        Returns:
+            str: Formatted coordinate string with HTML markup
+        """
+        x_formatted = self.format_coordinate_value(x, xaxis)
+        y_formatted = self.format_coordinate_value(y, yaxis)
+        return f"<b>{title}</b><br>x = {x_formatted}<br>y = {y_formatted}"
+
+    def format_coordinate_value(self, value: float, axis_id: str | int) -> str:
+        """Format a coordinate value based on the axis scale type
+
+        Args:
+            value: The coordinate value to format
+            axis_id: The axis name ("bottom", "top", "left", "right") or axis ID
+
+        Returns:
+            str: Formatted coordinate value
+        """
+        axis_id = self.get_axis_id(axis_id)
+
+        # Check if this axis is using datetime scale
+        if self.get_axis_scale(axis_id) == "datetime":
+            try:
+                scale_draw: qwt.QwtDateTimeScaleDraw = self.axisScaleDraw(axis_id)
+                dt = datetime.fromtimestamp(value)
+                return dt.strftime(scale_draw.get_format())
+            except (ValueError, OSError, OverflowError):
+                # Handle invalid timestamps, fall back to numeric display
+                return f"{value:g}"
+        else:
+            # Standard numeric formatting
+            return f"{value:g}"
 
     def set_marker_axes(self) -> None:
         """
@@ -644,7 +704,7 @@ class BasePlot(qwt.QwtPlot):
                 F = 1 + 3 * direction * float(x1 - x0) / width
             if F * (hbound - lbound) == 0:
                 continue
-            if self.get_axis_scale(axis_id) == "lin":
+            if self.get_axis_scale(axis_id) in ("lin", "datetime"):
                 orig = self.invTransform(axis_id, start)
                 vmin = orig - F * (orig - lbound)
                 vmax = orig + F * (hbound - orig)
@@ -827,6 +887,22 @@ class BasePlot(qwt.QwtPlot):
         text.setFont(self.font_title)
         self.setTitle(text)
         self.SIG_PLOT_LABELS_CHANGED.emit(self)
+
+    def get_show_axes_tab(self) -> bool:
+        """Get whether the axes tab is shown in the parameters dialog
+
+        Returns:
+            bool: True if the axes tab is shown
+        """
+        return self.options.show_axes_tab
+
+    def set_show_axes_tab(self, show: bool) -> None:
+        """Set whether the axes tab is shown in the parameters dialog
+
+        Args:
+            show (bool): True to show the axes tab
+        """
+        self.options.show_axes_tab = show
 
     def get_axis_id(self, axis_name: str | int) -> int:
         """Return axis ID from axis name
@@ -1034,7 +1110,7 @@ class BasePlot(qwt.QwtPlot):
             self.setAxisMaxMinor(axis_id, nminor)
 
     def get_axis_scale(self, axis_id: int) -> str:
-        """Return the name ('lin' or 'log') of the scale used by axis
+        """Return the name ('lin', 'log', or 'datetime') of the scale used by axis
 
         Args:
             axis_id (int): the axis id
@@ -1044,24 +1120,39 @@ class BasePlot(qwt.QwtPlot):
         """
         axis_id = self.get_axis_id(axis_id)
         engine = self.axisScaleEngine(axis_id)
-        for axis_label, axis_type in list(self.AXIS_TYPES.items()):
-            if isinstance(engine, axis_type):
-                return axis_label
-        return "lin"  # unknown default to linear
+
+        # Check for most specific types first, since datetime inherits from linear
+        if isinstance(engine, self.AXIS_TYPES["datetime"]):
+            return "datetime"
+        elif isinstance(engine, self.AXIS_TYPES["log"]):
+            return "log"
+        elif isinstance(engine, self.AXIS_TYPES["lin"]):
+            return "lin"
+        else:
+            return "lin"  # unknown default to linear
 
     def set_axis_scale(self, axis_id: int, scale: str, autoscale: bool = True) -> None:
         """Set axis scale
 
         Args:
             axis_id (int): the axis id
-            scale (str): the axis scale ('lin' or 'log')
+            scale (str): the axis scale ('lin', 'log', or 'datetime')
             autoscale (bool): autoscale the axis (optional, default=True)
 
         Example:
             self.set_axis_scale(curve.yAxis(), 'lin')
+            self.set_axis_scale('bottom', 'datetime')  # For time series data
         """
         axis_id = self.get_axis_id(axis_id)
-        self.setAxisScaleEngine(axis_id, self.AXIS_TYPES[scale]())
+        scale_engine = self.AXIS_TYPES[scale]()
+
+        if scale != self.get_axis_scale(axis_id):
+            if scale == "datetime":
+                self.setAxisScaleDraw(axis_id, qwt.QwtDateTimeScaleDraw())
+            else:
+                self.setAxisScaleDraw(axis_id, qwt.QwtScaleDraw())
+
+        self.setAxisScaleEngine(axis_id, scale_engine)
         if autoscale:
             self.do_autoscale(replot=False)
 
@@ -1077,7 +1168,7 @@ class BasePlot(qwt.QwtPlot):
         """Set active curve scales
 
         Args:
-            xscale (str): the x axis scale ('lin' or 'log')
+            xscale (str): the x axis scale ('lin', 'log' or 'datetime')
             yscale (str): the y axis scale ('lin' or 'log')
 
         Example:
@@ -1086,6 +1177,114 @@ class BasePlot(qwt.QwtPlot):
         self.set_axis_scale(ax, xscale)
         self.set_axis_scale(ay, yscale)
         self.replot()
+
+    def set_axis_datetime(
+        self,
+        axis_id: int | str,
+        format: str = "%Y-%m-%d %H:%M:%S",
+        rotate: float = -45,
+        spacing: int = 4,
+    ) -> None:
+        """Configure an axis to display datetime labels
+
+        This method sets up an axis to display Unix timestamps as formatted
+        date/time strings.
+
+        Args:
+            axis_id: Axis ID (constants.Y_LEFT, constants.X_BOTTOM, ...)
+                or string: 'bottom', 'left', 'top' or 'right'
+            format: Format string for datetime display (default: "%Y-%m-%d %H:%M:%S").
+                Uses Python datetime.strftime() format codes.
+            rotate: Rotation angle for labels in degrees (default: -45)
+            spacing: Spacing between labels (default: 4)
+
+        Examples:
+            >>> # Enable datetime on x-axis with default format
+            >>> plot.set_axis_datetime("bottom")
+
+            >>> # Enable datetime with time only
+            >>> plot.set_axis_datetime("bottom", format="%H:%M:%S")
+
+            >>> # Enable datetime with date only, no rotation
+            >>> plot.set_axis_datetime("bottom", format="%Y-%m-%d", rotate=0)
+        """
+        axis_id = self.get_axis_id(axis_id)
+        scale_draw = qwt.QwtDateTimeScaleDraw(format=format, spacing=spacing)
+        self.setAxisScaleDraw(axis_id, scale_draw)
+        scale_engine = qwt.QwtDateTimeScaleEngine()
+        self.setAxisScaleEngine(axis_id, scale_engine)
+        if rotate != 0:
+            self.setAxisLabelRotation(axis_id, rotate)
+            if rotate < 0:
+                self.setAxisLabelAlignment(axis_id, QC.Qt.AlignLeft | QC.Qt.AlignBottom)
+            else:
+                self.setAxisLabelAlignment(
+                    axis_id, QC.Qt.AlignRight | QC.Qt.AlignBottom
+                )
+        self.do_autoscale()
+
+    def set_axis_limits_from_datetime(
+        self,
+        axis_id: int | str,
+        dt_min: datetime,
+        dt_max: datetime,
+        stepsize: int = 0,
+    ) -> None:
+        """Set axis limits using datetime objects
+
+        This is a convenience method to set axis limits for datetime axes without
+        manually converting datetime objects to Unix timestamps.
+
+        Args:
+            axis_id: Axis ID (constants.Y_LEFT, constants.X_BOTTOM, ...)
+                or string: 'bottom', 'left', 'top' or 'right'
+            dt_min: Minimum datetime value
+            dt_max: Maximum datetime value
+            stepsize: The step size (optional, default=0)
+
+        Examples:
+            >>> from datetime import datetime
+            >>> # Set x-axis limits to a specific date range
+            >>> dt1 = datetime(2025, 10, 7, 10, 0, 0)
+            >>> dt2 = datetime(2025, 10, 7, 18, 0, 0)
+            >>> plot.set_axis_limits_from_datetime("bottom", dt1, dt2)
+        """
+        if not isinstance(dt_min, datetime) or not isinstance(dt_max, datetime):
+            raise TypeError("dt_min and dt_max must be datetime objects")
+
+        # Convert datetime objects to Unix timestamps
+        epoch = datetime(1970, 1, 1)
+        timestamp_min = (dt_min - epoch).total_seconds()
+        timestamp_max = (dt_max - epoch).total_seconds()
+
+        # Set the axis limits using the timestamps
+        self.set_axis_limits(axis_id, timestamp_min, timestamp_max, stepsize)
+
+    def get_autoscale_margin_percent(self) -> float:
+        """Get autoscale margin percentage
+
+        Returns:
+            float: the autoscale margin percentage
+        """
+        return self.autoscale_margin_percent
+
+    def set_autoscale_margin_percent(self, margin_percent: float) -> None:
+        """Set autoscale margin percentage
+
+        Args:
+            margin_percent (float): the autoscale margin percentage (0-50)
+
+        Raises:
+            ValueError: if margin_percent is not in valid range
+        """
+        if margin_percent < 0:
+            raise ValueError("autoscale_margin_percent must be non-negative")
+        if margin_percent > 50:
+            raise ValueError("autoscale_margin_percent must be <= 50%")
+
+        self.autoscale_margin_percent = margin_percent
+        # Trigger an autoscale to apply the new margin immediately
+        self.do_autoscale(replot=True)
 
     def enable_used_axes(self):
         """
@@ -1302,7 +1501,7 @@ class BasePlot(qwt.QwtPlot):
         self.SIG_ITEMS_CHANGED.emit(self)
 
         if isinstance(item, BaseImageItem):
-            parent: QW.QWidget = self.parent()
+            parent = self.parentWidget()
             if parent is not None:
                 parent.setUpdatesEnabled(False)
             self.update_colormap_axis(item)
@@ -1868,14 +2067,15 @@ class BasePlot(qwt.QwtPlot):
             if not active_item:
                 return
             self.get_selected_item_parameters(itemparams)
-            Param = self.get_axesparam_class(active_item)
-            axesparam = Param(
-                title=_("Axes"),
-                icon="lin_lin.png",
-                comment=_("Axes associated to selected item"),
-            )
-            axesparam.update_param(active_item)
-            itemparams.add("AxesParam", self, axesparam)
+            if self.get_show_axes_tab():
+                Param = self.get_axesparam_class(active_item)
+                axesparam = Param(
+                    title=_("Axes"),
+                    icon="lin_lin.png",
+                    comment=_("Axes associated to selected item"),
+                )
+                axesparam.update_param(active_item)
+                itemparams.add("AxesParam", self, axesparam)
 
     def set_item_parameters(self, itemparams: ItemParameters) -> None:
         """Set item (plot, here) parameters
@@ -2018,12 +2218,14 @@ class BasePlot(qwt.QwtPlot):
                 vmax += 1
             elif self.get_axis_scale(axis_id) == "lin":
                 dv = vmax - vmin
-                vmin -= 0.002 * dv
-                vmax += 0.002 * dv
+                margin = self.autoscale_margin_percent / 100.0
+                vmin -= margin * dv
+                vmax += margin * dv
             elif vmin > 0 and vmax > 0:  # log scale
                 dv = np.log10(vmax) - np.log10(vmin)
-                vmin = 10 ** (np.log10(vmin) - 0.002 * dv)
-                vmax = 10 ** (np.log10(vmax) + 0.002 * dv)
+                margin = self.autoscale_margin_percent / 100.0
+                vmin = 10 ** (np.log10(vmin) - margin * dv)
+                vmax = 10 ** (np.log10(vmax) + margin * dv)
             self.set_axis_limits(axis_id, vmin, vmax)
         self.setAutoReplot(auto)
         self.updateAxes()

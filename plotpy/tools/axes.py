@@ -69,14 +69,19 @@ class AxisScaleTool(CommandTool):
             icon=get_icon("log_log.png"),
             toggled=lambda state, x="log", y="log": self.set_scale(state, x, y),
         )
+        date_time = manager.create_action(
+            "Date Time",
+            toggled=lambda state, x="datetime", y="lin": self.set_scale(state, x, y),
+        )
         self.scale_menu = {
             ("lin", "lin"): lin_lin,
             ("lin", "log"): lin_log,
             ("log", "lin"): log_lin,
             ("log", "log"): log_log,
+            ("datetime", "lin"): date_time,
         }
         for obj in (group, menu):
-            add_actions(obj, (lin_lin, lin_log, log_lin, log_log))
+            add_actions(obj, (lin_lin, lin_log, log_lin, log_log, date_time))
         return menu
 
     def update_status(self, plot) -> None:
@@ -108,7 +113,7 @@ class AxisScaleTool(CommandTool):
 
         Args:
             checked: Whether the action is checked.
-            xscale: The scale for the x-axis ('lin' or 'log').
+            xscale: The scale for the x-axis ('lin', 'log', or 'datetime').
             yscale: The scale for the y-axis ('lin' or 'log').
         """
         if not checked:

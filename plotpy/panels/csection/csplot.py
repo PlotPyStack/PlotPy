@@ -227,7 +227,9 @@ class BaseCrossSectionPlot(BasePlot):
         Args:
             plot: Plot containing the image items to be used for cross section
         """
-        if self.lockscales:
+        if self.autoscale_mode:
+            self.do_autoscale(replot=True)
+        elif self.lockscales:
             self.do_autoscale(replot=False, axis_id=self.Z_AXIS)
             vmin, vmax = plot.get_axis_limits(self.CS_AXIS)
             self.set_axis_limits(self.CS_AXIS, vmin, vmax)
@@ -278,7 +280,8 @@ class BaseCrossSectionPlot(BasePlot):
                 return
         else:
             self.last_obj = weakref.ref(obj)
-        if obj.plot() is None:
+        plot = obj.plot()
+        if plot is None:
             self.unregister_shape(obj)
             return
         if self.label.isVisible():
@@ -294,10 +297,9 @@ class BaseCrossSectionPlot(BasePlot):
                 curve.apply_lut = self.apply_lut
                 if refresh:
                     curve.update_item(obj)
-        if self.autoscale_mode:
-            self.do_autoscale(replot=True)
-        elif self.lockscales:
-            self.do_autoscale(replot=True, axis_id=self.Z_AXIS)
+
+        # Delegate all scaling logic to plot_axis_changed for consistency
+        self.plot_axis_changed(plot)
 
     def toggle_perimage_mode(self, state: bool) -> None:
         """Toggle the per item mode

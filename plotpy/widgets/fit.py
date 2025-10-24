@@ -83,8 +83,8 @@ if TYPE_CHECKING:
 class AutoFitParam(DataSet):
     """Automatic fit parameters"""
 
-    xmin = FloatItem("xmin")
-    xmax = FloatItem("xmax")
+    xmin = FloatItem("xmin", default=0.0)
+    xmax = FloatItem("xmax", default=1.0)
     method = ChoiceItem(
         _("Method"),
         [
@@ -99,7 +99,7 @@ class AutoFitParam(DataSet):
     )
     err_norm = StringItem(
         "enorm",
-        default=2.0,
+        default="2.0",
         help=_("for simplex, powel, cg and bfgs norm used by the error function"),
     )
     xtol = FloatItem(
@@ -117,7 +117,7 @@ class AutoFitParam(DataSet):
 class FitParamDataSet(DataSet):
     """Fit parameter dataset"""
 
-    name = StringItem(_("Name"))
+    name = StringItem(_("Name"), default="")
     value = FloatItem(_("Value"), default=0.0)
     min = FloatItem(_("Min"), default=-1.0)
     max = FloatItem(_("Max"), default=1.0).set_pos(col=1)
@@ -125,6 +125,7 @@ class FitParamDataSet(DataSet):
     format = StringItem(_("Format"), default="%.3f").set_pos(col=1)
     logscale = BoolItem(_("Logarithmic"), _("Scale"))
     unit = StringItem(_("Unit"), default="").set_pos(col=1)
+    locked = BoolItem(_("Fixed value during optimization"), _("Lock"))
 
 
 class FitParam:
@@ -140,6 +141,8 @@ class FitParam:
         format: format of the parameter. Default is "%.3f".
         size_offset: size offset of the parameter. Default is 0.
         unit: unit of the parameter. Default is "".
+        locked: if True, the parameter value is locked and will not be modified
+            by the automatic fit. Default is False.
     """
 
     def __init__(
@@ -153,6 +156,7 @@ class FitParam:
         format: str = "%.3f",
         size_offset: int = 0,
         unit: str = "",
+        locked: bool = False,
     ):
         self.name = name
         self.value = value
@@ -162,6 +166,7 @@ class FitParam:
         self.steps = steps
         self.format = format
         self.unit = unit
+        self.locked = locked
         self.prefix_label = None
         self.lineedit = None
         self.unit_label = None
@@ -188,6 +193,7 @@ class FitParam:
             self.format,
             self._size_offset,
             self.unit,
+            self.locked,
         )
 
     def create_widgets(self, parent: QWidget, refresh_callback: Callable) -> None:
@@ -258,6 +264,8 @@ class FitParam:
             fmt: format (default: None)
         """
         style = "<span style='color: #444444'><b>{}</b></span>"
+        if self.locked:
+            style = "<span style='color: #888888'><b>{} 🔒</b></span>"
         self.prefix_label.setText(style.format(self.name))
         if self.value is None:
             value_str = ""
@@ -266,7 +274,10 @@ class FitParam:
                 fmt = self.format
             value_str = fmt % self.value
         self.lineedit.setText(value_str)
-        self.lineedit.setDisabled(bool(self.value == self.min and self.max == self.min))
+        is_disabled = bool(
+            self.locked or (self.value == self.min and self.max == self.min)
+        )
+        self.lineedit.setDisabled(is_disabled)
 
     def line_editing_finished(self):
         """Line editing finished"""
@@ -298,13 +309,13 @@ class FitParam:
         """Update slider value"""
         if self.value is None or self.min is None or self.max is None:
             self.slider.setEnabled(False)
-            if self.slider.parent() and self.slider.parent().isVisible():
+            if self.slider.parentWidget() and self.slider.parentWidget().isVisible():
                 self.slider.show()
         elif self.value == self.min and self.max == self.min:
             self.slider.hide()
         else:
-            self.slider.setEnabled(True)
-            if self.slider.parent() and self.slider.parent().isVisible():
+            self.slider.setEnabled(not self.locked)
+            if self.slider.parentWidget() and self.slider.parentWidget().isVisible():
                 self.slider.show()
             if self.logscale:
                 value_delta = max([np.log10(1 + self.value - self.min), 0.0])
@@ -366,7 +377,7 @@ def add_fitparam_widgets_to(
     row_nb = 0
     col_nb = 0
     for i, param in enumerate(fitparams):
-        param.create_widgets(layout.parent(), refresh_callback)
+        param.create_widgets(layout.parentWidget(), refresh_callback)
         widgets = param.get_widgets()
         w_colums = len(widgets) + 1
         row_contents += [
@@ -612,12 +623,12 @@ class FitWidget(QWidget):
         self.xrange.setVisible(self.show_xrange)
 
         if self.data_curve is None:
-            self.data_curve = make.curve([], [], _("Data"), color="b", linewidth=2)
+            self.data_curve = make.curve([], [], _("Data"), color="b", linewidth=2.0)
             plot.add_item(self.data_curve)
         self.data_curve.set_data(self.x, self.y)
 
         if self.fit_curve is None:
-            self.fit_curve = make.curve([], [], _("Fit"), color="r", linewidth=2)
+            self.fit_curve = make.curve([], [], _("Fit"), color="r", linewidth=2.0)
             plot.add_item(self.fit_curve)
         self.fit_curve.set_data(self.x, yfit)
 
@@ -666,11 +677,30 @@ class FitWidget(QWidget):
         self.i_min = self.x.searchsorted(self.autofit_prm.xmin)
         self.i_max = self.x.searchsorted(self.autofit_prm.xmax, side="right")
 
-    def errorfunc(self, params: list[float]) -> np.ndarray:
+    def get_full_params(self, free_params: np.ndarray) -> list[float]:
+        """Build full parameter list from free parameters
+
+        Args:
+            free_params: values of unlocked parameters only
+
+        Returns:
+            Full parameter list with locked parameters at their fixed values
+        """
+        full_params = []
+        free_idx = 0
+        for p in self.fitparams:
+            if p.locked:
+                full_params.append(p.value)
+            else:
+                full_params.append(free_params[free_idx])
+                free_idx += 1
+        return full_params
+
+    def errorfunc(self, free_params: np.ndarray) -> np.ndarray:
         """Get error function
 
         Args:
-            params: fit parameter values
+            free_params: values of unlocked fit parameters
 
         Returns:
             Error function
@@ -678,28 +708,42 @@ class FitWidget(QWidget):
         x = self.x[self.i_min : self.i_max]
         y = self.y[self.i_min : self.i_max]
         fitargs, fitkwargs = self.get_fitfunc_arguments()
+        params = self.get_full_params(free_params)
         return y - self.fitfunc(x, params, *fitargs, **fitkwargs)
 
     def autofit(self) -> None:
         """Autofit"""
         meth = self.autofit_prm.method
-        x0 = np.array([p.value for p in self.fitparams])
+
+        # Extract only unlocked parameters for optimization
+        free_params = np.array([p.value for p in self.fitparams if not p.locked])
+
+        # If all parameters are locked, nothing to optimize
+        if len(free_params) == 0:
+            return
+
         if meth == "lq":
-            x = self.autofit_lq(x0)
+            x = self.autofit_lq(free_params)
         elif meth == "simplex":
-            x = self.autofit_simplex(x0)
+            x = self.autofit_simplex(free_params)
         elif meth == "powel":
-            x = self.autofit_powel(x0)
+            x = self.autofit_powel(free_params)
         elif meth == "bfgs":
-            x = self.autofit_bfgs(x0)
+            x = self.autofit_bfgs(free_params)
         elif meth == "l_bfgs_b":
-            x = self.autofit_l_bfgs(x0)
+            x = self.autofit_l_bfgs(free_params)
         elif meth == "cg":
-            x = self.autofit_cg(x0)
+            x = self.autofit_cg(free_params)
         else:
             return
-        for v, p in zip(x, self.fitparams):
-            p.value = v
+
+        # Restore optimized values only to unlocked parameters
+        free_idx = 0
+        for p in self.fitparams:
+            if not p.locked:
+                p.value = x[free_idx]
+                free_idx += 1
+
         self.refresh()
         for prm in self.fitparams:
             prm.update()
@@ -776,7 +820,8 @@ class FitWidget(QWidget):
             Fitted values
         """
         prm = self.autofit_prm
-        bounds = [(p.min, p.max) for p in self.fitparams]
+        # Build bounds only for unlocked parameters
+        bounds = [(p.min, p.max) for p in self.fitparams if not p.locked]
 
         x, _f, _d = fmin_l_bfgs_b(
             self.get_norm_func(), x0, pgtol=prm.gtol, approx_grad=1, bounds=bounds

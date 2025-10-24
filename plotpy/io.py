@@ -366,7 +366,6 @@ def _imwrite_pil(filename, arr):
 def _import_dcm():
     """DICOM Import function (checking for required libraries):
     DICOM support requires library `pydicom`"""
-
     logger = logging.getLogger("pydicom")
     logger.setLevel(logging.CRITICAL)
 
@@ -616,6 +615,8 @@ register_serializable_items(
         "Axes",
         "AnnotatedPoint",
         "AnnotatedSegment",
+        "AnnotatedXRange",
+        "AnnotatedYRange",
         "AnnotatedRectangle",
         "AnnotatedObliqueRectangle",
         "AnnotatedEllipse",

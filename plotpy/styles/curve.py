@@ -39,7 +39,7 @@ class CurveParam(DataSet):
     )
     line = LineStyleItem(_("Line"))
     symbol = SymbolItem(_("Symbol"))
-    shade = FloatItem(_("Shadow"), default=0, min=0, max=1)
+    shade = FloatItem(_("Shadow"), default=0.0, min=0.0, max=1.0)
     curvestyle = ImageChoiceItem(_("Curve style"), CURVESTYLE_CHOICES, default="Lines")
     baseline = FloatItem(_("Baseline"), default=0.0)
     _use_dsamp_prop = GetAttrProp("use_dsamp")
@@ -68,7 +68,6 @@ class CurveParam(DataSet):
         Args:
             curve: instance of CurveItem to update
         """
-
         plot = curve.plot()
         if plot is not None:
             plot.blockSignals(True)  # Avoid unwanted calls of update_param

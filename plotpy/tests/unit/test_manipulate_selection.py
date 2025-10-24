@@ -123,7 +123,6 @@ def test_move_with_mouse(img_item_factory: Callable[[], BaseImageItem] | None):
     Arg:
         img_item_factory: image item factory function. Defaults to None.
     """
-
     with qt_app_context(exec_loop=False):
         img_item = None if img_item_factory is None else img_item_factory()
         win, tool, plot, img_item = _setup_plot(img_item)
@@ -291,11 +290,11 @@ def test_rectangular_selection():
     with qt_app_context(exec_loop=False):
         items = [
             make.image(gen_image4(100, 100)),
-            make.trimage(gen_image4(100, 100), x0=100, y0=100),
-            make.curve(np.arange(100), 100 + 20 * np.cos(np.arange(100))),
-            make.annotated_rectangle(50, 50, 100, 100),
+            make.trimage(gen_image4(100, 100), x0=100.0, y0=100.0),
+            make.curve(np.arange(100), 100.0 + 20.0 * np.cos(np.arange(100))),
+            make.annotated_rectangle(50.0, 50.0, 100.0, 100.0),
             make.legend(),
-            make.label("Test", (100, 100), (0, 0), "R"),
+            make.label("Test", (100.0, 100.0), (0, 0), "R"),
         ]
 
         is_rect_selectable = [

@@ -8,19 +8,21 @@
 from __future__ import annotations
 
 import numpy as np
-from guidata.qthelpers import qt_app_context
+from guidata.env import execenv
+from guidata.qthelpers import exec_dialog, qt_app_context
 from qtpy import QtGui as QG
+from qtpy import QtWidgets as QW
 
 from plotpy.builder import make
 from plotpy.plot import BasePlot, PlotOptions
-from plotpy.plot.plotwidget import SyncPlotWindow
+from plotpy.plot.plotwidget import SyncPlotDialog, SyncPlotWindow
 from plotpy.tests.data import gen_2d_gaussian
 
 
-def plot(plot_type, *itemlists):
-    """Plot items in SyncPlotDialog"""
-    win = SyncPlotWindow(
-        title="Window for showing plots, optionally synchronized",
+def show_with(cls: type[SyncPlotDialog] | type[SyncPlotWindow], plot_type, *itemlists):
+    """Show plot items in SyncPlotWindow or SyncPlotDialog"""
+    widget = cls(
+        title=f"{cls.__name__}: showing plots, optionally synchronized ({plot_type})",
         options=PlotOptions(type=plot_type),
     )
     row, col = 0, 0
@@ -30,16 +32,22 @@ def plot(plot_type, *itemlists):
             plot.add_item(item)
         plot.set_axis_font("left", QG.QFont("Courier"))
         plot.set_items_readonly(False)
-        win.add_plot(row, col, plot, sync=True)
+        widget.add_plot(row, col, plot, sync=True)
         col += 1
         if col == 2:
             row += 1
             col = 0
-    win.finalize_configuration()
+    widget.finalize_configuration()
     if plot_type == "image":
-        win.manager.get_contrast_panel().show()
-    win.resize(800, 600)
-    win.show()
+        widget.get_manager().get_contrast_panel().show()
+    widget.resize(800, 600)
+    if cls is SyncPlotWindow:
+        widget.show()
+        if not execenv.unattended:
+            app = QW.QApplication.instance()
+            app.exec()
+    else:
+        exec_dialog(widget)
 
 
 def test_syncplot_curves():
@@ -49,9 +57,8 @@ def test_syncplot_curves():
     y = np.sin(np.sin(np.sin(x)))
     x2 = np.linspace(-10, 10, 20)
     y2 = np.sin(np.sin(np.sin(x2)))
-    with qt_app_context(exec_loop=True):
-        plot(
-            "curve",
+    with qt_app_context():
+        itemlists = [
             [
                 make.curve(x, y, color="b"),
                 make.label(
@@ -70,21 +77,26 @@ def test_syncplot_curves():
                 make.label("Absolute position", "R", (0, 0), "R"),
                 make.legend("TR"),
             ],
-        )
+        ]
+        for cls in (SyncPlotWindow, SyncPlotDialog):
+            show_with(cls, "curve", *itemlists)
 
 
 def test_syncplot_images():
     """Test plot synchronization: images"""
-    img1 = gen_2d_gaussian(20, np.uint8, x0=-10, y0=-10, mu=7, sigma=10.0)
-    img2 = gen_2d_gaussian(20, np.uint8, x0=-10, y0=-10, mu=5, sigma=8.0)
-    img3 = gen_2d_gaussian(20, np.uint8, x0=-10, y0=-10, mu=3, sigma=6.0)
-    with qt_app_context(exec_loop=True):
+    img1 = gen_2d_gaussian(20, np.uint8, x0=-10.0, y0=-10.0, mu=7.0, sigma=10.0)
+    img2 = gen_2d_gaussian(20, np.uint8, x0=-10.0, y0=-10.0, mu=5.0, sigma=8.0)
+    img3 = gen_2d_gaussian(20, np.uint8, x0=-10.0, y0=-10.0, mu=3.0, sigma=6.0)
+    with qt_app_context():
 
         def makeim(data):
             """Make image item"""
             return make.image(data, interpolation="nearest")
 
-        plot("image", [makeim(img1)], [makeim(img2)], [makeim(img3)])
+        itemlists = [[makeim(img1)], [makeim(img2)], [makeim(img3)]]
+
+        for cls in (SyncPlotWindow, SyncPlotDialog):
+            show_with(cls, "image", *itemlists)
 
 
 if __name__ == "__main__":

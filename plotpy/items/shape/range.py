@@ -221,8 +221,9 @@ class BaseRangeSelection(AbstractShape):
         """
         self._min = _min
         self._max = _max
-        if dosignal:
-            self.plot().SIG_RANGE_CHANGED.emit(self, self._min, self._max)
+        plot = self.plot()
+        if dosignal and plot is not None:
+            plot.SIG_RANGE_CHANGED.emit(self, self._min, self._max)
 
     def update_item_parameters(self) -> None:
         """Update item parameters (dataset) from object properties"""
@@ -318,10 +319,11 @@ class XRangeSelection(BaseRangeSelection):
         cx = rct.center().x()
         painter.drawLine(QC.QPointF(cx, rct.top()), QC.QPointF(cx, rct.bottom()))
 
-        painter.setPen(pen)
-        x0, x1, y = self.get_handles_pos()
-        sym.drawSymbol(painter, QC.QPointF(x0, y))
-        sym.drawSymbol(painter, QC.QPointF(x1, y))
+        if self.can_resize() and not self.is_readonly():
+            painter.setPen(pen)
+            x0, x1, y = self.get_handles_pos()
+            sym.drawSymbol(painter, QC.QPointF(x0, y))
+            sym.drawSymbol(painter, QC.QPointF(x1, y))
 
     def hit_test(self, pos: QPointF) -> tuple[float, float, bool, None]:
         """Return a tuple (distance, attach point, inside, other_object)
@@ -479,10 +481,11 @@ class YRangeSelection(BaseRangeSelection):
         cy = rct.center().y()
         painter.drawLine(QC.QPointF(rct.left(), cy), QC.QPointF(rct.right(), cy))
 
-        painter.setPen(pen)
-        y0, y1, x = self.get_handles_pos()
-        sym.drawSymbol(painter, QC.QPointF(x, y0))
-        sym.drawSymbol(painter, QC.QPointF(x, y1))
+        if self.can_resize() and not self.is_readonly():
+            painter.setPen(pen)
+            y0, y1, x = self.get_handles_pos()
+            sym.drawSymbol(painter, QC.QPointF(x, y0))
+            sym.drawSymbol(painter, QC.QPointF(x, y1))
 
     def hit_test(self, pos: QPointF) -> tuple[float, float, bool, None]:
         """Return a tuple (distance, attach point, inside, other_object)

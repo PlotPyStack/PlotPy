@@ -22,6 +22,8 @@ if TYPE_CHECKING:
 
     from qtpy.QtCore import QPointF
 
+    from plotpy.interfaces import ICurveItemType, IImageItemType
+    from plotpy.items import BaseImageItem, CurveItem
     from plotpy.plot import BasePlot, PlotManager
 
 
@@ -644,3 +646,40 @@ class RectangularActionTool(InteractiveTool):
         if self.switch_to_default_tool:
             shape = self.get_last_final_shape()
             plot.set_active_item(shape)
+
+
+class LastItemHolder:
+    """Class to hold a weak reference to the last item"""
+
+    def __init__(self, item_type: IImageItemType | ICurveItemType) -> None:
+        self._item_type = item_type
+        self._last_item: weakref.ReferenceType[CurveItem | BaseImageItem] | None = None
+
+    def set(self, item: CurveItem | BaseImageItem) -> None:
+        """Set the last item
+
+        Args:
+            item: BaseImageItem instance
+        """
+        self._last_item = weakref.ref(item)
+
+    def get(self) -> CurveItem | BaseImageItem | None:
+        """Get the last item
+
+        Returns:
+            BaseImageItem instance or None
+        """
+        if self._last_item is not None:
+            return self._last_item()
+        return None
+
+    def update_from_selection(self, plot: BasePlot) -> CurveItem | BaseImageItem | None:
+        """Update the last item from the selected items of the plot, and return it.
+
+        Args:
+            plot: BasePlot instance
+        """
+        items = plot.get_selected_items(item_type=self._item_type)
+        if len(items) == 1:
+            self.set(items[0])
+        return self.get()

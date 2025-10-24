@@ -13,6 +13,7 @@ plotpy.widgets.label
 
 from __future__ import annotations
 
+import re
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
@@ -26,6 +27,7 @@ from plotpy.config import CONF, _
 from plotpy.coords import canvas_to_axes
 from plotpy.interfaces import IBasePlotItem, ISerializableType, IShapeItemType
 from plotpy.items.curve.base import CurveItem
+from plotpy.items.shape.range import XRangeSelection
 from plotpy.styles.label import LabelParam
 
 if TYPE_CHECKING:
@@ -38,7 +40,7 @@ if TYPE_CHECKING:
     from qtpy.QtGui import QBrush, QPainter, QPen, QTextDocument
 
     from plotpy.interfaces import IItemType
-    from plotpy.items import ImageItem, RectangleShape, XRangeSelection, YRangeSelection
+    from plotpy.items import ImageItem, RectangleShape, YRangeSelection
     from plotpy.styles.base import ItemParameters
 
 ANCHORS = {
@@ -452,6 +454,10 @@ class AbstractLabelItem(QwtPlotItem):
             lx, ly = self.C
             lx += new_pos.x() - old_pos.x()
             ly += new_pos.y() - old_pos.y()
+            lx, ly = (
+                int(lx),
+                int(ly),
+            )  # Convert to integer (expected type for canvas coordinates)
             self.C = lx, ly
             self.labelparam.xc, self.labelparam.yc = lx, ly
             lx0, ly0 = canvas_to_axes(self, old_pos)
@@ -906,6 +912,85 @@ class ObjectInfo:
         """Return the text to be displayed"""
         return ""
 
+    @staticmethod
+    def _replace_format_specifiers(label: str, datetime_positions: list[int]) -> str:
+        """Replace numeric format specifiers with %s for datetime positions
+
+        Args:
+            label: The label format string
+            datetime_positions: List of positions that should use %s
+
+        Returns:
+            Modified label string
+        """
+        # Find all format specifiers
+        pattern = r"%[+-]?(?:\d+)?(?:\.\d+)?[hlL]?[diouxXeEfFgGcrs%]"
+        matches = list(re.finditer(pattern, label))
+
+        # Replace numeric formats with %s for datetime positions
+        result = label
+        offset = 0
+        spec_index = 0
+
+        for match in matches:
+            if match.group() == "%%":  # Skip escaped %
+                continue
+
+            if spec_index in datetime_positions:
+                # Replace this format specifier with %s
+                old_spec = match.group()
+                new_spec = "%s"
+                start = match.start() + offset
+                end = match.end() + offset
+                result = result[:start] + new_spec + result[end:]
+                offset += len(new_spec) - len(old_spec)
+
+            spec_index += 1
+
+        return result
+
+    @staticmethod
+    def _format_values_for_datetime_axis(
+        plot, axis_id: int, label: str, result: tuple | list, value_checker: Callable
+    ) -> tuple[str, tuple]:
+        """Format values as datetime strings if they match the value_checker criterion
+
+        Args:
+            plot: The plot object
+            axis_id: The axis ID to check for datetime scale
+            label: The label format string
+            result: The result tuple/list from the function
+            value_checker: Function that takes (value, index) and returns True if the
+             value should be formatted as datetime
+
+        Returns:
+            Tuple of (adjusted_label, formatted_result)
+        """
+        # Check if axis is datetime
+        if plot.get_axis_scale(axis_id) != "datetime":
+            return label, result
+
+        # Convert result to list for modification
+        if not isinstance(result, (list, tuple)):
+            result = [result]
+        else:
+            result = list(result)
+
+        # Find positions that need datetime formatting
+        datetime_positions = []
+        for i, val in enumerate(result):
+            if isinstance(val, (int, float, np.number)) and not np.isnan(val):
+                if value_checker(val, i):
+                    datetime_positions.append(i)
+                    # Format as datetime string
+                    result[i] = plot.format_coordinate_value(val, axis_id)
+
+        # Replace format specifiers for datetime positions in the label
+        if datetime_positions:
+            label = ObjectInfo._replace_format_specifiers(label, datetime_positions)
+
+        return label, tuple(result)
+
 
 class RangeInfo(ObjectInfo):
     """ObjectInfo handling `XRangeSelection` or `YRangeSelection`
@@ -945,7 +1030,29 @@ class RangeInfo(ObjectInfo):
         v0, v1 = self.range.get_range()
         v = 0.5 * (v0 + v1)
         dv = 0.5 * (v1 - v0)
-        return self.label % self.func(v, dv)
+
+        # Get result from function
+        result = self.func(v, dv)
+
+        # Check if we need to format as datetime
+        plot = self.range.plot()
+        if plot is not None:
+            # Determine which axis this range is on
+            if isinstance(self.range, XRangeSelection):
+                axis_id = self.range.xAxis()
+            else:
+                axis_id = self.range.yAxis()
+
+            # Value checker: returns True if value matches v or dv (likely datetime)
+            def is_range_value(val, _idx):
+                return abs(val - v) < 1e-10 or abs(abs(val) - abs(dv)) < 1e-10
+
+            label, result = self._format_values_for_datetime_axis(
+                plot, axis_id, self.label, result, is_range_value
+            )
+            return label % result
+
+        return self.label % result
 
 
 class XRangeComputation(ObjectInfo):
@@ -1004,7 +1111,34 @@ class XRangeComputation(ObjectInfo):
                 vectors.append(np.array([np.nan]))
             else:
                 vectors.append(vector[i0:i1])
-        return self.label % self.func(*vectors)
+
+        # Get result from function
+        result = self.func(*vectors)
+
+        # Format values considering datetime axis
+        plot = self.curve.plot()
+        if plot is not None:
+            # Check if x-axis is datetime
+            x_axis = self.curve.xAxis()
+
+            # Compute x-statistics to identify x-coordinates in result
+            x_vector = vectors[0]
+            x_stats = set()
+            if x_vector is not None and len(x_vector) > 0:
+                x_stats = {x_vector.min(), x_vector.max(), x_vector.mean()}
+
+            # Value checker: returns True if value matches an x-statistic
+            def is_x_coordinate(val, _idx):
+                return any(
+                    abs(val - stat) < 1e-10 for stat in x_stats if not np.isnan(stat)
+                )
+
+            label, result = self._format_values_for_datetime_axis(
+                plot, x_axis, self.label, result, is_x_coordinate
+            )
+            return label % result
+
+        return self.label % result
 
 
 RangeComputation = XRangeComputation  # For backward compatibility

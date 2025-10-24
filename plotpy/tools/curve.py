@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-import weakref
 from typing import TYPE_CHECKING, Any, Callable
 
 import numpy as np
@@ -28,11 +27,15 @@ from plotpy.events import (
 from plotpy.interfaces import ICurveItemType
 from plotpy.items import Marker, XRangeSelection, YRangeSelection
 from plotpy.items.curve.base import CurveItem
-from plotpy.tools.base import DefaultToolbarID, InteractiveTool, ToggleTool
+from plotpy.tools.base import (
+    DefaultToolbarID,
+    InteractiveTool,
+    LastItemHolder,
+    ToggleTool,
+)
 from plotpy.tools.cursor import BaseCursorTool
 
 if TYPE_CHECKING:
-
     from plotpy.items.label import DataInfoLabel
     from plotpy.plot.base import BasePlot
     from plotpy.plot.manager import PlotManager
@@ -67,7 +70,7 @@ class BaseRangeCursorTool(BaseCursorTool):
         tip: str | None = None,
     ) -> None:
         super().__init__(manager, toolbar_id, title=title, icon=icon, tip=tip)
-        self._last_item: weakref.ReferenceType[CurveItem] | None = None
+        self.last_item_holder = LastItemHolder(ICurveItemType)
         self.label: DataInfoLabel | None = None
         self.labelfuncs = labelfuncs or self.LABELFUNCS
 
@@ -173,34 +176,14 @@ class CurveStatsTool(BaseRangeCursorTool):
         """
         self.labelfuncs = labelfuncs
 
-    def get_last_item(self) -> CurveItem | None:
-        """Get last item on which the tool was used"""
-        if self._last_item is not None:
-            return self._last_item()
-        return None
-
-    def get_associated_item(self, plot: BasePlot) -> CurveItem | None:
-        """Get associated item
-
-        Args:
-            plot: BasePlot instance
-
-        Returns:
-            curve item or None
-        """
-        items = plot.get_selected_items(item_type=ICurveItemType)
-        if len(items) == 1:
-            self._last_item = weakref.ref(items[0])
-        return self.get_last_item()
-
     def get_label_title(self) -> str | None:
         """Return label title"""
-        curve = self.get_associated_item(self.manager.get_plot())
+        curve = self.last_item_holder.update_from_selection(self.manager.get_plot())
         return curve.title().text() if curve else None
 
     def get_computation_specs(self) -> list[tuple[CurveItem, str, Callable[..., Any]]]:
         """Return computation specs"""
-        curve = self.get_associated_item(self.manager.get_plot())
+        curve = self.last_item_holder.update_from_selection(self.manager.get_plot())
         return [(curve, label, func) for label, func in self.labelfuncs]
 
     def update_status(self, plot: BasePlot) -> None:
@@ -209,7 +192,7 @@ class CurveStatsTool(BaseRangeCursorTool):
         Args:
             plot: BasePlot instance
         """
-        item = self.get_associated_item(plot)
+        item = self.last_item_holder.update_from_selection(plot)
         self.action.setEnabled(item is not None)
 
 
@@ -739,9 +722,9 @@ class SelectPointsTool(InteractiveTool):
 class InsertionDataSet(DataSet):
     """Insertion parameters"""
 
-    __index = IntItem(_("Insertion index"), min=0)
+    __index = IntItem(_("Insertion index"), min=0, default=0)
     index = __index
-    value = FloatItem(_("New value"))
+    value = FloatItem(_("New value"), default=0.0)
     index_offset = ChoiceItem(
         _("Location"), choices=[_("Before"), _("After")], default=0
     )
@@ -971,6 +954,7 @@ class EditPointTool(InteractiveTool):
                 0,
                 QC.QPointF(*new_pos),  # type: ignore
             )
+            filter.plot.replot()  # Needed on non-Windows platforms to update the view
 
     def __get_active_curve_item(self, filter: StatefulEventFilter) -> CurveItem:
         """Get active curve item. Simple method to avoid type checking errors.

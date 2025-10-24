@@ -243,6 +243,11 @@ class ErrorBarCurveItem(CurveItem):
         plot: BasePlot = self.plot()
         xminf, yminf = xmin[np.isfinite(xmin)], ymin[np.isfinite(ymin)]
         xmaxf, ymaxf = xmax[np.isfinite(xmax)], ymax[np.isfinite(ymax)]
+
+        # If all values are NaN, return the parent's bounding rect
+        if 0 in (xminf.size, yminf.size, xmaxf.size, ymaxf.size):
+            return CurveItem.boundingRect(self)
+
         if plot is not None and "log" in (
             plot.get_axis_scale(self.xAxis()),
             plot.get_axis_scale(self.yAxis()),
@@ -272,6 +277,8 @@ class ErrorBarCurveItem(CurveItem):
         if self._x is None or self._x.size == 0:
             return
         x, y, xmin, xmax, ymin, ymax = self.get_minmax_arrays(all_values=False)
+        if x.size == 0:  # All values are NaN
+            return
         tx = vmap(xMap, x)
         ty = vmap(yMap, y)
         RN = list(range(len(tx)))
