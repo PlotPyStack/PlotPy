@@ -15,6 +15,7 @@ from plotpy.config import _
 from plotpy.interfaces import (
     IBaseImageItem,
     IBasePlotItem,
+    IExportROIImageItemType,
     IHistDataSource,
     IVoiImageItemType,
 )
@@ -406,7 +407,13 @@ class MaskedImageItem(ImageItem, MaskedImageMixin):
         param: image parameters
     """
 
-    __implements__ = (IBasePlotItem, IBaseImageItem, IHistDataSource, IVoiImageItemType)
+    __implements__ = (
+        IBasePlotItem,
+        IBaseImageItem,
+        IHistDataSource,
+        IVoiImageItemType,
+        IExportROIImageItemType,
+    )
 
     def __init__(
         self,
@@ -570,7 +577,13 @@ class MaskedXYImageItem(XYImageItem, MaskedImageMixin):
         param: image parameters
     """
 
-    __implements__ = (IBasePlotItem, IBaseImageItem, IHistDataSource, IVoiImageItemType)
+    __implements__ = (
+        IBasePlotItem,
+        IBaseImageItem,
+        IHistDataSource,
+        IVoiImageItemType,
+        IExportROIImageItemType,
+    )
 
     def __init__(
         self,

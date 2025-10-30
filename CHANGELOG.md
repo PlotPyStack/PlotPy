@@ -1,5 +1,14 @@
 # Changelog #
 
+## Version 2.8.1 ##
+
+🛠️ Bug fixes:
+
+* [Issue #50](https://github.com/PlotPyStack/PlotPy/issues/50) - Fixed ImageStatsTool displaying "No available data" for `XYImageItem` and `MaskedXYImageItem`:
+  * Added `IExportROIImageItemType` to `XYImageItem.types()` so that `get_items_in_rectangle()` can properly identify XY image items
+  * Updated `__implements__` tuples for consistency across `XYImageItem`, `MaskedXYImageItem`, and `MaskedImageItem`
+  * The tool now correctly displays statistics for images with non-uniform coordinates
+
 ## Version 2.8.0 ##
 
 💥 New features / Enhancements:

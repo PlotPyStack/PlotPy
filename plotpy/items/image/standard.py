@@ -522,7 +522,14 @@ class XYImageItem(RawImageItem):
         them from the stored bin edges.
     """
 
-    __implements__ = (IBasePlotItem, IBaseImageItem, ISerializableType)
+    __implements__ = (
+        IBasePlotItem,
+        IBaseImageItem,
+        IHistDataSource,
+        IVoiImageItemType,
+        IExportROIImageItemType,
+        ISerializableType,
+    )
 
     def __init__(
         self,
@@ -788,6 +795,7 @@ class XYImageItem(RawImageItem):
             ITrackableItemType,
             ISerializableType,
             ICSImageItemType,
+            IExportROIImageItemType,
         )
 
     # ---- IBaseImageItem API --------------------------------------------------
