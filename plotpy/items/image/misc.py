@@ -474,10 +474,6 @@ def assemble_imageitems(
 
     Returns:
         Pixel data
-
-    .. warning::
-
-        Does not support `XYImageItem` objects
     """
     # align width to 'align' bytes
     if align is not None:
@@ -511,6 +507,8 @@ def assemble_imageitems(
     src_rect[1] += 0.5 * pixel_height
     src_rect[2] -= 0.5 * pixel_width
     src_rect[3] -= 0.5 * pixel_height
+    # Convert to tuple for compatibility with C extension
+    src_rect = tuple(src_rect)
 
     for it in sorted(items, key=lambda obj: obj.z()):
         if it.isVisible() and src_qrect.intersects(it.boundingRect()):
@@ -737,11 +735,6 @@ def get_image_from_plot(
 
     Returns:
         Image pixel data
-
-    .. warning::
-
-        Support only the image items implementing the `IExportROIImageItemType`
-        interface, i.e. this does *not* support `XYImageItem` objects
     """
     if destw is None:
         destw = p1.x() - p0.x() + 1

@@ -8,6 +8,10 @@
   * Added `IExportROIImageItemType` to `XYImageItem.types()` so that `get_items_in_rectangle()` can properly identify XY image items
   * Updated `__implements__` tuples for consistency across `XYImageItem`, `MaskedXYImageItem`, and `MaskedImageItem`
   * The tool now correctly displays statistics for images with non-uniform coordinates
+* Fixed snapshot tool failing with `SystemError` on `XYImageItem` and `MaskedXYImageItem`:
+  * Fixed `assemble_imageitems` passing list instead of tuple to C extension function `_scale_rect`
+  * Added missing `export_roi` method to `XYImageItem` to properly handle non-uniform coordinate transformations
+  * Snapshots of XY images now render correctly instead of producing black images
 
 ## Version 2.8.0 ##
 

@@ -433,9 +433,10 @@ class ImageItem(RawImageItem):
         else:
             a, b = 1.0, 0.0
         interp = self.interpolate if apply_interpolation else (INTERP_NEAREST,)
+        rescaled_src = self._rescale_src_rect(src_rect)
         _scale_rect(
             self.data,
-            self._rescale_src_rect(src_rect),
+            rescaled_src,
             dst_image,
             dst_rect,
             (a, b, None),
@@ -688,6 +689,38 @@ class XYImageItem(RawImageItem):
         )
         qrect = QC.QRectF(QC.QPointF(dest[0], dest[1]), QC.QPointF(dest[2], dest[3]))
         painter.drawImage(qrect, self._image, qrect)
+
+    def export_roi(
+        self,
+        src_rect: tuple[float, float, float, float],
+        dst_rect: tuple[float, float, float, float],
+        dst_image: np.ndarray,
+        apply_lut: bool = False,
+        apply_interpolation: bool = False,
+        original_resolution: bool = False,
+        force_interp_mode: str | None = None,
+        force_interp_size: int | None = None,
+    ) -> None:
+        """Export a rectangular area of the image to another image
+
+        Args:
+            src_rect: Source rectangle in plot coordinates
+            dst_rect: Destination rectangle in pixel coordinates
+            dst_image: Destination image array
+            apply_lut: Apply LUT (Default value = False)
+            apply_interpolation: Apply interpolation (Default value = False)
+            original_resolution: Original resolution (Default value = False)
+            force_interp_mode: Force interpolation mode (Default value = None)
+            force_interp_size: Force interpolation size (Default value = None)
+        """
+        if apply_lut:
+            lut = self.lut
+        else:
+            a, b = 1.0, 0.0
+            lut = (a, b, None, np.zeros((1,), np.uint32))
+        interp = self.interpolate if apply_interpolation else (INTERP_NEAREST,)
+        xytr = self.x, self.y, src_rect
+        _scale_xy(self.data, xytr, dst_image, dst_rect, lut, interp)
 
     def get_pixel_coordinates(self, xplot: float, yplot: float) -> tuple[float, float]:
         """Get pixel coordinates from plot coordinates
