@@ -718,6 +718,7 @@ class PlotManager:
         self.add_tool(tools.AnnotatedPointTool)
         self.add_tool(tools.AnnotatedSegmentTool)
         self.add_tool(tools.AnnotatedRectangleTool)
+        self.add_tool(tools.AnnotatedPolygonTool)
         self.add_tool(tools.AnnotatedObliqueRectangleTool)
         self.add_tool(tools.AnnotatedCircleTool)
         self.add_tool(tools.AnnotatedEllipseTool)
