@@ -1,5 +1,15 @@
 # Changelog #
 
+## Version 2.8.2 ##
+
+🛠️ Bug fixes:
+
+* Fixed `RuntimeWarning` when changing masked image data type from float to integer:
+  * `MaskedImageItem.update_mask()` now handles NaN and None `filling_value` gracefully
+  * When converting to integer dtypes, NaN/None values are replaced with 0 instead of triggering numpy cast warnings
+  * When converting to float dtypes, NaN is preserved as the fill value
+  * Added comprehensive tests to validate dtype conversion scenarios
+
 ## Version 2.8.1 ##
 
 🛠️ Bug fixes:

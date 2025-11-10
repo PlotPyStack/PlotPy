@@ -154,7 +154,17 @@ class MaskedImageMixin:
             # in future versions of NumPy (at the time of writing, this raises a
             # DeprecationWarning "NumPy will stop allowing conversion of out-of-bound
             # Python integers to integer arrays.")
-            val = np.array(self.param.filling_value).astype(self.data.dtype)
+            filling_value = self.param.filling_value
+            if filling_value is None or (
+                isinstance(filling_value, float) and np.isnan(filling_value)
+            ):
+                # Use a safe default for integer types when filling_value is None or NaN
+                if np.issubdtype(self.data.dtype, np.integer):
+                    val = np.array(0, dtype=self.data.dtype)
+                else:
+                    val = np.array(np.nan, dtype=self.data.dtype)
+            else:
+                val = np.array(filling_value).astype(self.data.dtype)
 
             self.data.set_fill_value(val)
 
