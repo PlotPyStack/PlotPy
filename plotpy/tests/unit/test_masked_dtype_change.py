@@ -13,8 +13,9 @@ filling_value is NaN or None.
 
 from __future__ import annotations
 
+import warnings
+
 import numpy as np
-import pytest
 
 from plotpy.builder import make
 
@@ -41,7 +42,8 @@ def test_masked_image_dtype_change_from_float_to_uint8():
     item.set_data(new_data)
 
     # This should not raise a RuntimeWarning
-    with pytest.warns(None) as warning_list:
+    with warnings.catch_warnings(record=True) as warning_list:
+        warnings.simplefilter("always")
         item.update_mask()
 
     # Check that no RuntimeWarning was raised
@@ -73,7 +75,8 @@ def test_masked_image_dtype_change_with_none_filling_value():
     item.set_data(new_data)
 
     # This should not raise a RuntimeWarning
-    with pytest.warns(None) as warning_list:
+    with warnings.catch_warnings(record=True) as warning_list:
+        warnings.simplefilter("always")
         item.update_mask()
 
     # Check that no RuntimeWarning was raised
@@ -104,7 +107,8 @@ def test_masked_image_filling_value_defaults():
         item.param.filling_value = np.nan
 
         # This should handle the conversion gracefully
-        with pytest.warns(None) as warning_list:
+        with warnings.catch_warnings(record=True) as warning_list:
+            warnings.simplefilter("always")
             item.update_mask()
 
         # Check that no RuntimeWarning was raised
