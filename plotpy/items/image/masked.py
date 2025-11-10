@@ -4,11 +4,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import guidata.io
 import numpy as np
 import numpy.ma as ma
 from qtpy import QtCore as QC
 
+import guidata.io
 from plotpy import io
 from plotpy._scaler import INTERP_NEAREST, _scale_rect, _scale_xy
 from plotpy.config import _
@@ -23,11 +23,11 @@ from plotpy.items.image.standard import ImageItem, XYImageItem
 from plotpy.styles.image import MaskedImageParam, MaskedXYImageParam
 
 if TYPE_CHECKING:
-    import guidata.io
     import qwt.scale_map
     from qtpy.QtCore import QRectF
     from qtpy.QtGui import QPainter
 
+    import guidata.io
     from plotpy.plot import BasePlot
 
 
@@ -150,10 +150,6 @@ class MaskedImageMixin:
     def update_mask(self) -> None:
         """Update mask"""
         if isinstance(self.data, np.ma.MaskedArray):
-            # Casting filling_value to data dtype, otherwise this may raise an error
-            # in future versions of NumPy (at the time of writing, this raises a
-            # DeprecationWarning "NumPy will stop allowing conversion of out-of-bound
-            # Python integers to integer arrays.")
             filling_value = self.param.filling_value
             if filling_value is None or (
                 isinstance(filling_value, float) and np.isnan(filling_value)
@@ -164,8 +160,15 @@ class MaskedImageMixin:
                 else:
                     val = np.array(np.nan, dtype=self.data.dtype)
             else:
+                # If filling_value is out of bounds for data dtype, get the default
+                # fill value for that dtype
+                if np.issubdtype(self.data.dtype, np.integer):
+                    info = np.iinfo(self.data.dtype)
+                    if filling_value < info.min or filling_value > info.max:
+                        # Using the default fill value thanks to the get_fill_value()
+                        # method of MaskedArray:
+                        filling_value = self.data.get_fill_value()
                 val = np.array(filling_value).astype(self.data.dtype)
-
             self.data.set_fill_value(val)
 
     def set_mask(self, mask: ma.MaskedArray) -> None:
