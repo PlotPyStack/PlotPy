@@ -4,11 +4,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import guidata.io
 import numpy as np
 import numpy.ma as ma
 from qtpy import QtCore as QC
 
-import guidata.io
 from plotpy import io
 from plotpy._scaler import INTERP_NEAREST, _scale_rect, _scale_xy
 from plotpy.config import _
@@ -23,11 +23,11 @@ from plotpy.items.image.standard import ImageItem, XYImageItem
 from plotpy.styles.image import MaskedImageParam, MaskedXYImageParam
 
 if TYPE_CHECKING:
+    import guidata.io
     import qwt.scale_map
     from qtpy.QtCore import QRectF
     from qtpy.QtGui import QPainter
 
-    import guidata.io
     from plotpy.plot import BasePlot
 
 
