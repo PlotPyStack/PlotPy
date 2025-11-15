@@ -10,6 +10,7 @@
 import timeit
 
 import numpy as np
+import pytest
 from guidata.qthelpers import qt_app_context
 
 from plotpy.builder import make
@@ -82,6 +83,7 @@ def create_random_polygons(
     return np.array(polygons)
 
 
+@pytest.mark.skip(reason="Not relevant in automated test suite")
 def test_large_number_of_annotations(measure_execution_time: bool = False):
     """Test large number of annotations
 
