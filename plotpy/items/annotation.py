@@ -599,6 +599,11 @@ class AnnotatedSegment(AnnotatedShape):
         """Return segment position (middle) after applying transform matrix"""
         return compute_center(*self.get_transformed_coords(0, 1))
 
+    def get_angle(self):
+        """Get angle for instance based on shape position"""
+        x1, y1, x2, y2 = self.get_rect()
+        return np.angle((x2-x1)+1j*(y2-y1),deg=True)
+
     # ----AnnotatedShape API-----------------------------------------------------
     def set_label_position(self):
         """Set label position, for instance based on shape position"""
@@ -616,6 +621,7 @@ class AnnotatedSegment(AnnotatedShape):
             [
                 _("Center:") + " " + self.get_tr_center_str(),
                 _("Distance:") + " " + self.x_to_str(self.get_tr_length()),
+                _("Angle:") + " %.1f°" % self.get_angle(),
             ]
         )
 
