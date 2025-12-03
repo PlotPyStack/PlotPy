@@ -23,7 +23,7 @@ It is part of the [PlotPyStack](https://github.com/PlotPyStack) project, aiming 
 
 <img src="https://raw.githubusercontent.com/PlotPyStack/plotpy/master/doc/images/panorama.png">
 
-See [documentation](https://plotpy.readthedocs.io/en/latest/) for more details on the library and [changelog](https://github.com/PlotPyStack/PlotPy/blob/master/CHANGELOG.md) for recent history of changes.
+See [documentation](https://plotpy.readthedocs.io/en/latest/) for more details on the library.
 
 Copyrights and licensing:
 

@@ -294,9 +294,9 @@ Best Practices
 
 - Clearly differentiate between ``fix/xxx`` (non-urgent fixes) and ``hotfix/xxx`` (critical production fixes).
 
-- When creating the ``release`` branch, update CHANGELOG to indicate which version it targets (e.g., add a comment in the merge commit: "Create release branch for v2.8.x maintenance").
+- When creating the ``release`` branch, update release notes to indicate which version it targets (e.g., add a comment in the merge commit: "Create release branch for v2.8.x maintenance").
 
-- The ``release`` branch always represents the current maintenance line. To know which version it targets, check the most recent tag on ``master`` or the CHANGELOG.
+- The ``release`` branch always represents the current maintenance line. To know which version it targets, check the most recent tag on ``master`` or the release notes.
 
 Takeaway
 --------

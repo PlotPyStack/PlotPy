@@ -50,6 +50,6 @@ Table of contents
    intro/index
    features/index
    dev/index
-   changelog
+   release_notes/index
 
 * :ref:`genindex`

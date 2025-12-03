@@ -7,10 +7,9 @@ Colormaps
 The `colormap` module contains definition of common colormaps and tools
 to manipulate and create them.
 
-.. automodule:: plotpy.widgets.colormap.widget
-    :members:
-.. automodule:: plotpy.widgets.colormap.editor
-    :members:
-.. automodule:: plotpy.widgets.colormap.manager
-    :members:
+This package provides widgets for creating, editing, and managing colormaps:
+
+- ``ColorMapWidget``: Interactive colormap editor widget
+- ``ColorMapEditor``: Full colormap editing dialog
+- ``ColorMapManager``: Colormap management interface
 """

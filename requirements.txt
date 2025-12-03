@@ -2,11 +2,11 @@ Coverage
 Cython>=3.0
 Pillow
 PyQt5>5.15.5
-PythonQwt >= 0.14
+PythonQwt >= 0.15
 SciPy >= 1.7.3
 babel
 build
-guidata >= 3.11
+guidata >= 3.13
 myst_parser
 numpy >= 1.22
 pre-commit

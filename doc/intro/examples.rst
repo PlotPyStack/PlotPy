@@ -22,7 +22,7 @@ Curve plotting
 Basic curve plotting
 ~~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: ../../plotpy/tests/items/test_curve.py
+.. literalinclude:: ../../plotpy/tests/items/test_curves.py
    :start-after: guitest:
 
 
@@ -86,7 +86,7 @@ Affine transforms example on 3000x3000 images (real-time transforms):
 Image rectangular filter
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: ../../plotpy/tests/features/test_imagefilter.py
+.. literalinclude:: ../../plotpy/tests/features/test_image_filter.py
    :start-after: guitest:
 
 
