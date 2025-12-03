@@ -11,23 +11,23 @@ The `PlotPy` package requires the following Python modules:
       - >=3.9, <4
       - Python programming language
     * - guidata
-      -  >= 3.11
+      - >= 3.13
       - Automatic GUI generation for easy dataset editing and display
     * - PythonQwt
-      -  >= 0.14
+      - >= 0.15
       - Qt plotting widgets for Python
     * - numpy
-      -  >= 1.22
+      - >= 1.22
       - Fundamental package for array computing in Python
     * - SciPy
-      -  >= 1.7.3
+      - >= 1.7.3
       - Fundamental algorithms for scientific computing in Python
     * - scikit-image
-      -  >= 0.19
+      - >= 0.19
       - Image processing in Python
     * - Pillow
       - 
-      - Python Imaging Library (Fork)
+      - Python Imaging Library (fork)
     * - tifffile
       - 
       - Read and write TIFF files
@@ -72,6 +72,9 @@ Optional modules for development:
     * - ruff
       - 
       - An extremely fast Python linter and code formatter, written in Rust.
+    * - pre-commit
+      - 
+      - A framework for managing and maintaining multi-language pre-commit hooks.
 
 Optional modules for building the documentation:
 

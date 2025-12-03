@@ -3,5 +3,4 @@ graft qtdesigner
 graft src
 graft colormaps
 include *.desktop
-include CHANGELOG.md
 include requirements.txt
