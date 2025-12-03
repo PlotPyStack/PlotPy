@@ -7,9 +7,9 @@ name: Build, install and test with PyQt5
 
 on:
   push:
-    branches: [ "master", "develop" ]
+    branches: [ "master", "develop", "release" ]
   pull_request:
-    branches: [ "master", "develop" ]
+    branches: [ "master", "develop", "release" ]
 
 jobs:
   build:
@@ -52,8 +52,25 @@ jobs:
            pip install -r deps.txt
            # Install PlotPy without dependencies
            pip install --no-deps .
+        elif [ "${{ github.ref_name }}" = "release" ]; then
+           pip uninstall -y guidata PythonQwt
+           cd ..
+           # Try cloning guidata from release, fallback to main or master
+           git clone --depth 1 --branch release https://github.com/PlotPyStack/guidata.git || git clone --depth 1 https://github.com/PlotPyStack/guidata.git || git clone --depth 1 --branch master https://github.com/PlotPyStack/guidata.git
+           # Try cloning PythonQwt from main or master
+           git clone --depth 1 https://github.com/PlotPyStack/PythonQwt.git || git clone --depth 1 --branch master https://github.com/PlotPyStack/PythonQwt.git
+           cd PlotPy
+           pip install -e ../guidata
+           pip install -e ../PythonQwt
+           # Install tomli for TOML parsing (safe if already present)
+           pip install tomli
+           # Extract dependencies and save to file, then install
+           python -c "import tomli; f=open('pyproject.toml','rb'); data=tomli.load(f); deps=[d for d in data['project']['dependencies'] if not any(p in d for p in ['guidata', 'PythonQwt'])]; open('deps.txt','w').write('\n'.join(deps))"
+           pip install -r deps.txt
+           # Install PlotPy without dependencies
+           pip install --no-deps .
         else
-           # Install from PyPI normally for main branch
+           # Install from PyPI normally for master branch
            pip install .[test]
         fi
     - name: Lint with Ruff

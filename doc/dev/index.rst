@@ -6,6 +6,7 @@ Development
    :caption: Contents:
 
    contribute
+   gitworkflow
    build
    guiqwt_to_plotpy
    v1_to_v2
