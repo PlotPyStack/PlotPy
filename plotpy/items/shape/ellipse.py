@@ -258,14 +258,52 @@ class EllipseShape(PolygonShape):
         painter.setRenderHint(QG.QPainter.Antialiasing)
         painter.setPen(pen)
         painter.setBrush(brush)
+
+        # Draw the axes lines connecting handles
         painter.drawLine(line0)
         painter.drawLine(line1)
-        painter.save()
-        painter.translate(rect.center())
-        painter.rotate(-line0.angle())
-        painter.translate(-rect.center())
-        painter.drawEllipse(rect.toRect())
-        painter.restore()
+
+        # For the ellipse, we need to handle non-uniform aspect ratios properly.
+        # The ellipse should have its semi-axes aligned with line0 and line1 directions.
+        # We use QPainterPath to draw an ellipse transformed to match the actual
+        # geometry.
+        center = line0.pointAt(0.5)
+
+        # Create the ellipse in a local coordinate system where line0 is horizontal
+        # and line1 is vertical, then transform it to match the actual geometry
+        path = QG.QPainterPath()
+
+        # Calculate the angle between line0 and line1 in pixel space
+        # (they should be 90° in data space but may differ after transformation)
+        angle0 = math.radians(line0.angle())
+        angle1 = math.radians(line1.angle())
+
+        # Semi-axes lengths
+        a = line0.length() / 2  # semi-major axis (along line0)
+        b = line1.length() / 2  # semi-minor axis (along line1)
+
+        # Draw ellipse using parametric form, accounting for non-perpendicular axes
+        # We sample points around the ellipse and create a path
+        n_points = 72  # Number of points for smooth ellipse
+        first_point = True
+        for i in range(n_points + 1):
+            t = 2 * math.pi * i / n_points
+            # Parametric ellipse with potentially non-perpendicular axes
+            # Point = center + cos(t) * a * dir0 + sin(t) * b * dir1
+            dx = math.cos(t) * a * math.cos(angle0) + math.sin(t) * b * math.cos(angle1)
+            dy = -math.cos(t) * a * math.sin(angle0) - math.sin(t) * b * math.sin(
+                angle1
+            )
+            px = center.x() + dx
+            py = center.y() + dy
+            if first_point:
+                path.moveTo(px, py)
+                first_point = False
+            else:
+                path.lineTo(px, py)
+        path.closeSubpath()
+        painter.drawPath(path)
+
         if symbol != QwtSymbol.NoSymbol:
             for i in range(points.size()):
                 symbol.drawSymbol(painter, points[i].toPoint())
