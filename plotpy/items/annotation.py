@@ -599,6 +599,14 @@ class AnnotatedSegment(AnnotatedShape):
         """Return segment position (middle) after applying transform matrix"""
         return compute_center(*self.get_transformed_coords(0, 1))
 
+    def get_tr_angle(self):
+        """Return segment angle with horizontal direction (0° to 180°),
+        after applying transform matrix"""
+        xcoords = self.get_transformed_coords(0, 1)
+        _x, yr1 = self.apply_transform_matrix(1.0, 1.0)
+        _x, yr2 = self.apply_transform_matrix(1.0, 2.0)
+        return (compute_angle(*xcoords, reverse=yr1 > yr2) + 180) % 180
+
     # ----AnnotatedShape API-----------------------------------------------------
     def set_label_position(self):
         """Set label position, for instance based on shape position"""
@@ -616,6 +624,7 @@ class AnnotatedSegment(AnnotatedShape):
             [
                 _("Center:") + " " + self.get_tr_center_str(),
                 _("Distance:") + " " + self.x_to_str(self.get_tr_length()),
+                _("Angle:") + f" {self.get_tr_angle():.1f}°",
             ]
         )
 
@@ -1108,12 +1117,12 @@ class AnnotatedObliqueRectangle(AnnotatedRectangle):
 
     # ----Public API-------------------------------------------------------------
     def get_tr_angle(self):
-        """Return X-diameter angle with horizontal direction,
+        """Return X-diameter angle with horizontal direction (0° to 180°),
         after applying transform matrix"""
         xcoords = self.get_transformed_coords(0, 1)
         _x, yr1 = self.apply_transform_matrix(1.0, 1.0)
         _x, yr2 = self.apply_transform_matrix(1.0, 2.0)
-        return (compute_angle(*xcoords, reverse=yr1 > yr2) + 90) % 180 - 90
+        return (compute_angle(*xcoords, reverse=yr1 > yr2) + 180) % 180
 
     def get_bounding_rect_coords(self) -> tuple[float, float, float, float]:
         """Return bounding rectangle coordinates (in plot coordinates)
@@ -1260,12 +1269,12 @@ class AnnotatedEllipse(AnnotatedShape):
         raise NotImplementedError
 
     def get_tr_angle(self):
-        """Return X-diameter angle with horizontal direction,
+        """Return X-diameter angle with horizontal direction (0° to 180°),
         after applying transform matrix"""
         xcoords = self.get_transformed_coords(0, 1)
         _x, yr1 = self.apply_transform_matrix(1.0, 1.0)
         _x, yr2 = self.apply_transform_matrix(1.0, 2.0)
-        return (compute_angle(*xcoords, reverse=yr1 > yr2) + 90) % 180 - 90
+        return (compute_angle(*xcoords, reverse=yr1 > yr2) + 180) % 180
 
     # ----AnnotatedShape API-----------------------------------------------------
     def set_label_position(self):

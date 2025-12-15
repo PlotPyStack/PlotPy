@@ -2,12 +2,21 @@
 
 ## PlotPy Version 2.8.3 ##
 
+💥 New features:
+
+* `AnnotatedSegment` new angle display:
+  * Added angle display in annotation label, showing the segment's angle relative to the horizontal direction (0° to 180°)
+  * This implements the equivalent feature submitted in [Pull Request #51](https://github.com/PlotPyStack/PlotPy/pull/51) by user @deuterium33
+
 🛠️ Bug fixes:
 
 * Fixed circle/ellipse shape drawing with non-uniform aspect ratios:
   * Axes were not perpendicular and did not connect to the ellipse edge when plot aspect ratio differed from 1.0
   * Now uses parametric ellipse drawing that correctly handles non-perpendicular axes in pixel space
   * The ellipse properly passes through all four handle points regardless of aspect ratio or rotation
+* Fixed angle display range for `AnnotatedObliqueRectangle` and `AnnotatedEllipse`:
+  * Angle is now displayed in the 0° to 180° range instead of -90° to 90° (the original implementation was also displaying 0° at vertical orientation -additionally to horizontal orientation- which was counter-intuitive)
+  * This provides a more intuitive and consistent angle representation
 
 ## PlotPy Version 2.8.2 (2025-11-10) ##
 
