@@ -1,5 +1,14 @@
 # Version 2.8 #
 
+## PlotPy Version 2.8.3 ##
+
+🛠️ Bug fixes:
+
+* Fixed circle/ellipse shape drawing with non-uniform aspect ratios:
+  * Axes were not perpendicular and did not connect to the ellipse edge when plot aspect ratio differed from 1.0
+  * Now uses parametric ellipse drawing that correctly handles non-perpendicular axes in pixel space
+  * The ellipse properly passes through all four handle points regardless of aspect ratio or rotation
+
 ## PlotPy Version 2.8.2 (2025-11-10) ##
 
 🛠️ Bug fixes:
