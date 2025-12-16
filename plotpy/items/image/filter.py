@@ -51,11 +51,26 @@ if TYPE_CHECKING:
 # Image with custom X, Y axes
 # ==============================================================================
 def to_bins(x):
-    """Convert point center to point bounds"""
+    """Convert point center to point bounds
+
+    Args:
+        x: 1D array of point centers
+
+    Returns:
+        1D array of bin edges (length = len(x) + 1)
+
+    Note:
+        When x has only 1 element, we assume a bin width of 1.0 centered on the point.
+    """
     bx = np.zeros((x.shape[0] + 1,), float)
-    bx[1:-1] = (x[:-1] + x[1:]) / 2
-    bx[0] = x[0] - (x[1] - x[0]) / 2
-    bx[-1] = x[-1] + (x[-1] - x[-2]) / 2
+    if x.shape[0] == 1:
+        # Single point: assume bin width of 1.0 centered on the point
+        bx[0] = x[0] - 0.5
+        bx[1] = x[0] + 0.5
+    else:
+        bx[1:-1] = (x[:-1] + x[1:]) / 2
+        bx[0] = x[0] - (x[1] - x[0]) / 2
+        bx[-1] = x[-1] + (x[-1] - x[-2]) / 2
     return bx
 
 

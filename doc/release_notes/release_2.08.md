@@ -10,6 +10,9 @@
 
 🛠️ Bug fixes:
 
+* Fixed `IndexError` when displaying images with a single row or column (e.g., SIF files with shape `(1, N)`):
+  * The `to_bins()` function now handles single-element coordinate arrays by assuming a bin width of 1.0 centered on the point
+  * Previously, loading such images in DataLab caused an `IndexError: index 1 is out of bounds for axis 0 with size 1`
 * Fixed circle/ellipse shape drawing with non-uniform aspect ratios:
   * Axes were not perpendicular and did not connect to the ellipse edge when plot aspect ratio differed from 1.0
   * Now uses parametric ellipse drawing that correctly handles non-perpendicular axes in pixel space
