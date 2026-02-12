@@ -1,5 +1,9 @@
 # Version 2.8 #
 
+## PlotPy Version 2.8.4 ##
+
+Added official support for Python 3.14
+
 ## PlotPy Version 2.8.3 ##
 
 💥 New features:
