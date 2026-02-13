@@ -58,7 +58,7 @@ plotpy-benchmarks = "plotpy.tests.benchmarks:run"
 
 [project.optional-dependencies]
 qt = ["PyQt5>5.15.5"]
-dev = ["build", "babel", "Coverage", "Cython>=3.0", "pylint", "ruff", "pre-commit"]
+dev = ["build", "babel", "Coverage", "Cython>=3.0", "pylint", "ruff", "pre-commit", "setuptools", "wheel"]
 doc = [
     "sphinx",
     "myst_parser",
@@ -82,7 +82,7 @@ addopts = "plotpy --import-mode=importlib"
 # addopts = "plotpy --import-mode=importlib --show-windows"  # Disable offscreen mode
 
 [tool.ruff]
-exclude = [".git", ".vscode", "build", "dist"]
+exclude = [".git", ".vscode", "build", "dist","venv*",".venv*"]
 line-length = 88                               # Same as Black.
 indent-width = 4                               # Same as Black.
 target-version = "py39"                        # Assume Python 3.9.
