@@ -67,8 +67,8 @@ Compatibility table:
 
 | PlotPy version | PyQt5 | PyQt6 | PySide2 | PySide6 |
 |----------------|-------|-------|---------|---------|
-| 2.0-2.5        | ✅    | ⚠️    | ❌     | ⚠️      |
-| Latest         | ✅    | ✅    | ❌     | ✅      |
+| 2.0-2.5        | ✅    | ⚠️    | ❌      | ⚠️      |
+| Latest         | ✅    | ✅    | ❌      | ⚠️      |
 
 ### Other dependencies and installation
 
