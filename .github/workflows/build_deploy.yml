@@ -22,7 +22,7 @@ jobs:
           pip install babel
 
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.21.2
+        uses: pypa/cibuildwheel@v3.3.1
         env:
           CIBW_BEFORE_BUILD: pip install babel && pybabel compile -d plotpy/locale -D plotpy
 
