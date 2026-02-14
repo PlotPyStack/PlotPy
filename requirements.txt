@@ -6,6 +6,7 @@ PythonQwt >= 0.15
 SciPy >= 1.7.3
 babel
 build
+setuptools
 guidata >= 3.13
 myst_parser
 numpy >= 1.22
