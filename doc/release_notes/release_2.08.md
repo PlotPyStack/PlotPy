@@ -1,6 +1,32 @@
 # Version 2.8 #
 
-## PlotPy Version 2.8.3 ##
+## PlotPy Version 2.8.4 (2026-02-14) ##
+
+💥 New features:
+
+* Added official support for Python 3.14
+
+🛠️ Bug fixes:
+
+* Fixed PySide6 compatibility issues causing segfaults in the test suite:
+  * Use `object` instead of C++ type strings (e.g., `"QMouseEvent"`, `"QEvent"`, `"QPointF"`) in `Signal` declarations — PySide6 segfaults with C++ type name strings
+  * Check QObject validity via `is_qobject_valid()` before accessing widgets in `__del__`, `closeEvent`, and panel close operations — PySide6 segfaults on deleted C++ objects instead of raising `RuntimeError`
+  * Restructure `BaseSyncPlot.__init__` to defer widget operations until after Qt `__init__` completes — PySide6 requires `__init__` to have fully completed before the widget can be used as a parent
+  * Replace deprecated `exec_()` calls with `exec()`
+* Fixed `test_multiline_tool` failing with PyQt6 due to smaller canvas size:
+  * The spiral test data started at `t=0`, placing the first two points so close together that they mapped to the same pixel on PyQt6's smaller default canvas
+  * Start the spiral at `t=2π` to ensure sufficient pixel spacing between consecutive points
+* Fixed pytest running all tests when selecting a single test from VS Code:
+  * Move `plotpy` from `addopts` to `testpaths` in `[tool.pytest.ini_options]`
+
+🔧 Other changes:
+
+* Add missing `setuptools` to `requirements.txt` (dev)
+* Update GitHub Actions to use latest artifact upload and download versions
+* Update `cibuildwheel` version to v3.3.1 for improved wheel building
+* Add `.venv*` to `.gitignore` to exclude virtual environment files
+
+## PlotPy Version 2.8.3 (2025-12-18) ##
 
 💥 New features:
 

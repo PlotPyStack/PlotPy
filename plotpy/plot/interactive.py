@@ -19,7 +19,7 @@ import guidata
 import numpy as np
 from guidata.configtools import get_icon
 from guidata.env import execenv
-from guidata.qthelpers import win32_fix_title_bar_background
+from guidata.qthelpers import is_qobject_valid, win32_fix_title_bar_background
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
@@ -94,10 +94,9 @@ class Window(QW.QMainWindow):
         if _figures.pop(figure_title) == _current_fig:
             _current_fig = None
             _current_axes = None
-        self.itemlist.close()
-        self.contrast.close()
-        self.xcsw.close()
-        self.ycsw.close()
+        for panel in (self.itemlist, self.contrast, self.xcsw, self.ycsw):
+            if is_qobject_valid(panel):
+                panel.close()
         event.accept()
 
     def add_plot(self, i, j, plot):

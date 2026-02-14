@@ -1266,7 +1266,7 @@ def edit_curve_data(item: CurveItem) -> None:
 
     dialog = ArrayEditor(item.plot())
     dialog.setup_and_check(data)
-    if dialog.exec_():
+    if dialog.exec():
         if data.shape[1] > 2:
             if data.shape[1] == 3:
                 x, y, tmp = data.T

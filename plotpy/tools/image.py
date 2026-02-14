@@ -1372,4 +1372,4 @@ def edit_image_data(item) -> None:
     """Edit image item data in array editor"""
     dialog = ArrayEditor(item.plot())
     dialog.setup_and_check(item.data)
-    dialog.exec_()
+    dialog.exec()

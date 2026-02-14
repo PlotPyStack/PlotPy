@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
 from guidata.configtools import get_icon
-from guidata.qthelpers import win32_fix_title_bar_background
+from guidata.qthelpers import is_qobject_valid, win32_fix_title_bar_background
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
@@ -827,7 +827,9 @@ class PlotWindow(QW.QMainWindow, AbstractPlotDialogWindow, metaclass=PlotWindowM
         # parent widget: otherwise, this panel will stay open after the main
         # window has been closed which is not the expected behavior)
         for panel in self.manager.panels:
-            self.manager.get_panel(panel).close()
+            panel_widget = self.manager.get_panel(panel)
+            if is_qobject_valid(panel_widget):
+                panel_widget.close()
         QW.QMainWindow.closeEvent(self, event)
 
 
@@ -903,16 +905,30 @@ class BaseSyncPlot:
     ) -> None:
         self.manager = PlotManager(None)
         self.manager.set_main(self)
-        self.subplotwidget = SubplotWidget(self.manager, parent=self, options=options)
+        # Note: parent is not set here and widget operations on `self` are
+        # deferred to _finalize_init() because PySide6 requires the subclass's
+        # __init__ to have fully completed before widget methods can be called.
+        self.subplotwidget = SubplotWidget(self.manager, parent=None, options=options)
+        self._toolbar_visible = toolbar
+        self.auto_tools = auto_tools
+        self._rescale_timer: QC.QTimer | None = None
+        self._init_title = title
+        self._init_icon = icon
+        self._init_size = size
+
+    def _finalize_init(self) -> None:
+        """Finalize initialization after Qt widget __init__ has completed.
+
+        This is called by subclasses in their __init__ after calling both
+        QMainWindow/QDialog.__init__ and BaseSyncPlot.__init__.
+        """
         self.toolbar = QW.QToolBar(_("Tools"), self)
-        self.toolbar.setVisible(toolbar)
+        self.toolbar.setVisible(self._toolbar_visible)
         self.manager.add_toolbar(self.toolbar, "default")
         self.toolbar.setMovable(True)
         self.toolbar.setFloatable(True)
-        self.auto_tools = auto_tools
-        self._rescale_timer: QC.QTimer | None = None
-        set_widget_title_icon(self, title, icon, size)
-        # Note: setup_layout() is called by subclasses after Qt widget initialization
+        set_widget_title_icon(self, self._init_title, self._init_icon, self._init_size)
+        # Note: setup_layout() is called by subclasses after _finalize_init()
 
     def setup_layout(self) -> None:
         """Setup the layout - to be implemented by subclasses"""
@@ -1048,8 +1064,9 @@ class SyncPlotWindow(QW.QMainWindow, BaseSyncPlot):
     ) -> None:
         self.subplotwidget: SubplotWidget
         self.toolbar: QW.QToolBar
-        QW.QMainWindow.__init__(self, parent)
         BaseSyncPlot.__init__(self, toolbar, options, auto_tools, title, icon, size)
+        QW.QMainWindow.__init__(self, parent)
+        self._finalize_init()
         self.setup_layout()
 
     def showEvent(self, event):  # pylint: disable=C0103
@@ -1107,8 +1124,9 @@ class SyncPlotDialog(QW.QDialog, BaseSyncPlot):
     ) -> None:
         self.subplotwidget: SubplotWidget
         self.toolbar: QW.QToolBar
-        QW.QDialog.__init__(self, parent)
         BaseSyncPlot.__init__(self, toolbar, options, auto_tools, title, icon, size)
+        QW.QDialog.__init__(self, parent)
+        self._finalize_init()
         self.setup_layout()
         self.setWindowFlags(QC.Qt.Window)
 

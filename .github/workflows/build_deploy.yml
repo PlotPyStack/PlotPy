@@ -11,8 +11,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        # macos-13 is an intel runner, macos-14 is apple silicon
-        os: [ubuntu-latest, windows-latest, macos-13, macos-14]
+        os: [ubuntu-latest, windows-latest, macos-14, macos-15]
 
     steps:
       - uses: actions/checkout@v4
@@ -23,11 +22,11 @@ jobs:
           pip install babel
 
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.21.2
+        uses: pypa/cibuildwheel@v3.3.1
         env:
           CIBW_BEFORE_BUILD: pip install babel && pybabel compile -d plotpy/locale -D plotpy
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: cibw-wheels-${{ matrix.os }}-${{ strategy.job-index }}
           path: ./wheelhouse/*.whl
@@ -49,7 +48,7 @@ jobs:
       - name: Build sdist
         run: pipx run build --sdist
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: cibw-sdist
           path: dist/*.tar.gz
@@ -62,7 +61,7 @@ jobs:
       id-token: write
     if: github.event_name == 'release' && github.event.action == 'published'
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           # unpacks all CIBW artifacts into dist/
           pattern: cibw-*
@@ -71,4 +70,5 @@ jobs:
 
       - uses: pypa/gh-action-pypi-publish@release/v1
         with:
+          attestations: false
           password: ${{ secrets.PYPI_API_TOKEN }}

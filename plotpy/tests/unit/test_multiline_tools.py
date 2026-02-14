@@ -60,7 +60,10 @@ def test_polygon_tool():
 def test_multiline_tool():
     """Test the multi line tool."""
     n = 100
-    t = np.linspace(0, np.pi * 10, n)
+    # Start from 2*pi to skip the degenerate center of the spiral where adjacent
+    # points are too close and may map to the same pixel on small canvases (this
+    # caused the test to fail with PyQt6 due to a smaller default canvas size).
+    t = np.linspace(2 * np.pi, np.pi * 10, n)
     x_arr = t * np.cos(t) / n + 0.5
     y_arr = t * np.sin(t) / n + 0.5
     __generic_polyline_tool_test(MultiLineTool, np.array([x_arr, y_arr]).T)

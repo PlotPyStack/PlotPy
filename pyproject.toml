@@ -26,6 +26,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Scientific/Engineering",
     "Topic :: Scientific/Engineering :: Image Processing",
     "Topic :: Scientific/Engineering :: Human Machine Interfaces",
@@ -57,7 +58,7 @@ plotpy-benchmarks = "plotpy.tests.benchmarks:run"
 
 [project.optional-dependencies]
 qt = ["PyQt5>5.15.5"]
-dev = ["build", "babel", "Coverage", "Cython>=3.0", "pylint", "ruff", "pre-commit"]
+dev = ["build", "babel", "Coverage", "Cython>=3.0", "pylint", "ruff", "pre-commit", "setuptools", "wheel"]
 doc = [
     "sphinx",
     "myst_parser",
@@ -77,11 +78,12 @@ include = ["plotpy*"]
 version = { attr = "plotpy.__version__" }
 
 [tool.pytest.ini_options]
-addopts = "plotpy --import-mode=importlib"
-# addopts = "plotpy --import-mode=importlib --show-windows"  # Disable offscreen mode
+addopts = "--import-mode=importlib"
+testpaths = ["plotpy"]
+# addopts = "--import-mode=importlib --show-windows"  # Disable offscreen mode
 
 [tool.ruff]
-exclude = [".git", ".vscode", "build", "dist"]
+exclude = [".git", ".vscode", "build", "dist","venv*",".venv*"]
 line-length = 88                               # Same as Black.
 indent-width = 4                               # Same as Black.
 target-version = "py39"                        # Assume Python 3.9.
