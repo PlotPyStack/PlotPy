@@ -117,5 +117,5 @@ line-ending = "auto"              # Like Black, automatically detect the appropr
 convention = "google"
 
 [tool.cibuildwheel]
-build = ["cp39-*", "cp310-*", "cp311-*", "cp312-*", "cp313-*"]
+build = ["cp39-*", "cp310-*", "cp311-*", "cp312-*", "cp313-*", "cp314-*"]
 skip = ["*-manylinux_i686", "*-musllinux*"]
