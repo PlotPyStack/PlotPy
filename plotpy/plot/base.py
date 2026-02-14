@@ -27,6 +27,7 @@ from typing import TYPE_CHECKING, Any
 import numpy as np
 import qwt
 from guidata.configtools import get_font
+from guidata.qthelpers import is_qobject_valid
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
@@ -447,18 +448,16 @@ class BasePlot(qwt.QwtPlot):
         # Sometimes, an obscure exception happens when we quit an application
         # because if we don't remove the eventFilter it can still be called
         # after the filter object has been destroyed by Python.
+        # Note: PySide6 segfaults instead of raising RuntimeError when accessing
+        # a deleted C++ object, so we must check validity before calling methods.
+        if not is_qobject_valid(self):
+            return
         canvas: qwt.QwtPlotCanvas = self.canvas()
-        if canvas:
+        if canvas and is_qobject_valid(canvas) and is_qobject_valid(self.filter):
             try:
                 canvas.removeEventFilter(self.filter)
-            except RuntimeError as exc:
-                # Depending on which widget owns the plot,
-                # Qt may have already deleted the canvas when
-                # the plot is deleted.
-                if "C++ object" not in str(exc):
-                    raise
-            except ValueError:
-                # This happens when object has already been deleted
+            except (RuntimeError, ValueError):
+                # Widget/filter may have already been deleted
                 pass
 
     def update_color_mode(self) -> None:

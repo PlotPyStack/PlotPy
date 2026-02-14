@@ -416,4 +416,4 @@ if __name__ == "__main__":
     #    win.showMaximized()
     win.resize(800, 400)
     win.show()
-    app.exec_()
+    app.exec()

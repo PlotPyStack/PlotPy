@@ -727,7 +727,7 @@ class ClickHandler(QC.QObject):
     """
 
     #: Signal emitted by ClickHandler on mouse click
-    SIG_CLICK_EVENT = QC.Signal(object, "QEvent")
+    SIG_CLICK_EVENT = QC.Signal(object, object)
 
     def __init__(
         self,
@@ -1134,16 +1134,16 @@ class QtDragHandler(DragHandler):
     """Class to handle drag events using Qt signals."""
 
     #: Signal emitted by QtDragHandler when starting tracking
-    SIG_START_TRACKING = QC.Signal(object, "QMouseEvent")
+    SIG_START_TRACKING = QC.Signal(object, object)
 
     #: Signal emitted by QtDragHandler when stopping tracking and not moving
-    SIG_STOP_NOT_MOVING = QC.Signal(object, "QMouseEvent")
+    SIG_STOP_NOT_MOVING = QC.Signal(object, object)
 
     #: Signal emitted by QtDragHandler when stopping tracking and moving
-    SIG_STOP_MOVING = QC.Signal(object, "QMouseEvent")
+    SIG_STOP_MOVING = QC.Signal(object, object)
 
     #: Signal emitted by QtDragHandler when moving
-    SIG_MOVE = QC.Signal(object, "QMouseEvent")
+    SIG_MOVE = QC.Signal(object, object)
 
     def start_tracking(self, filter: StatefulEventFilter, event: QMouseEvent) -> None:
         """Starts tracking the drag event.
@@ -1636,7 +1636,7 @@ class RectangularSelectionHandler(DragHandler):
     """
 
     #: Signal emitted by RectangularSelectionHandler when ending selection
-    SIG_END_RECT = QC.Signal(object, "QPointF", "QPointF")
+    SIG_END_RECT = QC.Signal(object, object, object)
 
     def __init__(
         self,
