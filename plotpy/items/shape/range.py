@@ -387,6 +387,37 @@ class XRangeSelection(BaseRangeSelection):
         # Draw delta label
         self._draw_delta_label(painter, rct)
 
+    def _delta_label_rect(self) -> QC.QRectF:
+        """Compute the bounding rectangle of the delta label in canvas coordinates.
+
+        Returns:
+            Label rectangle, or empty QRectF if unavailable.
+        """
+        plot: BasePlot = self.plot()
+        if plot is None:
+            return QC.QRectF()
+        delta = abs(self._max - self._min)
+        if plot.get_axis_scale(self.xAxis()) == "datetime":
+            label_text = plot.format_coordinate_value(delta, self.xAxis())
+        else:
+            label_text = f"\u0394x = {delta:g}"
+        text = QwtText(label_text)
+        text_style = TextStyleParam(_("Text"))
+        text_style.read_config(CONF, "plot", "marker/cursor/text")
+        text_style.update_text(text)
+        text_size = text.textSize(text.font())
+        canvas_rct = QC.QRectF(plot.canvas().contentsRect())
+        x0 = plot.transform(self.xAxis(), self._min)
+        x1 = plot.transform(self.xAxis(), self._max)
+        center_x = (x0 + x1) / 2
+        label_y = canvas_rct.top() + self._label_y_frac * canvas_rct.height()
+        return QC.QRectF(
+            center_x - text_size.width() / 2,
+            label_y - text_size.height() / 2,
+            text_size.width(),
+            text_size.height(),
+        )
+
     def _draw_delta_label(self, painter: QPainter, rct: QC.QRectF) -> None:
         """Draw the delta-x label at the horizontal center of the range.
 
@@ -458,11 +489,13 @@ class XRangeSelection(BaseRangeSelection):
         dist = z.min()
         handle = z.argmin()
         inside = bool(x0 < x < x1)
-        # Handle 3: Ctrl+click near the label (vertical drag)
+        # Handle 3: Ctrl+click on the delta label (vertical drag)
         ctrl = bool(QG.QGuiApplication.keyboardModifiers() & QC.Qt.ControlModifier)
-        if ctrl and inside:
-            handle = 3
-            dist = 0.0
+        if ctrl:
+            label_rect = self._delta_label_rect()
+            if not label_rect.isEmpty() and label_rect.contains(pos):
+                handle = 3
+                dist = 0.0
         return dist, handle, inside, None
 
     def move_local_point_to(self, handle: int, pos: QPointF, ctrl: bool = None) -> None:
