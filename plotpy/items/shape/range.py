@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Range selection shape items."""
 
 from __future__ import annotations
 
@@ -11,10 +12,12 @@ from guidata.dataset import update_dataset
 from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
+from qwt.text import QwtText
 
 from plotpy.config import CONF, _
 from plotpy.coords import canvas_to_axes
 from plotpy.items.shape.base import AbstractShape
+from plotpy.styles.base import TextStyleParam
 from plotpy.styles.shape import RangeShapeParam
 
 if TYPE_CHECKING:
@@ -264,6 +267,62 @@ class XRangeSelection(BaseRangeSelection):
 
     _icon_name = "xrange.png"
 
+    def __init__(
+        self,
+        _min: float | None = None,
+        _max: float | None = None,
+        shapeparam: RangeShapeParam | None = None,
+    ) -> None:
+        super().__init__(_min, _max, shapeparam)
+        self._label_y_frac: float = 0.5
+
+    def __reduce__(self) -> tuple[type, tuple, tuple]:
+        """Return state information for pickling"""
+        self.shapeparam.update_param(self)
+        state = (self.shapeparam, self._min, self._max, self._label_y_frac)
+        return (self.__class__, (), state)
+
+    def __setstate__(self, state: tuple) -> None:
+        """Restore state information from pickling"""
+        defaults = (None, 0, 0, 0.5)
+        state = state + defaults[len(state) :]
+        self.shapeparam, self._min, self._max, self._label_y_frac = state
+        self.shapeparam.update_item(self)
+
+    def serialize(
+        self,
+        writer: guidata.io.HDF5Writer | guidata.io.INIWriter | guidata.io.JSONWriter,
+    ) -> None:
+        """Serialize object to HDF5 writer
+
+        Args:
+            writer: HDF5, INI or JSON writer
+        """
+        self.shapeparam.update_param(self)
+        writer.write(self.shapeparam, group_name="shapeparam")
+        writer.write(self._min, group_name="min")
+        writer.write(self._max, group_name="max")
+        writer.write(self._label_y_frac, group_name="label_y_frac")
+
+    def deserialize(
+        self,
+        reader: guidata.io.HDF5Reader | guidata.io.INIReader | guidata.io.JSONReader,
+    ) -> None:
+        """Deserialize object from HDF5 reader
+
+        Args:
+            reader: HDF5, INI or JSON reader
+        """
+        self._min = reader.read("min")
+        self._max = reader.read("max")
+        self.shapeparam = RangeShapeParam(_("Range"), icon="xrange.png")
+        reader.read("shapeparam", instance=self.shapeparam)
+        self.shapeparam.update_item(self)
+        try:
+            self._label_y_frac = reader.read("label_y_frac")
+        except (KeyError, ValueError):
+            pass
+
     def get_handles_pos(self) -> tuple[float, float, float]:
         """Return the handles position
 
@@ -325,6 +384,52 @@ class XRangeSelection(BaseRangeSelection):
             sym.drawSymbol(painter, QC.QPointF(x0, y))
             sym.drawSymbol(painter, QC.QPointF(x1, y))
 
+        # Draw delta label
+        self._draw_delta_label(painter, rct)
+
+    def _draw_delta_label(self, painter: QPainter, rct: QC.QRectF) -> None:
+        """Draw the delta-x label at the horizontal center of the range.
+
+        The label is styled like marker labels (QwtText with font, color,
+        and semi-transparent background).
+
+        Args:
+            painter: Painter
+            rct: Rectangle of the range selection in canvas coordinates
+        """
+        plot: BasePlot = self.plot()
+        if plot is None:
+            return
+        delta = abs(self._max - self._min)
+        if plot.get_axis_scale(self.xAxis()) == "datetime":
+            label_text = plot.format_coordinate_value(delta, self.xAxis())
+        else:
+            label_text = f"\u0394x = {delta:g}"
+
+        text = QwtText(label_text)
+        # Use marker cursor text style so the label matches Marker labels
+        text_style = TextStyleParam(_("Text"))
+        text_style.read_config(CONF, "plot", "marker/cursor/text")
+        text_style.update_text(text)
+
+        text_size = text.textSize(painter.font())
+        canvas_rct = QC.QRectF(plot.canvas().contentsRect())
+        label_y = canvas_rct.top() + self._label_y_frac * canvas_rct.height()
+        label_x = rct.center().x() - text_size.width() / 2
+        label_rect = QC.QRectF(
+            label_x,
+            label_y - text_size.height() / 2,
+            text_size.width(),
+            text_size.height(),
+        )
+        painter.save()
+        painter.translate(label_rect.topLeft())
+        text.draw(
+            painter,
+            QC.QRectF(0, 0, label_rect.width(), label_rect.height()),
+        )
+        painter.restore()
+
     def hit_test(self, pos: QPointF) -> tuple[float, float, bool, None]:
         """Return a tuple (distance, attach point, inside, other_object)
 
@@ -353,6 +458,11 @@ class XRangeSelection(BaseRangeSelection):
         dist = z.min()
         handle = z.argmin()
         inside = bool(x0 < x < x1)
+        # Handle 3: Ctrl+click near the label (vertical drag)
+        ctrl = bool(QG.QGuiApplication.keyboardModifiers() & QC.Qt.ControlModifier)
+        if ctrl and inside:
+            handle = 3
+            dist = 0.0
         return dist, handle, inside, None
 
     def move_local_point_to(self, handle: int, pos: QPointF, ctrl: bool = None) -> None:
@@ -363,6 +473,15 @@ class XRangeSelection(BaseRangeSelection):
             pos: Position
             ctrl: True if <Ctrl> button is being pressed, False otherwise
         """
+        if handle == 3:
+            # Vertical label drag
+            plot = self.plot()
+            if plot is not None:
+                canvas = QC.QRectF(plot.canvas().contentsRect())
+                frac = (pos.y() - canvas.top()) / canvas.height()
+                self._label_y_frac = max(0.0, min(1.0, frac))
+                self.plot().replot()
+            return
         x, _y = canvas_to_axes(self, pos)
         self.move_point_to(handle, (x, 0), ctrl)
 

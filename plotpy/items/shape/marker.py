@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Marker shape item."""
 
 from __future__ import annotations
 
@@ -9,7 +10,10 @@ from typing import TYPE_CHECKING, Generator
 from guidata.dataset import update_dataset
 from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
+from qtpy.QtCore import QPointF, QRectF, QSizeF
+from qtpy.QtWidgets import QApplication
 from qwt import QwtPlotMarker
+from qwt.symbol import QwtSymbol
 
 from plotpy.config import CONF, _
 from plotpy.coords import canvas_to_axes
@@ -22,7 +26,6 @@ if TYPE_CHECKING:
 
     import guidata.io
     import qwt.scale_map
-    from qtpy.QtCore import QPointF, QRectF
     from qtpy.QtGui import QPainter
 
     from plotpy.interfaces import IItemType
@@ -93,17 +96,35 @@ class Marker(QwtPlotMarker):
             self.markerparam.read_config(CONF, "plot", "marker/cursor")
         else:
             self.markerparam = markerparam
+        self._label_forced_alignment: int | None = None
+        self._label_canvas_frac: float | None = None
         self.markerparam.update_item(self)
 
     def __reduce__(self) -> tuple[type, tuple, tuple]:
         """Return state information for pickling"""
         self.markerparam.update_param(self)
-        state = (self.markerparam, self.xValue(), self.yValue(), self.z())
+        state = (
+            self.markerparam,
+            self.xValue(),
+            self.yValue(),
+            self.z(),
+            self._label_forced_alignment,
+            self._label_canvas_frac,
+        )
         return (Marker, (), state)
 
     def __setstate__(self, state: tuple) -> None:
         """Restore state information from pickled state"""
-        self.markerparam, xvalue, yvalue, z = state
+        defaults = (None, 0, 0, 0, None, None)
+        state = state + defaults[len(state) :]
+        (
+            self.markerparam,
+            xvalue,
+            yvalue,
+            z,
+            self._label_forced_alignment,
+            self._label_canvas_frac,
+        ) = state
         self.setXValue(xvalue)
         self.setYValue(yvalue)
         self.setZ(z)
@@ -123,6 +144,12 @@ class Marker(QwtPlotMarker):
         writer.write(self.xValue(), group_name="x")
         writer.write(self.yValue(), group_name="y")
         writer.write(self.z(), group_name="z")
+        if self._label_forced_alignment is not None:
+            writer.write(
+                self._label_forced_alignment, group_name="label_forced_alignment"
+            )
+        if self._label_canvas_frac is not None:
+            writer.write(self._label_canvas_frac, group_name="label_canvas_frac")
 
     def deserialize(
         self,
@@ -139,6 +166,14 @@ class Marker(QwtPlotMarker):
         self.setXValue(reader.read("x"))
         self.setYValue(reader.read("y"))
         self.setZ(reader.read("z"))
+        try:
+            self._label_forced_alignment = reader.read("label_forced_alignment")
+        except (KeyError, ValueError):
+            pass
+        try:
+            self._label_canvas_frac = reader.read("label_canvas_frac")
+        except (KeyError, ValueError):
+            pass
 
     # ------QwtPlotItem API------------------------------------------------------
     def draw(
@@ -162,6 +197,68 @@ class Marker(QwtPlotMarker):
         self.update_label()
         with no_symbol_context(self, not self.can_resize()):
             QwtPlotMarker.draw(self, painter, xMap, yMap, canvasRect)
+
+    def drawLabel(self, painter: QPainter, canvasRect: QRectF, pos: QPointF) -> None:
+        """Draw the marker label, with custom positioning for VLine/HLine.
+
+        When the label has been manually positioned on a VLine or HLine marker,
+        it is drawn at a fixed fraction of the canvas dimension along the line,
+        so that it stays at the same screen position on zoom/pan.
+
+        Args:
+            painter: Painter
+            canvasRect: Contents rectangle of the canvas in painter coordinates
+            pos: Position of the marker, translated into widget coordinates
+        """
+        if not (
+            self._label_forced_alignment is not None
+            and self._label_canvas_frac is not None
+            and (self.is_vertical() or self.is_horizontal())
+        ):
+            super().drawLabel(painter, canvasRect, pos)
+            return
+
+        label = self.label()
+        if label.isEmpty():
+            return
+
+        # Compute custom position along the line
+        if self.is_vertical():
+            lpos = QPointF(
+                pos.x(),
+                canvasRect.top() + self._label_canvas_frac * canvasRect.height(),
+            )
+        else:
+            lpos = QPointF(
+                canvasRect.left() + self._label_canvas_frac * canvasRect.width(),
+                pos.y(),
+            )
+
+        align = self._label_forced_alignment
+        align_pos = QPointF(lpos)
+        pw2 = self.linePen().widthF() / 2.0
+        if pw2 == 0.0:
+            pw2 = 0.5
+        spacing = self.spacing()
+        text_size = label.textSize(painter.font())
+
+        if align & QC.Qt.AlignLeft:
+            align_pos.setX(align_pos.x() - (pw2 + spacing + text_size.width()))
+        elif align & QC.Qt.AlignRight:
+            align_pos.setX(align_pos.x() + pw2 + spacing)
+        else:
+            align_pos.setX(align_pos.x() - text_size.width() / 2)
+
+        if align & QC.Qt.AlignTop:
+            align_pos.setY(align_pos.y() - (pw2 + spacing + text_size.height()))
+        elif align & QC.Qt.AlignBottom:
+            align_pos.setY(align_pos.y() + pw2 + spacing)
+        else:
+            align_pos.setY(align_pos.y() - text_size.height() / 2)
+
+        painter.translate(align_pos.x(), align_pos.y())
+        text_rect = QRectF(0, 0, text_size.width(), text_size.height())
+        label.draw(painter, text_rect)
 
     # ------IBasePlotItem API----------------------------------------------------
     def get_icon_name(self) -> str:
@@ -319,6 +416,95 @@ class Marker(QwtPlotMarker):
         self.markerparam.update_item(self)
         self.invalidate_plot()
 
+    def _label_rect(self) -> QRectF:
+        """Compute the current label bounding rectangle in canvas coordinates.
+
+        This replicates the label positioning logic from QwtPlotMarker.drawLabel
+        (and our drawLabel override for VLine/HLine with forced alignment) so that
+        hit_test can detect Ctrl+clicks on the label.
+
+        Returns:
+            Label rectangle in canvas pixels, or empty QRectF if unavailable.
+        """
+        label = self.label()
+        if label.isEmpty():
+            return QRectF()
+        plot = self.plot()
+        if plot is None:
+            return QRectF()
+
+        canvas_rect = QRectF(plot.canvas().contentsRect())
+        mx = plot.transform(self.xAxis(), self.xValue())
+        my = plot.transform(self.yAxis(), self.yValue())
+        pos = QPointF(mx, my)
+
+        text_size = label.textSize(label.font())
+
+        # Custom positioning for manually positioned VLine/HLine
+        if (
+            self._label_forced_alignment is not None
+            and self._label_canvas_frac is not None
+            and (self.is_vertical() or self.is_horizontal())
+        ):
+            if self.is_vertical():
+                lpos = QPointF(
+                    pos.x(),
+                    canvas_rect.top() + self._label_canvas_frac * canvas_rect.height(),
+                )
+            else:
+                lpos = QPointF(
+                    canvas_rect.left() + self._label_canvas_frac * canvas_rect.width(),
+                    pos.y(),
+                )
+            align = self._label_forced_alignment
+            align_pos = QPointF(lpos)
+        else:
+            # Standard QwtPlotMarker.drawLabel positioning
+            align = self.labelAlignment()
+            align_pos = QPointF(pos)
+            if self.lineStyle() == QwtPlotMarker.VLine:
+                if align & QC.Qt.AlignTop:
+                    align_pos.setY(canvas_rect.top())
+                elif align & QC.Qt.AlignBottom:
+                    align_pos.setY(canvas_rect.bottom() - 1)
+                else:
+                    align_pos.setY(canvas_rect.center().y())
+            elif self.lineStyle() == QwtPlotMarker.HLine:
+                if align & QC.Qt.AlignLeft:
+                    align_pos.setX(canvas_rect.left())
+                elif align & QC.Qt.AlignRight:
+                    align_pos.setX(canvas_rect.right() - 1)
+                else:
+                    align_pos.setX(canvas_rect.center().x())
+
+        pw2 = self.linePen().widthF() / 2.0
+        if pw2 == 0.0:
+            pw2 = 0.5
+        spacing = self.spacing()
+        symbol_off = QSizeF(0, 0)
+        sym = self.symbol()
+        if sym is not None and sym.style() != QwtSymbol.NoSymbol:
+            symbol_off = QSizeF(sym.size()) + QSizeF(1, 1)
+            symbol_off /= 2
+        x_off = max(pw2, symbol_off.width())
+        y_off = max(pw2, symbol_off.height())
+
+        if align & QC.Qt.AlignLeft:
+            align_pos.setX(align_pos.x() - (x_off + spacing + text_size.width()))
+        elif align & QC.Qt.AlignRight:
+            align_pos.setX(align_pos.x() + x_off + spacing)
+        else:
+            align_pos.setX(align_pos.x() - text_size.width() / 2)
+
+        if align & QC.Qt.AlignTop:
+            align_pos.setY(align_pos.y() - (y_off + spacing + text_size.height()))
+        elif align & QC.Qt.AlignBottom:
+            align_pos.setY(align_pos.y() + y_off + spacing)
+        else:
+            align_pos.setY(align_pos.y() - text_size.height() / 2)
+
+        return QRectF(align_pos, text_size)
+
     def hit_test(self, pos: QPointF) -> tuple[float, float, bool, None]:
         """Return a tuple (distance, attach point, inside, other_object)
 
@@ -340,6 +526,14 @@ class Marker(QwtPlotMarker):
         """
         plot = self.plot()
         xc, yc = pos.x(), pos.y()
+
+        # Ctrl+click on label → handle=1 for label drag mode
+        ctrl_pressed = bool(QApplication.keyboardModifiers() & QC.Qt.ControlModifier)
+        if ctrl_pressed:
+            label_rect = self._label_rect()
+            if not label_rect.isEmpty() and label_rect.contains(pos):
+                return 0.0, 1, False, None
+
         x = plot.transform(self.xAxis(), self.xValue())
         y = plot.transform(self.yAxis(), self.yValue())
         ms = self.markerparam.markerstyle
@@ -349,12 +543,13 @@ class Marker(QwtPlotMarker):
         assert ms in list(MARKERSTYLES.values())
         if ms == "NoLine":
             return math.sqrt((x - xc) ** 2 + (y - yc) ** 2), 0, False, None
-        elif ms == "HLine":
+        if ms == "HLine":
             return math.sqrt((y - yc) ** 2), 0, False, None
-        elif ms == "VLine":
+        if ms == "VLine":
             return math.sqrt((x - xc) ** 2), 0, False, None
-        elif ms == "Cross":
+        if ms == "Cross":
             return math.sqrt(min((x - xc) ** 2, (y - yc) ** 2)), 0, False, None
+        return math.inf, 0, False, None
 
     def update_item_parameters(self) -> None:
         """Update item parameters (dataset) from object properties"""
@@ -394,8 +589,58 @@ class Marker(QwtPlotMarker):
             pos: Position
             ctrl: True if <Ctrl> button is being pressed, False otherwise
         """
+        if handle == 1 or ctrl:
+            self._move_label(pos)
+            return
         x, y = canvas_to_axes(self, pos)
         self.set_pos(x, y)
+
+    def _move_label(self, pos: QPointF) -> None:
+        """Reposition label based on mouse position while Ctrl is held.
+
+        For Cross/NoLine markers: rotates the label to the quadrant indicated
+        by the mouse position relative to the marker center.
+
+        For VLine/HLine markers: slides the label along the line at the
+        mouse position, on the side of the line indicated by the mouse.
+
+        Args:
+            pos: Current mouse position in canvas coordinates
+        """
+        plot = self.plot()
+        if plot is None:
+            return
+        mx = plot.transform(self.xAxis(), self.xValue())
+        my = plot.transform(self.yAxis(), self.yValue())
+        if self.is_vertical():
+            canvas = plot.canvas().contentsRect()
+            frac = (pos.y() - canvas.top()) / canvas.height()
+            self._label_canvas_frac = max(0.0, min(1.0, frac))
+            if pos.x() < mx:
+                self._label_forced_alignment = QC.Qt.AlignLeft | QC.Qt.AlignVCenter
+            else:
+                self._label_forced_alignment = QC.Qt.AlignRight | QC.Qt.AlignVCenter
+        elif self.is_horizontal():
+            canvas = plot.canvas().contentsRect()
+            frac = (pos.x() - canvas.left()) / canvas.width()
+            self._label_canvas_frac = max(0.0, min(1.0, frac))
+            if pos.y() < my:
+                self._label_forced_alignment = QC.Qt.AlignTop | QC.Qt.AlignHCenter
+            else:
+                self._label_forced_alignment = QC.Qt.AlignBottom | QC.Qt.AlignHCenter
+        else:
+            # Cross/NoLine: change quadrant only
+            if pos.x() < mx:
+                h_align = QC.Qt.AlignLeft
+            else:
+                h_align = QC.Qt.AlignRight
+            if pos.y() < my:
+                v_align = QC.Qt.AlignTop
+            else:
+                v_align = QC.Qt.AlignBottom
+            self._label_forced_alignment = h_align | v_align
+        self.setLabelAlignment(self._label_forced_alignment)
+        self.invalidate_plot()
 
     def move_local_shape(self, old_pos: QPointF, new_pos: QPointF) -> None:
         """Translate the shape such that old_pos becomes new_pos in canvas coordinates
@@ -549,6 +794,8 @@ class Marker(QwtPlotMarker):
         text = self.label()
         text.setText(label)
         self.setLabel(text)
+        if self._label_forced_alignment is not None:
+            return
         plot = self.plot()
         if plot is not None:
             xaxis = plot.axisScaleDiv(self.xAxis())
