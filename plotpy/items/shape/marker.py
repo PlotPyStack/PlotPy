@@ -108,7 +108,9 @@ class Marker(QwtPlotMarker):
             self.xValue(),
             self.yValue(),
             self.z(),
-            self._label_forced_alignment,
+            int(self._label_forced_alignment)
+            if self._label_forced_alignment is not None
+            else None,
             self._label_canvas_frac,
         )
         return (Marker, (), state)
@@ -129,6 +131,8 @@ class Marker(QwtPlotMarker):
         self.setYValue(yvalue)
         self.setZ(z)
         self.markerparam.update_item(self)
+        if self._label_forced_alignment is not None:
+            self.setLabelAlignment(self._label_forced_alignment)
 
     def serialize(
         self,
@@ -146,7 +150,8 @@ class Marker(QwtPlotMarker):
         writer.write(self.z(), group_name="z")
         if self._label_forced_alignment is not None:
             writer.write(
-                self._label_forced_alignment, group_name="label_forced_alignment"
+                int(self._label_forced_alignment),
+                group_name="label_forced_alignment",
             )
         if self._label_canvas_frac is not None:
             writer.write(self._label_canvas_frac, group_name="label_canvas_frac")
@@ -166,14 +171,11 @@ class Marker(QwtPlotMarker):
         self.setXValue(reader.read("x"))
         self.setYValue(reader.read("y"))
         self.setZ(reader.read("z"))
-        try:
-            self._label_forced_alignment = reader.read("label_forced_alignment")
-        except (KeyError, ValueError):
-            pass
-        try:
-            self._label_canvas_frac = reader.read("label_canvas_frac")
-        except (KeyError, ValueError):
-            pass
+        raw = reader.read("label_forced_alignment", default=None)
+        if raw is not None:
+            self._label_forced_alignment = int(raw)
+            self.setLabelAlignment(self._label_forced_alignment)
+        self._label_canvas_frac = reader.read("label_canvas_frac", default=None)
 
     # ------QwtPlotItem API------------------------------------------------------
     def draw(
@@ -617,17 +619,21 @@ class Marker(QwtPlotMarker):
             frac = (pos.y() - canvas.top()) / canvas.height()
             self._label_canvas_frac = max(0.0, min(1.0, frac))
             if pos.x() < mx:
-                self._label_forced_alignment = QC.Qt.AlignLeft | QC.Qt.AlignVCenter
+                self._label_forced_alignment = int(QC.Qt.AlignLeft | QC.Qt.AlignVCenter)
             else:
-                self._label_forced_alignment = QC.Qt.AlignRight | QC.Qt.AlignVCenter
+                self._label_forced_alignment = int(
+                    QC.Qt.AlignRight | QC.Qt.AlignVCenter
+                )
         elif self.is_horizontal():
             canvas = plot.canvas().contentsRect()
             frac = (pos.x() - canvas.left()) / canvas.width()
             self._label_canvas_frac = max(0.0, min(1.0, frac))
             if pos.y() < my:
-                self._label_forced_alignment = QC.Qt.AlignTop | QC.Qt.AlignHCenter
+                self._label_forced_alignment = int(QC.Qt.AlignTop | QC.Qt.AlignHCenter)
             else:
-                self._label_forced_alignment = QC.Qt.AlignBottom | QC.Qt.AlignHCenter
+                self._label_forced_alignment = int(
+                    QC.Qt.AlignBottom | QC.Qt.AlignHCenter
+                )
         else:
             # Cross/NoLine: change quadrant only
             if pos.x() < mx:
@@ -638,7 +644,7 @@ class Marker(QwtPlotMarker):
                 v_align = QC.Qt.AlignTop
             else:
                 v_align = QC.Qt.AlignBottom
-            self._label_forced_alignment = h_align | v_align
+            self._label_forced_alignment = int(h_align | v_align)
         self.setLabelAlignment(self._label_forced_alignment)
         self.invalidate_plot()
 

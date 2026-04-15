@@ -1594,14 +1594,14 @@ class ObjectHandler:
         if self.active is None:
             return
         self.unselection_pending = False
+        ctrl = event.modifiers() & QC.Qt.ControlModifier == QC.Qt.ControlModifier
         if self.rotate_inside:
             self.active.rotate_local_shape(self.last_pos, event.pos())
             self.undo_action = UndoRotatePoint(self.active, event.pos(), self.first_pos)
-        elif self.inside:
+        elif self.inside and not ctrl:
             self.active.move_local_shape(self.last_pos, event.pos())
             self.undo_action = UndoMoveObject(self.active, event.pos(), self.first_pos)
         else:
-            ctrl = event.modifiers() & QC.Qt.ControlModifier == QC.Qt.ControlModifier
             self.active.move_local_point_to(self.handle, event.pos(), ctrl)
             self.undo_action = UndoMovePoint(
                 self.active, self.first_pos, event.pos(), self.handle, ctrl

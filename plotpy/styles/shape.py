@@ -22,6 +22,7 @@ from guidata.dataset import (
 )
 from qtpy import QtGui as QG
 from qwt import QwtPlotMarker
+from qwt.text import QwtText
 
 from plotpy.config import _
 from plotpy.styles.base import (
@@ -363,6 +364,11 @@ class RangeShapeParam(DataSet):
     symbol = SymbolItem(_("Symbol (not selected)"))
     sel_symbol = SymbolItem(_("Symbol (selected)"))
     ___esymbol = EndGroup(_("Symbol"))
+    # ------------------------------------------------------------------ Text tab
+    ___text = BeginGroup(_("Text")).set_prop("display", icon="font.png")
+    text = TextStyleItem(_("Text (not selected)"))
+    sel_text = TextStyleItem(_("Text (selected)"))
+    ___etext = EndGroup(_("Text"))
     # ------------------------------------------------------------------ Fill tab
     ___fill = BeginGroup(_("Fill")).set_prop("display", icon="dense6pattern.png")
     fill = ColorItem(_("Fill color"))
@@ -388,6 +394,10 @@ class RangeShapeParam(DataSet):
         self.shade = obj.brush.color().alphaF()
         self.symbol.update_param(obj.symbol)
         self.sel_symbol.update_param(obj.sel_symbol)
+        if obj.label_text is not None:
+            self.text.update_param(obj.label_text)
+        if obj.sel_label_text is not None:
+            self.sel_text.update_param(obj.sel_label_text)
 
     def update_item(self, item: XRangeSelection) -> None:
         """Update object from parameters
@@ -403,3 +413,9 @@ class RangeShapeParam(DataSet):
         item.brush = QG.QBrush(col)
         item.symbol = self.symbol.build_symbol()
         item.sel_symbol = self.sel_symbol.build_symbol()
+        if item.label_text is None:
+            item.label_text = QwtText("")
+        self.text.update_text(item.label_text)
+        if item.sel_label_text is None:
+            item.sel_label_text = QwtText("")
+        self.sel_text.update_text(item.sel_label_text)
