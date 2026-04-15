@@ -74,6 +74,7 @@ class LevelsHistogram(BasePlot):
         self.param.read_config(CONF, "histogram", "curve")
 
         self.range = XRangeSelection(0, 1)
+        self.range.set_label_visible(False)
         self.range_mono_color = self.range.shapeparam.sel_line.color
         self.range_multi_color = CONF.get("histogram", "range/multi/color", "red")
 

@@ -67,8 +67,17 @@ class BaseRangeSelection(AbstractShape):
         self.sel_symbol = None
         self.label_text: QwtText | None = None
         self.sel_label_text: QwtText | None = None
+        self._show_label = True
         if self._min is not None and self._max is not None:
             self.shapeparam.update_item(self)  # creates all the above QObjects
+
+    def set_label_visible(self, state: bool) -> None:
+        """Set whether the delta label is drawn.
+
+        Args:
+            state: True to show the label, False to hide it
+        """
+        self._show_label = state
 
     def set_style(self, section: str, option: str) -> None:
         """Set style for this item
@@ -265,6 +274,8 @@ class BaseRangeSelection(AbstractShape):
             painter: Painter
             rct: Rectangle of the range selection in canvas coordinates
         """
+        if not self._show_label:
+            return
         plot: BasePlot = self.plot()
         if plot is None:
             return
