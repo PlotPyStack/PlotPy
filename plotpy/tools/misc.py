@@ -236,12 +236,11 @@ class HelpTool(CommandTool):
             """<b>Keyboard/mouse shortcuts:</b><br><br>
   - <u>single left-click</u>: item (curve, image, ...) selection<br>
   - <u>single right-click</u>: context-menu relative to selected item<br>
-  - <u>shift</u>: on-active-curve (or image) cursor (+ <u>control</u> to maintain
-cursor visible)<br>
-  - <u>shift + control</u>: on-active-curve cursor (+ <u>control</u> to maintain
-cursor visible)<br>
+  - <u>shift</u>: on-active-curve (or image) cursor<br>
+  - <u>shift + control</u>: on-active-curve cursor (maintained visible)<br>
   - <u>alt</u>: free cursor<br>
   - <u>left-click + mouse move</u>: move item (when available)<br>
+  - <u>control + left-click + mouse move</u>: move label on markers and range selections<br>
   - <u>middle-click + mouse move</u>: pan<br>
   - <u>right-click + mouse move</u>: zoom"""
         )

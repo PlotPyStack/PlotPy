@@ -67,6 +67,19 @@ class Marker(QwtPlotMarker):
 
         Marker class derives from QwtPlotMarker, which is a QwtPlotItem. That is
         why AbstractShape methods are re-implemented here.
+
+    **Label repositioning**
+
+    The marker label can be repositioned interactively by holding :kbd:`Ctrl`
+    and dragging:
+
+    * On **VLine** / **HLine** markers the label slides along the line and
+      switches side (left/right or top/bottom) depending on the mouse position
+      relative to the line.
+    * On **Cross** / **NoLine** markers the label snaps to the quadrant
+      indicated by the mouse position relative to the marker center.
+
+    The custom label position is persisted through serialization and pickling.
     """
 
     __implements__ = (IBasePlotItem,)

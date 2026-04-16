@@ -36,6 +36,18 @@ class BaseRangeSelection(AbstractShape):
         _min: Minimum value
         _max: Maximum value
         shapeparam: Shape parameters
+
+    **Interaction**
+
+    The range boundaries can be moved by dragging the left/right (or top/bottom)
+    handles. Dragging the center handle translates the whole range.
+
+    Holding :kbd:`Ctrl` while dragging repositions the delta label along the
+    secondary axis (vertically for an X-range, horizontally for a Y-range).
+    The label position is persisted through serialization and pickling.
+
+    The label text style is read from the cursor marker configuration
+    (``marker/cursor/text`` and ``marker/cursor/sel_text``).
     """
 
     _icon_name = ""
@@ -469,6 +481,9 @@ class BaseRangeSelection(AbstractShape):
 class XRangeSelection(BaseRangeSelection):
     """X range selection shape (horizontal)
 
+    Selects a horizontal range on the X axis. The delta label can be
+    repositioned vertically by holding :kbd:`Ctrl` while dragging.
+
     Args:
         _min: Minimum value
         _max: Maximum value
@@ -485,6 +500,9 @@ assert_interfaces_valid(XRangeSelection)
 
 class YRangeSelection(BaseRangeSelection):
     """Y range selection shape (vertical)
+
+    Selects a vertical range on the Y axis. The delta label can be
+    repositioned horizontally by holding :kbd:`Ctrl` while dragging.
 
     Args:
         _min: Minimum value
