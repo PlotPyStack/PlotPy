@@ -79,7 +79,7 @@ class BaseRangeSelection(AbstractShape):
         self.sel_symbol = None
         self.label_text: QwtText | None = None
         self.sel_label_text: QwtText | None = None
-        self._show_label = True
+        self._show_label = False
         if self._min is not None and self._max is not None:
             self.shapeparam.update_item(self)  # creates all the above QObjects
 
@@ -125,14 +125,22 @@ class BaseRangeSelection(AbstractShape):
     def __reduce__(self) -> tuple[type, tuple, tuple]:
         """Return state information for pickling"""
         self.shapeparam.update_param(self)
-        state = (self.shapeparam, self._min, self._max, self._label_frac)
+        state = (
+            self.shapeparam,
+            self._min,
+            self._max,
+            self._label_frac,
+            self._show_label,
+        )
         return (self.__class__, (), state)
 
     def __setstate__(self, state: tuple) -> None:
         """Restore state information from pickling"""
-        defaults = (None, 0, 0, 0.5)
+        defaults = (None, 0, 0, 0.5, False)
         state = state + defaults[len(state) :]
-        self.shapeparam, self._min, self._max, self._label_frac = state
+        (self.shapeparam, self._min, self._max, self._label_frac, self._show_label) = (
+            state
+        )
         self.shapeparam.update_item(self)
 
     def serialize(
@@ -149,6 +157,7 @@ class BaseRangeSelection(AbstractShape):
         writer.write(self._min, group_name="min")
         writer.write(self._max, group_name="max")
         writer.write(self._label_frac, group_name=self._label_frac_key)
+        writer.write(self._show_label, group_name="show_label")
 
     def deserialize(
         self,
@@ -165,6 +174,7 @@ class BaseRangeSelection(AbstractShape):
         reader.read("shapeparam", instance=self.shapeparam)
         self.shapeparam.update_item(self)
         self._label_frac = reader.read(self._label_frac_key, default=self._label_frac)
+        self._show_label = reader.read("show_label", default=False)
 
     def _primary_axis(self) -> int:
         """Return the primary axis ID (xAxis for horizontal, yAxis for vertical)."""
@@ -267,7 +277,7 @@ class BaseRangeSelection(AbstractShape):
             Formatted label string
         """
         delta = abs(self._max - self._min)
-        v_min, v_max = self._min, self._max
+        v_min, v_max = min(self._min, self._max), max(self._min, self._max)
         if self._horizontal:
             axis = self.xAxis()
             if plot.get_axis_scale(axis) == "datetime":
@@ -275,9 +285,7 @@ class BaseRangeSelection(AbstractShape):
             sym = "x"
         else:
             sym = "y"
-        return (
-            f"\u0394{sym} = {delta:g}\n{sym}\u2080 = {v_min:g}  {sym}\u2081 = {v_max:g}"
-        )
+        return f"{v_min:g} < {sym} < {v_max:g}\n\u0394{sym} = {delta:g}"
 
     def _draw_delta_label(self, painter: QPainter, rct: QC.QRectF) -> None:
         """Draw the delta label at the center of the range.

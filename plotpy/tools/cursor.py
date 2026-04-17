@@ -94,7 +94,9 @@ class HRangeTool(BaseCursorTool):
 
         :return:
         """
-        return XRangeSelection(0, 0)
+        shape = XRangeSelection(0, 0)
+        shape.set_label_visible(True)
+        return shape
 
 
 class VCursorTool(BaseCursorTool):

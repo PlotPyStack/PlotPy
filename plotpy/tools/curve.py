@@ -77,7 +77,9 @@ class BaseRangeCursorTool(BaseCursorTool):
     def create_shape(self) -> XRangeSelection | YRangeSelection:
         """Create shape associated with the tool"""
         assert self.SHAPECLASS is not None, "SHAPECLASS must be set in subclasses"
-        return self.SHAPECLASS(0, 0)
+        shape = self.SHAPECLASS(0, 0)
+        shape.set_label_visible(True)
+        return shape
 
     def get_label_title(self) -> str | None:
         """Return label title"""
