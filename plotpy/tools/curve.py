@@ -212,8 +212,8 @@ class YRangeCursorTool(BaseRangeCursorTool):
     TITLE = _("Y-range")
     ICON = "yrange.png"
     LABELFUNCS: tuple[tuple[str, Callable[..., Any]], ...] = (
-        ("%g &lt; y &lt; %g", lambda ymin, ymax: (ymin, ymax)),
-        ("∆y=%g", lambda ymin, ymax: ymax - ymin),
+        ("%g &lt; y &lt; %g", lambda ymin, ymax: (min(ymin, ymax), max(ymin, ymax))),
+        ("∆y=%g", lambda ymin, ymax: abs(ymax - ymin)),
     )
     SHAPECLASS = YRangeSelection
 
