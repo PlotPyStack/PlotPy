@@ -15,7 +15,7 @@ from plotpy import io
 from plotpy.config import _
 from plotpy.interfaces import IImageItemType
 from plotpy.items import (
-    compute_trimageitems_original_size,
+    compute_image_items_original_size,
     get_image_from_plot,
     get_items_in_rectangle,
     get_plot_qrect,
@@ -86,10 +86,13 @@ def save_snapshot(plot, p0, p1, new_size=None):
         )
         return
     src_x, src_y, src_w, src_h = get_plot_qrect(plot, p0, p1).getRect()
-    original_size = compute_trimageitems_original_size(items, src_w, src_h)
+    original_size = compute_image_items_original_size(items, plot, p0, p1)
 
     if new_size is None:
-        new_size = (int(p1.x() - p0.x() + 1), int(p1.y() - p0.y() + 1))  # Screen size
+        new_size = (
+            int(abs(p1.x() - p0.x()) + 1),
+            int(abs(p1.y() - p0.y()) + 1),
+        )  # Screen size
 
     dlg = ResizeDialog(
         plot, new_size=new_size, old_size=original_size, text=_("Destination size:")
