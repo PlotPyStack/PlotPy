@@ -368,6 +368,7 @@ class SymbolParam(DataSet):
     marker = ImageChoiceItem(_("Style"), MARKER_CHOICES, default="NoSymbol")
     size = IntItem(_("Size"), default=9)
     edgecolor = ColorItem(_("Border"), default="gray")
+    edgewidth = FloatItem(_("Border width"), default=1.0, min=0.0)
     facecolor = ColorItem(_("Background color"), default="yellow")
     alpha = FloatItem(_("Background alpha"), default=1.0, min=0, max=1)
 
@@ -386,6 +387,7 @@ class SymbolParam(DataSet):
         self.marker = MARKER_NAME[symb.style()]
         self.size = int(symb.size().width())
         self.edgecolor = str(symb.pen().color().name())
+        self.edgewidth = float(symb.pen().widthF())
         self.facecolor = str(symb.brush().color().name())
 
     def build_symbol(self):
@@ -396,10 +398,12 @@ class SymbolParam(DataSet):
         marker_type = getattr(QwtSymbol, self.marker)
         color = QG.QColor(self.facecolor)
         color.setAlphaF(self.alpha)
+        pen = QG.QPen(QG.QColor(self.edgecolor))
+        pen.setWidthF(self.edgewidth)
         marker = QwtSymbol(
             marker_type,
             QG.QBrush(color),
-            QG.QPen(QG.QColor(self.edgecolor)),
+            pen,
             QC.QSizeF(self.size, self.size),
         )
         return marker
