@@ -13,6 +13,11 @@
     axis scaling) regardless of axis orientation
   * The `ValueError` raised by the resize dialog when the selection produced
     negative dimensions on a reversed axis is gone
+  * Selecting a region larger than the plotted image now consistently reports
+    the full image size for both `ImageItem` and `XYImageItem` (previously
+    `XYImageItem` reported ``shape - 1`` and `ImageItem` reported an
+    oversized value): the selection is now clipped to the image's bounding
+    rectangle before computing the original size
 
 ## PlotPy Version 2.9.0 ##
 

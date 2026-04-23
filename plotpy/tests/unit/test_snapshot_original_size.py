@@ -126,3 +126,38 @@ def test_snapshot_original_size_with_xy_image_item():
         assert abs(width - 40) <= 5
         assert abs(height - 30) <= 5
         win.close()
+
+
+@pytest.mark.parametrize("make_factory", ["image", "xyimage"])
+def test_snapshot_original_size_selection_larger_than_image(make_factory):
+    """When the selection is larger than the plotted image, the "Original size"
+    must correspond to the clipped intersection with the image (i.e. the full
+    image when the selection fully covers it), consistently for both
+    ``ImageItem`` and ``XYImageItem``.
+
+    Regression for the off-by-one inconsistency reported in issue #57
+    (99x99 for XYImageItem vs. oversized for ImageItem on a 100x100 image).
+    """
+    data = np.arange(NB_ROWS * NB_COLS, dtype=np.float64).reshape(NB_ROWS, NB_COLS)
+    with qt_app_context(exec_loop=False):
+        if make_factory == "image":
+            image = make.image(data)
+        else:
+            x = np.linspace(0.0, float(NB_COLS), NB_COLS + 1)
+            y = np.linspace(0.0, float(NB_ROWS), NB_ROWS + 1)
+            image = make.xyimage(x, y, data)
+        win = ptv.show_items([image], plot_type="image", auto_tools=False)
+        plot = win.manager.get_plot()
+        plot.replot()
+
+        # Selection much larger than the image (negative lower bound, upper
+        # bound well beyond the image):
+        x0, y0, x1, y1 = -50.0, -50.0, NB_COLS + 50.0, NB_ROWS + 50.0
+        p0, p1 = _canvas_points(plot, x0, y0, x1, y1)
+
+        width, height = compute_image_items_original_size([image], plot, p0, p1)
+
+        # Must match the full image size exactly (not shape - 1, not oversize)
+        assert abs(width - NB_COLS) <= 1
+        assert abs(height - NB_ROWS) <= 1
+        win.close()

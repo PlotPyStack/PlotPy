@@ -616,8 +616,11 @@ def compute_image_items_original_size(
     given image items.
 
     The size is computed in **pixel coordinates** (independent of axis
-    orientation or scaling), by projecting the canvas points ``p0`` and ``p1``
-    on each item's pixel grid via :meth:`BaseImageItem.get_pixel_coordinates`.
+    orientation or scaling). The selection is first clipped to each item's
+    bounding rectangle (in plot coordinates), so that a selection larger
+    than the plotted image is treated as a selection of the image itself,
+    and all item types (``ImageItem``, ``XYImageItem``, ``TrImageItem``)
+    give consistent results.
 
     Args:
         plot: Plot
@@ -634,19 +637,47 @@ def compute_image_items_original_size(
     p0y = plot.invTransform(Y_LEFT, p0.y())
     p1x = plot.invTransform(X_BOTTOM, p1.x() + 1)
     p1y = plot.invTransform(Y_LEFT, p1.y() + 1)
+    sel_x0, sel_x1 = sorted([p0x, p1x])
+    sel_y0, sel_y1 = sorted([p0y, p1y])
     widths: list[float] = []
     heights: list[float] = []
     for item in items:
-        get_pix = getattr(item, "get_pixel_coordinates", None)
-        if get_pix is None:
+        data = getattr(item, "data", None)
+        if data is None:
             continue
-        try:
-            x0p, y0p = get_pix(p0x, p0y)
-            x1p, y1p = get_pix(p1x, p1y)
-        except (ValueError, TypeError, IndexError):
-            continue
-        widths.append(abs(x1p - x0p))
-        heights.append(abs(y1p - y0p))
+        # Clip selection to the item's bounding rect (in plot coordinates)
+        # so that a selection larger than the plotted image yields the full
+        # image size, consistently across item types.
+        brect = item.boundingRect()
+        x_min, x_max = sorted([brect.left(), brect.right()])
+        y_min, y_max = sorted([brect.top(), brect.bottom()])
+        cx0 = max(sel_x0, x_min)
+        cx1 = min(sel_x1, x_max)
+        cy0 = max(sel_y0, y_min)
+        cy1 = min(sel_y1, y_max)
+        if cx1 <= cx0 or cy1 <= cy0:
+            continue  # no overlap
+        if isinstance(item, TrImageItem):
+            # Use the item's affine transform (no clamping, handles rotation)
+            get_pix = item.get_pixel_coordinates
+            try:
+                x0p, y0p = get_pix(cx0, cy0)
+                x1p, y1p = get_pix(cx1, cy1)
+            except (ValueError, TypeError, IndexError):
+                continue
+            widths.append(abs(x1p - x0p))
+            heights.append(abs(y1p - y0p))
+        else:
+            # For ImageItem / XYImageItem, use the fraction of the bounding
+            # rect covered by the clipped selection. This gives a consistent
+            # result even when pixel coordinate helpers clamp to integer
+            # indices (as XYImageItem does).
+            bw = x_max - x_min
+            bh = y_max - y_min
+            if bw <= 0 or bh <= 0:
+                continue
+            widths.append((cx1 - cx0) / bw * data.shape[1])
+            heights.append((cy1 - cy0) / bh * data.shape[0])
     if widths:
         return max(widths), max(heights)
     # Fallback: axis-units size (always positive)
