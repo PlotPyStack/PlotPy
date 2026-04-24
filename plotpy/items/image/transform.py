@@ -274,8 +274,12 @@ class TrImageItem(RawImageItem):
         mat = self.tr @ tr
 
         dst_rect = tuple([int(i) for i in dst_rect])
+        if self.get_zaxis_log_state():
+            data = self._log_data
+        else:
+            data = self.data
         dest = _scale_tr(
-            self.data, mat, self._offscreen, dst_rect, self.lut, self.interpolate
+            data, mat, self._offscreen, dst_rect, self.lut, self.interpolate
         )
         qrect = QC.QRectF(QC.QPointF(dest[0], dest[1]), QC.QPointF(dest[2], dest[3]))
         painter.drawImage(qrect, self._image, qrect)

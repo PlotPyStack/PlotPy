@@ -11,7 +11,6 @@ from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
 
 from plotpy import io
-from plotpy._scaler import INTERP_AA
 from plotpy.config import _
 from plotpy.constants import LUTAlpha
 from plotpy.coords import canvas_to_axes, pixelround
@@ -29,7 +28,6 @@ from plotpy.interfaces import (
 )
 from plotpy.items.image.base import RawImageItem
 from plotpy.items.image.filter import XYImageFilterItem, to_bins
-from plotpy.mathutils.arrayfuncs import get_nan_range
 from plotpy.styles.image import ImageParam, RGBImageParam, XYImageParam
 
 if TYPE_CHECKING:
@@ -84,9 +82,6 @@ class ImageItem(RawImageItem):
         self.xmax = None
         self.ymin = None
         self.ymax = None
-        self._log_data = None
-        self._lin_lut_range = None
-        self._is_zaxis_log = False
         super().__init__(data=data, param=param)
 
     # ---- BaseImageItem API ---------------------------------------------------
@@ -227,28 +222,6 @@ class ImageItem(RawImageItem):
             return
         (xmin, xmax), (ymin, ymax) = self.get_xdata(), self.get_ydata()
         self.bounds = QC.QRectF(QC.QPointF(xmin, ymin), QC.QPointF(xmax, ymax))
-
-    def get_zaxis_log_state(self):
-        """Reimplement image.ImageItem method"""
-        return self._is_zaxis_log
-
-    def set_zaxis_log_state(self, state):
-        """Reimplement image.ImageItem method"""
-        self._is_zaxis_log = state
-        plot = self.plot()
-        if state:
-            self._lin_lut_range = self.get_lut_range()
-            if self._log_data is None:
-                self._log_data = np.array(np.log10(self.data.clip(1)), dtype=np.float64)
-            self.set_lut_range(get_nan_range(self._log_data))
-            dtype = self._log_data.dtype
-        else:
-            self._log_data = None
-            self.set_lut_range(self._lin_lut_range)
-            dtype = self.data.dtype
-        if self.interpolate[0] == INTERP_AA:
-            self.interpolate = (INTERP_AA, self.interpolate[1].astype(dtype))
-        plot.update_colormap_axis(self)
 
     # ---- BaseImageItem API ---------------------------------------------------
     def get_pixel_coordinates(self, xplot: float, yplot: float) -> tuple[float, float]:
@@ -684,8 +657,12 @@ class XYImageItem(RawImageItem):
             return
         xytr = self.x, self.y, src_rect
         dst_rect = tuple([int(i) for i in dst_rect])
+        if self.get_zaxis_log_state():
+            data = self._log_data
+        else:
+            data = self.data
         dest = _scale_xy(
-            self.data, xytr, self._offscreen, dst_rect, self.lut, self.interpolate
+            data, xytr, self._offscreen, dst_rect, self.lut, self.interpolate
         )
         qrect = QC.QRectF(QC.QPointF(dest[0], dest[1]), QC.QPointF(dest[2], dest[3]))
         painter.drawImage(qrect, self._image, qrect)

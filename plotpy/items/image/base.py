@@ -132,6 +132,12 @@ class BaseImageItem(QwtPlotItem):
         self._filename = None  # The file this image comes from
 
         self.histogram_cache = None
+
+        # Z-axis logarithmic scale support
+        self._log_data: np.ndarray | None = None
+        self._lin_lut_range: tuple[float, float] | None = None
+        self._is_zaxis_log = False
+
         if data is not None:
             self.set_data(data)
         self.param.update_item(self)
@@ -551,6 +557,34 @@ class BaseImageItem(QwtPlotItem):
             tuple[float, float]: Lut range, tuple(min, max)
         """
         return get_nan_range(self.data)
+
+    # ---- Z-axis logarithmic scale --------------------------------------------
+    def get_zaxis_log_state(self) -> bool:
+        """Return True if Z-axis is in logarithmic scale"""
+        return self._is_zaxis_log
+
+    def set_zaxis_log_state(self, state: bool) -> None:
+        """Set Z-axis logarithmic scale state
+
+        Args:
+            state: True to enable logarithmic scale, False otherwise
+        """
+        self._is_zaxis_log = state
+        plot = self.plot()
+        if state:
+            self._lin_lut_range = self.get_lut_range()
+            if self._log_data is None:
+                self._log_data = np.array(np.log10(self.data.clip(1)), dtype=np.float64)
+            self.set_lut_range(get_nan_range(self._log_data))
+            dtype = self._log_data.dtype
+        else:
+            self._log_data = None
+            self.set_lut_range(self._lin_lut_range)
+            dtype = self.data.dtype
+        if self.interpolate[0] == INTERP_AA:
+            self.interpolate = (INTERP_AA, self.interpolate[1].astype(dtype))
+        if plot is not None:
+            plot.update_colormap_axis(self)
 
     def get_lut_range_max(self) -> tuple[float, float]:
         """Get maximum range for this dataset
