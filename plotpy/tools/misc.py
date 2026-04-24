@@ -221,6 +221,34 @@ class SnapshotTool(RectangularActionTool):
             manager, save_snapshot, toolbar_id=toolbar_id, fix_orientation=True
         )
 
+    def end_rect(self, filter, p0, p1):
+        """End rect: emit ``SIG_TOOL_JOB_FINISHED`` *synchronously* so the
+        ``switch_to_default_tool`` listener restores the canvas cursor while
+        we are still inside the mouse-release event handler chain — Qt then
+        gets the chance to refresh the cursor on neighbouring widgets
+        (axes, toolbar) before any nested event loop is started by the
+        snapshot dialogs. The action function itself is deferred via a
+        zero-delay timer so the modal ``ResizeDialog`` (and following
+        dialogs) is not opened from inside the rubber-band ``mouseRelease``
+        handler chain — otherwise Qt's implicit grab is left in an unclean
+        state on Windows and the cross cursor used by the canvas during
+        the drag remains "stuck" on neighbouring widgets until the mouse
+        moves over them.
+        """
+        plot = filter.plot
+        if self.fix_orientation:
+            left, right = min(p0.x(), p1.x()), max(p0.x(), p1.x())
+            top, bottom = min(p0.y(), p1.y()), max(p0.y(), p1.y())
+            p0, p1 = QC.QPointF(left, top), QC.QPointF(right, bottom)
+        # Synchronous: cursor is restored on the canvas now, while we are
+        # still in the mouse-release handler chain.
+        self.SIG_TOOL_JOB_FINISHED.emit()
+        if self.switch_to_default_tool:
+            shape = self.get_last_final_shape()
+            plot.set_active_item(shape)
+        # Deferred: open the dialogs after Qt has cleanly released the grab.
+        QC.QTimer.singleShot(0, lambda: self.action_func(plot, p0, p1))
+
 
 class HelpTool(CommandTool):
     """ """
