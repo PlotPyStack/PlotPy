@@ -131,12 +131,15 @@ def test_snapshot_original_size_with_xy_image_item():
 @pytest.mark.parametrize("make_factory", ["image", "xyimage"])
 def test_snapshot_original_size_selection_larger_than_image(make_factory):
     """When the selection is larger than the plotted image, the "Original size"
-    must correspond to the clipped intersection with the image (i.e. the full
-    image when the selection fully covers it), consistently for both
-    ``ImageItem`` and ``XYImageItem``.
+    must reflect the **native pixel resolution** of the selection (i.e. the
+    number of source pixels the selection would cover at the item's pixel
+    density), not the clipped image size — so that exporting at "Original
+    size" preserves the source pixel density and the image is not upsampled.
 
-    Regression for the off-by-one inconsistency reported in issue #57
-    (99x99 for XYImageItem vs. oversized for ImageItem on a 100x100 image).
+    Both ``ImageItem`` and ``XYImageItem`` must agree on this: this is the
+    consistency fix for the off-by-one / inconsistency reported in #57
+    (99x99 for XYImageItem vs. oversized for ImageItem on a 100x100 image —
+    they must now both give the same oversized value).
     """
     data = np.arange(NB_ROWS * NB_COLS, dtype=np.float64).reshape(NB_ROWS, NB_COLS)
     with qt_app_context(exec_loop=False):
@@ -157,7 +160,10 @@ def test_snapshot_original_size_selection_larger_than_image(make_factory):
 
         width, height = compute_image_items_original_size([image], plot, p0, p1)
 
-        # Must match the full image size exactly (not shape - 1, not oversize)
-        assert abs(width - NB_COLS) <= 1
-        assert abs(height - NB_ROWS) <= 1
+        # Native pixel resolution of the (oversized) selection: 200 px wide
+        # selection on a 100 axis-unit / 100 px image -> 200 px
+        exp_w = (x1 - x0) * NB_COLS / float(NB_COLS)  # = 200
+        exp_h = (y1 - y0) * NB_ROWS / float(NB_ROWS)  # = 200
+        assert abs(width - exp_w) <= 2
+        assert abs(height - exp_h) <= 2
         win.close()

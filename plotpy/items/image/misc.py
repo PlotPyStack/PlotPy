@@ -612,15 +612,18 @@ def compute_image_items_original_size(
     p0: QPointF,
     p1: QPointF,
 ) -> tuple[float, float]:
-    """Compute the original (pixel) size of a rectangular selection across the
-    given image items.
+    """Compute the **native pixel resolution** of a rectangular selection
+    across the given image items.
 
-    The size is computed in **pixel coordinates** (independent of axis
-    orientation or scaling). The selection is first clipped to each item's
-    bounding rectangle (in plot coordinates), so that a selection larger
-    than the plotted image is treated as a selection of the image itself,
-    and all item types (``ImageItem``, ``XYImageItem``, ``TrImageItem``)
-    give consistent results.
+    The "Original size" semantics is *original resolution*: the returned
+    size is the number of source pixels that span the selection at the
+    item's native resolution, *independent of axis orientation or scaling*.
+    When the selection is larger than the plotted image, the returned size
+    is consequently larger than the image (the missing area will be padded
+    by the export step). When the selection is smaller, it is smaller in
+    pixels — there is **no** clipping to the image bounding rectangle, so
+    that exporting at "Original size" always preserves the source pixel
+    density.
 
     Args:
         plot: Plot
@@ -639,45 +642,38 @@ def compute_image_items_original_size(
     p1y = plot.invTransform(Y_LEFT, p1.y() + 1)
     sel_x0, sel_x1 = sorted([p0x, p1x])
     sel_y0, sel_y1 = sorted([p0y, p1y])
+    sel_w = sel_x1 - sel_x0
+    sel_h = sel_y1 - sel_y0
     widths: list[float] = []
     heights: list[float] = []
     for item in items:
         data = getattr(item, "data", None)
         if data is None:
             continue
-        # Clip selection to the item's bounding rect (in plot coordinates)
-        # so that a selection larger than the plotted image yields the full
-        # image size, consistently across item types.
-        brect = item.boundingRect()
-        x_min, x_max = sorted([brect.left(), brect.right()])
-        y_min, y_max = sorted([brect.top(), brect.bottom()])
-        cx0 = max(sel_x0, x_min)
-        cx1 = min(sel_x1, x_max)
-        cy0 = max(sel_y0, y_min)
-        cy1 = min(sel_y1, y_max)
-        if cx1 <= cx0 or cy1 <= cy0:
-            continue  # no overlap
         if isinstance(item, TrImageItem):
-            # Use the item's affine transform (no clamping, handles rotation)
+            # Use the item's affine transform (handles rotation and shear)
             get_pix = item.get_pixel_coordinates
             try:
-                x0p, y0p = get_pix(cx0, cy0)
-                x1p, y1p = get_pix(cx1, cy1)
+                x0p, y0p = get_pix(sel_x0, sel_y0)
+                x1p, y1p = get_pix(sel_x1, sel_y1)
             except (ValueError, TypeError, IndexError):
                 continue
             widths.append(abs(x1p - x0p))
             heights.append(abs(y1p - y0p))
         else:
-            # For ImageItem / XYImageItem, use the fraction of the bounding
-            # rect covered by the clipped selection. This gives a consistent
-            # result even when pixel coordinate helpers clamp to integer
-            # indices (as XYImageItem does).
-            bw = x_max - x_min
-            bh = y_max - y_min
+            # For ImageItem / XYImageItem: convert the (possibly oversized)
+            # selection to pixels via the item's own pixel density. This
+            # avoids ``XYImageItem.get_pixel_coordinates`` clamping to
+            # integer indices and yields oversized values when the
+            # selection extends beyond the image — consistently with the
+            # historical behavior of ``ImageItem``.
+            brect = item.boundingRect()
+            bw = abs(brect.width())
+            bh = abs(brect.height())
             if bw <= 0 or bh <= 0:
                 continue
-            widths.append((cx1 - cx0) / bw * data.shape[1])
-            heights.append((cy1 - cy0) / bh * data.shape[0])
+            widths.append(sel_w / bw * data.shape[1])
+            heights.append(sel_h / bh * data.shape[0])
     if widths:
         return max(widths), max(heights)
     # Fallback: axis-units size (always positive)
