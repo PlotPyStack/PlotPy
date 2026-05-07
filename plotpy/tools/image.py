@@ -25,13 +25,13 @@ from plotpy.interfaces import (
 from plotpy.items import (
     AnnotatedRectangle,
     EllipseShape,
-    ImageItem,
     MaskedImageItem,
     MaskedXYImageItem,
     RectangleShape,
     TrImageItem,
     get_items_in_rectangle,
 )
+from plotpy.items.image.base import BaseImageItem
 from plotpy.mathutils.colormap import ALL_COLORMAPS, build_icon_from_cmap_name, get_cmap
 from plotpy.tools.base import (
     CommandTool,
@@ -54,7 +54,6 @@ if TYPE_CHECKING:
 
     from plotpy.events import StatefulEventFilter
     from plotpy.interfaces.items import IBasePlotItem
-    from plotpy.items.image.base import BaseImageItem
     from plotpy.items.shape.base import AbstractShape
     from plotpy.items.shape.polygon import PolygonShape
     from plotpy.plot import BasePlot
@@ -412,7 +411,7 @@ class ZAxisLogTool(ToggleTool):
         items = [
             item
             for item in plot.get_items()
-            if isinstance(item, ImageItem)
+            if isinstance(item, BaseImageItem)
             and not item.is_empty()
             and hasattr(item, "get_zaxis_log_state")
         ]

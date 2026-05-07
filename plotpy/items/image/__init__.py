@@ -11,6 +11,7 @@ from .misc import (
     Histogram2DItem,
     QuadGridItem,
     assemble_imageitems,
+    compute_image_items_original_size,
     compute_trimageitems_original_size,
     get_image_from_plot,
     get_image_from_qrect,

@@ -15,7 +15,7 @@ from plotpy import io
 from plotpy.config import _
 from plotpy.interfaces import IImageItemType
 from plotpy.items import (
-    compute_trimageitems_original_size,
+    compute_image_items_original_size,
     get_image_from_plot,
     get_items_in_rectangle,
     get_plot_qrect,
@@ -86,10 +86,13 @@ def save_snapshot(plot, p0, p1, new_size=None):
         )
         return
     src_x, src_y, src_w, src_h = get_plot_qrect(plot, p0, p1).getRect()
-    original_size = compute_trimageitems_original_size(items, src_w, src_h)
+    original_size = compute_image_items_original_size(items, plot, p0, p1)
 
     if new_size is None:
-        new_size = (int(p1.x() - p0.x() + 1), int(p1.y() - p0.y() + 1))  # Screen size
+        new_size = (
+            int(abs(p1.x() - p0.x()) + 1),
+            int(abs(p1.y() - p0.y()) + 1),
+        )  # Screen size
 
     dlg = ResizeDialog(
         plot, new_size=new_size, old_size=original_size, text=_("Destination size:")
@@ -217,6 +220,34 @@ class SnapshotTool(RectangularActionTool):
         super().__init__(
             manager, save_snapshot, toolbar_id=toolbar_id, fix_orientation=True
         )
+
+    def end_rect(self, filter, p0, p1):
+        """End rect: emit ``SIG_TOOL_JOB_FINISHED`` *synchronously* so the
+        ``switch_to_default_tool`` listener restores the canvas cursor while
+        we are still inside the mouse-release event handler chain — Qt then
+        gets the chance to refresh the cursor on neighbouring widgets
+        (axes, toolbar) before any nested event loop is started by the
+        snapshot dialogs. The action function itself is deferred via a
+        zero-delay timer so the modal ``ResizeDialog`` (and following
+        dialogs) is not opened from inside the rubber-band ``mouseRelease``
+        handler chain — otherwise Qt's implicit grab is left in an unclean
+        state on Windows and the cross cursor used by the canvas during
+        the drag remains "stuck" on neighbouring widgets until the mouse
+        moves over them.
+        """
+        plot = filter.plot
+        if self.fix_orientation:
+            left, right = min(p0.x(), p1.x()), max(p0.x(), p1.x())
+            top, bottom = min(p0.y(), p1.y()), max(p0.y(), p1.y())
+            p0, p1 = QC.QPointF(left, top), QC.QPointF(right, bottom)
+        # Synchronous: cursor is restored on the canvas now, while we are
+        # still in the mouse-release handler chain.
+        self.SIG_TOOL_JOB_FINISHED.emit()
+        if self.switch_to_default_tool:
+            shape = self.get_last_final_shape()
+            plot.set_active_item(shape)
+        # Deferred: open the dialogs after Qt has cleanly released the grab.
+        QC.QTimer.singleShot(0, lambda: self.action_func(plot, p0, p1))
 
 
 class HelpTool(CommandTool):
