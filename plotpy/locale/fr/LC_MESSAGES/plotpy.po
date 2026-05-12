@@ -364,6 +364,21 @@ msgstr "date/heure"
 msgid "logarithmic"
 msgstr "logarithmique"
 
+msgid "Autoscale strategy"
+msgstr "Stratégie d'autoscale"
+
+msgid "Auto"
+msgstr "Automatique"
+
+msgid "Fixed range"
+msgstr "Plage fixe"
+
+msgid "Disabled"
+msgstr "Désactivée"
+
+msgid "Strategy used by the AutoScale action for this axis: 'Auto' computes bounds from items, 'Fixed range' applies the Min/Max values defined above, 'Disabled' leaves the axis untouched."
+msgstr "Stratégie utilisée par l'action AutoScale pour cet axe : « Automatique » calcule les bornes à partir des éléments, « Plage fixe » applique les valeurs Min/Max définies ci-dessus, « Désactivée » laisse l'axe inchangé."
+
 msgid "Lower axis limit"
 msgstr "Borne inférieure de l'axe"
 
@@ -542,6 +557,10 @@ msgid "Size"
 msgstr "Taille"
 
 msgid "Border"
+msgstr "Bordure"
+
+#, fuzzy
+msgid "Border width"
 msgstr "Bordure"
 
 msgid "Background color"
@@ -1686,4 +1705,3 @@ msgstr "Rotation et rognage"
 
 msgid "Show cropping rectangle"
 msgstr "Afficher le rectangle de rognage"
-
