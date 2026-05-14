@@ -360,6 +360,12 @@ class BaseImageItem(QwtPlotItem):
                 _min, _max = get_nan_range(data)
             self.set_lut_range((_min, _max))
 
+        if self.get_zaxis_log_state():
+            self._log_data = np.array(
+                np.log10(self.data.clip(1)), dtype=np.float64
+            )
+            self.set_lut_range(get_nan_range(self._log_data))
+
     def get_data(
         self, x0: float, y0: float, x1: float | None = None, y1: float | None = None
     ) -> float | tuple[np.ndarray, np.ndarray, np.ndarray]:
