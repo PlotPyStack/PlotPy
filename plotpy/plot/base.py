@@ -2534,7 +2534,16 @@ class BasePlot(qwt.QwtPlot):
             return
         zaxis = self.colormap_axis
         axiswidget: QwtScaleWidget = self.axisWidget(zaxis)
-        self.setAxisScale(zaxis, item.min, item.max)
+
+        zmin, zmax = item.min, item.max
+
+        if hasattr(item, "get_zaxis_log_state") and item.get_zaxis_log_state():
+            zmin, zmax = 10**zmin, 10**zmax
+            self.setAxisScaleEngine(zaxis, qwt.QwtLogScaleEngine())
+        else:
+            self.setAxisScaleEngine(zaxis, qwt.QwtLinearScaleEngine())
+
+        self.setAxisScale(zaxis, zmin, zmax)
         # XXX: The colormap can't be displayed if min>max, to fix this
         # we should pass an inverted colormap along with _max, _min values
         axiswidget.setColorMap(
