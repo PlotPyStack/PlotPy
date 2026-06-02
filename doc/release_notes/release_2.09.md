@@ -1,25 +1,5 @@
 # Version 2.9 #
 
-## PlotPy Version 2.9.1 ##
-
-🛠️ Bug fixes:
-
-* Fixed the rectangular snapshot tool's "Original size" computation. This closes
-  [Issue #57](https://github.com/PlotPyStack/PlotPy/issues/57):
-  * The preview no longer displays negative dimensions when the X or Y axis is
-    reversed
-  * The "Original size" is now computed from pixel coordinates instead of axis
-    units, so it is correct for `XYImageItem` (and any item with non-uniform
-    axis scaling) regardless of axis orientation
-  * The `ValueError` raised by the resize dialog when the selection produced
-    negative dimensions on a reversed axis is gone
-  * Selecting a region larger than the plotted image now reports the same
-    native pixel resolution for both `ImageItem` and `XYImageItem`
-    (previously `XYImageItem` reported ``shape - 1`` while `ImageItem`
-    reported the full oversized resolution): exporting at "Original size"
-    now consistently preserves the source pixel density and avoids
-    upsampling, regardless of the item type
-
 ## PlotPy Version 2.9.0 ##
 
 💥 New features:
