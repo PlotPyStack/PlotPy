@@ -14,7 +14,7 @@ The `PlotPy` package requires the following Python modules:
       - >= 3.14.1
       - Automatic GUI generation for easy dataset editing and display
     * - PythonQwt
-      - >= 0.15
+      - >= 0.16
       - Qt plotting widgets for Python
     * - numpy
       - >= 1.22
@@ -26,10 +26,10 @@ The `PlotPy` package requires the following Python modules:
       - >= 0.19
       - Image processing in Python
     * - Pillow
-      -
+      - 
       - Python Imaging Library (fork)
     * - tifffile
-      -
+      - 
       - Read and write TIFF files
 
 Optional modules for GUI support (Qt):
@@ -55,26 +55,32 @@ Optional modules for development:
       - Version
       - Summary
     * - build
-      -
+      - 
       - A simple, correct Python build frontend
     * - babel
-      -
+      - 
       - Internationalization utilities
     * - Coverage
-      -
+      - 
       - Code coverage measurement for Python
     * - Cython
       - >=3.0
       - The Cython compiler for writing C extensions in the Python language.
     * - pylint
-      -
+      - 
       - python code static checker
     * - ruff
-      -
+      - 
       - An extremely fast Python linter and code formatter, written in Rust.
     * - pre-commit
-      -
+      - 
       - A framework for managing and maintaining multi-language pre-commit hooks.
+    * - setuptools
+      - 
+      - Most extensible Python build backend with support for C/C++ extension modules
+    * - wheel
+      - 
+      - Command line tool for manipulating wheel files
 
 Optional modules for building the documentation:
 
@@ -86,19 +92,19 @@ Optional modules for building the documentation:
       - Version
       - Summary
     * - sphinx
-      -
+      - 
       - Python documentation generator
     * - myst_parser
-      -
+      - 
       - An extended [CommonMark](https://spec.commonmark.org/) compliant parser,
     * - sphinx-copybutton
-      -
+      - 
       - Add a copy button to each of your code cells.
     * - sphinx_qt_documentation
-      -
+      - 
       - Plugin for proper resolve intersphinx references for Qt elements
     * - python-docs-theme
-      -
+      - 
       - The Sphinx theme for the CPython docs and related projects
 
 Optional modules for running test suite:
@@ -111,8 +117,8 @@ Optional modules for running test suite:
       - Version
       - Summary
     * - pytest
-      -
+      - 
       - pytest: simple powerful testing with Python
     * - pytest-xvfb
-      -
+      - 
       - A pytest plugin to run Xvfb (or Xephyr/Xvnc) for tests.
