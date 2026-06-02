@@ -577,25 +577,108 @@ def get_items_in_rectangle(
 
 def compute_trimageitems_original_size(
     items: list[TrImageItem],
-    src_w: list[float, float, float, float],
-    src_h: list[float, float, float, float],
+    src_w: float,
+    src_h: float,
 ) -> tuple[float, float]:
     """Compute `TrImageItem` original size from max dx and dy
 
     Args:
         items: List of image items
-        src_w: Source width
-        src_h: Source height
+        src_w: Source width (in plot axis units)
+        src_h: Source height (in plot axis units)
 
     Returns:
         Tuple of original size
+
+    .. note::
+
+        The returned size is always positive: when the source rectangle is
+        defined on a reversed axis, ``src_w`` and/or ``src_h`` may be
+        negative. The original (pixel) size is intrinsically positive,
+        independent of axis orientation.
     """
+    src_w, src_h = abs(src_w), abs(src_h)
     trparams = [item.get_transform() for item in items if isinstance(item, TrImageItem)]
     if trparams:
         dx_max = max([dx for _x, _y, _angle, dx, _dy, _hf, _vf in trparams])
         dy_max = max([dy for _x, _y, _angle, _dx, dy, _hf, _vf in trparams])
         return src_w / dx_max, src_h / dy_max
     return src_w, src_h
+
+
+def compute_image_items_original_size(
+    items: list[BaseImageItem],
+    plot: qwt.plot.QwtPlot,
+    p0: QPointF,
+    p1: QPointF,
+) -> tuple[float, float]:
+    """Compute the **native pixel resolution** of a rectangular selection
+    across the given image items.
+
+    The "Original size" semantics is *original resolution*: the returned
+    size is the number of source pixels that span the selection at the
+    item's native resolution, *independent of axis orientation or scaling*.
+    When the selection is larger than the plotted image, the returned size
+    is consequently larger than the image (the missing area will be padded
+    by the export step). When the selection is smaller, it is smaller in
+    pixels — there is **no** clipping to the image bounding rectangle, so
+    that exporting at "Original size" always preserves the source pixel
+    density.
+
+    Args:
+        plot: Plot
+        items: List of image items in the selection
+        p0: First canvas point (top-left, in canvas coordinates)
+        p1: Second canvas point (bottom-right, in canvas coordinates)
+
+    Returns:
+        Tuple ``(width, height)`` in pixels (always positive). When no
+        compatible item is found, falls back to the absolute axis-units
+        size of the selection.
+    """
+    p0x = plot.invTransform(X_BOTTOM, p0.x())
+    p0y = plot.invTransform(Y_LEFT, p0.y())
+    p1x = plot.invTransform(X_BOTTOM, p1.x() + 1)
+    p1y = plot.invTransform(Y_LEFT, p1.y() + 1)
+    sel_x0, sel_x1 = sorted([p0x, p1x])
+    sel_y0, sel_y1 = sorted([p0y, p1y])
+    sel_w = sel_x1 - sel_x0
+    sel_h = sel_y1 - sel_y0
+    widths: list[float] = []
+    heights: list[float] = []
+    for item in items:
+        data = getattr(item, "data", None)
+        if data is None:
+            continue
+        if isinstance(item, TrImageItem):
+            # Use the item's affine transform (handles rotation and shear)
+            get_pix = item.get_pixel_coordinates
+            try:
+                x0p, y0p = get_pix(sel_x0, sel_y0)
+                x1p, y1p = get_pix(sel_x1, sel_y1)
+            except (ValueError, TypeError, IndexError):
+                continue
+            widths.append(abs(x1p - x0p))
+            heights.append(abs(y1p - y0p))
+        else:
+            # For ImageItem / XYImageItem: convert the (possibly oversized)
+            # selection to pixels via the item's own pixel density. This
+            # avoids ``XYImageItem.get_pixel_coordinates`` clamping to
+            # integer indices and yields oversized values when the
+            # selection extends beyond the image — consistently with the
+            # historical behavior of ``ImageItem``.
+            brect = item.boundingRect()
+            bw = abs(brect.width())
+            bh = abs(brect.height())
+            if bw <= 0 or bh <= 0:
+                continue
+            widths.append(sel_w / bw * data.shape[1])
+            heights.append(sel_h / bh * data.shape[0])
+    if widths:
+        return max(widths), max(heights)
+    # Fallback: axis-units size (always positive)
+    _src_x, _src_y, src_w, src_h = get_plot_qrect(plot, p0, p1).getRect()
+    return abs(src_w), abs(src_h)
 
 
 def get_image_from_qrect(
@@ -636,12 +719,12 @@ def get_image_from_qrect(
     if not items:
         raise TypeError(_("There is no supported image item in current plot."))
     if src_size is None:
-        _src_x, _src_y, src_w, src_h = get_plot_qrect(plot, p0, p1).getRect()
+        destw, desth = compute_image_items_original_size(items, plot, p0, p1)
     else:
         # The only benefit to pass the src_size list is to avoid any
         # rounding error in the transformation computed in `get_plot_qrect`
         src_w, src_h = src_size
-    destw, desth = compute_trimageitems_original_size(items, src_w, src_h)
+        destw, desth = compute_trimageitems_original_size(items, src_w, src_h)
     data = get_image_from_plot(
         plot,
         p0,

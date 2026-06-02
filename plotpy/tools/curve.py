@@ -142,13 +142,13 @@ class CurveStatsTool(BaseRangeCursorTool):
     TITLE = _("Signal statistics")
     ICON = "xrange.png"
     LABELFUNCS: tuple[tuple[str, Callable[..., Any]], ...] = (
-        ("%g &lt; x &lt; %g", lambda *args: (args[0].min(), args[0].max())),
-        ("%g &lt; y &lt; %g", lambda *args: (args[1].min(), args[1].max())),
-        ("∆x=%g", lambda *args: args[0].max() - args[0].min()),
-        ("∆y=%g", lambda *args: args[1].max() - args[1].min()),
-        ("&lt;y&gt;=%g", lambda *args: args[1].mean()),
-        ("σ(y)=%g", lambda *args: args[1].std()),
-        ("∑(y)=%g", lambda *args: np.sum(args[1])),
+        ("%g &lt; x &lt; %g", lambda *args: (np.nanmin(args[0]), np.nanmax(args[0]))),
+        ("%g &lt; y &lt; %g", lambda *args: (np.nanmin(args[1]), np.nanmax(args[1]))),
+        ("∆x=%g", lambda *args: np.nanmax(args[0]) - np.nanmin(args[0])),
+        ("∆y=%g", lambda *args: np.nanmax(args[1]) - np.nanmin(args[1])),
+        ("&lt;y&gt;=%g", lambda *args: np.nanmean(args[1])),
+        ("σ(y)=%g", lambda *args: np.nanstd(args[1])),
+        ("∑(y)=%g", lambda *args: np.nansum(args[1])),
         ("∫ydx=%g", lambda *args: spt.trapezoid(args[1], args[0])),
     )
     SHAPECLASS = XRangeSelection
@@ -212,8 +212,8 @@ class YRangeCursorTool(BaseRangeCursorTool):
     TITLE = _("Y-range")
     ICON = "yrange.png"
     LABELFUNCS: tuple[tuple[str, Callable[..., Any]], ...] = (
-        ("%g &lt; y &lt; %g", lambda ymin, ymax: (ymin, ymax)),
-        ("∆y=%g", lambda ymin, ymax: ymax - ymin),
+        ("%g &lt; y &lt; %g", lambda ymin, ymax: (min(ymin, ymax), max(ymin, ymax))),
+        ("∆y=%g", lambda ymin, ymax: abs(ymax - ymin)),
     )
     SHAPECLASS = YRangeSelection
 

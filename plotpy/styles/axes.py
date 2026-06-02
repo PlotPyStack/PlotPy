@@ -47,6 +47,20 @@ class AxisParam(DataSet):
         [("lin", _("linear")), ("log", _("logarithmic")), ("datetime", _("date/time"))],
         default="lin",
     )
+    autoscale = ChoiceItem(
+        _("Autoscale strategy"),
+        [
+            ("auto", _("Auto")),
+            ("fixed", _("Fixed range")),
+            ("none", _("Disabled")),
+        ],
+        default="auto",
+        help=_(
+            "Strategy used by the AutoScale action for this axis: "
+            "'Auto' computes bounds from items, 'Fixed range' applies the "
+            "Min/Max values defined above, 'Disabled' leaves the axis untouched."
+        ),
+    )
     vmin = FloatItem("Min", help=_("Lower axis limit"), default=0.0)
     vmax = FloatItem("Max", help=_("Upper axis limit"), default=1.0)
 
@@ -62,6 +76,13 @@ class AxisParam(DataSet):
         axis: QwtScaleDiv = plot.axisScaleDiv(axis_id)
         self.vmin = axis.lowerBound()
         self.vmax = axis.upperBound()
+        strategy, fixed_vmin, fixed_vmax = plot.get_axis_autoscale_strategy(axis_id)
+        self.autoscale = strategy
+        if strategy == "fixed":
+            if fixed_vmin is not None:
+                self.vmin = fixed_vmin
+            if fixed_vmax is not None:
+                self.vmax = fixed_vmax
 
     def update_axis(self, plot: BasePlot, axis_id: int) -> None:
         """
@@ -74,6 +95,9 @@ class AxisParam(DataSet):
         plot.enableAxis(axis_id, True)
         plot.set_axis_scale(axis_id, self.scale, autoscale=False)
         plot.setAxisScale(axis_id, self.vmin, self.vmax)
+        plot.set_axis_autoscale_strategy(
+            axis_id, self.autoscale, vmin=self.vmin, vmax=self.vmax
+        )
         plot.disable_unused_axes()
         plot.SIG_AXIS_PARAMETERS_CHANGED.emit(axis_id)
 

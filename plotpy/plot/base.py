@@ -325,6 +325,9 @@ class BasePlot(qwt.QwtPlot):
 
         self.__autoscale_excluded_items: list[itf.IBasePlotItem] = []
         self.autoscale_margin_percent = options.autoscale_margin_percent
+        self._axis_autoscale_strategy: dict[
+            int, tuple[str, float | None, float | None]
+        ] = {axis_id: ("auto", None, None) for axis_id in self.AXIS_IDS}
         self.lock_aspect_ratio = options.lock_aspect_ratio
         self.__autoLockAspectRatio = False
         if self.lock_aspect_ratio is None:
@@ -2177,8 +2180,53 @@ class BasePlot(qwt.QwtPlot):
         ]
         return [item_ref() for item_ref in self.__autoscale_excluded_items]
 
+    def get_axis_autoscale_strategy(
+        self, axis_id: int
+    ) -> tuple[str, float | None, float | None]:
+        """Return the autoscale strategy configured for a given axis.
+
+        Args:
+            axis_id: the axis ID
+
+        Returns:
+            A 3-tuple ``(strategy, vmin, vmax)`` where ``strategy`` is one of
+            ``"auto"``, ``"fixed"`` or ``"none"``. ``vmin``/``vmax`` are the
+            user-defined bounds applied when ``strategy == "fixed"``
+            (``None`` otherwise).
+        """
+        return self._axis_autoscale_strategy.get(axis_id, ("auto", None, None))
+
+    def set_axis_autoscale_strategy(
+        self,
+        axis_id: int,
+        strategy: str,
+        vmin: float | None = None,
+        vmax: float | None = None,
+    ) -> None:
+        """Set the autoscale strategy for a given axis.
+
+        Args:
+            axis_id: the axis ID
+            strategy: one of ``"auto"`` (compute bounds from items, current
+             behavior), ``"fixed"`` (apply ``vmin``/``vmax``) or ``"none"``
+             (leave the axis untouched on autoscale)
+            vmin: lower bound applied when ``strategy == "fixed"``
+            vmax: upper bound applied when ``strategy == "fixed"``
+        """
+        if strategy not in ("auto", "fixed", "none"):
+            raise ValueError(
+                f"Invalid autoscale strategy {strategy!r}: "
+                "expected one of 'auto', 'fixed', 'none'"
+            )
+        self._axis_autoscale_strategy[axis_id] = (strategy, vmin, vmax)
+
     def do_autoscale(self, replot: bool = True, axis_id: int | None = None) -> None:
         """Do autoscale on all axes
+
+        The behavior of each axis depends on its autoscale strategy
+        (see :py:meth:`set_axis_autoscale_strategy`): ``"auto"`` computes
+        bounds from items (default), ``"fixed"`` applies the configured
+        ``vmin``/``vmax`` and ``"none"`` leaves the axis untouched.
 
         Args:
             replot (bool): replot the widget (optional, default=True)
@@ -2190,6 +2238,14 @@ class BasePlot(qwt.QwtPlot):
         for axis_id in self.AXIS_IDS if axis_id is None else [axis_id]:
             vmin, vmax = None, None
             if not self.axisEnabled(axis_id):
+                continue
+            strategy, fixed_vmin, fixed_vmax = self.get_axis_autoscale_strategy(axis_id)
+            if strategy == "none":
+                continue
+            if strategy == "fixed":
+                if fixed_vmin is None or fixed_vmax is None:
+                    continue
+                self.set_axis_limits(axis_id, fixed_vmin, fixed_vmax)
                 continue
             for item in self.get_items():
                 if (

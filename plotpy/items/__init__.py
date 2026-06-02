@@ -33,6 +33,7 @@ from .image import (
     XYImageFilterItem,
     XYImageItem,
     assemble_imageitems,
+    compute_image_items_original_size,
     compute_trimageitems_original_size,
     get_image_from_plot,
     get_image_from_qrect,
