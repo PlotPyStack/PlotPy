@@ -436,7 +436,7 @@ class XYCrossSectionMixin:
         )
 
 
-class XCrossSectionPlot(HorizontalCrossSectionPlot, XYCrossSectionMixin):
+class XCrossSectionPlot(XYCrossSectionMixin, HorizontalCrossSectionPlot):
     """X-axis cross section plot"""
 
     _HEIGHT = 130
@@ -450,7 +450,7 @@ class XCrossSectionPlot(HorizontalCrossSectionPlot, XYCrossSectionMixin):
         return XCrossSectionItem(self.param)
 
 
-class YCrossSectionPlot(VerticalCrossSectionPlot, XYCrossSectionMixin):
+class YCrossSectionPlot(XYCrossSectionMixin, VerticalCrossSectionPlot):
     """Y-axis cross section plot"""
 
     _WIDTH = 140
