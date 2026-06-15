@@ -1,5 +1,12 @@
 # Version 2.10 #
 
+## PlotPy Version 2.10.1 ##
+
+🛠️ Bug fixes:
+
+* **Image cross sections** — Restored live cross-section updates when using `Alt+Mousemove` over an image. This regression had been introduced in v2.1.0: the X/Y cross-section panels no longer received marker-change updates because method resolution order was shadowing the mixin hook that connects `SIG_MARKER_CHANGED` (closes [Issue #68](https://github.com/PlotPyStack/PlotPy/issues/68))
+
+
 ## PlotPy Version 2.10.0 ##
 
 ✨ New features:
