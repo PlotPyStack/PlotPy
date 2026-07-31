@@ -28,7 +28,13 @@ def test_contours():
     """Contour plotting on two nearby 2D Gaussians"""
     with qt_app_context(exec_loop=True):
         image = create_two_gaussians()
-        contour_items = make.contours(image, np.linspace(0.2, 1.0, 5))
+        contour_items = make.contours(
+            image,
+            np.linspace(0.2, 1.0, 5),
+            color="y",
+            linestyle=":",
+            linewidth=2.0,
+        )
 
         assert contour_items
         assert all(isinstance(item, ContourItem) for item in contour_items)
