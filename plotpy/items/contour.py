@@ -29,7 +29,7 @@ from skimage import measure
 
 from plotpy.config import _
 from plotpy.items.shape.polygon import PolygonShape
-from plotpy.styles import ShapeParam
+from plotpy.styles import COLORS, ShapeParam
 
 
 class ContourLine(gds.DataSet):
@@ -123,6 +123,9 @@ def create_contour_items(
     levels: float | np.ndarray,
     X: np.ndarray | None = None,
     Y: np.ndarray | None = None,
+    color: str | None = None,
+    linestyle: str | None = None,
+    linewidth: float | None = None,
 ) -> list[ContourItem]:
     """Create contour items
 
@@ -142,6 +145,11 @@ def create_contour_items(
          ``numpy.meshgrid``), or it must both be 1-D such that ``len(Y) == N``
          is the number of rows in *Z*.
          If none, they are assumed to be integer indices, i.e. ``Y = range(N)``.
+        color: contour color name. Default is None
+        linestyle: contour line style (MATLAB-like string or "SolidLine",
+         "DashLine", "DotLine", "DashDotLine", "DashDotDotLine", "NoPen").
+         Default is None
+        linewidth: contour line width (pixels). Default is None
 
     Returns:
         A list of :py:class:`.ContourItem` instances.
@@ -153,6 +161,14 @@ def create_contour_items(
         param = ShapeParam("Contour", icon="contour.png")
         item = ContourItem(points=cline.vertices, shapeparam=param)
         item.set_style("plot", "shape/contour")
+        if color is not None:
+            item.shapeparam.line.color = COLORS.get(color, color)
+        if linestyle is not None:
+            item.shapeparam.line.set_style_from_matlab(linestyle)
+        if linewidth is not None:
+            item.shapeparam.line.width = linewidth
+        if color is not None or linestyle is not None or linewidth is not None:
+            item.shapeparam.update_item(item)
         item.setTitle(_("Contour") + f"[Z={cline.level}]")
         items.append(item)
     return items

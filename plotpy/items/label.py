@@ -828,7 +828,7 @@ class LegendBoxItem(AbstractLabelItem):
                 for item in self.plot().get_items()
                 if self.include_item(item) and isinstance(item, CurveItem)
             ]
-            if line < len(items):
+            if 0 <= line < len(items):
                 return 1000.0, None, False, items[line]
         return 2.0, 1, True, None
 

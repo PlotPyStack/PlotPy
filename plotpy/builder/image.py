@@ -826,6 +826,9 @@ class ImageBuilder:
         levels: float | np.ndarray,
         X: np.ndarray | None = None,
         Y: np.ndarray | None = None,
+        color: str | None = None,
+        linestyle: str | None = None,
+        linewidth: float | None = None,
     ) -> list[ContourItem]:
         """Make a contour curves
 
@@ -845,11 +848,24 @@ class ImageBuilder:
              ``numpy.meshgrid``), or it must both be 1-D such that ``len(Y) == N``
              is the number of rows in *Z*.
              If none, they are assumed to be integer indices, i.e. ``Y = range(N)``.
+            color: contour color name. Default is None
+            linestyle: contour line style (MATLAB-like string or "SolidLine",
+             "DashLine", "DotLine", "DashDotLine", "DashDotDotLine", "NoPen").
+             Default is None
+            linewidth: contour line width (pixels). Default is None
 
         Returns:
             list of :py:class:`.ContourItem` objects
         """
-        return create_contour_items(Z, levels, X, Y)
+        return create_contour_items(
+            Z,
+            levels,
+            X,
+            Y,
+            color=color,
+            linestyle=linestyle,
+            linewidth=linewidth,
+        )
 
     def histogram2D(
         self,
