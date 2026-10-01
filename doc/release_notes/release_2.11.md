@@ -1,5 +1,19 @@
 # Version 2.11 #
 
+## PlotPy Version 2.11.1 ##
+
+🛠️ Bug fixes:
+
+* **`hist_range_threshold` documentation** — Fixed the docstring of `plotpy.lutrange.hist_range_threshold`, which stated that `percent` was the share of the histogram mass to *retain*, whereas it is the share to *eliminate* (half on each side). The error message raised for an out-of-range `percent` now matches the accepted range `[0, 100]`
+
+📚 Documentation:
+
+* **Migrating from guiqwt** — Updated the migration guide to match the current API:
+  * Fixed outdated targets (`BasePlotWidget`, `BasePlot`) and the contour demo script path
+  * Updated the `BasePlot` constructor section: all configuration settings now go through `BasePlotOptions`
+  * Added equivalents for `canvas2plotitem`/`plotitem2canvas` (`plotpy.coords`), `mimedata2url` (`guidata.qthelpers`), `guiqwt.transitional` (`qwt` package) and guidance for `eliminate_outliers` and `guiqwt.signals`
+  * Completed the compatibility table with missing guiqwt modules and classes (`builder`, `panels`, `config`, `ImagePlot`, `ImageWidget`, `ImageDialog`, `ImageWindow`, ...)
+
 ## PlotPy Version 2.11.0 ##
 
 ✨ New features:
