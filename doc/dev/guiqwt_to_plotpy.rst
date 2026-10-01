@@ -70,15 +70,16 @@ to the `Generic PlotWidgets`_ may require some minor adaptation of your code:
   pass ``except_grid=False`` to your
   :py:meth:`.BasePlot.del_all_items` calls.
 
-* Some arguments were added to the constructor of the :py:class:`.BasePlot` class
-  (the arguments of the constructors of the old classes ``CurvePlot`` and
-  ``ImagePlot`` have been merged): the new `type` of the plot
-  (see `Generic PlotWidgets`_), and the arguments of the ``ImagePlot``
-  constructor that the ``CurvePlot`` constructor missed : ``zlabel``, ``zunit``,
-  ``yreverse``, ``aspect_ratio``, ``lock_aspect_ratio`` and ``force_colorbar_enabled``.
-  As a consequence, if you did not use keywords, but positional-only arguments when
-  instantiating a ``CurvePlot`` or ``ImagePlot``, you should adapt the new calls to the
-  :py:class:`.BasePlot` constructor to meet the new arguments list.
+* The constructor of the :py:class:`.BasePlot` class now only takes ``parent``
+  and ``options`` arguments. The arguments of the constructors of the old classes
+  ``CurvePlot`` and ``ImagePlot`` (``title``, ``xlabel``, ``ylabel``, ``xunit``,
+  ``yunit``, ``gridparam``, ``section``, ``axes_synchronised``, ``zlabel``,
+  ``zunit``, ``yreverse``, ``aspect_ratio``, ``lock_aspect_ratio``) have been
+  merged into the :py:class:`.BasePlotOptions` dataclass, together with the new
+  ``type`` (see `Generic PlotWidgets`_) and ``force_colorbar_enabled`` options.
+  As a consequence, you should pass these settings through the ``options``
+  argument, e.g. ``BasePlot(options=BasePlotOptions(title="My plot", type="image"))``
+  (a dictionary is also accepted).
 
 Renamed update_curve and update_image methods
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -147,7 +148,7 @@ algorithm provided by the `scikit-image` library.
 As a consequence, the applications that previously depended on `matplotlib` only for
 contour detection can now drop this dependency.
 
-See demo script `tests/items/test_contour.py`.
+See demo script `tests/items/test_contours.py`.
 
 MaskedXYImages
 ~~~~~~~~~~~~~~
@@ -176,7 +177,7 @@ New methods for creating ready-to-use plots have been added to the class:
 The method :py:meth:`.PlotBuilder.contours` has been added, in order to create
 contour curves. It returns a list of :py:class:`plotpy.items.ContourItem` objects.
 
-See demo script `tests/items/test_contour.py`.
+See demo script `tests/items/test_contours.py`.
 
 The new keyword parameter ``alpha_function`` has been added to the methods
 :py:meth:`.PlotBuilder.image`, :py:meth:`.PlotBuilder.xyimage`,

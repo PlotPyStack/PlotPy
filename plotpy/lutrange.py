@@ -29,8 +29,9 @@ if TYPE_CHECKING:
 def hist_range_threshold(
     hist: np.ndarray, bin_edges: np.ndarray, percent: float
 ) -> tuple[float, float]:
-    """Return the range corresponding to the central `percent` of the histogram mass.
-    This can be used to eliminate outliers symmetrically, e.g. for contrast adjustment.
+    """Return the range obtained by removing `percent` of the histogram mass.
+    Outliers are eliminated symmetrically (`percent / 2` on each side),
+    e.g. for contrast adjustment.
 
     Notes:
         - If the histogram comes from an image with integer values (e.g. 0-255),
@@ -40,14 +41,14 @@ def hist_range_threshold(
     Args:
         hist: The histogram (length N)
         bin_edges: The bin edges (length N+1)
-        percent: Percent of histogram mass to retain (between 0 and 100)
+        percent: Percent of histogram mass to eliminate (between 0 and 100)
 
     Returns:
         A tuple containing the minimum and maximum values of the range
-        corresponding to the central `percent` of the histogram mass.
+        remaining after removing `percent` of the histogram mass.
     """
     if not (0 <= percent <= 100):
-        raise ValueError("percent must be in (0, 100]")
+        raise ValueError("percent must be in [0, 100]")
 
     hist_len = len(hist)
     i_offset = 0
