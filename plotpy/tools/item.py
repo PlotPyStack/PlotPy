@@ -86,7 +86,8 @@ class ItemManipulationBaseTool(CommandTool):
         if len(all_items) == 1:
             return all_items
         else:
-            return [item for item in all_items if item in plot.get_selected_items()]
+            selected = plot.get_selected_items()
+            return [item for item in all_items if item in selected]
 
     def update_status(self, plot: BasePlot) -> None:
         """

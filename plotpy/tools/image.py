@@ -416,7 +416,8 @@ class ZAxisLogTool(ToggleTool):
             and hasattr(item, "get_zaxis_log_state")
         ]
         if len(items) > 1:
-            items = [item for item in items if item in plot.get_selected_items()]
+            selected = plot.get_selected_items()
+            items = [item for item in items if item in selected]
         if items:
             self.action.setChecked(items[0].get_zaxis_log_state())
         return items
