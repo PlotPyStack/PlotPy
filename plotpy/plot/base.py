@@ -886,6 +886,10 @@ class BasePlot(qwt.QwtPlot):
         Args:
             title (str): the title
         """
+        current = self.title()
+        if current.text() == title and current.font().key() == self.font_title.key():
+            # Nothing changed: setting the title would lay out the plot again
+            return
         text = qwt.QwtText(title)
         text.setFont(self.font_title)
         self.setTitle(text)
@@ -1044,18 +1048,28 @@ class BasePlot(qwt.QwtPlot):
 
         title_font = style.title_font.build_font()
         ticks_font = style.ticks_font.build_font()
-        self.setAxisFont(axis_id, ticks_font)
-
         if style.title and style.unit:
             title = f"{style.title} ({style.unit})"
         elif style.title:
             title = style.title
         else:
             title = style.unit
+        color = QG.QColor(style.color)
         axis_text = self.axisTitle(axis_id)
+        # Fonts are compared by key: the widget font is resolved against its
+        # parent font, so it never compares equal to the built font
+        if (
+            self.axisFont(axis_id).key() == ticks_font.key()
+            and axis_text.text() == title
+            and axis_text.font().key() == title_font.key()
+            and axis_text.color() == color
+        ):
+            # Nothing changed: setting the axis title would lay out the plot again
+            return
+        self.setAxisFont(axis_id, ticks_font)
         axis_text.setFont(title_font)
         axis_text.setText(title)
-        axis_text.setColor(QG.QColor(style.color))
+        axis_text.setColor(color)
         self.setAxisTitle(axis_id, axis_text)
         self.SIG_PLOT_LABELS_CHANGED.emit(self)
 
