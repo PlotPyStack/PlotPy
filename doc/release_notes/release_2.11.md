@@ -1,5 +1,16 @@
 # Version 2.11 #
 
+## PlotPy Version 2.11.2 ##
+
+🛠️ Bug fixes:
+
+* **Cross-section panels with many hidden images** — X/Y cross-section panels kept one curve for every image ever displayed, even after it was hidden, so plots containing hundreds of hidden images became progressively slower to refresh. Curves are now only kept for visible images, and are recreated when a hidden image is shown again
+
+⚡ Performance:
+
+* **Plot refresh** — Refreshing a plot no longer recomputes the plot layout when the title and axis styles did not change
+* **Item tools and item list** — Updating the status of item-related tools and of the item list panel is no longer quadratic in the number of plot items
+
 ## PlotPy Version 2.11.1 ##
 
 🛠️ Bug fixes:
