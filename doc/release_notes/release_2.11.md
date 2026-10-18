@@ -10,6 +10,7 @@
 
 * **Plot refresh** — Refreshing a plot no longer recomputes the plot layout when the title and axis styles did not change
 * **Item tools and item list** — Updating the status of item-related tools and of the item list panel is no longer quadratic in the number of plot items
+* **Image creation** — Creating an image item no longer recomputes the colormap lookup table when the same colormap, inversion and transparency settings were already used: the table (more than 1000 colormap evaluations) is computed once and reused, which saves a few milliseconds per image
 
 ## PlotPy Version 2.11.1 ##
 
