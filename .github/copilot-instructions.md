@@ -12,7 +12,7 @@ PythonQwt and guidata.
 
 ### Technology Stack
 
-- **Python**: 3.9+ (`from __future__ import annotations`)
+- **Python**: 3.10+ (`from __future__ import annotations`)
 - **Core**: NumPy, SciPy, scikit-image
 - **GUI**: Qt via QtPy, guidata, PythonQwt
 - **Build**: Some features rely on Cython extensions
