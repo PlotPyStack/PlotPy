@@ -1,5 +1,9 @@
 # Version 2.11 #
 
+## Unreleased ##
+
+* Python 3.10 or later is now required, and wheels are no longer built for Python 3.9. Python 3.9 users must keep an earlier compatible release.
+
 ## PlotPy Version 2.11.2 ##
 
 🛠️ Bug fixes:
