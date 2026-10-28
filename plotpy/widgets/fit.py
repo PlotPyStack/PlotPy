@@ -62,7 +62,7 @@ from guidata.dataset import (
     restore_dataset,
     update_dataset,
 )
-from guidata.qthelpers import create_groupbox, exec_dialog
+from guidata.qthelpers import create_groupbox, exec_dialog, get_std_icon
 
 # Do not remove this import (used by optimization funcs)
 from numpy import inf  # noqa: F401
@@ -121,7 +121,7 @@ class FitParamDataSet(DataSet):
     value = FloatItem(_("Value"), default=0.0)
     min = FloatItem(_("Min"), default=-1.0)
     max = FloatItem(_("Max"), default=1.0).set_pos(col=1)
-    steps = IntItem(_("Steps"), default=5000)
+    steps = IntItem(_("Steps"), default=5000, min=2)
     format = StringItem(_("Format"), default="%.3f").set_pos(col=1)
     logscale = BoolItem(_("Logarithmic"), _("Scale"))
     unit = StringItem(_("Unit"), default="").set_pos(col=1)
@@ -169,6 +169,7 @@ class FitParam:
         self.locked = locked
         self.prefix_label = None
         self.lineedit = None
+        self.range_warning = None
         self.unit_label = None
         self.slider = None
         self.button = None
@@ -216,6 +217,10 @@ class FitParam:
         self.button.clicked.connect(lambda: self.edit_param(parent))
         self.lineedit = QW.QLineEdit()
         self.lineedit.editingFinished.connect(self.line_editing_finished)
+        self.range_warning = self.lineedit.addAction(
+            get_std_icon("MessageBoxWarning"), QW.QLineEdit.TrailingPosition
+        )
+        self.range_warning.setVisible(False)
         self.unit_label = QW.QLabel(self.unit)
         self.slider = QW.QSlider()
         self.slider.setOrientation(QC.Qt.Horizontal)
@@ -278,14 +283,40 @@ class FitParam:
             self.locked or (self.value == self.min and self.max == self.min)
         )
         self.lineedit.setDisabled(is_disabled)
+        self._update_range_warning()
+
+    def _update_range_warning(self) -> None:
+        """Show a warning when the value is outside the slider range"""
+        out_of_range = bool(
+            self.value is not None
+            and self.min is not None
+            and self.max is not None
+            and np.isfinite(self.value)
+            and not self.min <= self.value <= self.max
+        )
+        tooltip = ""
+        if out_of_range:
+            tooltip = _("This value is outside the slider range ({vmin} to {vmax})")
+            tooltip = tooltip.format(
+                vmin=self.format % self.min, vmax=self.format % self.max
+            )
+        self.range_warning.setVisible(out_of_range)
+        self.range_warning.setToolTip(tooltip)
+        self.lineedit.setToolTip(tooltip)
 
     def line_editing_finished(self):
         """Line editing finished"""
         try:
-            self.value = float(self.lineedit.text())
+            value = float(self.lineedit.text())
         except ValueError:
+            value = np.nan
+        if not np.isfinite(value):
+            # Not a valid value (including "nan" and "inf"): restore the previous one
             self.set_text()
+            return
+        self.value = value
         self.update_slider_value()
+        self._update_range_warning()
         self._refresh_callback()
 
     def slider_value_changed(self, int_value: int) -> None:
@@ -305,6 +336,29 @@ class FitParam:
         self.set_text()
         self._refresh_callback()
 
+    def _get_slider_position(self) -> int | None:
+        """Return the slider position matching the value
+
+        Values outside the [min, max] range give the position of the nearest end of
+        the slider. This is the inverse of the mapping of `slider_value_changed`.
+
+        Returns:
+            Slider position, or None if the value is not finite or the range is empty
+        """
+        vmin, vmax, value = self.min, self.max, self.value
+        width = vmax - vmin
+        if not (np.isfinite(value) and np.isfinite(width) and width > 0):
+            return None
+        if value <= vmin:
+            ratio = 0.0
+        elif value >= vmax:
+            ratio = 1.0
+        elif self.logscale:
+            ratio = np.log10(1 + value - vmin) / np.log10(1 + width)
+        else:
+            ratio = (value - vmin) / width
+        return int(round(float(ratio) * (self.steps - 1)))
+
     def update_slider_value(self):
         """Update slider value"""
         if self.value is None or self.min is None or self.max is None:
@@ -317,16 +371,13 @@ class FitParam:
             self.slider.setEnabled(not self.locked)
             if self.slider.parentWidget() and self.slider.parentWidget().isVisible():
                 self.slider.show()
-            if self.logscale:
-                value_delta = max([np.log10(1 + self.value - self.min), 0.0])
-                total_delta = np.log10(1 + self.max - self.min)
-            else:
-                value_delta = self.value - self.min
-                total_delta = self.max - self.min
-            intval = int(self.steps * value_delta / total_delta)
-            self.slider.blockSignals(True)
-            self.slider.setValue(intval)
-            self.slider.blockSignals(False)
+            position = self._get_slider_position()
+            if position is not None:
+                was_blocked = self.slider.blockSignals(True)
+                try:
+                    self.slider.setValue(position)
+                finally:
+                    self.slider.blockSignals(was_blocked)
 
     def edit_param(self, parent: QWidget) -> None:
         """Edit param

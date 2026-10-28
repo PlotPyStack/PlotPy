@@ -1628,6 +1628,10 @@ msgstr "Paramètre d'ajustement"
 msgid "Edit '{name}' fit parameter properties"
 msgstr "Modifier les propriétés du paramètre d'ajustement '{name}'"
 
+#, python-brace-format
+msgid "This value is outside the slider range ({vmin} to {vmax})"
+msgstr "Cette valeur est en dehors de la plage du curseur ({vmin} à {vmax})"
+
 msgid "Fit parameters"
 msgstr "Paramètres d'ajustement"
 
