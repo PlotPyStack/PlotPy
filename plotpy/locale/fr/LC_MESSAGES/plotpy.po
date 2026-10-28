@@ -1489,7 +1489,6 @@ msgstr "Sélection"
 msgid "Polyline"
 msgstr "Ligne brisée"
 
-#, fuzzy
 msgid "Polygon"
 msgstr "Polygone"
 
