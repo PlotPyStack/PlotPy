@@ -167,13 +167,19 @@ class BaseCrossSectionPlot(BasePlot):
     def items_changed(self, plot: BasePlot) -> None:
         """Items have changed in the plot
 
+        Cross section curves are kept for visible image items only: the curve
+        of an image item that is hidden or removed is deleted, and created
+        again when the item is shown. Keeping the curves of hidden items would
+        make every change cost more as images accumulate in the plot (e.g. an
+        application showing one image at a time among many hidden ones).
+
         Args:
             plot: Plot containing the image items to be used for cross section
         """
-        # Del obsolete cross section items
         new_sources = plot.get_items(item_type=ICSImageItemType)
+        # Del cross section items of removed or hidden image items
         for source in self.known_items.copy():
-            if source not in new_sources:
+            if source not in new_sources or not source.isVisible():
                 curve = self.known_items.pop(source)
                 curve.clear_data()  # useful to emit SIG_CS_CURVE_CHANGED
                 # (eventually notify other panels that the

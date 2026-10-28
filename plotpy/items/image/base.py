@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import os
 import os.path as osp
+from collections import OrderedDict
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
@@ -46,6 +47,7 @@ from plotpy.lutrange import lut_range_threshold
 from plotpy.mathutils.arrayfuncs import get_nan_range
 from plotpy.mathutils.colormap import FULLRANGE, get_cmap
 from plotpy.styles.image import RawImageParam
+from plotpy.widgets.colormap.widget import EditableColormap
 
 if TYPE_CHECKING:
     import guidata.io
@@ -57,7 +59,110 @@ if TYPE_CHECKING:
     from plotpy.interfaces import IItemType
     from plotpy.plot import BasePlot
     from plotpy.styles.base import ItemParameters
-    from plotpy.widgets.colormap.widget import EditableColormap
+
+#: Lookup tables already computed by :func:`_get_colormap_lut`, most recent last
+_LUT_CACHE: OrderedDict[tuple, tuple[tuple[int, ...], np.ndarray]] = OrderedDict()
+_LUT_CACHE_SIZE = 32
+
+
+def _lut_cache_key(
+    table: EditableColormap, alpha: float, alpha_function: int
+) -> tuple | None:
+    """Return the key identifying the lookup table of a colormap, if cacheable.
+
+    The key is built from the colormap content (not its identity), so that an
+    edited colormap gets a new lookup table.
+
+    Args:
+        table: Colormap
+        alpha: Global alpha value
+        alpha_function: Alpha function (see :class:`plotpy.constants.LUTAlpha`)
+
+    Returns:
+        Cache key, or None if the lookup table must be computed: colormap
+        subclasses may compute colors differently, and the colors of translucent
+        stops depend on the order in which the stops were inserted.
+    """
+    if type(table) is not EditableColormap:
+        return None
+    stops = tuple((stop.pos, stop.rgb) for stop in table.colorStops())
+    if any(stop.a != 255 for stop in table.colorStops()):
+        return None
+    return (stops, table.mode(), table.invert, alpha, alpha_function)
+
+
+def _compute_colormap_lut(
+    table: EditableColormap, alpha: float, alpha_function: int
+) -> tuple[tuple[int, ...], np.ndarray]:
+    """Compute the color table and the lookup table of a colormap.
+
+    Args:
+        table: Colormap
+        alpha: Global alpha value
+        alpha_function: Alpha function (see :class:`plotpy.constants.LUTAlpha`)
+
+    Returns:
+        Color table (256 colors) and lookup table (``LUT_SIZE`` ARGB values)
+    """
+    colors = tuple(table.colorTable(FULLRANGE))
+    lut = np.zeros((LUT_SIZE,), np.uint32)
+    for i in range(LUT_SIZE):
+        if alpha_function == LUTAlpha.NONE.value:
+            pix_alpha = 1.0
+        elif alpha_function == LUTAlpha.CONSTANT.value:
+            pix_alpha = alpha
+        else:
+            x = i / float(LUT_SIZE - 1)
+            if alpha_function == LUTAlpha.LINEAR.value:
+                # Linear alpha function
+                pix_alpha = alpha * x
+            elif alpha_function == LUTAlpha.SIGMOID.value:
+                # Sigmoid alpha function
+                pix_alpha = alpha / (1 + np.exp(-10 * x))
+            elif alpha_function == LUTAlpha.TANH.value:
+                # Hyperbolic tangent alpha function
+                pix_alpha = alpha * np.tanh(5 * x)
+            elif alpha_function == LUTAlpha.STEP.value:
+                # Fully transparent lowest value and `alpha` transparent elsewhere
+                pix_alpha = alpha if x > 0 else 0
+            else:
+                raise ValueError(f"Invalid alpha function {alpha_function}")
+        # pylint: disable=too-many-function-args
+        alpha_channel = max(min(np.uint32(255 * pix_alpha + 0.5), 255), 0) << 24
+        lut[i] = (
+            np.uint32((table.rgb(FULLRANGE, i / LUT_MAX)) & 0xFFFFFF) | alpha_channel
+        )
+    return colors, lut
+
+
+def _get_colormap_lut(
+    table: EditableColormap, alpha: float, alpha_function: int
+) -> tuple[tuple[int, ...], np.ndarray]:
+    """Return the color table and the lookup table of a colormap.
+
+    Computing them takes more than 1000 calls to the colormap: they are cached,
+    since every new image item usually shows the same colormap.
+
+    Args:
+        table: Colormap
+        alpha: Global alpha value
+        alpha_function: Alpha function (see :class:`plotpy.constants.LUTAlpha`)
+
+    Returns:
+        Color table (256 colors) and lookup table (``LUT_SIZE`` ARGB values),
+        the latter being read-only
+    """
+    key = _lut_cache_key(table, alpha, alpha_function)
+    if key is not None and key in _LUT_CACHE:
+        _LUT_CACHE.move_to_end(key)
+        return _LUT_CACHE[key]
+    colors, lut = _compute_colormap_lut(table, alpha, alpha_function)
+    lut.flags.writeable = False
+    if key is not None:
+        _LUT_CACHE[key] = (colors, lut)
+        if len(_LUT_CACHE) > _LUT_CACHE_SIZE:
+            _LUT_CACHE.popitem(last=False)
+    return colors, lut
 
 
 class BaseImageItem(QwtPlotItem):
@@ -466,37 +571,11 @@ class BaseImageItem(QwtPlotItem):
         if invert is not None:
             table.invert = invert
         self.cmap_table = table
-        self.cmap = table.colorTable(FULLRANGE)
-        cmap_a = self.lut[3]
-        alpha = self.param.alpha
-        alpha_function = self.param.alpha_function
-        for i in range(LUT_SIZE):
-            if alpha_function == LUTAlpha.NONE.value:
-                pix_alpha = 1.0
-            elif alpha_function == LUTAlpha.CONSTANT.value:
-                pix_alpha = alpha
-            else:
-                x = i / float(LUT_SIZE - 1)
-                if alpha_function == LUTAlpha.LINEAR.value:
-                    # Linear alpha function
-                    pix_alpha = alpha * x
-                elif alpha_function == LUTAlpha.SIGMOID.value:
-                    # Sigmoid alpha function
-                    pix_alpha = alpha / (1 + np.exp(-10 * x))
-                elif alpha_function == LUTAlpha.TANH.value:
-                    # Hyperbolic tangent alpha function
-                    pix_alpha = alpha * np.tanh(5 * x)
-                elif alpha_function == LUTAlpha.STEP.value:
-                    # Fully transparent lowest value and `alpha` transparent elsewhere
-                    pix_alpha = alpha if x > 0 else 0
-                else:
-                    raise ValueError(f"Invalid alpha function {alpha_function}")
-            # pylint: disable=too-many-function-args
-            alpha_channel = max(min(np.uint32(255 * pix_alpha + 0.5), 255), 0) << 24
-            cmap_a[i] = (
-                np.uint32((table.rgb(FULLRANGE, i / LUT_MAX)) & 0xFFFFFF)
-                | alpha_channel
-            )
+        colors, lut = _get_colormap_lut(
+            table, self.param.alpha, self.param.alpha_function
+        )
+        self.cmap = list(colors)
+        self.lut[3][:] = lut
         plot = self.plot()
         if plot:
             plot.update_colormap_axis(self)

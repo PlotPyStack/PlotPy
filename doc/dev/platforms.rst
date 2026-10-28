@@ -7,7 +7,7 @@ The following sections describe the reference platforms for the project.
 
 .. note::
 
-    The officially supported Python versions are 3.9, 3.10, 3.11, 3.12 and 3.13.
+    The officially supported Python versions are 3.10, 3.11, 3.12, 3.13 and 3.14.
 
     The officially supported Qt binding is PyQt5. However, efforts have been
     made and will continue to be made to support PyQt6 and PySide6 as well.

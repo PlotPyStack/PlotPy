@@ -233,9 +233,9 @@ class ItemListWidget(QW.QListWidget):
         self.plot = plot
         _block = self.blockSignals(True)
         active = plot.get_active_item()
-        for item in self.items:
+        for row, item in enumerate(self.items):
             title = item.title().text()
-            lw_item = self.item(self.items.index(item))
+            lw_item = self.item(row)
             lw_item.setText(title)
             lw_item.setSelected(item.selected)
             font = lw_item.font()

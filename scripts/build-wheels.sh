@@ -4,22 +4,22 @@ set -e -u -x
 ARCH=$(uname -m)
 export PLAT=manylinux_2_24_$ARCH
 
-# Accurately check if Python version is 3.9 or greater
-function is_python_version_ge_39 {
+# Accurately check if Python version is 3.10 or greater
+function is_python_version_ge_310 {
     local pydir="$1"
-    if [[ $pydir =~ cp([0-9]+)([0-9]+)-cp ]]; then
+    if [[ $pydir =~ cp([0-9])([0-9]+)-cp ]]; then
         local version="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}"
-        # Use sort with version sort flag to compare version against 3.9
-        if [[ $(echo -e "3.9\n$version" | sort -V | head -n1) == "3.9" ]]; then
-            return 0  # True, version is >= 3.9
+        # Use sort with version sort flag to compare version against 3.10
+        if [[ $(echo -e "3.10\n$version" | sort -V | head -n1) == "3.10" ]]; then
+            return 0  # True, version is >= 3.10
         fi
     fi
-    return 1  # False, version is < 3.9
+    return 1  # False, version is < 3.10
 }
 
-# Compile wheels, only for CPython 3.9+
+# Compile wheels, only for CPython 3.10+
 for PYDIR in /opt/python/*; do
-    if is_python_version_ge_39 "$PYDIR"; then
+    if is_python_version_ge_310 "$PYDIR"; then
         PYBIN="$PYDIR/bin"
         "${PYBIN}/pip" install -r /io/requirements.txt
         "${PYBIN}/pip" wheel /io/ --no-deps -w wheelhouse/
@@ -33,9 +33,9 @@ for wheel in wheelhouse/*.whl; do
     fi
 done
 
-# Install packages and test, only for CPython 3.9+
+# Install packages and test, only for CPython 3.10+
 for PYDIR in /opt/python/*; do
-    if is_python_version_ge_39 "$PYDIR"; then
+    if is_python_version_ge_310 "$PYDIR"; then
         PYBIN="$PYDIR/bin"
         "${PYBIN}/pip" install plotpy --no-index -f /io/wheelhouse
         (cd "$HOME"; INSTDIR=$("${PYBIN}/python" -c "import plotpy, os.path as osp; print(osp.dirname(plotpy.__file__))"); export QT_QPA_PLATFORM=offscreen; "${PYBIN}/pytest" "$INSTDIR")
