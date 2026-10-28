@@ -15,4 +15,4 @@
 
 ⚙️ Dependencies:
 
-* Python 3.10 or later is now required, and wheels are no longer built for Python 3.9. Python 3.9 users must keep an earlier compatible release (PlotPy 2.11.x)
+* Python 3.10 or later is now required, and wheels are no longer built for Python 3.9. Python 3.9 users must keep an earlier compatible release (PlotPy 2.11.x) (closes [Issue #74](https://github.com/PlotPyStack/PlotPy/issues/74))
