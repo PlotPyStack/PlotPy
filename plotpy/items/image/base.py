@@ -188,6 +188,9 @@ class BaseImageItem(QwtPlotItem):
     _readonly = False
     _private = False
     _icon_name = "image.png"
+    #: True if the item supports the Z-axis logarithmic scale, i.e. if it draws
+    #: its data through :meth:`_get_display_data` (see :meth:`supports_zaxis_log`)
+    _ZAXIS_LOG_SUPPORTED = False
 
     def __init__(
         self, data: np.ndarray | None = None, param: Any | None = None
@@ -210,6 +213,13 @@ class BaseImageItem(QwtPlotItem):
         self.selected = False
 
         self.data: np.ndarray | None = None
+
+        # Z-axis logarithmic scale support: the LUT range (`min`, `max`) is always
+        # expressed in data units, only the color mapping is logarithmic
+        self._log_data: np.ndarray | None = None
+        self._log_floor = 1.0
+        self._lin_lut_range: tuple[float, float] | None = None
+        self._is_zaxis_log = False
 
         self.min = 0.0
         self.max = 1.0
@@ -237,11 +247,6 @@ class BaseImageItem(QwtPlotItem):
         self._filename = None  # The file this image comes from
 
         self.histogram_cache = None
-
-        # Z-axis logarithmic scale support
-        self._log_data: np.ndarray | None = None
-        self._lin_lut_range: tuple[float, float] | None = None
-        self._is_zaxis_log = False
 
         if data is not None:
             self.set_data(data)
@@ -451,8 +456,47 @@ class BaseImageItem(QwtPlotItem):
         Used both when toggling the Z-axis log scale on and when the underlying
         data is replaced (e.g. via :meth:`set_data`) while the log scale is
         already active.
+
+        Values lower than or equal to zero have no logarithm: they are replaced
+        by the smallest positive value of the data (the "log floor", or 1.0 if
+        there is no positive value), so that they are shown with the lowest
+        color of the colormap. NaN values are kept.
         """
-        self._log_data = np.array(np.log10(self.data.clip(1)), dtype=np.float64)
+        data = np.asarray(self.data)
+        with np.errstate(invalid="ignore"):
+            positive = data[data > 0]
+        self._log_floor = float(positive.min()) if positive.size else 1.0
+        with np.errstate(invalid="ignore", divide="ignore"):
+            self._log_data = np.log10(
+                np.maximum(data, self._log_floor, dtype=np.float64)
+            )
+
+    def _get_display_data(self) -> np.ndarray:
+        """Return the data to which the LUT is applied when drawing the image
+
+        Returns:
+            Base-10 logarithm of the data if the Z-axis log scale is enabled,
+            the data itself otherwise
+        """
+        if self._is_zaxis_log:
+            return self._log_data
+        return self.data
+
+    def _to_lut_space(self, values: np.ndarray) -> np.ndarray:
+        """Convert data values to the space in which the LUT is applied
+
+        Args:
+            values: Data values
+
+        Returns:
+            Base-10 logarithm of the values (see :meth:`_recompute_log_data` for
+            values lower than or equal to zero) if the Z-axis log scale is enabled,
+            the values themselves otherwise
+        """
+        if self._is_zaxis_log:
+            with np.errstate(invalid="ignore", divide="ignore"):
+                return np.log10(np.maximum(values, self._log_floor, dtype=np.float64))
+        return values
 
     def set_data(
         self, data: np.ndarray, lut_range: tuple[float, float] | None = None
@@ -461,7 +505,8 @@ class BaseImageItem(QwtPlotItem):
 
         Args:
             data: 2D NumPy array
-            lut_range: LUT range -- tuple (levelmin, levelmax) (Default value = None)
+            lut_range: LUT range -- tuple (levelmin, levelmax), in data units, even
+             when the Z-axis log scale is enabled (Default value = None)
         """
         self.data = data
         self.histogram_cache = None
@@ -469,16 +514,18 @@ class BaseImageItem(QwtPlotItem):
         self.update_border()
         # Refresh the cached log10 data when log scale is active, otherwise the
         # display would keep using the previous (now stale) log data.
-        if self.get_zaxis_log_state():
+        if self._is_zaxis_log:
             self._recompute_log_data()
         if not self.param.keep_lut_range:
-            if lut_range is not None:
-                _min, _max = lut_range
-            elif self.get_zaxis_log_state():
-                _min, _max = get_nan_range(self._log_data)
-            else:
-                _min, _max = get_nan_range(data)
-            self.set_lut_range((_min, _max))
+            if self._is_zaxis_log:
+                # The linear LUT range, restored when the log scale is disabled,
+                # is updated as it would have been without the log scale
+                self._lin_lut_range = (
+                    get_nan_range(data) if lut_range is None else tuple(lut_range)
+                )
+            if lut_range is None:
+                lut_range = self.get_lut_range_full()
+            self.set_lut_range(lut_range)
 
     def get_data(
         self, x0: float, y0: float, x1: float | None = None, y1: float | None = None
@@ -598,7 +645,8 @@ class BaseImageItem(QwtPlotItem):
         if interp_mode in (INTERP_NEAREST, INTERP_LINEAR):
             self.interpolate = (interp_mode,)
         if interp_mode == INTERP_AA:
-            aa = np.ones((size, size), self.data.dtype)
+            # The kernel must have the same data type as the data drawn
+            aa = np.ones((size, size), self._get_display_data().dtype)
             self.interpolate = (interp_mode, aa)
 
     def get_interpolation(self) -> tuple[int] | tuple[int, np.ndarray]:
@@ -610,17 +658,29 @@ class BaseImageItem(QwtPlotItem):
         Set the current active lut range
 
         Args:
-            lut_range: Lut range, tuple(min, max)
+            lut_range: Lut range, tuple(min, max), in data units (even when the
+             Z-axis log scale is enabled: values lower than or equal to zero are
+             then replaced by the smallest positive value of the data)
 
         Example:
             >>> item.set_lut_range((0.0, 1.0))
         """
-        self.min, self.max = lut_range
+        vmin, vmax = lut_range
+        if self._is_zaxis_log:
+            if vmax <= 0:
+                vmax = self._log_floor
+            if vmin <= 0:
+                vmin = min(self._log_floor, vmax)
+        self.min, self.max = vmin, vmax
         _a, _b, bg, cmap = self.lut
-        if self.max == self.min:
-            self.lut = (LUT_MAX, self.min, bg, cmap)
+        if self._is_zaxis_log:
+            lmin, lmax = np.log10(float(vmin)), np.log10(float(vmax))
         else:
-            fmin, fmax = float(self.min), float(self.max)  # avoid overflows
+            lmin, lmax = self.min, self.max
+        if lmax == lmin:
+            self.lut = (LUT_MAX, lmin, bg, cmap)
+        else:
+            fmin, fmax = float(lmin), float(lmax)  # avoid overflows
             self.lut = (
                 LUT_MAX / (fmax - fmin),
                 -LUT_MAX * fmin / (fmax - fmin),
@@ -632,7 +692,7 @@ class BaseImageItem(QwtPlotItem):
         """Get the current active lut range
 
         Returns:
-            tuple[float, float]: Lut range, tuple(min, max)
+            tuple[float, float]: Lut range, tuple(min, max), in data units
         """
         return self.min, self.max
 
@@ -648,11 +708,25 @@ class BaseImageItem(QwtPlotItem):
         """Return full dynamic range
 
         Returns:
-            tuple[float, float]: Lut range, tuple(min, max)
+            tuple[float, float]: Lut range, tuple(min, max), in data units. When the
+            Z-axis log scale is enabled, the minimum is the smallest positive value
+            of the data.
         """
-        return get_nan_range(self.data)
+        vmin, vmax = get_nan_range(self.data)
+        if self._is_zaxis_log:
+            return self._log_floor, max(vmax, self._log_floor)
+        return vmin, vmax
 
     # ---- Z-axis logarithmic scale --------------------------------------------
+    def supports_zaxis_log(self) -> bool:
+        """Return True if the item supports the Z-axis logarithmic scale
+
+        Items which do not support it (e.g. RGB images, which have no colormap)
+        are ignored by :class:`.ZAxisLogTool`, and :meth:`set_zaxis_log_state`
+        has no effect on them.
+        """
+        return self._ZAXIS_LOG_SUPPORTED
+
     def get_zaxis_log_state(self) -> bool:
         """Return True if Z-axis is in logarithmic scale"""
         return self._is_zaxis_log
@@ -660,23 +734,35 @@ class BaseImageItem(QwtPlotItem):
     def set_zaxis_log_state(self, state: bool) -> None:
         """Set Z-axis logarithmic scale state
 
+        With the logarithmic scale, the colors are mapped to the base-10 logarithm
+        of the data, whereas the LUT range (see :meth:`get_lut_range`), the color
+        bar, the contrast adjustment panel and the cursor values remain in data
+        units. Values lower than or equal to zero are shown with the lowest color
+        of the colormap.
+
+        Enabling the logarithmic scale sets the LUT range to the full range of the
+        positive values of the data; disabling it restores the previous LUT range.
+
         Args:
             state: True to enable logarithmic scale, False otherwise
         """
-        self._is_zaxis_log = state
-        plot = self.plot()
+        state = bool(state)
+        if not self.supports_zaxis_log() or state == self._is_zaxis_log:
+            return
         if state:
             self._lin_lut_range = self.get_lut_range()
-            if self._log_data is None:
+            self._is_zaxis_log = True
+            if self.data is not None:
                 self._recompute_log_data()
-            self.set_lut_range(get_nan_range(self._log_data))
-            dtype = self._log_data.dtype
+                self.set_lut_range(self.get_lut_range_full())
         else:
+            self._is_zaxis_log = False
             self._log_data = None
             self.set_lut_range(self._lin_lut_range)
-            dtype = self.data.dtype
-        if self.interpolate[0] == INTERP_AA:
+        if self.data is not None and self.interpolate[0] == INTERP_AA:
+            dtype = self._get_display_data().dtype
             self.interpolate = (INTERP_AA, self.interpolate[1].astype(dtype))
+        plot = self.plot()
         if plot is not None:
             plot.update_colormap_axis(self)
 
@@ -766,7 +852,12 @@ class BaseImageItem(QwtPlotItem):
         if self.warn_if_non_linear_scale(painter, canvasRect):
             return
         dest = _scale_rect(
-            self.data, src_rect, self._offscreen, dst_rect, self.lut, self.interpolate
+            self._get_display_data(),
+            src_rect,
+            self._offscreen,
+            dst_rect,
+            self.lut,
+            self.interpolate,
         )
         qrect = QC.QRectF(QC.QPointF(dest[0], dest[1]), QC.QPointF(dest[2], dest[3]))
         painter.drawImage(qrect, self._image, qrect)
@@ -797,10 +888,12 @@ class BaseImageItem(QwtPlotItem):
         """
         if apply_lut:
             a, b, _bg, _cmap = self.lut
+            data = self._get_display_data()
         else:
             a, b = 1.0, 0.0
+            data = self.data
         interp = self.interpolate if apply_interpolation else (INTERP_NEAREST,)
-        _scale_rect(self.data, src_rect, dst_image, dst_rect, (a, b, None), interp)
+        _scale_rect(data, src_rect, dst_image, dst_rect, (a, b, None), interp)
 
     # ---- QwtPlotItem API -----------------------------------------------------
     def draw(
@@ -1170,7 +1263,7 @@ class BaseImageItem(QwtPlotItem):
     def __process_cross_section(self, ydata, apply_lut):
         if apply_lut:
             a, b, _bg, _cmap = self.lut
-            return (ydata * a + b).clip(0, LUT_MAX)
+            return (self._to_lut_space(ydata) * a + b).clip(0, LUT_MAX)
         else:
             return ydata
 
@@ -1283,6 +1376,7 @@ class RawImageItem(BaseImageItem):
         IVoiImageItemType,
         ISerializableType,
     )
+    _ZAXIS_LOG_SUPPORTED = True
 
     # ---- BaseImageItem API ---------------------------------------------------
     def get_default_param(self) -> RawImageParam:

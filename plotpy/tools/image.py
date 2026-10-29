@@ -388,7 +388,13 @@ class ReverseYAxisTool(BaseReverseAxisTool):
 
 
 class ZAxisLogTool(ToggleTool):
-    """Patched tools.ToggleTool"""
+    """Toggle the Z-axis logarithmic scale of image items
+
+    Colors are then mapped to the base-10 logarithm of the data, whereas the color
+    bar, the contrast adjustment panel and the cursor values remain in data units
+    (see :meth:`.BaseImageItem.set_zaxis_log_state`). Image items which do not
+    support it (see :meth:`.BaseImageItem.supports_zaxis_log`) are ignored.
+    """
 
     def __init__(self, manager: PlotManager) -> None:
         title = _("Base-10 logarithmic Z axis")
@@ -403,7 +409,9 @@ class ZAxisLogTool(ToggleTool):
         """Reimplement tools.ToggleTool method"""
         for item in self.get_supported_items(plot):
             item.set_zaxis_log_state(not item.get_zaxis_log_state())
-        plot.replot()
+        # The LUT range of the items has changed: notify the contrast adjustment
+        # panel and the other listeners, update the color bar and replot
+        plot.notify_colormap_changed()
         self.update_status(plot)
 
     def get_supported_items(self, plot: BasePlot) -> list[BaseImageItem]:
@@ -413,7 +421,7 @@ class ZAxisLogTool(ToggleTool):
             for item in plot.get_items()
             if isinstance(item, BaseImageItem)
             and not item.is_empty()
-            and hasattr(item, "get_zaxis_log_state")
+            and item.supports_zaxis_log()
         ]
         if len(items) > 1:
             selected = plot.get_selected_items()

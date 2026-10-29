@@ -38,6 +38,7 @@ class MyPlotDialog(PlotDialog):
         plot.add_item(item)
         plot.set_active_item(item)
         item.unselect()
+        self.item = item
 
 
 def test_zaxislogtool() -> None:
@@ -45,10 +46,21 @@ def test_zaxislogtool() -> None:
     with qt_app_context(exec_loop=True):
         win = MyPlotDialog()
         win.show()
+        plot = win.get_plot()
+        item = win.item
+        zaxis = plot.colormap_axis
         tool = win.manager.get_tool(ZAxisLogTool)
         qt_wait(1, except_unattended=True)
         for _index in range(2):
             tool.activate()
+            if item.get_zaxis_log_state():
+                # The color bar shows data values, on a logarithmic scale
+                assert plot.get_axis_scale(zaxis) == "log"
+                scalediv = plot.axisScaleDiv(zaxis)
+                assert scalediv.lowerBound() >= 1.0
+                assert np.isclose(scalediv.upperBound(), item.data.max())
+            else:
+                assert plot.get_axis_scale(zaxis) == "lin"
             qt_wait(1, except_unattended=True)
 
 

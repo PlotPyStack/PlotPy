@@ -359,17 +359,14 @@ class ImageItem(RawImageItem):
         src2 = self._rescale_src_rect(src_rect)
         dst_rect = tuple([int(i) for i in dst_rect])
 
-        # Not the most efficient way to do it, but it works...
-        # --------------------------------------------------------------------------
-        if self.get_zaxis_log_state():
-            data = self._log_data
-        else:
-            data = self.data
-        # --------------------------------------------------------------------------
-
         try:
             dest = _scale_rect(
-                data, src2, self._offscreen, dst_rect, self.lut, self.interpolate
+                self._get_display_data(),
+                src2,
+                self._offscreen,
+                dst_rect,
+                self.lut,
+                self.interpolate,
             )
         except ValueError:
             # This exception is raised when zooming unreasonably inside a pixel
@@ -403,12 +400,14 @@ class ImageItem(RawImageItem):
         """
         if apply_lut:
             a, b, _bg, _cmap = self.lut
+            data = self._get_display_data()
         else:
             a, b = 1.0, 0.0
+            data = self.data
         interp = self.interpolate if apply_interpolation else (INTERP_NEAREST,)
         rescaled_src = self._rescale_src_rect(src_rect)
         _scale_rect(
-            self.data,
+            data,
             rescaled_src,
             dst_image,
             dst_rect,
@@ -657,12 +656,13 @@ class XYImageItem(RawImageItem):
             return
         xytr = self.x, self.y, src_rect
         dst_rect = tuple([int(i) for i in dst_rect])
-        if self.get_zaxis_log_state():
-            data = self._log_data
-        else:
-            data = self.data
         dest = _scale_xy(
-            data, xytr, self._offscreen, dst_rect, self.lut, self.interpolate
+            self._get_display_data(),
+            xytr,
+            self._offscreen,
+            dst_rect,
+            self.lut,
+            self.interpolate,
         )
         qrect = QC.QRectF(QC.QPointF(dest[0], dest[1]), QC.QPointF(dest[2], dest[3]))
         painter.drawImage(qrect, self._image, qrect)
@@ -692,12 +692,14 @@ class XYImageItem(RawImageItem):
         """
         if apply_lut:
             lut = self.lut
+            data = self._get_display_data()
         else:
             a, b = 1.0, 0.0
             lut = (a, b, None, np.zeros((1,), np.uint32))
+            data = self.data
         interp = self.interpolate if apply_interpolation else (INTERP_NEAREST,)
         xytr = self.x, self.y, src_rect
-        _scale_xy(self.data, xytr, dst_image, dst_rect, lut, interp)
+        _scale_xy(data, xytr, dst_image, dst_rect, lut, interp)
 
     def get_pixel_coordinates(self, xplot: float, yplot: float) -> tuple[float, float]:
         """Get pixel coordinates from plot coordinates
@@ -835,6 +837,8 @@ class RGBImageItem(ImageItem):
     """
 
     __implements__ = (IBasePlotItem, IBaseImageItem, ISerializableType)
+    # RGB images have no colormap
+    _ZAXIS_LOG_SUPPORTED = False
 
     def __init__(
         self, data: np.ndarray | None = None, param: RGBImageParam | None = None

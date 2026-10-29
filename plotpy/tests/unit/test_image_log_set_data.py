@@ -30,17 +30,15 @@ def test_set_data_refreshes_log_data_when_log_scale_enabled() -> None:
         first = np.array([[1.0, 10.0], [100.0, 1000.0]])
         item = _make_item(first)
         item.set_zaxis_log_state(True)
-        np.testing.assert_array_almost_equal(item._log_data, np.log10(first.clip(1)))
+        np.testing.assert_array_almost_equal(item._log_data, np.log10(first))
 
         second = np.array([[10.0, 100.0], [1000.0, 10000.0]])
         item.set_data(second)
 
         # The cache must reflect the new data, not the previous one.
-        np.testing.assert_array_almost_equal(item._log_data, np.log10(second.clip(1)))
-        # And the LUT range must be derived from the refreshed log data.
-        lut_min, lut_max = item.get_lut_range()
-        assert lut_min == np.log10(second.clip(1)).min()
-        assert lut_max == np.log10(second.clip(1)).max()
+        np.testing.assert_array_almost_equal(item._log_data, np.log10(second))
+        # And the LUT range must be the range of the new data, in data units.
+        assert item.get_lut_range() == (10.0, 10000.0)
 
 
 def test_set_data_keeps_lut_range_in_log_mode() -> None:
@@ -49,16 +47,16 @@ def test_set_data_keeps_lut_range_in_log_mode() -> None:
         first = np.array([[1.0, 10.0], [100.0, 1000.0]])
         item = _make_item(first)
         item.set_zaxis_log_state(True)
-        item.set_lut_range((0.5, 2.5))
+        item.set_lut_range((5.0, 500.0))
         item.param.keep_lut_range = True
 
         second = np.array([[10.0, 100.0], [1000.0, 10000.0]])
         item.set_data(second)
 
         # Cache must still be refreshed (display correctness)…
-        np.testing.assert_array_almost_equal(item._log_data, np.log10(second.clip(1)))
+        np.testing.assert_array_almost_equal(item._log_data, np.log10(second))
         # …but the LUT range must remain frozen as requested by the user.
-        assert item.get_lut_range() == (0.5, 2.5)
+        assert item.get_lut_range() == (5.0, 500.0)
 
 
 def test_set_data_does_not_create_log_data_when_log_scale_disabled() -> None:
