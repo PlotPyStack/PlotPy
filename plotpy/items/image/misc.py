@@ -71,6 +71,8 @@ class QuadGridItem(RawImageItem):
     """
 
     __implements__ = (IBasePlotItem, IBaseImageItem, IHistDataSource, IVoiImageItemType)
+    # Quadrilaterals are drawn from the data itself, without the log10 data
+    _ZAXIS_LOG_SUPPORTED = False
 
     def __init__(
         self,

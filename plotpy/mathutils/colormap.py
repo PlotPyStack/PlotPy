@@ -22,6 +22,10 @@ The following functions are available:
 * :py:func:`.build_icon_from_cmap_name`: build an icon representing the colormap
   from its name
 
+The :py:class:`.LogScaleColorMap` class maps values to colors on a base-10
+logarithmic scale (e.g. for the color bar of images shown with a logarithmic
+Z-axis).
+
 Reference
 ^^^^^^^^^
 
@@ -30,11 +34,14 @@ Reference
 .. autofunction:: add_cmap
 .. autofunction:: build_icon_from_cmap
 .. autofunction:: build_icon_from_cmap_name
+.. autoclass:: LogScaleColorMap
+   :members:
 """
 
 from __future__ import annotations
 
 import json
+import math
 import os
 from typing import Dict, Literal, Sequence
 
@@ -43,6 +50,7 @@ import qtpy.QtCore as QC
 import qtpy.QtGui as QG
 from guidata.configtools import get_module_data_path
 from qwt import QwtInterval, toQImage
+from qwt.color_map import QwtColorMap
 
 from plotpy.config import CONF
 from plotpy.widgets.colormap.widget import EditableColormap
@@ -301,3 +309,65 @@ def delete_cmap(cmap: EditableColormap) -> None:
     if CUSTOM_COLORMAPS.pop(cmap.name.lower(), None) is not None:
         del ALL_COLORMAPS[cmap.name.lower()]
         save_colormaps(CUSTOM_COLORMAPS_PATH, CUSTOM_COLORMAPS)
+
+
+class LogScaleColorMap(QwtColorMap):
+    """Color map applying another color map on a base-10 logarithmic scale
+
+    The value interval and the values are given in data units: the wrapped color
+    map is applied to their base-10 logarithm. Values lower than or equal to zero
+    get the color of the lower bound of the interval.
+
+    This is used to draw the color bar of images shown with a logarithmic Z-axis,
+    so that the colors of the color bar match those of the image.
+
+    Args:
+        colormap: Wrapped color map
+    """
+
+    def __init__(self, colormap: QwtColorMap) -> None:
+        super().__init__(colormap.format())
+        self.colormap = colormap
+
+    @staticmethod
+    def _to_log(interval: QwtInterval, value: float) -> tuple[QwtInterval, float]:
+        """Convert interval and value to base-10 logarithmic scale
+
+        Args:
+            interval: Value interval, in data units
+            value: Value, in data units
+
+        Returns:
+            Interval and value, on logarithmic scale (unchanged if the interval
+            is not strictly positive)
+        """
+        vmin, vmax = interval.minValue(), interval.maxValue()
+        if not (vmin > 0 and vmax > 0):
+            return interval, value
+        lmin = math.log10(vmin)
+        lvalue = math.log10(value) if value > 0 else lmin
+        return QwtInterval(lmin, math.log10(vmax)), lvalue
+
+    def rgb(self, interval: QwtInterval, value: float) -> int:
+        """Return the color of a value
+
+        Args:
+            interval: Value interval, in data units
+            value: Value, in data units
+
+        Returns:
+            RGB value of the color
+        """
+        return self.colormap.rgb(*self._to_log(interval, value))
+
+    def colorIndex(self, interval: QwtInterval, value: float) -> int:
+        """Return the color index of a value
+
+        Args:
+            interval: Value interval, in data units
+            value: Value, in data units
+
+        Returns:
+            Index of the color in the color table
+        """
+        return self.colormap.colorIndex(*self._to_log(interval, value))

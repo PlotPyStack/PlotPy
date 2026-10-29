@@ -55,6 +55,7 @@ from plotpy.items import (
     PolygonShape,
     QuiverItem,
 )
+from plotpy.mathutils.colormap import LogScaleColorMap
 from plotpy.styles.axes import AxesParam, AxeStyleParam, AxisParam, ImageAxesParam
 from plotpy.styles.base import GridParam, ItemParameters
 
@@ -2597,6 +2598,10 @@ class BasePlot(qwt.QwtPlot):
         """
         Update colormap axis
 
+        When the Z-axis logarithmic scale of the item is enabled, the colormap
+        axis uses a logarithmic scale, with bounds in data units, and its color
+        bar is drawn with the colormap applied on a logarithmic scale.
+
         Args:
             item (IColormapImageItemType): the item
         """
@@ -2604,12 +2609,18 @@ class BasePlot(qwt.QwtPlot):
             return
         zaxis = self.colormap_axis
         axiswidget: QwtScaleWidget = self.axisWidget(zaxis)
+        is_log = item.get_zaxis_log_state()
+        if is_log != (self.get_axis_scale(zaxis) == "log"):
+            self.setAxisScaleEngine(
+                zaxis, self.AXIS_TYPES["log" if is_log else "lin"]()
+            )
         self.setAxisScale(zaxis, item.min, item.max)
+        colormap = item.get_color_map()
+        if is_log:
+            colormap = LogScaleColorMap(colormap)
         # XXX: The colormap can't be displayed if min>max, to fix this
         # we should pass an inverted colormap along with _max, _min values
-        axiswidget.setColorMap(
-            qwt.QwtInterval(item.min, item.max), item.get_color_map()
-        )
+        axiswidget.setColorMap(qwt.QwtInterval(item.min, item.max), colormap)
         self.updateAxes()
 
     # # Keep this around to debug too many replots

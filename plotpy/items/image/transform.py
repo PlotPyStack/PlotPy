@@ -274,12 +274,13 @@ class TrImageItem(RawImageItem):
         mat = self.tr @ tr
 
         dst_rect = tuple([int(i) for i in dst_rect])
-        if self.get_zaxis_log_state():
-            data = self._log_data
-        else:
-            data = self.data
         dest = _scale_tr(
-            data, mat, self._offscreen, dst_rect, self.lut, self.interpolate
+            self._get_display_data(),
+            mat,
+            self._offscreen,
+            dst_rect,
+            self.lut,
+            self.interpolate,
         )
         qrect = QC.QRectF(QC.QPointF(dest[0], dest[1]), QC.QPointF(dest[2], dest[3]))
         painter.drawImage(qrect, self._image, qrect)
@@ -326,8 +327,10 @@ class TrImageItem(RawImageItem):
         """
         if apply_lut:
             a, b, _bg, _cmap = self.lut
+            data = self._get_display_data()
         else:
             a, b = 1.0, 0.0
+            data = self.data
 
         xs0, ys0, xs1, ys1 = src_rect
         xd0, yd0, xd1, yd1 = dst_rect
@@ -354,15 +357,13 @@ class TrImageItem(RawImageItem):
                 if force_interp_mode in (INTERP_NEAREST, INTERP_LINEAR):
                     interp = (force_interp_mode,)
                 else:  # INTERP_AA
-                    aa = np.ones(
-                        (force_interp_size, force_interp_size), self.data.dtype
-                    )
+                    aa = np.ones((force_interp_size, force_interp_size), data.dtype)
                     interp = (force_interp_mode, aa)
             else:  # don't force interpolation, keep current image interpolation
                 interp = self.interpolate
         else:  # don't apply interpolation --> INTERP_NEAREST
             interp = (INTERP_NEAREST,)
-        _scale_tr(self.data, mat, dst_image, dst_rect, (a, b, None), interp)
+        _scale_tr(data, mat, dst_image, dst_rect, (a, b, None), interp)
 
     # ---- IBasePlotItem API ---------------------------------------------------
     def move_local_point_to(self, handle: int, pos: QPointF, ctrl: bool = None) -> None:
