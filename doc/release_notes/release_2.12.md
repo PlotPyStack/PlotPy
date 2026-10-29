@@ -2,8 +2,13 @@
 
 ## PlotPy Version 2.12.0 ##
 
+✨ New features:
+
+* **Min/max curve downsampling** — Curve downsampling now keeps, by default, the minimum and the maximum of each group of 2 × N points (N being the downsampling factor), instead of one point out of N: narrow peaks and the envelope of noisy signals are preserved, with about as many points as before. The new **Downsampling method** curve parameter (`CurveParam.dsamp_method`) restores the former method ("stride"). `CurveItem.get_dsamp_indices` returns the indices of the points kept, the new `minmax_downsampling_indices` function computes them, and the `CurveItem.frozen_downsampling` context keeps them while points are edited (closes [Issue #83](https://github.com/PlotPyStack/PlotPy/issues/83))
+
 🛠️ Bug fixes:
 
+* **Editing points of downsampled curves** — With downsampling enabled, moving a curve point modified another point of the curve data than the one shown, since the handle of a drawn point was used as an index into the full data
 * **Curve fitting dialog** — Running the automatic fit no longer raises `OverflowError: argument 1 overflowed` errors when a fitted value ends up far outside the range of its slider (e.g. with the Powell method on a fit range restricted to the tail of a peak). These errors left the slider of the parameter unresponsive, and the values of the following parameters were not displayed. Such values are now shown with a warning icon, whose tooltip gives the slider range, while the slider stays at its nearest end. Typing `nan` or `inf` in a parameter field now restores the previous value instead of raising errors, and the number of slider steps must be at least 2 in the parameter properties dialog (closes [Issue #76](https://github.com/PlotPyStack/PlotPy/issues/76))
 * **Cross-section panels with many hidden images** — X/Y cross-section panels kept one curve for every image ever displayed, even after it was hidden, so plots containing hundreds of hidden images became progressively slower to refresh. Curves are now only kept for visible images, and are recreated when a hidden image is shown again
 

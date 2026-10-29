@@ -784,7 +784,8 @@ class EditPointTool(InteractiveTool):
         self.__indexed_changes: dict[CurveItem, dict[int, tuple[float, float]]] = {}
         self.__selection_threshold: float = 0.0
         self.end_callback = end_callback
-        self.__dsampling = 1  # synchronized with the active CurveItem
+        # Indices of the points kept by downsampling the active CurveItem, if any
+        self.__dsamp_indices: np.ndarray | None = None
         self.__curve_item_array_backup: dict[
             CurveItem, tuple[np.ndarray, np.ndarray]
         ] = {}
@@ -1001,16 +1002,16 @@ class EditPointTool(InteractiveTool):
     def downsampled_x(self) -> np.ndarray:
         """Downsampled x array"""
         assert self.__x is not None
-        if self.__dsampling > 1:
-            return self.__x[:: self.__dsampling]
+        if self.__dsamp_indices is not None:
+            return self.__x[self.__dsamp_indices]
         return self.__x
 
     @property
     def downsampled_y(self) -> np.ndarray:
         """Downsampled y array"""
         assert self.__y is not None
-        if self.__dsampling > 1:
-            return self.__y[:: self.__dsampling]
+        if self.__dsamp_indices is not None:
+            return self.__y[self.__dsamp_indices]
         return self.__y
 
     def start(self, filter: StatefulEventFilter, event: QG.QMouseEvent) -> None:
@@ -1031,9 +1032,7 @@ class EditPointTool(InteractiveTool):
             if self.__x is not curve_x or self.__x is None or self.__y is not curve_y:
                 self.__x, self.__y = curve_x.copy(), curve_y.copy()
 
-            self.__dsampling: int = (
-                1 if not curve_item.param.use_dsamp else curve_item.param.dsamp_factor
-            )  # type: ignore
+            self.__dsamp_indices = curve_item.get_dsamp_indices()
             self.__current_location_marker = self.__get_current_marker(filter)
             self.__current_location_marker.move_local_point_to(0, event.pos())
             x_value = self.__current_location_marker.xValue()
@@ -1041,7 +1040,9 @@ class EditPointTool(InteractiveTool):
                 int(np.searchsorted(self.downsampled_x, x_value)),
                 len(self.downsampled_x) - 1,
             )
-            self.__idx = self.__dsampled_idx * self.__dsampling  # type: ignore
+            self.__idx = self.__dsampled_idx
+            if self.__dsamp_indices is not None:
+                self.__idx = int(self.__dsamp_indices[self.__dsampled_idx])
             self.__lower_upper_x_bounds = self.__get_x_bounds(curve_x, self.__idx)
             self.__selection_threshold = self.__get_selection_threshold(filter)
             filter.plot.replot()
@@ -1083,11 +1084,11 @@ class EditPointTool(InteractiveTool):
             )
 
             assert self.__x is not None and self.__y is not None
-            (
-                self.downsampled_x[self.__dsampled_idx],
-                self.downsampled_y[self.__dsampled_idx],
-            ) = (new_x, new_y)
-            curve_item.set_data(self.__x, self.__y)
+            self.__x[self.__idx], self.__y[self.__idx] = new_x, new_y
+            # The moved point must stay drawn, even if it is no longer the minimum
+            # or the maximum of its group of points (min/max downsampling)
+            with curve_item.frozen_downsampling():
+                curve_item.set_data(self.__x, self.__y)
 
             self.__current_location_marker.constraint_cb = (
                 self.__current_location_marker.center_handle
