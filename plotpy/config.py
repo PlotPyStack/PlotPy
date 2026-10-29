@@ -48,6 +48,8 @@ def get_plotpy_defaults() -> dict[str, int | float | str | bool]:
         "plot": {
             "selection/distance": 6,
             "antialiasing": False,
+            # Draw thin curves (width <= 1) one device pixel wide on screen
+            "curve/cosmetic_hairline": True,
             "title/font/size": 12,
             "title/font/bold": False,
             "selected_curve_symbol/marker": "Rect",

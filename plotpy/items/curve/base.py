@@ -9,6 +9,7 @@ import numpy as np
 from guidata.dataset import update_dataset
 from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
+from qtpy import QtGui as QG
 from qwt import QwtPlotCurve
 
 from plotpy.config import CONF, _
@@ -24,6 +25,7 @@ from plotpy.styles.curve import CurveParam
 
 if TYPE_CHECKING:
     import guidata.io
+    from qwt import QwtScaleMap
 
     from plotpy.interfaces import IItemType
     from plotpy.plot import BasePlot
@@ -33,6 +35,39 @@ if TYPE_CHECKING:
 SELECTED_SYMBOL_PARAM = SymbolParam()
 SELECTED_SYMBOL_PARAM.read_config(CONF, "plot", "selected_curve_symbol")
 SELECTED_SYMBOL = SELECTED_SYMBOL_PARAM.build_symbol()
+
+
+def get_screen_pen(painter: QG.QPainter, pen: QG.QPen) -> QG.QPen:
+    """Return the pen to draw a line on screen
+
+    On high-DPI screens (e.g. with a 150 % scaling factor), a pen of width 1 is
+    drawn wider than one device pixel, which makes Qt's raster engine take its
+    much slower path for wide pens. When painting on screen (raster engine,
+    without scaling transform), pens of width 1 or less are therefore made
+    cosmetic, i.e. one device pixel wide. Printing and exporting, which use other
+    paint engines or a scaling transform, are not affected.
+
+    This behavior may be disabled with the ``curve/cosmetic_hairline`` option of
+    the ``plot`` configuration section.
+
+    Args:
+        painter: Painter
+        pen: Pen to draw with
+
+    Returns:
+        A cosmetic copy of the pen if applicable, the pen itself otherwise
+    """
+    if (
+        pen.isCosmetic()
+        or pen.widthF() > 1.0
+        or painter.paintEngine().type() != QG.QPaintEngine.Raster
+        or painter.worldTransform().isScaling()
+        or not CONF.get("plot", "curve/cosmetic_hairline", True)
+    ):
+        return pen
+    pen = QG.QPen(pen)
+    pen.setCosmetic(True)
+    return pen
 
 
 def seg_dist(P: QC.QPointF, P0: QC.QPointF, P1: QC.QPointF) -> float:
@@ -162,6 +197,36 @@ class CurveItem(QwtPlotCurve):
             return QC.QRectF(xmin, ymin, xf.max() - xmin, yf.max() - ymin)
         else:
             return QwtPlotCurve.boundingRect(self)
+
+    def drawCurve(
+        self,
+        painter: QG.QPainter,
+        style: int,
+        xMap: QwtScaleMap,
+        yMap: QwtScaleMap,
+        canvasRect: QC.QRectF,
+        from_: int,
+        to: int,
+    ) -> None:
+        """Draw the line part (without symbols) of a curve interval
+
+        Reimplemented to draw thin curves with a cosmetic pen on screen
+        (see :py:func:`get_screen_pen`).
+
+        Args:
+            painter: Painter
+            style: Curve style, see ``QwtPlotCurve.CurveStyle``
+            xMap: X axis scale map
+            yMap: Y axis scale map
+            canvasRect: Contents rectangle of the canvas
+            from_: Index of the first point to be painted
+            to: Index of the last point to be painted
+        """
+        pen = painter.pen()
+        screen_pen = get_screen_pen(painter, pen)
+        if screen_pen is not pen:
+            painter.setPen(screen_pen)
+        super().drawCurve(painter, style, xMap, yMap, canvasRect, from_, to)
 
     def types(self) -> tuple[type[IItemType], ...]:
         """Returns a group or category for this item.
