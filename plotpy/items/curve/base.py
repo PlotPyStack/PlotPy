@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import math
 import sys
+from collections.abc import Generator
+from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -37,6 +39,40 @@ if TYPE_CHECKING:
 SELECTED_SYMBOL_PARAM = SymbolParam()
 SELECTED_SYMBOL_PARAM.read_config(CONF, "plot", "selected_curve_symbol")
 SELECTED_SYMBOL = SELECTED_SYMBOL_PARAM.build_symbol()
+
+
+def minmax_downsampling_indices(data: np.ndarray, factor: int) -> np.ndarray:
+    """Return the indices of the points kept by min/max downsampling
+
+    The data is split into groups of ``2 * factor`` points, and the indices of the
+    minimum and of the maximum of each group are kept, in increasing order, so that
+    peaks are preserved with about as many points as when keeping one point out of
+    ``factor``. The first and the last points are always kept. NaN values are
+    ignored, except in groups containing only NaN values, which keep one of them so
+    that the curve is still interrupted there.
+
+    Args:
+        data: Data to downsample (e.g. Y values of a curve)
+        factor: Downsampling factor
+
+    Returns:
+        Sorted indices of the points to keep
+    """
+    data = np.asarray(data, dtype=float)
+    size = data.size
+    if factor <= 1 or size <= 2:
+        return np.arange(size)
+    bucket = 2 * factor
+    nbuckets = -(-size // bucket)  # Last group may be incomplete
+    padded = np.full(nbuckets * bucket, np.nan)
+    padded[:size] = data
+    groups = padded.reshape(nbuckets, bucket)
+    isnan = np.isnan(groups)
+    imin = np.argmin(np.where(isnan, np.inf, groups), axis=1)
+    imax = np.argmax(np.where(isnan, -np.inf, groups), axis=1)
+    offsets = np.arange(nbuckets) * bucket
+    indices = np.concatenate(([0, size - 1], offsets + imin, offsets + imax))
+    return np.unique(indices[indices < size])
 
 
 def get_screen_pen(painter: QG.QPainter, pen: QG.QPen) -> QG.QPen:
@@ -222,6 +258,9 @@ class CurveItem(QwtPlotCurve):
         self.immutable = True  # set to false to allow moving points around
         self._x = None
         self._y = None
+        self._dsamp_indices: np.ndarray | None = None
+        self._dsamp_size = 0
+        self._dsamp_frozen = False
         self.update_params()
 
     def _get_visible_axis_min(self, axis_id: int, axis_data: np.ndarray) -> float:
@@ -547,21 +586,69 @@ class CurveItem(QwtPlotCurve):
         if isinstance(self._x, np.ndarray) and isinstance(self._y, np.ndarray):
             self._setData(self._x, self._y)
 
-    def dsamp(self, data: np.ndarray) -> np.ndarray:
+    def dsamp(self, data: np.ndarray | None) -> np.ndarray | None:
         """Downsample data
 
         Args:
-            data: Data to downsample
+            data: Data to downsample (X, Y or error data of the curve)
 
         Returns:
             Downsampled data
         """
-        if self.param.use_dsamp and self.param.dsamp_factor > 1:
-            return data[:: self.param.dsamp_factor]
-        return data
+        if data is None or self._dsamp_indices is None:
+            return data
+        return data[self._dsamp_indices]
+
+    def get_dsamp_indices(self) -> np.ndarray | None:
+        """Return the indices of the points kept by downsampling
+
+        Returns:
+            Sorted indices of the points of the curve data that are drawn, or None if
+            the curve is not downsampled
+        """
+        return self._dsamp_indices
+
+    @contextmanager
+    def frozen_downsampling(self) -> Generator[None, None, None]:
+        """Keep the points kept by downsampling while the curve data is updated
+
+        This is useful when editing curve points: with min/max downsampling, a
+        point which is moved could otherwise be replaced by another point of its
+        group. The points kept by downsampling are computed again when the number
+        of points changes, or when the data is updated after this context.
+        """
+        self._dsamp_frozen = True
+        try:
+            yield
+        finally:
+            self._dsamp_frozen = False
+
+    def __update_dsamp_indices(self, values: np.ndarray) -> None:
+        """Update the indices of the points kept by downsampling
+
+        Args:
+            values: Curve values (Y data, or X data for vertical curves)
+        """
+        indices = self._dsamp_indices
+        if (
+            self._dsamp_frozen
+            and indices is not None
+            and self._dsamp_size == values.size
+        ):
+            return
+        self._dsamp_size = values.size
+        factor = self.param.dsamp_factor
+        if not self.param.use_dsamp or factor <= 1:
+            self._dsamp_indices = None
+        elif self.param.dsamp_method == "stride":
+            self._dsamp_indices = np.arange(0, values.size, factor)
+        else:
+            self._dsamp_indices = minmax_downsampling_indices(values, factor)
 
     def _setData(self, x: np.ndarray, y: np.ndarray) -> None:
         """Wrapper around QwtPlotCurve.setData() to handle downsampling"""
+        values = x if self.orientation() == QC.Qt.Vertical else y
+        self.__update_dsamp_indices(np.asarray(values))
         return super().setData(self.dsamp(x), self.dsamp(y))
 
     def set_data(self, x: np.ndarray, y: np.ndarray) -> None:
@@ -639,7 +726,12 @@ class CurveItem(QwtPlotCurve):
             p1x = plot.transform(ax, self._x[i + 1])
             p1y = plot.transform(ay, self._y[i + 1])
         distance = seg_dist(QC.QPointF(pos), QC.QPointF(p0x, p0y), QC.QPointF(p1x, p1y))
-        final_index = i // (int(not self.param.use_dsamp) or self.param.dsamp_factor)
+        indices = self._dsamp_indices
+        if indices is None:
+            final_index = int(i)
+        else:
+            # Index of the last point kept by downsampling at or before point `i`
+            final_index = max(int(np.searchsorted(indices, i, side="right")) - 1, 0)
         return distance, final_index, False, None
 
     def get_closest_coordinates(self, x: float, y: float) -> tuple[float, float]:
@@ -714,12 +806,19 @@ class CurveItem(QwtPlotCurve):
         """
         if self.immutable:
             return
+        indices = self._dsamp_indices
+        if indices is not None:
+            # The handle is the index of a point kept by downsampling
+            if handle < 0 or handle >= indices.size:
+                return
+            handle = int(indices[handle])
         if handle < 0 or handle > self._x.shape[0]:
             return
         x, y = canvas_to_axes(self, pos)
         self._x[handle] = x
         self._y[handle] = y
-        self._setData(self._x, self._y)
+        with self.frozen_downsampling():
+            self._setData(self._x, self._y)
         self.plot().replot()
 
     def move_local_shape(self, old_pos: QC.QPointF, new_pos: QC.QPointF) -> None:

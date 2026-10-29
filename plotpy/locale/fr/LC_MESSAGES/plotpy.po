@@ -355,14 +355,14 @@ msgstr "Police des valeurs"
 msgid "Scale"
 msgstr "Échelle"
 
-msgid "logarithmic"
-msgstr "logarithmique"
-
 msgid "linear"
 msgstr "linéaire"
 
 msgid "date/time"
 msgstr "date/heure"
+
+msgid "logarithmic"
+msgstr "logarithmique"
 
 msgid "Autoscale strategy"
 msgstr "Stratégie d'autoscale"
@@ -616,6 +616,22 @@ msgstr "Utiliser le sous-échantillonnage"
 msgid "Downsampling factor"
 msgstr "Facteur de sous-échantillonnage"
 
+msgid "Downsampling method"
+msgstr "Méthode de sous-échantillonnage"
+
+msgid "Min/max (peaks preserved)"
+msgstr "Min/max (pics préservés)"
+
+msgid "Stride (one point out of N)"
+msgstr "Pas (un point sur N)"
+
+msgid ""
+"Min/max: the minimum and the maximum of each group of 2 × N points are kept, so that peaks are preserved.\n"
+"Stride: one point out of N is kept."
+msgstr ""
+"Min/max : le minimum et le maximum de chaque groupe de 2 × N points sont conservés, de sorte que les pics sont préservés.\n"
+"Pas : un point sur N est conservé."
+
 msgid "Display"
 msgstr "Affichage"
 
@@ -648,11 +664,11 @@ msgstr "Classes"
 msgid "Number of bins"
 msgstr "Nombre de classes"
 
-msgid "Min"
-msgstr "Min"
-
 msgid "Minimum value"
 msgstr "Valeur minimale"
+
+msgid "Min"
+msgstr "Min"
 
 msgid "Maximum value"
 msgstr "Valeur maximale"
@@ -1707,3 +1723,4 @@ msgstr "Rotation et rognage"
 
 msgid "Show cropping rectangle"
 msgstr "Afficher le rectangle de rognage"
+
