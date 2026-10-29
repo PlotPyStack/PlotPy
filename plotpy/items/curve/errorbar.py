@@ -13,7 +13,7 @@ from qtpy import QtGui as QG
 from qwt import QwtPlotCurve, QwtScaleMap
 
 from plotpy.config import _
-from plotpy.items.curve.base import CurveItem
+from plotpy.items.curve.base import CurveItem, get_screen_pen
 from plotpy.styles.curve import CurveParam
 from plotpy.styles.errorbar import ErrorBarParam
 
@@ -286,7 +286,7 @@ class ErrorBarCurveItem(CurveItem):
             QwtPlotCurve.draw(self, painter, xMap, yMap, canvasRect)
 
         painter.save()
-        painter.setPen(self.errorPen)
+        painter.setPen(get_screen_pen(painter, self.errorPen))
         cap = self.errorCap / 2.0
 
         if self._dx is not None and self.errorbarparam.mode == 0:

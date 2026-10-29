@@ -12,6 +12,7 @@
 * **Plot refresh** — Refreshing a plot no longer recomputes the plot layout when the title and axis styles did not change
 * **Item tools and item list** — Updating the status of item-related tools and of the item list panel is no longer quadratic in the number of plot items
 * **Image creation** — Creating an image item no longer recomputes the colormap lookup table when the same colormap, inversion and transparency settings were already used: the table (more than 1000 colormap evaluations) is computed once and reused, which saves a few milliseconds per image
+* **Curves on high-DPI screens** — With a display scaling factor such as 125 % or 150 %, curves and error bars of width 1 were drawn wider than one screen pixel, which made their rendering up to several hundred times slower on noisy signals (about 800 ms instead of 3 ms for a 2000-point curve at 150 %). Curves and error bars of width 1 or less are now drawn one screen pixel wide on screen; printing and exporting are not affected. The new `curve/cosmetic_hairline` option of the `plot` configuration section restores the previous behavior (closes [Issue #80](https://github.com/PlotPyStack/PlotPy/issues/80))
 
 ⚙️ Dependencies:
 
