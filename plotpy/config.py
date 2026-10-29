@@ -50,6 +50,8 @@ def get_plotpy_defaults() -> dict[str, int | float | str | bool]:
             "antialiasing": False,
             # Draw thin curves (width <= 1) one device pixel wide on screen
             "curve/cosmetic_hairline": True,
+            # Draw thick curves as several one-pixel strokes on screen
+            "curve/fast_thick_lines": True,
             "title/font/size": 12,
             "title/font/bold": False,
             "selected_curve_symbol/marker": "Rect",
