@@ -9,6 +9,9 @@ jobs:
   test:
     uses: ./.github/workflows/test_pyqt5.yml
 
+  test_pyqt6:
+    uses: ./.github/workflows/test_pyqt6.yml
+
   build_wheels:
     name: Build wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
@@ -57,7 +60,7 @@ jobs:
           path: dist/*.tar.gz
 
   upload_pypi:
-    needs: [test, build_wheels, build_sdist]
+    needs: [test, test_pyqt6, build_wheels, build_sdist]
     runs-on: ubuntu-latest
     environment: pypi
     permissions:

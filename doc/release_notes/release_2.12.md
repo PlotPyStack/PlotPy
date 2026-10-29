@@ -27,4 +27,5 @@
 
 🔧 Other changes:
 
+* **Continuous integration** — PlotPy is now also tested with PyQt6 and PySide6 (Python 3.10 and 3.14) on each push and pull request, and with PyQt6 before each PyPI release. Pull requests targeting the `develop` or `release` branch are now tested against the development versions of guidata and PythonQwt, as pushes to these branches already were (closes [Issue #69](https://github.com/PlotPyStack/PlotPy/issues/69))
 * **Test suite** — The `SnapshotTool` annotation test no longer hangs when run on its own, on Windows or with Qt 6: it waited indefinitely for the snapshot dialog to be closed
