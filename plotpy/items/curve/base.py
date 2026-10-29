@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 import sys
 from typing import TYPE_CHECKING
 
@@ -11,6 +12,7 @@ from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qwt import QwtPlotCurve
+from qwt.plot_curve import series_to_polyline
 
 from plotpy.config import CONF, _
 from plotpy.coords import canvas_to_axes
@@ -68,6 +70,68 @@ def get_screen_pen(painter: QG.QPainter, pen: QG.QPen) -> QG.QPen:
     pen = QG.QPen(pen)
     pen.setCosmetic(True)
     return pen
+
+
+#: Maximum width, in device pixels, of the lines drawn as several one-pixel strokes
+#: (see :py:func:`get_thick_line_strokes`): wider lines are drawn with their pen
+THICK_LINE_MAX_STROKES_WIDTH = 8.0
+
+
+def get_thick_line_strokes(
+    painter: QG.QPainter, pen: QG.QPen
+) -> tuple[QG.QPen, list[tuple[float, float]]] | None:
+    """Return the strokes drawing a thick line quickly on screen
+
+    Qt's raster engine draws pens wider than one device pixel much more slowly
+    than one-pixel pens (up to a hundred times slower for noisy curves, with
+    antialiasing). When painting on screen (raster engine, without scaling
+    transform), an opaque solid line wider than one device pixel may instead be
+    drawn as several one-device-pixel strokes, offset horizontally and vertically
+    by at most one device pixel from each other so as to cover the line width,
+    whatever the line direction. Dash patterns are scaled by the line width, as
+    for the original pen.
+
+    The line is drawn with its pen when printing or exporting (other paint engines
+    or scaling transform), for translucent colors (whose overlapping strokes would
+    accumulate), for lines wider than :py:data:`THICK_LINE_MAX_STROKES_WIDTH`
+    device pixels, or when the ``curve/fast_thick_lines`` option of the ``plot``
+    configuration section is disabled.
+
+    Args:
+        painter: Painter
+        pen: Pen to draw with
+
+    Returns:
+        A tuple (stroke pen, stroke offsets in logical coordinates), or None if
+        the line must be drawn with the pen itself
+    """
+    if (
+        pen.style() == QC.Qt.NoPen
+        or pen.isCosmetic()
+        or pen.brush().style() != QC.Qt.SolidPattern
+        or pen.color().alpha() < 255
+        or painter.paintEngine().type() != QG.QPaintEngine.Raster
+        or painter.worldTransform().isScaling()
+    ):
+        return None
+    ratio = painter.device().devicePixelRatioF()
+    width = pen.widthF() * ratio
+    if (
+        width <= 1.0
+        or width > THICK_LINE_MAX_STROKES_WIDTH
+        or not CONF.get("plot", "curve/fast_thick_lines", True)
+    ):
+        return None
+    stroke_pen = QG.QPen(pen)
+    stroke_pen.setWidthF(1.0)
+    stroke_pen.setCosmetic(True)
+    if pen.style() != QC.Qt.SolidLine:
+        stroke_pen.setDashPattern([length * width for length in pen.dashPattern()])
+    extra = width - 1.0
+    shifts = np.linspace(-extra / 2, extra / 2, math.ceil(extra) + 1) / ratio
+    offsets = [(float(shift), 0.0) for shift in shifts]
+    offsets += [(0.0, float(shift)) for shift in shifts if shift != 0.0]
+    return stroke_pen, offsets
 
 
 def seg_dist(P: QC.QPointF, P0: QC.QPointF, P1: QC.QPointF) -> float:
@@ -227,6 +291,47 @@ class CurveItem(QwtPlotCurve):
         if screen_pen is not pen:
             painter.setPen(screen_pen)
         super().drawCurve(painter, style, xMap, yMap, canvasRect, from_, to)
+
+    def drawLines(
+        self,
+        painter: QG.QPainter,
+        xMap: QwtScaleMap,
+        yMap: QwtScaleMap,
+        canvasRect: QC.QRectF,
+        from_: int,
+        to: int,
+    ) -> None:
+        """Draw lines
+
+        Reimplemented to draw thick lines quickly on screen, as several one-pixel
+        strokes (see :py:func:`get_thick_line_strokes`).
+
+        Args:
+            painter: Painter
+            xMap: X axis scale map
+            yMap: Y axis scale map
+            canvasRect: Contents rectangle of the canvas
+            from_: Index of the first point to be painted
+            to: Index of the last point to be painted
+        """
+        strokes = get_thick_line_strokes(painter, painter.pen())
+        if strokes is None:
+            super().drawLines(painter, xMap, yMap, canvasRect, from_, to)
+            return
+        if from_ > to:
+            return
+        stroke_pen, offsets = strokes
+        polyline = series_to_polyline(xMap, yMap, self.data(), from_, to)
+        painter.save()
+        painter.setPen(stroke_pen)
+        for dx, dy in offsets:
+            painter.translate(dx, dy)
+            painter.drawPolyline(polyline)
+            painter.translate(-dx, -dy)
+        painter.restore()
+        brush = self.brush()
+        if brush.style() != QC.Qt.NoBrush and brush.color().alpha() > 0:
+            self.fillCurve(painter, xMap, yMap, canvasRect, polyline)
 
     def types(self) -> tuple[type[IItemType], ...]:
         """Returns a group or category for this item.
