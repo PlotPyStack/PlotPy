@@ -18,6 +18,8 @@ The following functions are available:
 * :py:func:`.get_cmap`: get a colormap from its name
 * :py:func:`.cmap_exists`: check if a colormap exists
 * :py:func:`.add_cmap`: add a colormap to the list of available colormaps
+* :py:func:`.get_custom_colormaps_path`: get the path of the custom colormaps file
+* :py:func:`.reload_custom_colormaps`: reload custom colormaps from this file
 * :py:func:`.build_icon_from_cmap`: build an icon representing the colormap
 * :py:func:`.build_icon_from_cmap_name`: build an icon representing the colormap
   from its name
@@ -26,12 +28,23 @@ The :py:class:`.LogScaleColorMap` class maps values to colors on a base-10
 logarithmic scale (e.g. for the color bar of images shown with a logarithmic
 Z-axis).
 
+Custom colormaps (e.g. created with the colormap manager) are saved in the
+configuration directory of PlotPy: ``.plotpy`` by default, in the user's configuration
+directory (``~/.config`` on Linux, the user's home directory otherwise). Applications
+may save them in their own configuration directory by setting the application name of
+PlotPy's configuration, e.g. ``plotpy.config.CONF.set_application("MyApp/plotpy",
+"1.0.0")``: custom colormaps are then reloaded from this directory. The first time,
+custom colormaps saved by previous versions of PlotPy (in the ``.none`` or ``.plotpy``
+directory) are copied there.
+
 Reference
 ^^^^^^^^^
 
 .. autofunction:: get_cmap
 .. autofunction:: cmap_exists
 .. autofunction:: add_cmap
+.. autofunction:: get_custom_colormaps_path
+.. autofunction:: reload_custom_colormaps
 .. autofunction:: build_icon_from_cmap
 .. autofunction:: build_icon_from_cmap_name
 .. autoclass:: LogScaleColorMap
@@ -43,12 +56,15 @@ from __future__ import annotations
 import json
 import math
 import os
-from typing import Dict, Literal, Sequence
+import os.path as osp
+import warnings
+from typing import Any, Dict, Literal, Sequence
 
 import numpy as np
 import qtpy.QtCore as QC
 import qtpy.QtGui as QG
 from guidata.configtools import get_module_data_path
+from guidata.userconfig import get_config_basedir
 from qwt import QwtInterval, toQImage
 from qwt.color_map import QwtColorMap
 
@@ -133,32 +149,16 @@ def get_cmap_path(config_path: str):
     return user_config_path
 
 
-# Load default colormaps path from the config file
-DEFAULT_COLORMAPS_PATH = get_cmap_path(
-    CONF.get(
-        "colormaps",
-        "colormaps/default",
-        default="colormaps_default.json",  # type: ignore
-    )
-)
-# Load custom colormaps path from the config file
-CUSTOM_COLORMAPS_PATH = get_cmap_path(
-    CONF.get(
-        "colormaps",
-        "colormaps/custom",
-        default="colormaps_custom.json",  # type: ignore
-    )
-)
+def _save_raw_colormaps(json_path: str, raw_colormaps: dict[str, Any]) -> None:
+    """Saves raw colormaps into the given json file, creating its directory if needed.
 
-# Load default and custom colormaps from json files
-DEFAULT_COLORMAPS: CmapDictType = load_qwt_colormaps_from_json(DEFAULT_COLORMAPS_PATH)
-CUSTOM_COLORMAPS: CmapDictType = load_qwt_colormaps_from_json(CUSTOM_COLORMAPS_PATH)
-
-# Merge default and custom colormaps into a single dictionnary to simplify access
-ALL_COLORMAPS: CmapDictType = {**DEFAULT_COLORMAPS, **CUSTOM_COLORMAPS}
-
-# Default colormap to use if a colormap is not found
-DEFAULT = ALL_COLORMAPS["jet"]
+    Args:
+        json_path: absolute path of the json file in which to save the colormaps
+        raw_colormaps: Dictionnary of colormaps names -> raw colormap sequences
+    """
+    os.makedirs(osp.dirname(json_path), exist_ok=True)
+    with open(json_path, "w", encoding="utf-8") as f:
+        json.dump(raw_colormaps, f, indent=4)
 
 
 def save_colormaps(json_filename: str, colormaps: CmapDictType):
@@ -170,9 +170,109 @@ def save_colormaps(json_filename: str, colormaps: CmapDictType):
         colormaps: Dictionnary of colormpas names -> CustomQwtLinearColormap
     """
     raw_colormaps = {cmap.name: cmap.to_tuples() for cmap in colormaps.values()}
-    json_abs_path = CONF.get_path(json_filename)
-    with open(json_abs_path, "w", encoding="utf-8") as f:
-        json.dump(raw_colormaps, f, indent=4)
+    _save_raw_colormaps(CONF.get_path(json_filename), raw_colormaps)
+
+
+#: Configuration directories in which previous versions of PlotPy saved the custom
+#: colormaps of all applications (``.none`` when PlotPy's configuration had no
+#: application name, ``.plotpy`` when the host application named it "plotpy")
+LEGACY_CUSTOM_COLORMAPS_DIRS = (".none", ".plotpy")
+
+
+def _get_custom_colormaps_filename() -> str:
+    """Returns the "colormaps/custom" option of PlotPy's configuration"""
+    return CONF.get(
+        "colormaps",
+        "colormaps/custom",
+        default="colormaps_custom.json",  # type: ignore
+    )
+
+
+def get_custom_colormaps_path() -> str:
+    """Returns the path of the json file in which custom colormaps are saved.
+
+    This file is located in the configuration directory of the application set with
+    ``plotpy.config.CONF.set_application`` (``.plotpy`` by default, in the user's
+    configuration directory), unless the "colormaps/custom" option of the "colormaps"
+    configuration section is an absolute path.
+
+    Returns:
+        Absolute path of the custom colormaps json file (which may not exist yet)
+    """
+    return CONF.get_path(_get_custom_colormaps_filename())
+
+
+def load_custom_colormaps() -> CmapDictType:
+    """Loads the custom colormaps of the current application (see function
+    get_custom_colormaps_path).
+
+    If the custom colormaps file of the application does not exist yet, the custom
+    colormaps saved by previous versions of PlotPy (see LEGACY_CUSTOM_COLORMAPS_DIRS)
+    are first copied into it. The legacy files are left untouched.
+
+    Returns:
+        Dictionnary of colormaps names -> CustomQwtLinearColormap
+    """
+    filename = _get_custom_colormaps_filename()
+    json_path = CONF.get_path(filename)
+    if not osp.isfile(json_path) and not osp.isabs(filename):
+        raw_colormaps: dict[str, Any] = {}
+        for dirname in LEGACY_CUSTOM_COLORMAPS_DIRS:
+            legacy_path = osp.join(get_config_basedir(), dirname, filename)
+            raw_colormaps.update(load_raw_colormaps_from_json(legacy_path))
+        if raw_colormaps:
+            try:
+                _save_raw_colormaps(json_path, raw_colormaps)
+            except OSError as exc:
+                warnings.warn(f"Unable to copy custom colormaps to {json_path}: {exc}")
+    return load_qwt_colormaps_from_json(json_path)
+
+
+# Load default colormaps path from the config file
+DEFAULT_COLORMAPS_PATH = get_cmap_path(
+    CONF.get(
+        "colormaps",
+        "colormaps/default",
+        default="colormaps_default.json",  # type: ignore
+    )
+)
+
+# Load default and custom colormaps from json files
+DEFAULT_COLORMAPS: CmapDictType = load_qwt_colormaps_from_json(DEFAULT_COLORMAPS_PATH)
+CUSTOM_COLORMAPS: CmapDictType = load_custom_colormaps()
+
+# Merge default and custom colormaps into a single dictionnary to simplify access
+ALL_COLORMAPS: CmapDictType = {**DEFAULT_COLORMAPS, **CUSTOM_COLORMAPS}
+
+# Default colormap to use if a colormap is not found
+DEFAULT = ALL_COLORMAPS["jet"]
+
+
+def reload_custom_colormaps() -> None:
+    """Reloads the custom colormaps of the current application (see function
+    load_custom_colormaps).
+
+    This function is called each time the application name of PlotPy's configuration
+    is set with ``plotpy.config.CONF.set_application``. The CUSTOM_COLORMAPS and
+    ALL_COLORMAPS global variables are updated in place.
+    """
+    custom_colormaps = load_custom_colormaps()
+    CUSTOM_COLORMAPS.clear()
+    CUSTOM_COLORMAPS.update(custom_colormaps)
+    ALL_COLORMAPS.clear()
+    ALL_COLORMAPS.update(DEFAULT_COLORMAPS)
+    ALL_COLORMAPS.update(custom_colormaps)
+
+
+CONF.register_application_callback(reload_custom_colormaps)
+
+
+def __getattr__(name: str) -> Any:
+    """Returns module attributes computed on demand"""
+    if name == "CUSTOM_COLORMAPS_PATH":
+        # Kept for backward compatibility: this path depends on the application name
+        return get_custom_colormaps_path()
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
 def build_icon_from_cmap(
@@ -300,7 +400,7 @@ def add_cmap(cmap: EditableColormap) -> None:
     global ALL_COLORMAPS, CUSTOM_COLORMAPS
     ALL_COLORMAPS[cmap.name.lower()] = cmap
     CUSTOM_COLORMAPS[cmap.name.lower()] = cmap
-    save_colormaps(CUSTOM_COLORMAPS_PATH, CUSTOM_COLORMAPS)
+    save_colormaps(get_custom_colormaps_path(), CUSTOM_COLORMAPS)
 
 
 def delete_cmap(cmap: EditableColormap) -> None:
@@ -308,7 +408,7 @@ def delete_cmap(cmap: EditableColormap) -> None:
     global ALL_COLORMAPS, CUSTOM_COLORMAPS
     if CUSTOM_COLORMAPS.pop(cmap.name.lower(), None) is not None:
         del ALL_COLORMAPS[cmap.name.lower()]
-        save_colormaps(CUSTOM_COLORMAPS_PATH, CUSTOM_COLORMAPS)
+        save_colormaps(get_custom_colormaps_path(), CUSTOM_COLORMAPS)
 
 
 class LogScaleColorMap(QwtColorMap):

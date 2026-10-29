@@ -15,11 +15,11 @@ from __future__ import annotations
 
 import os.path as osp
 import warnings
-from typing import Literal
+from typing import Callable, Literal
 
 from guidata import qthelpers as qth
 from guidata.configtools import add_image_module_path, get_translation
-from guidata.userconfig import UserConfig
+from guidata.userconfig import UserConfig, get_config_basedir
 
 
 def get_main_colors() -> tuple[str, str]:
@@ -786,9 +786,63 @@ def get_plotpy_defaults() -> dict[str, int | float | str | bool]:
     }
 
 
+class PlotPyUserConfig(UserConfig):
+    """PlotPy configuration
+
+    The configuration directory, which contains PlotPy's user files (e.g. custom
+    colormaps), depends on the application name: ``.plotpy`` by default, in the user's
+    configuration directory. Host applications may store these files in their own
+    configuration directory by calling :py:meth:`set_application`.
+
+    Unlike :py:class:`guidata.userconfig.UserConfig`, looking up a path does not create
+    the configuration directory: it is only created when a file is written.
+    """
+
+    def __init__(self, defaults: dict) -> None:
+        super().__init__(defaults)
+        self.__application_callbacks: list[Callable[[], None]] = []
+
+    def register_application_callback(self, callback: Callable[[], None]) -> None:
+        """Register a function to call each time the application name is set
+
+        Args:
+            callback: function without arguments
+        """
+        if callback not in self.__application_callbacks:
+            self.__application_callbacks.append(callback)
+
+    def set_application(
+        self, name: str, version: str | None, load: bool = True, raw_mode: bool = False
+    ) -> None:
+        """Set the application name and version, then call registered callbacks
+
+        Args:
+            name: name of the application, which is also the name of the
+             configuration directory (e.g. ``"MyApp/plotpy"``)
+            version: current version in format "X.Y.Z" (or None)
+            load: if True, load the configuration from the .ini file
+            raw_mode: if True, enable raw mode of ConfigParser
+        """
+        super().set_application(name, version, load=load, raw_mode=raw_mode)
+        for callback in self.__application_callbacks:
+            callback()
+
+    def get_path(self, basename: str) -> str:
+        """Return filename path inside configuration directory
+
+        Args:
+            basename: file name (or absolute path, which is returned as is)
+
+        Returns:
+            Absolute path of the file (the directory is not created)
+        """
+        return osp.join(get_config_basedir(), f".{self.name}", basename)
+
+
 DEFAULTS = get_plotpy_defaults()
 
-CONF = UserConfig(DEFAULTS)
+CONF = PlotPyUserConfig(DEFAULTS)
+CONF.set_application("plotpy", None, load=False)
 
 
 def update_plotpy_defaults() -> None:
