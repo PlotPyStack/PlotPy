@@ -52,6 +52,8 @@ def get_plotpy_defaults() -> dict[str, int | float | str | bool]:
             "curve/cosmetic_hairline": True,
             # Draw thick curves as several one-pixel strokes on screen
             "curve/fast_thick_lines": True,
+            # Render images at the resolution of the screen (e.g. 125%, 200%)
+            "image/device_resolution": True,
             "title/font/size": 12,
             "title/font/bold": False,
             "selected_curve_symbol/marker": "Rect",

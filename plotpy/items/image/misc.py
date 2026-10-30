@@ -180,13 +180,12 @@ class QuadGridItem(RawImageItem):
             self.data,
             src_rect,
             self._offscreen,
-            dst_rect,
+            self._offscreen_rect(dst_rect),
             self.lut,
             self.interpolate,
             self.grid,
         )
-        qrect = QC.QRectF(QC.QPointF(dest[0], dest[1]), QC.QPointF(dest[2], dest[3]))
-        painter.drawImage(qrect, self._image, qrect)
+        self._draw_offscreen(painter, dest)
         xl, yt, xr, yb = dest
         self._offscreen[yt:yb, xl:xr] = 0
 

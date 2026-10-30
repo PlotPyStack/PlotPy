@@ -271,9 +271,13 @@ class TrImageItem(RawImageItem):
         sy = (y1 - y0) / (H - 1)
         # tr1 = tr(x0,y0)@scale(sx,sy)@tr(-cx,-cy)
         tr = np.array([[sx, 0, x0 - cx * sx], [0, sy, y0 - cy * sy], [0, 0, 1]], float)
+        ratio = self._offscreen_ratio
+        if ratio != 1.0:
+            # From offscreen image pixels to canvas coordinates
+            tr = tr @ np.diag([1.0 / ratio, 1.0 / ratio, 1.0])
         mat = self.tr @ tr
 
-        dst_rect = tuple([int(i) for i in dst_rect])
+        dst_rect = self._offscreen_rect(dst_rect)
         dest = _scale_tr(
             self._get_display_data(),
             mat,
@@ -282,8 +286,7 @@ class TrImageItem(RawImageItem):
             self.lut,
             self.interpolate,
         )
-        qrect = QC.QRectF(QC.QPointF(dest[0], dest[1]), QC.QPointF(dest[2], dest[3]))
-        painter.drawImage(qrect, self._image, qrect)
+        self._draw_offscreen(painter, dest)
         # -- rotation circle
         if self.can_rotate():
             if self.rotation_point is None:

@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING
 import guidata.io
 import numpy as np
 import numpy.ma as ma
-from qtpy import QtCore as QC
 
 from plotpy import io
 from plotpy._scaler import INTERP_NEAREST, _scale_rect, _scale_xy
@@ -556,14 +555,11 @@ class MaskedImageItem(ImageItem, MaskedImageMixin):
             lut = (1, 0, bg, cmap)
             shown_data = np.ma.getmaskarray(self.data)
             src2 = self._rescale_src_rect(src_rect)
-            dst_rect = tuple([int(i) for i in dst_rect])
+            dst_rect = self._offscreen_rect(dst_rect)
             dest = _scale_rect(
                 shown_data, src2, self._offscreen, dst_rect, lut, (INTERP_NEAREST,)
             )
-            qrect = QC.QRectF(
-                QC.QPointF(dest[0], dest[1]), QC.QPointF(dest[2], dest[3])
-            )
-            painter.drawImage(qrect, self._image, qrect)
+            self._draw_offscreen(painter, dest)
 
     # ---- RawImageItem API -----------------------------------------------------
     def set_data(
@@ -734,14 +730,11 @@ class MaskedXYImageItem(XYImageItem, MaskedImageMixin):
             shown_data = np.ma.getmaskarray(self.data)
 
             xytr = self.x, self.y, src_rect
-            dst_rect = tuple([int(i) for i in dst_rect])
+            dst_rect = self._offscreen_rect(dst_rect)
             dest = _scale_xy(
                 shown_data, xytr, self._offscreen, dst_rect, lut, (INTERP_NEAREST,)
             )
-            qrect = QC.QRectF(
-                QC.QPointF(dest[0], dest[1]), QC.QPointF(dest[2], dest[3])
-            )
-            painter.drawImage(qrect, self._image, qrect)
+            self._draw_offscreen(painter, dest)
 
     def set_data(
         self, data: np.ndarray, lut_range: list[float, float] | None = None

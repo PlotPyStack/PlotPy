@@ -349,12 +349,11 @@ class XYImageFilterItem(ImageFilterItem):
             new_data,
             (x, y, src_rect),
             self._offscreen,
-            dstRect.getCoords(),
+            self._offscreen_rect(dstRect.getCoords()),
             lut,
             self.interpolate,
         )
-        qrect = QC.QRectF(QC.QPointF(dest[0], dest[1]), QC.QPointF(dest[2], dest[3]))
-        painter.drawImage(qrect, self._image, qrect)
+        self._draw_offscreen(painter, dest)
 
 
 assert_interfaces_valid(ImageFilterItem)

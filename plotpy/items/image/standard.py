@@ -357,7 +357,7 @@ class ImageItem(RawImageItem):
             return
 
         src2 = self._rescale_src_rect(src_rect)
-        dst_rect = tuple([int(i) for i in dst_rect])
+        dst_rect = self._offscreen_rect(dst_rect)
 
         try:
             dest = _scale_rect(
@@ -371,8 +371,7 @@ class ImageItem(RawImageItem):
         except ValueError:
             # This exception is raised when zooming unreasonably inside a pixel
             return
-        qrect = QC.QRectF(QC.QPointF(dest[0], dest[1]), QC.QPointF(dest[2], dest[3]))
-        painter.drawImage(qrect, self._image, qrect)
+        self._draw_offscreen(painter, dest)
 
     def export_roi(
         self,
@@ -658,7 +657,7 @@ class XYImageItem(RawImageItem):
         if self.warn_if_non_linear_scale(painter, canvasRect):
             return
         xytr = self.x, self.y, src_rect
-        dst_rect = tuple([int(i) for i in dst_rect])
+        dst_rect = self._offscreen_rect(dst_rect)
         dest = _scale_xy(
             self._get_display_data(),
             xytr,
@@ -667,8 +666,7 @@ class XYImageItem(RawImageItem):
             self.lut,
             self.interpolate,
         )
-        qrect = QC.QRectF(QC.QPointF(dest[0], dest[1]), QC.QPointF(dest[2], dest[3]))
-        painter.drawImage(qrect, self._image, qrect)
+        self._draw_offscreen(painter, dest)
 
     def export_roi(
         self,

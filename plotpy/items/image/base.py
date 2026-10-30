@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import math
 import os
 import os.path as osp
 from collections import OrderedDict
@@ -25,7 +26,7 @@ from plotpy._scaler import (
     _histogram,
     _scale_rect,
 )
-from plotpy.config import _
+from plotpy.config import CONF, _
 from plotpy.constants import LUT_MAX, LUT_SIZE, LUTAlpha
 from plotpy.coords import pixelround
 from plotpy.interfaces import (
@@ -165,6 +166,35 @@ def _get_colormap_lut(
     return colors, lut
 
 
+def get_offscreen_ratio(painter: QPainter) -> float:
+    """Return the resolution at which image items are rendered before being
+    drawn with the given painter, in pixels per canvas pixel.
+
+    Images are rendered at the resolution of the paint device, e.g. 1.25 or 2
+    pixels per canvas pixel with a 125% or 200% screen scaling, instead of being
+    upscaled from the canvas resolution, which takes more time (up to about 4
+    times with a 200% screen scaling). Images are rendered at the canvas
+    resolution when printing or exporting with a scaling (or rotating) painter
+    transform, or when the ``image/device_resolution`` option of the ``plot``
+    configuration section is disabled.
+
+    Args:
+        painter: Painter
+
+    Returns:
+        Resolution, in pixels per canvas pixel
+    """
+    world = painter.worldTransform()
+    if (
+        world.isScaling()
+        or world.isRotating()
+        or not CONF.get("plot", "image/device_resolution", True)
+    ):
+        return 1.0
+    ratio = abs(painter.deviceTransform().m11())
+    return ratio if ratio > 0.0 else 1.0
+
+
 class BaseImageItem(QwtPlotItem):
     """Base class for image items
 
@@ -229,6 +259,8 @@ class BaseImageItem(QwtPlotItem):
         self._image: QG.QImage | None = None
 
         self._offscreen = np.array((1, 1), np.uint32)
+        #: Resolution of the offscreen image, in pixels per canvas pixel
+        self._offscreen_ratio = 1.0
 
         # Linear interpolation is the default interpolation algorithm:
         # it's almost as fast as 'nearest pixel' method but far smoother
@@ -882,12 +914,39 @@ class BaseImageItem(QwtPlotItem):
             self._get_display_data(),
             src_rect,
             self._offscreen,
-            dst_rect,
+            self._offscreen_rect(dst_rect),
             self.lut,
             self.interpolate,
         )
-        qrect = QC.QRectF(QC.QPointF(dest[0], dest[1]), QC.QPointF(dest[2], dest[3]))
-        painter.drawImage(qrect, self._image, qrect)
+        self._draw_offscreen(painter, dest)
+
+    def _offscreen_rect(
+        self, rect: tuple[float, float, float, float]
+    ) -> tuple[int, int, int, int]:
+        """Convert a rectangle from canvas coordinates to offscreen image pixels
+
+        Args:
+            rect: Rectangle (x1, y1, x2, y2), in canvas coordinates
+
+        Returns:
+            Rectangle (x1, y1, x2, y2), in offscreen image pixels
+        """
+        ratio = self._offscreen_ratio
+        return tuple(int(value * ratio) for value in rect)
+
+    def _draw_offscreen(
+        self, painter: QPainter, rect: tuple[int, int, int, int]
+    ) -> None:
+        """Draw a part of the offscreen image on the canvas
+
+        Args:
+            painter: Painter
+            rect: Rectangle (x1, y1, x2, y2) to be drawn, in offscreen image pixels
+        """
+        source = QC.QRectF(QC.QPointF(rect[0], rect[1]), QC.QPointF(rect[2], rect[3]))
+        ratio = self._offscreen_ratio
+        target = QC.QRectF(source.topLeft() / ratio, source.bottomRight() / ratio)
+        painter.drawImage(target, self._image, source)
 
     def export_roi(
         self,
@@ -941,20 +1000,26 @@ class BaseImageItem(QwtPlotItem):
             yMap: Y axis scale map
             canvasRect: Canvas rectangle
         """
-        x1, y1, x2, y2 = canvasRect.getCoords()
+        # The offscreen image covers the canvas at the resolution of the paint
+        # device (see `get_offscreen_ratio`), rounded up to whole pixels
+        ratio = self._offscreen_ratio = get_offscreen_ratio(painter)
+        W = math.ceil(canvasRect.right() * ratio)
+        H = math.ceil(canvasRect.bottom() * ratio)
+        x1, y1 = canvasRect.left(), canvasRect.top()
+        x2, y2 = W / ratio, H / ratio
         i1, i2 = xMap.invTransform(x1), xMap.invTransform(x2)
         j1, j2 = yMap.invTransform(y1), yMap.invTransform(y2)
 
+        # Destination rectangle, extended by one offscreen image pixel to the right
+        # and to the bottom (offscreen image pixels being truncated)
         xl, yt, xr, yb = self.boundingRect().getCoords()
         dest = (
             xMap.transform(xl),
             yMap.transform(yt),
-            xMap.transform(xr) + 1,
-            yMap.transform(yb) + 1,
+            xMap.transform(xr) + 1 / ratio,
+            yMap.transform(yb) + 1 / ratio,
         )
 
-        W = int(canvasRect.right())
-        H = int(canvasRect.bottom())
         if self._offscreen.shape != (H, W):
             self._offscreen = np.empty((H, W), np.uint32)
             self._image = QG.QImage(self._offscreen, W, H, QG.QImage.Format_ARGB32)
