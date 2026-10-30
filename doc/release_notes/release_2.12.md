@@ -1,5 +1,12 @@
 # Version 2.12 #
 
+## PlotPy Version 2.12.1 ##
+
+🛠️ Bug fixes:
+
+* **Images on high-DPI screens** — With a display scaling factor such as 125 %, 150 % or 200 %, images were rendered at the resolution of the plot canvas and then upscaled to the screen resolution: with a 200 % scaling, images were shown with half the resolution of the screen, and with a 125 % scaling, one screen pixel row and column out of five were duplicated, which made fine image details (e.g. noise, thin lines) look irregular. Images are now rendered at the resolution of the screen; printing and exporting are not affected. Rendering images at the screen resolution takes more time: for a 2000 × 2000 image shown in a 700 × 700 plot, about 8 ms instead of 7 ms with a 125 % scaling and 19 ms instead of 7 ms with a 200 % scaling (104 ms instead of 28 ms with the anti-aliasing interpolation). The new `image/device_resolution` option of the `plot` configuration section restores the previous behavior
+* **Raw image items** — `RawImageItem` objects were not drawn: each redraw failed with `ValueError: Invalid destination rectangle (expected tuple of 4 integers)`
+
 ## PlotPy Version 2.12.0 ##
 
 ✨ New features:
