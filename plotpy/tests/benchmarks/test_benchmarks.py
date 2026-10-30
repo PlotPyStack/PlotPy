@@ -35,11 +35,11 @@ import numpy as np
 import pytest
 from guidata.env import execenv
 from guidata.qthelpers import qt_app_context
-from guidata.widgets import about
 from qtpy import QtWidgets as QW
 
 from plotpy.builder import make
 from plotpy.plot import PlotOptions, PlotWindow
+from plotpy.widgets.about import get_python_libs_info
 
 
 class BaseBM:
@@ -51,7 +51,7 @@ class BaseBM:
     @classmethod
     def print_header(cls):
         """Print header for benchmark results"""
-        execenv.print(f"PlotPy plot benchmark [{about.get_python_libs_info()}]")
+        execenv.print(f"PlotPy plot benchmark [{get_python_libs_info()}]")
         execenv.print()
         table_header = (
             "N".rjust(10) + " | " + "∆t (ms)".rjust(7) + " | " + "Description"
