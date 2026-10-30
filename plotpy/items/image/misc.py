@@ -25,7 +25,7 @@ from plotpy.interfaces import (
     ITrackableItemType,
     IVoiImageItemType,
 )
-from plotpy.items.image.base import BaseImageItem, RawImageItem
+from plotpy.items.image.base import BaseImageItem, RawImageItem, reusable_rendering
 from plotpy.items.image.transform import TrImageItem
 from plotpy.mathutils.arrayfuncs import get_nan_range
 from plotpy.styles import Histogram2DParam, ImageParam, QuadGridParam
@@ -278,6 +278,7 @@ class Histogram2DItem(BaseImageItem):
     # ---- QwtPlotItem API ------------------------------------------------------
     fill_canvas = True
 
+    @reusable_rendering
     def draw_image(
         self,
         painter: QPainter,

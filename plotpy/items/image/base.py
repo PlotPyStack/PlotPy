@@ -8,7 +8,9 @@ from __future__ import annotations
 import math
 import os
 import os.path as osp
+import weakref
 from collections import OrderedDict
+from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
@@ -195,6 +197,60 @@ def get_offscreen_ratio(painter: QPainter) -> float:
     return ratio if ratio > 0.0 else 1.0
 
 
+def reusable_rendering(draw_image: Callable) -> Callable:
+    """Decorator marking a ``draw_image`` method whose rendering may be reused
+
+    The decorated method must only draw with :meth:`BaseImageItem._draw_offscreen`,
+    from offscreen images which are only modified when the item is rendered. The
+    rendering may then be drawn again without being computed when the plot is
+    redrawn with :meth:`.BasePlot.replot_overlays` (e.g. while moving a shape over
+    the image).
+
+    Args:
+        draw_image: ``draw_image`` method
+
+    Returns:
+        The same method
+    """
+    draw_image.reusable_rendering = True
+    return draw_image
+
+
+class _RenderKey:
+    """Key of the rendering of an image item (see :func:`reusable_rendering`)
+
+    The key is made of values, compared by equality, and of objects (e.g. data
+    arrays), compared by identity. The objects are referenced weakly, so that they
+    are not kept alive by the key: an object which does not exist anymore does not
+    match any object, even another one with the same ``id``.
+
+    Args:
+        values: Values
+        objects: Objects (arrays or None)
+    """
+
+    __slots__ = ("values", "refs")
+
+    def __init__(self, values: tuple, objects: tuple[np.ndarray | None, ...]) -> None:
+        self.values = values
+        self.refs = tuple(None if obj is None else weakref.ref(obj) for obj in objects)
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, _RenderKey) or self.values != other.values:
+            return False
+        if len(self.refs) != len(other.refs):
+            return False
+        for ref, other_ref in zip(self.refs, other.refs):
+            if ref is None or other_ref is None:
+                if ref is not other_ref:
+                    return False
+            elif ref() is None or ref() is not other_ref():
+                return False
+        return True
+
+    __hash__ = None
+
+
 class BaseImageItem(QwtPlotItem):
     """Base class for image items
 
@@ -261,6 +317,10 @@ class BaseImageItem(QwtPlotItem):
         self._offscreen = np.array((1, 1), np.uint32)
         #: Resolution of the offscreen image, in pixels per canvas pixel
         self._offscreen_ratio = 1.0
+        #: Offscreen images and rectangles drawn by the last rendering of the item
+        self._offscreen_draws: list[tuple[QG.QImage, tuple[int, int, int, int]]] = []
+        #: Key of the last rendering of the item (see `_get_render_key`)
+        self._render_key: _RenderKey | None = None
 
         # Linear interpolation is the default interpolation algorithm:
         # it's almost as fast as 'nearest pixel' method but far smoother
@@ -866,6 +926,17 @@ class BaseImageItem(QwtPlotItem):
         """
         self.border_rect.draw(painter, xMap, yMap, canvasRect)
 
+    def _has_linear_scales(self) -> bool:
+        """Return True if the image axes of the plot have linear scales
+
+        Returns:
+            True if linear scales
+        """
+        plot: BasePlot = self.plot()
+        return isinstance(
+            plot.axisScaleEngine(plot.X_BOTTOM), QwtLinearScaleEngine
+        ) and isinstance(plot.axisScaleEngine(plot.Y_LEFT), QwtLinearScaleEngine)
+
     def warn_if_non_linear_scale(self, painter: QPainter, canvasRect: QRectF) -> bool:
         """Warn if non-linear scale
 
@@ -876,10 +947,7 @@ class BaseImageItem(QwtPlotItem):
         Returns:
             True if non-linear scale
         """
-        plot: BasePlot = self.plot()
-        if not isinstance(
-            plot.axisScaleEngine(plot.X_BOTTOM), QwtLinearScaleEngine
-        ) or not isinstance(plot.axisScaleEngine(plot.Y_LEFT), QwtLinearScaleEngine):
+        if not self._has_linear_scales():
             painter.setPen(QC.Qt.red)
             painter.drawText(
                 canvasRect,
@@ -889,6 +957,7 @@ class BaseImageItem(QwtPlotItem):
             return True
         return False
 
+    @reusable_rendering
     def draw_image(
         self,
         painter: QPainter,
@@ -935,18 +1004,85 @@ class BaseImageItem(QwtPlotItem):
         return tuple(int(value * ratio) for value in rect)
 
     def _draw_offscreen(
-        self, painter: QPainter, rect: tuple[int, int, int, int]
+        self,
+        painter: QPainter,
+        rect: tuple[int, int, int, int],
+        image: QG.QImage | None = None,
     ) -> None:
-        """Draw a part of the offscreen image on the canvas
+        """Draw a part of an offscreen image on the canvas
 
         Args:
             painter: Painter
+            rect: Rectangle (x1, y1, x2, y2) to be drawn, in offscreen image pixels
+            image: Offscreen image (default: offscreen image of the item)
+        """
+        if image is None:
+            image = self._image
+        self._offscreen_draws.append((image, rect))
+        self._draw_offscreen_image(painter, image, rect)
+
+    def _draw_offscreen_image(
+        self, painter: QPainter, image: QG.QImage, rect: tuple[int, int, int, int]
+    ) -> None:
+        """Draw a part of an offscreen image on the canvas
+
+        Args:
+            painter: Painter
+            image: Offscreen image
             rect: Rectangle (x1, y1, x2, y2) to be drawn, in offscreen image pixels
         """
         source = QC.QRectF(QC.QPointF(rect[0], rect[1]), QC.QPointF(rect[2], rect[3]))
         ratio = self._offscreen_ratio
         target = QC.QRectF(source.topLeft() / ratio, source.bottomRight() / ratio)
-        painter.drawImage(target, self._image, source)
+        painter.drawImage(target, image, source)
+
+    def _get_render_key(
+        self,
+        canvasRect: QRectF,
+        src_rect: tuple[float, float, float, float],
+        dst_rect: tuple[float, float, float, float],
+    ) -> _RenderKey | None:
+        """Return the key of the rendering of the item: the previous rendering may
+        be drawn again as long as the key does not change
+
+        Args:
+            canvasRect: Canvas rectangle
+            src_rect: Source rectangle
+            dst_rect: Destination rectangle
+
+        Returns:
+            Key, or None if the rendering may not be reused (``draw_image`` not
+            decorated with :func:`reusable_rendering`)
+        """
+        if not getattr(type(self).draw_image, "reusable_rendering", False):
+            return None
+        if not self._has_linear_scales():
+            # A warning is drawn instead of the image
+            return None
+        # No LUT for RGB images
+        lut_values = None
+        if self.lut is not None:
+            # The colormap may be changed in place (e.g. by `set_color_map`)
+            a, b, bg, cmap = self.lut
+            lut_values = (a, b, bg, cmap.tobytes())
+        interp_values = tuple(
+            value.tobytes() if isinstance(value, np.ndarray) else value
+            for value in self.interpolate
+        )
+        values = (
+            # Image items are rendered again on each replot (data, contrast, ...)
+            self.plot().get_replot_count(),
+            # Plot geometry and item position
+            self._offscreen_ratio,
+            canvasRect.getCoords(),
+            src_rect,
+            dst_rect,
+            # LUT and interpolation changes, even without replot
+            lut_values,
+            interp_values,
+        )
+        # Data changes, even without replot
+        return _RenderKey(values, (self._get_display_data(),))
 
     def export_roi(
         self,
@@ -1020,12 +1156,24 @@ class BaseImageItem(QwtPlotItem):
             yMap.transform(yb) + 1 / ratio,
         )
 
-        if self._offscreen.shape != (H, W):
-            self._offscreen = np.empty((H, W), np.uint32)
-            self._image = QG.QImage(self._offscreen, W, H, QG.QImage.Format_ARGB32)
-            self._image.ndarray = self._offscreen
-            self.notify_new_offscreen()
-        self.draw_image(painter, canvasRect, (i1, j1, i2, j2), dest, xMap, yMap)
+        src_rect = (i1, j1, i2, j2)
+        key = self._get_render_key(canvasRect, src_rect, dest)
+        if key is not None and key == self._render_key:
+            # The item has not changed (e.g. a shape is moved over the image): its
+            # previous rendering is drawn again
+            for image, rect in self._offscreen_draws:
+                self._draw_offscreen_image(painter, image, rect)
+        else:
+            self._render_key = None
+            self._offscreen_draws = []
+            if self._offscreen.shape != (H, W):
+                self._offscreen = np.empty((H, W), np.uint32)
+                self._image = QG.QImage(self._offscreen, W, H, QG.QImage.Format_ARGB32)
+                self._image.ndarray = self._offscreen
+                self.notify_new_offscreen()
+            self.draw_image(painter, canvasRect, src_rect, dest, xMap, yMap)
+            # Key after rendering, which may update the item (e.g. its LUT range)
+            self._render_key = self._get_render_key(canvasRect, src_rect, dest)
         self.draw_border(painter, xMap, yMap, canvasRect)
 
     def boundingRect(self) -> QRectF:

@@ -26,7 +26,7 @@ from plotpy.interfaces import (
     ITrackableItemType,
     IVoiImageItemType,
 )
-from plotpy.items.image.base import RawImageItem
+from plotpy.items.image.base import RawImageItem, reusable_rendering
 from plotpy.items.image.filter import XYImageFilterItem, to_bins
 from plotpy.styles.image import ImageParam, RGBImageParam, XYImageParam
 
@@ -332,6 +332,7 @@ class ImageItem(RawImageItem):
             y0 = y1 = 0
         return x0, y0, x1, y1
 
+    @reusable_rendering
     def draw_image(
         self,
         painter: QPainter,
@@ -635,6 +636,7 @@ class XYImageItem(RawImageItem):
         """Provides a filter object over this image's content"""
         return XYImageFilterItem(self, filterobj, filterparam)
 
+    @reusable_rendering
     def draw_image(
         self,
         painter: QPainter,

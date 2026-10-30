@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 import guidata.io
 import numpy as np
 import numpy.ma as ma
+from qtpy import QtGui as QG
 
 from plotpy import io
 from plotpy._scaler import INTERP_NEAREST, _scale_rect, _scale_xy
@@ -18,6 +19,7 @@ from plotpy.interfaces import (
     IHistDataSource,
     IVoiImageItemType,
 )
+from plotpy.items.image.base import reusable_rendering
 from plotpy.items.image.standard import ImageItem, XYImageItem
 from plotpy.styles.image import MaskedImageParam, MaskedXYImageParam
 
@@ -110,6 +112,9 @@ class MaskedImageMixin:
         self._mask: ma.MaskedArray | None = mask
         self._mask_filename: str | None = None
         self._masked_areas: list[MaskedArea] = []
+        #: Offscreen image of the mask overlay (see `_get_mask_offscreen`)
+        self._mask_offscreen: np.ndarray | None = None
+        self._mask_image: QG.QImage | None = None
         # ImageItem and XYImageItem attributes:
         self.data: ma.MaskedArray | None = None
         self.param: MaskedImageParam | MaskedXYImageParam | None = None
@@ -395,6 +400,55 @@ class MaskedImageMixin:
         if plot is not None:
             plot.replot()
 
+    def _get_mask_lut(self) -> tuple | None:
+        """Return the LUT of the mask overlay
+
+        Returns:
+            LUT, or None if the mask overlay is hidden or would be fully
+            transparent (transparent unmasked pixels, and no masked pixel or
+            transparent masked pixels)
+        """
+        if self.data is None or not self.is_mask_visible():
+            return None
+        # pylint: disable=too-many-function-args
+        alpha_masked = np.uint32(255 * self.param.alpha_masked + 0.5).clip(0, 255) << 24
+        alpha_unmasked = (
+            np.uint32(255 * self.param.alpha_unmasked + 0.5).clip(0, 255) << 24
+        )
+        if alpha_unmasked == 0 and (
+            alpha_masked == 0 or not np.ma.getmask(self.data).any()
+        ):
+            return None
+        cmap = np.array(
+            [
+                np.uint32(0x000000 & 0xFFFFFF) | alpha_unmasked,
+                np.uint32(0xFFFFFF & 0xFFFFFF) | alpha_masked,
+            ],
+            dtype=np.uint32,
+        )
+        _a, _b, bg, _cmap = self.lut
+        return (1, 0, bg, cmap)
+
+    def _get_mask_offscreen(self) -> np.ndarray:
+        """Return the offscreen image of the mask overlay
+
+        It has the size of the offscreen image of the item, but it is distinct from
+        it, so that the rendering of the item may be drawn again (see
+        :func:`.reusable_rendering`).
+
+        Returns:
+            Offscreen image array (its `QImage` being ``self._mask_image``)
+        """
+        shape = self._offscreen.shape
+        if self._mask_offscreen is None or self._mask_offscreen.shape != shape:
+            height, width = shape
+            self._mask_offscreen = np.empty(shape, np.uint32)
+            self._mask_image = QG.QImage(
+                self._mask_offscreen, width, height, QG.QImage.Format_ARGB32
+            )
+            self._mask_image.ndarray = self._mask_offscreen
+        return self._mask_offscreen
+
     def _set_data(self, data: np.ndarray) -> None:
         """Set image data
 
@@ -514,6 +568,7 @@ class MaskedImageItem(ImageItem, MaskedImageMixin):
         MaskedImageMixin.deserialize(self, reader)
 
     # ---- BaseImageItem API ----------------------------------------------------
+    @reusable_rendering
     def draw_image(
         self,
         painter: QPainter,
@@ -534,32 +589,20 @@ class MaskedImageItem(ImageItem, MaskedImageMixin):
             yMap: Y axis scale map
         """
         ImageItem.draw_image(self, painter, canvasRect, src_rect, dst_rect, xMap, yMap)
-        if self.data is None:
-            return
-        if self.is_mask_visible():
-            _a, _b, bg, _cmap = self.lut
-            # pylint: disable=too-many-function-args
-            alpha_masked = (
-                np.uint32(255 * self.param.alpha_masked + 0.5).clip(0, 255) << 24
-            )
-            alpha_unmasked = (
-                np.uint32(255 * self.param.alpha_unmasked + 0.5).clip(0, 255) << 24
-            )
-            cmap = np.array(
-                [
-                    np.uint32(0x000000 & 0xFFFFFF) | alpha_unmasked,
-                    np.uint32(0xFFFFFF & 0xFFFFFF) | alpha_masked,
-                ],
-                dtype=np.uint32,
-            )
-            lut = (1, 0, bg, cmap)
+        lut = self._get_mask_lut()
+        if lut is not None:
             shown_data = np.ma.getmaskarray(self.data)
             src2 = self._rescale_src_rect(src_rect)
             dst_rect = self._offscreen_rect(dst_rect)
             dest = _scale_rect(
-                shown_data, src2, self._offscreen, dst_rect, lut, (INTERP_NEAREST,)
+                shown_data,
+                src2,
+                self._get_mask_offscreen(),
+                dst_rect,
+                lut,
+                (INTERP_NEAREST,),
             )
-            self._draw_offscreen(painter, dest)
+            self._draw_offscreen(painter, dest, self._mask_image)
 
     # ---- RawImageItem API -----------------------------------------------------
     def set_data(
@@ -686,6 +729,7 @@ class MaskedXYImageItem(XYImageItem, MaskedImageMixin):
         MaskedImageMixin.deserialize(self, reader)
 
     # ---- BaseImageItem API ----------------------------------------------------
+    @reusable_rendering
     def draw_image(
         self,
         painter: QPainter,
@@ -708,33 +752,20 @@ class MaskedXYImageItem(XYImageItem, MaskedImageMixin):
         XYImageItem.draw_image(
             self, painter, canvasRect, src_rect, dst_rect, xMap, yMap
         )
-        if self.data is None:
-            return
-        if self.is_mask_visible():
-            _a, _b, bg, _cmap = self.lut
-            # pylint: disable=too-many-function-args
-            alpha_masked = (
-                np.uint32(255 * self.param.alpha_masked + 0.5).clip(0, 255) << 24
-            )
-            alpha_unmasked = (
-                np.uint32(255 * self.param.alpha_unmasked + 0.5).clip(0, 255) << 24
-            )
-            cmap = np.array(
-                [
-                    np.uint32(0x000000 & 0xFFFFFF) | alpha_unmasked,
-                    np.uint32(0xFFFFFF & 0xFFFFFF) | alpha_masked,
-                ],
-                dtype=np.uint32,
-            )
-            lut = (1, 0, bg, cmap)
+        lut = self._get_mask_lut()
+        if lut is not None:
             shown_data = np.ma.getmaskarray(self.data)
-
             xytr = self.x, self.y, src_rect
             dst_rect = self._offscreen_rect(dst_rect)
             dest = _scale_xy(
-                shown_data, xytr, self._offscreen, dst_rect, lut, (INTERP_NEAREST,)
+                shown_data,
+                xytr,
+                self._get_mask_offscreen(),
+                dst_rect,
+                lut,
+                (INTERP_NEAREST,),
             )
-            self._draw_offscreen(painter, dest)
+            self._draw_offscreen(painter, dest, self._mask_image)
 
     def set_data(
         self, data: np.ndarray, lut_range: list[float, float] | None = None

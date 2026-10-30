@@ -1607,7 +1607,8 @@ class ObjectHandler:
                 self.active, self.first_pos, event.pos(), self.handle, ctrl
             )
         self.last_pos = QC.QPointF(event.pos())
-        filter.plot.replot()
+        # Images are drawn again without being rendered, unless they are moved
+        filter.plot.replot_overlays()
 
     def stop_tracking(self, filter: StatefulEventFilter, event: QC.QEvent) -> None:
         """Stop tracking the object.
@@ -1723,7 +1724,7 @@ class RectangularSelectionHandler(DragHandler):
         """
         self.shape.move_local_point_to(self.shape_h1, QC.QPointF(event.pos()))
         self.move_action(filter, event)
-        filter.plot.replot()
+        filter.plot.replot_overlays()
 
     def move_action(self, filter: StatefulEventFilter, event: QMouseEvent) -> None:
         """Move the object.
@@ -1882,7 +1883,7 @@ class MultilineSelectionHandler(DragHandler):
             event: The mouse event.
         """
         self.shape.move_local_point_to(self.current_handle, QC.QPointF(event.pos()))
-        filter.plot.replot()
+        filter.plot.replot_overlays()
 
     def stop_notmoving(self, filter: StatefulEventFilter, event: QMouseEvent) -> None:
         """Stops tracking when the drag event is not moving.

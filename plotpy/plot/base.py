@@ -179,6 +179,10 @@ class BasePlot(qwt.QwtPlot):
 
     AUTOSCALE_TYPES = (CurveItem, BaseImageItem, PolygonMapItem, QuiverItem)
 
+    #: Number of calls to :meth:`replot` and :meth:`invalidate`, by which image items
+    #: tell whether their rendering may have changed (see :meth:`replot_overlays`)
+    _replot_count = 0
+
     #: Signal emitted by plot when an IBasePlotItem object was moved
     #:
     #: Args:
@@ -2318,8 +2322,38 @@ class BasePlot(qwt.QwtPlot):
         use instead of replot when only the content
         of the canvas needs redrawing (axes, shouldn't change)
         """
+        self._replot_count += 1
         self.canvas().replot()
         self.update()
+
+    def replot(self) -> None:
+        """Redraw the plot
+
+        Image items are rendered again (see :meth:`replot_overlays`).
+        """
+        self._replot_count += 1
+        super().replot()
+
+    def replot_overlays(self) -> None:
+        """Redraw the plot when only items drawn over images have changed
+
+        This is intended for interactive changes of shapes, markers, annotations,
+        etc. (e.g. while moving a shape with the mouse): image items draw their
+        previous rendering again instead of rendering their data again, unless
+        their position, the plot axes or the plot size have changed. Any other
+        change of image items (data, contrast, colormap, ...) must be followed by
+        :meth:`replot` or :meth:`invalidate`.
+        """
+        super().replot()
+
+    def get_replot_count(self) -> int:
+        """Return the number of calls to :meth:`replot` and :meth:`invalidate`
+
+        Returns:
+            Number of calls to :meth:`replot` and :meth:`invalidate`, which does
+            not change when calling :meth:`replot_overlays`
+        """
+        return self._replot_count
 
     def get_axis_direction(self, axis_id: int | str) -> bool:
         """
