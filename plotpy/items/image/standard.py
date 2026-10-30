@@ -404,7 +404,10 @@ class ImageItem(RawImageItem):
         else:
             a, b = 1.0, 0.0
             data = self.data
-        interp = self.interpolate if apply_interpolation else (INTERP_NEAREST,)
+        if apply_interpolation:
+            interp = self._get_interpolation_for(data)
+        else:
+            interp = (INTERP_NEAREST,)
         rescaled_src = self._rescale_src_rect(src_rect)
         _scale_rect(
             data,
@@ -697,7 +700,10 @@ class XYImageItem(RawImageItem):
             a, b = 1.0, 0.0
             lut = (a, b, None, np.zeros((1,), np.uint32))
             data = self.data
-        interp = self.interpolate if apply_interpolation else (INTERP_NEAREST,)
+        if apply_interpolation:
+            interp = self._get_interpolation_for(data)
+        else:
+            interp = (INTERP_NEAREST,)
         xytr = self.x, self.y, src_rect
         _scale_xy(data, xytr, dst_image, dst_rect, lut, interp)
 

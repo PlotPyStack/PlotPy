@@ -516,6 +516,8 @@ class BaseImageItem(QwtPlotItem):
         # display would keep using the previous (now stale) log data.
         if self._is_zaxis_log:
             self._recompute_log_data()
+        # The new data may have another data type than the previous one
+        self._sync_interpolation_dtype()
         if not self.param.keep_lut_range:
             if self._is_zaxis_log:
                 # The linear LUT range, restored when the log scale is disabled,
@@ -653,6 +655,33 @@ class BaseImageItem(QwtPlotItem):
         """Get interpolation mode"""
         return self.interpolate
 
+    def _get_interpolation_for(
+        self, data: np.ndarray
+    ) -> tuple[int] | tuple[int, np.ndarray]:
+        """Return the interpolation mode to be used to scale the given data
+
+        The scaling functions require the anti-aliasing kernel to have the data
+        type of the data they scale, which is not always the data drawn (e.g. the
+        raw data, exported without the LUT, instead of its logarithm drawn with
+        the Z-axis logarithmic scale).
+
+        Args:
+            data: Data to be scaled
+
+        Returns:
+            Interpolation mode, with an anti-aliasing kernel of the data type of
+            the given data
+        """
+        interp = self.interpolate
+        if interp[0] == INTERP_AA and interp[1].dtype != data.dtype:
+            interp = (INTERP_AA, interp[1].astype(data.dtype))
+        return interp
+
+    def _sync_interpolation_dtype(self) -> None:
+        """Give the anti-aliasing kernel the data type of the data drawn"""
+        if self.data is not None:
+            self.interpolate = self._get_interpolation_for(self._get_display_data())
+
     def set_lut_range(self, lut_range: tuple[float, float]) -> None:
         """
         Set the current active lut range
@@ -759,9 +788,7 @@ class BaseImageItem(QwtPlotItem):
             self._is_zaxis_log = False
             self._log_data = None
             self.set_lut_range(self._lin_lut_range)
-        if self.data is not None and self.interpolate[0] == INTERP_AA:
-            dtype = self._get_display_data().dtype
-            self.interpolate = (INTERP_AA, self.interpolate[1].astype(dtype))
+        self._sync_interpolation_dtype()
         plot = self.plot()
         if plot is not None:
             plot.update_colormap_axis(self)
@@ -892,7 +919,10 @@ class BaseImageItem(QwtPlotItem):
         else:
             a, b = 1.0, 0.0
             data = self.data
-        interp = self.interpolate if apply_interpolation else (INTERP_NEAREST,)
+        if apply_interpolation:
+            interp = self._get_interpolation_for(data)
+        else:
+            interp = (INTERP_NEAREST,)
         _scale_rect(data, src_rect, dst_image, dst_rect, (a, b, None), interp)
 
     # ---- QwtPlotItem API -----------------------------------------------------

@@ -360,7 +360,7 @@ class TrImageItem(RawImageItem):
                     aa = np.ones((force_interp_size, force_interp_size), data.dtype)
                     interp = (force_interp_mode, aa)
             else:  # don't force interpolation, keep current image interpolation
-                interp = self.interpolate
+                interp = self._get_interpolation_for(data)
         else:  # don't apply interpolation --> INTERP_NEAREST
             interp = (INTERP_NEAREST,)
         _scale_tr(data, mat, dst_image, dst_rect, (a, b, None), interp)

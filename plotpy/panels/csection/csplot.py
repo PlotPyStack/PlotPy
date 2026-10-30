@@ -173,34 +173,50 @@ class BaseCrossSectionPlot(BasePlot):
         make every change cost more as images accumulate in the plot (e.g. an
         application showing one image at a time among many hidden ones).
 
+        The curves of image items which are added or shown again are computed
+        right away from the last marker or shape used for the cross section,
+        unless the auto-refresh mode is disabled.
+
         Args:
             plot: Plot containing the image items to be used for cross section
         """
         new_sources = plot.get_items(item_type=ICSImageItemType)
+        visible_sources = [source for source in new_sources if source.isVisible()]
         # Del cross section items of removed or hidden image items
         for source in self.known_items.copy():
-            if source not in new_sources or not source.isVisible():
+            if source not in visible_sources:
                 curve = self.known_items.pop(source)
                 curve.clear_data()  # useful to emit SIG_CS_CURVE_CHANGED
                 # (eventually notify other panels that the
                 #  cross section curve is now empty)
                 self.del_item(curve)
 
+        # Add cross section items of added or shown again image items
+        # (the shade is applied to the curves when they are created)
+        if visible_sources:
+            self.param.shade = self.SHADE / len(visible_sources)
+        new_curves: list[CrossSectionItem] = []
+        for source in visible_sources:
+            if source not in self.known_items:
+                if not self.single_source or not self.known_items:
+                    self.add_cross_section_item(source=source)
+                    new_curves.append(self.known_items[source])
+
         # Update plot only to show/hide cross section curves according to
         # the associated image item visibility state (hence `refresh=False`)
         self.update_plot(refresh=False)
+
+        # Compute the new curves only: the other curves are already up to date
+        obj = self.get_last_obj()
+        if new_curves and self.autorefresh_mode and obj is not None:
+            if obj.plot() is not None:
+                for curve in new_curves:
+                    curve.update_item(obj)
 
         self.plot_axis_changed(plot)
 
         if not new_sources:
             self.replot()
-            return
-
-        self.param.shade = self.SHADE / len(new_sources)
-        for source in new_sources:
-            if source not in self.known_items and source.isVisible():
-                if not self.single_source or not self.known_items:
-                    self.add_cross_section_item(source=source)
 
     def active_item_changed(self, plot: BasePlot) -> None:
         """Active item has just changed
