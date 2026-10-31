@@ -66,7 +66,7 @@ class HistogramItem(CurveItem):
     """
 
     __implements__ = (IBasePlotItem,)
-    _icon_name = "histogram.png"
+    _icon_name = "histogram.svg"
 
     def __init__(
         self,
@@ -84,10 +84,10 @@ class HistogramItem(CurveItem):
         self.old_logscale = None
         self.keep_weakref = keep_weakref
         if curveparam is None:
-            curveparam = CurveParam(_("Curve"), icon="curve.png")
+            curveparam = CurveParam(_("Curve"), icon="curve.svg")
             curveparam.curvestyle = "Steps"
         if histparam is None:
-            self.histparam = HistogramParam(title=_("Histogram"), icon="histogram.png")
+            self.histparam = HistogramParam(title=_("Histogram"), icon="histogram.svg")
         else:
             self.histparam = histparam
         CurveItem.__init__(self, curveparam)

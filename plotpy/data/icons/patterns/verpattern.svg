@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>patterns/verpattern</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<rect x="0" y="0" width="16" height="16" fill="#fff"/>
+<rect x="4" y="0" width="1" height="16" fill="#000"/>
+<rect x="12" y="0" width="1" height="16" fill="#000"/>
+</svg>

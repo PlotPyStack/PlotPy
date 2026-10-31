@@ -59,9 +59,9 @@ class PlotType(enum.Enum):
 # ===============================================================================
 
 PARAMETERS_TITLE_ICON = {
-    "grid": (_("Grid..."), "grid.png"),
-    "axes": (_("Axes style..."), "axes.png"),
-    "item": (_("Parameters..."), "settings.png"),
+    "grid": (_("Grid..."), "grid.svg"),
+    "axes": (_("Axes style..."), "axes.svg"),
+    "item": (_("Parameters..."), "settings.svg"),
 }
 
 

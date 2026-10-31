@@ -63,7 +63,7 @@ class QuiverItem(QwtPlotItem):
     _can_resize = False
     _can_rotate = False
     _can_move = False
-    _icon_name = "quiver.png"
+    _icon_name = "quiver.svg"
 
     def __init__(
         self,

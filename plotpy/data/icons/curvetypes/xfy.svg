@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>curvetypes/xfy</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<path d="M2.5 1 V15 M1 13 L2.5 15 L4 13 M1 2.5 H15 M13 1 L15 2.5 L13 4" fill="none" stroke="#3e3e3e" stroke-width="0.9"/>
+<g transform="translate(.3 .4) scale(.9)">
+<path d="M1 13 C3 8 3.8 7.8 6.5 9.8 C10.5 13 11.2 11.2 13 5 L15 1.5" fill="none" stroke="#ff414c" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

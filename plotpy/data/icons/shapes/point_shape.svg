@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>shapes/point_shape</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<rect x="6.5" y="6.5" width="4" height="4" fill="#ffd800" stroke="#ae0000" stroke-width="0.9" stroke-opacity="0.7"/>
+</svg>

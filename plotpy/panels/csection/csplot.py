@@ -62,7 +62,7 @@ class BaseCrossSectionPlot(BasePlot):
         self.known_items = {}
         self._shapes = {}
 
-        self.param = CurveParam(_("Curve"), icon="curve.png")
+        self.param = CurveParam(_("Curve"), icon="curve.svg")
         self.set_curve_style("cross_section", "curve")
 
         if self._HEIGHT is not None:

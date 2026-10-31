@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>styles/dashdotdot</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<rect x="1" y="7" width="5" height="2" fill="#000"/>
+<rect x="8" y="7" width="2" height="2" fill="#000"/>
+<rect x="12" y="7" width="2" height="2" fill="#000"/>
+</svg>

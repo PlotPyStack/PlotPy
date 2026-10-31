@@ -85,30 +85,30 @@ class ItemListWidget(QW.QListWidget):
         self.rename_ac = create_action(
             self,
             _("Rename"),
-            icon=get_icon("rename.png"),
+            icon=get_icon("rename.svg"),
             triggered=self.rename_item,
             shortcut="F2",
         )
         self.movedown_ac = create_action(
             self,
             _("Move to back"),
-            icon=get_icon("arrow_down.png"),
+            icon=get_icon("arrow_down.svg"),
             triggered=lambda: self.move_item("down"),
         )
         self.moveup_ac = create_action(
             self,
             _("Move to front"),
-            icon=get_icon("arrow_up.png"),
+            icon=get_icon("arrow_up.svg"),
             triggered=lambda: self.move_item("up"),
         )
         self.settings_ac = create_action(
             self,
             _("Parameters..."),
-            icon=get_icon("settings.png"),
+            icon=get_icon("settings.svg"),
             triggered=self.edit_plot_parameters,
         )
         self.remove_ac = create_action(
-            self, _("Remove"), icon=get_icon("trash.png"), triggered=self.remove_item
+            self, _("Remove"), icon=get_icon("trash.svg"), triggered=self.remove_item
         )
         return [
             self.rename_ac,
@@ -142,7 +142,7 @@ class ItemListWidget(QW.QListWidget):
             Param = self.plot.get_axesparam_class(sel_items[0])
             axesparam = Param(
                 title=_("Axes"),
-                icon="lin_lin.png",
+                icon="lin_lin.svg",
                 comment=_("Axes associated to selected item"),
             )
             axesparam.update_param(sel_items[0])
@@ -343,7 +343,7 @@ class PlotItemList(PanelWidget):
     __implements__ = (IPanel,)
     PANEL_ID = ID_ITEMLIST
     PANEL_TITLE = _("Item list")
-    PANEL_ICON = "item_list.png"
+    PANEL_ICON = "item_list.svg"
 
     def __init__(self, parent):
         super().__init__(parent)

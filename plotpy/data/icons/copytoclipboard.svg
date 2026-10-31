@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>copytoclipboard</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+<defs>
+<linearGradient id="green" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#a9f987"/>
+<stop offset="0.5" stop-color="#37b225"/>
+<stop offset="1" stop-color="#168a19"/>
+</linearGradient>
+<linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#ffffff"/>
+<stop offset="1" stop-color="#ededf1"/>
+</linearGradient>
+<linearGradient id="sand" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#f9e1a9"/>
+<stop offset="1" stop-color="#bb9451"/>
+</linearGradient>
+<linearGradient id="silver" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#fafcfd"/>
+<stop offset="1" stop-color="#b8c0c8"/>
+</linearGradient>
+</defs>
+<rect x="1.5" y="2.6" width="9.5" height="11.7" fill="url(#sand)" stroke="#a17c49" stroke-width="0.6"/>
+<rect x="2.8" y="3.5" width="7" height="9.8" fill="#fff" stroke="#c9c4ba" stroke-width="0.4"/>
+<path d="M4 2 V1 H8 V2 H9.1 V3.7 H2.9 V2 Z" fill="url(#silver)" stroke="#9e927c" stroke-width="0.6"/>
+<rect x="6.2" y="6" width="7.8" height="8.5" fill="url(#paper)" stroke="#a4a4ae" stroke-width="0.7"/>
+<path d="M7 6.7 L13.4 6.7" fill="none" stroke="#fff" stroke-width="0.45"/>
+<path d="M3.5 6.5 H8.3 V5 L11 8 L8.3 11 V9.5 H3.5 Z" fill="url(#green)" stroke="#46863b" stroke-width="0.45"/>
+</svg>

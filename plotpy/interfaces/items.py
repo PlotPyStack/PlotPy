@@ -249,7 +249,7 @@ class IBasePlotItem:
     _can_move = True
     _can_resize = True
     _can_rotate = True
-    _icon_name = ""  # Icon name (e.g. "point.png")
+    _icon_name = ""  # Icon name (e.g. "point.svg")
 
     def get_icon_name(self) -> str:
         """Return the icon name

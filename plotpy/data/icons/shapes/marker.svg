@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>shapes/marker</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<rect x="3" y="3" width="10" height="10" fill="#0018ff"/>
+<rect x="5" y="5" width="6" height="6" fill="#00cfff"/>
+</svg>

@@ -44,7 +44,7 @@ class PolygonShape(AbstractShape):
     ADDITIONNAL_POINTS = 0  # Number of points which are not part of the shape
     LINK_ADDITIONNAL_POINTS = False  # Link additionnal points with dotted lines
     CLOSED = True
-    _icon_name = "polygon.png"
+    _icon_name = "polygon.svg"
 
     def __init__(
         self,
@@ -57,7 +57,7 @@ class PolygonShape(AbstractShape):
         self.selected = False
 
         if shapeparam is None:
-            self.shapeparam = ShapeParam(_("Shape"), icon="rectangle.png")
+            self.shapeparam = ShapeParam(_("Shape"), icon="rectangle.svg")
         else:
             self.shapeparam = shapeparam
             self.shapeparam.update_item(self)
@@ -117,7 +117,7 @@ class PolygonShape(AbstractShape):
             reader: HDF5, INI or JSON reader
         """
         self.closed = reader.read("closed")
-        self.shapeparam = ShapeParam(_("Shape"), icon="rectangle.png")
+        self.shapeparam = ShapeParam(_("Shape"), icon="rectangle.svg")
         reader.read("shapeparam", instance=self.shapeparam)
         self.shapeparam.update_item(self)
         self.points = reader.read(group_name="points", func=reader.read_array)

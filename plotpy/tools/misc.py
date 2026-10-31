@@ -62,7 +62,7 @@ class CopyToClipboardTool(CommandTool):
         super().__init__(
             manager,
             _("Copy to clipboard"),
-            get_icon("copytoclipboard.png"),
+            get_icon("copytoclipboard.svg"),
             toolbar_id=toolbar_id,
         )
 
@@ -214,7 +214,7 @@ class SnapshotTool(RectangularActionTool):
 
     SWITCH_TO_DEFAULT_TOOL = True
     TITLE = _("Rectangle snapshot")
-    ICON = "snapshot.png"
+    ICON = "snapshot.svg"
 
     def __init__(self, manager, toolbar_id=DefaultToolbarID):
         super().__init__(
@@ -299,7 +299,7 @@ class PrintTool(CommandTool):
 
     def __init__(self, manager, toolbar_id=DefaultToolbarID):
         super().__init__(
-            manager, _("Print..."), get_icon("print.png"), toolbar_id=toolbar_id
+            manager, _("Print..."), get_icon("print.svg"), toolbar_id=toolbar_id
         )
 
     def activate_command(self, plot, checked):

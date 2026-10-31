@@ -30,7 +30,7 @@ class CrossSectionWidget(PanelWidget):
     SIG_RESIZED = QC.Signal()  # emitted when the widget is resized
     PANEL_ID = None
     PANEL_TITLE = _("Cross section tool")
-    PANEL_ICON = "csection.png"
+    PANEL_ICON = "csection.svg"
     CrossSectionPlotKlass = BaseCrossSectionPlot  # to be overridden in subclasses
 
     __implements__ = (IPanel,)
@@ -134,7 +134,7 @@ class CrossSectionWidget(PanelWidget):
         self.lockscales_ac = create_action(
             self,
             _("Lock scales"),
-            icon=get_icon("axes.png"),
+            icon=get_icon("axes.svg"),
             toggled=self.cs_plot.toggle_lockscales,
             tip=_("Lock scales to main plot axes"),
         )
@@ -142,7 +142,7 @@ class CrossSectionWidget(PanelWidget):
         self.autoscale_ac = create_action(
             self,
             _("Auto-scale"),
-            icon=get_icon("csautoscale.png"),
+            icon=get_icon("csautoscale.svg"),
             toggled=self.cs_plot.toggle_autoscale,
         )
         self.autoscale_ac.toggled.connect(self.lockscales_ac.setDisabled)
@@ -150,13 +150,13 @@ class CrossSectionWidget(PanelWidget):
         self.refresh_ac = create_action(
             self,
             _("Refresh"),
-            icon=get_icon("refresh.png"),
+            icon=get_icon("refresh.svg"),
             triggered=lambda: self.cs_plot.update_plot(),
         )
         self.autorefresh_ac = create_action(
             self,
             _("Auto-refresh"),
-            icon=get_icon("autorefresh.png"),
+            icon=get_icon("autorefresh.svg"),
             toggled=self.cs_plot.toggle_autorefresh,
         )
         self.autorefresh_ac.setChecked(self.cs_plot.autorefresh_mode)
@@ -313,7 +313,7 @@ class XCrossSection(CrossSectionWidget):
         self.peritem_ac = create_action(
             self,
             _("Per image cross-section"),
-            icon=get_icon("csperimage.png"),
+            icon=get_icon("csperimage.svg"),
             toggled=self.cs_plot.toggle_perimage_mode,
             tip=_(
                 "Enable the per-image cross-section mode, "
@@ -326,7 +326,7 @@ class XCrossSection(CrossSectionWidget):
         self.applylut_ac = create_action(
             self,
             _("Apply LUT\n(contrast settings)"),
-            icon=get_icon("csapplylut.png"),
+            icon=get_icon("csapplylut.svg"),
             toggled=self.cs_plot.toggle_apply_lut,
             tip=_(
                 "Apply LUT (Look-Up Table) contrast settings.\n"
@@ -391,7 +391,7 @@ class ObliqueCrossSection(CrossSectionWidget):
 
     PANEL_ID = ID_OCS
     CrossSectionPlotKlass = ObliqueCrossSectionPlot
-    PANEL_ICON = "csection_oblique.png"
+    PANEL_ICON = "csection_oblique.svg"
 
     def setup_actions(self):
         """ """

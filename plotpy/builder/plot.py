@@ -365,7 +365,7 @@ class WidgetBuilder:
         Returns:
             :py:class:`.GridParam`: grid parameters
         """
-        gridparam = GridParam(title=_("Grid"), icon="lin_lin.png")
+        gridparam = GridParam(title=_("Grid"), icon="lin_lin.svg")
         gridparam.read_config(CONF, "plot", "grid")
         if background is not None:
             gridparam.background = background

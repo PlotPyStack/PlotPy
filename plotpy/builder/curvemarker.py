@@ -260,7 +260,7 @@ class CurveMarkerCursorBuilder:
         basename = _("Curve")
         curves = []
         for yi, stylei in zip(y, style):
-            param = CurveParam(title=basename, icon="curve.png")
+            param = CurveParam(title=basename, icon="curve.svg")
             if "label" in kwargs:
                 param.label = kwargs.pop("label")
             else:
@@ -406,7 +406,7 @@ class CurveMarkerCursorBuilder:
             )
 
         basename = _("Curve")
-        param = CurveParam(title=basename, icon="curve.png")
+        param = CurveParam(title=basename, icon="curve.svg")
         if not title:
             global CURVE_COUNT
             CURVE_COUNT += 1
@@ -447,8 +447,8 @@ class CurveMarkerCursorBuilder:
         """  # noqa: E501
         x, y, dx, dy, style = self.__get_arg_triple_errorbar(args)
         basename = _("Curve")
-        curveparam = CurveParam(title=basename, icon="curve.png")
-        errorbarparam = ErrorBarParam(title=_("Error bars"), icon="errorbar.png")
+        curveparam = CurveParam(title=basename, icon="curve.svg")
+        errorbarparam = ErrorBarParam(title=_("Error bars"), icon="errorbar.svg")
         if "label" in kwargs:
             curveparam.label = kwargs["label"]
         else:
@@ -569,8 +569,8 @@ class CurveMarkerCursorBuilder:
             error(x, y, None, dy, marker='o', markerfacecolor='w')
         """
         basename = _("Curve")
-        curveparam = CurveParam(title=basename, icon="curve.png")
-        errorbarparam = ErrorBarParam(title=_("Error bars"), icon="errorbar.png")
+        curveparam = CurveParam(title=basename, icon="curve.svg")
+        errorbarparam = ErrorBarParam(title=_("Error bars"), icon="errorbar.svg")
         if not title:
             global CURVE_COUNT
             CURVE_COUNT += 1
@@ -627,8 +627,8 @@ class CurveMarkerCursorBuilder:
             :py:class:`.HistogramItem` object
         """
         basename = _("Histogram")
-        histparam = HistogramParam(title=basename, icon="histogram.png")
-        curveparam = CurveParam(_("Curve"), icon="curve.png")
+        histparam = HistogramParam(title=basename, icon="histogram.svg")
+        curveparam = CurveParam(_("Curve"), icon="curve.svg")
         curveparam.read_config(CONF, "histogram", "curve")
         if not title:
             global HISTOGRAM_COUNT
@@ -980,7 +980,7 @@ class CurveMarkerCursorBuilder:
         Returns:
             :py:class:`.Marker` object
         """
-        param = MarkerParam(_("Marker"), icon="marker.png")
+        param = MarkerParam(_("Marker"), icon="marker.svg")
         param.read_config(CONF, "plot", "marker/cursor")
         if (
             color

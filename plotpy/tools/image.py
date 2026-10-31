@@ -119,7 +119,7 @@ class ImageStatsRectangle(AnnotatedRectangle):
     """
 
     shape: PolygonShape
-    _icon_name = "imagestats.png"
+    _icon_name = "imagestats.svg"
 
     def __init__(
         self,
@@ -223,7 +223,7 @@ class ImageStatsTool(RectangularShapeTool):
 
     SWITCH_TO_DEFAULT_TOOL = True
     TITLE = _("Image statistics")
-    ICON = "imagestats.png"
+    ICON = "imagestats.svg"
     SHAPE_STYLE_KEY = "shape/image_stats"
 
     def __init__(
@@ -802,7 +802,7 @@ class ImageMaskTool(CommandTool):
         super().__init__(
             manager,
             _("Mask"),
-            icon="mask_tool.png",
+            icon="mask_tool.svg",
             tip=_("Manage image masking areas"),
             toolbar_id=toolbar_id,
         )
@@ -819,28 +819,28 @@ class ImageMaskTool(CommandTool):
             toolbar_id=None,
             handle_final_shape_cb=lambda shape: self.handle_shape(shape, inside=True),
             title=_("Mask rectangular area (inside)"),
-            icon="mask_rectangle.png",
+            icon="mask_rectangle.svg",
         )
         rect_out_tool = manager.add_tool(
             RectangleTool,
             toolbar_id=None,
             handle_final_shape_cb=lambda shape: self.handle_shape(shape, inside=False),
             title=_("Mask rectangular area (outside)"),
-            icon="mask_rectangle_outside.png",
+            icon="mask_rectangle_outside.svg",
         )
         ellipse_tool = manager.add_tool(
             CircleTool,
             toolbar_id=None,
             handle_final_shape_cb=lambda shape: self.handle_shape(shape, inside=True),
             title=_("Mask circular area (inside)"),
-            icon="mask_circle.png",
+            icon="mask_circle.svg",
         )
         ellipse_out_tool = manager.add_tool(
             CircleTool,
             toolbar_id=None,
             handle_final_shape_cb=lambda shape: self.handle_shape(shape, inside=False),
             title=_("Mask circular area (outside)"),
-            icon="mask_circle_outside.png",
+            icon="mask_circle_outside.svg",
         )
 
         menu = QW.QMenu()
@@ -852,14 +852,14 @@ class ImageMaskTool(CommandTool):
         )
         showshapes_action.setChecked(True)
         applymask_a = manager.create_action(
-            _("Apply mask"), icon=get_icon("apply.png"), triggered=self.apply_mask
+            _("Apply mask"), icon=get_icon("apply.svg"), triggered=self.apply_mask
         )
         clearmask_a = manager.create_action(
-            _("Clear mask"), icon=get_icon("delete.png"), triggered=self.clear_mask
+            _("Clear mask"), icon=get_icon("delete.svg"), triggered=self.clear_mask
         )
         removeshapes_a = manager.create_action(
             _("Remove all masking shapes"),
-            icon=get_icon("delete.png"),
+            icon=get_icon("delete.svg"),
             triggered=self.remove_all_shapes,
         )
         add_actions(
@@ -1076,7 +1076,10 @@ class LockTrImageTool(ToggleTool):
 
     def __init__(self, manager: PlotManager, toolbar_id=None) -> None:
         super().__init__(
-            manager, title=_("Lock"), icon=get_icon("lock.png"), toolbar_id=None
+            manager,
+            title=_("Lock"),
+            icon=get_icon("trimage_lock.svg"),
+            toolbar_id=None,
         )
 
     def activate_command(self, plot: BasePlot, checked: bool) -> None:
@@ -1091,9 +1094,9 @@ class LockTrImageTool(ToggleTool):
             for item in itemlist:
                 item.set_locked(checked)
                 if item.is_locked():
-                    item.set_icon_name("trimage_lock.png")
+                    item.set_icon_name("trimage_lock.svg")
                 else:
-                    item.set_icon_name("image.png")
+                    item.set_icon_name("image.svg")
                 plot.SIG_ITEM_PARAMETERS_CHANGED.emit(item)
             plot.SIG_ITEMS_CHANGED.emit(plot)
 
@@ -1124,13 +1127,13 @@ class LockTrImageTool(ToggleTool):
                 self.action.setChecked(False)
                 self.title = _("Lock")
                 self.action.setText(self.title)
-                self.icon = get_icon("trimage_lock.png")
+                self.icon = get_icon("trimage_lock.svg")
                 self.action.setIcon(self.icon)
             else:  # all images are locked
                 self.action.setChecked(True)
                 self.title = _("Unlock")
                 self.action.setText(self.title)
-                self.icon = get_icon("trimage_unlock.png")
+                self.icon = get_icon("trimage_unlock.svg")
                 self.action.setIcon(self.icon)
         else:
             self.action.setEnabled(False)
@@ -1324,7 +1327,7 @@ class RotateCropTool(CommandTool):
         super().__init__(
             manager,
             title=_("Rotate and crop"),
-            icon=get_icon("rotate.png"),
+            icon=get_icon("rotate.svg"),
             toolbar_id=toolbar_id,
         )
         self.options = options

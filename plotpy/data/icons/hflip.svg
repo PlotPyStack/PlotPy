@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>hflip</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<path d="M7 2 V13 H1 Z" fill="#cce5ff" stroke="#a0c7fb" stroke-width="0.7"/>
+<path d="M9 2 V13 H15 Z" fill="#9cc4f6" stroke="#76a5df" stroke-width="0.7"/>
+</svg>

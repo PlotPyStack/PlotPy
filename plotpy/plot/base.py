@@ -442,7 +442,7 @@ class BasePlot(qwt.QwtPlot):
 
         # Setting up grid
         if options.gridparam is None:
-            options.gridparam = GridParam(title=_("Grid"), icon="grid.png")
+            options.gridparam = GridParam(title=_("Grid"), icon="grid.svg")
             options.gridparam.read_config(CONF, options.section, "grid")
         self.grid = GridItem(options.gridparam)
         self.add_item(self.grid, z=-1)
@@ -2093,7 +2093,7 @@ class BasePlot(qwt.QwtPlot):
                 Param = self.get_axesparam_class(active_item)
                 axesparam = Param(
                     title=_("Axes"),
-                    icon="lin_lin.png",
+                    icon="lin_lin.svg",
                     comment=_("Axes associated to selected item"),
                 )
                 axesparam.update_param(active_item)

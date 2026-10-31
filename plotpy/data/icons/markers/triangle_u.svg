@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>markers/triangle_u</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<g transform="rotate(0 8 8)">
+<path d="M8 4 L11.9 11.6 H4.1 Z" fill="#ffff00" stroke="#b1b1a0" stroke-width="0.9"/>
+</g>
+</svg>

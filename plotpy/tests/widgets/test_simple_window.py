@@ -193,7 +193,7 @@ class MainWindow(QW.QMainWindow):
 
     def setup(self):
         """Setup window parameters"""
-        self.setWindowIcon(get_icon("python.png"))
+        self.setWindowIcon(get_icon("python.svg"))
         self.setWindowTitle(_("Application example"))
         self.resize(QC.QSize(600, 800))
 
@@ -213,7 +213,7 @@ class MainWindow(QW.QMainWindow):
             self,
             _("New..."),
             shortcut="Ctrl+N",
-            icon=get_icon("filenew.png"),
+            icon=get_icon("filenew.svg"),
             tip=_("Create a new image"),
             triggered=self.new_image,
         )
@@ -221,7 +221,7 @@ class MainWindow(QW.QMainWindow):
             self,
             _("Open..."),
             shortcut="Ctrl+O",
-            icon=get_icon("fileopen.png"),
+            icon=get_icon("fileopen.svg"),
             tip=_("Open an image"),
             triggered=self.open_image,
         )
@@ -241,7 +241,7 @@ class MainWindow(QW.QMainWindow):
             self,
             _("Delete"),
             shortcut="Del",
-            icon=get_icon("editdelete.png"),
+            icon=get_icon("editdelete.svg"),
             tip=_("Delete selected image"),
             triggered=self.mainwidget.remove_image,
         )

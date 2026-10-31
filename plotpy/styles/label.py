@@ -44,7 +44,7 @@ class LabelParam(DataSet):
     _styles = BeginTabGroup("Styles")
     # -------------------------------------------------------------- Contents tab
     ___cont = BeginGroup(_("Contents")).set_prop(
-        "display", icon="label.png", hide=GetAttrProp("_no_contents")
+        "display", icon="label.svg", hide=GetAttrProp("_no_contents")
     )
     contents = TextItem("", default="").set_prop(
         "display", hide=GetAttrProp("_no_contents")
@@ -54,21 +54,21 @@ class LabelParam(DataSet):
     )
     # ---------------------------------------------------------------- Symbol tab
     symbol = SymbolItem(_("Symbol")).set_prop(
-        "display", icon="diamond.png", hide=GetAttrProp("_legend")
+        "display", icon="diamond.svg", hide=GetAttrProp("_legend")
     )
     # ---------------------------------------------------------------- Border tab
     border = LineStyleItem(
         _("Border"), default=Obj(color="#cbcbcb"), help=_("set width to 0 to disable")
-    ).set_prop("display", icon="dashdot.png")
+    ).set_prop("display", icon="dashdot.svg")
     # ------------------------------------------------------------------ Text tab
-    ___text = BeginGroup(_("Text")).set_prop("display", icon="font.png")
+    ___text = BeginGroup(_("Text")).set_prop("display", icon="font.svg")
     font = FontItem(_("Text font"))
     color = ColorItem(_("Text color"), default="#000000")
     bgcolor = ColorItem(_("Background color"), default="#ffffff")
     bgalpha = FloatItem(_("Background transparency"), min=0.0, max=1.0, default=0.8)
     ___etext = EndGroup(_("Text"))
     # -------------------------------------------------------------- Position tab
-    ___position = BeginGroup(_("Position")).set_prop("display", icon="move.png")
+    ___position = BeginGroup(_("Position")).set_prop("display", icon="move.svg")
     _begin_anchor = BeginGroup(_("Position relative to anchor")).set_prop(
         "display", hide=GetAttrProp("_multiselection")
     )

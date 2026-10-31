@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>markers/star</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<path d="M8 3.5 V12.5 M3.5 8 H12.5 M4.8 4.8 L11.2 11.2 M11.2 4.8 L4.8 11.2" fill="none" stroke="#acaca7" stroke-width="1"/>
+</svg>

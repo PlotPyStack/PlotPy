@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>items/grid</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<rect x="0.5" y="0.5" width="15" height="15" fill="none" stroke="#969696" stroke-width="1"/>
+<path d="M4.5 1 V15 M8.5 1 V15 M12.5 1 V15 M1 4.5 H15 M1 8.5 H15 M1 12.5 H15" fill="none" stroke="#aaa" stroke-width="0.8"/>
+</svg>
