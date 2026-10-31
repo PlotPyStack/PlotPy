@@ -307,7 +307,7 @@ class SaveItemsTool(CommandTool):
         super().__init__(
             manager,
             _("Save items"),
-            get_std_icon("DialogSaveButton", 16),
+            get_std_icon("DialogSaveButton"),
             toolbar_id=toolbar_id,
         )
 

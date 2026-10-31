@@ -32,7 +32,7 @@ class SaveAsTool(CommandTool):
         super().__init__(
             manager,
             _("Save as..."),
-            get_std_icon("DialogSaveButton", 16),
+            get_std_icon("DialogSaveButton"),
             toolbar_id=toolbar_id,
         )
 
@@ -257,7 +257,7 @@ class HelpTool(CommandTool):
         super().__init__(
             manager,
             _("Help"),
-            get_std_icon("DialogHelpButton", 16),
+            get_std_icon("DialogHelpButton"),
             toolbar_id=toolbar_id,
         )
 
@@ -327,7 +327,7 @@ class OpenFileTool(CommandTool):
         self, manager, title=_("Open..."), formats="*.*", toolbar_id=DefaultToolbarID
     ):
         super().__init__(
-            manager, title, get_std_icon("DialogOpenButton", 16), toolbar_id=toolbar_id
+            manager, title, get_std_icon("DialogOpenButton"), toolbar_id=toolbar_id
         )
         self.formats = formats
         self.directory = ""
