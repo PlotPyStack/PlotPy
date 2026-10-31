@@ -170,7 +170,9 @@ class ColorMapManager(QW.QDialog):
 
         add_btn = QW.QPushButton(get_icon("edit_add.svg"), _("Add") + "...")
         add_btn.clicked.connect(self.add_colormap)
-        self._remove_btn = QW.QPushButton(get_icon("delete.svg"), _("Remove") + "...")
+        self._remove_btn = QW.QPushButton(
+            get_icon("guidata:delete.svg"), _("Remove") + "..."
+        )
         is_custom_cmap = cmap_exists(default_colormap, CUSTOM_COLORMAPS)
         self._remove_btn.setEnabled(is_custom_cmap)
         self._remove_btn.clicked.connect(self.remove_colormap)

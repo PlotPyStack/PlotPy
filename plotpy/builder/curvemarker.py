@@ -627,7 +627,7 @@ class CurveMarkerCursorBuilder:
             :py:class:`.HistogramItem` object
         """
         basename = _("Histogram")
-        histparam = HistogramParam(title=basename, icon="histogram.svg")
+        histparam = HistogramParam(title=basename, icon="plotpy:histogram.svg")
         curveparam = CurveParam(_("Curve"), icon="curve.svg")
         curveparam.read_config(CONF, "histogram", "curve")
         if not title:

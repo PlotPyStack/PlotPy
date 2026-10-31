@@ -80,6 +80,8 @@ version = { attr = "plotpy.__version__" }
 addopts = "--import-mode=importlib"
 testpaths = ["plotpy"]
 # addopts = "--import-mode=importlib --show-windows"  # Disable offscreen mode
+# Ambiguous image names must be designated explicitly ("module:filename")
+filterwarnings = ["error::guidata.configtools.ImageNameConflictWarning"]
 
 [tool.ruff]
 exclude = [".git", ".vscode", "build", "dist","venv*",".venv*"]

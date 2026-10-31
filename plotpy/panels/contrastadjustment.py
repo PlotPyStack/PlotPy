@@ -160,7 +160,7 @@ class LevelsHistogram(BasePlot):
 
         for item in items:
             if item not in known_items:
-                histparam = HistogramParam(_("Histogram"), icon="histogram.svg")
+                histparam = HistogramParam(_("Histogram"), icon="plotpy:histogram.svg")
                 histparam.logscale = False
                 histparam.n_bins = self.DEFAULT_NBINS
                 curve = HistogramItem(self.param, histparam, keep_weakref=True)

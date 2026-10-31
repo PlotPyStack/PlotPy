@@ -85,7 +85,7 @@ class ItemListWidget(QW.QListWidget):
         self.rename_ac = create_action(
             self,
             _("Rename"),
-            icon=get_icon("rename.svg"),
+            icon=get_icon("guidata:rename.svg"),
             triggered=self.rename_item,
             shortcut="F2",
         )

@@ -66,7 +66,7 @@ class HistogramItem(CurveItem):
     """
 
     __implements__ = (IBasePlotItem,)
-    _icon_name = "histogram.svg"
+    _icon_name = "plotpy:histogram.svg"
 
     def __init__(
         self,
@@ -87,7 +87,9 @@ class HistogramItem(CurveItem):
             curveparam = CurveParam(_("Curve"), icon="curve.svg")
             curveparam.curvestyle = "Steps"
         if histparam is None:
-            self.histparam = HistogramParam(title=_("Histogram"), icon="histogram.svg")
+            self.histparam = HistogramParam(
+                title=_("Histogram"), icon="plotpy:histogram.svg"
+            )
         else:
             self.histparam = histparam
         CurveItem.__init__(self, curveparam)

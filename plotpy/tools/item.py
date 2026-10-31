@@ -151,7 +151,7 @@ class ExportItemDataTool(ItemManipulationBaseTool):
     """Tool for exporting item data."""
 
     TITLE: str = _("Export data...")
-    ICON: str = "export.svg"
+    ICON: str = "plotpy:export.svg"
 
     def __init__(self, manager, toolbar_id: str | type[DefaultToolbarID] | None = None):
         """

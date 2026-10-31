@@ -530,7 +530,7 @@ class FitWidget(QWidget):
         Returns:
             Autofit group
         """
-        auto_button = QW.QPushButton(get_icon("apply.svg"), _("Run"), self)
+        auto_button = QW.QPushButton(get_icon("guidata:apply.svg"), _("Run"), self)
         auto_button.clicked.connect(self.autofit)
         autoprm_button = QW.QPushButton(get_icon("settings.svg"), _("Settings"), self)
         autoprm_button.clicked.connect(self.edit_parameters)
