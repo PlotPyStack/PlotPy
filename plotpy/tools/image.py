@@ -852,14 +852,18 @@ class ImageMaskTool(CommandTool):
         )
         showshapes_action.setChecked(True)
         applymask_a = manager.create_action(
-            _("Apply mask"), icon=get_icon("apply.svg"), triggered=self.apply_mask
+            _("Apply mask"),
+            icon=get_icon("guidata:apply.svg"),
+            triggered=self.apply_mask,
         )
         clearmask_a = manager.create_action(
-            _("Clear mask"), icon=get_icon("delete.svg"), triggered=self.clear_mask
+            _("Clear mask"),
+            icon=get_icon("guidata:delete.svg"),
+            triggered=self.clear_mask,
         )
         removeshapes_a = manager.create_action(
             _("Remove all masking shapes"),
-            icon=get_icon("delete.svg"),
+            icon=get_icon("guidata:delete.svg"),
             triggered=self.remove_all_shapes,
         )
         add_actions(
@@ -1096,7 +1100,7 @@ class LockTrImageTool(ToggleTool):
                 if item.is_locked():
                     item.set_icon_name("trimage_lock.svg")
                 else:
-                    item.set_icon_name("image.svg")
+                    item.set_icon_name("plotpy:image.svg")
                 plot.SIG_ITEM_PARAMETERS_CHANGED.emit(item)
             plot.SIG_ITEMS_CHANGED.emit(plot)
 

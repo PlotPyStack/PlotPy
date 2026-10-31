@@ -51,7 +51,9 @@ image and icon under the plotpy/data/icons directory.
 
 The icons are SVG reconstructions (2026) of the historical PNG icons: the notices
 and licenses of the original artwork remain. They are also provided in the
-plotpy/data/icons/LICENSES.txt file.
+plotpy/data/icons/LICENSES.txt file. The icons shared with guidata (e.g. editors,
+file types, Python logo) are provided by guidata (see guidata's
+guidata/data/icons/LICENSES.txt file).
 
 
 -------------------------------------------------------------------------------
@@ -91,74 +93,9 @@ Files covered:
 
 * plotpy/data/icons/arrow_down.svg
 * plotpy/data/icons/arrow_up.svg
-* plotpy/data/icons/cell_edit.svg
-* plotpy/data/icons/edit.svg
-* plotpy/data/icons/editors/edit.svg
-* plotpy/data/icons/editors/edit_add.svg
-* plotpy/data/icons/editors/editcopy.svg
-* plotpy/data/icons/editors/editdelete.svg
-* plotpy/data/icons/editors/editpaste.svg
-* plotpy/data/icons/editors/filesave.svg
-* plotpy/data/icons/editors/imshow.svg
-* plotpy/data/icons/editors/insert.svg
-* plotpy/data/icons/editors/plot.svg
-* plotpy/data/icons/editors/rename.svg
 * plotpy/data/icons/eraser.svg
-* plotpy/data/icons/exit.svg
-* plotpy/data/icons/fileclose.svg
-* plotpy/data/icons/fileimport.svg
-* plotpy/data/icons/filenew.svg
-* plotpy/data/icons/fileopen.svg
-* plotpy/data/icons/filesave.svg
-* plotpy/data/icons/filesaveas.svg
 * plotpy/data/icons/magnifier.svg
 * plotpy/data/icons/print.svg
-* plotpy/data/icons/save_all.svg
-
--------------------------------------------------------------------------------
-
-Python Logo
------------
-
-
-Copyright (c) 2008 Python Software Foundation
-
-
-| Author: Python Software Foundation | https://www.python.org/
-| Source/Download: https://www.python.org/community/logos/
-| License: Python Software Foundation License Version 2 https://docs.python.org/3/license.html
-| Trademark: Python Software Foundation Trademark Usage Policy https://www.python.org/psf/trademarks/
-
-Modifications: SVG reconstruction of the historical PNG, 2026.
-
-
-The Python logo is a trademark of the Python Software Foundation,
-which is responsible for defending against
-any damaging or confusing uses of the trademark.
-
-See the PSF Trademark Usage Policy: https://www.python.org/psf/trademarks/
-
-In general, we want the logo to be used as widely as possible to indicate
-use of Python or suitability for Python. However, please ask first when using
-a derived version of the logo or when in doubt.
-
-Projects and companies that use Python are encouraged to incorporate the
-Python logo on their websites, brochures, packaging, and elsewhere to indicate
-suitability for use with Python or implementation in Python. Use of the
-"two snakes" logo element alone, without the accompanying wordmark is permitted
-on the same terms as the combined logo.
-
-
-See below for the full text of the PSF License Version 2.
-
-The license history and text can be found online at:
-https://docs.python.org/3/license.html
-
-
-Files covered:
-
-* plotpy/data/icons/python.svg
-
 
 -------------------------------------------------------------------------------
 

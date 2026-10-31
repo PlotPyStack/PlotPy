@@ -5,6 +5,9 @@ SVG files replace the historical PNG icon resources. They were reconstructed
 from those PNGs in 2026; the original artwork's notices and licenses remain.
 The project code license does not replace these artwork licenses.
 
+The icons shared with guidata (e.g. editors, file types, Python logo) are
+provided by guidata: see guidata/data/icons/LICENSES.txt.
+
 Crystal Project
 ---------------
 Copyright (c) 2006-2007 Everaldo Coelho
@@ -17,39 +20,9 @@ Modification: SVG reconstruction of the historical PNG icons, 2026.
 Covered SVG files (relative to this directory):
 - arrow_down.svg
 - arrow_up.svg
-- cell_edit.svg
-- edit.svg
-- editors/edit.svg
-- editors/edit_add.svg
-- editors/editcopy.svg
-- editors/editdelete.svg
-- editors/editpaste.svg
-- editors/filesave.svg
-- editors/imshow.svg
-- editors/insert.svg
-- editors/plot.svg
-- editors/rename.svg
 - eraser.svg
-- exit.svg
-- fileclose.svg
-- fileimport.svg
-- filenew.svg
-- fileopen.svg
-- filesave.svg
-- filesaveas.svg
 - magnifier.svg
 - print.svg
-- save_all.svg
-
-Python logo
------------
-Copyright (c) 2008 Python Software Foundation
-Source: https://www.python.org/community/logos/
-License: Python Software Foundation License Version 2 (PSF-2.0)
-Resource: python.svg
-Modification: SVG reconstruction of the historical PNG, 2026.
-The Python logo is a trademark of the Python Software Foundation.
-Trademark policy: https://www.python.org/psf/trademarks/
 
 License texts retained from PlotPy's doc/intro/licenses.rst follow.
 

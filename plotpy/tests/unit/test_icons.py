@@ -12,6 +12,7 @@ the former PNG names of the icons must still be resolved (to the SVG files).
 
 from __future__ import annotations
 
+import collections
 import os
 import os.path as osp
 import re
@@ -31,7 +32,7 @@ def _referenced_icon_names() -> set[str]:
     """Return the SVG image names referenced as string literals in PlotPy's code
     (tests excluded)"""
     names = set()
-    pattern = re.compile(r"[\"']([\w\-]+\.svg)[\"']")
+    pattern = re.compile(r"[\"']((?:[\w.]+:)?[\w\-]+\.svg)[\"']")
     root = osp.dirname(plotpy.__file__)
     for dirpath, dirnames, filenames in os.walk(root):
         if dirpath == root:
@@ -55,10 +56,27 @@ def test_no_png_icons() -> None:
     assert not pngs
 
 
+def test_unique_icon_file_names() -> None:
+    """Test that PlotPy icon file names are unique (``"plotpy:filename"`` designates
+    an icon without ambiguity), and that PlotPy does not ship copies of guidata
+    icons"""
+    names = collections.defaultdict(list)
+    for modname in ("guidata", "plotpy"):
+        root = configtools.get_module_data_path(modname, "data/icons")
+        for dirpath, _dirnames, filenames in os.walk(root):
+            for filename in filenames:
+                if filename.endswith(".svg"):
+                    names[filename].append(osp.join(dirpath, filename))
+    duplicates = {name: paths for name, paths in names.items() if len(paths) > 1}
+    # Distinct icons (designated explicitly in PlotPy and guidata)
+    assert set(duplicates) == {"export.svg"}
+
+
 def test_referenced_icons_exist() -> None:
     """Test that the icons referenced in PlotPy's code exist"""
     names = _referenced_icon_names()
     assert "curve.svg" in names
+    assert "plotpy:image.svg" in names
     missing = set()
     for name in names:
         try:

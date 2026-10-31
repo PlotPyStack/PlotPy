@@ -215,7 +215,7 @@ class BaseTransformWidget(QW.QWidget):
         apply_btn = create_toolbutton(
             self.plot_widget,
             text=_("Apply"),
-            icon=get_icon("apply.svg"),
+            icon=get_icon("guidata:apply.svg"),
             triggered=self.apply_transformation,
             autoraise=False,
         )

@@ -77,7 +77,7 @@ def create_qtdesigner_plugin(
     create_qtdesigner_plugin(group = "plotpy", module_name = "plotpy.baseplot",
                              class_name = "PlotWidget",
                              plot_options=PlotOptions(type="image")),
-                             icon = "image.svg", tooltip = "", whatsthis = ""):
+                             icon = "plotpy:image.svg", tooltip = "", whatsthis = ""):
     """
     Widget = getattr(__import__(module_name, fromlist=[class_name]), class_name)
 

@@ -273,7 +273,7 @@ class BaseImageItem(QwtPlotItem):
     _can_rotate = False
     _readonly = False
     _private = False
-    _icon_name = "image.svg"
+    _icon_name = "plotpy:image.svg"
     #: True if the item supports the Z-axis logarithmic scale, i.e. if it draws
     #: its data through :meth:`_get_display_data` (see :meth:`supports_zaxis_log`)
     _ZAXIS_LOG_SUPPORTED = False
