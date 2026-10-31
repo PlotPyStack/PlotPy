@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>csperimage</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<rect x="0.5" y="0.5" width="15" height="15" fill="#fff" stroke="#c3c3c3" stroke-width="0.8"/>
+<rect x="3" y="5" width="2" height="9" fill="none" stroke="#ff1c25" stroke-width="1"/>
+<rect x="7" y="3" width="2" height="11" fill="none" stroke="#002bff" stroke-width="1"/>
+<rect x="11" y="7" width="2" height="7" fill="none" stroke="#f01fff" stroke-width="1"/>
+<path d="M0 14.5 L16 14.5" fill="none" stroke="#424242" stroke-width="1"/>
+</svg>

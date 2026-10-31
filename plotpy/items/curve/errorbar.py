@@ -55,7 +55,7 @@ class ErrorBarCurveItem(CurveItem):
         errorbarparam: Error-bar parameters
     """
 
-    _icon_name = "errorbar.png"
+    _icon_name = "errorbar.svg"
 
     def __init__(
         self,
@@ -63,7 +63,7 @@ class ErrorBarCurveItem(CurveItem):
         errorbarparam: ErrorBarParam | None = None,
     ) -> None:
         if errorbarparam is None:
-            self.errorbarparam = ErrorBarParam(_("Error bars"), icon="errorbar.png")
+            self.errorbarparam = ErrorBarParam(_("Error bars"), icon="errorbar.svg")
         else:
             self.errorbarparam = errorbarparam
         self.errorPen: QG.QPen | None = None
@@ -99,9 +99,9 @@ class ErrorBarCurveItem(CurveItem):
         Args:
             reader: HDF5, INI or JSON reader
         """
-        self.param = CurveParam(_("Curve"), icon="curve.png")
+        self.param = CurveParam(_("Curve"), icon="curve.svg")
         reader.read("curveparam", instance=self.param)
-        self.errorbarparam = ErrorBarParam(_("Error bars"), icon="errorbar.png")
+        self.errorbarparam = ErrorBarParam(_("Error bars"), icon="errorbar.svg")
         reader.read("errorbarparam", instance=self.errorbarparam)
         x = reader.read(group_name="Xdata", func=reader.read_array)
         y = reader.read(group_name="Ydata", func=reader.read_array)

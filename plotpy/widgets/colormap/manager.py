@@ -145,7 +145,7 @@ class ColorMapManager(QW.QDialog):
         invert: bool = False,
     ) -> None:
         super().__init__(parent)
-        self.setWindowIcon(get_icon("cmap_edit.png"))
+        self.setWindowIcon(get_icon("cmap_edit.svg"))
         self.setWindowTitle(_("Colormap manager"))
 
         self.active_cmap_name = default_colormap = active_colormap
@@ -168,9 +168,9 @@ class ColorMapManager(QW.QDialog):
         self._cmap_choice.setIconSize(QC.QSize(LARGE_ICON_WIDTH, LARGE_ICON_HEIGHT))
         self._cmap_choice.setCurrentText(default_colormap)
 
-        add_btn = QW.QPushButton(get_icon("edit_add.png"), _("Add") + "...")
+        add_btn = QW.QPushButton(get_icon("edit_add.svg"), _("Add") + "...")
         add_btn.clicked.connect(self.add_colormap)
-        self._remove_btn = QW.QPushButton(get_icon("delete.png"), _("Remove") + "...")
+        self._remove_btn = QW.QPushButton(get_icon("delete.svg"), _("Remove") + "...")
         is_custom_cmap = cmap_exists(default_colormap, CUSTOM_COLORMAPS)
         self._remove_btn.setEnabled(is_custom_cmap)
         self._remove_btn.clicked.connect(self.remove_colormap)

@@ -118,7 +118,7 @@ class EditItemDataTool(ItemManipulationBaseTool):
     """Tool for editing item data."""
 
     TITLE: str = _("Edit data...")
-    ICON: str = "arredit.png"
+    ICON: str = "arredit.svg"
 
     def __init__(self, manager, toolbar_id: str | type[DefaultToolbarID] | None = None):
         """
@@ -151,7 +151,7 @@ class ExportItemDataTool(ItemManipulationBaseTool):
     """Tool for exporting item data."""
 
     TITLE: str = _("Export data...")
-    ICON: str = "export.png"
+    ICON: str = "export.svg"
 
     def __init__(self, manager, toolbar_id: str | type[DefaultToolbarID] | None = None):
         """
@@ -181,7 +181,7 @@ class ItemCenterTool(CommandTool):
             toolbar_id: ID of the toolbar to which this tool belongs.
         """
         super().__init__(
-            manager, _("Center items"), "center.png", toolbar_id=toolbar_id
+            manager, _("Center items"), "center.svg", toolbar_id=toolbar_id
         )
 
     def get_supported_items(self, plot: BasePlot) -> list:
@@ -247,7 +247,7 @@ class DeleteItemTool(CommandTool):
             manager: The plot manager.
             toolbar_id: ID of the toolbar to which this tool belongs.
         """
-        super().__init__(manager, _("Remove"), "trash.png", toolbar_id=toolbar_id)
+        super().__init__(manager, _("Remove"), "trash.svg", toolbar_id=toolbar_id)
 
     def get_supported_items(self, plot: BasePlot) -> list:
         """

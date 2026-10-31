@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>on_curve</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<path d="M1 13 C3 8 3.8 7.8 6.5 9.8 C10.5 13 11.2 11.2 13 5 L15 1.5" fill="none" stroke="#ff414c" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="4.5" cy="8.6" r="2.2" fill="#ffff2f" stroke="#92924a" stroke-width="0.8"/>
+</svg>

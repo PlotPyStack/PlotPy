@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>shapes/xrange</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<rect x="2" y="3" width="12" height="10" fill="#ffd9d9"/>
+<path d="M2 3 V13 M14 3 V13" fill="none" stroke="#ff4b55" stroke-width="1"/>
+<rect x="1" y="6" width="2" height="4" fill="#ff303b"/>
+<rect x="13" y="6" width="2" height="4" fill="#ff303b"/>
+<path d="M8 3 L8 13" fill="none" stroke="#ff7981" stroke-width="1.5" stroke-dasharray=".6 1.2"/>
+</svg>

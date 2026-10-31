@@ -246,12 +246,12 @@ class CurveItem(QwtPlotCurve):
 
     _readonly = False
     _private = False
-    _icon_name = "curve.png"
+    _icon_name = "curve.svg"
 
     def __init__(self, curveparam: CurveParam | None = None) -> None:
         super().__init__()
         if curveparam is None:
-            self.param = CurveParam(_("Curve"), icon="curve.png")
+            self.param = CurveParam(_("Curve"), icon="curve.svg")
         else:
             self.param = curveparam
         self.selected = False
@@ -504,7 +504,7 @@ class CurveItem(QwtPlotCurve):
         Args:
             reader: HDF5, INI or JSON reader
         """
-        self.param = CurveParam(_("Curve"), icon="curve.png")
+        self.param = CurveParam(_("Curve"), icon="curve.svg")
         reader.read("curveparam", instance=self.param)
         x = reader.read(group_name="Xdata", func=reader.read_array)
         y = reader.read(group_name="Ydata", func=reader.read_array)

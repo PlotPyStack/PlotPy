@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>curve_downsample</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<path d="M1 14 V10 Q1 9 2 9 H4 Q5 9 5 10 V13 Q5 14 6 14 H8 Q9 14 9 13 V9 Q9 8 10 8 H12 Q13 8 13 7 V3 H15" fill="none" stroke="#ff525d" stroke-width="1.6" stroke-linejoin="round"/>
+</svg>

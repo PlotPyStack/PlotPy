@@ -140,7 +140,7 @@ class CurveStatsTool(BaseRangeCursorTool):
     """
 
     TITLE = _("Signal statistics")
-    ICON = "xrange.png"
+    ICON = "xrange.svg"
     LABELFUNCS: tuple[tuple[str, Callable[..., Any]], ...] = (
         ("%g &lt; x &lt; %g", lambda *args: (np.nanmin(args[0]), np.nanmax(args[0]))),
         ("%g &lt; y &lt; %g", lambda *args: (np.nanmin(args[1]), np.nanmax(args[1]))),
@@ -210,7 +210,7 @@ class YRangeCursorTool(BaseRangeCursorTool):
     """
 
     TITLE = _("Y-range")
-    ICON = "yrange.png"
+    ICON = "yrange.svg"
     LABELFUNCS: tuple[tuple[str, Callable[..., Any]], ...] = (
         ("%g &lt; y &lt; %g", lambda ymin, ymax: (min(ymin, ymax), max(ymin, ymax))),
         ("∆y=%g", lambda ymin, ymax: abs(ymax - ymin)),
@@ -284,7 +284,7 @@ class SelectPointTool(InteractiveTool):
     """
 
     TITLE = _("Point selection")
-    ICON = "point_selection.png"
+    ICON = "point_selection.svg"
     MARKER_STYLE_SECT = "plot"
     MARKER_STYLE_KEY = "marker/curve"
     CURSOR = QC.Qt.CursorShape.PointingHandCursor
@@ -434,7 +434,7 @@ class SelectPointsTool(InteractiveTool):
     """
 
     TITLE = _("Multi-point selection")
-    ICON = "multipoint_selection.png"
+    ICON = "multipoint_selection.svg"
     MARKER_STYLE_SECT = "plot"
     MARKER_STYLE_KEY = "marker/curve"
     CURSOR = QC.Qt.CursorShape.PointingHandCursor
@@ -755,7 +755,7 @@ class EditPointTool(InteractiveTool):
     """
 
     TITLE = _("Edit point")
-    ICON = "edit_point_selection.png"
+    ICON = "edit_point_selection.svg"
     MARKER_STYLE_SECT = "plot"
     MARKER_STYLE_KEY = "marker/curve"
     CURSOR = QC.Qt.CursorShape.PointingHandCursor
@@ -939,7 +939,7 @@ class EditPointTool(InteractiveTool):
             )
             return
 
-        param = InsertionDataSet(title=_("Insert new value"), icon="insert.png")
+        param = InsertionDataSet(title=_("Insert new value"), icon="insert.svg")
         param.set_max_index(self.__x.size - 1)
         param.index = self.__idx
         param.value = self.__y[self.__idx - 1 : self.__idx + 1].mean()

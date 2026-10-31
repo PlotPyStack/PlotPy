@@ -38,7 +38,7 @@ class DoAutoscaleTool(CommandTool):
         self,
         manager,
         title=_("AutoScale"),
-        icon="autoscale.png",
+        icon="autoscale.svg",
         tip=None,
         toolbar_id=DefaultToolbarID,
     ):
@@ -114,7 +114,7 @@ class DisplayCoordsTool(CommandTool):
         super().__init__(
             manager,
             _("Markers"),
-            icon=get_icon("on_curve.png"),
+            icon=get_icon("on_curve.svg"),
             tip=None,
             toolbar_id=None,
         )
@@ -175,7 +175,7 @@ class DisplayCoordsTool(CommandTool):
 
 class RectZoomTool(InteractiveTool):
     TITLE = _("Rectangle zoom")
-    ICON = "magnifier.png"
+    ICON = "magnifier.svg"
 
     def setup_filter(self, baseplot):
         """

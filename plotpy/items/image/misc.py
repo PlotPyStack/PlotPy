@@ -208,7 +208,7 @@ class Histogram2DItem(BaseImageItem):
     """
 
     __implements__ = (IBasePlotItem, IBaseImageItem, IHistDataSource, IVoiImageItemType)
-    _icon_name = "histogram2d.png"
+    _icon_name = "histogram2d.svg"
 
     def __init__(
         self,

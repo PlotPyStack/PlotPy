@@ -60,7 +60,7 @@ class AnnotatedShape(AbstractShape):
     """
 
     __implements__ = (IBasePlotItem, ISerializableType)
-    _icon_name = "annotation.png"
+    _icon_name = "annotation.svg"
     SHAPE_CLASS: type[AbstractShape] = RectangleShape  # to be overridden
     LABEL_ANCHOR: str = ""
 
@@ -84,7 +84,7 @@ class AnnotatedShape(AbstractShape):
         self.subtitle_visible = True
         if annotationparam is None:
             self.annotationparam = AnnotationParam(
-                _("Annotation"), icon="annotation.png"
+                _("Annotation"), icon="annotation.svg"
             )
         else:
             self.annotationparam = annotationparam
@@ -135,7 +135,7 @@ class AnnotatedShape(AbstractShape):
         Args:
             reader: HDF5, INI or JSON reader
         """
-        self.annotationparam = AnnotationParam(_("Annotation"), icon="annotation.png")
+        self.annotationparam = AnnotationParam(_("Annotation"), icon="annotation.svg")
         reader.read("annotationparam", instance=self.annotationparam)
         self.annotationparam.update_item(self)
         self.shape.deserialize(reader)
@@ -192,7 +192,7 @@ class AnnotatedShape(AbstractShape):
         Returns:
             Label object
         """
-        label_param = LabelParam(_("Label"), icon="label.png")
+        label_param = LabelParam(_("Label"), icon="label.svg")
         label_param.read_config(CONF, "plot", "shape/label")
         label_param.anchor = self.LABEL_ANCHOR
         if self.LABEL_ANCHOR == "C":
@@ -497,7 +497,7 @@ class AnnotatedPoint(AnnotatedShape):
     *annotationparam* (see :py:class:`.styles.AnnotationParam`)
     """
 
-    _icon_name = "point_shape.png"
+    _icon_name = "point_shape.svg"
     SHAPE_CLASS = PointShape
     LABEL_ANCHOR = "TL"
 
@@ -559,7 +559,7 @@ class AnnotatedSegment(AnnotatedShape):
     (see :py:class:`.styles.AnnotationParam`)
     """
 
-    _icon_name = "segment.png"
+    _icon_name = "segment.svg"
     SHAPE_CLASS = SegmentShape
     LABEL_ANCHOR = "C"
 
@@ -808,7 +808,7 @@ class AnnotatedXRange(BaseAnnotatedRangeSelection):
         info_callback: Callback to get information on the shape
     """
 
-    _icon_name = "xrange.png"
+    _icon_name = "xrange.svg"
     SHAPE_CLASS = XRangeSelection
     LABEL_ANCHOR = "C"
 
@@ -845,7 +845,7 @@ class AnnotatedYRange(BaseAnnotatedRangeSelection):
         info_callback: Callback to get information on the shape
     """
 
-    _icon_name = "yrange.png"
+    _icon_name = "yrange.svg"
     SHAPE_CLASS = YRangeSelection
     LABEL_ANCHOR = "C"
 
@@ -881,7 +881,7 @@ class AnnotatedPolygon(AnnotatedShape):
         annotationparam: Annotation parameters
     """
 
-    _icon_name = "polygon.png"
+    _icon_name = "polygon.svg"
     SHAPE_CLASS = PolygonShape
     LABEL_ANCHOR = "C"
 
@@ -1037,7 +1037,7 @@ class AnnotatedRectangle(AnnotatedShape):
     (see :py:class:`.styles.AnnotationParam`)
     """
 
-    _icon_name = "rectangle.png"
+    _icon_name = "rectangle.svg"
     SHAPE_CLASS = RectangleShape
     LABEL_ANCHOR = "TL"
 
@@ -1104,7 +1104,7 @@ class AnnotatedObliqueRectangle(AnnotatedRectangle):
     (see :py:class:`.styles.AnnotationParam`)
     """
 
-    _icon_name = "oblique_rectangle.png"
+    _icon_name = "oblique_rectangle.svg"
     SHAPE_CLASS = ObliqueRectangleShape
     LABEL_ANCHOR = "C"
 
@@ -1202,7 +1202,7 @@ class AnnotatedEllipse(AnnotatedShape):
     (see :py:class:`.styles.AnnotationParam`)
     """
 
-    _icon_name = "ellipse_shape.png"
+    _icon_name = "ellipse_shape.svg"
     SHAPE_CLASS = EllipseShape
     LABEL_ANCHOR = "C"
 

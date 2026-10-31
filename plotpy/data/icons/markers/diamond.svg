@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>markers/diamond</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<path d="M8 4 L11.5 8 L8 12 L4.5 8 Z" fill="#ffff00" stroke="#b1b1a0" stroke-width="0.9"/>
+</svg>

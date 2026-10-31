@@ -210,7 +210,7 @@ class FitParam:
         font.setPointSize(font.pointSize() + self._size_offset)
         self.prefix_label.setFont(font)
         self.button = QW.QPushButton()
-        self.button.setIcon(get_icon("settings.png"))
+        self.button.setIcon(get_icon("settings.svg"))
         self.button.setToolTip(
             _("Edit '{name}' fit parameter properties").format(name=self.name)
         )
@@ -530,11 +530,11 @@ class FitWidget(QWidget):
         Returns:
             Autofit group
         """
-        auto_button = QW.QPushButton(get_icon("apply.png"), _("Run"), self)
+        auto_button = QW.QPushButton(get_icon("apply.svg"), _("Run"), self)
         auto_button.clicked.connect(self.autofit)
-        autoprm_button = QW.QPushButton(get_icon("settings.png"), _("Settings"), self)
+        autoprm_button = QW.QPushButton(get_icon("settings.svg"), _("Settings"), self)
         autoprm_button.clicked.connect(self.edit_parameters)
-        xrange_button = QW.QPushButton(get_icon("xrange.png"), _("Bounds"), self)
+        xrange_button = QW.QPushButton(get_icon("xrange.svg"), _("Bounds"), self)
         xrange_button.setCheckable(True)
         xrange_button.toggled.connect(self.toggle_xrange)
         auto_layout = QW.QVBoxLayout()

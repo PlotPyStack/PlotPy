@@ -218,7 +218,7 @@ class ImageBuilder:
 
         assert isinstance(xdata, (tuple, list)) and len(xdata) == 2
         assert isinstance(ydata, (tuple, list)) and len(ydata) == 2
-        param = ImageParam(title=_("Image"), icon="image.png")
+        param = ImageParam(title=_("Image"), icon="image.svg")
         data, filename, title = self._get_image_data(
             data, filename, title, to_grayscale=True
         )
@@ -370,7 +370,7 @@ class ImageBuilder:
 
         assert isinstance(xdata, (tuple, list)) and len(xdata) == 2
         assert isinstance(ydata, (tuple, list)) and len(ydata) == 2
-        param = MaskedImageParam(title=_("Image"), icon="image.png")
+        param = MaskedImageParam(title=_("Image"), icon="image.svg")
         data, filename, title = self._get_image_data(
             data, filename, title, to_grayscale=True
         )
@@ -468,7 +468,7 @@ class ImageBuilder:
         if isinstance(y, (list, tuple)):
             y = np.array(y)
 
-        param = MaskedXYImageParam(title=_("Image"), icon="image.png")
+        param = MaskedXYImageParam(title=_("Image"), icon="image.svg")
         assert data.ndim == 2, "Data must have 2 dimensions"
 
         self.__set_image_param(
@@ -533,7 +533,7 @@ class ImageBuilder:
         """
         assert isinstance(xdata, (tuple, list)) and len(xdata) == 2
         assert isinstance(ydata, (tuple, list)) and len(ydata) == 2
-        param = RGBImageParam(title=_("Image"), icon="image.png")
+        param = RGBImageParam(title=_("Image"), icon="image.svg")
         data, filename, title = self._get_image_data(
             data, filename, title, to_grayscale=False
         )
@@ -593,7 +593,7 @@ class ImageBuilder:
         Returns:
             :py:class:`.QuadGridItem` object
         """
-        param = QuadGridParam(title=_("Image"), icon="image.png")
+        param = QuadGridParam(title=_("Image"), icon="image.svg")
         self.__set_image_param(
             param,
             title,
@@ -682,7 +682,7 @@ class ImageBuilder:
         Returns:
             :py:class:`.TrImageItem` object
         """
-        param = TrImageParam(title=_("Image"), icon="image.png")
+        param = TrImageParam(title=_("Image"), icon="image.svg")
         data, filename, title = self._get_image_data(
             data, filename, title, to_grayscale=True
         )
@@ -758,7 +758,7 @@ class ImageBuilder:
         Returns:
             :py:class:`.XYImageItem` object
         """
-        param = XYImageParam(title=_("Image"), icon="image.png")
+        param = XYImageParam(title=_("Image"), icon="image.svg")
         self.__set_image_param(
             param,
             title,
@@ -811,7 +811,7 @@ class ImageBuilder:
         Returns:
             :py:class:`.ImageFilterItem` object
         """
-        param = ImageFilterParam(_("Filter"), icon="funct.png")
+        param = ImageFilterParam(_("Filter"), icon="funct.svg")
         param.xmin, param.xmax, param.ymin, param.ymax = xmin, xmax, ymin, ymax
         if title is not None:
             param.label = title
@@ -900,7 +900,7 @@ class ImageBuilder:
             :py:class:`.Histogram2DItem` object
         """
         basename = _("2D Histogram")
-        param = Histogram2DParam(title=basename, icon="histogram2d.png")
+        param = Histogram2DParam(title=basename, icon="histogram2d.svg")
         if NX is not None:
             param.nx_bins = NX
         if NY is not None:

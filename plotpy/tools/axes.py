@@ -33,7 +33,7 @@ class AxisScaleTool(CommandTool):
             manager: The plot manager.
         """
         super().__init__(
-            manager, _("Scale"), icon=get_icon("log_log.png"), tip=None, toolbar_id=None
+            manager, _("Scale"), icon=get_icon("log_log.svg"), tip=None, toolbar_id=None
         )
         self.action.setEnabled(True)
 
@@ -51,22 +51,22 @@ class AxisScaleTool(CommandTool):
         group = QW.QActionGroup(manager.get_main())
         lin_lin = manager.create_action(
             "Lin Lin",
-            icon=get_icon("lin_lin.png"),
+            icon=get_icon("lin_lin.svg"),
             toggled=lambda state, x="lin", y="lin": self.set_scale(state, x, y),
         )
         lin_log = manager.create_action(
             "Lin Log",
-            icon=get_icon("lin_log.png"),
+            icon=get_icon("lin_log.svg"),
             toggled=lambda state, x="lin", y="log": self.set_scale(state, x, y),
         )
         log_lin = manager.create_action(
             "Log Lin",
-            icon=get_icon("log_lin.png"),
+            icon=get_icon("log_lin.svg"),
             toggled=lambda state, x="log", y="lin": self.set_scale(state, x, y),
         )
         log_log = manager.create_action(
             "Log Log",
-            icon=get_icon("log_log.png"),
+            icon=get_icon("log_log.svg"),
             toggled=lambda state, x="log", y="log": self.set_scale(state, x, y),
         )
         date_time = manager.create_action(
@@ -134,7 +134,7 @@ class PlaceAxesTool(RectangularShapeTool):
     """
 
     TITLE: str = _("Axes")
-    ICON: str = "gtaxes.png"
+    ICON: str = "gtaxes.svg"
     SHAPE_STYLE_KEY: str = "shape/axes"
 
     def create_shape(self) -> tuple[Axes, int, int]:

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>items/polygonmap</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<path d="M2 5 L4 2 L7 3 L7 6 L4 7 Z" fill="#39e871"/>
+<path d="M6 5 L10 4 L11 8 L7 10 L4 7 Z" fill="#ff8faf"/>
+<path d="M11 1 L14 1 L14.5 4 L11.5 5 L10 3 Z" fill="#ff3954"/>
+<path d="M11 7 L14 6 L15 9 L13 11 L10 10 Z" fill="#78adff"/>
+<path d="M4 10 L7 9 L9 12 L8 15 L4 14 L3 12 Z" fill="#ffe16e"/>
+<path d="M1 12 L3 11 L4 14 L1 15 Z" fill="#e871ff"/>
+</svg>

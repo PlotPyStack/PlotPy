@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>items/legend</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<rect x="0.8" y="2" width="14.4" height="12" fill="#fff" stroke="#888" stroke-width="0.9"/>
+<path d="M2 5 L13 5" fill="none" stroke="#d10000" stroke-width="1"/>
+<path d="M2 8 L13 8" fill="none" stroke="#058d16" stroke-width="1" stroke-dasharray="1.8 .5"/>
+<path d="M2 11 L13 11" fill="none" stroke="#1d16ed" stroke-width="1" stroke-dasharray="1 .6"/>
+</svg>

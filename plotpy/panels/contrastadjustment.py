@@ -70,7 +70,7 @@ class LevelsHistogram(BasePlot):
 
         # a dict of dict : plot -> selected items -> HistogramItem
         self._tracked_items: dict[BasePlot, dict[BaseImageItem, HistogramItem]] = {}
-        self.param = CurveParam(_("Curve"), icon="curve.png")
+        self.param = CurveParam(_("Curve"), icon="curve.svg")
         self.param.read_config(CONF, "histogram", "curve")
 
         self.range = XRangeSelection(0, 1)
@@ -160,7 +160,7 @@ class LevelsHistogram(BasePlot):
 
         for item in items:
             if item not in known_items:
-                histparam = HistogramParam(_("Histogram"), icon="histogram.png")
+                histparam = HistogramParam(_("Histogram"), icon="histogram.svg")
                 histparam.logscale = False
                 histparam.n_bins = self.DEFAULT_NBINS
                 curve = HistogramItem(self.param, histparam, keep_weakref=True)
@@ -432,7 +432,7 @@ class ContrastAdjustment(PanelWidget):
     __implements__ = (IPanel,)
     PANEL_ID = ID_CONTRAST
     PANEL_TITLE = _("Contrast")
-    PANEL_ICON = "contrast.png"
+    PANEL_ICON = "contrast.svg"
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -541,14 +541,14 @@ class ContrastAdjustment(PanelWidget):
         fullrange_ac = create_action(
             self,
             _("Full range"),
-            icon=get_icon("full_range.png"),
+            icon=get_icon("full_range.svg"),
             triggered=self.histogram.set_full_range,
             tip=_("Scale the image's display range according to data range"),
         )
         outliers_ac = create_action(
             self,
             _("Eliminate %"),
-            icon=get_icon("eliminate_outliers.png"),
+            icon=get_icon("eliminate_outliers.svg"),
             triggered=self.eliminate_outliers,
             tip=_(
                 "Eliminate outliers from the image's display range, "
@@ -558,7 +558,7 @@ class ContrastAdjustment(PanelWidget):
         setrange_ac = create_action(
             self,
             _("Set range"),
-            icon=get_icon("xrange.png"),
+            icon=get_icon("xrange.svg"),
             triggered=self.set_range_manually,
             tip=_("Set the image's display range manually"),
         )

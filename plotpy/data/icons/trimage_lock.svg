@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>trimage_lock</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<path d="M4.5 8 V5 C4.5 .8 11.5 .8 11.5 5 V8" fill="none" stroke="#737f8c" stroke-width="1.6" stroke-linecap="round"/>
+<rect x="3" y="7.5" width="10" height="7.5" fill="#f7ce63" stroke="#b38226" stroke-width="0.8" rx="0.7"/>
+<circle cx="8" cy="10.5" r="1" fill="#a0772e"/>
+<rect x="7.5" y="10.5" width="1" height="2.5" fill="#a0772e"/>
+</svg>

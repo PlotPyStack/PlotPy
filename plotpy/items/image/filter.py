@@ -89,7 +89,7 @@ class ImageFilterItem(BaseImageItem):
     _can_select = True
     _can_resize = True
     _can_move = True
-    _icon_name = "funct.png"
+    _icon_name = "funct.svg"
 
     def __init__(
         self, image: RawImageItem | None, filter: Callable, param: ImageFilterParam

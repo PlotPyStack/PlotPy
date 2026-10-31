@@ -215,7 +215,7 @@ class BaseTransformWidget(QW.QWidget):
         apply_btn = create_toolbutton(
             self.plot_widget,
             text=_("Apply"),
-            icon=get_icon("apply.png"),
+            icon=get_icon("apply.svg"),
             triggered=self.apply_transformation,
             autoraise=False,
         )
@@ -231,7 +231,7 @@ class BaseTransformWidget(QW.QWidget):
         edit_options_btn = create_toolbutton(
             self.plot_widget,
             text=_("Reset"),
-            icon=get_icon("eraser.png"),
+            icon=get_icon("eraser.svg"),
             triggered=self.reset,
             autoraise=False,
         )

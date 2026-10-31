@@ -24,7 +24,7 @@ class PointShape(PolygonShape):
     """
 
     CLOSED = False
-    _icon_name = "point_shape.png"
+    _icon_name = "point_shape.svg"
 
     def __init__(
         self, x: float = 0.0, y: float = 0.0, shapeparam: ShapeParam = None

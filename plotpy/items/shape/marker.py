@@ -73,7 +73,7 @@ class Marker(QwtPlotMarker):
     _can_resize = True
     _can_rotate = False
     _can_move = True
-    _icon_name = "marker.png"
+    _icon_name = "marker.svg"
 
     def __init__(
         self,
@@ -133,7 +133,7 @@ class Marker(QwtPlotMarker):
         Args:
             reader: HDF5, INI or JSON reader
         """
-        self.markerparam = MarkerParam(_("Marker"), icon="marker.png")
+        self.markerparam = MarkerParam(_("Marker"), icon="marker.svg")
         reader.read("markerparam", instance=self.markerparam)
         self.markerparam.update_item(self)
         self.setXValue(reader.read("x"))
