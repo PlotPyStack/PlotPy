@@ -20,7 +20,7 @@ External resources:
 .. _GitHub: https://github.com/PierreRaybaut/plotpy
 """
 
-__version__ = "2.12.1"
+__version__ = "2.12.2rc1"
 # Numeric part of the version, also for release candidates (e.g. "2.12.2rc1")
 __VERSION__ = tuple(int(number) for number in __version__.partition("rc")[0].split("."))
 
