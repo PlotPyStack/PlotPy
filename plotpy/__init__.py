@@ -21,7 +21,8 @@ External resources:
 """
 
 __version__ = "2.12.1"
-__VERSION__ = tuple([int(number) for number in __version__.split(".")])
+# Numeric part of the version, also for release candidates (e.g. "2.12.2rc1")
+__VERSION__ = tuple(int(number) for number in __version__.partition("rc")[0].split("."))
 
 # --- Important note: DATAPATH and LOCALEPATH are used by guidata.configtools
 # ---                 to retrieve data and translation files paths
