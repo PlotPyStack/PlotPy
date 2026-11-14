@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>trash</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+<defs>
+<linearGradient id="silver" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#fafcfd"/>
+<stop offset="1" stop-color="#b8c0c8"/>
+</linearGradient>
+</defs>
+<path d="M3.5 4.5 H12.5 L12 14 H4 Z" fill="url(#silver)" stroke="#3b3d3c" stroke-width="0.8"/>
+<path d="M5.5 5.5 V12.8 M8 5.5 V12.8 M10.5 5.5 V12.8" fill="none" stroke="#858988" stroke-width="0.65"/>
+<rect x="2" y="3" width="12" height="1.8" fill="url(#silver)" stroke="#3b3d3c" stroke-width="0.8"/>
+<path d="M5.5 2.8 V1.8 H10.5 V2.8" fill="none" stroke="#545958" stroke-width="0.8"/>
+</svg>

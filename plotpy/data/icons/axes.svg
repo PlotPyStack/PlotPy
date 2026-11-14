@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>axes</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+<defs>
+<linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#ffec9b"/>
+<stop offset="0.5" stop-color="#e5b34a"/>
+<stop offset="1" stop-color="#b58322"/>
+</linearGradient>
+</defs>
+<path d="M1.5 1.5 H4 V12 H14.5 V14.5 H1.5 Z" fill="url(#gold)" stroke="#8f8825" stroke-width="0.6"/>
+<path d="M2 4 H3 M2 7 H3 M2 10 H3 M5 13 V14 M8 13 V14 M11 13 V14" fill="none" stroke="#b5a046" stroke-width="0.5"/>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>patterns/bdiagpattern</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<rect x="0" y="0" width="16" height="16" fill="#fff"/>
+<path d="M0 8 L8 0 M0 16 L16 0 M8 16 L16 8 " fill="none" stroke="#000" stroke-width="0.9"/>
+</svg>

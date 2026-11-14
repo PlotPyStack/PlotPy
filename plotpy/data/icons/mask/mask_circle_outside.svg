@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>mask/mask_circle_outside</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<path d="M0 0 H16 V16 H0 Z M2.2 8 A5.8 5.8 0 1 0 13.8 8 A5.8 5.8 0 1 0 2.2 8 Z" fill="#8a8a8a" fill-rule="evenodd" fill-opacity="0.7"/>
+<circle cx="8" cy="8" r="5.8" fill="none" stroke="#5f5f5f" stroke-width="0.9" stroke-opacity="0.7"/>
+<rect x="1" y="1.5" width="4" height="4" fill="#fff" stroke="#5f5f5f" stroke-width="0.9" stroke-opacity="0.7"/>
+<rect x="11" y="10.5" width="4" height="4" fill="#fff" stroke="#5f5f5f" stroke-width="0.9" stroke-opacity="0.7"/>
+</svg>

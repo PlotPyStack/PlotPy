@@ -51,17 +51,17 @@ class MarkerParam(DataSet):
 
     _styles = BeginTabGroup("Styles")
     # ------------------------------------------------------------------ Line tab
-    ___line = BeginGroup(_("Line")).set_prop("display", icon="dashdot.png")
+    ___line = BeginGroup(_("Line")).set_prop("display", icon="dashdot.svg")
     line = LineStyleItem(_("Line (not selected)"))
     sel_line = LineStyleItem(_("Line (selected)"))
     ___eline = EndGroup(_("Line"))
     # ---------------------------------------------------------------- Symbol tab
-    ___sym = BeginGroup(_("Symbol")).set_prop("display", icon="diamond.png")
+    ___sym = BeginGroup(_("Symbol")).set_prop("display", icon="diamond.svg")
     symbol = SymbolItem(_("Symbol (not selected)"))
     sel_symbol = SymbolItem(_("Symbol (selected)"))
     ___esym = EndGroup(_("Symbol"))
     # ------------------------------------------------------------------ Text tab
-    ___text = BeginGroup(_("Text")).set_prop("display", icon="font.png")
+    ___text = BeginGroup(_("Text")).set_prop("display", icon="font.svg")
     text = TextStyleItem(_("Text (not selected)"))
     sel_text = TextStyleItem(_("Text (selected)"))
     ___etext = EndGroup(_("Text"))
@@ -138,18 +138,18 @@ class ShapeParam(DataSet):
     label = StringItem(_("Title"), default="")
     _styles = BeginTabGroup("Styles")
     # ------------------------------------------------------------------ Line tab
-    ___line = BeginGroup(_("Line")).set_prop("display", icon="dashdot.png")
+    ___line = BeginGroup(_("Line")).set_prop("display", icon="dashdot.svg")
     line = LineStyleItem(_("Line (not selected)"))
     sel_line = LineStyleItem(_("Line (selected)"))
     ___eline = EndGroup(_("Line"))
     # ---------------------------------------------------------------- Symbol tab
-    ___sym = BeginGroup(_("Symbol")).set_prop("display", icon="diamond.png")
+    ___sym = BeginGroup(_("Symbol")).set_prop("display", icon="diamond.svg")
     symbol = SymbolItem(_("Symbol (not selected)"))
     sel_symbol = SymbolItem(_("Symbol (selected)"))
     ___esym = EndGroup(_("Symbol"))
     # ------------------------------------------------------------------ Fill tab
     ___fill = BeginGroup(_("Fill pattern")).set_prop(
-        "display", icon="dense6pattern.png"
+        "display", icon="dense6pattern.svg"
     )
     fill = BrushStyleItem(_("Fill pattern (not selected)"))
     sel_fill = BrushStyleItem(_("Fill pattern (selected)"))
@@ -223,13 +223,13 @@ class AxesShapeParam(DataSet):
     )
     _styles = BeginTabGroup("Styles")
     # ------------------------------------------------------------------ Line tab
-    ___line = BeginGroup(_("Line")).set_prop("display", icon="dashdot.png")
+    ___line = BeginGroup(_("Line")).set_prop("display", icon="dashdot.svg")
     xarrow_pen = LineStyleItem(_("Line (X-Axis)"))
     yarrow_pen = LineStyleItem(_("Line (Y-Axis)"))
     ___eline = EndGroup(_("Line"))
     # ------------------------------------------------------------------ Fill tab
     ___fill = BeginGroup(_("Fill pattern")).set_prop(
-        "display", icon="dense6pattern.png"
+        "display", icon="dense6pattern.svg"
     )
     xarrow_brush = BrushStyleItem(_("Fill pattern (X-Axis)"))
     yarrow_brush = BrushStyleItem(_("Fill pattern (Y-Axis)"))
@@ -354,17 +354,17 @@ class RangeShapeParam(DataSet):
     label = StringItem(_("Title"), default="")
     _styles = BeginTabGroup("Styles")
     # ------------------------------------------------------------------ Line tab
-    ___line = BeginGroup(_("Line")).set_prop("display", icon="dashdot.png")
+    ___line = BeginGroup(_("Line")).set_prop("display", icon="dashdot.svg")
     line = LineStyleItem(_("Line (not selected)"))
     sel_line = LineStyleItem(_("Line (selected)"))
     ___eline = EndGroup(_("Line"))
     # ---------------------------------------------------------------- Symbol tab
-    ___symbol = BeginGroup(_("Symbol")).set_prop("display", icon="diamond.png")
+    ___symbol = BeginGroup(_("Symbol")).set_prop("display", icon="diamond.svg")
     symbol = SymbolItem(_("Symbol (not selected)"))
     sel_symbol = SymbolItem(_("Symbol (selected)"))
     ___esymbol = EndGroup(_("Symbol"))
     # ------------------------------------------------------------------ Fill tab
-    ___fill = BeginGroup(_("Fill")).set_prop("display", icon="dense6pattern.png")
+    ___fill = BeginGroup(_("Fill")).set_prop("display", icon="dense6pattern.svg")
     fill = ColorItem(_("Fill color"))
     shade = FloatItem(_("Shade"), default=0.05, min=0, max=1)
     ___efill = EndGroup(_("Fill"))

@@ -10,6 +10,9 @@ build:
     post_create_environment:
       - pip install PyQt5 setuptools numpy Cython
       - python setup.py build_ext --inplace
+    pre_install:
+      # Development builds may require dependency versions not yet released on PyPI
+      - python scripts/rtd_install_dev_deps.py
 sphinx:
    configuration: doc/conf.py
 formats:

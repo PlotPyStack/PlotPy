@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>funct</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+<defs>
+<linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#ffffff"/>
+<stop offset="1" stop-color="#ededf1"/>
+</linearGradient>
+</defs>
+<rect x="1" y="1" width="14" height="14" fill="url(#paper)" stroke="#a4a4ae" stroke-width="0.7"/>
+<path d="M1.8 1.7 L14.4 1.7" fill="none" stroke="#fff" stroke-width="0.45"/>
+<path d="M3 11 C4 9 4 5 6 5 Q7 5 7 6 M3 7 H6 M8.5 4.5 Q6.5 8 8.5 11.5 M10 6.5 V10 M8.8 7.3 H11.1 M12 4.5 Q14 8 12 11.5" fill="none" stroke="#747474" stroke-width="0.95" stroke-linecap="round"/>
+</svg>

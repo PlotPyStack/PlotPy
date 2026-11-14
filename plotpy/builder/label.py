@@ -84,7 +84,7 @@ class LabelBuilder:
             make.label("Absolute position", "R", (0,0), "R")
         """
         basename = _("Label")
-        param = LabelParamWithContents(basename, icon="label.png")
+        param = LabelParamWithContents(basename, icon="label.svg")
         param.read_config(CONF, "plot", "label")
         if title:
             param.label = title
@@ -124,7 +124,7 @@ class LabelBuilder:
             :py:class:`.LegendBoxItem` or
             :py:class:`.SelectedLegendBoxItem` object
         """
-        param = LegendParam(_("Legend"), icon="legend.png")
+        param = LegendParam(_("Legend"), icon="legend.svg")
         param.read_config(CONF, "plot", "legend")
         param.abspos = True
         param.absg = anchor
@@ -155,7 +155,7 @@ class LabelBuilder:
             :py:class:`.DataInfoLabel` object
         """
         basename = _("Computation")
-        param = LabelParam(basename, icon="label.png")
+        param = LabelParam(basename, icon="label.svg")
         param.read_config(CONF, "plot", "info_label")
         if title is not None:
             param.label = title

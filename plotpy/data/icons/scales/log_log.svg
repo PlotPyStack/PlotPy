@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+<title>scales/log_log</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<g transform="scale(3 3)">
+<g transform="scale(.3333333333)">
+<rect x="1" y="1" width="46" height="46" fill="#fff" stroke="#969696" stroke-width="2"/>
+<path d="M16.5 3 L16.5 45" fill="none" stroke="#aaa" stroke-width="2" stroke-dasharray="2 2"/>
+<path d="M24.5 3 L24.5 45" fill="none" stroke="#aaa" stroke-width="2" stroke-dasharray="2 2"/>
+<path d="M28.5 3 L28.5 45" fill="none" stroke="#aaa" stroke-width="2" stroke-dasharray="2 2"/>
+<path d="M3 7.5 L45 7.5" fill="none" stroke="#aaa" stroke-width="2" stroke-dasharray="2 2"/>
+<path d="M3 23.5 L45 23.5" fill="none" stroke="#aaa" stroke-width="2" stroke-dasharray="2 2"/>
+<path d="M3 27.5 L45 27.5" fill="none" stroke="#aaa" stroke-width="2" stroke-dasharray="2 2"/>
+<path d="M3 35.5 L45 35.5" fill="none" stroke="#aaa" stroke-width="2" stroke-dasharray="2 2"/>
+</g>
+</g>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>items/quiver</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<path d="M1.7272 4.2728 L4.2728 1.7272" fill="none" stroke="#0765ba" stroke-width="1.05"/>
+<path d="M4.2728 1.7272 L3.9899 3.2828 L2.7172 2.0101 Z" fill="#0765ba"/>
+<path d="M6.2 3 L9.8 3" fill="none" stroke="#0765ba" stroke-width="1.05"/>
+<path d="M9.8000 3.0000 L8.5000 3.9000 L8.5000 2.1000 Z" fill="#0765ba"/>
+<path d="M11.7272 1.7272 L14.2728 4.2728" fill="none" stroke="#0765ba" stroke-width="1.05"/>
+<path d="M14.2728 4.2728 L12.7172 3.9899 L13.9899 2.7172 Z" fill="#0765ba"/>
+<path d="M3 9.8 L3 6.2" fill="none" stroke="#0765ba" stroke-width="1.05"/>
+<path d="M3.0000 6.2000 L3.9000 7.5000 L2.1000 7.5000 Z" fill="#0765ba"/>
+<path d="M6.2 8 L9.8 8" fill="none" stroke="#0765ba" stroke-width="1.05"/>
+<path d="M9.8000 8.0000 L8.5000 8.9000 L8.5000 7.1000 Z" fill="#0765ba"/>
+<path d="M13 6.2 L13 9.8" fill="none" stroke="#0765ba" stroke-width="1.05"/>
+<path d="M13.0000 9.8000 L12.1000 8.5000 L13.9000 8.5000 Z" fill="#0765ba"/>
+<path d="M4.2728 14.2728 L1.7272 11.7272" fill="none" stroke="#0765ba" stroke-width="1.05"/>
+<path d="M1.7272 11.7272 L3.2828 12.0101 L2.0101 13.2828 Z" fill="#0765ba"/>
+<path d="M9.8 13 L6.2 13" fill="none" stroke="#0765ba" stroke-width="1.05"/>
+<path d="M6.2000 13.0000 L7.5000 12.1000 L7.5000 13.9000 Z" fill="#0765ba"/>
+<path d="M14.2728 11.7272 L11.7272 14.2728" fill="none" stroke="#0765ba" stroke-width="1.05"/>
+<path d="M11.7272 14.2728 L12.0101 12.7172 L13.2828 13.9899 Z" fill="#0765ba"/>
+</svg>

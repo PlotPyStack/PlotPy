@@ -2,14 +2,19 @@
 
 from __future__ import annotations
 
+import math
 import sys
+from collections.abc import Generator
+from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 import numpy as np
 from guidata.dataset import update_dataset
 from guidata.utils.misc import assert_interfaces_valid
 from qtpy import QtCore as QC
+from qtpy import QtGui as QG
 from qwt import QwtPlotCurve
+from qwt.plot_curve import series_to_polyline
 
 from plotpy.config import CONF, _
 from plotpy.coords import canvas_to_axes
@@ -24,6 +29,7 @@ from plotpy.styles.curve import CurveParam
 
 if TYPE_CHECKING:
     import guidata.io
+    from qwt import QwtScaleMap
 
     from plotpy.interfaces import IItemType
     from plotpy.plot import BasePlot
@@ -33,6 +39,135 @@ if TYPE_CHECKING:
 SELECTED_SYMBOL_PARAM = SymbolParam()
 SELECTED_SYMBOL_PARAM.read_config(CONF, "plot", "selected_curve_symbol")
 SELECTED_SYMBOL = SELECTED_SYMBOL_PARAM.build_symbol()
+
+
+def minmax_downsampling_indices(data: np.ndarray, factor: int) -> np.ndarray:
+    """Return the indices of the points kept by min/max downsampling
+
+    The data is split into groups of ``2 * factor`` points, and the indices of the
+    minimum and of the maximum of each group are kept, in increasing order, so that
+    peaks are preserved with about as many points as when keeping one point out of
+    ``factor``. The first and the last points are always kept. NaN values are
+    ignored, except in groups containing only NaN values, which keep one of them so
+    that the curve is still interrupted there.
+
+    Args:
+        data: Data to downsample (e.g. Y values of a curve)
+        factor: Downsampling factor
+
+    Returns:
+        Sorted indices of the points to keep
+    """
+    data = np.asarray(data, dtype=float)
+    size = data.size
+    if factor <= 1 or size <= 2:
+        return np.arange(size)
+    bucket = 2 * factor
+    nbuckets = -(-size // bucket)  # Last group may be incomplete
+    padded = np.full(nbuckets * bucket, np.nan)
+    padded[:size] = data
+    groups = padded.reshape(nbuckets, bucket)
+    isnan = np.isnan(groups)
+    imin = np.argmin(np.where(isnan, np.inf, groups), axis=1)
+    imax = np.argmax(np.where(isnan, -np.inf, groups), axis=1)
+    offsets = np.arange(nbuckets) * bucket
+    indices = np.concatenate(([0, size - 1], offsets + imin, offsets + imax))
+    return np.unique(indices[indices < size])
+
+
+def get_screen_pen(painter: QG.QPainter, pen: QG.QPen) -> QG.QPen:
+    """Return the pen to draw a line on screen
+
+    On high-DPI screens (e.g. with a 150 % scaling factor), a pen of width 1 is
+    drawn wider than one device pixel, which makes Qt's raster engine take its
+    much slower path for wide pens. When painting on screen (raster engine,
+    without scaling transform), pens of width 1 or less are therefore made
+    cosmetic, i.e. one device pixel wide. Printing and exporting, which use other
+    paint engines or a scaling transform, are not affected.
+
+    This behavior may be disabled with the ``curve/cosmetic_hairline`` option of
+    the ``plot`` configuration section.
+
+    Args:
+        painter: Painter
+        pen: Pen to draw with
+
+    Returns:
+        A cosmetic copy of the pen if applicable, the pen itself otherwise
+    """
+    if (
+        pen.isCosmetic()
+        or pen.widthF() > 1.0
+        or painter.paintEngine().type() != QG.QPaintEngine.Raster
+        or painter.worldTransform().isScaling()
+        or not CONF.get("plot", "curve/cosmetic_hairline", True)
+    ):
+        return pen
+    pen = QG.QPen(pen)
+    pen.setCosmetic(True)
+    return pen
+
+
+#: Maximum width, in device pixels, of the lines drawn as several one-pixel strokes
+#: (see :py:func:`get_thick_line_strokes`): wider lines are drawn with their pen
+THICK_LINE_MAX_STROKES_WIDTH = 8.0
+
+
+def get_thick_line_strokes(
+    painter: QG.QPainter, pen: QG.QPen
+) -> tuple[QG.QPen, list[tuple[float, float]]] | None:
+    """Return the strokes drawing a thick line quickly on screen
+
+    Qt's raster engine draws pens wider than one device pixel much more slowly
+    than one-pixel pens (up to a hundred times slower for noisy curves, with
+    antialiasing). When painting on screen (raster engine, without scaling
+    transform), an opaque solid line wider than one device pixel may instead be
+    drawn as several one-device-pixel strokes, offset horizontally and vertically
+    by at most one device pixel from each other so as to cover the line width,
+    whatever the line direction. Dash patterns are scaled by the line width, as
+    for the original pen.
+
+    The line is drawn with its pen when printing or exporting (other paint engines
+    or scaling transform), for translucent colors (whose overlapping strokes would
+    accumulate), for lines wider than :py:data:`THICK_LINE_MAX_STROKES_WIDTH`
+    device pixels, or when the ``curve/fast_thick_lines`` option of the ``plot``
+    configuration section is disabled.
+
+    Args:
+        painter: Painter
+        pen: Pen to draw with
+
+    Returns:
+        A tuple (stroke pen, stroke offsets in logical coordinates), or None if
+        the line must be drawn with the pen itself
+    """
+    if (
+        pen.style() == QC.Qt.NoPen
+        or pen.isCosmetic()
+        or pen.brush().style() != QC.Qt.SolidPattern
+        or pen.color().alpha() < 255
+        or painter.paintEngine().type() != QG.QPaintEngine.Raster
+        or painter.worldTransform().isScaling()
+    ):
+        return None
+    ratio = painter.device().devicePixelRatioF()
+    width = pen.widthF() * ratio
+    if (
+        width <= 1.0
+        or width > THICK_LINE_MAX_STROKES_WIDTH
+        or not CONF.get("plot", "curve/fast_thick_lines", True)
+    ):
+        return None
+    stroke_pen = QG.QPen(pen)
+    stroke_pen.setWidthF(1.0)
+    stroke_pen.setCosmetic(True)
+    if pen.style() != QC.Qt.SolidLine:
+        stroke_pen.setDashPattern([length * width for length in pen.dashPattern()])
+    extra = width - 1.0
+    shifts = np.linspace(-extra / 2, extra / 2, math.ceil(extra) + 1) / ratio
+    offsets = [(float(shift), 0.0) for shift in shifts]
+    offsets += [(0.0, float(shift)) for shift in shifts if shift != 0.0]
+    return stroke_pen, offsets
 
 
 def seg_dist(P: QC.QPointF, P0: QC.QPointF, P1: QC.QPointF) -> float:
@@ -111,18 +246,21 @@ class CurveItem(QwtPlotCurve):
 
     _readonly = False
     _private = False
-    _icon_name = "curve.png"
+    _icon_name = "curve.svg"
 
     def __init__(self, curveparam: CurveParam | None = None) -> None:
         super().__init__()
         if curveparam is None:
-            self.param = CurveParam(_("Curve"), icon="curve.png")
+            self.param = CurveParam(_("Curve"), icon="curve.svg")
         else:
             self.param = curveparam
         self.selected = False
         self.immutable = True  # set to false to allow moving points around
         self._x = None
         self._y = None
+        self._dsamp_indices: np.ndarray | None = None
+        self._dsamp_size = 0
+        self._dsamp_frozen = False
         self.update_params()
 
     def _get_visible_axis_min(self, axis_id: int, axis_data: np.ndarray) -> float:
@@ -162,6 +300,77 @@ class CurveItem(QwtPlotCurve):
             return QC.QRectF(xmin, ymin, xf.max() - xmin, yf.max() - ymin)
         else:
             return QwtPlotCurve.boundingRect(self)
+
+    def drawCurve(
+        self,
+        painter: QG.QPainter,
+        style: int,
+        xMap: QwtScaleMap,
+        yMap: QwtScaleMap,
+        canvasRect: QC.QRectF,
+        from_: int,
+        to: int,
+    ) -> None:
+        """Draw the line part (without symbols) of a curve interval
+
+        Reimplemented to draw thin curves with a cosmetic pen on screen
+        (see :py:func:`get_screen_pen`).
+
+        Args:
+            painter: Painter
+            style: Curve style, see ``QwtPlotCurve.CurveStyle``
+            xMap: X axis scale map
+            yMap: Y axis scale map
+            canvasRect: Contents rectangle of the canvas
+            from_: Index of the first point to be painted
+            to: Index of the last point to be painted
+        """
+        pen = painter.pen()
+        screen_pen = get_screen_pen(painter, pen)
+        if screen_pen is not pen:
+            painter.setPen(screen_pen)
+        super().drawCurve(painter, style, xMap, yMap, canvasRect, from_, to)
+
+    def drawLines(
+        self,
+        painter: QG.QPainter,
+        xMap: QwtScaleMap,
+        yMap: QwtScaleMap,
+        canvasRect: QC.QRectF,
+        from_: int,
+        to: int,
+    ) -> None:
+        """Draw lines
+
+        Reimplemented to draw thick lines quickly on screen, as several one-pixel
+        strokes (see :py:func:`get_thick_line_strokes`).
+
+        Args:
+            painter: Painter
+            xMap: X axis scale map
+            yMap: Y axis scale map
+            canvasRect: Contents rectangle of the canvas
+            from_: Index of the first point to be painted
+            to: Index of the last point to be painted
+        """
+        strokes = get_thick_line_strokes(painter, painter.pen())
+        if strokes is None:
+            super().drawLines(painter, xMap, yMap, canvasRect, from_, to)
+            return
+        if from_ > to:
+            return
+        stroke_pen, offsets = strokes
+        polyline = series_to_polyline(xMap, yMap, self.data(), from_, to)
+        painter.save()
+        painter.setPen(stroke_pen)
+        for dx, dy in offsets:
+            painter.translate(dx, dy)
+            painter.drawPolyline(polyline)
+            painter.translate(-dx, -dy)
+        painter.restore()
+        brush = self.brush()
+        if brush.style() != QC.Qt.NoBrush and brush.color().alpha() > 0:
+            self.fillCurve(painter, xMap, yMap, canvasRect, polyline)
 
     def types(self) -> tuple[type[IItemType], ...]:
         """Returns a group or category for this item.
@@ -295,7 +504,7 @@ class CurveItem(QwtPlotCurve):
         Args:
             reader: HDF5, INI or JSON reader
         """
-        self.param = CurveParam(_("Curve"), icon="curve.png")
+        self.param = CurveParam(_("Curve"), icon="curve.svg")
         reader.read("curveparam", instance=self.param)
         x = reader.read(group_name="Xdata", func=reader.read_array)
         y = reader.read(group_name="Ydata", func=reader.read_array)
@@ -377,21 +586,69 @@ class CurveItem(QwtPlotCurve):
         if isinstance(self._x, np.ndarray) and isinstance(self._y, np.ndarray):
             self._setData(self._x, self._y)
 
-    def dsamp(self, data: np.ndarray) -> np.ndarray:
+    def dsamp(self, data: np.ndarray | None) -> np.ndarray | None:
         """Downsample data
 
         Args:
-            data: Data to downsample
+            data: Data to downsample (X, Y or error data of the curve)
 
         Returns:
             Downsampled data
         """
-        if self.param.use_dsamp and self.param.dsamp_factor > 1:
-            return data[:: self.param.dsamp_factor]
-        return data
+        if data is None or self._dsamp_indices is None:
+            return data
+        return data[self._dsamp_indices]
+
+    def get_dsamp_indices(self) -> np.ndarray | None:
+        """Return the indices of the points kept by downsampling
+
+        Returns:
+            Sorted indices of the points of the curve data that are drawn, or None if
+            the curve is not downsampled
+        """
+        return self._dsamp_indices
+
+    @contextmanager
+    def frozen_downsampling(self) -> Generator[None, None, None]:
+        """Keep the points kept by downsampling while the curve data is updated
+
+        This is useful when editing curve points: with min/max downsampling, a
+        point which is moved could otherwise be replaced by another point of its
+        group. The points kept by downsampling are computed again when the number
+        of points changes, or when the data is updated after this context.
+        """
+        self._dsamp_frozen = True
+        try:
+            yield
+        finally:
+            self._dsamp_frozen = False
+
+    def __update_dsamp_indices(self, values: np.ndarray) -> None:
+        """Update the indices of the points kept by downsampling
+
+        Args:
+            values: Curve values (Y data, or X data for vertical curves)
+        """
+        indices = self._dsamp_indices
+        if (
+            self._dsamp_frozen
+            and indices is not None
+            and self._dsamp_size == values.size
+        ):
+            return
+        self._dsamp_size = values.size
+        factor = self.param.dsamp_factor
+        if not self.param.use_dsamp or factor <= 1:
+            self._dsamp_indices = None
+        elif self.param.dsamp_method == "stride":
+            self._dsamp_indices = np.arange(0, values.size, factor)
+        else:
+            self._dsamp_indices = minmax_downsampling_indices(values, factor)
 
     def _setData(self, x: np.ndarray, y: np.ndarray) -> None:
         """Wrapper around QwtPlotCurve.setData() to handle downsampling"""
+        values = x if self.orientation() == QC.Qt.Vertical else y
+        self.__update_dsamp_indices(np.asarray(values))
         return super().setData(self.dsamp(x), self.dsamp(y))
 
     def set_data(self, x: np.ndarray, y: np.ndarray) -> None:
@@ -469,7 +726,12 @@ class CurveItem(QwtPlotCurve):
             p1x = plot.transform(ax, self._x[i + 1])
             p1y = plot.transform(ay, self._y[i + 1])
         distance = seg_dist(QC.QPointF(pos), QC.QPointF(p0x, p0y), QC.QPointF(p1x, p1y))
-        final_index = i // (int(not self.param.use_dsamp) or self.param.dsamp_factor)
+        indices = self._dsamp_indices
+        if indices is None:
+            final_index = int(i)
+        else:
+            # Index of the last point kept by downsampling at or before point `i`
+            final_index = max(int(np.searchsorted(indices, i, side="right")) - 1, 0)
         return distance, final_index, False, None
 
     def get_closest_coordinates(self, x: float, y: float) -> tuple[float, float]:
@@ -544,12 +806,19 @@ class CurveItem(QwtPlotCurve):
         """
         if self.immutable:
             return
+        indices = self._dsamp_indices
+        if indices is not None:
+            # The handle is the index of a point kept by downsampling
+            if handle < 0 or handle >= indices.size:
+                return
+            handle = int(indices[handle])
         if handle < 0 or handle > self._x.shape[0]:
             return
         x, y = canvas_to_axes(self, pos)
         self._x[handle] = x
         self._y[handle] = y
-        self._setData(self._x, self._y)
+        with self.frozen_downsampling():
+            self._setData(self._x, self._y)
         self.plot().replot()
 
     def move_local_shape(self, old_pos: QC.QPointF, new_pos: QC.QPointF) -> None:

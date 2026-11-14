@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 from guidata.dataset import (
     BoolItem,
+    ChoiceItem,
     DataSet,
     FloatItem,
     GetAttrProp,
@@ -49,6 +50,19 @@ class CurveParam(DataSet):
     dsamp_factor = IntItem(_("Downsampling factor"), default=10, min=1).set_prop(
         "display", active=_use_dsamp_prop
     )
+    dsamp_method = ChoiceItem(
+        _("Downsampling method"),
+        (
+            ("minmax", _("Min/max (peaks preserved)")),
+            ("stride", _("Stride (one point out of N)")),
+        ),
+        default="minmax",
+        help=_(
+            "Min/max: the minimum and the maximum of each group of "
+            "2 × N points are kept, so that peaks are preserved.\n"
+            "Stride: one point out of N is kept."
+        ),
+    ).set_prop("display", active=_use_dsamp_prop)
 
     def update_param(self, curve: CurveItem) -> None:
         """Updates the parameters using values from a given CurveItem

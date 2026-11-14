@@ -63,12 +63,12 @@ class PolygonMapItem(QwtPlotItem):
     _can_resize = False
     _can_move = False
     _can_rotate = False
-    _icon_name = "polygonmap.png"
+    _icon_name = "polygonmap.svg"
 
     def __init__(self, param: PolygonMapParam | None = None) -> None:
         super().__init__()
         if param is None:
-            self.param = PolygonMapParam(_("PolygonMap"), icon="polygonmap.png")
+            self.param = PolygonMapParam(_("PolygonMap"), icon="polygonmap.svg")
         else:
             self.param = param
         self.selected = False
@@ -215,7 +215,7 @@ class PolygonMapItem(QwtPlotItem):
         c = reader.read(group_name="Cdata", func=reader.read_array)
         self.set_data(pts, n, c)
         self.setZ(reader.read("z"))
-        self.param = PolygonMapParam(_("PolygonMap"), icon="polygonmap.png")
+        self.param = PolygonMapParam(_("PolygonMap"), icon="polygonmap.svg")
         reader.read("param", instance=self.param)
         self.update_params()
 

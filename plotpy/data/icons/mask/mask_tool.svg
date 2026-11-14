@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>mask/mask_tool</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<rect x="4" y="0.8" width="8" height="3" fill="#ccccff" stroke="#6666ff" stroke-width="0.9"/>
+<circle cx="4.5" cy="10.5" r="3.5" fill="#ccccff" stroke="#6666ff" stroke-width="0.9"/>
+<rect x="10" y="7.5" width="5.2" height="6" fill="#ccccff" stroke="#6666ff" stroke-width="0.9"/>
+</svg>

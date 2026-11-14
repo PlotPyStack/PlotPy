@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+<title>scales/lin_lin</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<g transform="scale(3 3)">
+<g transform="scale(.3333333333)">
+<rect x="1" y="1" width="46" height="46" fill="#fff" stroke="#969696" stroke-width="2"/>
+<path d="M16.5 3 L16.5 45" fill="none" stroke="#aaa" stroke-width="2" stroke-dasharray="2 2"/>
+<path d="M32.5 3 L32.5 45" fill="none" stroke="#aaa" stroke-width="2" stroke-dasharray="2 2"/>
+<path d="M3 15.5 L45 15.5" fill="none" stroke="#aaa" stroke-width="2" stroke-dasharray="2 2"/>
+<path d="M3 31.5 L45 31.5" fill="none" stroke="#aaa" stroke-width="2" stroke-dasharray="2 2"/>
+</g>
+</g>
+</svg>

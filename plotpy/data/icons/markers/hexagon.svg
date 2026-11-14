@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>markers/hexagon</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<path d="M8.000 4.700 L9.332 6.142 L11.551 6.350 L10.665 8.000 L11.551 9.650 L9.332 9.858 L8.000 11.300 L6.668 9.858 L4.449 9.650 L5.335 8.000 L4.449 6.350 L6.667 6.142 Z" fill="#ffff00" stroke="#b1b1a0" stroke-width="0.9"/>
+</svg>

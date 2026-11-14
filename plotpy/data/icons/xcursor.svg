@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>xcursor</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<path d="M1 8.5 H15 M6.5 0 V15" fill="none" stroke="#ff1118" stroke-width="1"/>
+<rect x="5" y="7" width="3" height="3" fill="none" stroke="#ff4148" stroke-width="1"/>
+</svg>

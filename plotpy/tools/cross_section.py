@@ -25,7 +25,7 @@ if TYPE_CHECKING:
 class CrossSectionTool(RectangularShapeTool):
     SWITCH_TO_DEFAULT_TOOL = True
     TITLE = _("Cross section")
-    ICON = "csection.png"
+    ICON = "csection.svg"
     SHAPE_STYLE_KEY = "shape/cross_section"
     SHAPE_TITLE = TITLE
     PANEL_IDS = (ID_XCS, ID_YCS)
@@ -84,7 +84,7 @@ class CrossSectionTool(RectangularShapeTool):
 class AverageCrossSectionTool(CrossSectionTool):
     SWITCH_TO_DEFAULT_TOOL = True
     TITLE = _("Average cross section")
-    ICON = "csection_a.png"
+    ICON = "csection_a.svg"
     SHAPE_STYLE_KEY = "shape/average_cross_section"
     SHAPE_TITLE = TITLE
 
@@ -96,7 +96,7 @@ class AverageCrossSectionTool(CrossSectionTool):
 class LineCrossSectionTool(CrossSectionTool):
     SWITCH_TO_DEFAULT_TOOL = True
     TITLE = _("Line cross section")
-    ICON = "csection_line.png"
+    ICON = "csection_line.svg"
     SHAPE_STYLE_KEY = "shape/average_cross_section"
     SHAPE_TITLE = TITLE
     PANEL_IDS = (ID_LCS,)
@@ -110,7 +110,7 @@ class LineCrossSectionTool(CrossSectionTool):
 class ObliqueCrossSectionTool(CrossSectionTool):
     SWITCH_TO_DEFAULT_TOOL = True
     TITLE = _("Oblique averaged cross section")
-    ICON = "csection_oblique.png"
+    ICON = "csection_oblique.svg"
     SHAPE_STYLE_KEY = "shape/average_cross_section"
     SHAPE_TITLE = TITLE
     PANEL_IDS = (ID_OCS,)

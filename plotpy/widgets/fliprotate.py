@@ -202,7 +202,7 @@ class FlipRotateWidget(basetransform.BaseTransformWidget):
         hflip = create_toolbutton(
             self,
             text="",
-            icon=get_icon("hflip.png"),
+            icon=get_icon("hflip.svg"),
             toggled=lambda state: self.transform.apply_transformation(),
             autoraise=False,
         )
@@ -211,7 +211,7 @@ class FlipRotateWidget(basetransform.BaseTransformWidget):
         vflip = create_toolbutton(
             self,
             text="",
-            icon=get_icon("vflip.png"),
+            icon=get_icon("vflip.svg"),
             toggled=lambda state: self.transform.apply_transformation(),
             autoraise=False,
         )

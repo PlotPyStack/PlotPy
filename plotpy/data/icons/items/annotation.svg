@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>items/annotation</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<path d="M5 9.5 L10.5 3.5 Q12 2 13.3 3.3 Q14.5 4.6 13.2 6 L6.5 13.3 Q4.2 15.6 2.2 13.5 Q.2 11.5 2.5 9 L9.2 2 Q12-1 14.5 1.6 Q17 4.2 14.3 7.1 L7 14.7" fill="none" stroke="#848988" stroke-width="0.85" stroke-linecap="round"/>
+</svg>

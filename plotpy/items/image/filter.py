@@ -89,7 +89,7 @@ class ImageFilterItem(BaseImageItem):
     _can_select = True
     _can_resize = True
     _can_move = True
-    _icon_name = "funct.png"
+    _icon_name = "funct.svg"
 
     def __init__(
         self, image: RawImageItem | None, filter: Callable, param: ImageFilterParam
@@ -349,12 +349,11 @@ class XYImageFilterItem(ImageFilterItem):
             new_data,
             (x, y, src_rect),
             self._offscreen,
-            dstRect.getCoords(),
+            self._offscreen_rect(dstRect.getCoords()),
             lut,
             self.interpolate,
         )
-        qrect = QC.QRectF(QC.QPointF(dest[0], dest[1]), QC.QPointF(dest[2], dest[3]))
-        painter.drawImage(qrect, self._image, qrect)
+        self._draw_offscreen(painter, dest)
 
 
 assert_interfaces_valid(ImageFilterItem)

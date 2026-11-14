@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>curvestyles/steps</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<path d="M1.5 7 V10 H3.5 V13 H7.5 V11 H9.5 V8 H11.5 V4 H13.5 V1.5 H15" fill="none" stroke="#1010ff" stroke-width="1"/>
+</svg>

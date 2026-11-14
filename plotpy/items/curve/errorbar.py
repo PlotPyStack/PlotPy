@@ -13,7 +13,7 @@ from qtpy import QtGui as QG
 from qwt import QwtPlotCurve, QwtScaleMap
 
 from plotpy.config import _
-from plotpy.items.curve.base import CurveItem
+from plotpy.items.curve.base import CurveItem, get_screen_pen
 from plotpy.styles.curve import CurveParam
 from plotpy.styles.errorbar import ErrorBarParam
 
@@ -55,7 +55,7 @@ class ErrorBarCurveItem(CurveItem):
         errorbarparam: Error-bar parameters
     """
 
-    _icon_name = "errorbar.png"
+    _icon_name = "errorbar.svg"
 
     def __init__(
         self,
@@ -63,7 +63,7 @@ class ErrorBarCurveItem(CurveItem):
         errorbarparam: ErrorBarParam | None = None,
     ) -> None:
         if errorbarparam is None:
-            self.errorbarparam = ErrorBarParam(_("Error bars"), icon="errorbar.png")
+            self.errorbarparam = ErrorBarParam(_("Error bars"), icon="errorbar.svg")
         else:
             self.errorbarparam = errorbarparam
         self.errorPen: QG.QPen | None = None
@@ -99,9 +99,9 @@ class ErrorBarCurveItem(CurveItem):
         Args:
             reader: HDF5, INI or JSON reader
         """
-        self.param = CurveParam(_("Curve"), icon="curve.png")
+        self.param = CurveParam(_("Curve"), icon="curve.svg")
         reader.read("curveparam", instance=self.param)
-        self.errorbarparam = ErrorBarParam(_("Error bars"), icon="errorbar.png")
+        self.errorbarparam = ErrorBarParam(_("Error bars"), icon="errorbar.svg")
         reader.read("errorbarparam", instance=self.errorbarparam)
         x = reader.read(group_name="Xdata", func=reader.read_array)
         y = reader.read(group_name="Ydata", func=reader.read_array)
@@ -286,7 +286,7 @@ class ErrorBarCurveItem(CurveItem):
             QwtPlotCurve.draw(self, painter, xMap, yMap, canvasRect)
 
         painter.save()
-        painter.setPen(self.errorPen)
+        painter.setPen(get_screen_pen(painter, self.errorPen))
         cap = self.errorCap / 2.0
 
         if self._dx is not None and self.errorbarparam.mode == 0:

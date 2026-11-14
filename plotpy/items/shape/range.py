@@ -48,7 +48,7 @@ class BaseRangeSelection(AbstractShape):
         self._min = _min
         self._max = _max
         if shapeparam is None:
-            self.shapeparam = RangeShapeParam(_("Range"), icon="xrange.png")
+            self.shapeparam = RangeShapeParam(_("Range"), icon="xrange.svg")
             self.shapeparam.read_config(CONF, "histogram", "range")
         else:
             self.shapeparam: RangeShapeParam = shapeparam
@@ -107,7 +107,7 @@ class BaseRangeSelection(AbstractShape):
         """
         self._min = reader.read("min")
         self._max = reader.read("max")
-        self.shapeparam = RangeShapeParam(_("Range"), icon="xrange.png")
+        self.shapeparam = RangeShapeParam(_("Range"), icon="xrange.svg")
         reader.read("shapeparam", instance=self.shapeparam)
         self.shapeparam.update_item(self)
 
@@ -262,7 +262,7 @@ class XRangeSelection(BaseRangeSelection):
         shapeparam: Shape parameters
     """
 
-    _icon_name = "xrange.png"
+    _icon_name = "xrange.svg"
 
     def get_handles_pos(self) -> tuple[float, float, float]:
         """Return the handles position
@@ -424,7 +424,7 @@ class YRangeSelection(BaseRangeSelection):
         shapeparam: Shape parameters
     """
 
-    _icon_name = "yrange.png"
+    _icon_name = "yrange.svg"
 
     def get_handles_pos(self) -> tuple[float, float, float]:
         """Return the handles position

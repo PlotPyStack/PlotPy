@@ -37,7 +37,7 @@ class Axes(PolygonShape):
     """
 
     CLOSED: bool = True
-    _icon_name = "gtaxes.png"
+    _icon_name = "gtaxes.svg"
 
     def __init__(
         self,
@@ -56,7 +56,7 @@ class Axes(PolygonShape):
         self.y_pen = self.pen
         self.y_brush = self.brush
         if axesparam is None:
-            self.axesparam = AxesShapeParam(_("Axes"), icon="gtaxes.png")
+            self.axesparam = AxesShapeParam(_("Axes"), icon="gtaxes.svg")
         else:
             self.axesparam = axesparam
         self.axesparam.update_param(self)
@@ -100,7 +100,7 @@ class Axes(PolygonShape):
             reader: HDF5, INI or JSON reader
         """
         super().deserialize(reader)
-        self.axesparam = AxesShapeParam(_("Axes"), icon="gtaxes.png")
+        self.axesparam = AxesShapeParam(_("Axes"), icon="gtaxes.svg")
         reader.read("axesparam", instance=self.axesparam)
         self.axesparam.update_item(self)
 

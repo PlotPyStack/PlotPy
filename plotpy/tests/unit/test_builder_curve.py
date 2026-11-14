@@ -63,8 +63,15 @@ def _make_curve_dsamp(dsamp_factor, use_dsamp):
     x = np.linspace(-10, 10, 1000)
     y = np.sin(x)
     curve = make.curve(x, y, dsamp_factor=dsamp_factor, use_dsamp=use_dsamp)
-    if use_dsamp:
+    if use_dsamp and dsamp_factor > 1:
+        # Min/max downsampling (default): about one point out of `dsamp_factor`
+        assert curve.dataSize() == curve.get_dsamp_indices().size
+        assert curve.dataSize() <= x[::dsamp_factor].size + 2
+        curve.param.dsamp_method = "stride"
+        curve.update_params()
         assert curve.dataSize() == x[::dsamp_factor].size
+    else:
+        assert curve.dataSize() == x.size
     return curve
 
 

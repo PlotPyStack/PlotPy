@@ -87,7 +87,7 @@ class BaseCursorTool(InteractiveTool):
 
 class HRangeTool(BaseCursorTool):
     TITLE = _("Horizontal selection")
-    ICON = "xrange.png"
+    ICON = "xrange.svg"
 
     def create_shape(self):
         """
@@ -99,7 +99,7 @@ class HRangeTool(BaseCursorTool):
 
 class VCursorTool(BaseCursorTool):
     TITLE = _("Vertical cursor")
-    ICON = "vcursor.png"
+    ICON = "vcursor.svg"
 
     def create_shape(self):
         """
@@ -113,7 +113,7 @@ class VCursorTool(BaseCursorTool):
 
 class HCursorTool(BaseCursorTool):
     TITLE = _("Horizontal cursor")
-    ICON = "hcursor.png"
+    ICON = "hcursor.svg"
 
     def create_shape(self):
         """
@@ -127,7 +127,7 @@ class HCursorTool(BaseCursorTool):
 
 class XCursorTool(BaseCursorTool):
     TITLE = _("Cross cursor")
-    ICON = "xcursor.png"
+    ICON = "xcursor.svg"
 
     def create_shape(self):
         """

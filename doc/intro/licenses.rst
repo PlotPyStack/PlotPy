@@ -42,12 +42,18 @@ Additional asset licenses:
 -------------------------------------------------------------------------------
 
 
-Icons under plotpy/images
-=========================
+Icons under plotpy/data/icons
+=============================
 
 
 The following lists the source, license and accompanying details for
-image and icon under the plotpy/images directory.
+image and icon under the plotpy/data/icons directory.
+
+The icons are SVG reconstructions (2026) of the historical PNG icons: the notices
+and licenses of the original artwork remain. They are also provided in the
+plotpy/data/icons/LICENSES.txt file. The icons shared with guidata (e.g. editors,
+file types, Python logo) are provided by guidata (see guidata's
+guidata/data/icons/LICENSES.txt file).
 
 
 -------------------------------------------------------------------------------
@@ -66,7 +72,7 @@ Crystal Project Icons
 | Download (mirror): https://github.com/thecodingmachine/crystal-project
 | License: GNU Lesser General Public License 2.1 or later https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
 
-No modifications made.
+Modifications: SVG reconstruction of the historical PNG icons, 2026.
 
 
 All Icons are free software; you can redistribute it and/or modify it under the
@@ -85,76 +91,11 @@ https://www.gnu.org/licenses/lgpl.html
 
 Files covered:
 
-* plotpy/images/arrow_down.png
-* plotpy/images/arrow_up.png
-* plotpy/images/editors/copywop.png
-* plotpy/images/editors/edit.png
-* plotpy/images/editors/editclear.png
-* plotpy/images/editors/editcopy.png
-* plotpy/images/editors/editcut.png
-* plotpy/images/editors/editdelete.png
-* plotpy/images/editors/editpaste.png
-* plotpy/images/editors/edit_add.png
-* plotpy/images/eraser.png
-* plotpy/images/exit.png
-* plotpy/images/editors/imshow.png
-* plotpy/images/editors/insert.png
-* plotpy/images/magnifier.png
-* plotpy/images/editors/plot.png
-* plotpy/images/editors/rename.png
-* plotpy/images/fileclose.png
-* plotpy/images/fileimport.png
-* plotpy/images/filenew.png
-* plotpy/images/fileopen.png
-* plotpy/images/filesave.png
-* plotpy/images/filesaveas.png
-* plotpy/images/print.png
-* plotpy/images/save_all.png
-
--------------------------------------------------------------------------------
-
-Python Logo
------------
-
-
-Copyright (c) 2008 Python Software Foundation
-
-
-| Author: Python Software Foundation | https://www.python.org/
-| Source/Download: https://www.python.org/community/logos/
-| License: Python Software Foundation License Version 2 https://docs.python.org/3/license.html
-| Trademark: Python Software Foundation Trademark Usage Policy https://www.python.org/psf/trademarks/
-
-No modifications made.
-
-
-The Python logo is a trademark of the Python Software Foundation,
-which is responsible for defending against
-any damaging or confusing uses of the trademark.
-
-See the PSF Trademark Usage Policy: https://www.python.org/psf/trademarks/
-
-In general, we want the logo to be used as widely as possible to indicate
-use of Python or suitability for Python. However, please ask first when using
-a derived version of the logo or when in doubt.
-
-Projects and companies that use Python are encouraged to incorporate the
-Python logo on their websites, brochures, packaging, and elsewhere to indicate
-suitability for use with Python or implementation in Python. Use of the
-"two snakes" logo element alone, without the accompanying wordmark is permitted
-on the same terms as the combined logo.
-
-
-See below for the full text of the PSF License Version 2.
-
-The license history and text can be found online at:
-https://docs.python.org/3/license.html
-
-
-Files covered:
-
-* plotpy/images/python.png
-
+* plotpy/data/icons/arrow_down.svg
+* plotpy/data/icons/arrow_up.svg
+* plotpy/data/icons/eraser.svg
+* plotpy/data/icons/magnifier.svg
+* plotpy/data/icons/print.svg
 
 -------------------------------------------------------------------------------
 

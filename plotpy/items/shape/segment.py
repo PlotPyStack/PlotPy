@@ -26,7 +26,7 @@ class SegmentShape(PolygonShape):
 
     CLOSED = False
     ADDITIONNAL_POINTS = 1  # Number of points which are not part of the shape
-    _icon_name = "segment.png"
+    _icon_name = "segment.svg"
 
     def __init__(
         self,

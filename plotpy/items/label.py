@@ -81,7 +81,7 @@ class AbstractLabelItem(QwtPlotItem):
         self.border_pen = None
         self.bg_brush = None
         if labelparam is None:
-            self.labelparam = LabelParam(_("Label"), icon="label.png")
+            self.labelparam = LabelParam(_("Label"), icon="label.svg")
         else:
             self.labelparam = labelparam
             self.labelparam.update_item(self)
@@ -125,7 +125,7 @@ class AbstractLabelItem(QwtPlotItem):
         Args:
             reader: HDF5, INI or JSON reader
         """
-        self.labelparam = LabelParam(_("Label"), icon="label.png")
+        self.labelparam = LabelParam(_("Label"), icon="label.svg")
         reader.read("labelparam", instance=self.labelparam)
         self.labelparam.update_item(self)
         if isinstance(self.G, np.ndarray):
@@ -518,7 +518,7 @@ class LabelItem(AbstractLabelItem):
     """
 
     __implements__ = (IBasePlotItem, ISerializableType)
-    _icon_name = "label.png"
+    _icon_name = "label.svg"
 
     def __init__(
         self, text: str | None = None, labelparam: LabelParam | None = None
@@ -666,7 +666,7 @@ class LegendBoxItem(AbstractLabelItem):
     """
 
     __implements__ = (IBasePlotItem, ISerializableType)
-    _icon_name = "legend.png"
+    _icon_name = "legend.svg"
 
     def __init__(self, labelparam: LabelParam = None) -> None:
         self.font = None

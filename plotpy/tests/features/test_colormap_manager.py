@@ -33,6 +33,7 @@ def test_cmap(cmap_name="Kinda Viridis"):
     delete_cmap(get_cmap(cmap_name))
 
 
+@pytest.mark.usefixtures("isolated_config_dir")
 def test_colormap_manager(test_cmap: EditableColormap) -> None:
     """Test the colormap manager widget."""
     with qt_app_context(exec_loop=False):

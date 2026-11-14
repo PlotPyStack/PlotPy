@@ -109,7 +109,7 @@ class ContourItem(PolygonShape):
     _can_resize = False
     _can_rotate = False
     _can_move = False
-    _icon_name = "contour.png"
+    _icon_name = "contour.svg"
 
     def __init__(self, points=None, shapeparam=None):
         super().__init__(points, closed=True, shapeparam=shapeparam)
@@ -158,7 +158,7 @@ def create_contour_items(
 
     contours = compute_contours(Z, levels, X, Y)
     for cline in contours:
-        param = ShapeParam("Contour", icon="contour.png")
+        param = ShapeParam("Contour", icon="contour.svg")
         item = ContourItem(points=cline.vertices, shapeparam=param)
         item.set_style("plot", "shape/contour")
         if color is not None:

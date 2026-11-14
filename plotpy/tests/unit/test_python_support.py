@@ -10,7 +10,7 @@ from importlib.metadata import metadata
 import pytest
 
 
-@pytest.mark.parametrize("minor", range(9, 16))
+@pytest.mark.parametrize("minor", range(10, 16))
 def test_python_classifiers(minor):
     """Check that package metadata advertises every supported Python version."""
     classifiers = metadata("PlotPy").get_all("Classifier")

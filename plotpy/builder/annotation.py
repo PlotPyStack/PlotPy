@@ -53,7 +53,7 @@ class AnnotationBuilder:
         readonly: bool | None = None,
         private: bool | None = None,
     ) -> AnnotationParam:
-        param = AnnotationParam(_("Annotation"), icon="annotation.png")
+        param = AnnotationParam(_("Annotation"), icon="annotation.svg")
         if title is not None:
             param.title = title
         if subtitle is not None:

@@ -21,7 +21,6 @@ classifiers = [
     "Operating System :: Microsoft :: Windows :: Windows 10",
     "Operating System :: Microsoft :: Windows :: Windows 11",
     "Operating System :: POSIX :: Linux",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -37,10 +36,10 @@ classifiers = [
     "Topic :: Software Development :: Widget Sets",
     "Topic :: Utilities",
 ]
-requires-python = ">=3.9, <4"
+requires-python = ">=3.10, <4"
 dependencies = [
-    "guidata >= 3.14.1",
-    "PythonQwt >= 0.16",
+    "guidata >= 3.17.1",
+    "PythonQwt >= 0.17.1",
     "numpy >= 1.22",
     "SciPy >= 1.7.3",
     "scikit-image >= 0.19",
@@ -82,12 +81,14 @@ version = { attr = "plotpy.__version__" }
 addopts = "--import-mode=importlib"
 testpaths = ["plotpy"]
 # addopts = "--import-mode=importlib --show-windows"  # Disable offscreen mode
+# Ambiguous image names must be designated explicitly ("module:filename")
+filterwarnings = ["error::guidata.configtools.ImageNameConflictWarning"]
 
 [tool.ruff]
 exclude = [".git", ".vscode", "build", "dist","venv*",".venv*"]
 line-length = 88                               # Same as Black.
 indent-width = 4                               # Same as Black.
-target-version = "py39"                        # Assume Python 3.9.
+target-version = "py310"                       # Assume Python 3.10.
 
 [tool.ruff.lint]
 # all rules can be found here: https://beta.ruff.rs/docs/rules/
@@ -118,5 +119,5 @@ line-ending = "auto"              # Like Black, automatically detect the appropr
 convention = "google"
 
 [tool.cibuildwheel]
-build = ["cp39-*", "cp310-*", "cp311-*", "cp312-*", "cp313-*", "cp314-*", "cp315-*"]
+build = ["cp310-*", "cp311-*", "cp312-*", "cp313-*", "cp314-*", "cp315-*"]
 skip = ["*-manylinux_i686", "*-musllinux*"]

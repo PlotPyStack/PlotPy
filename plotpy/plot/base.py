@@ -55,6 +55,7 @@ from plotpy.items import (
     PolygonShape,
     QuiverItem,
 )
+from plotpy.mathutils.colormap import LogScaleColorMap
 from plotpy.styles.axes import AxesParam, AxeStyleParam, AxisParam, ImageAxesParam
 from plotpy.styles.base import GridParam, ItemParameters
 
@@ -177,6 +178,10 @@ class BasePlot(qwt.QwtPlot):
     DEFAULT_ACTIVE_YAXIS = Y_LEFT
 
     AUTOSCALE_TYPES = (CurveItem, BaseImageItem, PolygonMapItem, QuiverItem)
+
+    #: Number of calls to :meth:`replot` and :meth:`invalidate`, by which image items
+    #: tell whether their rendering may have changed (see :meth:`replot_overlays`)
+    _replot_count = 0
 
     #: Signal emitted by plot when an IBasePlotItem object was moved
     #:
@@ -437,7 +442,7 @@ class BasePlot(qwt.QwtPlot):
 
         # Setting up grid
         if options.gridparam is None:
-            options.gridparam = GridParam(title=_("Grid"), icon="grid.png")
+            options.gridparam = GridParam(title=_("Grid"), icon="grid.svg")
             options.gridparam.read_config(CONF, options.section, "grid")
         self.grid = GridItem(options.gridparam)
         self.add_item(self.grid, z=-1)
@@ -886,6 +891,10 @@ class BasePlot(qwt.QwtPlot):
         Args:
             title (str): the title
         """
+        current = self.title()
+        if current.text() == title and current.font().key() == self.font_title.key():
+            # Nothing changed: setting the title would lay out the plot again
+            return
         text = qwt.QwtText(title)
         text.setFont(self.font_title)
         self.setTitle(text)
@@ -1044,18 +1053,28 @@ class BasePlot(qwt.QwtPlot):
 
         title_font = style.title_font.build_font()
         ticks_font = style.ticks_font.build_font()
-        self.setAxisFont(axis_id, ticks_font)
-
         if style.title and style.unit:
             title = f"{style.title} ({style.unit})"
         elif style.title:
             title = style.title
         else:
             title = style.unit
+        color = QG.QColor(style.color)
         axis_text = self.axisTitle(axis_id)
+        # Fonts are compared by key: the widget font is resolved against its
+        # parent font, so it never compares equal to the built font
+        if (
+            self.axisFont(axis_id).key() == ticks_font.key()
+            and axis_text.text() == title
+            and axis_text.font().key() == title_font.key()
+            and axis_text.color() == color
+        ):
+            # Nothing changed: setting the axis title would lay out the plot again
+            return
+        self.setAxisFont(axis_id, ticks_font)
         axis_text.setFont(title_font)
         axis_text.setText(title)
-        axis_text.setColor(QG.QColor(style.color))
+        axis_text.setColor(color)
         self.setAxisTitle(axis_id, axis_text)
         self.SIG_PLOT_LABELS_CHANGED.emit(self)
 
@@ -2074,7 +2093,7 @@ class BasePlot(qwt.QwtPlot):
                 Param = self.get_axesparam_class(active_item)
                 axesparam = Param(
                     title=_("Axes"),
-                    icon="lin_lin.png",
+                    icon="lin_lin.svg",
                     comment=_("Axes associated to selected item"),
                 )
                 axesparam.update_param(active_item)
@@ -2303,8 +2322,38 @@ class BasePlot(qwt.QwtPlot):
         use instead of replot when only the content
         of the canvas needs redrawing (axes, shouldn't change)
         """
+        self._replot_count += 1
         self.canvas().replot()
         self.update()
+
+    def replot(self) -> None:
+        """Redraw the plot
+
+        Image items are rendered again (see :meth:`replot_overlays`).
+        """
+        self._replot_count += 1
+        super().replot()
+
+    def replot_overlays(self) -> None:
+        """Redraw the plot when only items drawn over images have changed
+
+        This is intended for interactive changes of shapes, markers, annotations,
+        etc. (e.g. while moving a shape with the mouse): image items draw their
+        previous rendering again instead of rendering their data again, unless
+        their position, the plot axes or the plot size have changed. Any other
+        change of image items (data, contrast, colormap, ...) must be followed by
+        :meth:`replot` or :meth:`invalidate`.
+        """
+        super().replot()
+
+    def get_replot_count(self) -> int:
+        """Return the number of calls to :meth:`replot` and :meth:`invalidate`
+
+        Returns:
+            Number of calls to :meth:`replot` and :meth:`invalidate`, which does
+            not change when calling :meth:`replot_overlays`
+        """
+        return self._replot_count
 
     def get_axis_direction(self, axis_id: int | str) -> bool:
         """
@@ -2583,6 +2632,10 @@ class BasePlot(qwt.QwtPlot):
         """
         Update colormap axis
 
+        When the Z-axis logarithmic scale of the item is enabled, the colormap
+        axis uses a logarithmic scale, with bounds in data units, and its color
+        bar is drawn with the colormap applied on a logarithmic scale.
+
         Args:
             item (IColormapImageItemType): the item
         """
@@ -2590,12 +2643,18 @@ class BasePlot(qwt.QwtPlot):
             return
         zaxis = self.colormap_axis
         axiswidget: QwtScaleWidget = self.axisWidget(zaxis)
+        is_log = item.get_zaxis_log_state()
+        if is_log != (self.get_axis_scale(zaxis) == "log"):
+            self.setAxisScaleEngine(
+                zaxis, self.AXIS_TYPES["log" if is_log else "lin"]()
+            )
         self.setAxisScale(zaxis, item.min, item.max)
+        colormap = item.get_color_map()
+        if is_log:
+            colormap = LogScaleColorMap(colormap)
         # XXX: The colormap can't be displayed if min>max, to fix this
         # we should pass an inverted colormap along with _max, _min values
-        axiswidget.setColorMap(
-            qwt.QwtInterval(item.min, item.max), item.get_color_map()
-        )
+        axiswidget.setColorMap(qwt.QwtInterval(item.min, item.max), colormap)
         self.updateAxes()
 
     # # Keep this around to debug too many replots

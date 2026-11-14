@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>move</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<path d="M8 0 L11 3 H9 V7 H13 V5 L16 8 L13 11 V9 H9 V13 H11 L8 16 L5 13 H7 V9 H3 V11 L0 8 L3 5 V7 H7 V3 H5 Z" fill="#000"/>
+</svg>

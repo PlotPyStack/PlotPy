@@ -5,8 +5,12 @@
 
 from __future__ import annotations
 
+import math
 import os
 import os.path as osp
+import weakref
+from collections import OrderedDict
+from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
@@ -24,7 +28,7 @@ from plotpy._scaler import (
     _histogram,
     _scale_rect,
 )
-from plotpy.config import _
+from plotpy.config import CONF, _
 from plotpy.constants import LUT_MAX, LUT_SIZE, LUTAlpha
 from plotpy.coords import pixelround
 from plotpy.interfaces import (
@@ -46,6 +50,7 @@ from plotpy.lutrange import lut_range_threshold
 from plotpy.mathutils.arrayfuncs import get_nan_range
 from plotpy.mathutils.colormap import FULLRANGE, get_cmap
 from plotpy.styles.image import RawImageParam
+from plotpy.widgets.colormap.widget import EditableColormap
 
 if TYPE_CHECKING:
     import guidata.io
@@ -57,7 +62,193 @@ if TYPE_CHECKING:
     from plotpy.interfaces import IItemType
     from plotpy.plot import BasePlot
     from plotpy.styles.base import ItemParameters
-    from plotpy.widgets.colormap.widget import EditableColormap
+
+#: Lookup tables already computed by :func:`_get_colormap_lut`, most recent last
+_LUT_CACHE: OrderedDict[tuple, tuple[tuple[int, ...], np.ndarray]] = OrderedDict()
+_LUT_CACHE_SIZE = 32
+
+
+def _lut_cache_key(
+    table: EditableColormap, alpha: float, alpha_function: int
+) -> tuple | None:
+    """Return the key identifying the lookup table of a colormap, if cacheable.
+
+    The key is built from the colormap content (not its identity), so that an
+    edited colormap gets a new lookup table.
+
+    Args:
+        table: Colormap
+        alpha: Global alpha value
+        alpha_function: Alpha function (see :class:`plotpy.constants.LUTAlpha`)
+
+    Returns:
+        Cache key, or None if the lookup table must be computed: colormap
+        subclasses may compute colors differently, and the colors of translucent
+        stops depend on the order in which the stops were inserted.
+    """
+    if type(table) is not EditableColormap:
+        return None
+    stops = tuple((stop.pos, stop.rgb) for stop in table.colorStops())
+    if any(stop.a != 255 for stop in table.colorStops()):
+        return None
+    return (stops, table.mode(), table.invert, alpha, alpha_function)
+
+
+def _compute_colormap_lut(
+    table: EditableColormap, alpha: float, alpha_function: int
+) -> tuple[tuple[int, ...], np.ndarray]:
+    """Compute the color table and the lookup table of a colormap.
+
+    Args:
+        table: Colormap
+        alpha: Global alpha value
+        alpha_function: Alpha function (see :class:`plotpy.constants.LUTAlpha`)
+
+    Returns:
+        Color table (256 colors) and lookup table (``LUT_SIZE`` ARGB values)
+    """
+    colors = tuple(table.colorTable(FULLRANGE))
+    lut = np.zeros((LUT_SIZE,), np.uint32)
+    for i in range(LUT_SIZE):
+        if alpha_function == LUTAlpha.NONE.value:
+            pix_alpha = 1.0
+        elif alpha_function == LUTAlpha.CONSTANT.value:
+            pix_alpha = alpha
+        else:
+            x = i / float(LUT_SIZE - 1)
+            if alpha_function == LUTAlpha.LINEAR.value:
+                # Linear alpha function
+                pix_alpha = alpha * x
+            elif alpha_function == LUTAlpha.SIGMOID.value:
+                # Sigmoid alpha function
+                pix_alpha = alpha / (1 + np.exp(-10 * x))
+            elif alpha_function == LUTAlpha.TANH.value:
+                # Hyperbolic tangent alpha function
+                pix_alpha = alpha * np.tanh(5 * x)
+            elif alpha_function == LUTAlpha.STEP.value:
+                # Fully transparent lowest value and `alpha` transparent elsewhere
+                pix_alpha = alpha if x > 0 else 0
+            else:
+                raise ValueError(f"Invalid alpha function {alpha_function}")
+        # pylint: disable=too-many-function-args
+        alpha_channel = max(min(np.uint32(255 * pix_alpha + 0.5), 255), 0) << 24
+        lut[i] = (
+            np.uint32((table.rgb(FULLRANGE, i / LUT_MAX)) & 0xFFFFFF) | alpha_channel
+        )
+    return colors, lut
+
+
+def _get_colormap_lut(
+    table: EditableColormap, alpha: float, alpha_function: int
+) -> tuple[tuple[int, ...], np.ndarray]:
+    """Return the color table and the lookup table of a colormap.
+
+    Computing them takes more than 1000 calls to the colormap: they are cached,
+    since every new image item usually shows the same colormap.
+
+    Args:
+        table: Colormap
+        alpha: Global alpha value
+        alpha_function: Alpha function (see :class:`plotpy.constants.LUTAlpha`)
+
+    Returns:
+        Color table (256 colors) and lookup table (``LUT_SIZE`` ARGB values),
+        the latter being read-only
+    """
+    key = _lut_cache_key(table, alpha, alpha_function)
+    if key is not None and key in _LUT_CACHE:
+        _LUT_CACHE.move_to_end(key)
+        return _LUT_CACHE[key]
+    colors, lut = _compute_colormap_lut(table, alpha, alpha_function)
+    lut.flags.writeable = False
+    if key is not None:
+        _LUT_CACHE[key] = (colors, lut)
+        if len(_LUT_CACHE) > _LUT_CACHE_SIZE:
+            _LUT_CACHE.popitem(last=False)
+    return colors, lut
+
+
+def get_offscreen_ratio(painter: QPainter) -> float:
+    """Return the resolution at which image items are rendered before being
+    drawn with the given painter, in pixels per canvas pixel.
+
+    Images are rendered at the resolution of the paint device, e.g. 1.25 or 2
+    pixels per canvas pixel with a 125% or 200% screen scaling, instead of being
+    upscaled from the canvas resolution, which takes more time (up to about 4
+    times with a 200% screen scaling). Images are rendered at the canvas
+    resolution when printing or exporting with a scaling (or rotating) painter
+    transform, or when the ``image/device_resolution`` option of the ``plot``
+    configuration section is disabled.
+
+    Args:
+        painter: Painter
+
+    Returns:
+        Resolution, in pixels per canvas pixel
+    """
+    world = painter.worldTransform()
+    if (
+        world.isScaling()
+        or world.isRotating()
+        or not CONF.get("plot", "image/device_resolution", True)
+    ):
+        return 1.0
+    ratio = abs(painter.deviceTransform().m11())
+    return ratio if ratio > 0.0 else 1.0
+
+
+def reusable_rendering(draw_image: Callable) -> Callable:
+    """Decorator marking a ``draw_image`` method whose rendering may be reused
+
+    The decorated method must only draw with :meth:`BaseImageItem._draw_offscreen`,
+    from offscreen images which are only modified when the item is rendered. The
+    rendering may then be drawn again without being computed when the plot is
+    redrawn with :meth:`.BasePlot.replot_overlays` (e.g. while moving a shape over
+    the image).
+
+    Args:
+        draw_image: ``draw_image`` method
+
+    Returns:
+        The same method
+    """
+    draw_image.reusable_rendering = True
+    return draw_image
+
+
+class _RenderKey:
+    """Key of the rendering of an image item (see :func:`reusable_rendering`)
+
+    The key is made of values, compared by equality, and of objects (e.g. data
+    arrays), compared by identity. The objects are referenced weakly, so that they
+    are not kept alive by the key: an object which does not exist anymore does not
+    match any object, even another one with the same ``id``.
+
+    Args:
+        values: Values
+        objects: Objects (arrays or None)
+    """
+
+    __slots__ = ("values", "refs")
+
+    def __init__(self, values: tuple, objects: tuple[np.ndarray | None, ...]) -> None:
+        self.values = values
+        self.refs = tuple(None if obj is None else weakref.ref(obj) for obj in objects)
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, _RenderKey) or self.values != other.values:
+            return False
+        if len(self.refs) != len(other.refs):
+            return False
+        for ref, other_ref in zip(self.refs, other.refs):
+            if ref is None or other_ref is None:
+                if ref is not other_ref:
+                    return False
+            elif ref() is None or ref() is not other_ref():
+                return False
+        return True
+
+    __hash__ = None
 
 
 class BaseImageItem(QwtPlotItem):
@@ -82,7 +273,10 @@ class BaseImageItem(QwtPlotItem):
     _can_rotate = False
     _readonly = False
     _private = False
-    _icon_name = "image.png"
+    _icon_name = "plotpy:image.svg"
+    #: True if the item supports the Z-axis logarithmic scale, i.e. if it draws
+    #: its data through :meth:`_get_display_data` (see :meth:`supports_zaxis_log`)
+    _ZAXIS_LOG_SUPPORTED = False
 
     def __init__(
         self, data: np.ndarray | None = None, param: Any | None = None
@@ -106,6 +300,13 @@ class BaseImageItem(QwtPlotItem):
 
         self.data: np.ndarray | None = None
 
+        # Z-axis logarithmic scale support: the LUT range (`min`, `max`) is always
+        # expressed in data units, only the color mapping is logarithmic
+        self._log_data: np.ndarray | None = None
+        self._log_floor = 1.0
+        self._lin_lut_range: tuple[float, float] | None = None
+        self._is_zaxis_log = False
+
         self.min = 0.0
         self.max = 1.0
         self.cmap_table = None
@@ -114,6 +315,12 @@ class BaseImageItem(QwtPlotItem):
         self._image: QG.QImage | None = None
 
         self._offscreen = np.array((1, 1), np.uint32)
+        #: Resolution of the offscreen image, in pixels per canvas pixel
+        self._offscreen_ratio = 1.0
+        #: Offscreen images and rectangles drawn by the last rendering of the item
+        self._offscreen_draws: list[tuple[QG.QImage, tuple[int, int, int, int]]] = []
+        #: Key of the last rendering of the item (see `_get_render_key`)
+        self._render_key: _RenderKey | None = None
 
         # Linear interpolation is the default interpolation algorithm:
         # it's almost as fast as 'nearest pixel' method but far smoother
@@ -132,11 +339,6 @@ class BaseImageItem(QwtPlotItem):
         self._filename = None  # The file this image comes from
 
         self.histogram_cache = None
-
-        # Z-axis logarithmic scale support
-        self._log_data: np.ndarray | None = None
-        self._lin_lut_range: tuple[float, float] | None = None
-        self._is_zaxis_log = False
 
         if data is not None:
             self.set_data(data)
@@ -346,8 +548,47 @@ class BaseImageItem(QwtPlotItem):
         Used both when toggling the Z-axis log scale on and when the underlying
         data is replaced (e.g. via :meth:`set_data`) while the log scale is
         already active.
+
+        Values lower than or equal to zero have no logarithm: they are replaced
+        by the smallest positive value of the data (the "log floor", or 1.0 if
+        there is no positive value), so that they are shown with the lowest
+        color of the colormap. NaN values are kept.
         """
-        self._log_data = np.array(np.log10(self.data.clip(1)), dtype=np.float64)
+        data = np.asarray(self.data)
+        with np.errstate(invalid="ignore"):
+            positive = data[data > 0]
+        self._log_floor = float(positive.min()) if positive.size else 1.0
+        with np.errstate(invalid="ignore", divide="ignore"):
+            self._log_data = np.log10(
+                np.maximum(data, self._log_floor, dtype=np.float64)
+            )
+
+    def _get_display_data(self) -> np.ndarray:
+        """Return the data to which the LUT is applied when drawing the image
+
+        Returns:
+            Base-10 logarithm of the data if the Z-axis log scale is enabled,
+            the data itself otherwise
+        """
+        if self._is_zaxis_log:
+            return self._log_data
+        return self.data
+
+    def _to_lut_space(self, values: np.ndarray) -> np.ndarray:
+        """Convert data values to the space in which the LUT is applied
+
+        Args:
+            values: Data values
+
+        Returns:
+            Base-10 logarithm of the values (see :meth:`_recompute_log_data` for
+            values lower than or equal to zero) if the Z-axis log scale is enabled,
+            the values themselves otherwise
+        """
+        if self._is_zaxis_log:
+            with np.errstate(invalid="ignore", divide="ignore"):
+                return np.log10(np.maximum(values, self._log_floor, dtype=np.float64))
+        return values
 
     def set_data(
         self, data: np.ndarray, lut_range: tuple[float, float] | None = None
@@ -356,7 +597,8 @@ class BaseImageItem(QwtPlotItem):
 
         Args:
             data: 2D NumPy array
-            lut_range: LUT range -- tuple (levelmin, levelmax) (Default value = None)
+            lut_range: LUT range -- tuple (levelmin, levelmax), in data units, even
+             when the Z-axis log scale is enabled (Default value = None)
         """
         self.data = data
         self.histogram_cache = None
@@ -364,16 +606,20 @@ class BaseImageItem(QwtPlotItem):
         self.update_border()
         # Refresh the cached log10 data when log scale is active, otherwise the
         # display would keep using the previous (now stale) log data.
-        if self.get_zaxis_log_state():
+        if self._is_zaxis_log:
             self._recompute_log_data()
+        # The new data may have another data type than the previous one
+        self._sync_interpolation_dtype()
         if not self.param.keep_lut_range:
-            if lut_range is not None:
-                _min, _max = lut_range
-            elif self.get_zaxis_log_state():
-                _min, _max = get_nan_range(self._log_data)
-            else:
-                _min, _max = get_nan_range(data)
-            self.set_lut_range((_min, _max))
+            if self._is_zaxis_log:
+                # The linear LUT range, restored when the log scale is disabled,
+                # is updated as it would have been without the log scale
+                self._lin_lut_range = (
+                    get_nan_range(data) if lut_range is None else tuple(lut_range)
+                )
+            if lut_range is None:
+                lut_range = self.get_lut_range_full()
+            self.set_lut_range(lut_range)
 
     def get_data(
         self, x0: float, y0: float, x1: float | None = None, y1: float | None = None
@@ -466,37 +712,11 @@ class BaseImageItem(QwtPlotItem):
         if invert is not None:
             table.invert = invert
         self.cmap_table = table
-        self.cmap = table.colorTable(FULLRANGE)
-        cmap_a = self.lut[3]
-        alpha = self.param.alpha
-        alpha_function = self.param.alpha_function
-        for i in range(LUT_SIZE):
-            if alpha_function == LUTAlpha.NONE.value:
-                pix_alpha = 1.0
-            elif alpha_function == LUTAlpha.CONSTANT.value:
-                pix_alpha = alpha
-            else:
-                x = i / float(LUT_SIZE - 1)
-                if alpha_function == LUTAlpha.LINEAR.value:
-                    # Linear alpha function
-                    pix_alpha = alpha * x
-                elif alpha_function == LUTAlpha.SIGMOID.value:
-                    # Sigmoid alpha function
-                    pix_alpha = alpha / (1 + np.exp(-10 * x))
-                elif alpha_function == LUTAlpha.TANH.value:
-                    # Hyperbolic tangent alpha function
-                    pix_alpha = alpha * np.tanh(5 * x)
-                elif alpha_function == LUTAlpha.STEP.value:
-                    # Fully transparent lowest value and `alpha` transparent elsewhere
-                    pix_alpha = alpha if x > 0 else 0
-                else:
-                    raise ValueError(f"Invalid alpha function {alpha_function}")
-            # pylint: disable=too-many-function-args
-            alpha_channel = max(min(np.uint32(255 * pix_alpha + 0.5), 255), 0) << 24
-            cmap_a[i] = (
-                np.uint32((table.rgb(FULLRANGE, i / LUT_MAX)) & 0xFFFFFF)
-                | alpha_channel
-            )
+        colors, lut = _get_colormap_lut(
+            table, self.param.alpha, self.param.alpha_function
+        )
+        self.cmap = list(colors)
+        self.lut[3][:] = lut
         plot = self.plot()
         if plot:
             plot.update_colormap_axis(self)
@@ -519,29 +739,69 @@ class BaseImageItem(QwtPlotItem):
         if interp_mode in (INTERP_NEAREST, INTERP_LINEAR):
             self.interpolate = (interp_mode,)
         if interp_mode == INTERP_AA:
-            aa = np.ones((size, size), self.data.dtype)
+            # The kernel must have the same data type as the data drawn
+            aa = np.ones((size, size), self._get_display_data().dtype)
             self.interpolate = (interp_mode, aa)
 
     def get_interpolation(self) -> tuple[int] | tuple[int, np.ndarray]:
         """Get interpolation mode"""
         return self.interpolate
 
+    def _get_interpolation_for(
+        self, data: np.ndarray
+    ) -> tuple[int] | tuple[int, np.ndarray]:
+        """Return the interpolation mode to be used to scale the given data
+
+        The scaling functions require the anti-aliasing kernel to have the data
+        type of the data they scale, which is not always the data drawn (e.g. the
+        raw data, exported without the LUT, instead of its logarithm drawn with
+        the Z-axis logarithmic scale).
+
+        Args:
+            data: Data to be scaled
+
+        Returns:
+            Interpolation mode, with an anti-aliasing kernel of the data type of
+            the given data
+        """
+        interp = self.interpolate
+        if interp[0] == INTERP_AA and interp[1].dtype != data.dtype:
+            interp = (INTERP_AA, interp[1].astype(data.dtype))
+        return interp
+
+    def _sync_interpolation_dtype(self) -> None:
+        """Give the anti-aliasing kernel the data type of the data drawn"""
+        if self.data is not None:
+            self.interpolate = self._get_interpolation_for(self._get_display_data())
+
     def set_lut_range(self, lut_range: tuple[float, float]) -> None:
         """
         Set the current active lut range
 
         Args:
-            lut_range: Lut range, tuple(min, max)
+            lut_range: Lut range, tuple(min, max), in data units (even when the
+             Z-axis log scale is enabled: values lower than or equal to zero are
+             then replaced by the smallest positive value of the data)
 
         Example:
             >>> item.set_lut_range((0.0, 1.0))
         """
-        self.min, self.max = lut_range
+        vmin, vmax = lut_range
+        if self._is_zaxis_log:
+            if vmax <= 0:
+                vmax = self._log_floor
+            if vmin <= 0:
+                vmin = min(self._log_floor, vmax)
+        self.min, self.max = vmin, vmax
         _a, _b, bg, cmap = self.lut
-        if self.max == self.min:
-            self.lut = (LUT_MAX, self.min, bg, cmap)
+        if self._is_zaxis_log:
+            lmin, lmax = np.log10(float(vmin)), np.log10(float(vmax))
         else:
-            fmin, fmax = float(self.min), float(self.max)  # avoid overflows
+            lmin, lmax = self.min, self.max
+        if lmax == lmin:
+            self.lut = (LUT_MAX, lmin, bg, cmap)
+        else:
+            fmin, fmax = float(lmin), float(lmax)  # avoid overflows
             self.lut = (
                 LUT_MAX / (fmax - fmin),
                 -LUT_MAX * fmin / (fmax - fmin),
@@ -553,7 +813,7 @@ class BaseImageItem(QwtPlotItem):
         """Get the current active lut range
 
         Returns:
-            tuple[float, float]: Lut range, tuple(min, max)
+            tuple[float, float]: Lut range, tuple(min, max), in data units
         """
         return self.min, self.max
 
@@ -569,11 +829,25 @@ class BaseImageItem(QwtPlotItem):
         """Return full dynamic range
 
         Returns:
-            tuple[float, float]: Lut range, tuple(min, max)
+            tuple[float, float]: Lut range, tuple(min, max), in data units. When the
+            Z-axis log scale is enabled, the minimum is the smallest positive value
+            of the data.
         """
-        return get_nan_range(self.data)
+        vmin, vmax = get_nan_range(self.data)
+        if self._is_zaxis_log:
+            return self._log_floor, max(vmax, self._log_floor)
+        return vmin, vmax
 
     # ---- Z-axis logarithmic scale --------------------------------------------
+    def supports_zaxis_log(self) -> bool:
+        """Return True if the item supports the Z-axis logarithmic scale
+
+        Items which do not support it (e.g. RGB images, which have no colormap)
+        are ignored by :class:`.ZAxisLogTool`, and :meth:`set_zaxis_log_state`
+        has no effect on them.
+        """
+        return self._ZAXIS_LOG_SUPPORTED
+
     def get_zaxis_log_state(self) -> bool:
         """Return True if Z-axis is in logarithmic scale"""
         return self._is_zaxis_log
@@ -581,23 +855,33 @@ class BaseImageItem(QwtPlotItem):
     def set_zaxis_log_state(self, state: bool) -> None:
         """Set Z-axis logarithmic scale state
 
+        With the logarithmic scale, the colors are mapped to the base-10 logarithm
+        of the data, whereas the LUT range (see :meth:`get_lut_range`), the color
+        bar, the contrast adjustment panel and the cursor values remain in data
+        units. Values lower than or equal to zero are shown with the lowest color
+        of the colormap.
+
+        Enabling the logarithmic scale sets the LUT range to the full range of the
+        positive values of the data; disabling it restores the previous LUT range.
+
         Args:
             state: True to enable logarithmic scale, False otherwise
         """
-        self._is_zaxis_log = state
-        plot = self.plot()
+        state = bool(state)
+        if not self.supports_zaxis_log() or state == self._is_zaxis_log:
+            return
         if state:
             self._lin_lut_range = self.get_lut_range()
-            if self._log_data is None:
+            self._is_zaxis_log = True
+            if self.data is not None:
                 self._recompute_log_data()
-            self.set_lut_range(get_nan_range(self._log_data))
-            dtype = self._log_data.dtype
+                self.set_lut_range(self.get_lut_range_full())
         else:
+            self._is_zaxis_log = False
             self._log_data = None
             self.set_lut_range(self._lin_lut_range)
-            dtype = self.data.dtype
-        if self.interpolate[0] == INTERP_AA:
-            self.interpolate = (INTERP_AA, self.interpolate[1].astype(dtype))
+        self._sync_interpolation_dtype()
+        plot = self.plot()
         if plot is not None:
             plot.update_colormap_axis(self)
 
@@ -642,6 +926,17 @@ class BaseImageItem(QwtPlotItem):
         """
         self.border_rect.draw(painter, xMap, yMap, canvasRect)
 
+    def _has_linear_scales(self) -> bool:
+        """Return True if the image axes of the plot have linear scales
+
+        Returns:
+            True if linear scales
+        """
+        plot: BasePlot = self.plot()
+        return isinstance(
+            plot.axisScaleEngine(plot.X_BOTTOM), QwtLinearScaleEngine
+        ) and isinstance(plot.axisScaleEngine(plot.Y_LEFT), QwtLinearScaleEngine)
+
     def warn_if_non_linear_scale(self, painter: QPainter, canvasRect: QRectF) -> bool:
         """Warn if non-linear scale
 
@@ -652,10 +947,7 @@ class BaseImageItem(QwtPlotItem):
         Returns:
             True if non-linear scale
         """
-        plot: BasePlot = self.plot()
-        if not isinstance(
-            plot.axisScaleEngine(plot.X_BOTTOM), QwtLinearScaleEngine
-        ) or not isinstance(plot.axisScaleEngine(plot.Y_LEFT), QwtLinearScaleEngine):
+        if not self._has_linear_scales():
             painter.setPen(QC.Qt.red)
             painter.drawText(
                 canvasRect,
@@ -665,6 +957,7 @@ class BaseImageItem(QwtPlotItem):
             return True
         return False
 
+    @reusable_rendering
     def draw_image(
         self,
         painter: QPainter,
@@ -687,10 +980,109 @@ class BaseImageItem(QwtPlotItem):
         if self.warn_if_non_linear_scale(painter, canvasRect):
             return
         dest = _scale_rect(
-            self.data, src_rect, self._offscreen, dst_rect, self.lut, self.interpolate
+            self._get_display_data(),
+            src_rect,
+            self._offscreen,
+            self._offscreen_rect(dst_rect),
+            self.lut,
+            self.interpolate,
         )
-        qrect = QC.QRectF(QC.QPointF(dest[0], dest[1]), QC.QPointF(dest[2], dest[3]))
-        painter.drawImage(qrect, self._image, qrect)
+        self._draw_offscreen(painter, dest)
+
+    def _offscreen_rect(
+        self, rect: tuple[float, float, float, float]
+    ) -> tuple[int, int, int, int]:
+        """Convert a rectangle from canvas coordinates to offscreen image pixels
+
+        Args:
+            rect: Rectangle (x1, y1, x2, y2), in canvas coordinates
+
+        Returns:
+            Rectangle (x1, y1, x2, y2), in offscreen image pixels
+        """
+        ratio = self._offscreen_ratio
+        return tuple(int(value * ratio) for value in rect)
+
+    def _draw_offscreen(
+        self,
+        painter: QPainter,
+        rect: tuple[int, int, int, int],
+        image: QG.QImage | None = None,
+    ) -> None:
+        """Draw a part of an offscreen image on the canvas
+
+        Args:
+            painter: Painter
+            rect: Rectangle (x1, y1, x2, y2) to be drawn, in offscreen image pixels
+            image: Offscreen image (default: offscreen image of the item)
+        """
+        if image is None:
+            image = self._image
+        self._offscreen_draws.append((image, rect))
+        self._draw_offscreen_image(painter, image, rect)
+
+    def _draw_offscreen_image(
+        self, painter: QPainter, image: QG.QImage, rect: tuple[int, int, int, int]
+    ) -> None:
+        """Draw a part of an offscreen image on the canvas
+
+        Args:
+            painter: Painter
+            image: Offscreen image
+            rect: Rectangle (x1, y1, x2, y2) to be drawn, in offscreen image pixels
+        """
+        source = QC.QRectF(QC.QPointF(rect[0], rect[1]), QC.QPointF(rect[2], rect[3]))
+        ratio = self._offscreen_ratio
+        target = QC.QRectF(source.topLeft() / ratio, source.bottomRight() / ratio)
+        painter.drawImage(target, image, source)
+
+    def _get_render_key(
+        self,
+        canvasRect: QRectF,
+        src_rect: tuple[float, float, float, float],
+        dst_rect: tuple[float, float, float, float],
+    ) -> _RenderKey | None:
+        """Return the key of the rendering of the item: the previous rendering may
+        be drawn again as long as the key does not change
+
+        Args:
+            canvasRect: Canvas rectangle
+            src_rect: Source rectangle
+            dst_rect: Destination rectangle
+
+        Returns:
+            Key, or None if the rendering may not be reused (``draw_image`` not
+            decorated with :func:`reusable_rendering`)
+        """
+        if not getattr(type(self).draw_image, "reusable_rendering", False):
+            return None
+        if not self._has_linear_scales():
+            # A warning is drawn instead of the image
+            return None
+        # No LUT for RGB images
+        lut_values = None
+        if self.lut is not None:
+            # The colormap may be changed in place (e.g. by `set_color_map`)
+            a, b, bg, cmap = self.lut
+            lut_values = (a, b, bg, cmap.tobytes())
+        interp_values = tuple(
+            value.tobytes() if isinstance(value, np.ndarray) else value
+            for value in self.interpolate
+        )
+        values = (
+            # Image items are rendered again on each replot (data, contrast, ...)
+            self.plot().get_replot_count(),
+            # Plot geometry and item position
+            self._offscreen_ratio,
+            canvasRect.getCoords(),
+            src_rect,
+            dst_rect,
+            # LUT and interpolation changes, even without replot
+            lut_values,
+            interp_values,
+        )
+        # Data changes, even without replot
+        return _RenderKey(values, (self._get_display_data(),))
 
     def export_roi(
         self,
@@ -718,10 +1110,15 @@ class BaseImageItem(QwtPlotItem):
         """
         if apply_lut:
             a, b, _bg, _cmap = self.lut
+            data = self._get_display_data()
         else:
             a, b = 1.0, 0.0
-        interp = self.interpolate if apply_interpolation else (INTERP_NEAREST,)
-        _scale_rect(self.data, src_rect, dst_image, dst_rect, (a, b, None), interp)
+            data = self.data
+        if apply_interpolation:
+            interp = self._get_interpolation_for(data)
+        else:
+            interp = (INTERP_NEAREST,)
+        _scale_rect(data, src_rect, dst_image, dst_rect, (a, b, None), interp)
 
     # ---- QwtPlotItem API -----------------------------------------------------
     def draw(
@@ -739,26 +1136,44 @@ class BaseImageItem(QwtPlotItem):
             yMap: Y axis scale map
             canvasRect: Canvas rectangle
         """
-        x1, y1, x2, y2 = canvasRect.getCoords()
+        # The offscreen image covers the canvas at the resolution of the paint
+        # device (see `get_offscreen_ratio`), rounded up to whole pixels
+        ratio = self._offscreen_ratio = get_offscreen_ratio(painter)
+        W = math.ceil(canvasRect.right() * ratio)
+        H = math.ceil(canvasRect.bottom() * ratio)
+        x1, y1 = canvasRect.left(), canvasRect.top()
+        x2, y2 = W / ratio, H / ratio
         i1, i2 = xMap.invTransform(x1), xMap.invTransform(x2)
         j1, j2 = yMap.invTransform(y1), yMap.invTransform(y2)
 
+        # Destination rectangle, extended by one offscreen image pixel to the right
+        # and to the bottom (offscreen image pixels being truncated)
         xl, yt, xr, yb = self.boundingRect().getCoords()
         dest = (
             xMap.transform(xl),
             yMap.transform(yt),
-            xMap.transform(xr) + 1,
-            yMap.transform(yb) + 1,
+            xMap.transform(xr) + 1 / ratio,
+            yMap.transform(yb) + 1 / ratio,
         )
 
-        W = int(canvasRect.right())
-        H = int(canvasRect.bottom())
-        if self._offscreen.shape != (H, W):
-            self._offscreen = np.empty((H, W), np.uint32)
-            self._image = QG.QImage(self._offscreen, W, H, QG.QImage.Format_ARGB32)
-            self._image.ndarray = self._offscreen
-            self.notify_new_offscreen()
-        self.draw_image(painter, canvasRect, (i1, j1, i2, j2), dest, xMap, yMap)
+        src_rect = (i1, j1, i2, j2)
+        key = self._get_render_key(canvasRect, src_rect, dest)
+        if key is not None and key == self._render_key:
+            # The item has not changed (e.g. a shape is moved over the image): its
+            # previous rendering is drawn again
+            for image, rect in self._offscreen_draws:
+                self._draw_offscreen_image(painter, image, rect)
+        else:
+            self._render_key = None
+            self._offscreen_draws = []
+            if self._offscreen.shape != (H, W):
+                self._offscreen = np.empty((H, W), np.uint32)
+                self._image = QG.QImage(self._offscreen, W, H, QG.QImage.Format_ARGB32)
+                self._image.ndarray = self._offscreen
+                self.notify_new_offscreen()
+            self.draw_image(painter, canvasRect, src_rect, dest, xMap, yMap)
+            # Key after rendering, which may update the item (e.g. its LUT range)
+            self._render_key = self._get_render_key(canvasRect, src_rect, dest)
         self.draw_border(painter, xMap, yMap, canvasRect)
 
     def boundingRect(self) -> QRectF:
@@ -1091,7 +1506,7 @@ class BaseImageItem(QwtPlotItem):
     def __process_cross_section(self, ydata, apply_lut):
         if apply_lut:
             a, b, _bg, _cmap = self.lut
-            return (ydata * a + b).clip(0, LUT_MAX)
+            return (self._to_lut_space(ydata) * a + b).clip(0, LUT_MAX)
         else:
             return ydata
 
@@ -1204,6 +1619,7 @@ class RawImageItem(BaseImageItem):
         IVoiImageItemType,
         ISerializableType,
     )
+    _ZAXIS_LOG_SUPPORTED = True
 
     # ---- BaseImageItem API ---------------------------------------------------
     def get_default_param(self) -> RawImageParam:

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>contrast</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<circle cx="8" cy="8" r="6.8" fill="#fff" stroke="#8c8c8c" stroke-width="0.9"/>
+<path d="M8 1.2 A6.8 6.8 0 0 1 8 14.8 Z" fill="#000"/>
+</svg>

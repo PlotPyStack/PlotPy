@@ -11,7 +11,7 @@ class LabelTool(InteractiveTool):
     """ """
 
     TITLE = _("Label")
-    ICON = "label.png"
+    ICON = "label.svg"
     LABEL_STYLE_SECT = "plot"
     LABEL_STYLE_KEY = "label"
     SWITCH_TO_DEFAULT_TOOL = True

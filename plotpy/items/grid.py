@@ -35,12 +35,12 @@ class GridItem(QwtPlotGrid):
 
     _readonly = True
     _private = False
-    _icon_name = "grid.png"
+    _icon_name = "grid.svg"
 
     def __init__(self, gridparam: GridParam | None = None) -> None:
         super().__init__()
         if gridparam is None:
-            self.gridparam = GridParam(title=_("Grid"), icon="grid.png")
+            self.gridparam = GridParam(title=_("Grid"), icon="grid.svg")
         else:
             self.gridparam = gridparam
         self.selected = False

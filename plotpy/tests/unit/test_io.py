@@ -9,7 +9,6 @@ Unit tests for io module
 
 import numpy as np
 import pytest
-from guidata.configtools import get_image_file_path
 from qtpy.QtGui import QImage
 
 from plotpy.tests import get_path
@@ -85,7 +84,7 @@ def test_imread_brain_png():
 
 def test_imread_python_icon():
     """Test reading of python icon which is a colored PNG with alpha."""
-    path = get_image_file_path("python.png")
+    path = get_path("python.png")
     data = imread(path)
     assert data.shape == (16, 16, 4)
 
@@ -93,7 +92,7 @@ def test_imread_python_icon():
 def test_imread_python_icon_grayscale():
     """Test reading of python icon which is a colored PNG with alpha,
     data should be converted to grayscale."""
-    path = get_image_file_path("python.png")
+    path = get_path("python.png")
     data = imread(path, to_grayscale=True)
     assert data.shape == (16, 16)
 

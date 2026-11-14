@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>csautoscale</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<rect x="0.5" y="1.5" width="15" height="13" fill="#fff" stroke="#737373" stroke-width="1"/>
+<path d="M5.5 14 V3.5 H9.5 V14" fill="none" stroke="#0026ff" stroke-width="1"/>
+<path d="M6 8 H1 M3 6 L1 8 L3 10 M10 8 H15 M13 6 L15 8 L13 10" fill="none" stroke="#ff8000" stroke-width="1.5"/>
+</svg>

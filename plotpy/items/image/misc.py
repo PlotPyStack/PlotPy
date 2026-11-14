@@ -25,7 +25,7 @@ from plotpy.interfaces import (
     ITrackableItemType,
     IVoiImageItemType,
 )
-from plotpy.items.image.base import BaseImageItem, RawImageItem
+from plotpy.items.image.base import BaseImageItem, RawImageItem, reusable_rendering
 from plotpy.items.image.transform import TrImageItem
 from plotpy.mathutils.arrayfuncs import get_nan_range
 from plotpy.styles import Histogram2DParam, ImageParam, QuadGridParam
@@ -71,6 +71,8 @@ class QuadGridItem(RawImageItem):
     """
 
     __implements__ = (IBasePlotItem, IBaseImageItem, IHistDataSource, IVoiImageItemType)
+    # Quadrilaterals are drawn from the data itself, without the log10 data
+    _ZAXIS_LOG_SUPPORTED = False
 
     def __init__(
         self,
@@ -178,13 +180,12 @@ class QuadGridItem(RawImageItem):
             self.data,
             src_rect,
             self._offscreen,
-            dst_rect,
+            self._offscreen_rect(dst_rect),
             self.lut,
             self.interpolate,
             self.grid,
         )
-        qrect = QC.QRectF(QC.QPointF(dest[0], dest[1]), QC.QPointF(dest[2], dest[3]))
-        painter.drawImage(qrect, self._image, qrect)
+        self._draw_offscreen(painter, dest)
         xl, yt, xr, yb = dest
         self._offscreen[yt:yb, xl:xr] = 0
 
@@ -207,7 +208,7 @@ class Histogram2DItem(BaseImageItem):
     """
 
     __implements__ = (IBasePlotItem, IBaseImageItem, IHistDataSource, IVoiImageItemType)
-    _icon_name = "histogram2d.png"
+    _icon_name = "histogram2d.svg"
 
     def __init__(
         self,
@@ -277,6 +278,7 @@ class Histogram2DItem(BaseImageItem):
     # ---- QwtPlotItem API ------------------------------------------------------
     fill_canvas = True
 
+    @reusable_rendering
     def draw_image(
         self,
         painter: QPainter,

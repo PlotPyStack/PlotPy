@@ -51,7 +51,7 @@ class MultiLineTool(InteractiveTool):
     """
 
     TITLE: str = _("Polyline")
-    ICON: str = "polyline.png"
+    ICON: str = "polyline.svg"
     CLOSED: bool = False
     CURSOR: QC.Qt.CursorShape = QC.Qt.CursorShape.PointingHandCursor
 
@@ -174,7 +174,7 @@ class PolygonTool(MultiLineTool):
     """
 
     TITLE: str = _("Polygon")
-    ICON: str = "polygon.png"
+    ICON: str = "polygon.svg"
     CLOSED: bool = True
 
 
@@ -274,14 +274,14 @@ class RectangleTool(RectangularShapeTool):
     """Tool for creating rectangle shapes."""
 
     TITLE: str = _("Rectangle")
-    ICON: str = "rectangle.png"
+    ICON: str = "rectangle.svg"
 
 
 class ObliqueRectangleTool(RectangularShapeTool):
     """Tool for creating oblique rectangle shapes."""
 
     TITLE: str = _("Oblique rectangle")
-    ICON: str = "oblique_rectangle.png"
+    ICON: str = "oblique_rectangle.svg"
     AVOID_NULL_SHAPE: bool = True
 
     def create_shape(self):
@@ -300,7 +300,7 @@ class PointTool(RectangularShapeTool):
     """Tool for creating point shapes."""
 
     TITLE: str = _("Point")
-    ICON: str = "point_shape.png"
+    ICON: str = "point_shape.svg"
     SHAPE_STYLE_KEY: str = "shape/point"
 
     def create_shape(self):
@@ -332,7 +332,7 @@ class SegmentTool(RectangularShapeTool):
     """Tool for creating segment shapes."""
 
     TITLE: str = _("Segment")
-    ICON: str = "segment.png"
+    ICON: str = "segment.svg"
     SHAPE_STYLE_KEY: str = "shape/segment"
 
     def create_shape(self):
@@ -351,7 +351,7 @@ class CircleTool(RectangularShapeTool):
     """Tool for creating circle shapes."""
 
     TITLE: str = _("Circle")
-    ICON: str = "circle.png"
+    ICON: str = "circle.svg"
 
     def create_shape(self):
         """
@@ -369,7 +369,7 @@ class EllipseTool(RectangularShapeTool):
     """Tool for creating ellipse shapes."""
 
     TITLE: str = _("Ellipse")
-    ICON: str = "ellipse_shape.png"
+    ICON: str = "ellipse_shape.svg"
 
     def create_shape(self):
         """

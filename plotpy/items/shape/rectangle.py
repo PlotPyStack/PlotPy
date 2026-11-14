@@ -42,7 +42,7 @@ class RectangleShape(PolygonShape):
     """
 
     CLOSED = True
-    _icon_name = "rectangle.png"
+    _icon_name = "rectangle.svg"
 
     def __init__(
         self,
@@ -139,7 +139,7 @@ class ObliqueRectangleShape(PolygonShape):
     CLOSED = True
     ADDITIONNAL_POINTS = 2  # Number of points which are not part of the shape
     LINK_ADDITIONNAL_POINTS = True  # Link additionnal points with dotted lines
-    _icon_name = "oblique_rectangle.png"
+    _icon_name = "oblique_rectangle.svg"
 
     def __init__(
         self,

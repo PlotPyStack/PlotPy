@@ -30,7 +30,7 @@ def get_python_libs_info(addinfo: str = "") -> str:
     if addinfo:
         addinfo = ", " + addinfo
     addinfo = f"PlotPy {plotpy.__version__}{addinfo}"
-    return guidata_about.get_python_libs_info(addinfo)
+    return guidata_about.get_python_libs_infos(addinfo)
 
 
 def about(html: bool = True, copyright_only: bool = False) -> str:

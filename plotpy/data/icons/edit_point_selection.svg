@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>edit_point_selection</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<path d="M1 13 C3 8 3.8 7.8 6.5 9.8 C10.5 13 11.2 11.2 13 5 L15 1.5" fill="none" stroke="#ff414c" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4.5 1 L4.5 13" fill="none" stroke="#222" stroke-width="1" stroke-dasharray="1 1"/>
+<rect x="3" y="8.5" width="3" height="3" fill="none" stroke="#222" stroke-width="0.9"/>
+</svg>

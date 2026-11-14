@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<title>shapes/contour</title>
+<desc>Hand-authored vector reconstruction. Explicit geometric primitives and curves; no raster tracing.</desc>
+
+<rect x="0" y="0" width="16" height="16" fill="#b7ff46"/>
+<path d="M0 0 A16 16 0 0 1 16 16 H0 Z" fill="#dcf332"/>
+<path d="M0 3 A13 13 0 0 1 13 16 H0 Z" fill="#ffe216"/>
+<path d="M0 6 A10 10 0 0 1 10 16 H0 Z" fill="#ffb400"/>
+<path d="M0 9 A7 7 0 0 1 7 16 H0 Z" fill="#ff6e00"/>
+<path d="M0 12 A4 4 0 0 1 4 16 H0 Z" fill="#ff2200"/>
+</svg>

@@ -72,6 +72,24 @@ def disable_gc_for_tests():
     gc.enable()
 
 
+@pytest.fixture
+def isolated_config_dir(tmp_path):
+    """Use a temporary user configuration directory for PlotPy's user files (e.g.
+    custom colormaps), restoring the application name and custom colormaps afterwards.
+    """
+    # pylint: disable=import-outside-toplevel
+    from plotpy.config import CONF
+    from plotpy.mathutils.colormap import reload_custom_colormaps
+
+    app_name = CONF.name
+    with pytest.MonkeyPatch.context() as mpatch:
+        for varname in ("HOME", "USERPROFILE", "XDG_CONFIG_HOME"):
+            mpatch.setenv(varname, str(tmp_path))
+        reload_custom_colormaps()
+        yield tmp_path
+    CONF.set_application(app_name, None, load=False)
+
+
 def pytest_report_header(config):
     """Add additional information to the pytest report header."""
     qtbindings_version = qtpy.PYSIDE_VERSION

@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 import numpy as np
 import pytest
 from guidata.qthelpers import exec_dialog, execenv, qt_app_context
+from qtpy import QtWidgets as QW
 
 from plotpy.interfaces.items import IBasePlotItem, IShapeItemType
 from plotpy.tests import vistools as ptv
@@ -97,13 +98,29 @@ def _test_annotation_tools(tool_classes: tuple[type[InteractiveTool], ...]):
         for tool_class in tool_classes:
             tool = win.manager.get_tool(tool_class)
             assert tool is not None
+            snapshot_calls: list[tuple] | None = None
+            if execenv.unattended and isinstance(tool, SnapshotTool):
+                # The snapshot action opens modal dialogs (destination size, options,
+                # file name) which are never closed in unattended mode
+                snapshot_calls = []
+                tool.action_func = lambda *args, calls=snapshot_calls: calls.append(
+                    args
+                )
             tool.activate()
             x_path = np.linspace(0, 0.5, 100)
             y_path = np.linspace(0, 0.5, 100)
             with execenv.context(accept_dialogs=True):
                 drag_mouse(win, x_path, y_path)
+            # Run the actions deferred by a zero-delay timer (e.g. the snapshot
+            # action) within this test rather than in a later event loop
+            QW.QApplication.processEvents()
             if hasattr(tool_class, "SWITCH_TO_DEFAULT_TOOL"):
                 assert win.manager.get_default_tool() == default_tool
+            if snapshot_calls is not None:
+                assert len(snapshot_calls) == 1
+                snap_plot, p0, p1 = snapshot_calls[0]
+                assert snap_plot is plot
+                assert p0.x() < p1.x() and p0.y() < p1.y()
         plot.unselect_all()
         shape_items: list[IBasePlotItem] = plot.get_items(item_type=IShapeItemType)
         plot.select_some_items(shape_items)
